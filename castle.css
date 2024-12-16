@@ -1,0 +1,67 @@
+#castle-body{
+	
+	position:relative;
+	display:flex;
+	height:100vh;
+	width:100vw;
+	
+}
+
+#castle-body canvas {
+	
+	position:absolute;
+	
+}
+
+.castle-hero{
+	
+	position:absolute;
+	bottom:0;
+	display:flex;
+	align-items:center;
+	flex-flow:row nowrap;
+	background:rgba(255,0,0,0.3);
+	height:19vh;
+	width:100vw;
+	overflow-x:scroll;
+	
+}
+
+.castle-hero-item{
+	
+	width:16vh;
+	min-width:16vh;
+	height:16vh;
+	margin:0 0.5vw;
+	cursor:pointer;
+	background-size:cover;
+	background-position:center;
+	background-repeat:no-repeat;
+	
+}
+
+.castle-menu {
+	
+	position:absolute;
+	left:0;
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	flex-flow:column nowrap;
+	background:rgba(0,255,0,0.3);
+	height:100vh;
+	width:3vw;
+	
+}
+
+.castle-menu-item{
+	
+	
+	
+}
+
+#STAT{
+	
+	display:none;
+	
+}

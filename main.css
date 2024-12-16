@@ -34,7 +34,7 @@ html,body{padding:0;margin:0;background:#dcdcdc;font:22px/1.5 Verdana}
 body{
 overscroll-behavior: contain;
 overscroll-behavior-y: none;
-background-image:url('./bg1.jpg');
+background-image:url('img/bg.jpg');
 background-position:center;
 background-attachment:fixed;
 background-repeat:repeat-y;
@@ -332,7 +332,7 @@ background-color:rgba(15,15,15,0.7);
 .build-hero-stats{
 	display:flex;
 	align-self: start;
-	width: 300px;
+	width: 370px;
 	flex-flow:column nowrap;
 	font: 1.2rem / 1 Tahoma;
 	
@@ -348,6 +348,34 @@ background-color:rgba(15,15,15,0.7);
 .build-hero-stats-line:nth-child(n+10) {
 	border-bottom: 1px solid #777;
 }
+.build-hero-stats-line:nth-last-child(-n+3) {
+	box-shadow: 0 0 25px rgba(200,200,200,0.2);
+	border-radius: 15px;
+	cursor: pointer;
+}
+.build-hero-stats-line .wrapper {
+	position: absolute;
+	border: 1px solid #000;
+	padding: 5px;
+	left: 21vw;
+	bottom: 2vh;
+	color: #fff;
+	background: #333b;
+	cursor: pointer;
+}
+.build-hero-stats-line .wrapper div {
+	padding: 5px;
+}
+.build-hero-stats-line .wrapper .home.highlight {
+	background: rgb(154, 205, 50);
+}
+.build-hero-stats-line .wrapper .enemy.highlight {
+	background: red;
+}
+.build-hero-stats-line .noNumber div:last-child {
+	display: none;
+}
+
 .build-hero-stats-item{
 	
 	display:flex;
@@ -368,6 +396,10 @@ background-color:rgba(15,15,15,0.7);
 	background: none;
 	cursor: default;
 }
+.build-hero-stats-item.highlight {
+	background: #2a6d3d !important;
+}
+
 
 .build-hero-stats-daw {
 	
@@ -450,8 +482,9 @@ background-color:rgba(15,15,15,0.7);
 }
 .build-field-bottom:after {
 	content: 'Нажмите левой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст\a(автоматическое применение)';
+	font-size: smaller;
 	white-space: pre;
-	color: #eee;
+	color: #ddd;
 	display: flex;
 	justify-content: end;
 	text-align: center;
@@ -474,7 +507,7 @@ button.skins,
 button.new-build {
 	color: #eee;
 	font-size: 70px;
-	background-image: url(plus.svg) !important;
+	background-image: url(icons/plus.svg) !important;
 	background-color: #279aac !important;
 	background-size: 77px;
 	background-position-x: -8px;
@@ -491,7 +524,7 @@ button.new-build:hover {
 button.random-build {
 	background: transparent;
 	border: 0;
-	background-image: url(dice.svg) !important;
+	background-image: url(icons/dice.svg) !important;
 	background-color: #279aac;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -564,7 +597,7 @@ button.sets {
 }
 
 .build-list-item{
-	font-family: "PT Sans", sans-serif;
+	font-family: Arial;
     border-radius: 15px;
     box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
 }
@@ -690,7 +723,7 @@ button.sets {
 
 .build .build-talent-item[data-active='1']:after {
 	content: '';
-	background-image: url('activeBorder.png');
+	background-image: url('icons/activeBorder.png');
 	display: block;
 	width: 128px;
 	height: 120px;
@@ -2221,4 +2254,112 @@ cursor:pointer;
 		margin-left: 36vw;
 		width: 17vw;
 	}
+}
+
+@media (height < 1200px) {
+	.build-hero {
+		min-width: 20vw;
+		margin-top: -180px;
+	}
+
+	.build-hero > div:first-child {
+		height: 23vh;
+	}
+	.build-hero .avatar {
+		width: 166px;
+		height: 166px;
+	}
+	.build-hero .name {
+		margin: 1vh;
+	}
+
+	.build-hero-stats {
+		font-size: 1rem;
+	}
+
+	.build-hero-stats-line {
+		margin: 0;
+	}
+
+	.build-level {
+		min-height: 500px;
+		height: 10vh;
+	}
+
+	.build-level div {
+		width:  70px;
+		height: 70px;
+		font-size: 1rem;
+		line-height: 71px;
+	}
+
+	.build-talent {
+		height: 70vh;
+	}
+
+	.buttons-talents-and-sets button,
+	button.skins {
+		width: 150px;
+		height: 45px;
+	}
+	button.skins {
+		margin-left: 248px;
+	}
+
+	.build-talent-item {
+		width: 64px;
+		height: 64px;
+	}
+	.build .build-talent-item[data-active="1"]::after {
+		transform: scale(0.70);
+		position: relative;
+		top: -20px;
+		margin-left: -23px;
+	}
+
+	.build-field {
+		justify-content: center;
+	}
+
+	.build-field-item {
+		width:  70px;
+		height: 79px;
+	}
+
+	.build-field {
+		min-width: 30vw;
+		width: 30vw;
+		min-height: 500px;
+		height: 500px;
+	}
+
+	.build-talents {
+		height: 543px;
+	}
+
+	.build-talents .build-talent-item {
+		margin: 13px 8px;
+	}
+
+	.build-field-bottom {
+		margin-top: 0vh;
+	}
+
+	.build-active-bar-item {
+		width: 3vw;
+		height: 3vw;
+	}
+
+	.build-active-bar-item {
+		border-width: 4px;
+	}
+
+	.build-active-bar-item:not(:empty)::after {
+		/* Build screen: active panels: circle green/gray */
+		left: 50px;
+		width: 10px;
+		height: 10px;
+		border-width: 1px;
+	}
+
 }
