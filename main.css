@@ -59,7 +59,7 @@ prime{
 }
 prime:after{
     content: '';
-	background-image: url('icons/2497.png');
+	background-image: url('icons/2497.webp');
 	background-size: cover;
 	display: inline-block;
 	height: 1em;
@@ -71,7 +71,7 @@ fiz{
 }
 fiz:after{
     content: '';
-	background-image: url('icons/2602.png');
+	background-image: url('icons/2602.webp');
 	background-size: cover;
 	display: inline-block;
 	height: 1em;
@@ -80,7 +80,7 @@ fiz:after{
 }
 speedtal:after{
     content: '';
-	background-image: url('icons/cooldown.png');
+	background-image: url('icons/cooldown.webp');
 	background-size: cover;
 	display: inline-block;
 	height: 1em;
@@ -92,7 +92,7 @@ mag{
 }
 mag:after{
     content: '';
-	background-image: url('icons/2599.png');
+	background-image: url('icons/2599.webp');
 	background-size: cover;
 	display: inline-block;
 	height: 1em;
@@ -714,7 +714,7 @@ button.sets {
 
 .build .build-talent-item[data-active='1']:after {
 	content: '';
-	background-image: url('icons/activeBorder.png');
+	background-image: url('icons/activeBorder.webp');
 	display: block;
 	width: 128px;
 	height: 120px;
