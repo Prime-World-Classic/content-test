@@ -48,7 +48,7 @@
 }
 
 .castle-button-play{
-	
+	margin-top: -160px;
 	background:rgba(255,50,0,0.9);
 	font: 3vh / 1 Verdana;
 	color:rgba(255,255,255,0.9);
@@ -67,33 +67,34 @@
 
 .castle-play-lobby-player{
 	
-	width:12vh;
-	height:12vh;
+	width: 10vh;
+	height: 10vh;
 	border-radius:50%;
-	background-size:110%;
+	background-size: 10vh !important;
+	background-repeat: no-repeat !important;
 	background-position:center;
 	background-repeat:no-repeat;
-	margin:0 0.5vh;
+	margin: 0 auto;
 	cursor:pointer;
-	font:5vh / 1 Verdana;
-	line-height:9.5vh;
+	font: 8vh / 1 Verdana;
+	line-height: 10vh;
 	text-align:center;
-	color:rgba(255,255,255,0.2);
-	
+	color:rgba(255,255,255,.6);
+	background: #9996;
+	box-shadow: 0 0 26px #000;
 }
 
 .castle-party-middle-item-ready{
 	margin-top: 0.1vw;
 	text-align:center;
 	font:2.5vh / 1 Verdana;
-	color:rgba(153,255,51,0.8);
+	color: rgba(150, 255, 150, .8);
 	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
 	font-weight:600;
 	font-style:italic;
 	cursor:pointer;
 	background:#244;
 	border:1px solid orange;
-	padding: 0.5vh 0.4vh;
 	width: 8vw;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 	
@@ -110,7 +111,6 @@
 	cursor:pointer;
 	background:#244;
 	border:1px solid orange;
-	padding: 0.5vh 0.4vh;
 	width: 8vw;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 	
@@ -124,13 +124,12 @@
 }
 
 .castle-rank{
-	width:100%;
 	display:flex;
 	flex-flow:row nowrap;
 	justify-content:space-between;
 	align-items:center;
 	position:absolute;
-	bottom:0;
+	bottom: 13px;
 }
 
 .castle-rank-icon{
@@ -155,7 +154,7 @@
 	color: #fdd;
 	font: 0.9vw / 1 Arial;
 	padding:0.1vw 0.5vw;
-
+	margin: 0 3vw 0 -1vw;
 }
 
 .castle-party-middle-item-nickname {
@@ -168,10 +167,13 @@
 	color: #ccc;
 	background:#244;
 	width: 8vw;
-	height: 2vw;
+	height: 1vw;
 	
 	border:1px solid orange;
-	
+
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .castle-hero{

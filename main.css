@@ -1218,6 +1218,7 @@ background:rgba(255,255,255,0.5);
 
 .splash-content .wrap {
 	display: flex;
+	flex-direction: column;
 	margin: 90px 20px;
 }
 .splash-content .wrap div {
