@@ -4706,6 +4706,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_01",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -4718,6 +4724,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_02",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -4730,6 +4742,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_03",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -4742,6 +4760,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_04",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -4754,6 +4778,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_05",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -4766,6 +4796,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_06",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -5444,7 +5480,7 @@
                     ],
                     "transform": [
                         25.10964, -4.0, -22.43118, 1425.92554,
-                        0.0, 12.53167, 0.0, 107.4,
+                        0.0, 12.53167, 0.0, 157.4,
                         20.30888, -4.00, 38.22029, 1366.54523,
                         0, 0, 0, 1
                     ],
@@ -11287,6 +11323,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_01",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -11299,6 +11341,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_02",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -11311,6 +11359,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_03",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -11323,6 +11377,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_04",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -11335,6 +11395,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_05",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -11347,6 +11413,12 @@
                     "indexCount": 6,
                     "shader": "shader_pos_uv",
                     "texture": "sky_06",
+                    "tintColor": [
+                        10,
+                        10,
+                        10,
+                        1
+                    ],
                     "transform": [
                         -2857.23, 0, -914.43, 1442,
                         0, 3000, 0, -500,
@@ -13803,7 +13875,7 @@
                     ],
                     "transform": [
                         25.10964, -4.0, -22.43118, 1425.92554,
-                        0.0, 12.53167, 0.0, 107.4,
+                        0.0, 12.53167, 0.0, 157.4,
                         20.30888, -4.00, 38.22029, 1366.54523,
                         0, 0, 0, 1
                     ],

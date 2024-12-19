@@ -355,8 +355,8 @@ background-color:rgba(15,15,15,0.7);
 	position: absolute;
 	border: 1px solid #000;
 	padding: 5px;
-	left: 21vw;
-	bottom: 2vh;
+	left: 27vw;
+	bottom: 6vh;
 	color: #fff;
 	background: #333b;
 	cursor: pointer;
@@ -431,7 +431,7 @@ background-color:rgba(15,15,15,0.7);
 }
 
 .build-level{
-	margin: 12px -16px 0 12px;
+	margin: 14px -16px 0 12px;
 	min-width:100px;
 	width:100px;
 	height:660px;
@@ -450,13 +450,11 @@ background-color:rgba(15,15,15,0.7);
 	text-align:center;
 	line-height:94px;
 	background:rgba(255,255,255,0.2);
-	margin: 9px 0;
+	margin: 10px 0;
 	border-radius:50%;
 	cursor:pointer;
 	transform:scale(0.8);
 	box-shadow:0 0 50px rgba(25,25,25,0.5);
-
-	
 }
 
 .build-list-close {
@@ -671,9 +669,7 @@ button.sets {
 	width: 97%;
 }
 .build-talent-item {
-	
 	margin:5px;
-	
 }
 .build-active-bar-item .build-talent-item {
 	margin: 0;
@@ -1652,6 +1648,16 @@ cursor:pointer;
 	
 }
 
+.animation-text{
+	
+	background-image: linear-gradient(90deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+	background-clip:text;
+	background-size: 400% 400%;
+	animation: gradient 10s ease infinite;
+	transform: translate3d(0, 0, 0);
+	
+}
+
 .top{
 	
 	width:100vw;
@@ -1902,7 +1908,6 @@ cursor:pointer;
 	
 	position:fixed;
 	bottom:0;
-	left: 9vw;
 	width:100%;
 	text-align:center;
 	z-index:9999;
@@ -2192,6 +2197,73 @@ cursor:pointer;
 	background: #8f9 !important;
 }
 
+.chat{
+	
+	width:90%;
+	height:90%;
+	padding:5%;
+	transition: all 0.3s ease-out;
+	
+}
+
+.chat:hover{
+	
+	background:rgba(0,0,0,0.7);
+	
+}
+
+.chat-body{
+	
+	height:93%;
+	overflow-y:scroll;
+	
+}
+
+.chat-input{
+	
+	width:100%;
+	height:7%;
+	background:none;
+	font:1.2vw / 1 Verdana;
+	color:rgba(255,255,255,0.9)
+	
+}
+
+.chat-input::placeholder{
+	
+	color:rgba(255,255,255,0.5);
+	
+}
+
+.chat-body-item div{
+	
+	
+	display:inline;
+	font:1.2vw / 1 Verdana;
+	text-shadow:rgba(0,0,0,0.5) 0 0 1vw;
+	
+}
+
+.chat-body-item:hover{
+	
+	background:rgba(255,255,255,0.1);
+	cursor:pointer;
+	
+}
+
+.chat-body-item div:first-child{
+	
+	color:rgba(255,255,255,0.7);
+	padding-right:1vw;
+	
+}
+
+.chat-body-item div:last-child{
+	
+	color:rgba(255,255,255,0.9);
+	
+}
+
 
 @keyframes borderRotate {
 	100% {
@@ -2201,8 +2273,8 @@ cursor:pointer;
 
 @media (width > 1900px) {
 	.build-buttons--wrapper {
-		margin-left: 31.5vw;
-		width: 25vw;
+		margin-left: 32.2vw;
+		width: 24vw;
 	}
 }
 
@@ -2351,7 +2423,7 @@ cursor:pointer;
 
 	.build-field {
 		min-width: 25vw;
-		width: 20vw;
+		width: 486px;
 		min-height: 536px;
 		height: 512px;
 	}
@@ -2370,8 +2442,8 @@ cursor:pointer;
 	}
 
 	.build-active-bar-item {
-		width: 3vw;
-		height: 3vw;
+		width: 57px;
+		height: 57px;
 	}
 
 	.build-active-bar-item {
@@ -2384,6 +2456,89 @@ cursor:pointer;
 		width: 10px;
 		height: 10px;
 		border-width: 1px;
+	}
+
+}
+
+
+@media (height <= 900px) {
+	.build-hero {
+		margin-top: -130px;
+		width: 200px;
+	}
+	.build-hero-stats {
+		width: 230px;
+	}
+
+	.build-hero .name {
+		display: none;
+	}
+
+	.new-random-skins-buttons--wrapper {
+		margin-top: -98px;
+	}
+	
+	.build-buttons--wrapper {
+		width: 470px;
+		margin-left: 23vw;
+	}
+
+	button.skins {
+		margin-top: -38px;
+	}
+
+	.build-field-bottom:after {
+		content: 'Нажмите левой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст (автоматическое применение)';
+	}
+}
+
+@media (height <= 720px) {
+
+	.build-hero {
+		width: 240px;
+	}
+
+	.build-level {
+		height: 410px;
+		min-height: 270px;
+	}
+	.build-level div {
+		margin: 2px 0;
+	}
+
+	.build-field {
+		width: 430px;
+		height: 440px;
+		min-height: 440px;
+	}
+	
+	.build-field-item {
+		width: 60px;
+		margin: 0px 5px;
+		padding: 0px;
+		height: 50px;
+	}
+		
+	.build-talent-item {
+		margin: 5px !important;!i;!;
+	}
+
+	.build-talent {
+		height: 530px;
+		width: 440px;
+	}
+	.build-talents {
+		width: 450px;
+	}
+
+	.build-rarity {
+		min-width: 20px;
+		width: 50px;
+		margin-left: 10px;
+	}
+
+	.build-field-bottom {
+		margin-top: -70px;
 	}
 
 }
