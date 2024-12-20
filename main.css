@@ -2256,9 +2256,8 @@ cursor:pointer;
 	
 	display:inline;
 	font:1.2vw / 1 Verdana;
-	text-shadow:rgb(0, 0, 0) 0 0 0.5vw;
+	text-shadow:rgba(0, 0, 0, 0.3) 0 0 0.2vw;
 	transition: all 0.3s ease-out;
-	opacity: 80%;
 	
 }
 

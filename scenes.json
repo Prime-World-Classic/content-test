@@ -11631,12 +11631,22 @@
                     ]
                 },
                 {
+                    "mesh": "ad/fog_8_02.bin",
+                    "indexCount": 72,
+                    "shader": "shader_pos_norm_uv",
+                    "texture": "white-flare",
+                    "blend": [
+                        "SRC_ALPHA",
+                        "ONE_MINUS_SRC_ALPHA"
+                    ]
+                },
+                {
                     "mesh": "ad/rainbow_9_01.bin",
                     "indexCount": 600,
                     "shader": "shader_pos_color_uv16",
                     "texture": "rainbow",
                     "blend": [
-                        "SRC_ALPHA",
+                        "ONE",
                         "ONE"
                     ],
                     "transform": [
@@ -11676,16 +11686,6 @@
                     "uvScroll": [
                         0.0,
                         0.05
-                    ]
-                },
-                {
-                    "mesh": "ad/fog_8_02.bin",
-                    "indexCount": 72,
-                    "shader": "shader_pos_norm_uv",
-                    "texture": "white-flare",
-                    "blend": [
-                        "SRC_ALPHA",
-                        "ONE_MINUS_SRC_ALPHA"
                     ]
                 },
                 {
@@ -11809,7 +11809,7 @@
                     "texture": "particle4873",
                     "blend": [
                         "SRC_ALPHA",
-                        "ONE_MINUS_SRC_ALPHA"
+                        "ONE"
                     ],
                     "tintColor": [
                         0.1,
