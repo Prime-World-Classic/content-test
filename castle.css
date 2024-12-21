@@ -74,21 +74,21 @@
 .castle-play-lobby-player{
 	height: 12vh;
 	margin:0 2vh;
+	border-radius:50%;
 	cursor:pointer;
+
 	background-size:12vh;
 	background-position:center;
 	background-repeat:no-repeat;
-	border-radius:50%;
-
 }
 
 .castle-play-lobby-player .castle-play-lobby-empty{
-	width: 100%;
-	height: 100%;
+	height: 12vh;
+	margin:0 2vh;
 	border-radius:50%;
-	margin: 0 auto;
 	cursor:pointer;
-	
+
+	margin: 0 auto;
 	font: 8vh / 1 Verdana;
 	line-height: 11vh;
 	text-align:center;
@@ -162,31 +162,23 @@
 }
 
 .castle-rank-lvl{
-	height: 0.9vw;
+	height: 2.1vh;
 	background: #244;
 	border: 0.1vh solid darkorange;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 	color: #fdd;
-	font: 0.9vw / 1 Arial;
-	padding:0.1vw 0.5vw;
+	font: 2.1vh / 1 Arial;
+	padding:0.2vh 0.5vw;
 }
 
-.castle-player-nickname-wremove {
-	width: 80%;
-	
-	text-align: center;
-}
-
-.castle-player-nickname-woremove {
-	width: 100%;
-	text-align: center;
-}
 
 .castle-player-nickname {
 	white-space:nowrap;
 	display: inline-block;
 	position: relative;
 	text-overflow: clip;
+	width: 100%;
+	text-align: center;
 }
 
 .castle-player-nickname-autoscroll:hover {
@@ -206,20 +198,34 @@
 	}
 
 .castle-party-remove {
+	align-items: center;
 	position: relative;
-	top: -4.1vh;
-	left: 11.9vh;
+	margin-left: -2vh;
+	right: -1vh;
 	width: 6vh;
 	height: 6vh;
-	background-size: 4.8vh;
+	background-size: contain;
+	background-position: center;
 	background-repeat:no-repeat;
 	cursor: pointer;
+}
+
+.castle-party-middle-item-nickname-hidden-overflow {
+	width: 100%;
+	height: 100%;
+	text-align:center;
+	
+	display: flex;
+	align-items:center;
+	flex-flow:row nowrap;
+
+	overflow: hidden;
 }
 
 .castle-party-middle-item-nickname {
 	width: 100%;
 	height: 2.2vh;
-	margin:0.1vh 0;
+	margin:1.1vh 0;
 	text-align:center;
 	font: bold 1.2vh / 1 Verdana;
 	padding: 0.5vh 0.4vh;
@@ -228,12 +234,9 @@
 	color: #ccc;
 	background:#244;
 	border:0.1vh solid orange;
-	
 	display: flex;
 	align-items:center;
 	flex-flow:row nowrap;
-
-	overflow: hidden;
 }
 
 .castle-hero{
