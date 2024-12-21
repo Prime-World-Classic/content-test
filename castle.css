@@ -184,7 +184,7 @@
 .castle-player-nickname-autoscroll:hover {
 	animation-timing-function: linear;
 	animation-name: scroll-rtl;
-	animation-duration: 4s;
+	animation-duration: 5s;
 	animation-direction: forwards;
 	animation-iteration-count: infinite;
   }
