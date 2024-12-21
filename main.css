@@ -2334,9 +2334,45 @@ cursor:pointer;
 
 /* Zoom 75% */
 @media (width >= 2560px) {
+	.build-hero {
+		width: 23vw;
+	}
+
+	.build-hero-stats {
+		width: 20vw;
+	}
+
+	.build-level {
+		margin-right: 0;
+	}
+
 	.build-buttons--wrapper {
-		margin-left: 30vw;
+		margin-left: 35vw;
 		width: 25vw;
+	}
+
+	.build-talent {
+		width: 25vw;
+	}
+
+	.build-field {
+		margin-right: 1vw;
+	}
+
+	.build-field-bottom {
+		margin-left: 18vw;
+	}
+	.build-field-bottom::after {
+		padding-right: 6vw;
+	}
+}
+@media (height >= 1440px) {
+	.build-buttons--wrapper {
+		margin-top: 138px;
+	}
+
+	.build-hero {
+		margin-top: -324px;
 	}
 }
 
