@@ -13,15 +13,56 @@
 	
 }
 
-.castle-music{
-	
-	background-image: url('htalents/194.webp');
-	background-size: cover;
+.castle-settings{
 	position:absolute;
 	right: 1vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.castle-settings div{
+	opacity: 50%;
+}
+
+.castle-settings div:hover{ 
+	opacity: 100%;
+	transition: all 0.3s ease-out;
+}
+
+.castle-close{
     width: 7vh;
 	height: 7vh;
+	background-image: url('icons/close-cropped.svg');
+	background-size: cover;
     object-fit: cover;
+	cursor: pointer;
+}
+
+.castle-builds{
+    width: 7vh;
+	height: 7vh;
+	background-image: url('talents/65.webp');
+	background-size: cover;
+    object-fit: cover;
+	cursor: pointer;
+}
+
+.castle-music{
+    width: 7vh;
+	height: 7vh;
+	background-image: url('htalents/243.webp');
+	background-size: cover;
+    object-fit: cover;
+	cursor: pointer;
+}
+
+.castle-render{
+    width: 7vh;
+	height: 7vh;
+	background-image: url('htalents/542.webp');
+	background-size: cover;
+    object-fit: cover;
+	cursor: pointer;
 }
 
 .button-outline:hover{
