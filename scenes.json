@@ -186,6 +186,36 @@
             ]
         },
         {
+            "name": "shader_pos_tangent16_norm_uv16_color",
+            "layout": [
+                {
+                    "name": "vertPosition",
+                    "count": 3,
+                    "sizeElem": 4
+                },
+                {
+                    "name": "vertTangent",
+                    "count": 4,
+                    "sizeElem": 2
+                },
+                {
+                    "name": "vertNormal",
+                    "count": 3,
+                    "sizeElem": 4
+                },
+                {
+                    "name": "vertTexCoord",
+                    "count": 2,
+                    "sizeElem": 2
+                },
+                {
+                    "name": "vertColor",
+                    "count": 4,
+                    "sizeElem": 1
+                }
+            ]
+        },
+        {
             "name": "shader_pos_tangent16_norm_uv16_uv",
             "layout": [
                 {
@@ -10144,6 +10174,18 @@
                 }
             ],
             "objects": [
+                {
+                    "mesh": "ad/understage01_16_01.bin",
+                    "indexCount": 1254,
+                    "shader": "shader_pos_tangent16_norm_uv16_color",
+                    "texture": "terrain_02",
+                    "transform": [
+                        1, 0, 0, 0,
+                        0, 1, 0, 0,
+                        0, 0, 1, 0,
+                        0, 0, 0, 1
+                    ]
+                },
                 {
                     "mesh": "ad/bushes_8_01.bin",
                     "indexCount": 552,
