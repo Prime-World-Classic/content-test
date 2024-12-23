@@ -89,10 +89,11 @@
 }
 
 .castle-button-play{
-	width: 10%;
+	width: auto;
+	height: 5vh;
 	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
 	text-align:center;
-	padding:0.8vh 0vh;
+	padding:0.8vh 1vh;
 	cursor:pointer;
 	border-radius:5px;
 	box-shadow:0 0 25px rgba(0,0,0,0.3);
@@ -101,7 +102,8 @@
 	top: 1vh;
 
 	background:rgba(255,50,0,0.9);
-	font: 2.5vw / 1 Verdana;
+	font: 5vh / 1 Verdana;
+	overflow: hidden;
 	color:rgba(255,255,255,0.9);	
 }
 
