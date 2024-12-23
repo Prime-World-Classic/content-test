@@ -42,6 +42,9 @@ background-size:cover;
 height: 100vh;
 overflow: hidden;
 }
+.noselect {
+	user-select: none;
+}
 input,select{
 outline: none;
 appearance: none;
@@ -333,7 +336,7 @@ background-color:rgba(15,15,15,0.7);
 	align-self: start;
 	width: 311px;
 	flex-flow:column nowrap;
-	font: 1.2rem / 1 Tahoma;
+	font: 1rem / 1 Tahoma;
 }
 
 .build-hero-stats-line{
@@ -2275,7 +2278,6 @@ cursor:pointer;
 .chat-body-item div:first-child{
 	
 	color:rgba(255,255,255,0.7);
-	padding-right:1vw;
 	
 }
 
@@ -2396,6 +2398,13 @@ cursor:pointer;
 	.build-buttons--wrapper {
 		margin-left: 33vw;
 		width: 21vw;
+	}
+}
+
+@media (width >= 3440px) {
+	.build-buttons--wrapper {
+		margin-left: 38vw;
+		width: 19vw;
 	}
 }
 
