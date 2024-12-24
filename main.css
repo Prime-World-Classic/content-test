@@ -1121,6 +1121,22 @@ text-align:center;
 	
 }
 
+.splash-text{
+	
+	margin:0 15vw;
+	font: 1.5vw / 1.3 Verdana;
+	color:rgba(255,255,255,0.9);
+	text-shadow: rgba(0, 0, 0, 0.3) 0 0 0.5vw;
+	
+}
+
+.splash-text a{
+	
+	color:rgba(255, 50, 0, 0.9);
+	font-weight:800;
+	
+}
+
 .mm{
 	
 	z-index:9000;
