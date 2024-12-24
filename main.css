@@ -50,6 +50,21 @@ outline: none;
 appearance: none;
 border: none;
 }
+.telegram-bot {
+	background-image: url('icons/tg.svg');
+	background-repeat: no-repeat;
+	position: relative;
+	width: 6vh;
+	margin-left: -7vh;
+	bottom: 0.8vh;
+	height: 6vh;
+	cursor: pointer;
+}
+
+.invite-input {
+	display: flex;
+	align-items: center;
+}
 
 rz{
 	color: yellowgreen;
@@ -117,7 +132,7 @@ height: 100vh;
 .login-box-forma{
 
 display: flex;
-height:50vh;
+height:80vh;
 flex-flow:row nowrap;
 align-items:center;
 justify-content: center;
@@ -134,7 +149,8 @@ justify-content: center;
 
 }
 .login-box-forma-inputs{
-	
+	display: flex;
+	flex-direction: column;
 	width:20vw;
 
 }
@@ -494,7 +510,7 @@ background-color:rgba(15,15,15,0.7);
 }
 
 
-button.skins,
+button.skins
 {
 	margin-top: -100px;
 	font-weight: bold;
@@ -921,13 +937,13 @@ text-align:center;
 }
 
 .author{
-	
-
+	height: 0vh;
 	position:absolute;
+	bottom: 0;
 	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
-	bottom:0;
-	margin-bottom:200px;
+	bottom: -10vh;
 	text-align:center;
+	margin-bottom:20vh;
 	color:rgba(255,255,255,0.5);
 	
 }
@@ -2408,11 +2424,28 @@ cursor:pointer;
 	}
 }
 
+@media (height >= 1650px) {
+	.build-buttons--wrapper {
+		margin-top: 8vh;
+		height: 70px;
+	}
+}
+@media (height >= 1700px) {
+	.build-buttons--wrapper {
+		margin-top: 6vh;
+	}
+}
 /* Zoom 50% (4k) */
 @media (width >= 3840px) {
 	.build-buttons--wrapper {
-		margin-left: 36vw;
+		margin-left: 39vw;
 		width: 17vw;
+	}
+}
+@media (height >= 2160px) {
+	.build-buttons--wrapper {
+		margin: 5vh 0 0 39vw;
+		height: 70px;
 	}
 }
 
@@ -2586,7 +2619,7 @@ cursor:pointer;
 	}
 		
 	.build-talent-item {
-		margin: 5px !important;!i;!;
+		margin: 5px !important;
 	}
 
 	.build-talent {
