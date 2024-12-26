@@ -2269,15 +2269,32 @@ cursor:pointer;
 	height:55vh;
 }
 
+
+.chat-input-container{
+	display: flex;
+	align-items: center;
+	color:rgba(255,255,255,0.9)
+	
+}
+
 .chat-input{
-	position: absolute;
-	bottom: 1vh;
+	position: relative;
+	bottom: 0;
 	width:90%;
 	height:4vh;
 	background:none;
-	font:1.2vw / 1 Verdana;
-	color:rgba(255,255,255,0.9)
+	font:2.0vh / 1 Verdana;
+	color:rgba(255,255,255,0.9);
+	word-wrap:normal;
 	
+}
+.scroll-btn {
+	position: relative;
+	width: 2.5vh;
+	height: 2.5vh;
+	cursor: pointer;
+	font:2.5vh / 1 Verdana;
+	color:rgba(255, 255, 255, 0.377)
 }
 
 .chat-input::placeholder{
@@ -2286,11 +2303,16 @@ cursor:pointer;
 	
 }
 
+
+.chat-body-item{
+	margin-top: 1.2vh;
+
+}
+
 .chat-body-item div{
 	
-	
 	display:inline;
-	font:1.2vw / 1 Verdana;
+	font:1.0vw / 1 Verdana;
 	text-shadow:rgba(0, 0, 0, 0.3) 0 0 0.2vw;
 	transition: all 0.3s ease-out;
 	
@@ -2309,7 +2331,7 @@ cursor:pointer;
 
 .chat-body-item div:first-child{
 	
-	color:rgba(255,255,255,0.7);
+	color:rgb(250, 229, 108);
 	
 }
 
