@@ -324,7 +324,7 @@ background-color:rgba(15,15,15,0.7);
 }
 
 .build-hero .name {
-	
+	margin-top: 10px;
 	text-align: center;
 	color: #fff;
 	font-family: Arial;
@@ -333,7 +333,7 @@ background-color:rgba(15,15,15,0.7);
 
 .build-hero .avatar{
 	width:200px;
-	
+	margin: auto;
 }
 
 .avatar {
@@ -2326,6 +2326,31 @@ cursor:pointer;
 	}
 }
 
+@media (width >= 1366px) {
+	.build-buttons--wrapper {
+		margin-left: 21vw;
+	}
+}
+@media (width >= 1500px) {
+	.build-buttons--wrapper {
+		margin-left: 24vw;
+	}
+}
+@media (width >= 1600px) {
+	.build-buttons--wrapper {
+		margin-left: 26vw;
+	}
+}
+
+@media (height <= 1000px) {
+	#STAT,
+	.build-field-bottom::after
+	{
+		display: none;
+	}
+
+}
+
 @media (width > 1900px) {
 	.build-buttons--wrapper {
 		margin-left: 32.2vw;
@@ -2447,6 +2472,10 @@ cursor:pointer;
 	}
 }
 @media (height >= 1700px) {
+	.main-vertical {
+		margin-top: -7vh;
+	}
+
 	.build-buttons--wrapper {
 		margin-top: 6vh;
 	}
@@ -2595,7 +2624,6 @@ cursor:pointer;
 	
 	.build-buttons--wrapper {
 		width: 470px;
-		margin-left: 23vw;
 	}
 
 	button.skins {
@@ -2611,6 +2639,9 @@ cursor:pointer;
 
 	.build-hero {
 		width: 240px;
+	}
+	.build-hero .avatar {
+		margin-top: -20px;
 	}
 
 	.build-level {
@@ -2654,6 +2685,10 @@ cursor:pointer;
 
 	.build-field-bottom {
 		margin-top: -70px;
+	}
+
+	.build-active-bar-item:not(:empty)::after {
+		bottom: 11px;
 	}
 
 }
