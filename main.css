@@ -1056,11 +1056,11 @@ text-align:center;
 	
 }
 
-.error-message{
+.error-message, .notify-message{
 	
 	position:fixed;
 	width:94%;
-	margin:15px 3%;
+	margin:10vh 3%;
 	display:flex;
 	flex-flow:row nowrap;
 	justify-content:center;
@@ -1070,15 +1070,24 @@ text-align:center;
 	
 }
 
-.error-message div{
-	
-	background:rgba(255,0,0,0.8);
+.error-message div, .notify-message div{
 	padding: 1vmin 2vmin;
 	border-radius:15px;
 	font:1rem / 1 Verdana;
 	font-weight:800;
 	color:rgba(255,255,255,0.9);
 	text-align:center;
+}
+
+.error-message div{
+	
+	background:rgba(255,0,0,0.8);
+	
+}
+
+.notify-message div{
+	
+	background:#008cffcc;
 	
 }
 
