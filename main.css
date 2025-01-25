@@ -1571,6 +1571,7 @@ box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
 	background-size:cover;
 	cursor:pointer;
 	position:relative;
+	container-type: size;
 	
 }
 
@@ -1650,6 +1651,7 @@ box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
 	background-repeat:no-repeat;
 	position:relative;
 	box-shadow: 0 0 2vw rgba(0,0,0, 0.5);
+	container-type: size;
 	
 }
 
