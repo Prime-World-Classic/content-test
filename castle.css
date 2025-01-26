@@ -455,6 +455,45 @@
 	
 }
 
+.castle-friend-item-middle{
+	
+	position:absolute;
+	display:flex;
+	flex-flow:row nowrap;
+	justify-content:center;
+	align-items:center;
+	width:100%;
+	height:100%;
+	
+}
+
+.castle-friend-item-bottom{
+	
+	width:100%;
+	display:flex;
+	flex-flow:row nowrap;
+	justify-content:center;
+	align-items:center;
+	position:absolute;
+	bottom:0;
+	
+}
+
+.castle-friend-online{
+	font-weight:600;
+	font-size:0.5vw;
+	color:rgba(102,255,0,0.9);
+	
+}
+
+.castle-friend-request{
+	
+	color:rgba(255,255,255,0.8);
+	font-size:0.6vw;
+	text-align:center;
+	
+}
+
 .castle-hero-name{
 	overflow: scroll;
 	height: 1.5vh;
