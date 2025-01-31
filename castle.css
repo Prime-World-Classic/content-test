@@ -132,17 +132,17 @@
     height: 5vh;
     text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
     text-align: center;
-    padding: 0.8vh 1vh;
+    padding: 0.8cqh 2cqh;
     cursor: pointer;
-    border-radius: 1.5cqh;/* Закругленные углы */
+    border-radius: 15cqh;/* Закругленные углы */
     box-shadow: 0 0 1cqh rgba(0, 0, 0, 0.3);
     position: absolute;
-    top: 1vh;
-    background: linear-gradient(to top, rgb(100, 30, 0), rgba(255, 70, 0, 0.9)); /* Увеличенный тон градиента */
-    font: 4.5vh / 1 Verdana;
+    top: 1cqh;
+    background: linear-gradient(to top, rgb(144, 19, 17), rgb(144, 19, 17), rgba(81, 7, 4, 0.95), rgba(81, 7, 4, 0.95), rgba(150, 50, 60, 0.9), rgba(158, 112, 121, 0.85)); /* Увеличенный тон градиента */
+    font: 4.5cqh / 1 Verdana;
     overflow: hidden;
     color: rgba(255, 255, 255, 0.9);
-    border: 0.1cqh solid rgb(158, 155, 104); /* Окантовка */
+    border: 0.2cqh solid rgb(158, 155, 104); /* Окантовка */
     transition: transform 0.3s, box-shadow 0.3s; /* Плавный переход */
 }
 
