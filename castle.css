@@ -2,8 +2,8 @@
 	
 	position:relative;
 	display:flex;
-	height:100vh;
-	width:100vw;
+	height:100cqh;
+	width:100cqw;
 	
 }
 
@@ -15,16 +15,16 @@
 
 .castle-settings{
 	position:absolute;
-	right: 1vh;
+	right: 1cqh;
 	display: flex;
 	flex-direction: row-reverse;
 }
 
 .castle-settings div{
 	position: relative;
-	top: 1vh;
+	top: 1cqh;
 	opacity: 50%;
-	margin: 0 1vh;
+	margin: 0 1cqh;
 }
 
 .castle-settings div:hover{ 
@@ -33,8 +33,8 @@
 }
 
 .castle-close{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('icons/close-cropped.svg');
 	background-size: cover;
     object-fit: cover;
@@ -42,8 +42,8 @@
 }
 
 .castle-menu{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('htalents/8.webp');
 	background-size: cover;
     object-fit: cover;
@@ -51,26 +51,44 @@
 }
 
 .castle-clans{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('htalents/32.webp');
 	background-size: cover;
     object-fit: cover;
 	cursor: pointer;
 }
 
-.castle-builds{
-    width: 7vh;
-	height: 7vh;
+.castle-top{
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('talents/268.webp');
 	background-size: cover;
     object-fit: cover;
 	cursor: pointer;
 }
 
+.castle-history{
+    width: 7cqh;
+	height: 7cqh;
+	background-image: url('talents/441.webp');
+	background-size: cover;
+    object-fit: cover;
+	cursor: pointer;
+}
+
+.castle-farm{
+    width: 7cqh;
+	height: 7cqh;
+	background-image: url('talents/762.webp');
+	background-size: cover;
+    object-fit: cover;
+	cursor: pointer;
+}
+
 .castle-music{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('htalents/243.webp');
 	background-size: cover;
     object-fit: cover;
@@ -78,8 +96,8 @@
 }
 
 .castle-render{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('htalents/542.webp');
 	background-size: cover;
     object-fit: cover;
@@ -87,27 +105,27 @@
 }
 
 .castle-settings-btn{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-image: url('htalents/8.webp');
 	background-size: cover;
     object-fit: cover;
 	cursor: pointer;
 }
 .castle-settings-window{
-    width: 7vh;
-	height: 7vh;
+    width: 7cqh;
+	height: 7cqh;
 	background-color: #000;
 }
 
 .castle-input{
-	width: 7vh;
-    height: 0.1vh;
+	width: 7cqh;
+    height: 0.1cqh;
 }
 
 .button-outline:hover{
-	filter: drop-shadow(-0.1vh 0.1vh 0vh rgba(221, 255, 0, 0.5))
-			drop-shadow(0.1vh -0.1vh 0vh rgba(221, 255, 0, 0.5));
+	filter: drop-shadow(-0.1cqh 0.1cqh 0cqh rgba(221, 255, 0, 0.5))
+			drop-shadow(0.1cqh -0.1cqh 0cqh rgba(221, 255, 0, 0.5));
 	transition: 300ms;
 }
 .button-outline:not(:hover){
@@ -122,14 +140,14 @@
 	justify-content:center;
 	align-items:center;
 	/**background:rgba(0,0,255,0.3);**/
-	width:100vw;
-	top: 0vh;
+	width:100cqw;
+	top: 0cqh;
 	
 }
 
 .castle-button-play {
     width: auto;
-    height: 5vh;
+    height: 5cqh;
     text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
     text-align: center;
     padding: 0.8cqh 2cqh;
@@ -166,8 +184,8 @@
 
 .castle-play-lobby-player{
 	width: auto;
-	height: 10vh;
-	margin:0 1vh;
+	height: 10cqh;
+	margin:0 1cqh;
 	cursor:pointer;
 
 	background-size:100%;
@@ -184,7 +202,7 @@
 	cursor:pointer;
 
 	background: #9996;
-	box-shadow: 0 0 2.2vh #000;
+	box-shadow: 0 0 2.2cqh #000;
 
 	display:flex;
 	text-align:center;
@@ -196,7 +214,7 @@
 	width: 100cqh;
 	height: 100cqh;
 	line-height: 100cqh;
-	font: 8.8vh / 1 Verdana;
+	font: 8.8cqh / 1 Verdana;
 	color:rgba(255,255,255,.6);
 
 	
@@ -207,10 +225,10 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	margin-top: 0.2vh;
+	margin-top: 0.2cqh;
 	text-align:center;
-	font:1.4vh / 1 Verdana;
-	text-shadow:rgba(0,0,0,0.3) 0 0 1vh;
+	font:1.4cqh / 1 Verdana;
+	text-shadow:rgba(0,0,0,0.3) 0 0 1cqh;
 	font-weight:600;
 	font-style:italic;
 	cursor:pointer;
@@ -220,9 +238,9 @@
 .castle-party-middle-item-ready-notready div{
 	width: 90%;
 	background:#244;
-	border:0.1vh solid orange;
+	border:0.1cqh solid orange;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
-	padding: 0.3vh 0.1vh;
+	padding: 0.3cqh 0.1cqh;
 }
 
 .castle-party-middle-item-ready{
@@ -236,8 +254,8 @@
 
 .castle-party-middle-item {
 	
-	margin:0 1vh;
-	width: 13vh;
+	margin:0 1cqh;
+	width: 13cqh;
 	height: 100%;
 	
 }
@@ -259,19 +277,19 @@
 	flex-flow:row nowrap;
 	align-items:end;
 	position: relative;
-	bottom: 0.1vh;
+	bottom: 0.1cqh;
 }
 
 .castle-play-rank-lvl{
 	width: 30%;
 	text-align: center;
-	height: 1.5vh;
+	height: 1.5cqh;
 	background: #244;
-	border: 0.1vh solid darkorange;
+	border: 0.1cqh solid darkorange;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 	color: #fdd;
-	font: 1.5vh / 1 Arial;
-	padding:0.2vh 0.5vw;
+	font: 1.5cqh / 1 Arial;
+	padding:0.2cqh 0.5cqw;
 }
 
 .castle-play-rank-icon{
@@ -280,7 +298,7 @@
 	width: 20%;
 	height: 20%;
 	background:#244;
-	border:0.1vh solid orange;
+	border:0.1cqh solid orange;
 	border-radius:50%;
 	background-size:80%;
 	background-position:center;
@@ -295,10 +313,10 @@
 .castle-rank-icon{
 	position: relative;
 	right: 0;
-	width: 2.3vh;
-	height: 2.3vh;
+	width: 2.3cqh;
+	height: 2.3cqh;
 	background:#244;
-	border:0.1vh solid orange;
+	border:0.1cqh solid orange;
 	border-radius:50%;
 	background-size:80%;
 	background-position:center;
@@ -307,15 +325,15 @@
 }
 
 .castle-rank-lvl{
-	width: 3.5vh;
+	width: 3.5cqh;
 	text-align: center;
-	height: 1.5vh;
+	height: 1.5cqh;
 	background: #244;
-	border: 0.1vh solid darkorange;
+	border: 0.1cqh solid darkorange;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 	color: #fdd;
-	font: 1.5vh / 1 Arial;
-	padding:0.2vh 0.5vw;
+	font: 1.5cqh / 1 Arial;
+	padding:0.2cqh 0.5cqw;
 }
 
 
@@ -356,10 +374,10 @@
 
 .castle-party-remove {
 	position: relative;
-	right: -1vh;
-	margin-left: -2vh;
-	width: 3.6vh;
-	height: 3.6vh;
+	right: -1cqh;
+	margin-left: -2cqh;
+	width: 3.6cqh;
+	height: 3.6cqh;
 	background-size: contain;
 	background-position: center;
 	background-repeat:no-repeat;
@@ -380,16 +398,16 @@
 
 .castle-party-middle-item-nickname {
 	width: auto;
-	height: 1.2vh;
-	margin:0.5vh 0vh;
+	height: 1.2cqh;
+	margin:0.5cqh 0cqh;
 	text-align:center;
-	font: bold 1.2vh / 1 Verdana;
-	padding: 0.5vh 0.4vh;
+	font: bold 1.2cqh / 1 Verdana;
+	padding: 0.5cqh 0.4cqh;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 
 	color: #ccc;
 	background:#244;
-	border:0.1vh solid orange;
+	border:0.1cqh solid orange;
 	display: flex;
 	align-items:center;
 	flex-flow:row nowrap;
@@ -402,32 +420,39 @@
 	display:flex;
 	align-items:center;
 	flex-flow:row nowrap;
-	width:100vw;
-	height:15vh;
+	width:100cqw;
+	height:13cqh;
 	background-image:linear-gradient(rgba(38, 109, 103, 0),rgba(18, 69, 73, 0.596),rgba(21,51,59,0.8),rgba(4,32,42,0.8));
 	
 }
 
 .castle-bottom-menu{
 	
-	width:3vw;
-	height:15vh;
+	width:3cqw;
+	height:15cqh;
 	display:flex;
 	flex-flow:column nowrap;
 	justify-content:center;
 	align-items:center;
-	
 }
 
 .castle-bottom-menu div{
 	
-	width:2vw;
-	height:2vw;
-	margin:0.2vw 0;
+	width:2cqw;
+	height:2cqw;
+	margin:0.2cqw 0;
 	border-radius:50%;
 	background:rgba(255,255,255,0.3);
+	background-size: contain;
 	cursor:pointer;
 	
+}
+
+.castle-bottom-menu :first-child {
+	background-image: url('htalents/270.webp');
+}
+.castle-bottom-menu :last-child {
+	background-image: url('htalents/456.webp');
 }
 
 .castle-bottom-content{
@@ -435,18 +460,18 @@
 	display:flex;
 	align-items:center;
 	flex-flow:row nowrap;
-	height:15vh;
-	width:97vw;
+	height:12cqh;
+	width:97cqw;
 	overflow-x:scroll;
 	
 }
 
 .castle-hero-item,.castle-friend-item{
 	
-	width:12vh;
-	min-width:12vh;
-	height:12vh;
-	margin:0 0.2vw;
+	width:12cqh;
+	min-width:12cqh;
+	height:12cqh;
+	margin:0 0.2cqw;
 	cursor:pointer;
 	background-size:100%;
 	background-position:center;
@@ -481,7 +506,7 @@
 
 .castle-friend-online{
 	font-weight:600;
-	font-size:0.5vw;
+	font-size:0.5cqw;
 	color:rgba(102,255,0,0.9);
 	
 }
@@ -489,20 +514,20 @@
 .castle-friend-request{
 	
 	color:rgba(255,255,255,0.8);
-	font-size:0.6vw;
+	font-size:12cqw;
 	text-align:center;
 	
 }
 
 .castle-hero-name{
 	overflow: scroll;
-	height: 1.5vh;
+	height: 13cqh;
 	background: #244;
-	border: 0.1vh solid darkorange;
+	border: 0.1cqh solid darkorange;
 	border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 	color: #fdd;
-	font: 1.5vh / 1 Arial;
-	padding:0.2vh 0.5vh;
+	font: 12cqh / 1 Arial;
+	padding:2cqh 5cqh;
 	white-space:nowrap;
 }
 
@@ -522,14 +547,14 @@
 	
 	position:absolute;
 	right:0;
-	bottom: 22vh;
+	bottom: 22cqh;
 	display:flex;
 	justify-content:center;
 	align-items:center;
 	flex-flow:column nowrap;
-	margin-top:19vh;
-	height:62vh;
-	width:50vh;
+	margin-top:19cqh;
+	height:62cqh;
+	width:50cqh;
 	
 }
 
