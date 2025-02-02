@@ -801,32 +801,33 @@ button.build-action-item:hover {
 }
 
 .build-description{
-	width: 30cqh;
-	font:0.8rem / 1.3 Tahoma;
+	width: auto;
+	max-width: 60cqh;
+	font:1.4cqh / 1.3 Tahoma;
 	background:rgba(15,15,15,0.9);
 	color:rgba(255,255,255,0.8);
-	padding:1cqh 0 1cqh 2cqh;
+	padding:0.5cqh 2cqh 0.5cqh 2cqh;
 	border-radius:2cqh;
 	
 }
 
 .build-description b{
 	
-	font:1rem / 1 Tahoma;
+	font:1.6cqh / 1 Tahoma;
 	
 }
 
 .build-description div{
 	
-	margin-top:10px;
+	margin-top:1cqh;
 	
 }
 
 .build-description span{
 	display:block;
-	font:1rem / 1 Tahoma;
+	font:1.6cqh / 1 Tahoma;
 	color:rgb(51,204,51);
-	margin-top:10px;
+	margin-top:1cqh;
 	
 }
 
