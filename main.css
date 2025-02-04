@@ -860,7 +860,7 @@ button.build-action-item:hover {
 	font: 8cqh / 1 Verdana;
 }
 .inventory{
-	padding-top:3cqh;
+	padding:3cqh;
 	font: 1rem / 1 Verdana;
 	display:flex;
 	flex-flow:row wrap;
@@ -878,15 +878,14 @@ button.build-action-item:hover {
 	background-size:cover;
 	background-position:center;
 	position:relative;
-	
 }
 
 .inventory span{
 	
-	position:absolute;
+	position:relative;
 	width:10cqh;
 	text-align:center;
-	top:10cqh;
+	top: 10cqh;
 	color:rgba(255,255,255,0.5);
 	
 	
