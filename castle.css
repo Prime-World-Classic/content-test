@@ -145,7 +145,25 @@
 	
 }
 
+#MMQueue{
+	
+	font-size: 1cqh;
+	margin-top:0.1cqh;
+	opacity:0.9;
+	
+}
+
+#MMQueue::before{
+	
+	content:'Очередь ';
+	
+}
+
 .castle-button-play {
+	display:flex;
+	flex-flow:column nowrap;
+	justify-content:center;
+	align-items:center;
     width: auto;
     height: 5cqh;
     text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
@@ -157,7 +175,7 @@
     position: absolute;
     top: 1cqh;
     background: linear-gradient(to top, rgb(144, 19, 17), rgb(144, 19, 17), rgba(81, 7, 4, 0.95), rgba(81, 7, 4, 0.95), rgba(150, 50, 60, 0.9), rgba(158, 112, 121, 0.85)); /* Увеличенный тон градиента */
-    font: 4.5cqh / 1 Verdana;
+    font: 4.0cqh / 1 Verdana;
     overflow: hidden;
     color: rgba(255, 255, 255, 0.9);
     border: 0.2cqh solid rgb(158, 155, 104); /* Окантовка */
@@ -506,7 +524,7 @@
 
 .castle-friend-online{
 	font-weight:600;
-	font-size:0.5cqw;
+	font-size:10cqh;
 	color:rgba(102,255,0,0.9);
 	
 }
