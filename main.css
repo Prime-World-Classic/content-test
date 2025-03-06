@@ -708,7 +708,7 @@ button.build-action-item:hover {
     justify-content: center;
     flex-flow:column;
     position: absolute;
-    bottom: 5cqh;
+    bottom: -10cqh;
 }
 
 .build-active-bar{
@@ -2678,6 +2678,7 @@ button.build-action-item:hover {
     display: flex;
     flex-direction: column;
     align-items:center;
+    position: relative;
 }
 
 .build-right {
@@ -2738,7 +2739,7 @@ button.build-action-item:hover {
     flex-direction: row;
     justify-content: center;
     position: absolute;
-    top: 4cqh;
+    top: -10cqh;
 }
 
 @media (max-aspect-ratio: 1/1) {
