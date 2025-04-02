@@ -188,7 +188,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     width: 15vw;
     height: 10vw;
 	position:relative;
-	top:0.5vw;
+	top:2.5vw;
+	transform:scale(1.3);
     
 }
 
