@@ -188,7 +188,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     width: 15vw;
     height: 10vw;
 	position:relative;
-	top:3.5vw;
+	top:2.6vw;
 	transform:scale(1.5);
 	
 }
@@ -614,8 +614,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	text-overflow: clip;
 	width: 100%;
 	text-align: center;
-	font: 1.4cqh / 1 Tahoma;
-	height: 1.6cqh;
+	font: 1.3cqh / 1 Tahoma;
+	height: 1.5cqh;
 }
 
 .castle-name-autoscroll {
