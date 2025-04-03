@@ -188,8 +188,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     width: 15vw;
     height: 10vw;
 	position:relative;
-	top:2.5vw;
-	transform:scale(1.3);	
+	top:3.5vw;
+	transform:scale(1.5);
+	
 }
 
 .castle-button-play-mode,
