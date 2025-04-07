@@ -2593,6 +2593,83 @@ border-radius:5px;
 	z-index: 9998;
 }
 
+.aram-background{
+	
+	position:relative;
+	background-position:center;
+	background-attachment:fixed;
+	background-repeat:no-repeat;
+	background-size:cover;
+	width:100vw;
+	height:100vh;
+	
+}
+
+.aram-briefing{
+	
+	position:absolute;
+	width:38vw;
+	height:38vh;
+	background:rgba(0,0,0,0.8);
+	border-radius:2vw;
+	top:20vh;
+	left:14vw;
+	display:flex;
+	flex-flow:row nowrap;
+	justify-content:center;
+	align-items:center;
+	
+	
+}
+
+.aram-timer{
+	position:absolute;
+	bottom:-2vh;
+	background:rgba(255,50,0,0.9);
+	font:1.5vw / 1 Tahoma;
+	color:rgba(255,255,255,0.9);
+	padding:1cqh 1cqw;
+	border-radius:0.8vw;
+
+	
+}
+
+.aram-briefing-left{
+	
+	width:33%;
+	margin: 0 3%;
+	aspect-ratio:1/1;
+	background-repeat:no-repeat;
+	background-size:100%;
+	background-position:center;
+	border-radius:50%;
+	
+}
+
+.aram-briefing-right{
+	
+	width:50%;
+	padding: 0 3%;
+	
+}
+
+.aram-briefing-right h3{
+	
+	margin:0;
+	font: 1.5cqw / 1 Verdana;
+	font-style:italic;
+	color:rgba(255,255,255,0.8);
+	
+}
+
+.aram-briefing-right p{
+	
+	margin:3% 0;
+	font:1cqw / 1.4 Verdana;
+	color:rgba(255,255,255,0.6);
+	
+}
+
 
 #wtop, #whistory {
 	container-type: size;
