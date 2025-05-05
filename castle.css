@@ -201,6 +201,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .castle-button-play-1,
 .castle-button-play-2, 
 .castle-button-play-3,
+.castle-button-play-test,
 .castle-button-play-4,
 .castle-button-play-5,
 .castle-button-play-6,
@@ -340,6 +341,21 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	width:7vw;
 	aspect-ratio:154/65;
 	top:3.8vw;
+	text-align:center;
+	line-height:3vw;
+	color:#ffe78a;
+	font-family:Arial;
+	font-size:1.4vw;
+	
+}
+
+.castle-button-play-test {
+	
+	z-index:2;
+	background-image: url('img/b3.png');
+	width:7vw;
+	aspect-ratio:154/65;
+	top:10.8vw;
 	text-align:center;
 	line-height:3vw;
 	color:#ffe78a;
