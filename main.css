@@ -1090,6 +1090,10 @@ text-align:center;
 	z-index:9999;
 	
 }
+.error-message {
+	flex-flow:column nowrap;
+	align-items:end;
+}
 
 .error-message div, .notify-message div{
 	padding: 1vmin 2vmin;
