@@ -1019,6 +1019,7 @@ text-align:center;
 	position:absolute;
 	bottom:12cqh;
 	container-type: size;
+	z-index:5;
 }
 
 .rank-icon{
@@ -1624,9 +1625,41 @@ box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
 	
 }
 
+.mm-status-commander-1,.mm-status-commander-2,.mm-status-commander-3{
+	
+	position:absolute;
+	width:100%;
+	height:100%;
+	background-position:center;
+	background-repeat:no-repeat;
+	background-size:cover;
+	transform:scale(1.2);
+	border-radius:50%;
+	z-index:1;
+	
+}
+
+.mm-status-commander-1{
+	
+	background-image:url('img/winrate/1.png');
+	
+}
+
+.mm-status-commander-2{
+	
+	background-image:url('img/winrate/2.png');
+	
+}
+
+.mm-status-commander-3{
+	
+	background-image:url('img/winrate/3.png');
+	
+}
+
 .mm-lobby-header-team-player-name{
-	padding: 2px;
-	margin-top:1cqh;
+	
+	margin-top:2cqh;
 	font: 1cqw / 1 Tahoma;
 	color: #fff;
     text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
