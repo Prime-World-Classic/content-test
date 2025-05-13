@@ -136,6 +136,78 @@ mag:after{
 	width: 1em;
 	margin-left: 0.2em;
 }
+detail{
+	color: #a2872a;
+}
+detail:after{
+    content: '';
+	background-image: url('icons/detail.webp');
+	background-size: cover;
+	display: inline-block;
+	height: 0.8em;
+	width: 0.85em;
+	margin-left: 0.2em;
+}
+mana{
+	color: #01F6FA;
+}
+mana:after{
+    content: '';
+	background-image: url('icons/mana.webp');
+	background-size: cover;
+	display: inline-block;
+	height: 0.8em;
+	width: 0.85em;
+	margin-left: 0.2em;
+}
+lifecost{
+	color: #F80201;
+}
+lifecost:after{
+    content: '';
+	background-image: url('icons/lifecost.webp');
+	background-size: cover;
+	display: inline-block;
+	height: 0.8em;
+	width: 0.85em;
+	margin-left: 0.2em;
+}
+CD{
+	color: #E3D0D4;
+}
+CD:after{
+    content: '';
+	background-image: url('icons/cooldown.webp');
+	background-size: cover;
+	display: inline-block;
+	height: 0.8em;
+	width: 0.85em;
+	margin-left: 0.2em;
+}
+bloodlust{
+	color: #D80E00;
+}
+bloodlust:after{
+    content: '';
+	background-image: url('icons/bloodlust.webp');
+	background-size: cover;
+	display: inline-block;
+	height: 0.8em;
+	width: 0.85em;
+	margin-left: 0.2em;
+}
+Shadow{
+	color: #E967F5;
+}
+Shadow:after{
+    content: '';
+	background-image: url('icons/Shadow.webp');
+	background-size: cover;
+	display: inline-block;
+	height: 0.8em;
+	width: 0.85em;
+	margin-left: 0.2em;
+}
 
 select option {
   color: #fff;
