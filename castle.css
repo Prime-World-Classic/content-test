@@ -181,16 +181,14 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .castle-button-play {
-	
-	display:flex;
-	flex-flow:column nowrap;
-	align-items:center;
-    width: 15vw;
-    height: 10vw;
-	position:relative;
-	top:2.6vw;
-	transform:scale(1.5);
-	
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    width: 15vh; /* Изменено с vw на vh */
+    height: 10vh; /* Изменено с vw на vh */
+    position: relative;
+    top: 6.6vh; /* Изменено с vw на vh */
+    transform: scale(2.2);
 }
 
 .castle-button-play-mode,
@@ -209,267 +207,207 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .castle-button-play-8,
 .castle-button-play-9,
 .castle-button-play-l1,
-.castle-button-play-l2{
-	
-	background-repeat: no-repeat;
-	background-position:center;
-	background-size:cover;
-	position:absolute;
-	
+.castle-button-play-l2 {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    position: absolute;
 }
 
-.castle-button-play-mode{
-	
-	z-index:3;
-	background-image: url('img/m1.png');
-	width:4vw;
-	aspect-ratio:1/1;
-	border-radius:50%;
-	transform:scale(0.7);
-	
+.castle-button-play-mode {
+    z-index: 3;
+    background-image: url('img/m1.png');
+    width: 4vh; /* Изменено с vw на vh */
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    transform: scale(0.7);
 }
 
-.castle-button-play-m1{
-	
-	z-index:3;
-	background-image: url('img/m1.png');
-	width:4vw;
-	aspect-ratio:1/1;
-	top:3.8vw;
-	right:10.5vw;
-	transform:scale(0.6);
-	display:none;
-	
+.castle-button-play-m1 {
+    z-index: 3;
+    background-image: url('img/m1.png');
+    width: 4vh; /* Изменено с vw на vh */
+    aspect-ratio: 1/1;
+    top: 3.8vh; /* Изменено с vw на vh */
+    right: 10.5vh; /* Изменено с vw на vh */
+    transform: scale(0.6);
+    display: none;
 }
 
-.castle-button-play-m2{
-	
-	z-index:1;
-	background-image: url('img/m2.png');
-	width:4vw;
-	aspect-ratio:1/1;
-	top:3.8vw;
-	right:7.2vw;
-	transform:scale(0.6);
-	display:none;
-	
+.castle-button-play-m2 {
+    z-index: 1;
+    background-image: url('img/m2.png');
+    width: 4vh; /* Изменено с vw на vh */
+    aspect-ratio: 1/1;
+    top: 3.8vh; /* Изменено с vw на vh */
+    right: 7.2vh; /* Изменено с vw на vh */
+    transform: scale(0.6);
+    display: none;
 }
 
-.castle-button-play-m3{
-	
-	z-index:1;
-	background-image: url('img/m3.png');
-	width:4vw;
-	aspect-ratio:1/1;
-	top:3.8vw;
-	left:7.2vw;
-	transform:scale(0.6);
-	display:none;
-	
+.castle-button-play-m3 {
+    z-index: 1;
+    background-image: url('img/m3.png');
+    width: 4vh; /* Изменено с vw на vh */
+    aspect-ratio: 1/1;
+    top: 3.8vh; /* Изменено с vw на vh */
+    left: 7.2vh; /* Изменено с vw на vh */
+    transform: scale(0.6);
+    display: none;
 }
 
-.castle-button-play-m4{
-	
-	z-index:1;
-	background-image: url('img/m4.png');
-	width:4vw;
-	aspect-ratio:1/1;
-	top:3.8vw;
-	left:10.5vw;
-	transform:scale(0.6);
-	display:none;
-	
+.castle-button-play-m4 {
+    z-index: 1;
+    background-image: url('img/m4.png');
+    width: 4vh; /* Изменено с vw на vh */
+    aspect-ratio: 1/1;
+    top: 3.8vh; /* Изменено с vw на vh */
+    left: 10.5vh; /* Изменено с vw на vh */
+    transform: scale(0.6);
+    display: none;
 }
 
 .castle-button-play-m1:after,
 .castle-button-play-m2:after,
 .castle-button-play-m3:after,
-.castle-button-play-m4:after{
-	
-	font:0.7vw/1 Arial;
-	position:absolute;
-	top:4.5vw;
-	width:4vw;
-	text-align:center;
-	color:rgba(189,139,23);
-	text-shadow: 0.1vw 0 0.1vw rgb(74,75,46);
-	
-}
-
-.castle-button-play-m1:after{
-	content:'Пограничье';
-}
-
-.castle-button-play-m2:after{
-	content:'Форпост';
-}
-
-.castle-button-play-m3:after{
-	content:'Драгонвальд';
-}
-
-.castle-button-play-m4:after{
-	content:'Чехарда';
+.castle-button-play-m4:after {
+    font: 0.7vh/1 Arial; /* Изменено с vw на vh */
+    position: absolute;
+    top: 4.5vh; /* Изменено с vw на vh */
+    width: 4vh; /* Изменено с vw на vh */
+    text-align: center;
+    color: rgba(189, 139, 23);
+    text-shadow: 0.1vh 0 0.1vh rgb(74, 75, 46); /* Изменено с vw на vh */
 }
 
 .castle-button-play-1 {
-	
-	z-index:5;
-	background-image: url('img/b1.png');
-	width:3.5vw;
-	aspect-ratio:16/5;
-	top:3.3vw;
-	
+    z-index: 5;
+    background-image: url('img/b1.png');
+    width: 3.5vh; /* Изменено с vw на vh */
+    aspect-ratio: 16/5;
+    top: 3.3vh; /* Изменено с vw на vh */
 }
 
 .castle-button-play-2 {
-	
-	z-index:2;
-	background-image: url('img/b2.png');
-	width:4vw;
-	aspect-ratio:1/1;
-	border-radius:50%;
-	
-	
-	
+    z-index: 2;
+    background-image: url('img/b2.png');
+    width: 4vh; /* Изменено с vw на vh */
+    aspect-ratio: 1/1;
+    border-radius: 50%;
 }
 
 .castle-button-play-3 {
-	
-	z-index:2;
-	background-image: url('img/b3.png');
-	width:7vw;
-	aspect-ratio:154/65;
-	top:3.8vw;
-	text-align:center;
-	line-height:3vw;
-	color:#ffe78a;
-	font-family:Arial;
-	font-size:1.4vw;
-	
+    z-index: 2;
+    background-image: url('img/b3.png');
+    width: 7vh; /* Изменено с vw на vh */
+    aspect-ratio: 154/65;
+    top: 3.8vh; /* Изменено с vw на vh */
+    text-align: center;
+    line-height: 3vh; /* Изменено с vw на vh */
+    color: #ffe78a;
+    font-family: Arial;
+    font-size: 1.4vh; /* Изменено с vw на vh */
 }
 
 .castle-button-play-test {
-	
-	z-index:2;
-	background-image: url('img/b3.png');
-	width:7vw;
-	aspect-ratio:154/65;
-	top:10.8vw;
-	text-align:center;
-	line-height:3vw;
-	color:#ffe78a;
-	font-family:Arial;
-	font-size:1.4vw;
-	
+    z-index: 2;
+    background-image: url('img/b3.png');
+    width: 7vh; /* Изменено с vw на vh */
+    aspect-ratio: 154/65;
+    top: 10.8vh; /* Изменено с vw на vh */
+    text-align: center;
+    line-height: 3vh; /* Изменено с vw на vh */
+    color: #ffe78a;
+    font-family: Arial;
+    font-size: 1.4vh; /* Изменено с vw на vh */
 }
 
 .castle-button-play-4 {
-	
-	z-index:1;
-	background-image: url('img/b4.png');
-	width:4vw;
-	top:1vw;
-	left:8vw;
-	aspect-ratio:73/58;
-
-	
+    z-index: 1;
+    background-image: url('img/b4.png');
+    width: 4vh; /* Изменено с vw на vh */
+    top: 1vh; /* Изменено с vw на vh */
+    left: 8vh; /* Изменено с vw на vh */
+    aspect-ratio: 73/58;
 }
 
 .castle-button-play-5 {
-	
-	z-index:1;
-	background-image: url('img/b5.png');
-	width:4vw;
-	top:1vw;
-	right:8vw;
-	aspect-ratio:73/58;
-	
+    z-index: 1;
+    background-image: url('img/b5.png');
+    width: 4vh; /* Изменено с vw на vh */
+    top: 1vh; /* Изменено с vw на vh */
+    right: 8vh; /* Изменено с vw на vh */
+    aspect-ratio: 73/58;
 }
 
 .castle-button-play-6 {
-	
-	z-index:1;
-	background-image: url('img/b6.png');
-	width:4vw;
-	top:0.5vw;
-	right:8.3vw;
-	aspect-ratio:41/42;
-	transform:scale(0.5);
-	
+    z-index: 1;
+    background-image: url('img/b6.png');
+    width: 4vh; /* Изменено с vw на vh */
+    top: 0.5vh; /* Изменено с vw на vh */
+    right: 8.3vh; /* Изменено с vw на vh */
+    aspect-ratio: 41/42;
+    transform: scale(0.5);
 }
 
 .castle-button-play-7 {
-	
-	z-index:1;
-	background-image: url('img/b6.png');
-	width:4vw;
-	top:0.5vw;
-	left:8.3vw;
-	aspect-ratio:41/42;
-	transform:scale(0.5);
-	
+    z-index: 1;
+    background-image: url('img/b6.png');
+    width: 4vh; /* Изменено с vw на vh */
+    top: 0.5vh; /* Изменено с vw на vh */
+    left: 8.3vh; /* Изменено с vw на vh */
+    aspect-ratio: 41/42;
+    transform: scale(0.5);
 }
 
 .castle-button-play-8 {
-	
-	z-index:4;
-	background-image: url('img/b7.png');
-	width:4vw;
-	transform:scale(1);
-	aspect-ratio:1/1;
-	border-radius:50%;
-
-	
+    z-index: 4;
+    background-image: url('img/b7.png');
+    width: 4vh; /* Изменено с vw на vh */
+    transform: scale(1);
+    aspect-ratio: 1/1;
+    border-radius: 50%;
 }
 
-.castle-button-play-8 div{
-	
-	position:absolute;
-	top:2.6vw;
-	width:4vw;
-	text-align:center;
-	font-weight:600;
-	font-size:0.7vw;
-	color:rgba(255,255,255,0.7);
-	font-family:Arial;
-	
+.castle-button-play-8 div {
+    position: absolute;
+    top: 2.6vh; /* Изменено с vw на vh */
+    width: 4vh; /* Изменено с vw на vh */
+    text-align: center;
+    font-weight: 600;
+    font-size: 0.7vh; /* Изменено с vw на vh */
+    color: rgba(255, 255, 255, 0.7);
+    font-family: Arial;
 }
 
 .castle-button-play-9 {
-	
-	display:none;
-	z-index:0;
-	background-image: url('img/b8.png');
-	top:3.7vw;
-	width:16vw;
-	aspect-ratio:500/133;
-	
+    display: none;
+    z-index: 0;
+    background-image: url('img/b8.png');
+    top: 3.7vh; /* Изменено с vw на vh */
+    width: 16vh; /* Изменено с vw на vh */
+    aspect-ratio: 500/133;
 }
 
-
-.castle-button-play-l1{
-	
-	animation: search 1.3s linear infinite;
-	z-index:7;
-	background-image: url('img/l1.png');
-	aspect-ratio:1/1;
-	width:4vw;
-	display:none;
-	
+.castle-button-play-l1 {
+    animation: search 1.3s linear infinite;
+    z-index: 7;
+    background-image: url('img/l1.png');
+    aspect-ratio: 1/1;
+    width: 4vh; /* Изменено с vw на vh */
+    display: none;
 }
 
-.castle-play-lobby{
-	height: auto;
-	width: 45%;
-	display:flex;
-	flex-flow:row wrap;
-	justify-content:start;
-	align-items:start;
-	position: absolute;
-	left: 0;
-	top: 0;
-	
+.castle-play-lobby {
+    height: auto;
+    width: 40%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: start;
+    align-items: start;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .castle-play-lobby-player{
