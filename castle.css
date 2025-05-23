@@ -306,7 +306,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     line-height: 3vh; /* Изменено с vw на vh */
     color: #ffe78a;
     font-family: Arial;
-    font-size: 1.4vh; /* Изменено с vw на vh */
+    font-size: 1.1vh; /* Изменено с vw на vh */
 }
 
 .castle-button-play-test {
