@@ -3238,7 +3238,7 @@ border-radius:5px;
     color: white;
     transition: all 0.2s;
 }
-#wcastle-keybinding {
+#wcastle-keybindings {
 	container-type: size;
 	position: absolute;
 	margin-top: 18cqh;
