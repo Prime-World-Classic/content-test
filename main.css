@@ -3200,7 +3200,7 @@ border-radius:5px;
 	right: 0;
 	text-align: center;
 	width: calc(min(26cqh, 19cqw));
-	height: 53cqh;
+	height: 59cqh;
 	/*background-color: #8d8b8b;*/
 	border-radius: 2cqh;
 	border: 0.1cqh solid rgb(158, 155, 104);
@@ -3210,6 +3210,79 @@ border-radius:5px;
 	align-items: center;
 	justify-content: center;
 	padding: 1cqh 1cqh;
+}
+.keybinding-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 1cqh 0;
+}
+
+.keybinding-label {
+    width: 60%;
+    text-align: left;
+    font: 2.5cqh / 1 Tahoma;
+    color: rgba(255,255,255,0.9);
+    text-shadow: rgba(0,0,0,0.3) 0 0 0.5cqh;
+}
+
+.castle-keybinding-input {
+    width: 30%;
+    height: 4cqh;
+    text-align: center;
+    font-size: 2.5cqh;
+    background: rgba(0,0,0,0.3);
+    border: 0.1cqh solid rgb(158, 155, 104);
+    border-radius: 0.5cqh;
+    color: white;
+    transition: all 0.2s;
+}
+#wcastle-keybinding {
+	container-type: size;
+	position: absolute;
+	margin-top: 18cqh;
+	margin-left: auto;
+	margin-right: auto;
+	left: 0;
+	right: 0;
+	text-align: center;
+	width: calc(min(26cqh, 19cqw));
+	height: 59cqh;
+	/*background-color: #8d8b8b;*/
+	border-radius: 2cqh;
+	border: 0.1cqh solid rgb(158, 155, 104);
+	background-image: linear-gradient(to bottom, rgba(4, 32, 42, 0.9), rgba(18, 69, 73, 0.85), rgba(21, 51, 59, 0.8), rgba(18, 69, 73, 0.85), rgba(4, 32, 42, 0.9));
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 1cqh 1cqh;
+}
+/* Стили для кнопок */
+.reset-btn {
+    background-image: linear-gradient(to bottom, rgba(255,235,59,0.3), rgba(245,166,35,0.3));
+}
+
+.save-btn {
+    background-image: linear-gradient(to bottom, rgba(76,175,80,0.3), rgba(56,142,60,0.3));
+}
+
+/* Анимации */
+.input-success {
+    background-color: rgba(76,175,80,0.3) !important;
+}
+
+.input-error {
+    background-color: rgba(244,67,54,0.3) !important;
+}
+
+.action-success {
+    background-image: linear-gradient(to bottom, rgba(76,175,80,0.7), rgba(56,142,60,0.7)) !important;
+}
+
+.action-error {
+    background-image: linear-gradient(to bottom, rgba(244,67,54,0.5), rgba(211,47,47,0.5)) !important;
 }
 
 .menu-icons {
