@@ -1476,7 +1476,6 @@ text-align:center;
 .splash-content input{
 	
 transition: all 0.3s ease-out;
-width:100%;
 padding: 0.6vmin 0;
 margin-bottom:15px;
 font: 1.0rem / 1 Tahoma;
@@ -2447,7 +2446,7 @@ border-radius:5px;
 
 .search-input {
     width: 100%;
-    padding: 1.2cqmin 2.5cqmin;
+    padding: 1.2cqmin 0.1cqmin;
     margin-bottom: 1.5cqmin;
     font-size: clamp(0.9rem, 1.5cqw, 1.2rem);
     background: rgba(255, 255, 255, 0.15);

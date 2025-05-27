@@ -279,7 +279,21 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     color: rgba(189, 139, 23);
     text-shadow: 0.1vh 0 0.1vh rgb(74, 75, 46); /* Изменено с vw на vh */
 }
+.castle-button-play-m1:after{
+	content:'Пограничье';
+}
 
+.castle-button-play-m2:after{
+	content:'Форпост';
+}
+
+.castle-button-play-m3:after{
+	content:'Драгонвальд';
+}
+
+.castle-button-play-m4:after{
+	content:'Чехарда';
+}
 .castle-button-play-1 {
     z-index: 5;
     background-image: url('img/b1.png');
