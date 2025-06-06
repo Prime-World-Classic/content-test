@@ -109,7 +109,7 @@ void main()
 #endif // VS_NORMAL
 
   // Albedo
-  gl_FragColor = texture2D(tex0, fragTexCoord + uvScroll * uvScale.xx);
+  gl_FragColor = texture2D(tex0, (fragTexCoord + uvScroll) * uvScale.xx);
 
   gl_FragColor *= tintColor;
 #if defined(PS_FALLOFF_BLEND) && defined(VS_COLOR)

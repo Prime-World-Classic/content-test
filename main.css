@@ -3062,6 +3062,48 @@ border-radius:5px;
 	
 }
 
+.aram-background-part{
+	
+	position:absolute;
+	background-position:center;
+	background-attachment:fixed;
+	background-repeat:no-repeat;
+	background-size:cover;
+	width:100vw;
+	height:100vh;
+	backdrop-filter:blur(5vmax);
+	
+}
+
+.aram-text{
+	font:2vw / 1.4 Tahoma;
+	position:absolute;
+	width:100%;
+	height:100%;
+	display:flex;
+	flex-flow:column nowrap;
+	justify-content:center;
+	align-items:center;
+	color:rgba(255,255,255,0.9);
+	opacity:0;
+	
+}
+
+.aram-text h1 {
+	
+	font-size:4vw;
+	padding:0;
+	margin:0;
+	
+}
+
+.aram-text-center{
+	
+	margin-left:25%;
+	width:55%;
+	
+}
+
 .aram-briefing{
 	
 	position:absolute;
@@ -3094,10 +3136,10 @@ border-radius:5px;
 }
 
 .aram-briefing-left{
-	
-	position:relative;
-	width:33%;
-	margin: 0 3%;
+	top:25%;
+	left:8%;
+	position:absolute;
+	width:15%;
 	aspect-ratio:1/1;
 	background-repeat:no-repeat;
 	background-size:100%;

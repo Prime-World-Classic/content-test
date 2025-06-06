@@ -196,6 +196,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .castle-button-play-m2,
 .castle-button-play-m3,
 .castle-button-play-m4,
+.castle-button-play-m5,
+.castle-button-play-m6,
 .castle-button-play-1,
 .castle-button-play-2, 
 .castle-button-play-3,
@@ -228,8 +230,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     background-image: url('img/m1.png');
     width: 4vh; /* Изменено с vw на vh */
     aspect-ratio: 1/1;
-    top: 3.8vh; /* Изменено с vw на vh */
-    right: 10.5vh; /* Изменено с vw на vh */
+    top: 3.9vh; /* Изменено с vw на vh */
+    right: 14vh; /* Изменено с vw на vh */
     transform: scale(0.6);
     display: none;
 }
@@ -239,8 +241,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     background-image: url('img/m2.png');
     width: 4vh; /* Изменено с vw на vh */
     aspect-ratio: 1/1;
-    top: 3.8vh; /* Изменено с vw на vh */
-    right: 7.2vh; /* Изменено с vw на vh */
+    top: 3.9vh; /* Изменено с vw на vh */
+    right: 10.6vh; /* Изменено с vw на vh */
     transform: scale(0.6);
     display: none;
 }
@@ -250,8 +252,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     background-image: url('img/m3.png');
     width: 4vh; /* Изменено с vw на vh */
     aspect-ratio: 1/1;
-    top: 3.8vh; /* Изменено с vw на vh */
-    left: 7.2vh; /* Изменено с vw на vh */
+    top: 3.9vh; /* Изменено с vw на vh */
+    left: 3.9vh; /* Изменено с vw на vh */
     transform: scale(0.6);
     display: none;
 }
@@ -261,8 +263,31 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     background-image: url('img/m4.png');
     width: 4vh; /* Изменено с vw на vh */
     aspect-ratio: 1/1;
-    top: 3.8vh; /* Изменено с vw на vh */
-    left: 10.5vh; /* Изменено с vw на vh */
+    top: 3.9vh; /* Изменено с vw на vh */
+    left: 7.2vh; /* Изменено с vw на vh */
+    transform: scale(0.6);
+    display: none;
+}
+
+.castle-button-play-m5 {
+    z-index: 1;
+    background-image: url('img/m5.png');
+    width: 4vh;
+    aspect-ratio: 1/1;
+    top: 3.9vh;
+    left: 10.6vh;
+    transform: scale(0.6);
+    display: none;
+}
+
+.castle-button-play-m6 {
+    z-index: 1;
+    background-image: url('img/m6.png');
+	background-size:130%;
+    width: 4vh;
+    aspect-ratio: 1/1;
+    top: 3.9vh;
+    left: 13.9vh;
     transform: scale(0.6);
     display: none;
 }
@@ -270,7 +295,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .castle-button-play-m1:after,
 .castle-button-play-m2:after,
 .castle-button-play-m3:after,
-.castle-button-play-m4:after {
+.castle-button-play-m4:after,
+.castle-button-play-m5:after,
+.castle-button-play-m6:after {
     font: 0.7vh/1 Arial; /* Изменено с vw на vh */
     position: absolute;
     top: 4.5vh; /* Изменено с vw на vh */
@@ -292,8 +319,17 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .castle-button-play-m4:after{
-	content:'Чехарда';
+	content:'ARAM';
 }
+
+.castle-button-play-m5:after{
+	content:'Испытание';
+}
+
+.castle-button-play-m6:after{
+	content:'Дуэль';
+}
+
 .castle-button-play-1 {
     z-index: 5;
     background-image: url('img/b1.png');
@@ -398,9 +434,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     display: none;
     z-index: 0;
     background-image: url('img/b8.png');
-    top: 3.7vh; /* Изменено с vw на vh */
-    width: 16vh; /* Изменено с vw на vh */
-    aspect-ratio: 500/133;
+    top: 3.8vh; /* Изменено с vw на vh */
+    width: 21vh; /* Изменено с vw на vh */
+    aspect-ratio: 371/76;
 }
 
 .castle-button-play-l1 {
@@ -673,26 +709,18 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	flex-flow:column nowrap;
 	justify-content:center;
 	align-items:center;
+	container-type: size;
 }
 
 .castle-bottom-menu div{
 	
-	width:2cqw;
-	min-width:5vh;
-	height:2cqw;
-	min-height:5vh;
-	margin:0.5vh 0;
+	width:25cqh;
+	height:25cqh;
+	margin:0.1vh 0;
 	border-radius:50%;
-	background:rgba(255,255,255,0.3);
+	background:rgba(255,255,255,0.0);
 	background-size: contain;
 	
-}
-
-.castle-bottom-menu :first-child {
-	background-image: url('htalents/270.webp');
-}
-.castle-bottom-menu :last-child {
-	background-image: url('htalents/456.webp');
 }
 
 .castle-bottom-content{
