@@ -906,7 +906,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	align-items:center;
 	flex-flow:column nowrap;
 	margin-top:19cqh;
-	height:62cqh;
+	max-height:62cqh;
 	width:50cqh;
 	
 }
