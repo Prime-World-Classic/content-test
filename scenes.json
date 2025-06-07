@@ -13730,18 +13730,6 @@
                     ]
                 },
                 {
-                    "mesh": "ad/trees_10_03.bin",
-                    "indexCount": 36801,
-                    "shader": "shader_pos_norm_uv16_uv_ak",
-                    "texture": "trees",
-                    "transform": [
-                        1, 0, 0, 0,
-                        0, 1, 0, 2,
-                        0, 0, 1, 0,
-                        0, 0, 0, 1
-                    ]
-                },
-                {
                     "mesh": "ad/trees_10_04.bin",
                     "indexCount": 5748,
                     "shader": "shader_pos_norm_uv16_uv_ak",
