@@ -40,6 +40,7 @@ varying vec4 v_projectedTexcoord;
 #ifdef PS_GRID
 varying vec2 posXZ;
 uniform vec2 cursorGridPosition;
+uniform sampler2D gridTex;
 #endif
 #ifdef SNOW
 varying float posDepth;
@@ -81,12 +82,15 @@ void main()
 #ifdef PS_GRID
   // Grid cells
   gl_FragColor = vec4(0.0, 0.0, 0.0, max(0.0, (1.5 - mod(posXZ.x, 7.0))) + max(0.0, (1.5 - mod(posXZ.y, 7.0))));
-  gl_FragColor.rgb += vec3(gl_FragColor.a, gl_FragColor.a, 0.1);
+  gl_FragColor.rgb += vec3(gl_FragColor.a, gl_FragColor.a, 0.1*gl_FragColor.a);
+  float gridMul = clamp(1.0 - gl_FragColor.r * 10000.0, 0.0, 1.0);
 
   // Grid falloff
   float falloff = sqrt(dot(posXZ - cursorGridPosition, posXZ - cursorGridPosition)) - gridFalloffDistance;
   gl_FragColor.a *= 1.0 - falloff;
   gl_FragColor.a = (max(0.0, gl_FragColor.a - 0.9) / 30.0);
+  vec4 gridColor = texture2D(gridTex, (posXZ.xy + vec2(126.0, 77.0)) / vec2(322.0, 266.0) * vec2(46.0 / 64.0, 38.0 / 64.0));
+  gl_FragColor += vec4(gridColor * vec4(gridMul));
   //gl_FragColor.a = gl_FragColor.a / (1.0 + abs(gl_FragColor.a));
 
   vec3 light = vec3(1.0);
