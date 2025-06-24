@@ -568,13 +568,6 @@ height: 100cqh;
     transform: translate(50%, -40%) scale(1.1);
 } 
 
-/* Для поддержки темной/светлой темы */
-@media (prefers-color-scheme: light) {
-    .close-button {
-        filter: invert(1);
-    }
-}
-
 /* Модификаторы ДОЛЖНЫ содержать только отличия от базового стиля */
 .build-list-close {
     /* Если нужны специфичные стили, иначе можно удалить этот класс */
