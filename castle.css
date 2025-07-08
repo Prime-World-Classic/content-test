@@ -209,7 +209,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .castle-button-play-8,
 .castle-button-play-9,
 .castle-button-play-l1,
-.castle-button-play-l2 {
+.castle-button-play-l2,
+.castle-button-play-division,
+.castle-button-play-karma {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -419,13 +421,25 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     border-radius: 50%;
 }
 
-.castle-button-play-8 div {
+.castle-button-play-queue {
     position: absolute;
     top: 2.6vh; /* Изменено с vw на vh */
     width: 4vh; /* Изменено с vw на vh */
     text-align: center;
     font-weight: 600;
     font-size: 0.7vh; /* Изменено с vw на vh */
+    color: rgba(255, 255, 255, 0.7);
+    font-family: Arial;
+}
+
+.castle-button-play-queue-mode {
+    position: absolute;
+    width:100%;
+	height:100%;
+	top:3.1vh;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1vh; /* Изменено с vw на vh */
     color: rgba(255, 255, 255, 0.7);
     font-family: Arial;
 }
@@ -446,6 +460,32 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     aspect-ratio: 1/1;
     width: 4vh; /* Изменено с vw на vh */
     display: none;
+}
+
+.castle-button-play-division {
+    z-index: 3;
+    width: 2vh; 
+    aspect-ratio: 1/1;
+    top: 4.4vh;
+    left: 2vh;
+	transform: scale(0.8);
+	display:none;
+}
+
+.castle-button-play-karma {
+    z-index: 3;
+    background-image: url('htalents/405.webp');
+	border-radius:50%;
+    width: 2vh; 
+    aspect-ratio: 1/1;
+    top: 4.4vh;
+	right: 2vh;
+	font-weight:800;
+	color:rgba(255,255,255,0.9);
+	justify-content:center;
+	align-items:center;
+    font: 0.5vh / 1 Verdana;
+	display:none;
 }
 
 .castle-play-lobby {
