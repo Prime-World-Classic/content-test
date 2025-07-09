@@ -1418,9 +1418,26 @@ class CastleNAVBAR {
 		
 		if(CastleNAVBAR.karma){
 			
-			CastleNAVBAR.body.children[18].style.display = 'flex';
+			let karma = 0;
 			
-			CastleNAVBAR.body.children[18].firstChild.innerText = `${CastleNAVBAR.karma}%`;
+			if(CastleNAVBAR.karma >= 75){
+				
+				karma = 75;
+				
+			}
+			else if(CastleNAVBAR.karma >= 50){
+				
+				karma = 50;
+				
+			}
+			
+			if(karma){
+				
+				CastleNAVBAR.body.children[18].style.display = 'flex';
+				
+				CastleNAVBAR.body.children[18].firstChild.innerText = `>${karma}`;
+				
+			}
 			
 		}
 		
