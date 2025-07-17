@@ -1297,10 +1297,6 @@ class CastleNAVBAR {
 	static state = false;
 
 	static mode = 0;
-	
-	static karma = 0;
-	
-	static division = 0;
 
 	static init() {
 
@@ -1420,8 +1416,6 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[17].title = 'Дивизия';
-		
 		CastleNAVBAR.body.children[18].title = 'Уровень кармы вашего аккаунта';
 		
 		CastleNAVBAR.body.children[18].append(DOM({tag:'div'}));
@@ -1435,7 +1429,7 @@ class CastleNAVBAR {
 		if (CastleNAVBAR.state) {
 
 			return;
-
+			
 		}
 
 		CastleNAVBAR.state = true;
@@ -1454,55 +1448,42 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[4].style.filter = 'grayscale(70%)';
 		
-		if(CastleNAVBAR.karma){
+	}
+	
+	static karma(id){
+		
+		let karma = 0;
+		
+		if(id >= 75){
 			
-			let karma = 0;
+			karma = 75;
 			
-			if(CastleNAVBAR.karma >= 75){
-				
-				karma = 75;
-				
-			}
-			else if(CastleNAVBAR.karma >= 50){
-				
-				karma = 50;
-				
-			}
+		}
+		else if(id >= 50){
 			
-			if(karma){
-				
-				CastleNAVBAR.body.children[18].style.display = 'flex';
-				
-				CastleNAVBAR.body.children[18].firstChild.innerText = `>${karma}`;
-				
-			}
+			karma = 50;
 			
 		}
 		
-		if(CastleNAVBAR.division){
+		if(karma){
 			
-			let division = 0;
+			CastleNAVBAR.body.children[18].style.display = 'flex';
 			
-			if(CastleNAVBAR.division <= 50){
-				
-				division = 3;
-				
-			}
-			else if(CastleNAVBAR.division <= 100){
-				
-				division = 11;
-				
-			}
-			
-			if(division){
-				
-				CastleNAVBAR.body.children[17].style.backgroundImage =  `url(content/ranks/${division}.webp)`;
-				
-				CastleNAVBAR.body.children[17].style.display = 'block';
-				
-			}
+			CastleNAVBAR.body.children[18].firstChild.innerText = `>${karma}`;
 			
 		}
+		
+	}
+	
+	static division(id) {
+		
+		let division = Division.get(id);
+		
+		CastleNAVBAR.body.children[17].style.backgroundImage =  `url(content/ranks/${division.icon}.webp)`;
+		
+		CastleNAVBAR.body.children[17].title = division.name;
+		
+		CastleNAVBAR.body.children[17].style.display = 'block';
 		
 	}
 
@@ -4340,6 +4321,39 @@ class Rank {
 
 	}
 
+}
+
+class Division {
+	
+	static list = {
+	10:{name:'Рядовой',icon:3}, 
+	20:{name:'Капрал',icon:4},  
+	30:{name:'Сержант',icon:5}, 
+	40:{name:'Лейтенант',icon:6}, 
+	50:{name:'Капитан',icon:7},  
+	60:{name:'Майор',icon:8},  
+	70:{name:'Подполковник',icon:9}, 
+	80:{name:'Полковник',icon:10},  
+	90:{name:'Генерал',icon:11}, 
+	100:{name:'Маршал',icon:12} 
+	};
+	
+	static get(id){
+		
+		for(let key in Division.list){
+			
+			if(id <= key){
+				
+				return Division.list[key];
+				
+			}
+			
+		}
+		
+		return {name:'Не определено',icon:1};
+		
+	}
+	
 }
 
 class Build {
@@ -7493,7 +7507,7 @@ class App {
 		await News.init();
 		
 		await Store.init();
-
+		
 		App.storage = new Store('u3');
 
 		await App.storage.init({ id: 0, token: '', login: '' });
@@ -11026,9 +11040,9 @@ class MM {
 
 				let request = await App.api.request(CURRENT_MM, 'start', { hero: MM.activeSelectHero, version: PW_VERSION, mode: CastleNAVBAR.mode, mac: NativeAPI.getMACAdress() });
 				
-				CastleNAVBAR.division = request.division;
+				CastleNAVBAR.division(request.division);
 				
-				CastleNAVBAR.karma = request.karma;
+				CastleNAVBAR.karma(request.karma);
 				
 				if (request.type == 'reconnect') {
 
