@@ -4405,10 +4405,10 @@ class Build {
 	};
 
 	static talentRefineByRarity = {
-		4: 5.0,
-		3: 7.0,
-		2: 9.0,
-		1: 12.0
+		4: 10.0,
+		3: 13.0,
+		2: 15.0,
+		1: 21.0
 	}
 
 	static async view(user, hero, nickname = '', animate = true) {
@@ -5728,11 +5728,11 @@ class Build {
 
 		// Calculate overall power bonus
 		const talentPowerByRarity = {
-			4: 68.952,
-			3: 68.208,
-			2: 69.12,
-			1: 64.875,
-			0: 90.2
+			4: 88.842,
+			3: 89.376,
+			2: 88.56,
+			1: 88.5,
+			0: 146.64
 		}
 
 		let talentPower = 'rarity' in talent ? talentPowerByRarity[talent.rarity] : talentPowerByRarity[0];
