@@ -7052,14 +7052,16 @@ class Build {
 					default: dataTemp = 0; break; //Классовые и красные
 
 				}
+				let starOrange = window.innerHeight*0.02;
 				
+				let starGold = window.innerHeight*0.02;
 				
 				 for(let i = 0; i < Math.min(Build.talentRefineByRarity[dataTemp==0?4:dataTemp],15); i++){
 					if(Math.floor(i/5)%2 == 1){
-						stars = stars + `<img src="content/icons/starOrange.webp" width="16" height="16">`;
+						stars = stars + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
 					}
 					else{
-						stars = stars + `<img src="content/icons/starGold.webp" width="16" height="16">`;
+						stars = stars + `<img src="content/icons/starGold.webp" width=${starGold} height=${starGold}>`;
 					}
 					
 				} 
