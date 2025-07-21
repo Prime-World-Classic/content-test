@@ -1,6 +1,6 @@
 APP_VERSION = '0';
 
-PW_VERSION = '2.6.3';
+PW_VERSION = '2.6.4';
 
 CURRENT_MM = 'mmtest'
 
@@ -4405,12 +4405,28 @@ class Build {
 	};
 
 	static talentRefineByRarity = {
-		4: 10.0,
-		3: 13.0,
-		2: 15.0,
-		1: 21.0
+		4: 5.0, //И классовые
+		3: 7.0,
+		2: 9.0,
+		1: 12.0
 	}
-
+	
+	static talentPowerByRarityFirstLevel = {
+		4: 53.04,
+		3: 47.04,
+		2: 43.2,
+		1: 36,
+		0: 45.12
+	}
+	
+	static talentPowerByRarityPerLevel = {
+		4: 3.978,
+		3: 3.528,
+		2: 3.24,
+		1: 2.625,
+		0: 11.28
+	}
+	
 	static async view(user, hero, nickname = '', animate = true) {
 
 		let request = await App.api.request('build', 'get', { user: user, hero: hero });
@@ -5728,11 +5744,11 @@ class Build {
 
 		// Calculate overall power bonus
 		const talentPowerByRarity = {
-			4: 88.842,
-			3: 89.376,
-			2: 88.56,
-			1: 88.5,
-			0: 146.64
+			4: Build.talentPowerByRarityFirstLevel[4] + Build.talentPowerByRarityPerLevel[4]*(Build.talentRefineByRarity[4]-1),
+			3: Build.talentPowerByRarityFirstLevel[3] + Build.talentPowerByRarityPerLevel[3]*(Build.talentRefineByRarity[3]-1),
+			2: Build.talentPowerByRarityFirstLevel[2] + Build.talentPowerByRarityPerLevel[2]*(Build.talentRefineByRarity[2]-1),
+			1: Build.talentPowerByRarityFirstLevel[1] + Build.talentPowerByRarityPerLevel[1]*(Build.talentRefineByRarity[1]-1),
+			0: Build.talentPowerByRarityFirstLevel[0] + Build.talentPowerByRarityPerLevel[0]*(Build.talentRefineByRarity[4]-1)
 		}
 
 		let talentPower = 'rarity' in talent ? talentPowerByRarity[talent.rarity] : talentPowerByRarity[0];
@@ -7018,7 +7034,43 @@ class Build {
 					}
 
 				}
-				Build.descriptionView.innerHTML = `<b style="color:rgb(${rgb})">${data.name}</b><div>${data.description}</div><span>${stats}</span>`;
+				
+				let dataTemp = data.rarity; 
+				 
+				let stars = "";
+				
+				switch (dataTemp) {
+
+					case 1: dataTemp = 1; break;
+
+					case 2: dataTemp = 2; break;
+
+					case 3: dataTemp = 3; break;
+					
+					case 4: dataTemp = 4; break;
+					
+					default: dataTemp = 0; break; //Классовые и красные
+
+				}
+				
+				
+				 for(let i = 0; i < Math.min(Build.talentRefineByRarity[dataTemp==0?4:dataTemp],15); i++){
+					if(Math.floor(i/5)%2 == 1){
+						stars = stars + `<img src="content/icons/starOrange.webp" width="16" height="16">`;
+					}
+					else{
+						stars = stars + `<img src="content/icons/starGold.webp" width="16" height="16">`;
+					}
+					
+				} 
+				
+				if(Build.talentRefineByRarity[dataTemp==0?4:dataTemp]>15){
+					stars = "+" + (Build.talentRefineByRarity[dataTemp==0?4:dataTemp]-15) + `<img src="content/icons/starGoldBright.webp" width="16" height="16">`;
+				}
+				
+				let descriptionWithStars = `${stars} <br><br> ${data.description} `;
+				
+				Build.descriptionView.innerHTML = `<b style="color:rgb(${rgb})">${data.name}</b><div>${descriptionWithStars}</div><span>${stats}</span>`;
 
 				let innerChilds = Build.descriptionView.childNodes[1].childNodes;
 				let paramIterator = 0;
