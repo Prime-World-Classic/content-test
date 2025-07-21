@@ -7052,9 +7052,9 @@ class Build {
 					default: dataTemp = 0; break; //Классовые и красные
 
 				}
-				let starOrange = window.innerHeight*0.02;
+				let starOrange = window.innerHeight*0.015;
 				
-				let starGold = window.innerHeight*0.02;
+				let starGold = window.innerHeight*0.015;
 				
 				 for(let i = 0; i < Math.min(Build.talentRefineByRarity[dataTemp==0?4:dataTemp],15); i++){
 					if(Math.floor(i/5)%2 == 1){
