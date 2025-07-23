@@ -111,7 +111,8 @@ class Lang {
 				skins: 'Skins',
 				authorizationSteam: 'Login with Steam',
 				steamauthTitle: 'Login with Steam',
-				steamauth: 'By clicking Continue, you will register a new account! If you want to log in to your current PW Classic account, you must first link your Steam account from the settings menu.'
+				steamauth: 'By clicking Continue, you will register a new account! If you want to log in to your current PW Classic account, you must first link your Steam account from the settings menu.',
+				classTalent: 'Class Talent'
 			}
 		},
 		ru: {
@@ -164,7 +165,8 @@ class Lang {
 				skins: 'Скины',
 				authorizationSteam: 'Вход через Steam',
 				steamauthTitle: 'Вход через Steam',
-				steamauth: 'Нажимая кнопку Продолжить, произойдёт регистрация нового аккаунта! Если Вы хотите осуществить вход в свой текущий аккаунт PW Classic, Вам необхоидмо сначала привязать свой Steam аккаунт из меню настроек.'
+				steamauth: 'Нажимая кнопку Продолжить, произойдёт регистрация нового аккаунта! Если Вы хотите осуществить вход в свой текущий аккаунт PW Classic, Вам необхоидмо сначала привязать свой Steam аккаунт из меню настроек.',
+				classTalent: 'Классовый'
 			}
 		},
 		be: {
@@ -217,7 +219,8 @@ class Lang {
 				skins: 'Абалонкі',
 				authorizationSteam: 'Увайсці праз steam',
 				steamauthTitle: 'Увайсці праз steam',
-				steamauth: 'Націскаючы кнопку Працягнуць, адбудзецца рэгістрацыя новага акаўнта! Калі Вы жадаеце ажыццявіць уваход у свой бягучы акаўнт PW Classic, Вам неабходна спачатку прывязаць свой Steam акаўнт з меню налад.'
+				steamauth: 'Націскаючы кнопку Працягнуць, адбудзецца рэгістрацыя новага акаўнта! Калі Вы жадаеце ажыццявіць уваход у свой бягучы акаўнт PW Classic, Вам неабходна спачатку прывязаць свой Steam акаўнт з меню налад.',
+				classTalent: 'Класавы'
 			}	
 		}
 	};
@@ -7037,8 +7040,6 @@ class Build {
 				
 				let dataTemp = data.rarity; 
 				 
-				let stars = "";
-				
 				switch (dataTemp) {
 
 					case 1: dataTemp = 1; break;
@@ -7049,14 +7050,25 @@ class Build {
 					
 					case 4: dataTemp = 4; break;
 					
-					default: dataTemp = 0; break; //Классовые и красные
+					default: dataTemp = 0; break; 
 
 				}
+				
+				let talentIsClassBased = "";
+				
+				if(!dataTemp){
+					talentIsClassBased = Lang.text('classTalent') + `<br>`;
+				}
+				
 				let starOrange = window.innerHeight*0.015;
 				
 				let starGold = window.innerHeight*0.015;
 				
-				 for(let i = 0; i < Math.min(Build.talentRefineByRarity[dataTemp==0?4:dataTemp],15); i++){
+				let talentRefineByRarity = Build.talentRefineByRarity[dataTemp==0?4:dataTemp];
+				
+				let stars = "";
+				
+				for(let i = 0; i < (talentRefineByRarity>15?0:talentRefineByRarity); i++){
 					if(Math.floor(i/5)%2 == 1){
 						stars = stars + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
 					}
@@ -7066,11 +7078,11 @@ class Build {
 					
 				} 
 				
-				if(Build.talentRefineByRarity[dataTemp==0?4:dataTemp]>15){
-					stars = "+" + (Build.talentRefineByRarity[dataTemp==0?4:dataTemp]-15) + `<img src="content/icons/starGoldBright.webp" width="16" height="16">`;
+				if(talentRefineByRarity>15){
+					stars = stars + talentRefineByRarity + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
 				}
 				
-				let descriptionWithStars = `${stars} <br><br> ${data.description} `;
+				let descriptionWithStars = `<b>${talentIsClassBased}</b>${stars} <br><br> ${data.description} `;
 				
 				Build.descriptionView.innerHTML = `<b style="color:rgb(${rgb})">${data.name}</b><div>${descriptionWithStars}</div><span>${stats}</span>`;
 
@@ -7188,14 +7200,21 @@ class Build {
 
 			Build.descriptionView.style.zIndex = 9999;
 
-			Build.descriptionView.style.position = 'absolute';
-
-			Build.descriptionView.style.left = positionElement.left + 'px';
-
-			Build.descriptionView.style.top = (positionElement.top + positionElement.height) + 'px';
-
+			Build.descriptionView.style.position = 'fixed';
+			
 			Build.descriptionView.style.display = 'block';
-
+			
+			let descriptionWidth = Build.descriptionView.offsetWidth;
+			
+			let ofSetW = 0,ofSetH = 0;
+		
+			if(Build.descriptionView.offsetHeight + positionElement.top > window.innerHeight){
+				ofSetW = window.innerHeight - Build.descriptionView.offsetHeight - positionElement.top;
+			}
+		
+			Build.descriptionView.style.left = (positionElement.left + positionElement.height)+ 'px';
+			
+			Build.descriptionView.style.top = (positionElement.top + ofSetW) + 'px';
 		}
 
 		let descEventEnd = () => {
@@ -7203,7 +7222,7 @@ class Build {
 			Build.descriptionView.style.display = 'none';
 
 		}
-
+		
 		element.ontouchstart = (e) => {
 			//e.preventDefault();
 			descEvent();
