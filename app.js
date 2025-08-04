@@ -8225,6 +8225,15 @@ class Chat {
 			nickname.classList.add('owner-text');
 
 		}
+		else if (data.id == -2) {
+
+			nickname.style.color = 'transparent';
+
+			nickname.style.fontWeight = 600;
+
+			nickname.classList.add('telegrambot-text');
+			
+		}
 		else if (App.isAdmin(data.id)) {
 
 			nickname.style.color = 'transparent';
