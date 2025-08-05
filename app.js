@@ -54,18 +54,139 @@ class ParentEvent {
 	
 }
 
-class Lang {
+class Settings {
 
-	static target = 'ru'; // TODO get from the system
-	// TODO add UI dropdown?
-	static default = 'ru';
+    static async ApplySettings(options = {}) {
+		// Установка значений по умолчанию для options
+		options = {
+			render: true,    // Применять настройки рендеринга по умолчанию
+			audio: true,     // Применять настройки звука по умолчанию
+			window: true,    // Применять настройки окна по умолчанию
+			...options       // Переопределение дефолтных значений
+		};
+	
+		try {
+			// 1. Применение настроек рендеринга (если не отключено в options)
+			if (options.render !== false && typeof Castle !== 'undefined') {
+				Castle.toggleRender(Castle.RENDER_LAYER_PLAYER, localStorage.getItem('render'));
+			}
+	
+			// 2. Применение настроек окна (если не отключено в options)
+			if (options.window !== false && NativeAPI.status && NativeAPI.window) {
+				const currentMode = await NativeAPI.window.isFullscreen;
+				if (localStorage.getItem('fullscreen') == true && !currentMode) {
+					await NativeAPI.window.enterFullscreen();
+				} else if (localStorage.getItem('fullscreen') != true && currentMode) {
+					await NativeAPI.window.leaveFullscreen();
+					NativeAPI.window.resizeTo(1280, 720);
+					NativeAPI.window.setPosition('center');
+				}
+			}
+
+			// 3. Применение настроек звука (если не отключено в options)
+			if (options.audio !== false && typeof Sound !== 'undefined') {
+				// Обновляем громкость для всех звуков
+				for (const soundId in Sound.all) {
+					const type = soundId === 'castle' ? Castle.AUDIO_MUSIC : Castle.AUDIO_SOUNDS;
+					Sound.setVolume(soundId, Castle.GetVolume(type));
+				}
+				
+				// Специальная обработка тестового звука (если используется)
+				if (Castle.testSoundIsPlaying && Sound.all.sound_test) {
+					Sound.setVolume('sound_test', Castle.GetVolume(Castle.AUDIO_SOUNDS));
+				}
+			}
+	
+		} catch (e) {
+			App.error('Ошибка применения настроек: ' + e);
+		}
+	}
+
+    static async init() {
+        await this.ApplySettings();
+    }
+}
+
+const idToName = [
+	'',
+	'prince',
+	'snowqueen',
+	'faceless',
+	'warlord',
+	'thundergod',
+	'invisible',
+	'mowgly',
+	'inventor',
+	'artist',
+	'highlander',
+	'marine',
+	'firefox',
+	'healer',
+	'night',
+	'rockman',
+	'assassin',
+	'unicorn',
+	'hunter',
+	'ghostlord',
+	'ratcatcher',
+	'archeress',
+	'werewolf',
+	'frogenglut',
+	'witchdoctor',
+	'manawyrm',
+	'bard',
+	'naga',
+	'mage',
+	'fairy',
+	'witcher',
+	'alchemist',
+	'demonolog',
+	'vampire',
+	'witch',
+	'crusader_A',
+	'crusader_B',
+	'monster',
+	'angel',
+	'freeze',
+	'gunslinger',
+	'reaper',
+	'fluffy',
+	'rifleman',
+	'magicgirl',
+	'pinkgirl',
+	'ironknight',
+	'fallenangel',
+	'bladedancer',
+	'ent',
+	'plaguedoctor',
+	'katana',
+	'plane',
+	'zealot',
+	'wraithking',
+	'dryad',
+	'stalker',
+	'gunner',
+	'chronicle',
+	'brewer',
+	'shadow',
+	'wendigo',
+	'trickster',
+	'banshee',
+	'shaman',
+	'bomber',
+]
+
+class Lang {
 
 	static list = {
 		en: {
-			locale:['en_US'],
+			locale:['en'],
 			name:'English',
 			word: {
 				nickname: 'login/Nickname',
+				nicknameChange: 'Nickname change',
+				nickOfPlayer: 'Nickname of a player',
+				sideChange: 'Side change',
 				code: 'code/Telegram bot',
 				password: 'password',
 				passwordAgain: 'password again',
@@ -78,10 +199,9 @@ class Lang {
 				enterTextAndPressEnter: 'Enter the text and press Enter',
 				ready: 'Ready',
 				library: 'Library',
-				menu: 'Меню',
 				preferences: 'Preferences',
 				windowMode: 'Window mode',
-				radminPriority: 'RadminVPN Priority',
+				radmin: 'RadminVPN Priority',
 				threeD: '3D',
 				volume: 'Volume',
 				volumeMusic: 'Volume of music',
@@ -90,7 +210,9 @@ class Lang {
 				soundHelp: 'If the sound settings are lost, you can adjust the volume in the mixer: right-click on the sound icon on the Taskbar -> Volume Mixer -> Game icon -> make it quieter',
 				support: 'Support',
 				supportDesk: 'Questions? Feel free to contact us:',
+				account: 'Account',
 				accountSwitch: 'Switch account',
+				steamConnect: 'Connect Steam',
 				exit: 'Exit from Prime World',
 				version: 'Version',
 				health: 'Health',
@@ -109,17 +231,188 @@ class Lang {
 				defencePsys: 'Defence Psysical',
 				defenceMagic: 'Defence Magic',
 				skins: 'Skins',
+				training: 'Training',
+				newBuildTab: 'New build tab',
+				buildDuplicate: 'Duplicate build',
+				generateRandomBuild: 'Generate random build',
+				resetTalents: 'Reset talents in this build',
+				reset: 'Reset',
+				cancel: 'Cancel',
+				accept: 'Accept',
+				party: 'Party',
+				offline: 'Offline',
+				reject: 'Reject',
+				wait: 'Waiting',
 				authorizationSteam: 'Login with Steam',
 				steamauthTitle: 'Login with Steam',
 				steamauth: 'By clicking Continue, you will register a new account! If you want to log in to your current PW Classic account, you must first link your Steam account from the settings menu.',
-				classTalent: 'Class Talent'
+				classTalent: 'Class Talent',
+				stealBuild: 'Steal build?',
+				pressToSeeRating: 'Press to see the rating by hero',
+
+				border: 'Borderlands',
+				forpost: 'Forpost',
+				dragonvald: 'Dragonvald',
+				arm: 'ARM',
+				challenge: 'Challenge',
+				duel: 'Duel',
+
+				prince: 'Prince',
+				snowqueen: 'Snowqueen',
+				faceless: 'Faceless',
+				warlord: 'Warlord',
+				thundergod: 'Thundergod',
+				invisible: 'Invisible',
+				mowgly: 'Mowgly',
+				inventor: 'Inventor',
+				artist: 'Artist',
+				highlander: 'Highlander',
+				marine: 'Marine',
+				firefox: 'Firefox',
+				healer: 'Healer',
+				night: 'Night',
+				rockman: 'Rockman',
+				assassin: 'Assassin',
+				unicorn: 'Unicorn',
+				hunter: 'Hunter',
+				ghostlord: 'Ghostlord',
+				ratcatcher: 'Ratcatcher',
+				archeress: 'Archeress',
+				werewolf: 'Werewolf',
+				frogenglut: 'Frogenglut',
+				witchdoctor: 'Witchdoctor',
+				manawyrm: 'Manawyrm',
+				bard: 'Bard',
+				naga: 'Naga',
+				mage: 'Mage',
+				fairy: 'Fairy',
+				witcher: 'Witcher',
+				alchemist: 'Alchemist',
+				demonolog: 'Demonolog',
+				vampire: 'Vampire',
+				witch: 'Witch',
+				crusader_A: "Da'ka",
+				crusader_B: "Kha'ka",
+				monster: 'Monster',
+				angel: 'Angel',
+				freeze: 'Freeze',
+				gunslinger: 'Gunslinger',
+				reaper: "Tu'Rekhu",
+				fluffy: 'Fluffy',
+				rifleman: 'Rifleman',
+				magicgirl: 'Magicgirl',
+				pinkgirl: 'Pinkgirl',
+				ironknight: 'Ironknight',
+				fallenangel: 'Fallenangel',
+				bladedancer: 'Bladedancer',
+				ent: 'Ent',
+				plaguedoctor: 'Plaguedoctor',
+				katana: 'Katana',
+				plane: 'Plane',
+				zealot: 'Zealot',
+				wraithking: 'Wraithking',
+				dryad: 'Dryad',
+				stalker: 'Stalker',
+				gunner: 'Gunner',
+				chronicle: 'Chronicle',
+				brewer: 'Brewer',
+				shadow: 'Shadow',
+				wendigo: 'Wendigo',
+				trickster: 'Trickster',
+				banshee: 'Banshee',
+				shaman: 'Shaman',
+				bomber: 'Bomber',
+
+				pearlFarm: 'Pearl Farm',
+				primeDistiller: 'Prime Distiller',
+				mushroomFarm: 'Mushroom Farm',
+				farm: 'Farm',
+				rubberTree: 'Rubber Tree',
+				mine: 'Mine',
+				spinningMill: 'Spinning Mill',
+				sawmill: 'Sawmill',
+				weavingWorkshop: 'Weaving Workshop',
+				manufactory: 'Manufactory',
+				talentGarden: 'Talent Garden',
+				talentForge: 'Talent Forge',
+				clanHouse: 'Clan House',
+				fair: 'Fair',
+				mansion: 'Mansion',
+				terem: 'Terem',
+				library: 'Library',
+				warehouse: 'Warehouse',
+				arena: 'Arena',
+				spire: 'Spire',
+				secretService: 'Secret Service',
+				alcoveOfLife: 'Alcove of Life',
+				bastion: 'Bastion',
+				templeOfPurity: 'Temple of Purity',
+				houseOfMercy: 'House of Mercy',
+				monument: 'Monument',
+				taran: 'Taran',
+				teaHouse: 'Tea House',
+				tavern: 'Tavern',
+				catsHouse: 'Cat\'s House',
+				puppyHouse: 'Puppy House',
+				unicornHouse: 'Unicorn House',
+				scarletFlower: 'Scarlet Flower',
+				lantern: 'Lantern',
+				amberFlower: 'Amber Flower',
+				bigLantern: 'Big Lantern',
+				pointer: 'Pointer',
+				statue: 'Statue',
+				flagpole: 'Flagpole',
+				drums: 'Drums',
+				telescope: 'Telescope',
+				palmTreeWithABird: 'Palm Tree with a Bird',
+				globe: 'Globe',
+				fountain: 'Fountain',
+				lanternShop: 'Lantern Shop',
+				crimsonBush: 'Crimson Bush',
+				bush: 'Bush',
+				azureBush: 'Azure Bush',
+				bloomingBush: 'Blooming Bush',
+				crimsonBlossom: 'Crimson Blossom',
+				purpleBlossom: 'Purple Blossom',
+				hedge: 'Hedge',
+				livingWall: 'Living Wall',
+				bloomingWall: 'Blooming Wall',
+				column: 'Column',
+				flowerbed: 'Flowerbed',
+				smallTree: 'Small Tree',
+				roundTree: 'Round Tree',
+				bloomingSakura: 'Blooming Sakura',
+				bonsai: 'Bonsai',
+				bloomingBonsai: 'Blooming Bonsai',
+				caneTower: 'Cane Tower',
+				topiaryCone: 'Topiary Cone',
+				miniatureGarden: 'Miniature Garden',
+				giraffeFigure: 'Giraffe Figure',
+				largeSakura: 'Large Sakura',
+				topiaryCube: 'Topiary Cube',
+				hugeCactus: 'Huge Cactus',
+				largeTree: 'Large Tree',
+				rafflesia: 'Rafflesia',
+				elephantFigure: 'Elephant Figure',
+				flycatcher: 'Flycatcher',
+				unicornFigure: 'Unicorn Figure',
+				figuredCane: 'Figured Cane',
+				smallTopiaryCone: 'Small Topiary Cone',
+				bananaPalm: 'Banana Palm',
+				topiaryTower: 'Topiary Tower',
+				coconutPalm: 'Coconut Palm',
+				topiaryPole: 'Topiary Pole'
+
 			}
 		},
 		ru: {
-			locale:['ru_RU'],
+			locale:['ru'],
 			name:'Русский',
 			word: {
 				nickname: 'Логин/Никнейм',
+				nicknameChange: 'Изменить никнейм',
+				nickOfPlayer: 'Ник игрока',
+				sideChange: 'Изменить сторону',
 				code: 'Инвайт-код',
 				password: 'Пароль',
 				passwordAgain: 'Еще раз пароль',
@@ -132,10 +425,9 @@ class Lang {
 				enterTextAndPressEnter: 'Введите текст и нажмите Enter',
 				ready: 'Готов',
 				library: 'Библиотека',
-				menu: 'Меню',
 				preferences: 'Настройки',
 				windowMode: 'Оконный режим',
-				radminPriority: 'Приоритет RadminVPN',
+				radmin: 'Приоритет RadminVPN',
 				threeD: '3D графика',
 				volume: 'Общая громкость',
 				volumeMusic: 'Громкость музыки',
@@ -144,7 +436,9 @@ class Lang {
 				soundHelp: 'Если сбиваются настройки звука, то можно отрегулировать в микшере громкости: ПКМ на значок звука на Панели задач -> Микшер громкости -> Значок игры -> делаете тише',
 				support: 'Поддержка',
 				supportDesk: 'Если у Вас есть вопросы, Вы можете связаться с нами через:',
+				account: 'Аккаунт',
 				accountSwitch: 'Сменить аккаунт',
+				steamConnect: 'Привязать Steam',
 				exit: 'Выйти из Prime World',
 				version: 'Версия',
 				health: 'Здоровье',
@@ -163,17 +457,188 @@ class Lang {
 				defencePsys: 'Защита тела',
 				defenceMagic: 'Защита духа',
 				skins: 'Скины',
+				training: 'Тренировка',
+				newBuildTab: 'Создать новую вкладку билда',
+				buildDuplicate: 'Дублировать текущий билд',
+				generateRandomBuild: 'Сгенерировать случайный билд',
+				resetTalents: 'Сбросить таланты в этом билде',
+				reset: 'Сбросить',
+				cancel: 'Отменить',
+				accept: 'Принять',
+				reject: 'Отклонить',
+				party: 'Группа',
+				offline: 'Не в сети',
+				wait: 'Ожидание',
 				authorizationSteam: 'Вход через Steam',
 				steamauthTitle: 'Вход через Steam',
 				steamauth: 'Нажимая кнопку Продолжить, произойдёт регистрация нового аккаунта! Если Вы хотите осуществить вход в свой текущий аккаунт PW Classic, Вам необхоидмо сначала привязать свой Steam аккаунт из меню настроек.',
-				classTalent: 'Классовый'
+				classTalent: 'Классовый',
+				stealBuild: 'Украть билд?',
+				pressToSeeRating: 'Нажмите, чтобы посмотреть рейтинг по отдельным героям',
+
+				border: 'Пограничье',
+				forpost: 'Форпост',
+				dragonvald: 'Драгонвальд',
+				arm: 'ARM',
+				challenge: 'Испытание',
+				duel: 'Дуэль',
+
+				prince: 'Дуэлянт',
+				snowqueen: 'Крио',
+				faceless: 'Безликий',
+				warlord: 'Воевода',
+				thundergod: 'Молниеносный',
+				invisible: 'Тень',
+				mowgly: 'Егерь',
+				inventor: 'Изобретатель',
+				artist: 'Художница',
+				highlander: 'Горец',
+				marine: 'Комбат',
+				firefox: 'Огненная лиса',
+				healer: 'Целительница',
+				night: 'Царица ночи',
+				rockman: 'Человек-гора',
+				assassin: 'Чистильщик',
+				unicorn: 'Дева',
+				hunter: 'Стрелок',
+				ghostlord: 'Жнец душ',
+				ratcatcher: 'Крысолов',
+				archeress: 'Лучница',
+				werewolf: 'Клык',
+				frogenglut: 'Жабий наездник',
+				witchdoctor: 'Ведун',
+				manawyrm: 'Чарозмей',
+				bard: 'Бард',
+				naga: 'Мастер клинков',
+				mage: 'Заклинатель',
+				fairy: 'Фикси',
+				witcher: 'Ведьмак',
+				alchemist: 'Доктрина',
+				demonolog: 'Демонолог',
+				vampire: 'Вампир',
+				witch: 'Ведьма',
+				crusader_A: "Да'Ка",
+				crusader_B: "Ха'Ка",
+				monster: 'Геноморф',
+				angel: 'Заступница',
+				freeze: 'Фриз',
+				gunslinger: 'Головорез',
+				reaper: "Ту'Реху",
+				fluffy: 'Мими',
+				rifleman: 'Путник',
+				magicgirl: 'Луна',
+				pinkgirl: 'Хулиганка',
+				ironknight: 'Берсерк',
+				fallenangel: 'Аггель',
+				bladedancer: 'Асур',
+				ent: 'Дуболом',
+				plaguedoctor: 'Чумной доктор',
+				katana: 'Катана',
+				plane: 'Авиатор',
+				zealot: 'Фанатик',
+				wraithking: 'Павший владыка',
+				dryad: 'Дриада',
+				stalker: 'Странник',
+				gunner: 'Канонир',
+				chronicle: 'Хроника',
+				brewer: 'Медовар',
+				shadow: 'Кара',
+				wendigo: 'Вендиго',
+				trickster: 'Трикстер',
+				banshee: 'Банши',
+				shaman: 'Шаман',
+				bomber: 'Подрывница',
+
+				pearlFarm: 'Жемчужная ферма',
+				primeDistiller: 'Дистиллятор прайма',
+				mushroomFarm: 'Грибная ферма',
+				farm: 'Ферма',
+				rubberTree: 'Каучуковое дерево',
+				mine: 'Шахта',
+				spinningMill: 'Прядильная',
+				sawmill: 'Лесопилка',
+				weavingWorkshop: 'Ткацкая мастерская',
+				manufactory: 'Мануфактура',
+				talentGarden: 'Сад талантов',
+				talentForge: 'Кузница талантов',
+				clanHouse: 'Дом клана',
+				fair: 'Ярмарка',
+				mansion: 'Особняк',
+				terem: 'Терем',
+				library: 'Библиотека',
+				warehouse: 'Склад',
+				arena: 'Арена',
+				spire: 'Шпиль',
+				secretService: 'Тайная служба',
+				alcoveOfLife: 'Альков жизни',
+				bastion: 'Бастион',
+				templeofPurity: 'Храм чистоты',
+				houseofMercy: 'Дом милосердия',
+				monument: 'Памятник',
+				taran: 'Таран',
+				teaHouse: 'Чайный дом',
+				tavern: 'Таверна',
+				catsHouse: 'Кошкин дом',
+				puppyHouse: 'Дом щенка',
+				unicornHouse: 'Дом единорога',
+				scarletFlower: 'Аленький цветочек',
+				lantern: 'Фонарь',
+				amberFlower: 'Янтарный цветок',
+				bigLantern: 'Большой фонарь',
+				pointer: 'Указатель',
+				statue: 'Статуя',
+				flagpole: 'Флагшток',
+				drums: 'Барабаны',
+				telescope: 'Телескоп',
+				palmTreewithaBird: 'Пальма с птицей',
+				globe: 'Глобус',
+				fountain: 'Фонтан',
+				lanternShop: 'Лавка фонарей',
+				crimsonBush: 'Малиновый куст',
+				bush: 'Куст',
+				azureBush: 'Голубой куст',
+				bloomingBush: 'Цветущий куст',
+				crimsonBlossom: 'Малиновый цвет',
+				purpleBlossom: 'Фиолетовый цвет',
+				hedge: 'Живая изгородь',
+				livingWall: 'Живой забор',
+				bloomingWall: 'Цветущий забор',
+				column: 'Колонна',
+				flowerbed: 'Клумба',
+				smallTree: 'Маленькое дерево',
+				roundTree: 'Круглое дерево',
+				bloomingSakura: 'Цветущая сакура',
+				bonsai: 'Бонсай',
+				bloomingBonsai: 'Цветущий бонсай',
+				caneTower: 'Тростниковая башня',
+				topiaryCone: 'Топиарный конус',
+				miniatureGarden: 'Миниатюрный сад',
+				giraffeFigure: 'Фигура жирафа',
+				largeSakura: 'Большая сакура',
+				topiaryCube: 'Топиарный куб',
+				hugeCactus: 'Огромный кактус',
+				largeTree: 'Большое дерево',
+				rafflesia: 'Раффлезия',
+				elephantFigure: 'Фигура слона',
+				flycatcher: 'Венерина мухоловка',
+				unicornFigure: 'Фигура единорога',
+				figuredCane: 'Фигурный тростник',
+				smallTopiaryCone: 'Малый топиарный конус',
+				bananaPalm: 'Банановая пальма',
+				topiaryTower: 'Топиарная башня',
+				coconutPalm: 'Кокосовая пальма',
+				topiaryPole: 'Топиарный столб'
+
 			}
 		},
 		be: {
-			locale:['be_BY'],
+			locale:['be'],
 			name:'Беларускі',
 			word: {
 				nickname: 'Лагін/Нікнейм',
+				nicknameChange: 'Змяніць імя',
+				nickOfPlayer: 'Імя гульца',
+				sideChange: 'Змяніць старану',
 				code: 'Код/бот тэлеграм',
 				password: 'Пароль',
 				passwordAgain: 'Яшчэ раз пароль',
@@ -186,10 +651,9 @@ class Lang {
 				enterTextAndPressEnter: 'Увядзіце тэкст і націсніце Enter',
 				ready: 'Гатоў',
 				library: 'Бібліятэка',
-				menu: 'Мяню',
 				preferences: 'Прылады',
 				windowMode: 'Аконны рэжым',
-				radminPriority: 'Прыярытэт RadminVPN',
+				radmin: 'Прыярытэт RadminVPN',
 				threeD: '3D графіка',
 				volume: 'Агульная гучнасць',
 				volumeMusic: 'Гучнасць музыкі',
@@ -198,7 +662,9 @@ class Lang {
 				soundHelp: 'Калі збіваюцца налады гуку, то можна адрэгуляваць ў мікшар гучнасці: правы пстрык мышы на значок гуку на панэлі задач -> Мікшар гучнасці -> Значок гульні -> рабіце цішэй',
 				support: 'Падтрымка',
 				supportDesk: 'Калі ў вас ёсць пытанні, вы можаце звязацца з намі праз:',
+				account: 'Рахунак',
 				accountSwitch: 'Змяніць улiковы запiс',
+				steamConnect: 'Прывязаць Steam',
 				exit: 'Выйсці з Prime World',
 				version: 'Версія',
 				health: 'Здароўе',
@@ -217,11 +683,628 @@ class Lang {
 				defencePsys: 'Абарона цела',
 				defenceMagic: 'Абарона духу',
 				skins: 'Абалонкі',
+				training: 'Трэніроўка',
+				newBuildTab: 'Стварыць новую ўкладку білда',
+				buildDuplicate: 'Дубляваць бягучы білд',
+				generateRandomBuild: 'Згенераваць выпадковы білд',
+				resetTalents: 'Скінуць таленты ў гэтым білдзе',
+				reset: 'Скінуць',
+				cancel: 'Адмяняць',
+				accept: 'Прыняць',
+				reject: 'Адхіліць',
+				party: 'Гурт',
+				offline: 'Не ў сеціве',
+				wait: 'Чаканне',
 				authorizationSteam: 'Увайсці праз steam',
 				steamauthTitle: 'Увайсці праз steam',
 				steamauth: 'Націскаючы кнопку Працягнуць, адбудзецца рэгістрацыя новага акаўнта! Калі Вы жадаеце ажыццявіць уваход у свой бягучы акаўнт PW Classic, Вам неабходна спачатку прывязаць свой Steam акаўнт з меню налад.',
-				classTalent: 'Класавы'
-			}	
+				classTalent: 'Класавы',
+				stealBuild: 'Cкрасці білд?',
+				pressToSeeRating: 'Націсніце, каб паглядзець рэйтынг па асобных героям',
+
+				border: 'Памежжа',
+				forpost: 'Фарпост',
+				dragonvald: 'Цмокіта',
+				arm: 'ARM',
+				challenge: 'Выпрабаванне',
+				duel: 'Cутычка',
+
+				prince: 'Дуэлянт',
+				snowqueen: 'Крыё',
+				faceless: 'Безаблічны',
+				warlord: 'Ваявода',
+				thundergod: 'Маланкавы',
+				invisible: 'Цень',
+				mowgly: 'Егер',
+				inventor: 'Вынаходнік',
+				artist: 'Мастачка',
+				highlander: 'Гаравік',
+				marine: 'Камбат',
+				firefox: 'Агнявая ліса',
+				healer: 'Ацаляльніца',
+				night: 'Царыца ночы',
+				rockman: 'Чалавек-гара',
+				assassin: 'Чысьціцель',
+				unicorn: 'Дзева',
+				hunter: 'Паляўнічы',
+				ghostlord: 'Жняца душаў',
+				ratcatcher: 'Шчуралоў',
+				archeress: 'Лучніца',
+				werewolf: 'Іклан',
+				frogenglut: 'Жабін вершнік',
+				witchdoctor: 'Чараўнік',
+				manawyrm: 'Чаразмей',
+				bard: 'Бард',
+				naga: 'Майстар клінкоў',
+				mage: 'Заклінальнік',
+				fairy: 'Фіксі',
+				witcher: 'Вядзьмар',
+				alchemist: 'Дактрына',
+				demonolog: 'Дэманолаг',
+				vampire: 'Вупыр',
+				witch: 'Вядзьмарка',
+				crusader_A: "Да'Ка",
+				crusader_B: "Ха'Ка",
+				monster: 'Генаморф',
+				angel: 'Абаронніца',
+				freeze: 'Фрыз',
+				gunslinger: 'Забойца',
+				reaper: "Ту'Рэху",
+				fluffy: 'Мімі',
+				rifleman: 'Падарожнік',
+				magicgirl: 'Месяц',
+				pinkgirl: 'Хуліганка',
+				ironknight: 'Берсерк',
+				fallenangel: 'Анёл-упалы',
+				bladedancer: 'Асур',
+				ent: 'Дубасек',
+				plaguedoctor: 'Чумны доктар',
+				katana: 'Катана',
+				plane: 'Авіятар',
+				zealot: 'Фанатык',
+				wraithking: 'Палеглы ўладар',
+				dryad: 'Дрыяда',
+				stalker: 'Вандроўнік',
+				gunner: 'Гарматнік',
+				chronicle: 'Хроніка',
+				brewer: 'Піўвар',
+				shadow: 'Кара',
+				wendigo: 'Вэндзіга',
+				trickster: 'Жартаўнік',
+				banshee: 'Баншы',
+				shaman: 'Шаман',
+				bomber: 'Падрыўніца',
+
+				pearlFarm: 'Жамчужная ферма',
+				primeDistiller: 'Дыстылятар прайму',
+				mushroomFarm: 'Грыбная ферма',
+				farm: 'Ферма',
+				rubberTree: 'Каучукавае дрэва',
+				mine: 'Шахта',
+				spinningMill: 'Прадзільная фабрыка',
+				sawmill: 'Лясапілка',
+				weavingWorkshop: 'Ткацкая майстэрня',
+				manufactory: 'Мануфактура',
+				talentGarden: 'Сад талентаў',
+				talentForge: 'Кузня талентаў',
+				clanHouse: 'Дом клана',
+				fair: 'Кірмаш',
+				mansion: 'Палац',
+				terem: 'Церам',
+				library: 'Бібліятэка',
+				warehouse: 'Склад',
+				arena: 'Арэна',
+				spire: 'Шпіль',
+				secretService: 'Тайная служба',
+				alcoveOfLife: 'Альков жыцця',
+				bastion: 'Бастыён',
+				templeOfPurity: 'Храм чысціні',
+				houseOfMercy: 'Дом міласэрнасці',
+				monument: 'Манумент',
+				taran: 'Таран',
+				teaHouse: 'Чайны дом',
+				tavern: 'Таверна',
+				catsHouse: 'Дом ката',
+				puppyHouse: 'Дом шчанюка',
+				unicornHouse: 'Дом аднарога',
+				scarletFlower: 'Пунсовая кветка',
+				lantern: 'Ліхтар',
+				amberFlower: 'Бурштынавая кветка',
+				bigLantern: 'Вялікі ліхтар',
+				pointer: 'Паказальнік',
+				statue: 'Статуя',
+				flagpole: 'Сцягшток',
+				drums: 'Барабаны',
+				telescope: 'Тэлескоп',
+				palmTreeWithABird: 'Пальма з птушкай',
+				globe: 'Глобус',
+				fountain: 'Фантан',
+				lanternShop: 'Крама ліхтароў',
+				crimsonBush: 'Малінавы куст',
+				bush: 'Куст',
+				azureBush: 'Блакітны куст',
+				bloomingBush: 'Квітнеючы куст',
+				crimsonBlossom: 'Малінавы цвет',
+				purpleBlossom: 'Фіялетавы цвет',
+				hedge: 'Жывая агароджа',
+				livingWall: 'Жывая сцяна',
+				bloomingWall: 'Квітнеючая сцяна',
+				column: 'Калона',
+				flowerbed: 'Клумба',
+				smallTree: 'Малое дрэва',
+				roundTree: 'Круглае дрэва',
+				bloomingSakura: 'Квітнеючая сакура',
+				bonsai: 'Бонсай',
+				bloomingBonsai: 'Квітнеючы бонсай',
+				caneTower: 'Трысняговая вежа',
+				topiaryCone: 'Тапіярны конус',
+				miniatureGarden: 'Мініяцюрны сад',
+				giraffeFigure: 'Фігура жырафа',
+				largeSakura: 'Вялікая сакура',
+				topiaryCube: 'Тапіярны куб',
+				hugeCactus: 'Велізарны кактус',
+				largeTree: 'Вялікае дрэва',
+				rafflesia: 'Раффлезія',
+				elephantFigure: 'Фігура слана',
+				flycatcher: 'Мухалоўка',
+				unicornFigure: 'Фігура аднарога',
+				figuredCane: 'Фігурны трыснёг',
+				smallTopiaryCone: 'Малы тапіярны конус',
+				bananaPalm: 'Бананавая пальма',
+				topiaryTower: 'Тапіярная вежа',
+				coconutPalm: 'Какасавая пальма',
+				topiaryPole: 'Тапіярны слуп'
+
+			}
+		},
+		ua: {
+			locale:['uk'],
+			name:'Ukraine',
+			word: {
+				nickname: 'Логін/Нікнейм',
+				nicknameChange: 'Змінити нікнейм',
+				nickOfPlayer: 'Нік гравця',
+				sideChange: 'Змінити сторону',
+				code: 'Інвайт-код',
+				password: 'Пароль',
+				passwordAgain: 'Ще раз пароль',
+				login: 'Увійти',
+				registration: 'Реєстрація',
+				fraction: 'Оберіть фракцію',
+				adornia: 'Королівство Адорнія',
+				docts: 'Імперія Доктів',
+				fight: 'У бій!',
+				enterTextAndPressEnter: 'Введіть текст і натисніть Enter',
+				ready: 'Готово',
+				library: 'Бібліотека',
+				preferences: 'Налаштування',
+				windowMode: 'Віконний режим',
+				radmin: 'Пріоритет RadminVPN',
+				threeD: '3D графіка',
+				volume: 'Загальна гучність',
+				volumeMusic: 'Гучність музики',
+				volumeSound: 'Гучність звуків',
+				back: 'Назад',
+				soundHelp: 'Якщо збиваються налаштування звуку, їх можна відрегулювати в мікшері гучності: ПКМ на значок звуку на Панелі завдань -> Мікшер гучності -> Значок гри -> зробіть тихіше',
+				support: 'Підтримка',
+				supportDesk: 'Якщо у вас є запитання, ви можете зв’язатися з нами через:',
+				account: 'Акаунт',
+				accountSwitch: 'Змінити акаунт',
+				steamConnect: 'Прив’язати Steam',
+				exit: 'Вийти з Prime World',
+				version: 'Версія',
+				health: 'Здоров’я',
+				energy: 'Енергія',
+				speed: 'Швидкість',
+				strength: 'Сила',
+				intelligence: 'Розум',
+				agility: 'Спритність',
+				dexterity: 'Хитрість',
+				stamina: 'Витривалість',
+				will: 'Воля',
+				damage: 'Урон',
+				criticalHit: 'Шанс криту',
+				attacksPerSecond: 'Швидкість атаки',
+				penetration: 'Пробивання',
+				defencePsys: 'Захист тіла',
+				defenceMagic: 'Захист духу',
+				skins: 'Скіни',
+				training: 'Тренування',
+				newBuildTab: 'Створити нову вкладку білду',
+				buildDuplicate: 'Дублювати поточний білд',
+				generateRandomBuild: 'Згенерувати випадковий білд',
+				resetTalents: 'Скинути таланти в цьому білді',
+				reset: 'Скинути',
+				cancel: 'Скасувати',
+				accept: 'Прийняти',
+				reject: 'Відхилити',
+				party: 'Група',
+				offline: 'Не в мережі',
+				wait: 'Очікування',
+				authorizationSteam: 'Вхід через Steam',
+				steamauthTitle: 'Вхід через Steam',
+				steamauth: 'Натискаючи кнопку Продовжити, буде створено новий акаунт! Якщо ви хочете увійти до свого поточного акаунта PW Classic, спершу прив’яжіть свій Steam акаунт у меню налаштувань.',
+				classTalent: 'Класовий',
+				stealBuild: 'Вкрасти білд?',
+				pressToSeeRating: 'Натисніть, щоб переглянути рейтинг по окремих героях',
+				border: 'Прикордоння',
+				forpost: 'Форпост',
+				dragonvald: 'Драгонвальд',
+				arm: 'ARM',
+				challenge: 'Випробування',
+				duel: 'Дуель',
+				prince: 'Дуелянт',
+				snowqueen: 'Кріо',
+				faceless: 'Безликий',
+				warlord: 'Воєвода',
+				thundergod: 'Блискавичний',
+				invisible: 'Тінь',
+				mowgly: 'Єгерь',
+				inventor: 'Винахідник',
+				artist: 'Художниця',
+				highlander: 'Горець',
+				marine: 'Комбат',
+				firefox: 'Вогняна лисиця',
+				healer: 'Цілителька',
+				night: 'Цариця ночі',
+				rockman: 'Людина-гора',
+				assassin: 'Чистильник',
+				unicorn: 'Діва',
+				hunter: 'Стрілець',
+				ghostlord: 'Жнець душ',
+				ratcatcher: 'Щуролов',
+				archeress: 'Лучниця',
+				werewolf: 'Клик',
+				frogenglut: 'Жаб’ячий наїзник',
+				witchdoctor: 'Віщун',
+				manawyrm: 'Чарозмій',
+				bard: 'Бард',
+				naga: 'Майстер клинків',
+				mage: 'Заклинач',
+				fairy: 'Фіксі',
+				witcher: 'Відьмак',
+				alchemist: 'Доктрина',
+				demonolog: 'Демонолог',
+				vampire: 'Вампір',
+				witch: 'Відьма',
+				crusader_A: 'Да’Ка',
+				crusader_B: 'Ха’Ка',
+				monster: 'Геноморф',
+				angel: 'Заступниця',
+				freeze: 'Фріз',
+				gunslinger: 'Головоріз',
+				reaper: 'Ту’Реху',
+				fluffy: 'Мімі',
+				rifleman: 'Мандрівник',
+				magicgirl: 'Луна',
+				pinkgirl: 'Хуліганка',
+				ironknight: 'Берсерк',
+				fallenangel: 'Аггель',
+				bladedancer: 'Асур',
+				ent: 'Дуболом',
+				plaguedoctor: 'Чумний лікар',
+				katana: 'Катана',
+				plane: 'Авіатор',
+				zealot: 'Фанатик',
+				wraithking: 'Павший владика',
+				dryad: 'Дріада',
+				stalker: 'Мандрівник',
+				gunner: 'Канонір',
+				chronicle: 'Хроніка',
+				brewer: 'Пивовар',
+				shadow: 'Кара',
+				wendigo: 'Вендіго',
+				trickster: 'Трикстер',
+				banshee: 'Банші',
+				shaman: 'Шаман',
+				bomber: 'Підривниця',
+
+				pearlFarm: 'Жамчужная ферма',
+				primeDistiller: 'Дыстылятар прайму',
+				mushroomFarm: 'Грыбная ферма',
+				farm: 'Ферма',
+				rubberTree: 'Каучукавае дрэва',
+				mine: 'Шахта',
+				spinningMill: 'Прадзільная фабрыка',
+				sawmill: 'Лясапілка',
+				weavingWorkshop: 'Ткацкая майстэрня',
+				manufactory: 'Мануфактура',
+				talentGarden: 'Сад талентаў',
+				talentForge: 'Кузня талентаў',
+				clanHouse: 'Дом клана',
+				fair: 'Кірмаш',
+				mansion: 'Палац',
+				terem: 'Церам',
+				library: 'Бібліятэка',
+				warehouse: 'Склад',
+				arena: 'Арэна',
+				spire: 'Шпіль',
+				secretService: 'Тайная служба',
+				alcoveOfLife: 'Альков жыцця',
+				bastion: 'Бастыён',
+				templeOfPurity: 'Храм чысціні',
+				houseOfMercy: 'Дом міласэрнасці',
+				monument: 'Манумент',
+				taran: 'Таран',
+				teaHouse: 'Чайны дом',
+				tavern: 'Таверна',
+				catsHouse: 'Дом ката',
+				puppyHouse: 'Дом шчанюка',
+				unicornHouse: 'Дом аднарога',
+				scarletFlower: 'Пунсовая кветка',
+				lantern: 'Ліхтар',
+				amberFlower: 'Бурштынавая кветка',
+				bigLantern: 'Вялікі ліхтар',
+				pointer: 'Паказальнік',
+				statue: 'Статуя',
+				flagpole: 'Сцягшток',
+				drums: 'Барабаны',
+				telescope: 'Тэлескоп',
+				palmTreeWithABird: 'Пальма з птушкай',
+				globe: 'Глобус',
+				fountain: 'Фантан',
+				lanternShop: 'Крама ліхтароў',
+				crimsonBush: 'Малінавы куст',
+				bush: 'Куст',
+				azureBush: 'Блакітны куст',
+				bloomingBush: 'Квітнеючы куст',
+				crimsonBlossom: 'Малінавы цвет',
+				purpleBlossom: 'Фіялетавы цвет',
+				hedge: 'Жывая агароджа',
+				livingWall: 'Жывая сцяна',
+				bloomingWall: 'Квітнеючая сцяна',
+				column: 'Калона',
+				flowerbed: 'Клумба',
+				smallTree: 'Малое дрэва',
+				roundTree: 'Круглае дрэва',
+				bloomingSakura: 'Квітнеючая сакура',
+				bonsai: 'Бонсай',
+				bloomingBonsai: 'Квітнеючы бонсай',
+				caneTower: 'Трысняговая вежа',
+				topiaryCone: 'Тапіярны конус',
+				miniatureGarden: 'Мініяцюрны сад',
+				giraffeFigure: 'Фігура жырафа',
+				largeSakura: 'Вялікая сакура',
+				topiaryCube: 'Тапіярны куб',
+				hugeCactus: 'Велізарны кактус',
+				largeTree: 'Вялікае дрэва',
+				rafflesia: 'Раффлезія',
+				elephantFigure: 'Фігура слана',
+				flycatcher: 'Мухалоўка',
+				unicornFigure: 'Фігура аднарога',
+				figuredCane: 'Фігурны трыснёг',
+				smallTopiaryCone: 'Малы тапіярны конус',
+				bananaPalm: 'Бананавая пальма',
+				topiaryTower: 'Тапіярная вежа',
+				coconutPalm: 'Какасавая пальма',
+				topiaryPole: 'Тапіярны слуп'
+
+			}
+		},
+		tr: {
+			locale:['tr'],
+			name:'Turkey',
+			word: {
+				nickname: 'Giriş/rumuz',
+				nicknameChange: 'Rumuzu değiştir',
+				nickOfPlayer: 'Oyuncunun rumuzu',
+				sideChange: 'Tarafı değiştir',
+				code: 'Davet kodu',
+				password: 'Şifre',
+				passwordAgain: 'Şifreyi tekrar girin',
+				login: 'Giriş yap',
+				registration: 'Kayıt ol',
+				fraction: 'Fraksiyon seçin',
+				adornia: 'Adornia Krallığı',
+				docts: 'Docts İmparatorluğu',
+				fight: 'Savaşa!',
+				enterTextAndPressEnter: 'Metni girin ve Enter’a basın',
+				ready: 'Hazır',
+				library: 'Kütüphane',
+				preferences: 'Ayarlar',
+				windowMode: 'Pencere modu',
+				radmin: 'RadminVPN önceliği',
+				threeD: '3D grafik',
+				volume: 'Genel ses seviyesi',
+				volumeMusic: 'Müzik sesi',
+				volumeSound: 'Efekt sesi',
+				back: 'Geri',
+				soundHelp: 'Ses ayarları bozulursa, ses mikserinden düzeltilebilir: Görev çubuğundaki ses simgesine sağ tıklayın -> Ses mikseri -> Oyun simgesi -> sesi azaltın',
+				support: 'Destek',
+				supportDesk: 'Sorularınız varsa bizimle şu şekilde iletişime geçebilirsiniz:',
+				account: 'Hesap',
+				accountSwitch: 'Hesap değiştir',
+				steamConnect: 'Steam bağla',
+				exit: 'Prime World’den çık',
+				version: 'Sürüm',
+				health: 'Sağlık',
+				energy: 'Enerji',
+				speed: 'Hız',
+				strength: 'Güç',
+				intelligence: 'Zeka',
+				agility: 'Çeviklik',
+				dexterity: 'Kurnazlık',
+				stamina: 'Dayanıklılık',
+				will: 'İrade',
+				damage: 'Hasar',
+				criticalHit: 'Kritik şansı',
+				attacksPerSecond: 'Saldırı hızı',
+				penetration: 'Delme gücü',
+				defencePsys: 'Fiziksel savunma',
+				defenceMagic: 'Ruhsal savunma',
+				skins: 'Kostümler',
+				training: 'Eğitim',
+				newBuildTab: 'Yeni yapı sekmesi oluştur',
+				buildDuplicate: 'Mevcut yapıyı kopyala',
+				generateRandomBuild: 'Rastgele yapı oluştur',
+				resetTalents: 'Bu yapıdaki yetenekleri sıfırla',
+				reset: 'Sıfırla',
+				cancel: 'İptal',
+				accept: 'Kabul et',
+				reject: 'Reddet',
+				party: 'Grup',
+				offline: 'Çevrimdışı',
+				wait: 'Bekleniyor',
+				authorizationSteam: 'Steam ile giriş',
+				steamauthTitle: 'Steam ile giriş',
+				steamauth: 'Devam et düğmesine bastığınızda yeni bir hesap oluşturulacak! Mevcut PW Classic hesabınıza giriş yapmak istiyorsanız, önce Steam hesabınızı ayarlardan bağlamalısınız.',
+				classTalent: 'Sınıf yeteneği',
+				stealBuild: 'Yapıyı çalmak mı?',
+				pressToSeeRating: 'Kahramanlara göre sıralamayı görmek için tıklayın',
+				border: 'Sınır bölgesi',
+				forpost: 'Karakol',
+				dragonvald: 'Ejder Vadisi',
+				arm: 'ARM',
+				challenge: 'Meydan okuma',
+				duel: 'Düello',
+
+				prince: 'Düellocu',
+				snowqueen: 'Buz Kraliçesi',
+				faceless: 'Yüzsüz',
+				warlord: 'Komutan',
+				thundergod: 'Yıldırım Tanrısı',
+				invisible: 'Gölge',
+				mowgly: 'Avcı',
+				inventor: 'Mucit',
+				artist: 'Sanatçı',
+				highlander: 'Dağlı',
+				marine: 'Asker',
+				firefox: 'Ateş Tilkisi',
+				healer: 'Şifacı',
+				night: 'Gece Kraliçesi',
+				rockman: 'Dağ Adamı',
+				assassin: 'Temizleyici',
+				unicorn: 'Bakire',
+				hunter: 'Nişancı',
+				ghostlord: 'Ruh Biçici',
+				ratcatcher: 'Fare Avcısı',
+				archeress: 'Okçu',
+				werewolf: 'Pençe',
+				frogenglut: 'Kurbağa Binici',
+				witchdoctor: 'Şaman',
+				manawyrm: 'Mana Ejderi',
+				bard: 'Ozan',
+				naga: 'Kılıç Ustası',
+				mage: 'Büyücü',
+				fairy: 'Peri',
+				witcher: 'Cadı Avcısı',
+				alchemist: 'Doktrin',
+				demonolog: 'Demonolog',
+				vampire: 'Vampir',
+				witch: 'Cadı',
+				crusader_A: 'Da\'Ka',
+				crusader_B: 'Ha\'Ka',
+				monster: 'Genomorf',
+				angel: 'Koruyucu',
+				freeze: 'Don',
+				gunslinger: 'Silahşör',
+				reaper: 'Tu\'Rehu',
+				fluffy: 'Mimi',
+				rifleman: 'Gezgin',
+				magicgirl: 'Ay',
+				pinkgirl: 'Yaramaz',
+				ironknight: 'Berserker',
+				fallenangel: 'Aggel',
+				bladedancer: 'Asur',
+				ent: 'Ağaçadam',
+				plaguedoctor: 'Veba Doktoru',
+				katana: 'Katana',
+				plane: 'Pilot',
+				zealot: 'Fanatik',
+				wraithking: 'Düşmüş Kral',
+				dryad: 'Dryad',
+				stalker: 'Gezgin',
+				gunner: 'Topçu',
+				chronicle: 'Kronik',
+				brewer: 'Bira Ustası',
+				shadow: 'Ceza',
+				wendigo: 'Wendigo',
+				trickster: 'Hilebaz',
+				banshee: 'Banshee',
+				shaman: 'Şaman',
+				bomber: 'Bombacı',
+
+				pearlFarm: 'İnci çiftliği',
+				primeDistiller: 'Asıl damıtıcı',
+				mushroomFarm: 'Mantar çiftliği',
+				farm: 'Çiftlik',
+				rubberTree: 'Kauçuk ağacı',
+				mine: 'Maden',
+				spinningMill: 'İplik fabrikası',
+				sawmill: 'Kereste fabrikası',
+				weavingWorkshop: 'Dokuma atölyesi',
+				manufactory: 'İmalathane',
+				talentGarden: 'Yetenek bahçesi',
+				talentForge: 'Yetenek dökümhanesi',
+				clanHouse: 'Klan evi',
+				fair: 'Panayır',
+				mansion: 'Köşk',
+				terem: 'Terem',
+				library: 'Kütüphane',
+				warehouse: 'Depo',
+				arena: 'Arena',
+				spire: 'Diken',
+				secretService: 'Gizli servis',
+				alcoveOfLife: 'Yaşam köşesi',
+				bastion: 'Kale',
+				templeOfPurity: 'Arınma tapınağı',
+				houseOfMercy: 'Merhamet evi',
+				monument: 'Anıt',
+				taran: 'Koçbaşı',
+				teaHouse: 'Çay evi',
+				tavern: 'Meyhane',
+				catsHouse: 'Kedi evi',
+				puppyHouse: 'Yavru köpek evi',
+				unicornHouse: 'Tekboynuz evi',
+				scarletFlower: 'Kızıl çiçek',
+				lantern: 'Fener',
+				amberFlower: 'Kehribar çiçek',
+				bigLantern: 'Büyük fener',
+				pointer: 'Gösterge',
+				statue: 'Heykel',
+				flagpole: 'Bayrak direği',
+				drums: 'Davullar',
+				telescope: 'Teleskop',
+				palmTreeWithABird: 'Kuşlu palmiye',
+				globe: 'Küre',
+				fountain: 'Çeşme',
+				lanternShop: 'Fener dükkânı',
+				crimsonBush: 'Kızıl çalı',
+				bush: 'Çalı',
+				azureBush: 'Turkuaz çalı',
+				bloomingBush: 'Çiçek açan çalı',
+				crimsonBlossom: 'Kızıl çiçek',
+				purpleBlossom: 'Mor çiçek',
+				hedge: 'Çit',
+				livingWall: 'Canlı duvar',
+				bloomingWall: 'Çiçekli duvar',
+				column: 'Sütun',
+				flowerbed: 'Çiçek tarhı',
+				smallTree: 'Küçük ağaç',
+				roundTree: 'Yuvarlak ağaç',
+				bloomingSakura: 'Çiçek açan sakura',
+				bonsai: 'Bonsai',
+				bloomingBonsai: 'Çiçek açan bonsai',
+				caneTower: 'Kamış kulesi',
+				topiaryCone: 'Topiary koni',
+				miniatureGarden: 'Minyatür bahçe',
+				giraffeFigure: 'Zürafa figürü',
+				largeSakura: 'Büyük sakura',
+				topiaryCube: 'Topiary küp',
+				hugeCactus: 'Dev kaktüs',
+				largeTree: 'Büyük ağaç',
+				rafflesia: 'Rafflesia',
+				elephantFigure: 'Fil figürü',
+				flycatcher: 'Sinek kapan',
+				unicornFigure: 'Tekboynuz figürü',
+				figuredCane: 'Şekilli kamış',
+				smallTopiaryCone: 'Küçük topiary koni',
+				bananaPalm: 'Muz palmiyesi',
+				topiaryTower: 'Topiary kule',
+				coconutPalm: 'Hindistan cevizi palmiyesi',
+				topiaryPole: 'Topiary direk'
+
+			}
 		}
 	};
 	
@@ -240,27 +1323,13 @@ class Lang {
 			locale = navigator.language;
 			
 		}
-		
-		for(let key in Lang.list){
-			
-			if(Lang.list[key].locale.includes(locale)){
-				
-				Lang.target = key;
-				
-				break;
-				
-			}
-			
-		}
-		
 	}
 
 	static text(word) {
-		if (word in Lang.list[Lang.target].word) {
-			return Lang.list[Lang.target].word[word];
+		const w = Lang.list[localStorage.getItem('lang') || 'en'].word
+		if (word in w) {
+			return w[word];
 		}
-
-		return Lang.list[Lang.default].word[word];
 	}
 
 }
@@ -380,6 +1449,8 @@ window.addEventListener('DOMContentLoaded', () => {
 		
 	});
 	
+	Settings.init();
+
 	Splash.init();
 
 	NativeAPI.init();
@@ -407,8 +1478,6 @@ window.addEventListener('DOMContentLoaded', () => {
 	});
 
 	App.findBestHostAndInit();
-
-	Settings.init();
 
 	let testRadminConnection = async () => {
 		let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
@@ -1371,7 +2440,10 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[9].append(DOM({ style: 'castle-button-play-queue', title: 'Очередь игроков матчмейкинга на данный режим игры' }));
 		
-		CastleNAVBAR.body.children[11].append(DOM({style:'castle-button-play-queue-mode'}));
+		CastleNAVBAR.body.children[11].append(
+			DOM({style:'castle-button-play-queue-mode'}),
+			DOM({style: 'text'}, Lang.text('border'))
+		);
 		
 		CastleNAVBAR.body.children[11].onclick = () => {
 
@@ -1379,7 +2451,10 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[12].append(DOM({style:'castle-button-play-queue-mode'}));
+		CastleNAVBAR.body.children[12].append(
+			DOM({style:'castle-button-play-queue-mode'}),
+			DOM({style: 'text'}, Lang.text('forpost'))
+		);
 
 		CastleNAVBAR.body.children[12].onclick = () => {
 
@@ -1387,7 +2462,10 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[13].append(DOM({style:'castle-button-play-queue-mode'}));
+		CastleNAVBAR.body.children[13].append(
+			DOM({style:'castle-button-play-queue-mode'}),
+			DOM({style: 'text'}, Lang.text('dragonvald'))
+		);
 
 		CastleNAVBAR.body.children[13].onclick = () => {
 
@@ -1395,7 +2473,10 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[14].append(DOM({style:'castle-button-play-queue-mode'}));
+		CastleNAVBAR.body.children[14].append(
+			DOM({style:'castle-button-play-queue-mode'}),
+			DOM({style: 'text'}, Lang.text('arm'))
+		);
 
 		CastleNAVBAR.body.children[14].onclick = () => {
 
@@ -1403,7 +2484,10 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[15].append(DOM({style:'castle-button-play-queue-mode'}));
+		CastleNAVBAR.body.children[15].append(
+			DOM({style:'castle-button-play-queue-mode'}),
+			DOM({style: 'text'}, Lang.text('challenge'))
+		);
 		
 		CastleNAVBAR.body.children[15].onclick = () => {
 
@@ -1411,7 +2495,10 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[16].append(DOM({style:'castle-button-play-queue-mode'}));
+		CastleNAVBAR.body.children[16].append(
+			DOM({style:'castle-button-play-queue-mode'}),
+			DOM({style: 'text'}, Lang.text('duel'))
+		);
 		
 		CastleNAVBAR.body.children[16].onclick = () => {
 
@@ -1439,7 +2526,7 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[0].style.display = 'block';
 
-		CastleNAVBAR.body.children[5].innerText = 'Отменить';
+		CastleNAVBAR.body.children[5].innerText = Lang.text('cancel');
 
 		//CastleNAVBAR.body.children[5].style.fontSize = '1.1vw';
 
@@ -2157,7 +3244,7 @@ class View {
 
 		let clan = DOM({ style: ['castle-clans', 'button-outline'], title: 'Кланы', event: ['click', () => Frame.open('clan')] });
 
-		let menu = DOM({ style: ['castle-menu', 'button-outline'], title: Lang.text('menu'), event: ['click', () => Window.show('main', 'menu')] });
+		let menu = DOM({ style: ['castle-menu', 'button-outline'], event: ['click', () => Window.show('main', 'menu')] });
 
 		let history = DOM({ style: ['castle-history', 'button-outline'], title: 'История', event: ['click', () => Window.show('main', 'history')] });
 
@@ -2324,7 +3411,7 @@ class View {
 
 			for (let item of result) {
 
-				const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, item.name));
+				const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, Lang.text(idToName[item.id])));
 
 				if (item.name.length > 10) {
 					heroName.firstChild.classList.add('castle-name-autoscroll');
@@ -2369,7 +3456,7 @@ class View {
 			let buttonAdd = DOM({
 			style: 'castle-friend-item',
 			onclick: () => {
-				let input = DOM({ tag: 'input', style: 'search-input', placeholder: 'Ник игрока' });
+				let input = DOM({ tag: 'input', style: 'search-input', placeholder: Lang.text('nickOfPlayer') });
 				let body = DOM({ style: 'search-body' });
 
 				// Создаём крестик для закрытия (как в buildSelectName)
@@ -2498,7 +3585,7 @@ class View {
 
 				if (item.status == 1) {
 
-					let group = DOM({ style: 'castle-friend-add-group' }, (item.online) ? 'Группа' : 'Не в сети');
+					let group = DOM({ style: 'castle-friend-add-group' }, (item.online) ? Lang.text('party') : Lang.text('offline'));
 
 					if (!item.online) {
 
@@ -2567,10 +3654,10 @@ class View {
 									App.notify(`Приглашение отправлено игроку ${item.nickname}`);
 
 								}]
-							}, 'Группа'));
+							}, Lang.text('party')));
 
 						}]
-					}, 'Принять'), DOM({
+					}, Lang.text('accept')), DOM({
 						style: 'castle-friend-cancel', event: ['click', async () => {
 
 							await App.api.request('friend', 'remove', { id: item.id });
@@ -2578,12 +3665,12 @@ class View {
 							friend.remove();
 
 						}]
-					}, 'Отклонить'));
+					}, Lang.text('reject')));
 
 				}
 				else if (item.status == 3) {
 
-					friend.append(DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, 'Ожидание')));
+					friend.append(DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('wait'))));
 
 					friend.style.filter = 'grayscale(1)';
 
@@ -2595,7 +3682,7 @@ class View {
 							friend.remove();
 
 						}]
-					}, 'Отменить'));
+					}, Lang.text('cancel')));
 
 				}
 
@@ -3058,7 +4145,7 @@ class View {
 
 			hero.style.backgroundImage = `url(content/hero/${item.hero}/${item.skin ? item.skin : 1}.webp)`;
 
-			let game = DOM({ style: 'history-item' }, hero, DOM({ style: 'history-text-box', tag: 'div' }, (item.team == 1) ? 'Докты' : 'Адорния'), DOM({ style: 'history-text-box', tag: 'div' }, Math.round(((item.team == item.win) ? +item.rating : -item.rating) * 10.0) / 10.0), DOM({ style: 'history-text-box', tag: 'div' }, new Date(item.added).toLocaleString()));
+			let game = DOM({ style: 'history-item' }, hero, DOM({ style: 'history-text-box', tag: 'div' }, (item.team == 1) ? Lang.text('docts') : Lang.text('adornia')), DOM({ style: 'history-text-box', tag: 'div' }, Math.round(((item.team == item.win) ? +item.rating : -item.rating) * 10.0) / 10.0), DOM({ style: 'history-text-box', tag: 'div' }, new Date(item.added).toLocaleString()));
 
 			if (item.team == item.win) {
 
@@ -3093,7 +4180,7 @@ class View {
 
 		let top = DOM({ style: isSplah ? 'wtop-scroll' : 'top-scroll' },
 			DOM({
-				style: 'top-filter', title: 'Выберите героя, чтобы отсортировать игроков зала славы', event: ['click', async () => {
+				style: 'top-filter', event: ['click', async () => {
 
 					let request = await App.api.request('build', 'heroAll');
 
@@ -3137,7 +4224,7 @@ class View {
 					Splash.show(bodyHero, false);
 
 				}]
-			}, DOM({ tag: 'div' }), DOM({ tag: 'div' })));
+			}, DOM({ tag: 'div' }), DOM({ tag: 'div' })), DOM({style: 'help'}, Lang.text('pressToSeeRating')));
 
 		top.firstChild.classList.add('animation1');
 
@@ -3753,12 +4840,11 @@ class Window {
 	}
 	static async menu() {
 		return DOM({ id: 'wcastle-menu' },
-			DOM({ style: 'castle-menu-title' }, Lang.text('menu')),
 			DOM({style: 'castle-menu-items'},
 			App.isAdmin() ? DOM({ style: 'castle-menu-item-button' },
 				DOM({ event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ')) : DOM(),
 			DOM({ style: 'castle-menu-item-button' },
-				DOM({ event: ['click', () => Window.show('main', 'accountPanel')] }, 'Аккаунт')),
+				DOM({ event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account'))),
 			DOM({ style: 'castle-menu-item-button' },
 				DOM({ event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences'))),
 			DOM({ style: 'castle-menu-item-button' },
@@ -3800,97 +4886,119 @@ class Window {
 	
 		return DOM({ id: 'wcastle-menu' },
 			DOM({ style: 'castle-menu-title' }, Lang.text('preferences')),
+
 			DOM({style: 'castle-menu-items'},
-			DOM({ style: 'castle-menu-item-checkbox' },
+			DOM({ style: 'castle-menu-item' },
 				DOM({
-					tag: 'input', type: 'checkbox', id: 'fullscreen-toggle', checked: !Settings.settings.fullscreen, event: ['change', (e) => {
-						Settings.settings.fullscreen = !e.target.checked;
+					tag: 'input', type: 'checkbox', id: 'fullscreen-toggle', checked: localStorage.getItem('fullscreen') != true, event: ['change', (e) => {
+						localStorage.setItem('fullscreen', !e.target.checked);
 						Settings.ApplySettings({render: false, audio: false});
 					}]
-				},
-					{ checked: Settings.settings.fullscreen }),
+				}),
 				DOM({ tag: 'label', for: 'fullscreen-toggle' }, Lang.text('windowMode'))
 			),
-			DOM({ style: 'castle-menu-item-checkbox' },
+
+			DOM({ style: 'castle-menu-item' },
             	DOM({
                 	tag: 'input',
                 	type: 'checkbox',
                 	id: 'render-toggle',
-                	checked: Settings.settings.render,
+                	checked: localStorage.getItem('render'),
                 	event: ['change', (e) => {
-                    	Settings.settings.render = e.target.checked;
+                    	localStorage.setItem('render', e.target.checked)
                     	Settings.ApplySettings({audio: false, window: false});
                 	}]
             	}),
             	DOM({ tag: 'label', for: 'render-toggle' }, Lang.text('threeD'))
         	),
-			DOM({ style: 'castle-menu-item-checkbox' },
+
+			DOM({ style: 'castle-menu-item' },
 				DOM({
-					tag: 'input', type: 'checkbox', id: 'radmin-priority', checked: Settings.settings.radminPriority, event: ['change', (e) => {
-						Settings.settings.radminPriority = e.target.checked;
+					tag: 'input', type: 'checkbox', id: 'radmin-priority', checked: localStorage.getItem('radmin') == 'true', event: ['change', (e) => {
+						localStorage.setItem('radmin', e.target.checked)
 					}]
-				},
-					{ checked: Settings.settings.radminPriority }),
-				DOM({ tag: 'label', for: 'radmin-priority' }, Lang.text('radminPriority'))
+				}),
+				DOM({ tag: 'label', for: 'radmin-priority' }, Lang.text('radmin'))
 			),
+
+			DOM({style: 'castle-menu-item'},
+				((() => {
+					const select = DOM({
+						tag: 'select', id: 'language', event: ['change', e => {
+							localStorage.setItem('lang', e.target.value);
+						}]
+					});
+					select.append(
+						DOM({tag: 'option', value: 'en'}, 'English'),
+						DOM({tag: 'option', value: 'ru'}, 'Русский'),
+						DOM({tag: 'option', value: 'be'}, 'Беларуская'),
+						DOM({tag: 'option', value: 'ua'}, 'Українська'),
+						DOM({tag: 'option', value: 'tr'}, 'Turkey')
+					);
+					select.value = localStorage.getItem('lang') || 'en';
+					return select;
+				})()),
+				DOM({tag: 'label', for: 'language'}, 'Language')
+			),
+
 			DOM({ style: 'castle-menu-label' }, Lang.text('volume'),
             	DOM({
                 	tag: 'input',
                 	type: 'range',
-                	value: Settings.settings.globalVolume * 100,
+                	value: (localStorage.getItem('globalVolume') || 1.0) * 100,
                 	min: '0',
                 	max: '100',
                 	step: '1',
                 	style: 'castle-menu-slider',
                 	event: ['input', (e) => {
-                    	Settings.settings.globalVolume = parseFloat(e.target.value) / 100;
+                    	localStorage.setItem('globalVolume', parseFloat(e.target.value) / 100);
                     	Settings.ApplySettings({render: false, window: false});
 																	  
 																		  
                     	document.getElementById('global-volume-percentage').textContent = 
-                        	`${Math.round(Settings.settings.globalVolume * 100)}%`;
+                        	`${Math.round((localStorage.getItem('globalVolume') || 1.0) * 100)}%`;
                 	}]
             	}),
 				DOM({ 
 					tag: 'span', 
 					id: 'global-volume-percentage', 
 					style: 'volume-percentage' 
-				}, `${Math.round(Settings.settings.globalVolume * 100)}%`)
+				}, `${Math.round((localStorage.getItem('globalVolume') || 1.0) * 100)}%`)
 			),
 			DOM({ style: 'castle-menu-label' }, Lang.text('volumeMusic'),
 				DOM({
 					tag: 'input', 
 					type: 'range', 
-					value: Settings.settings.musicVolume * 100, 
+					value: (localStorage.getItem('musicVolume') || 0.5) * 100,
 					min: '0', 
 					max: '100', 
 					step: '1',
 					style: 'castle-menu-slider', 
 					event: ['input', (e) => {
-						Settings.settings.musicVolume = parseFloat(e.target.value) / 100;
+						localStorage.setItem('musicVolume', parseFloat(e.target.value) / 100);
 						Settings.ApplySettings({render: false, window: false});
 																	  
 						document.getElementById('music-volume-percentage').textContent = 
-							`${Math.round(Settings.settings.musicVolume * 100)}%`;
+							`${Math.round((localStorage.getItem('musicVolume') || 0.5) * 100)}%`;
 					}]
 				}),
 				DOM({ 
 					tag: 'span', 
 					id: 'music-volume-percentage', 
 					style: 'volume-percentage' 
-				}, `${Math.round(Settings.settings.musicVolume * 100)}%`)
+				}, `${Math.round((localStorage.getItem('musicVolume') || 0.5) * 100)}%`)
 			),
 			DOM({ style: 'castle-menu-label' }, Lang.text('volumeSound'),
 				DOM({
 					tag: 'input', 
 					type: 'range', 
-					value: Settings.settings.soundsVolume * 100, 
+					value: (localStorage.getItem('soundsVolume') || 0.3) * 100,
 					min: '0', 
 					max: '100', 
 					step: '1',
 					style: 'castle-menu-slider', 
 					event: ['input', (e) => {
-						Settings.settings.soundsVolume = parseFloat(e.target.value) / 100;
+						localStorage.setItem('soundsVolume', parseFloat(e.target.value) / 100);
 						Settings.ApplySettings({render: false, window: false});
 						
 						if (!Castle.testSoundIsPlaying) {
@@ -3904,14 +5012,14 @@ class Window {
 						}
 																		  
 						document.getElementById('sounds-volume-percentage').textContent = 
-							`${Math.round(Settings.settings.soundsVolume * 100)}%`;
+							`${Math.round((localStorage.getItem('soundsVolume') || 0.3) * 100)}%`;
 					}]
 				}),
 				DOM({ 
 					tag: 'span', 
 					id: 'sounds-volume-percentage', 
 					style: 'volume-percentage' 
-				}, `${Math.round(Settings.settings.soundsVolume * 100)}%`)
+				}, `${Math.round((localStorage.getItem('soundsVolume') || 0.3) * 100)}%`)
 			),
 			// Добавленная кнопка "Клавиши"
 			/*DOM({ 
@@ -4142,28 +5250,28 @@ class Window {
 	}
 	static async accountPanel() {
 		return DOM({ id: 'wcastle-menu' },
-			DOM({ style: 'castle-menu-title' }, 'Аккаунт'),
+			DOM({ style: 'castle-menu-title' }, Lang.text('account')),
 			DOM({
 				style: 'castle-menu-item-button', event: ['click', () => {
 					
 					ParentEvent.children = window.open(`https://api2.26rus-game.ru:2087/connect/${App.storage.data.token}`, `SteamAuth`, 'width=1280, height=720, top='+((screen.height-720)/2)+', left='+((screen.width-1280)/2)+', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no');
 					
 				}]
-			}, 'Привязать Steam'),
+			}, Lang.text('steamConnect')),
 			DOM({
 				style: 'castle-menu-item-button', event: ['click', () => {
 					
 					App.setNickname();
 					
 				}]
-			}, 'Изменить никнейм'),
+			}, Lang.text('nicknameChange')),
 			DOM({
 				style: 'castle-menu-item-button', event: ['click', () => {
 					
 					App.setFraction();
 					
 				}]
-			}, 'Сменить сторону'),
+			}, Lang.text('sideChange')),
 			DOM({ style: 'castle-menu-item-button', event: ['click', () => Window.show('main', 'menu')] }, Lang.text('back'))
 		);
 	}
@@ -4469,7 +5577,7 @@ class Build {
 				Splash.hide();
 
 			}]
-		}, `Украсть билд?`);
+		}, Lang.text('stealBuild'));
 
 		let bottom = DOM({ style: 'build-bottom' }, get, DOM({ event: ['click', () => Splash.hide()] }, `[Х]`));
 
@@ -4611,7 +5719,7 @@ class Build {
 
 	static async init(heroId, targetId, isWindow) {
 
-		Build.talents = new Object();
+		Build.talents = await fetch('content/talent_hero.json').then(resp => resp.json());
 
 		Build.descriptionView = document.createElement('div');
 
@@ -4716,7 +5824,7 @@ class Build {
 
 			}]
 		},
-			'Тренировка'
+			Lang.text('training')
 		);
 
 		Build.inventoryView.append(buildTalents);
@@ -4881,7 +5989,7 @@ class Build {
 		if (builds.length < 6) {
 			const create = DOM({
 				tag: 'button', style: ['build-action-item', 'btn-hover', 'color-1'],
-				title: 'Создать новую вкладку билда',
+				title: Lang.text('newBuildTab'),
 				event: ['click', () => Build.buildSelectName('create', 'Создать билд', { heroId: Build.heroId }, isWindow)]
 			});
 
@@ -4896,7 +6004,7 @@ class Build {
 		const duplicate = DOM({
 		tag: 'button', 
 		style: ['build-action-item', 'btn-hover', 'color-1'],
-		title: 'Дублировать текущий билд',
+		title: Lang.text('buildDuplicate'),
 		event: ['click', async () => {
 			// Сохраняем ID текущего билда до любых действий
 			const currentBuildId = Build.id;
@@ -5000,7 +6108,7 @@ class Build {
 		{
 			const random = DOM({
 				tag: 'button', style: ['build-action-item', 'btn-hover', 'color-1'],
-				title: 'Сгенерировать случайный билд',
+				title: Lang.text('generateRandomBuild'),
 				event: ['click', async () => {
 					await App.api.request('build', 'random', { id: Build.id });
 					isWindow ? Window.show('main', 'build', Build.heroId, 0, true) : View.show('build', Build.heroId);
@@ -5018,10 +6126,10 @@ class Build {
 			const resetBuild = DOM({
 				tag: 'button', 
 				style: ['build-action-item', 'btn-hover', 'color-1'],
-				title: 'Сбросить таланты в этом билде',
+				title: Lang.text('resetTalents'),
 				event: ['click', async () => {
 					const fragment = document.createDocumentFragment();
-					const title = DOM({ style: 'splash-text' }, 'Сбросить таланты в этом билде?');
+					const title = DOM({ style: 'splash-text' }, Lang.text('resetTalents') + '?');
 					fragment.append(title);
 					
 					// Красная кнопка сброса
@@ -5033,7 +6141,7 @@ class Build {
 							Splash.hide();
 							isWindow ? Window.show('main', 'build', Build.heroId, 0, true) : View.show('build', Build.heroId);
 						}]
-					}, 'Сбросить');
+					}, Lang.text('reset'));
 					
 					// Явно задаём красный цвет
 					reset.style.backgroundColor = '#7b001c';
@@ -6011,8 +7119,6 @@ class Build {
 		}
 
 		data.params = data.txtNum ? data.txtNum : data.params; //"all,8,74,num,razum";
-
-		Build.talents[data.id] = data;
 
 		talent.dataset.id = data.id;
 
@@ -7026,8 +8132,8 @@ class Build {
 						let statValue = parseFloat(data.stats[key]);
 
 						if ('statsRefine' in data && 'rarity' in data) {
-							let refineBonus = Build.getTalentRefineByRarity(data.rarity);
-							let refineMul = parseFloat(data.statsRefine[key]);
+							let refineMul = Build.getTalentRefineByRarity(data.rarity);
+							let refineBonus = parseFloat(data.statsRefine[key]);
 							statValue += refineBonus * refineMul;
 						}
 
@@ -7409,7 +8515,7 @@ class Events {
 				Splash.hide();
 
 			}]
-		}, 'Принять');
+		}, Lang.text('accept'));
 
 		let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, 'Отмена');
 
@@ -7802,8 +8908,8 @@ class App {
     
 
     const factions = [
-			{id: 1, name: 'Адорнийцы', icon: 'Elf_logo_over.webp'},
-			{id: 2, name: 'Докты', icon: 'Human_logo_over2.webp'}
+			{id: 1, name: Lang.text('adornia'), icon: 'Elf_logo_over.webp'},
+			{id: 2, name: Lang.text('docts'), icon: 'Human_logo_over2.webp'}
 		];
 		
 	
@@ -8232,7 +9338,7 @@ class Chat {
 			nickname.style.fontWeight = 600;
 
 			nickname.classList.add('telegrambot-text');
-			
+
 		}
 		else if (App.isAdmin(data.id)) {
 
@@ -8400,7 +9506,7 @@ class PWGame {
 
 	static GetPlayPwProtocol(id) {
 		let chosenServer = PWGame.mainServerHasConnection ? 0 : 2;
-		if (Settings.settings.radminPriority && PWGame.radminHasConnection) {
+		if (localStorage.getItem('radmin') && PWGame.radminHasConnection) {
 			chosenServer = 1;
 		}
 		return `pwclassic://runGame/${id}/${PW_VERSION}/${chosenServer}`;
@@ -8577,7 +9683,7 @@ class NativeAPI {
 
 		NativeAPI.altEnterShortcut = new nw.Shortcut({
 			key: 'Alt+Enter', active: () => {
-				Settings.settings.fullscreen = !Settings.settings.fullscreen;
+				localStorage.setItem('fullscreen', localStorage.getItem('fullscreen') != true);
 				Settings.ApplySettings();
 			}
 		});
@@ -9044,10 +10150,9 @@ class Castle {
 	static AUDIO_MUSIC = 0;
 	static AUDIO_SOUNDS = 1;
 	static GetVolume(type) {
-		// Используем настройки из Settings вместо внутренних переменных
-		const global = Settings.settings.globalVolume ?? 1.0;
-		const music = Settings.settings.musicVolume ?? 0.5;
-		const sounds = Settings.settings.soundsVolume ?? 0.3;
+		const global = localStorage.getItem('globalVolume') ?? 1.0;
+		const music = localStorage.getItem('musicVolume') ?? 0.5;
+		const sounds = localStorage.getItem('soundsVolume') ?? 0.3;
 	
 		if (type == Castle.AUDIO_MUSIC) {
 			return global * music;
@@ -9274,65 +10379,64 @@ class Castle {
 	static phantomBuildingIsAllowedToBuild = false;
 
 	static buildingsNames = [
-		["",""],
+		['', ''],
+		[Lang.text('pearlFarm'), Lang.text('primeDistiller')],
+		[Lang.text('mushroomFarm'), Lang.text('farm')],
+		[Lang.text('rubberTree'), Lang.text('mine')],
+		[Lang.text('spinningMill'), Lang.text('sawmill')],
+		[Lang.text('weavingWorkshop'), Lang.text('manufactory')],
+		[Lang.text('talentGarden'), Lang.text('talentForge')],
 
-		["Жемчужная ферма","Дистиллятор прайма"],
-		["Грибница","Ферма"],
-		["Каучуковое дерево","Штольня"],
-		["Прядильня","Лесопилка"],
-		["Ткацкая мастерская","Мануфактура"],
-		["Сад талантов","Кузница талантов"],
+		[Lang.text('clanHouse'), Lang.text('clanHouse')],
+		[Lang.text('fair'), Lang.text('fair')],
+		[Lang.text('mansion'), Lang.text('terem')],
+		[Lang.text('library'), Lang.text('library')],
+		[Lang.text('warehouse'), Lang.text('warehouse')],
 
-		["Дом клана","Дом клана"],
-		["Ярмарка","Ярмарка"],
-		["Особняк", "Терем"],
-		["Библиотека", "Библиотека"],
-		["Склад","Склад"],
+		[Lang.text('arena'), Lang.text('arena')],
+		[Lang.text('spire'), Lang.text('secretService')],
+		[Lang.text('alcoveOfLife'), Lang.text('bastion')],
+		[Lang.text('templeOfPurity'), Lang.text('houseOfMercy')],
+		[Lang.text('monument'), Lang.text('taran')],
+		[Lang.text('teaHouse'), Lang.text('tavern')],
 
-		["Арена", "Арена"],
-		["Шпиль","Секретная служба"],
-		["Альков жизни", "Бастион"],
-		["Храм чистоты","Дом милосердия"],
-		["Монумент","Таран"],
-		["Чайный домик","Таверна"],
+		[Lang.text('catsHouse'), Lang.text('catsHouse')],
+		[Lang.text('puppyHouse'), Lang.text('puppyHouse')],
+		[Lang.text('unicornHouse'), Lang.text('unicornHouse')],
 
-		["Кошкин дом","Кошкин дом"],
-		["Домик щенка","Домик щенка"],
-		["Домик единорожка","Домик единорожка"],
-
-		["Алый цветок","Фонарь"],
-		["Янтарный цветок","Большой фонарь"],
-		["Указатель","Указатель"],
-		["Статуя","Флагшток"],
-		["Барабаны","Подзорная труба"],
-		["Пальма с птицей","Глобус"],
-		["Фонтан","Фонтан"],
-		["Лавка с фонарями","Лавка с фонарями"],
-		["Багряный куст","Куст"],
-		["Лазурный куст","Цветущий куст"],
-		["Багряное соцветие","Цветущий куст"],
-		["Пурпурное соцветие","Цветущий куст"],
-		["Живая изгородь","Живая стена"],
-		["Живая изгородь","Цветущая стена"],
-		["Живая изгородь","Цветущая стена"],
-		["Колонна","Цветущая стена"],
-		["Клумба","Клумба"],
-		["Клумба","Клумба"],
-		["Клумба","Клумба"],
-		["Клумба","Клумба"],
-		["Маленькое дерево","Круглое дерево"],
-		["Цветущая сакура","Круглое дерево"],
-		["Бонсай","Круглое дерево"],
-		["Цветущий бонсай","Круглое дерево"],
-		["Тростниковая башня","Топиарный конус"],
-		["Миниатюрный сад","Фигура жирафа"],
-		["Большая сакура","Топиарный куб"],
-		["Огромный кактус","Большое дерево"],
-		["Раффлезия","Фигура слона"],
-		["Мухоловка","Фигура единорога"],
-		["Фигурный тростник","Малый топиарный конус"],
-		["Банановая пальма","Топиарная башня"],
-		["Кокосовая пальма","Топиарный столб"],
+		[Lang.text('scarletFlower'), Lang.text('lantern')],
+		[Lang.text('amberFlower'), Lang.text('bigLantern')],
+		[Lang.text('pointer'), Lang.text('pointer')],
+		[Lang.text('statue'), Lang.text('flagpole')],
+		[Lang.text('drums'), Lang.text('telescope')],
+		[Lang.text('palmTreeWithABird'), Lang.text('globe')],
+		[Lang.text('fountain'), Lang.text('fountain')],
+		[Lang.text('lanternShop'), Lang.text('lanternShop')],
+		[Lang.text('crimsonBush'), Lang.text('bush')],
+		[Lang.text('azureBush'), Lang.text('bloomingBush')],
+		[Lang.text('crimsonBlossom'), Lang.text('bloomingBush')],
+		[Lang.text('purpleBlossom'), Lang.text('bloomingBush')],
+		[Lang.text('hedge'), Lang.text('livingWall')],
+		[Lang.text('hedge'), Lang.text('bloomingWall')],
+		[Lang.text('hedge'), Lang.text('bloomingWall')],
+		[Lang.text('column'), Lang.text('bloomingWall')],
+		[Lang.text('flowerbed'), Lang.text('flowerbed')],
+		[Lang.text('flowerbed'), Lang.text('flowerbed')],
+		[Lang.text('flowerbed'), Lang.text('flowerbed')],
+		[Lang.text('flowerbed'), Lang.text('flowerbed')],
+		[Lang.text('smallTree'), Lang.text('roundTree')],
+		[Lang.text('bloomingSakura'), Lang.text('roundTree')],
+		[Lang.text('bonsai'), Lang.text('roundTree')],
+		[Lang.text('bloomingBonsai'), Lang.text('roundTree')],
+		[Lang.text('caneTower'), Lang.text('topiaryCone')],
+		[Lang.text('miniatureGarden'), Lang.text('giraffeFigure')],
+		[Lang.text('largeSakura'), Lang.text('topiaryCube')],
+		[Lang.text('hugeCactus'), Lang.text('largeTree')],
+		[Lang.text('rafflesia'), Lang.text('elephantFigure')],
+		[Lang.text('flycatcher'), Lang.text('unicornFigure')],
+		[Lang.text('figuredCane'), Lang.text('smallTopiaryCone')],
+		[Lang.text('bananaPalm'), Lang.text('topiaryTower')],
+		[Lang.text('coconutPalm'), Lang.text('topiaryPole')],
 	];
 
 	static toggleMusic(layer, value) {
@@ -10706,132 +11810,6 @@ class Castle {
 
 	}
 
-}
-
-class Settings {
-    static defaultSettings = {
-        fullscreen: true,
-        render: true,
-        globalVolume: 0.5,
-        musicVolume: 0.7,
-        soundsVolume: 0.7,
-		radminPriority: false
-    };
-
-    static settings = JSON.parse(JSON.stringify(this.defaultSettings));
-    static pwcLauncherSettingsDir;
-    static settingsFilePath;
-
-    static async ensureSettingsFile() {
-        const homeDir = NativeAPI.os.homedir();
-        this.pwcLauncherSettingsDir = NativeAPI.path.join(homeDir, 'Prime World Classic');
-        this.settingsFilePath = NativeAPI.path.join(this.pwcLauncherSettingsDir, 'launcher.cfg');
-
-        try {
-            await NativeAPI.fileSystem.promises.mkdir(this.pwcLauncherSettingsDir, { recursive: true });
-            await NativeAPI.fileSystem.promises.access(this.settingsFilePath);
-            return true;
-        } catch (e) {
-            App.error('Ошибка доступа к файлу настроек: ' + e);
-            await this.writeDefaultSettings();
-            return false;
-        }
-    }
-
-    static async writeDefaultSettings() {
-        this.settings = JSON.parse(JSON.stringify(this.defaultSettings));
-        await this.WriteSettings();
-    }
-
-    static async ReadSettings() {
-        if (!NativeAPI.status) {
-            App.error('NativeAPI не инициализирован! Используются настройки по умолчанию');
-            this.settings = { ...this.defaultSettings };
-            return;
-        }
-
-        try {
-            if (await this.ensureSettingsFile()) {
-                const data = await NativeAPI.fileSystem.promises.readFile(this.settingsFilePath, 'utf-8');
-                this.settings = { ...this.defaultSettings, ...JSON.parse(data) };
-            }
-        } catch (e) {
-            App.error('Ошибка чтения настроек: ' + e);
-            this.settings = { ...this.defaultSettings };
-        }
-    }
-
-    static async WriteSettings() {
-        if (!this.settingsFilePath || !NativeAPI.status) {
-            App.error('Не могу сохранить настройки: путь или NativeAPI недоступны');
-            return;
-        }
-        
-        try {
-            await NativeAPI.fileSystem.promises.writeFile(
-                this.settingsFilePath,
-                JSON.stringify(this.settings, null, 2),
-                'utf-8'
-            );
-        } catch (e) {
-            App.error('Ошибка сохранения настроек: ' + e);
-        }
-    }
-
-    static async ApplySettings(options = {}) {
-		// Установка значений по умолчанию для options
-		options = {
-			render: true,    // Применять настройки рендеринга по умолчанию
-			audio: true,     // Применять настройки звука по умолчанию
-			window: true,    // Применять настройки окна по умолчанию
-			...options       // Переопределение дефолтных значений
-		};
-	
-		try {
-			// 1. Применение настроек рендеринга (если не отключено в options)
-			if (options.render !== false && typeof Castle !== 'undefined') {
-				Castle.toggleRender(Castle.RENDER_LAYER_PLAYER, this.settings.render);
-			}
-	
-			// 2. Применение настроек окна (если не отключено в options)
-			if (options.window !== false && NativeAPI.status && NativeAPI.window) {
-				const currentMode = await NativeAPI.window.isFullscreen;
-				if (this.settings.fullscreen && !currentMode) {
-					await NativeAPI.window.enterFullscreen();
-				} else if (!this.settings.fullscreen && currentMode) {
-					await NativeAPI.window.leaveFullscreen();
-					NativeAPI.window.resizeTo(1280, 720);
-					NativeAPI.window.setPosition('center');
-				}
-			}
-	
-			// 3. Применение настроек звука (если не отключено в options)
-			if (options.audio !== false && typeof Sound !== 'undefined') {
-				// Обновляем громкость для всех звуков
-				for (const soundId in Sound.all) {
-					const type = soundId === 'castle' ? Castle.AUDIO_MUSIC : Castle.AUDIO_SOUNDS;
-					Sound.setVolume(soundId, Castle.GetVolume(type));
-				}
-				
-				// Специальная обработка тестового звука (если используется)
-				if (Castle.testSoundIsPlaying && Sound.all.sound_test) {
-					Sound.setVolume('sound_test', Castle.GetVolume(Castle.AUDIO_SOUNDS));
-				}
-			}
-	
-		} catch (e) {
-			App.error('Ошибка применения настроек: ' + e);
-		}
-	}
-
-    static async init() {
-        await this.ReadSettings();
-        await this.ApplySettings();
-        
-        window.addEventListener('beforeunload', () => {
-            this.WriteSettings();
-        });
-    }
 }
 
 class MM {
