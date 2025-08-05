@@ -2322,12 +2322,10 @@ border-radius:5px;
 	
 }
 
-.top-filter:after {
-	content: 'Нажмите, чтобы посмотреть рейтинг по отдельным героям';
+.top-filter + .help
+{
 	position: absolute;
-	width:100%;
-	text-align:center;
-	margin-top: 8cqw;
+	top: 8cqw;
 	font-size: small;
 }
 
@@ -3480,7 +3478,7 @@ border-radius:5px;
 	align-self: center;
 }
 
-.castle-menu-item-checkbox {
+.castle-menu-item {
 	width: 90cqw;
 	color:rgba(255,255,255,0.9);
 	text-shadow:rgba(0,0,0,0.3) 0 0 1cqw;
@@ -3491,7 +3489,9 @@ border-radius:5px;
 	position: relative;
 }
 
-.castle-menu-item-checkbox input[type="checkbox"] {
+.castle-menu-item input[type='checkbox'],
+.castle-menu-item select
+{
 	appearance: none;
 	width: 10cqw;
 	height: 10cqw;
@@ -3502,7 +3502,8 @@ border-radius:5px;
 	transform: translateY(-50%);
 }
 
-.castle-menu-item-checkbox input[type="checkbox"]::before {
+.castle-menu-item input[type='checkbox']::before
+{
 	content: '';
 	width: 100%;
 	height: 100%;
@@ -3514,7 +3515,7 @@ border-radius:5px;
 	left: 0;
 }
 
-.castle-menu-item-checkbox input[type="checkbox"]:checked::before {
+.castle-menu-item input[type='checkbox']:checked::before {
 	background-image: url('icons/checkbox.webp');
 }
 
