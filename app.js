@@ -4105,13 +4105,13 @@ class Window {
 			DOM({style: 'castle-menu-items'},
 			DOM({ style: 'castle-menu-text' }, Lang.text('supportDesk')),
 			DOM({ style: 'menu-icons' },
-				DOM({ tag: 'a', href: 'https://vk.me/join/HbESO2Fty/Z9sgbWSO0jOhNu_at9J84U7Uk=', target: '_blank', event: ['click', (e) => NativeAPI.linkHandler(e)] },
+				DOM({ tag: 'a', href: 'https://vk.me/join/AZQ1dy/d2Qg98tKilOoQ1u34', target: '_blank', event: ['click', (e) => NativeAPI.linkHandler(e)] },
 					DOM({ tag: 'img', src: 'content/icons/vk.webp', alt: 'VK', style: 'support-icon' })
 				),
 				DOM({ tag: 'a', href: 'https://t.me/primeworldclassic/8232', target: '_blank', event: ['click', (e) => NativeAPI.linkHandler(e)] },
 					DOM({ tag: 'img', src: 'content/icons/telegram.webp', alt: 'Telegram', style: 'support-icon' })
 				),
-				DOM({ tag: 'a', href: 'https://discord.com/channels/1252164250265325598/1298407885876891691', target: '_blank', event: ['click', (e) => NativeAPI.linkHandler(e)] },
+				DOM({ tag: 'a', href: 'https://discord.gg/S3yrbFGT86', target: '_blank', event: ['click', (e) => NativeAPI.linkHandler(e)] },
 					DOM({ tag: 'img', src: 'content/icons/discord.webp', alt: 'Discord', style: 'support-icon' })
 				)
 			),
