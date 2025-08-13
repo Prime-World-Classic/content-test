@@ -1601,7 +1601,20 @@ class CastleNAVBAR {
 }
 
 class View {
+	static mmQueueMap = {};
 
+	static getQueue(cssKey) {
+  		const map = {
+    		pvp: 0,
+    		anderkrug: 1,
+   		 	cte: 2,
+    		m4: 3,
+    		'pve-ep2-red': 4,
+    		'custom-battle': 5
+  		};
+  			const index = map[cssKey];
+  			return (View.mmQueueMap.mode && View.mmQueueMap.mode[index]) || '-';
+		}
 	static activeTemplate = false;
 
 	static activeAnimation = false;
@@ -1818,7 +1831,7 @@ class View {
 			
 		}
 		
-		body.append(View.castleSettings());
+		body.append(View.castleSettings(), View.castleBannerOnline());
 		
 		setTimeout(() => {
 
@@ -2141,6 +2154,69 @@ class View {
 		return body;
 
 	}
+	
+	static castleBannerOnline() {
+		
+    const modeMap = {
+        pvp: 0,
+        anderkrug: 1,	
+        cte: 2,
+        m4: 3,
+        'pve-ep2-red': 4,
+        'custom-battle': 5
+    };
+
+    const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
+        cssKey,
+        label: () => View.getQueue(cssKey)
+    }));
+
+    const banner = DOM({ style: ['castle-banner-online'] });
+
+    // Украшение слева
+    banner.append(DOM({ style: ['banner-ornament'] }));
+
+    // Основные иконки режимов + подписи
+    bannerItems.forEach((item, idx) => {
+        const wrap = DOM({ style: ['banner-item'] });
+        const icon = DOM({ style: ['banner-icon', `banner-icon--${item.cssKey}`] });
+        const lbl = DOM({ tag: 'div', style: ['banner-count'] });
+
+        lbl.textContent = item.label();
+
+        wrap.append(icon, lbl);
+        banner.append(wrap);
+
+        if (idx < bannerItems.length - 1) {
+            banner.append(DOM({ tag: 'div', style: ['banner-separator'] }));
+        }
+    });
+
+    // Правый блок статистики (прямоугольник + круг + иконка)
+    const statWrapper = DOM({ style: ['banner-stat-wrapper'] });
+    const statRect = DOM({ style: ['banner-stat-rect'] });
+    const statCircle = DOM({ style: ['banner-stat-circle'] });
+    const statIcon = DOM({ style: ['banner-icon', 'banner-icon--stat'] });
+
+    statCircle.append(statIcon);
+    statWrapper.append(statRect, statCircle);
+
+    // Вопросительный знак и тултип
+    const tooltipWrap = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
+    const questionIcon = DOM({ tag: 'div', style: ['question-icon'] });
+    const tooltipBubble = DOM({ tag: 'div', style: ['tooltip-bubble-img'] });
+    const tooltipText = DOM({ tag: 'div', style: ['tooltip-text'] });
+
+    tooltipText.textContent = 'Сколько \nчеловек\nв очереди\nпо режимам.';
+
+    tooltipBubble.append(tooltipText);
+    tooltipWrap.append(questionIcon, tooltipBubble);
+    banner.append(tooltipWrap);
+
+    banner.append(statWrapper);
+
+    return DOM({ style: 'castle-banner-online-wrapper' }, banner);
+}
 
 	static castleSettings() {
 
@@ -7484,10 +7560,18 @@ class Events {
 	}
 
 	static MMQueueV2(data) {
-
-		CastleNAVBAR.queue(data);
-
-	}
+  		console.log('[MMQueueV2] пришли данные:', data);
+  		View.mmQueueMap = data;
+		document.querySelectorAll('.banner-count').forEach((el, idx) => {
+    	const keys = ['pvp', 'anderkrug', 'cte', 'm4', 'pve-ep2-red', 'custom-battle'];
+    	const cssKey = keys[idx];
+    		if (cssKey) {
+     	 const val = View.getQueue(cssKey);
+		 console.log(`[${cssKey}] => ${val}`);
+		 el.textContent = val;
+    }
+  });
+}
 
 	static ADMStat(data) {
 
@@ -7598,7 +7682,7 @@ class App {
 				7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2},
 				8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2},
 				9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2}
-				},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858]};
+				},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
 
 			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:49,ready:0,rating:1284,select:true,team:1,mode:0,commander:true};
 				
@@ -11506,7 +11590,7 @@ class MM {
 
 		});
 
-		let body = DOM({ style: 'mm-lobby' }, DOM({ style: 'mm-lobby-header' }, leftTeam, info, rightTeam), DOM({ style: 'mm-lobby-middle' }, DOM({ style: 'mm-lobby-middle-chat' }, DOM({ style: 'mm-lobby-middle-chat-map' }, (data.mode == 0) ? MM.renderMap() : DOM()), MM.chatBody, chatInput), lobbyBuild, MM.lobbyHeroes));
+		let body = DOM({ style: 'mm-lobby' }, DOM({ style: 'mm-lobby-header' }, leftTeam, info, rightTeam), DOM({ style: 'mm-lobby-middle' }, DOM({ style: 'mm-lobby-middle-chat' }, DOM({ style: 'mm-lobby-middle-chat-map' }, (data.mode == 0) ? MM.renderMap(data.users[App.storage.data.id].team) : DOM()), MM.chatBody, chatInput), lobbyBuild, MM.lobbyHeroes));
 
 		Sound.play('content/sounds/tambur.ogg', { id: 'tambur', volume: Castle.GetVolume(Castle.AUDIO_MUSIC), loop: true });
 
@@ -11538,9 +11622,9 @@ class MM {
 
 	}
 
-	static renderMap() {
+	static renderMap(team) {
 
-		MM.renderBody = DOM({ style: 'map' });
+		MM.renderBody = DOM({ style: (team == 1) ? 'map' : 'map-reverse' });
 
 		let container = DOM({ tag: 'div' }, MM.renderBody);
 
@@ -11657,7 +11741,7 @@ class MM {
 		} catch (e) {
 			App.error(e);
 		}
-	
+		/*
 		if (data.mode == 3) {
 			ARAM.briefing(data.hero, data.role, () => {
 				MM.gameRunEvent();
@@ -11667,6 +11751,12 @@ class MM {
 			MM.gameRunEvent();
 			PWGame.start(data.key, MM.gameStopEvent);
 		}
+		*/
+		
+		MM.gameRunEvent();
+		
+		PWGame.start(data.key, MM.gameStopEvent);
+		
 	}
 
 	static eventChangeHero(data) {

@@ -1,0 +1,167 @@
+/* Общий контейнер: баннер сверху, кнопки снизу */
+.castle-settings-container {
+  position: absolute;
+  right: 1cqh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* castle.css */
+
+/* Контейнер баннера */
+.castle-banner-online {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  padding: 0.5cqh 1cqh;
+  height: 4cqh;
+  background: url('statbtn/hor.png') no-repeat center bottom;
+  background-size: 100% auto;
+  margin-bottom: 1cqh;
+  z-index: 0;
+}
+
+/* Украшение слева */
+.castle-banner-online .banner-ornament {
+  position: absolute;
+  top: 1cqh;
+  left: 0;
+  transform: translate(-50%, 0) rotate(90deg);
+  transform-origin: center;
+  width: 5.2cqh;
+  height: 2.7cqh;
+  background: url('statbtn/byaka.png') no-repeat center/contain;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Иконка и подпись */
+.castle-banner-online .banner-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0.5cqh;
+  width: 4cqh;
+}
+.castle-banner-online .banner-icon {
+  width: 4cqh;
+  height: 4cqh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* Тултип-обёртка */
+.castle-banner-online .tooltip-wrap-left {
+  position: absolute;
+  left: -4.5cqh;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4cqh;
+  height: 4cqh;
+  z-index: 9;
+}
+.castle-banner-online .question-icon {
+  width: 90%;
+  height: 90%;
+  background: url('statbtn/Spravka.png') no-repeat center/contain;
+}
+.castle-banner-online .tooltip-bubble-img {
+  display: none;
+  position: absolute;
+  top: -4.5cqh;
+  right: 4.5cqh;
+  width: 18cqh;
+  height: 14.5cqh;
+  background: url('statbtn/spravkfa2.png') no-repeat center/100% 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+.castle-banner-online .tooltip-text {
+  position: absolute;
+  top: 2.5cqh;
+  left: 1.1cqh;
+  right: 1.4cqh;
+  color: #fff;
+  text-align: center;
+  font-size: 1.6cqh;
+  line-height: 2.2cqh;
+  font-family: 'Tahoma', sans-serif;
+  font-weight: bold;
+  white-space: pre-line;
+}
+.castle-banner-online .tooltip-wrap-left:hover .tooltip-bubble-img {
+  display: block;
+}
+
+/* Иконки режимов */
+.banner-icon--pvp { background-image: url('statbtn/PvP.png'); }
+.banner-icon--anderkrug { background-image: url('statbtn/MidOnly.png'); }
+.banner-icon--cte { background-image: url('statbtn/CTE.png'); }
+.banner-icon--m4 { background-image: url('statbtn/m4.png'); height: 3.8cqh; }
+.banner-icon--pve-ep2-red { background-image: url('statbtn/PvEEpisode2_Red.png'); }
+.banner-icon--custom-battle { background-image: url('statbtn/xuy.png'); }
+.banner-icon--stat { background-image: url('statbtn/stat.png'); }
+
+/* Подпись под иконкой */
+.castle-banner-online .banner-count {
+  margin-top: 0.6cqh;
+  font-size: 1.5cqh;
+  color: #fff;
+}
+
+/* Разделитель */
+.castle-banner-online .banner-separator {
+  width: 1px;
+  height: 4cqh;
+  margin: 0 0.1cqh;
+  background: url('statbtn/razdel.png') no-repeat center/contain;
+  transform: scaleY(-1);
+}
+
+/* Блок статистики */
+.castle-banner-online .banner-stat-wrapper {
+  position: relative;
+  width: 5cqh;
+  height: 7cqh;
+  margin-left: 1cqh;
+}
+.castle-banner-online .banner-stat-rect {
+  position: absolute;
+  top: 0.5cqh;
+  left: 55%;
+  transform: translateX(-50%);
+  width: 15cqh;
+  height: 9.8cqh;
+  background: url('statbtn/anderkrug.png') repeat-y center/contain;
+  z-index: 2;
+}
+.castle-banner-online .banner-stat-circle {
+  position: absolute;
+  top: -1.5cqh;
+  left: 55%;
+  transform: translate(-50%, 0);
+  width: 12cqh;
+  height: 8cqh;
+  background: url('statbtn/круг.png') no-repeat center/contain;
+  z-index: 2;
+}
+.castle-banner-online .banner-stat-circle .banner-icon--stat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6cqh;
+  height: 6cqh;
+  z-index: 3;
+}
+.castle-banner-online-wrapper {
+  position: absolute;
+  top: 4.4cqh;
+  right: 1cqh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  z-index: 100;
+}
