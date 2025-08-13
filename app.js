@@ -7677,14 +7677,14 @@ class App {
 				1858:{nickname:'vitaly-zdanevich',hero:3,ready:1,rating:1100,select:false,team:1},
 				2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1},
 				4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1},
-				5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2},
+				5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:1},
 				6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2},
 				7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2},
 				8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2},
 				9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2}
 				},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
 
-			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:49,ready:0,rating:1284,select:true,team:1,mode:0,commander:true};
+			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:49,ready:0,rating:1284,select:true,team:2,mode:0,commander:true};
 				
 			  MM.lobby(obj);
 			

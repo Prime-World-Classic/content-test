@@ -2926,8 +2926,8 @@ border-radius:5px;
 	background-size:110%;
 	border-radius:50%;
 	backdrop-filter:blur(0.2cqw);
-	
 }
+
 
 .map-item-1:hover,.map-item-2:hover,.map-item-3:hover,.map-item-4:hover,.map-item-5:hover, .map-item-6:hover {
 	
@@ -2958,6 +2958,8 @@ border-radius:5px;
 .map-reverse .map-item-5{ left:39%; bottom:19%; }
 
 .map-reverse .map-item-6{ left:11%; top:63%; }
+
+.map-reverse div { transform: rotate(180deg); }
 
 @keyframes borderRotate {
 	100% {
