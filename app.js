@@ -7682,9 +7682,9 @@ class App {
 				7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2},
 				8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2},
 				9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2}
-				},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
+				},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0,hero:['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15']};
 
-			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:49,ready:0,rating:1284,select:true,team:1,mode:0,commander:true};
+			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:48,ready:0,rating:1284,select:true,team:1,mode:0,commander:true};
 				
 			  MM.lobby(obj);
 			
@@ -11304,6 +11304,8 @@ class MM {
 		}
 
 		let builds = await App.api.request('build', 'my', { hero: heroId });
+		
+		let target = 0;
 
 		for (let build of builds) {
 
@@ -11311,6 +11313,8 @@ class MM {
 				event: ['click', async () => {
 
 					await App.api.request('build', 'target', { id: build.id });
+					
+					target = build.id;
 
 					for (let child of MM.lobbyBuildTab.children) {
 
@@ -11332,6 +11336,8 @@ class MM {
 			}, build.name);
 
 			if (build.target) {
+				
+				target = build.id;
 
 				tab.style.background = 'rgba(255,255,255,0.3)';
 
@@ -11348,7 +11354,51 @@ class MM {
 			MM.lobbyBuildTab.append(tab);
 
 		}
-
+		
+		let notify = true, random = DOM({style:'ready-button',event:['click', async () => {
+			
+			if(notify){
+				
+				random.innerText = 'Перезаписать текущий билд?';
+				
+				notify = false;
+				
+				return;
+				
+			}
+			
+			random.innerText = 'Генерация...';
+			
+			let build = await App.api.request('build', 'rebuild', { id: target });
+			
+			if (MM.lobbyBuildField.firstChild) {
+				
+				MM.lobbyBuildField.firstChild.remove();
+				
+			}
+			
+			MM.lobbyBuildField.append(Build.viewModel(build.body, false, false));
+			
+			notify = true;
+			
+			for (let item of builds) {
+				
+				if(item.id == target){
+					
+					item.body = build.body;
+					
+				}
+				
+			}
+			
+			random.innerText = 'Случайный билд';
+			
+		}]},'Случайный билд');
+		
+		random.style.width = 'auto';
+		
+		MM.lobbyBuildTab.append(random);
+		
 	}
 
 	static async lobby(data) {
@@ -11500,6 +11550,22 @@ class MM {
 		let activeRankName = '';
 
 		for (let item of MM.hero) {
+			
+			if(!item.id){
+				
+				continue;
+				
+			}
+			
+			if( ('hero' in data) && (data.hero.length) ){
+				
+				if(!data.hero.includes(`${item.id}`)){
+					
+					continue;
+					
+				}
+				
+			}
 
 			let getRankName = Rank.getName(item.rating);
 
