@@ -2202,8 +2202,8 @@ class View {
     anderkrug: 1,
     cte: 2,
     m4: 3,
-    'pve-ep2-red': 4,
-    'custom-battle': 5
+	'custom-battle': 4,
+    'pve-ep2-red': 5
   };
 
   const medalMap = {
@@ -2211,8 +2211,8 @@ class View {
     anderkrug: 'gold',
     cte: 'gold',
     m4: 'gold',
-    'pve-ep2-red': 'gold',
-    'custom-battle': 'silver'
+    'pve-ep2-red': 'silver',
+    'custom-battle': 'gold'
   };
 
   const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
@@ -2222,7 +2222,7 @@ class View {
 
   const banner = DOM({ style: ['castle-banner-online'] });
   banner.append(DOM({ style: ['banner-ornament'] }));
-
+  
   bannerItems.forEach((item, idx) => {
     const wrap = DOM({ style: ['banner-item'] });
 
@@ -2237,8 +2237,7 @@ class View {
 	: 0;
 
 	lbl.textContent = `${total}/${current}`;
-
-	lbl.textContent = `${total}/${current}`;
+	
     wrap.append(lbl);
 
     // медаль
@@ -2257,7 +2256,7 @@ class View {
       medal.setAttribute('role', 'button');
       medal.tabIndex = 0;
       const openStats = () => {
-        if (typeof View?.openModeStats === 'function') View.openModeStats(item.cssKey);
+		Window.show('main','top',0,idx);
       };
       medal.addEventListener('click', openStats);
       medal.addEventListener('keydown', (e) => {
@@ -3263,11 +3262,11 @@ class View {
 
 	}
 	*/
-	static async top(hero = 0, isSplah = false) {
-
+	static async top(hero = 0, isSplah = false, mode = 0) {
+		
 		let body = DOM({ style: 'main' });
 
-		let result = await App.api.request(CURRENT_MM, 'top', { limit: 100, hero: hero });
+		let result = await App.api.request(CURRENT_MM, 'top', { limit: 100, hero: hero, mode: mode });
 
 		if (!result) {
 
@@ -3305,9 +3304,9 @@ class View {
 						hero.addEventListener('click', async () => {
 
 							if (isSplah) {
-								Window.show('main', 'top', item.id);
+								Window.show('main', 'top', item.id, mode);
 							} else {
-								View.show('top', item.id);
+								View.show('top', item.id, false, mode);
 							}
 
 							Splash.hide();
@@ -3919,8 +3918,8 @@ class Window {
 		let viewBuild = await View.build(heroId, targetId, isWindow);
 		return DOM({ id: 'wbuild' }, viewBuild);
 	}
-	static async top(hero = 0) {
-		let viewTop = await View.top(hero, true);
+	static async top(hero = 0,mode = 0) {
+		let viewTop = await View.top(hero, true, mode);
 		return DOM({ id: 'wtop' }, viewTop);
 	}
 	static async farm() {
