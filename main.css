@@ -54,9 +54,30 @@ overflow: hidden;
 container-type: inline-size;
 }
 
-input,button,img {
+input,button,img,iframe {
 	padding: 0;
 	margin: 0;
+	border:none;
+}
+
+.iframe-stats iframe{
+	
+	width:100vw;
+	height:100vh;
+	
+}
+
+.iframe-stats-navbar{
+	
+	width:3vw;
+	height:3vw;
+	border-radius:50%;
+	position:fixed;
+	z-index:999;
+	background:rgba(255,255,255,0.1);
+	padding:1vw;
+	text-align:center;
+	
 }
 
 .noselect {
@@ -2545,10 +2566,9 @@ border-radius:5px;
 }
 
 #ADMStat{
-	
 	position:fixed;
-	top:9cqh;
-	right:2cqh;
+	top:10vh;
+	right:1vh;
 	z-index:9999;
     font: 1cqw / 1 Arial;
 	padding:0.3vw;
@@ -3256,6 +3276,7 @@ border-radius:5px;
 	text-align: center;
 	width: calc(min(150cqh, 95cqw));
 	height: 80cqh;
+	z-index: 9;
 	/*background-color: #8d8b8b;*/
 	border-radius: 2cqh;
 	border: 0.1cqh solid rgb(158, 155, 104);

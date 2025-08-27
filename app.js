@@ -1,6 +1,6 @@
 APP_VERSION = '0';
 
-PW_VERSION = '2.6.10';
+PW_VERSION = '2.6.12';
 
 CURRENT_MM = 'mmtest'
 
@@ -1300,6 +1300,8 @@ class CastleNAVBAR {
 	static state = false;
 
 	static mode = 0;
+	
+	static stateDefaultMode = 0;
 
 	static init() {
 
@@ -1336,14 +1338,14 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[3].onclick = () => {
 
-			App.error('Привет от ifst 😎');
-
+			// App.error('Привет от ifst 😎');
+			
 		}
 
 		CastleNAVBAR.body.children[4].onclick = () => {
 
-			App.error('Товарищеские матчи в процессе разработки...');
-
+			// App.error('Товарищеские матчи в процессе разработки...');
+			
 		}
 
 		CastleNAVBAR.body.children[5].innerText = Lang.text('fight');
@@ -1419,11 +1421,46 @@ class CastleNAVBAR {
 			
 		};
 		
-		CastleNAVBAR.body.children[18].title = 'Уровень кармы вашего аккаунта';
-		
-		CastleNAVBAR.body.children[18].append(DOM({tag:'div'}));
+		CastleNAVBAR.body.children[18].title =
+      		'Карма — поведение игрока и его "полезность" в бою.\n' +
+      		'Она может повышаться и понижаться, в зависимости от боёв.';
+    	CastleNAVBAR.body.children[18].style.pointerEvents = 'auto';
+    	CastleNAVBAR.body.children[18].style.zIndex = '4';
+    	CastleNAVBAR.body.children[18].append(DOM({ tag: 'div' }));
 		
 		return CastleNAVBAR.body.children[5];
+		
+	}
+	
+	static defaultMode(id){
+		
+		if(!id){
+			
+			if(CastleNAVBAR.stateDefaultMode){
+				
+				CastleNAVBAR.stateDefaultMode = 0;
+				
+			}
+			
+			return;
+			
+		}
+		
+		if( (CastleNAVBAR.stateDefaultMode) && (CastleNAVBAR.stateDefaultMode == id) ){
+			
+			return;
+			
+		}
+		
+		if(CastleNAVBAR.state){
+			
+			return;
+			
+		}
+		
+		CastleNAVBAR.setMode(id);
+		
+		CastleNAVBAR.stateDefaultMode = id;
 		
 	}
 
@@ -1453,30 +1490,28 @@ class CastleNAVBAR {
 		
 	}
 	
-	static karma(id){
-		
-		let karma = 0;
-		
-		if(id >= 75){
-			
-			karma = 75;
-			
-		}
-		else if(id >= 50){
-			
-			karma = 50;
-			
-		}
-		
-		if(karma){
-			
-			CastleNAVBAR.body.children[18].style.display = 'flex';
-			
-			CastleNAVBAR.body.children[18].firstChild.innerText = `>${karma}`;
-			
-		}
-		
-	}
+	static karma(id) {
+
+    let karma = 0;
+
+    if (id >= 75) {
+      karma = 75;
+    } else if (id >= 50) {
+      karma = 50;
+    }
+
+    if (karma) {
+      const el = CastleNAVBAR.body.children[18];
+      el.style.display = 'flex';
+      el.firstChild.innerText = `>${karma}`;
+
+      
+      el.title =
+        'Карма — поведение игрока и его "полезность" в бою.\n' +
+        'Она может повышаться и понижаться, в зависимости от боёв.\n' +
+        `Текущий порог: >${karma}`;
+    }
+  }
 	
 	static division(id) {
 		
@@ -1831,7 +1866,7 @@ class View {
 			
 		}
 		
-		body.append(View.castleSettings(), View.castleBannerOnline());
+		body.append(View.castleSettings());
 		
 		setTimeout(() => {
 
@@ -2154,68 +2189,142 @@ class View {
 		return body;
 
 	}
-	
+
 	static castleBannerOnline() {
-		
-    const modeMap = {
-        pvp: 0,
-        anderkrug: 1,	
-        cte: 2,
-        m4: 3,
-        'pve-ep2-red': 4,
-        'custom-battle': 5
-    };
 
-    const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
-        cssKey,
-        label: () => View.getQueue(cssKey)
-    }));
+  const getDivisionId = () =>
+    (window.User && (User.divisionId || User.rank || User.rating)) ||
+    (window.Settings && Settings.user && (Settings.user.divisionId || Settings.user.rank)) ||
+    10;
 
-    const banner = DOM({ style: ['castle-banner-online'] });
+  const modeMap = {
+    pvp: 0,
+    anderkrug: 1,
+    cte: 2,
+    m4: 3,
+    'pve-ep2-red': 4,
+    'custom-battle': 5
+  };
 
-    // Украшение слева
-    banner.append(DOM({ style: ['banner-ornament'] }));
+  const medalMap = {
+    pvp: 'gold',
+    anderkrug: 'gold',
+    cte: 'gold',
+    m4: 'gold',
+    'pve-ep2-red': 'gold',
+    'custom-battle': 'silver'
+  };
 
-    // Основные иконки режимов + подписи
-    bannerItems.forEach((item, idx) => {
-        const wrap = DOM({ style: ['banner-item'] });
-        const icon = DOM({ style: ['banner-icon', `banner-icon--${item.cssKey}`] });
-        const lbl = DOM({ tag: 'div', style: ['banner-count'] });
+  const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
+    cssKey,
+    label: () => View.getQueue(cssKey)
+  }));
 
-        lbl.textContent = item.label();
+  const banner = DOM({ style: ['castle-banner-online'] });
+  banner.append(DOM({ style: ['banner-ornament'] }));
 
-        wrap.append(icon, lbl);
-        banner.append(wrap);
+  bannerItems.forEach((item, idx) => {
+    const wrap = DOM({ style: ['banner-item'] });
 
-        if (idx < bannerItems.length - 1) {
-            banner.append(DOM({ tag: 'div', style: ['banner-separator'] }));
-        }
+    const icon = DOM({ style: ['banner-icon', `banner-icon--${item.cssKey}`] });
+    wrap.append(icon);
+
+    const lbl = DOM({ tag: 'div', style: ['banner-count'] });
+
+	const current = item.label(); 
+	const total = (typeof View?.getTotalQueue === 'function')
+	? View.getTotalQueue(item.cssKey)
+	: 0;
+
+	lbl.textContent = `${total}/${current}`;
+
+	lbl.textContent = `${total}/${current}`;
+    wrap.append(lbl);
+
+    // медаль
+    const type = medalMap[item.cssKey] || 'gold';
+    const disabled = (type === 'silver');
+
+    const medal = DOM({
+      tag: 'span',
+      style: ['banner-medal', `banner-medal--${type}`, disabled ? 'is-disabled' : null].filter(Boolean)
     });
 
-    // Правый блок статистики (прямоугольник + круг + иконка)
-    const statWrapper = DOM({ style: ['banner-stat-wrapper'] });
-    const statRect = DOM({ style: ['banner-stat-rect'] });
-    const statCircle = DOM({ style: ['banner-stat-circle'] });
-    const statIcon = DOM({ style: ['banner-icon', 'banner-icon--stat'] });
+    if (disabled) {
+      medal.title = 'Режим временно недоступен';
+    } else {
+      medal.title = 'Посмотреть статистику по режиму';
+      medal.setAttribute('role', 'button');
+      medal.tabIndex = 0;
+      const openStats = () => {
+        if (typeof View?.openModeStats === 'function') View.openModeStats(item.cssKey);
+      };
+      medal.addEventListener('click', openStats);
+      medal.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openStats(); }
+      });
+    }
 
-    statCircle.append(statIcon);
-    statWrapper.append(statRect, statCircle);
+    wrap.append(medal);
+    banner.append(wrap);
 
-    // Вопросительный знак и тултип
-    const tooltipWrap = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
-    const questionIcon = DOM({ tag: 'div', style: ['question-icon'] });
-    const tooltipBubble = DOM({ tag: 'div', style: ['tooltip-bubble-img'] });
-    const tooltipText = DOM({ tag: 'div', style: ['tooltip-text'] });
+    if (idx < bannerItems.length - 1) {
+      banner.append(DOM({ tag: 'div', style: ['banner-separator'] }));
+    }
+  });
 
-    tooltipText.textContent = 'Сколько \nчеловек\nв очереди\nпо режимам.';
+  const statWrapper = DOM({ style: ['banner-stat-wrapper'] });
+  const statRect    = DOM({ style: ['banner-stat-rect'] });
+  const statCircle  = DOM({ style: ['banner-stat-circle'] });
 
-    tooltipBubble.append(tooltipText);
-    tooltipWrap.append(questionIcon, tooltipBubble);
-    banner.append(tooltipWrap);
+  // Кнопка Stat
+  const statsBtn = DOM({
+    style: ['banner-icon', 'banner-icon--stat', 'button-outline'],
+    title: 'Статистика',
+    event: ['click', () => {
+      const onEsc = (e) => {
+        if (e.key === 'Escape') { Splash.hide(); document.removeEventListener('keydown', onEsc); }
+      };
+      document.addEventListener('keydown', onEsc, { once: true });
+      Splash.show(
+        DOM(
+          { style: 'iframe-stats', event: ['click', (e) => { if (e.target === e.currentTarget) Splash.hide(); }] },
+          DOM({ style: 'iframe-stats-navbar', event: ['click', () => Splash.hide()] }),
+          DOM({ tag: 'iframe', src: 'https://pw2.26rus-game.ru/stats/?tab=info&q=&user_id=0', style: 'iframe-stats-frame' })
+        ),
+        false
+      );
+    }]
+  });
 
-    banner.append(statWrapper);
+  // ► Бейдж дивизии ПОД кнопкой Stat
+  const divId = getDivisionId();
+  const divInfo = typeof Division?.get === 'function'
+    ? Division.get(divId)
+    : { name: 'Дивизион', icon: 1 };
 
-    return DOM({ style: 'castle-banner-online-wrapper' }, banner);
+  const divisionBadgeUnderStat = DOM({ style: ['banner-division-badge', 'banner-division-badge--stat'] });
+  divisionBadgeUnderStat.style.backgroundImage = `url(content/ranks/${divInfo.icon}.webp)`;
+
+  
+  divisionBadgeUnderStat.title =
+    'Дивизия — группа игроков под одним званием,\n' +
+    'которая играет примерно на равно винрейте матчмейкинга.';
+
+  statCircle.append(statsBtn, divisionBadgeUnderStat);
+  statWrapper.append(statRect, statCircle);
+
+  const tooltipWrap   = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
+  const questionIcon  = DOM({ tag: 'div', style: ['question-icon'] });
+  const tooltipBubble = DOM({ tag: 'div', style: ['tooltip-bubble-img'] });
+  const tooltipText   = DOM({ tag: 'div', style: ['tooltip-text'] });
+  tooltipText.textContent = 'Сколько \nчеловек\nв очереди\nпо режимам.';
+  tooltipBubble.append(tooltipText);
+  tooltipWrap.append(questionIcon, tooltipBubble);
+
+  banner.append(tooltipWrap, statWrapper);
+
+  return DOM({ style: 'castle-banner-online-wrapper' }, banner);
 }
 
 	static castleSettings() {
@@ -2233,13 +2342,13 @@ class View {
 
 		let clan = DOM({ style: ['castle-clans', 'button-outline'], title: 'Кланы', event: ['click', () => Frame.open('clan')] });
 
-		let menu = DOM({ style: ['castle-menu', 'button-outline'], title: Lang.text('menu'), event: ['click', () => Window.show('main', 'menu')] });
+		let menu = DOM({ style: ['castle-menu', 'button-outline'], event: ['click', () => Window.show('main', 'menu')] });
 
-		let history = DOM({ style: ['castle-history', 'button-outline'], title: 'История', event: ['click', () => Window.show('main', 'history')] });
+		/*let history = DOM({ style: ['castle-history', 'button-outline'], title: 'История', event: ['click', () => Window.show('main', 'history')] });*/
 
 		let farm = DOM({ style: ['castle-farm', 'button-outline'], title: 'Фарм', event: ['click', () => Window.show('main', 'farm')] });
 
-
+		
 		let input = DOM({ style: 'castle-input', tag: 'input' });
 
 		input.type = 'range';
@@ -2248,10 +2357,9 @@ class View {
 		input.max = '1';
 		input.step = '0.01';
 
-		let body = DOM({ style: ['castle-settings'] }, menu, ratings, history);
-
-		return body;
-
+		let body = DOM({ style: ['castle-settings'] }, menu, ratings);
+		let container = DOM({ style: ['castle-settings-container'] }, View.castleBannerOnline(), body);
+		return container;
 	}
 
 	static castleChat() {
@@ -2776,7 +2884,7 @@ class View {
 		menu.append(
 			DOM({ style: 'main-header-item', event: ['click', () => View.show('castle')] }, Castle.gl ? 'Замок' : 'Лобби'),
 			DOM({ style: 'main-header-item', event: ['click', () => View.show('builds')] }, 'Билды'),
-			DOM({ style: 'main-header-item', event: ['click', () => View.show('history')] }, 'История'),
+			/*DOM({ style: 'main-header-item', event: ['click', () => View.show('history')] }, 'История'),*/
 			DOM({ style: 'main-header-item', event: ['click', () => View.show('top')] }, 'Рейтинг'),
 			DOM({ style: 'main-header-item', event: ['click', () => View.show('game')] }, 'Фарм'),
 			DOM({ style: 'main-header-item', event: ['click', () => View.exitOrLogout()] }, 'Выйти')
@@ -3121,7 +3229,7 @@ class View {
 		return body;
 
 	}
-
+	/*
 	static async history(isWindow) {
 
 		let body = DOM({ style: 'main' }), history = DOM({ style: isWindow ? 'whistory' : 'history' });
@@ -3154,7 +3262,7 @@ class View {
 		return body;
 
 	}
-
+	*/
 	static async top(hero = 0, isSplah = false) {
 
 		let body = DOM({ style: 'main' });
@@ -4539,8 +4647,8 @@ class Build {
 				}
 
 				await App.api.request('build', 'steal', { user: user, hero: hero });
-
-				View.show('build', hero);
+				
+				await Window.show('main', 'build', hero, 0, true);
 
 				Splash.hide();
 
@@ -7701,6 +7809,13 @@ class App {
 		setTimeout(() => {
 			
 			ARAM.briefing(6,1,() => alert(1));
+			
+		},3000);
+		*/
+		/*
+		setTimeout(() => {
+			
+			Splash.show(DOM({style:'iframe-stats'},DOM({style:'iframe-stats-navbar',event:['click',() => Splash.hide()]},'X'),DOM({tag:'iframe',src:'https://stat.26rus-game.ru'})),false);
 			
 		},3000);
 		*/
