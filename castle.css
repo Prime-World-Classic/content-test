@@ -87,8 +87,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
   position: absolute;
   top: 1cqh;
   right: 1cqh;
-  width: 6cqh;
-  height: 6cqh;
+  width: 1.6cqh;
+  height: 1.6cqh;
   background: url('icons/close-cropped.svg') no-repeat center/contain; 
   z-index: 12001;
 }
@@ -322,8 +322,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 
 .castle-banner-online .banner-count {
     margin-top: 0.4cqh;
-    font-size: 1.3cqh;
+    font-size: 1.6cqh;
     color: #fff;
+    opacity: 75%;
 }
 .banner-count {
   white-space: nowrap;
@@ -851,10 +852,24 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
   margin-top: 0.5cqh;  
   
 }
+.banner-count.is-loading {
+  opacity: .7;
+  filter: saturate(.7);
+}
+
 
 .banner-division-badge--stat {
   pointer-events: auto !important;
-  z-index: 4;                 
+  position: absolute;
+  left: 50%;
+  bottom: -2.6cqh;          
+  transform: translateX(-50%);
+  width: 2.4cqh;
+  height: 2.4cqh;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;      
 }
 
 .banner-stat-circle .banner-icon--stat {
@@ -886,6 +901,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
   background-position: center;
   display: block;   
 }
+
 
 
 .castle-button-play-karma {

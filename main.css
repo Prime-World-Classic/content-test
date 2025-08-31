@@ -1927,6 +1927,16 @@ box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
 	
 }
 
+.mm-lobby-middle-hero-prompt{
+	
+	text-align:center;
+	width: 33.33cqw;
+	margin: 1cqw 0;
+	font: 1.2cqw / 1 Tahoma;
+	color: rgba(255, 255, 255, 0.3);
+	
+}
+
 .mm-lobby-middle-hero-item {
 
 	width:6.66cqw;
