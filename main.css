@@ -1879,6 +1879,22 @@ box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
 	
 }
 
+.mm-player-ban{
+	
+	display:none;
+	position:absolute;
+	width:2.5vw;
+	aspect-ratio:1/1;
+	border-radius:50%;
+	background-position:center;
+	background-repeat:no-repeat;
+	background-size:115%;
+	border:solid 0.1vw rgb(255, 0, 0);
+	box-shadow: 0 0 15cqw rgb(255, 0, 0);
+	z-index:9999;
+	
+}
+
 .lobby-build-tab{
 	display:flex;
 	flex-flow:row nowrap;

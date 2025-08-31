@@ -7489,11 +7489,23 @@ class Events {
 		if (!NativeAPI.status) {
 
 			return;
-
+			
 		}
 
 		MM.eventChangeHero(data);
+		
+	}
+	
+	static MMBanHero(data) {
 
+		if (!NativeAPI.status) {
+
+			return;
+			
+		}
+
+		MM.eventBanHero(data);
+		
 	}
 
 	static MMChat(data) {
@@ -7565,7 +7577,7 @@ class Events {
 		}
 
 		MM.select(data);
-
+		
 	}
 
 	static MMEnd(data) {
@@ -7779,23 +7791,25 @@ class App {
 		await MM.init();
 		/*
 		setTimeout(() => {
-			let obj = {id:1, users:{
-				10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1},
-				1858:{nickname:'vitaly-zdanevich',hero:3,ready:1,rating:1100,select:false,team:1},
-				2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1},
-				4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1},
-				5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2},
-				6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2},
-				7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2},
-				8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2},
-				9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2}
-				},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0,hero:['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15']};
-
-			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:48,ready:0,rating:1284,select:true,team:1,mode:0,commander:true};
-				
-			  MM.lobby(obj);
 			
-		 }, 1000);
+			let obj = {id:1, users:{
+				10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1,banhero:16},
+				1858:{nickname:'vitaly-zdanevich',hero:3,ready:1,rating:1100,select:false,team:1,banhero:17},
+				2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1,banhero:18},
+				4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1,banhero:19},
+				5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2,banhero:20},
+				6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2,banhero:21},
+				7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2,banhero:22},
+				8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2,banhero:23},
+				9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2,banhero:26}
+			},target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
+
+			obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:48,ready:0,rating:1284,select:true,team:1,mode:0,commander:true,banhero:28};
+			
+			MM.lobby(obj);
+			
+		},1000);
+		
 		setTimeout(() => {
 			
 			MM.chat({id:0,message:'тестовое сообщение'});
@@ -11037,6 +11051,8 @@ class MM {
 	static id = '';
 
 	static hero = false;
+	
+	static targetBanHeroId = 0;
 
 	static view = document.createElement('div');
 
@@ -11552,8 +11568,8 @@ class MM {
 
 				try {
 
-					await App.api.request(CURRENT_MM, 'hero', { id: data.id, heroId: MM.targetHeroId });
-
+					await App.api.request(CURRENT_MM, 'hero', { id: data.id, heroId: MM.targetHeroId, banHeroId: MM.targetBanHeroId });
+					
 				}
 				catch (error) {
 
@@ -11562,9 +11578,9 @@ class MM {
 					setTimeout(() => {
 
 						MM.lobbyConfirm.innerText = 'Подтвердить';
-
+						
 					}, 1500);
-
+					
 				}
 
 			}]
@@ -11611,8 +11627,20 @@ class MM {
 				hero.append(DOM({ style: `mm-status-commander-${Winrate.icon(data.users[key].winrate)}` }));
 
 				name.setAttribute('style', 'color:rgba(255,215,0,0.9)');
-
+				
 			}
+			
+			let banhero = DOM({style:'mm-player-ban'});
+			
+			if(data.users[key].banhero){
+				
+				banhero.style.backgroundImage = `url(content/hero/${data.users[key].banhero}/1.webp)`
+				
+				banhero.style.display = 'block';
+				
+			}
+			
+			hero.append(banhero);
 
 			hero.style.backgroundImage = (data.users[key].hero) ? `url(content/hero/${data.users[key].hero}/1.webp)` : `url(content/hero/empty.webp)`;
 
@@ -11621,7 +11649,7 @@ class MM {
 			if (key == data.target) {
 
 				MM.lobbyPlayerAnimate = player.animate({ transform: ['scale(1)', 'scale(0.8)', 'scale(1.1)', 'scale(1)'] }, { duration: 2000, iterations: Infinity, easing: 'ease-in-out' });
-
+				
 			}
 
 			if (data.users[App.storage.data.id].team == data.users[key].team) {
@@ -11710,7 +11738,15 @@ class MM {
 				await App.api.request(CURRENT_MM, 'eventChangeHero', { id: MM.id, heroId: item.id });
 
 				MM.lobbyBuildView(MM.targetHeroId);
-
+				
+			}
+			
+			hero.oncontextmenu = async () => {
+				
+				await App.api.request(CURRENT_MM, 'eventBanHero', { id: MM.id, heroId: item.id });
+				
+				MM.targetBanHeroId = item.id;
+				
 			}
 
 			let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating));
@@ -11783,7 +11819,7 @@ class MM {
 			if (!data.users[key].hero) {
 
 				continue;
-
+				
 			}
 
 			let findHero = document.getElementById(`HERO${data.users[key].hero}`);
@@ -11795,11 +11831,25 @@ class MM {
 				findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
 
 				findHero.dataset.ban = key;
-
+				
 			}
-
+			
+			if(data.users[key].banhero){
+				
+				let findHero = document.getElementById(`HERO${data.users[key].banhero}`);
+				
+				if (findHero) {
+					
+					findHero.style.filter = 'grayscale(100%)';
+					
+					findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+					
+				}
+				
+			}
+			
 		}
-
+		
 	}
 
 	static renderMap(team) {
@@ -11857,7 +11907,20 @@ class MM {
 			findOldPlayer.firstChild.firstChild.firstChild.innerText = data.rating;
 
 			findOldPlayer.firstChild.firstChild.lastChild.style.backgroundImage = `url(content/ranks/99.png)`;
-
+			
+			if(data.banHeroId){
+				
+				findOldPlayer.firstChild.lastChild.style.backgroundImage = `url(content/hero/${data.banHeroId}/1.webp)`;
+				
+				findOldPlayer.firstChild.lastChild.style.display = 'block';
+				
+			}
+			else{
+				
+				findOldPlayer.firstChild.lastChild.style.display = 'none';
+				
+			}
+			
 		}
 
 		if (data.target != 0) {
@@ -11867,7 +11930,7 @@ class MM {
 			if (findPlayer) {
 
 				MM.lobbyPlayerAnimate = findPlayer.animate({ transform: ['scale(1)', 'scale(0.8)', 'scale(1.2)', 'scale(1)'] }, { duration: 500, iterations: Infinity, easing: 'ease-in-out' });
-
+				
 			}
 
 		}
@@ -11883,7 +11946,7 @@ class MM {
 				child.style.backgroundColor = 'rgba(255, 255, 255, 0)';
 
 				break;
-
+				
 			}
 
 		}
@@ -11897,20 +11960,40 @@ class MM {
 			findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
 
 			findHero.onclick = false;
-
+			
+			findHero.oncontextmenu = false;
+			
+		}
+		
+		if(data.banHeroId){
+			
+			let findHero = document.getElementById(`HERO${data.banHeroId}`);
+			
+			if (findHero) {
+				
+				findHero.style.filter = 'grayscale(100%)';
+				
+				findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+				
+				findHero.onclick = false;
+				
+				findHero.oncontextmenu = false;
+				
+			}
+			
 		}
 
 		if (App.storage.data.id == data.target) {
 
 			MM.lobbyConfirm.style.opacity = 1;
-
+			
 		}
 		else {
 
 			MM.lobbyConfirm.style.opacity = 0;
-
+			
 		}
-
+		
 	}
 
 	static finish(data) {
@@ -11967,56 +12050,27 @@ class MM {
 					item.style.backgroundImage = url;
 
 					break;
-
+					
 				}
+				
+			}
+			
+		}
+		
+	}
 
-			}
+	static eventBanHero(data){
 
-		}
-
-		/*
-		let oldHero = MM.lobbyUsers[data.id].hero, countHero = 0;
+		let findPlayer = document.getElementById(`PLAYER${data.id}`);
 		
-		for(let key in MM.lobbyUsers){
+		if(findPlayer){
 			
-			if(MM.lobbyUsers[key].hero == oldHero){
-				
-				countHero++;
-				
-			}
+			findPlayer.firstChild.lastChild.style.backgroundImage = `url(content/hero/${data.heroId}/1.webp)`;
+			
+			findPlayer.firstChild.lastChild.style.display = 'block';
 			
 		}
 		
-		if(countHero == 1){
-			
-			let findHero = document.getElementById(`HERO${oldHero}`);
-			
-			if(findHero){
-				
-				findHero.style.backgroundColor = 'rgba(51, 255, 51, 0)';
-				
-				findHero.dataset.active = 0;
-				
-			}
-			
-		}
-		
-		let findHero = document.getElementById(`HERO${data.heroId}`);
-		
-		if(findHero){
-			
-			if(findHero.dataset.active == 0){
-				
-				findHero.style.backgroundColor = 'rgba(51, 255, 51, 0.8)';
-				
-				findHero.dataset.active = 1;
-				
-				MM.lobbyUsers[data.id].hero = data.heroId;
-				
-			}
-			
-		}
-		*/
 	}
 
 	static chat(data) {
