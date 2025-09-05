@@ -1,6 +1,7 @@
 html,body{cursor:url('img/cursor.png') 0 0,default}
 
 @keyframes search {
+	
 	0% {
 		transform:rotate(0deg) scale(1);
 	}
@@ -24,8 +25,31 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	}
 
 	100% {
+		
 		transform:rotate(360deg) scale(1);
+		
 	}
+	
+}
+
+@keyframes questanim {
+	
+	0% {
+		transform:scale(0.4);
+	}
+	
+	50% {
+		
+		transform:scale(0.5);
+		
+	}
+	
+	100% {
+		
+		transform:scale(0.4);
+		
+	}
+	
 }
 /* Общий контейнер: баннер сверху, кнопки снизу */
 .castle-settings-container {
@@ -1387,6 +1411,89 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	position: absolute;
 	bottom: 0;
 }
+
+.quest{
+	
+	position:absolute;
+	left:0;
+	display:flex;
+	align-items:center;
+	justify-content:center;
+	flex-flow:column nowrap;
+	width:6vw;
+	height:100vh;
+	margin:0 0.5vw;
+	
+}
+
+.quest-item{
+	
+	position:relative;
+	width:6vw;
+	height:6vw;
+	margin:0.5vh 0;
+	
+}
+
+.quest-item-1,.quest-item-2,.quest-item-hero,.quest-item-3{
+	
+	position:absolute;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	width:6vw;
+	height:6vw;
+	
+}
+
+.quest-item-1{
+	
+	transform:scale(0.9);
+	background-image: url('img/quest/1.png');
+	z-index:1;
+	
+}
+
+.quest-item-2{
+	
+	background-image: url('img/quest/2.png');
+	z-index:3;
+	
+}
+
+.quest-item-3{
+	
+	background-image: url('img/quest/3.png');
+	z-index:5;
+	left:2.5vw;
+	top:1vw;
+	transform:scale(0.4);
+	animation: questanim 1s linear infinite;
+	
+}
+
+.quest-item-5{
+	position:absolute;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+	width:6vw;
+	background-image: url('img/quest/5.png');
+	z-index:4;
+	top:5vw;
+	aspect-ratio:121/21;
+	font-size:0.7vw;
+	text-align:center;
+	color:rgba(255,255,255,0.9);
+	
+}
+
+.quest-item-hero{
+	
+	z-index:2;
+	
+}
+
 @media (max-aspect-ratio: 1/1) {
 	.castle-settings {
 		flex-direction: column;
