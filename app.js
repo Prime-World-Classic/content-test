@@ -1719,7 +1719,7 @@ class View {
 			document.body.append(template);
 
 		}
-
+		
 	}
 	
 	static authorization() {
@@ -1832,6 +1832,8 @@ class View {
 		
 		body.append(backgroundImage,Castle.canvas);
 		
+		body.append(await View.castleQuest());
+		
 		try{
 			
 			let castlePlay = await View.castlePlay();
@@ -1880,6 +1882,26 @@ class View {
 		
 		return body;
 
+	}
+	
+	static async quest(questId,cloneNode,test){
+		
+		let ghost = DOM();
+		
+		cloneNode.lastChild.remove();
+		
+		cloneNode.lastChild.remove();
+		
+		ghost.append(cloneNode);
+		
+		ghost.setAttribute('style','position:absolute;left:-3vw;top:-3vw;transform:scale(1.3)');
+		
+		let body = DOM();
+		
+		body.innerText = JSON.stringify(test);
+		
+		return DOM({tag:'div'},ghost,body);
+		
 	}
 
 	static async castlePlay() {
@@ -2500,6 +2522,98 @@ class View {
 
 		return body;
 
+	}
+	
+	static async castleQuest(){
+		
+		let body = DOM({style:'quest'});
+		
+		let request = [
+		{
+			id:1,
+			heroId:16,
+			title:'Смена власти',
+			description:'Ты силён. Я видел твои победы. Но сила без амбиций — лишь пустой звук. Один герой, возомнил себя наследником трона. Убери его. Докажи, что настоящая сила — в умении вовремя нанести удар.',
+			target:'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье не меньше трёх раз за один бой. Ваш герой не должен умереть от жертвы.',
+			reward:'+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
+			prompt:'Получить сведения в тамбуре, могут только герои класса — Убийца.',
+			status:0,
+			timer:(Date.now() + 86400000)
+			},
+			{
+			id:2,
+			heroId:1,
+			title:'Право сильнейшего',
+			description:'Пограничье видело немало поединков, но истинных воинов среди них — единицы. Один из героев запятнал свою честь, используя запрещённые приёмы в бою. Он должен быть остановлен твоим мастерством. Сразись с ним и докажи, что сила без чести — ничто. Победи его в честном дуэли, и твоя награда будет достойной.',
+			target:'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье за один бой. Ваш герой не должен умереть до того, как устранит жертву.',
+			reward:'+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
+			prompt:'Получить сведения в тамбуре, могут только герои класса — Убийца.',
+			status:0,
+			timer:(Date.now() + 86400000)
+			},
+			{
+			id:3,
+			heroId:38,
+			title:'Воздаяние Неуязвимому',
+			description:'Мой взор пронзает битвы и интриги этого мира, и я видела, как твоя сила обратила в бегство тех, кто возжелал твоей погибели. Они думали, что ты — добыча. Они ошиблись. Ты — испытание, которое они не смогли пройти. Их неудача — доказательство твоей избранности. И за это достоинство ты должен быть вознаграждён. Прими мой дар — не как плату за убийство, но как признание твоей несокрушимости',
+			target:'Выжить в условиях PvP-охоты',
+			reward:'+1 кристалл прайма',
+			prompt:'',
+			status:0,
+			timer:(Date.now() + 86400000)
+			},
+			{
+			id:4,
+			heroId:13,
+			title:'Сила единства',
+			description:'Приветствую тебя, дитя Света! Этот мир держится не только на силе клинка, но и на взаимопомощи. Я вижу, как ты сражаешься, но истинная мощь проявляется, когда мы поддерживаем друг друга. Твои союзники нуждаются в твоей помощи — исцелении, защите, усилении. Окажи 1000 поддержек в битвах, и я покажу тебе, какую силу рождает настоящее единство.',
+			target:'Оказать 1000 поддержек союзным героям.',
+			reward:'+100 кристаллов прайма',
+			prompt:'',
+			status:0,
+			timer:(Date.now() + (86400000 * 30) )
+			},
+			{
+			id:5,
+			heroId:3,
+			title:'Путь Превосходства',
+			description:'Приветствую, испытующий! Мир Прайма рожден из хаоса и крови. Сила — единственный язык, который здесь понимают все. Ты уже показал себя в битвах, но настоящая мощь требует жертв. Я бросаю тебе вызов: соверши 1000 убийств. Пусть каждый поверженный враг станет твоим шагом к величию. Докажи, что ты достоин называться истинным чемпионом Прая!',
+			target:'Совершить 1000 убийств вражеских героев.',
+			reward:'+100 кристаллов прайма',
+			prompt:'',
+			status:0,
+			timer:(Date.now() + (86400000 * 30) )
+			}
+		];
+		
+		for(let item of request){
+			
+			let hero = DOM({style:'quest-item-hero'});
+			
+			hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
+			
+			let timer = DOM({style:'quest-item-5'});
+			
+			timer.innerText = (item.timer - Date.now());
+			
+			setInterval(() => {
+				
+				timer.innerText = (item.timer - Date.now());
+				
+			},1000)
+			
+			let quest = DOM({style:'quest-item',event:['click',() => {
+				
+				Window.show('main','quest',item.id,quest.cloneNode(true),item);
+				
+			}]},DOM({style:'quest-item-1'}),hero,DOM({style:'quest-item-2'}),DOM({style:'quest-item-3'}),timer);
+			
+			body.append(quest);
+			
+		}
+		
+		return body;
+		
 	}
 
 	static bodyCastleBuildings() {
@@ -3994,6 +4108,10 @@ class Window {
 	static async inventory() {
 		let view = await View.inventory(true);
 		return DOM({ id: 'winventory' }, view);
+	}
+	static async quest(questId,cloneNode,test) {
+		let view = await View.quest(questId,cloneNode,test);
+		return DOM({ id: 'wquest' }, view);
 	}
 	static async menu() {
 		return DOM({ id: 'wcastle-menu' },
@@ -7786,7 +7904,7 @@ class Events {
 }
 
 class App {
-	static RIGA = 'wss://pw-classic.ddns.net:443';
+	static RIGA = 'wss://pwclassic.isgood.host:443';
 	static MOSCOW = 'wss://api2.26rus-game.ru:8443';
 	static CLOUDFLARE = 'wss://api.26rus-game.ru:8443';
 	static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE ];
@@ -8736,7 +8854,7 @@ class PWGame {
 	static gameServerIps = [
 		'http://81.88.210.30:27302/api',
 		'http://26.133.141.83:27302/api', // test connection to Radmin IP
-		'http://95.164.91.124:27302/api',
+		'http://46.32.186.159:27302/api',
 	];
 	static MAIN_GAME_SERVER_IP = 0
 	static RADMIN_GAME_SERVER_IP = 1;
