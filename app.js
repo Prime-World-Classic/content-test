@@ -1338,12 +1338,13 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[3].onclick = () => {
 
-		
+			// App.error('Привет от ifst 😎');
 			
 		}
 
 		CastleNAVBAR.body.children[4].onclick = () => {
 
+			// App.error('Товарищеские матчи в процессе разработки...');
 			
 		}
 
@@ -1518,7 +1519,7 @@ class CastleNAVBAR {
 		
 		CastleNAVBAR.body.children[17].style.backgroundImage =  `url(content/ranks/${division.icon}.webp)`;
 		
-		CastleNAVBAR.body.children[17].title = 'Дивизия — группа игроков под одним званием,\nкоторая играет примерно на равном винрейте матчмейкинга.';
+		CastleNAVBAR.body.children[17].title = division.name;
 		
 		CastleNAVBAR.body.children[17].style.display = 'block';
 		
@@ -2397,7 +2398,12 @@ class View {
   // подсказка слева
   const tooltipWrap   = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
   const questionIcon  = DOM({ tag: 'div', style: ['question-icon'] });
-  tooltipWrap.append(questionIcon);
+  const tooltipBubble = DOM({ tag: 'div', style: ['tooltip-bubble-img'] });
+  const tooltipText   = DOM({ tag: 'div', style: ['tooltip-text'] });
+  tooltipText.textContent = 'Сколько \nчеловек\nв очереди\nпо режимам.';
+  tooltipBubble.append(tooltipText);
+  tooltipWrap.append(questionIcon, tooltipBubble);
+
   banner.append(tooltipWrap, statWrapper);
   return DOM({ style: 'castle-banner-online-wrapper' }, banner);
 }
@@ -2406,6 +2412,8 @@ class View {
 	static castleSettings() {
 
 		let builds = DOM({ style: ['castle-builds', 'button-outline'], title: "Рейтинг", event: ['click', () => View.show('top')] });
+
+		/*let ratings = DOM({ style: ['castle-top', 'button-outline'], title: "Рейтинг", event: ['click', () => Window.show('main', 'top')] });*/
 
 		let settings = DOM({
 			style: ['castle-settings-btn', 'button-outline'], title: "Вкл/Выкл графики замка", event: ['click', () => {
@@ -2416,7 +2424,9 @@ class View {
 
 		let clan = DOM({ style: ['castle-clans', 'button-outline'], title: 'Кланы', event: ['click', () => Frame.open('clan')] });
 
-		
+		let menu = DOM({ style: ['castle-menu', 'button-outline'], event: ['click', () => Window.show('main', 'menu')] });
+
+		/*let history = DOM({ style: ['castle-history', 'button-outline'], title: 'История', event: ['click', () => Window.show('main', 'history')] });*/
 
 		let farm = DOM({ style: ['castle-farm', 'button-outline'], title: 'Фарм', event: ['click', () => Window.show('main', 'farm')] });
 
@@ -2429,7 +2439,7 @@ class View {
 		input.max = '1';
 		input.step = '0.01';
 
-		let body = DOM({ style: ['castle-settings'] });
+		let body = DOM({ style: ['castle-settings'] }, menu);
 		let container = DOM({ style: ['castle-settings-container'] }, View.castleBannerOnline(), body);
 		return container;
 	}
@@ -2452,31 +2462,27 @@ class View {
 
 		View.castleBottom.addEventListener('wheel', function (event) {
 
-			if (event.deltaY != 0) {
+			let modifier = 0;
 
 			if (event.deltaMode == event.DOM_DELTA_PIXEL) {
 
-				event.preventDefault();
-				
-				View.scrollHero(event.deltaY / 100);
+				modifier = 1;
 
 			} else if (event.deltaMode == event.DOM_DELTA_LINE) {
 
-				event.preventDefault();
-				
-				View.scrollHeroLine(event.deltaY / 100);
+				modifier = parseInt(getComputedStyle(this).lineHeight);
 
 			} else if (event.deltaMode == event.DOM_DELTA_PAGE) {
 
-				event.preventDefault();
-
-				let modifier = this.clientWidth;
-
-				View.castleBottom.scrollLeft += modifier;
-
-				View.updateArrows();
+				modifier = this.clientHeight;
 
 			}
+
+			if (event.deltaY != 0) {
+
+				this.scrollLeft += modifier * event.deltaY;
+
+				event.preventDefault();
 
 			}
 
@@ -2484,37 +2490,7 @@ class View {
 
 		View.bodyCastleHeroes();
 
-		let nicknameValue = String(App?.storage?.data?.login || '').trim();
-		let nicknameMenuItem = DOM({
-			style: 'nickname-menu-item',
-			event: ['click', () => {
-				App.setNickname();
-			}], title: 'Смена никнейма'
-			}, DOM({}, nicknameValue));
-		if (nicknameValue.length > 10) {
-			nicknameMenuItem.firstChild.classList.add('castle-name-autoscroll');
-		}
-		
-		let flagMenuItem = DOM({
-			style: 'flag-menu-item',
-			event: ['click', () => {
-				App.setFraction();
-			}], title: 'Выбор стороны'
-			});
-		let settingsMenuItem = DOM({
-			style: 'settings-menu-item',
-			event: ['click', () => {
-				Window.show('main', 'menu');
-			}], title: 'Настройки'
-			});
-		let chatMenuItem = DOM({
-			style: 'chat-menu-item',
-			event: ['click', () => {
-				Chat.changeChatVisibility();
-			}], title: 'Отображение чата'
-			});
 		let heroesMenuItem = DOM({
-			style: 'heroes-menu-item',
 			event: ['click', () => {
 
 				View.bodyCastleHeroes();
@@ -2523,7 +2499,6 @@ class View {
 			}], title: 'Герои'
 			});
 		let friendsMenuItem = DOM({
-			style: 'friends-menu-item',
 			event: ['click', () => {
 
 				View.bodyCastleFriends();
@@ -2532,7 +2507,6 @@ class View {
 			}], title: 'Друзья'
 			});
 		let buildingsMenuItem = DOM({
-			style: 'buildings-menu-item',
 			event: ['click', () => {
 
 				View.bodyCastleBuildings();
@@ -2540,108 +2514,20 @@ class View {
 
 			}], title: 'Строительство'
 			});
+		heroesMenuItem.style.backgroundImage = `url(content/htalents/270.webp)`;
+		friendsMenuItem.style.backgroundImage = `url(content/htalents/456.webp)`;
+		buildingsMenuItem.style.backgroundImage = `url(content/icons/buildings.webp)`;
 
-		flagMenuItem.style.backgroundImage = Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`; 
-		
-		View.arrows = new Object();
-		View.arrows.ls = DOM({style: 'castle-bottom-left-scroll-single', event: ['click', () => View.scrollHero(-1)]});
-		View.arrows.ld = DOM({style: 'castle-bottom-left-scroll-double', event: ['click', () => View.scrollHeroLine(-1)]});
-		View.arrows.rs = DOM({style: 'castle-bottom-right-scroll-single', event: ['click', () => View.scrollHero(1)]});
-		View.arrows.rd = DOM({style: 'castle-bottom-right-scroll-double', event: ['click', () => View.scrollHeroLine(1)]});
-		body.append(DOM({ style: 'castle-bottom-menu' }, nicknameMenuItem, flagMenuItem, settingsMenuItem, heroesMenuItem , friendsMenuItem, buildingsMenuItem, chatMenuItem), 
-		DOM({style: 'castle-bottom-content-container'}, 
-			View.castleBottom,
-			DOM({ style: 'castle-bottom-content-left-scroll' }, 
-				View.arrows.ls,
-				View.arrows.ld,
-			),
-			DOM({ style: 'castle-bottom-content-right-scroll' }, 
-				View.arrows.rs,
-				View.arrows.rd,
-			)
-			));
-
-		View.updateArrows();
+		body.append(DOM({ style: 'castle-bottom-menu' }, heroesMenuItem , friendsMenuItem, buildingsMenuItem), View.castleBottom);
 
 		return body;
-	}
 
-	static currentFloatScroll = 0.0;
-
-	static scrollHero(delta) {
-
-		let modifier = parseFloat(getComputedStyle(View.castleBottom.firstChild).width) + parseFloat(getComputedStyle(View.castleBottom.firstChild).borderRightWidth);
-
-		let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
-		if (isNaN(View.currentFloatScroll)) {
-			View.currentFloatScroll = 0;
-		}
-		View.currentFloatScroll += modifier * delta;
-		View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
-		View.castleBottom.scrollLeft = View.currentFloatScroll;
-
-		View.updateArrows();
-
-	}
-
-	static scrollHeroLine(delta) {
-
-		let width = parseFloat(getComputedStyle(View.castleBottom).width);
-
-		let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
-		if (isNaN(View.currentFloatScroll)) {
-			View.currentFloatScroll = 0;
-		}
-		View.currentFloatScroll += width * delta;
-		View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
-		View.castleBottom.scrollLeft = View.currentFloatScroll;
-
-		View.updateArrows();
-		
-	}
-
-	static updateArrows() {
-		let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
-		if (View.castleBottom.scrollLeft == 0) {
-			View.arrows.ls.classList.add('castle-bottom-content-btn-disable');
-			View.arrows.ld.classList.add('castle-bottom-content-btn-disable');
-		} else {
-			View.arrows.ls.classList.remove('castle-bottom-content-btn-disable');
-			View.arrows.ld.classList.remove('castle-bottom-content-btn-disable');
-		}
-
-		if (maxScrollLeft && View.castleBottom.scrollLeft == maxScrollLeft) {
-			View.arrows.rs.classList.add('castle-bottom-content-btn-disable');
-			View.arrows.rd.classList.add('castle-bottom-content-btn-disable');
-		} else {
-			View.arrows.rs.classList.remove('castle-bottom-content-btn-disable');
-			View.arrows.rd.classList.remove('castle-bottom-content-btn-disable');
-		}
 	}
 	
 	static async castleQuest(){
-
+		
 		let body = DOM({style:'quest'});
 		
-		const list = DOM({ style: 'quest-list' });
-		const PAGE   = 4;       
-		let   start  = 0;       
-		const items  = [];       
-		const btnUp   = DOM({
-			style: ['quest-arrow','quest-arrow-up'],
-			event: ['click', () => {
-			if (start > 0) { start--; render(); }
-		}]
-});
-	const btnDown = DOM({
-		style: ['quest-arrow','quest-arrow-down'],
-		event: ['click', () => {
-		if (start < Math.max(0, items.length - PAGE)) { start++; render(); }
-    }]
-});
-
-  body.append(btnUp, list, btnDown); // порядок: ▲ список ▼
-
 		let request = [
 		{
 			id:1,
@@ -2699,53 +2585,35 @@ class View {
 			timer:(Date.now() + (86400000 * 30) )
 			}
 		];
-	
-    for (let item of request) {
-
-    let hero = DOM({style:'quest-item-hero'}, DOM({style:'quest-item-portrait-glass'}));
-    hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
-
-    let timer = DOM({style:'quest-item-timer'});
-    const tick = () => {
-    const ms = item.timer - Date.now();
-    const sec = Math.max(0, Math.floor(ms/1000));
-    const h = Math.floor(sec/3600);
-    const m = Math.floor((sec%3600)/60);
-    const s = sec%60;
-    timer.textContent = h>0
-        ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
-        : `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    };
-    tick(); setInterval(tick, 1000);
-
-    let quest = DOM(
-		{
-        style:'quest-item',
-        event:['click', () => {
-			Window.show('main','quest', item.id, quest.cloneNode(true), item);
-        }]
-	},
-	DOM({style:'quest-item-portrait-background'}, hero, DOM({style:'quest-item-exclamation'})),
-	timer
-    );
-
-    items.push(quest);
-
-    if (items.length <= PAGE) list.append(quest);
-	}
-
-	function render() {
-		list.innerHTML = '';
-				const end = Math.min(start + PAGE, items.length);
-				for (let i = start; i < end; i++) list.append(items[i]);
-				const maxStart = Math.max(0, items.length - PAGE);
-				const noScroll = items.length <= PAGE;
-				btnUp.classList.toggle('disabled', noScroll || start === 0);
-				btnDown.classList.toggle('disabled', noScroll || start >= maxStart);
-}
-
-	render();
-	return body;
+		
+		for(let item of request){
+			
+			let hero = DOM({style:'quest-item-hero'});
+			
+			hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
+			
+			let timer = DOM({style:'quest-item-5'});
+			
+			timer.innerText = (item.timer - Date.now());
+			
+			setInterval(() => {
+				
+				timer.innerText = (item.timer - Date.now());
+				
+			},1000)
+			
+			let quest = DOM({style:'quest-item',event:['click',() => {
+				
+				Window.show('main','quest',item.id,quest.cloneNode(true),item);
+				
+			}]},DOM({style:'quest-item-1'}),hero,DOM({style:'quest-item-2'}),DOM({style:'quest-item-3'}),timer);
+			
+			body.append(quest);
+			
+		}
+		
+		return body;
+		
 	}
 
 	static bodyCastleBuildings() {
@@ -2782,7 +2650,7 @@ class View {
 
 			let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
 
-			let building = DOM({ style: 'castle-building-item' }, buildingNameBase);
+			let building = DOM({ style: 'castle-hero-item' }, buildingNameBase);
 
 			building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
@@ -2820,21 +2688,15 @@ class View {
 					heroName.firstChild.classList.add('castle-name-autoscroll');
 				}
 
-				let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
+				let heroNameBase = DOM({ style: 'castle-item-hero-name' }, heroName);
 
-				let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
+				let rankIcon = DOM({ style: 'rank-icon' });
 
 				rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-				let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIcon);
+				let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
 
-				let hero = DOM({ style: ['castle-hero-item', 'hover-brightness'] }, 
-					DOM({ style: ['castle-hero-item-bg', 'hover-brightness']}), 
-					DOM({ style: ['castle-hero-item-img', 'no-hover-brightness']}), 
-					DOM({ style: ['castle-item-background', 'hover-brightness']}), 
-					DOM({ style: ['castle-item-ornament', 'hover-brightness']}), 
-					rank, 
-					heroNameBase);
+				let hero = DOM({ style: 'castle-hero-item' }, rank, heroNameBase);
 
 				hero.addEventListener('click', async () => Window.show('main', 'build', item.id, 0, true));
 
@@ -8668,29 +8530,25 @@ class Chat {
 
 			if (event.code == 'KeyM' && (event.ctrlKey || event.metaKey)) {
 
-				changeChatVisibility();
+				if (Chat.hide) {
+
+					Chat.body.style.display = 'block';
+
+					Chat.hide = false;
+
+				}
+				else {
+
+					Chat.body.style.display = 'none';
+
+					Chat.hide = true;
+
+				}
 
 			}
 
 		});
 
-	}
-
-	static changeChatVisibility() {
-		if (Chat.hide) {
-
-			Chat.body.style.display = 'block';
-
-			Chat.hide = false;
-
-		}
-		else {
-
-			Chat.body.style.display = 'none';
-
-			Chat.hide = true;
-
-		}
 	}
 
 	static wrapLinksInATag(message) {
