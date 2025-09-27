@@ -8463,7 +8463,7 @@ class App {
 
 	static isAdmin(id = 0) {
 
-		return [1, 2, 24, 134, 865, 2220, 292].includes(Number((id ? id : App.storage.data.id)));
+		return [1, 2, 24, 134, 865, 2220, 292, 1853].includes(Number((id ? id : App.storage.data.id)));
 
 	}
 
