@@ -59,6 +59,7 @@ export const en = {
 		titletraining: 'Training mode',
 		training: 'Training',
 		confirm:'Confirm',
+		continue:'Continue',
 
 		// Подсказки
 		titleflag: 'Choosing a faction',

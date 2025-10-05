@@ -4319,7 +4319,7 @@ class Window {
 				
 				ParentEvent.children = window.open('https://api2.26rus-game.ru:2087', 'SteamAuth', 'width=1280, height=720, top='+((screen.height-720)/2)+', left='+((screen.width-1280)/2)+', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no');
 				
-			}]}, "Продолжить")			
+			}]}, Lang.text("continue"))			
 			)
 		);
 	}

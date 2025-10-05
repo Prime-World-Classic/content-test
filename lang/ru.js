@@ -58,6 +58,7 @@ export const ru = {
 		language: 'Язык',
 		LangTarg: 'Язык изменен',
 		confirm:'Подтвердить',
+		continue:'Продолжить',
 
 		// Подсказки
 		titletraining: 'Тренировка',
