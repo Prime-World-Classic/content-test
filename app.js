@@ -54,215 +54,139 @@ class ParentEvent {
 	
 }
 
+
+
 class Lang {
-
-	static target = 'ru'; // TODO get from the system
-	// TODO add UI dropdown?
+	static target = 'ru';
 	static default = 'ru';
+	static list = {};
+	static cache = new Map();
 
-	static list = {
-		en: {
-			locale:['en_US'],
-			name:'English',
-			word: {
-				nickname: 'login/Nickname',
-				code: 'code/Telegram bot',
-				password: 'password',
-				passwordAgain: 'password again',
-				login: 'Login',
-				registration: 'Registration',
-				fraction: 'Select a faction',
-				adornia: 'Kingdom of Adornia',
-				docts: 'Empire of the Docts',
-				fight: 'Fight!',
-				enterTextAndPressEnter: 'Enter the text and press Enter',
-				ready: 'Ready',
-				library: 'Library',
-				menu: 'Меню',
-				preferences: 'Preferences',
-				windowMode: 'Window mode',
-				radminPriority: 'RadminVPN Priority',
-				threeD: '3D',
-				volume: 'Volume',
-				volumeMusic: 'Volume of music',
-				volumeSound: 'Volume of sounds',
-				back: 'Back',
-				soundHelp: 'If the sound settings are lost, you can adjust the volume in the mixer: right-click on the sound icon on the Taskbar -> Volume Mixer -> Game icon -> make it quieter',
-				support: 'Support',
-				supportDesk: 'Questions? Feel free to contact us:',
-				accountSwitch: 'Switch account',
-				exit: 'Exit from Prime World',
-				version: 'Version',
-				health: 'Health',
-				energy: 'Energy',
-				speed: 'Speed',
-				strength: 'Strength',
-				intelligence: 'Intelligence',
-				agility: 'Agility',
-				dexterity: 'Dexterity',
-				stamina: 'Stamina',
-				will: 'Will',
-				damage: 'Damage',
-				criticalHit: 'Critical Hit',
-				attacksPerSecond: 'Attacks per second',
-				penetration: 'Penetration',
-				defencePsys: 'Defence Psysical',
-				defenceMagic: 'Defence Magic',
-				skins: 'Skins',
-				authorizationSteam: 'Login with Steam',
-				steamauthTitle: 'Login with Steam',
-				steamauth: 'By clicking Continue, you will register a new account! If you want to log in to your current PW Classic account, you must first link your Steam account from the settings menu.',
-				classTalent: 'Class Talent'
-			}
-		},
-		ru: {
-			locale:['ru_RU'],
-			name:'Русский',
-			word: {
-				nickname: 'Логин/Никнейм',
-				code: 'Инвайт-код',
-				password: 'Пароль',
-				passwordAgain: 'Еще раз пароль',
-				login: 'Войти',
-				registration: 'Регистрация',
-				fraction: 'Выберите фракцию',
-				adornia: 'Королевство Адорния',
-				docts: 'Империя Доктов',
-				fight: 'В бой!',
-				enterTextAndPressEnter: 'Введите текст и нажмите Enter',
-				ready: 'Готов',
-				library: 'Библиотека',
-				menu: 'Меню',
-				preferences: 'Настройки',
-				windowMode: 'Оконный режим',
-				radminPriority: 'Приоритет RadminVPN',
-				threeD: '3D графика',
-				volume: 'Общая громкость',
-				volumeMusic: 'Громкость музыки',
-				volumeSound: 'Громкость звуков',
-				back: 'Назад',
-				soundHelp: 'Если сбиваются настройки звука, то можно отрегулировать в микшере громкости: ПКМ на значок звука на Панели задач -> Микшер громкости -> Значок игры -> делаете тише',
-				support: 'Поддержка',
-				supportDesk: 'Если у Вас есть вопросы, Вы можете связаться с нами через:',
-				accountSwitch: 'Сменить аккаунт',
-				exit: 'Выйти из Prime World',
-				version: 'Версия',
-				health: 'Здоровье',
-				energy: 'Энергия',
-				speed: 'Скорость',
-				strength: 'Сила',
-				intelligence: 'Разум',
-				agility: 'Проворство',
-				dexterity: 'Хитрость',
-				stamina: 'Стойкость',
-				will: 'Воля',
-				damage: 'Урон',
-				criticalHit: 'Шанс крита',
-				attacksPerSecond: 'Скорость атаки',
-				penetration: 'Пробивание',
-				defencePsys: 'Защита тела',
-				defenceMagic: 'Защита духа',
-				skins: 'Скины',
-				authorizationSteam: 'Вход через Steam',
-				steamauthTitle: 'Вход через Steam',
-				steamauth: 'Нажимая кнопку Продолжить, произойдёт регистрация нового аккаунта! Если Вы хотите осуществить вход в свой текущий аккаунт PW Classic, Вам необхоидмо сначала привязать свой Steam аккаунт из меню настроек.',
-				classTalent: 'Классовый'
-			}
-		},
-		be: {
-			locale:['be_BY'],
-			name:'Беларускі',
-			word: {
-				nickname: 'Лагін/Нікнейм',
-				code: 'Код/бот тэлеграм',
-				password: 'Пароль',
-				passwordAgain: 'Яшчэ раз пароль',
-				login: 'Увайсці',
-				registration: 'Рэгістрацыя',
-				fraction: 'Абярыце фракцыю',
-				adornia: 'Каралеўства Адорнія',
-				docts: 'Імперыя Доктаў',
-				fight: 'У бой!',
-				enterTextAndPressEnter: 'Увядзіце тэкст і націсніце Enter',
-				ready: 'Гатоў',
-				library: 'Бібліятэка',
-				menu: 'Мяню',
-				preferences: 'Прылады',
-				windowMode: 'Аконны рэжым',
-				radminPriority: 'Прыярытэт RadminVPN',
-				threeD: '3D графіка',
-				volume: 'Агульная гучнасць',
-				volumeMusic: 'Гучнасць музыкі',
-				volumeSound: 'Гучнасць гукаў',
-				back: 'Назад',
-				soundHelp: 'Калі збіваюцца налады гуку, то можна адрэгуляваць ў мікшар гучнасці: правы пстрык мышы на значок гуку на панэлі задач -> Мікшар гучнасці -> Значок гульні -> рабіце цішэй',
-				support: 'Падтрымка',
-				supportDesk: 'Калі ў вас ёсць пытанні, вы можаце звязацца з намі праз:',
-				accountSwitch: 'Змяніць улiковы запiс',
-				exit: 'Выйсці з Prime World',
-				version: 'Версія',
-				health: 'Здароўе',
-				energy: 'Энергія',
-				speed: 'Хуткасць',
-				strength: 'Сіла',
-				intelligence: 'Розум',
-				agility: 'Шпаркасць',
-				dexterity: 'Хітрасць',
-				stamina: 'Цягавітасьць',
-				will: 'Воля',
-				damage: 'Шкода',
-				criticalHit: 'Шанец крытычнага траплення',
-				attacksPerSecond: 'Хуткасць атакі',
-				penetration: 'Прабіванне',
-				defencePsys: 'Абарона цела',
-				defenceMagic: 'Абарона духу',
-				skins: 'Абалонкі',
-				authorizationSteam: 'Увайсці праз steam',
-				steamauthTitle: 'Увайсці праз steam',
-				steamauth: 'Націскаючы кнопку Працягнуць, адбудзецца рэгістрацыя новага акаўнта! Калі Вы жадаеце ажыццявіць уваход у свой бягучы акаўнт PW Classic, Вам неабходна спачатку прывязаць свой Steam акаўнт з меню налад.',
-				classTalent: 'Класавы'
-			}	
+	static async init() {
+		try {
+			console.log('Loading languages...');
+
+			// Абсолютные пути
+			const { ru } = await import('/content/lang/ru.js');
+			const { en } = await import('/content/lang/en.js');
+			const { be } = await import('/content/lang/be.js');
+
+			Lang.list = { ru, en, be };
+			console.log('Languages loaded successfully:', Object.keys(Lang.list));
+
+		} catch (error) {
+			console.error('Error loading language files:', error);
+			throw new Error('Failed to load language files: ' + error.message);
 		}
-	};
-	
-	static init(){
-		
-		let locale = NativeAPI.getLocale();
-		
-		if(!locale){
-			
-			if( !('language' in navigator) ){
-				
+
+		// Загрузка языка из настроек
+		if (typeof Settings !== 'undefined' && Settings.settings && Settings.settings.language) {
+			if (Settings.settings.language in Lang.list) {
+				Lang.target = Settings.settings.language;
+				console.log('Language from settings:', Lang.target);
+				Lang.clearCache(); // Очистка кеша при смене языка
 				return;
-				
 			}
-			
+		}
+
+		// Автоопределение языка по локали
+		let locale = NativeAPI.getLocale();
+		if (!locale && 'language' in navigator) {
 			locale = navigator.language;
-			
 		}
-		
-		for(let key in Lang.list){
-			
-			if(Lang.list[key].locale.includes(locale)){
-				
+
+		for (let key in Lang.list) {
+			// Предполагаем, что .locale это массив
+			if (Lang.list[key].locale.includes(locale)) {
 				Lang.target = key;
-				
+				console.log('Language detected from locale:', locale, '->', Lang.target);
 				break;
-				
 			}
-			
 		}
-		
+
+		console.log('Final language:', Lang.target);
+		Lang.clearCache(); // Очистка кеша после инициализации
+	}
+
+	static clearCache() {
+		Lang.cache.clear();
 	}
 
 	static text(word) {
-		if (word in Lang.list[Lang.target].word) {
-			return Lang.list[Lang.target].word[word];
+		// Проверяем кеш
+		const cacheKey = `${Lang.target}:${word}`;
+		if (Lang.cache.has(cacheKey)) {
+			return Lang.cache.get(cacheKey);
 		}
 
-		return Lang.list[Lang.default].word[word];
+		// Получаем перевод
+		const targetWords = Lang.list[Lang.target]?.word;
+		const defaultWords = Lang.list[Lang.default]?.word;
+
+		let translation;
+		if (targetWords && targetWords.hasOwnProperty(word)) {
+			translation = targetWords[word];
+		} else if (defaultWords && defaultWords.hasOwnProperty(word)) {
+			translation = defaultWords[word];
+		} else {
+			console.warn('Translation not found:', word);
+			translation = word;
+		}
+
+		// Сохраняем в кеш
+		Lang.cache.set(cacheKey, translation);
+		return translation;
 	}
 
+	static getTranslationMap(wordKeys) {
+		const targetWords = Lang.list[Lang.target]?.word || {};
+		const defaultWords = Lang.list[Lang.default]?.word || {};
+		const translationMap = new Map();
+
+		for (const key of wordKeys) {
+			
+			translationMap.set(key, Lang.text(key));
+		}
+
+		return translationMap;
+	}
+
+	static toggle() {
+		const languages = Object.keys(Lang.list);
+		const currentIndex = languages.indexOf(Lang.target);
+		const nextIndex = (currentIndex + 1) % languages.length;
+		Lang.target = languages[nextIndex];
+		Lang.clearCache(); 
+		return Lang.target;
+	}
+
+	static getNextLanguage() {
+		const languages = Object.keys(Lang.list);
+		const currentIndex = languages.indexOf(Lang.target);
+		const nextIndex = (currentIndex + 1) % languages.length;
+		return languages[nextIndex];
+	}
+
+	static heroName(heroId, skinIndex = 1) {
+		if (skinIndex > 1) {
+			const skinKey = `hero_${heroId}_skin_${skinIndex}_name`;
+			const skinName = this.text(skinKey);
+
+			
+			if (skinName !== skinKey) {
+				return skinName;
+			}
+		}
+
+		// Возвращаем основное имя героя (скин 1)
+		return this.text(`hero_${heroId}_name`);
+	}
+
+	static async reinitViews() {
+		Chat.initView();
+		MM.initView();
+		await App.ShowCurrentViewAsync();
+	}
 }
 
 class News {
@@ -379,12 +303,10 @@ window.addEventListener('DOMContentLoaded', () => {
 		console.log('event.data',event.data);
 		
 	});
-	
+
 	Splash.init();
 
 	NativeAPI.init();
-	
-	Lang.init();
 
 	NativeAPI.update((data) => {
 
@@ -406,10 +328,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
 	});
 
-	App.findBestHostAndInit();
-
-	Settings.init();
-
 	let testRadminConnection = async () => {
 		let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
 		if (hasConnection) {
@@ -426,6 +344,16 @@ window.addEventListener('DOMContentLoaded', () => {
 		testRadminConnection();
 		testMainConnection();
 	}, 3000);
+
+	Settings.init().then(() => {
+
+		Lang.init().then(() => {
+			
+			App.findBestHostAndInit();
+
+		})
+
+	});
 });
 
 class DataBase {
@@ -1338,13 +1266,12 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[3].onclick = () => {
 
-			// App.error('Привет от ifst 😎');
+		
 			
 		}
 
 		CastleNAVBAR.body.children[4].onclick = () => {
 
-			// App.error('Товарищеские матчи в процессе разработки...');
 			
 		}
 
@@ -1476,7 +1403,7 @@ class CastleNAVBAR {
 
 		CastleNAVBAR.body.children[0].style.display = 'block';
 
-		CastleNAVBAR.body.children[5].innerText = 'Отменить';
+		CastleNAVBAR.body.children[5].innerText = Lang.text('cancel');;
 
 		//CastleNAVBAR.body.children[5].style.fontSize = '1.1vw';
 
@@ -1519,7 +1446,7 @@ class CastleNAVBAR {
 		
 		CastleNAVBAR.body.children[17].style.backgroundImage =  `url(content/ranks/${division.icon}.webp)`;
 		
-		CastleNAVBAR.body.children[17].title = division.name;
+		CastleNAVBAR.body.children[17].title = 'Дивизия — группа игроков под одним званием,\nкоторая играет примерно на равном винрейте матчмейкинга.';
 		
 		CastleNAVBAR.body.children[17].style.display = 'block';
 		
@@ -1654,6 +1581,8 @@ class View {
 
 	static activeAnimation = false;
 
+	static animationIsEnabled = false;
+
 	static defaultAnimation = { transform: ['scale(1.1)', 'scale(1)'], opacity: [0, 1], backdropFilter: ['blur(0)', 'blur(1cqh)'] };
 
 	static defaultOptionAnimation = { duration: 150, fill: 'both', easing: 'ease-out' };
@@ -1695,11 +1624,36 @@ class View {
 
 		if (View.active) {
 
-			View.activeAnimation.reverse();
+			if (View.animationIsEnabled) {
 
-			View.activeAnimation.addEventListener('finish', () => {
+				View.activeAnimation.reverse();
+
+				View.activeAnimation.addEventListener('finish', () => {
+
+					View.active.remove();
+
+					View.active = template;
+
+					View.activeAnimation = template.animate(View.defaultAnimation, View.defaultOptionAnimation);
+
+					document.body.append(template);
+
+				});
+
+			} else {
 
 				View.active.remove();
+
+				View.active = template;
+
+				document.body.append(template);
+
+			}
+
+		}
+		else {
+
+			if (View.animationIsEnabled) {
 
 				View.active = template;
 
@@ -1707,16 +1661,13 @@ class View {
 
 				document.body.append(template);
 
-			});
+			} else {
 
-		}
-		else {
+				View.active = template;
 
-			View.active = template;
+				document.body.append(template);
 
-			View.activeAnimation = template.animate(View.defaultAnimation, View.defaultOptionAnimation);
-
-			document.body.append(template);
+			}
 
 		}
 		
@@ -1730,9 +1681,37 @@ class View {
 		}];
 
 		let login = DOM({ tag: 'input', placeholder: Lang.text('nickname'), event: numEnterEvent }), password = DOM({ tag: 'input', placeholder: Lang.text('password'), type: 'password', event: numEnterEvent });
+	// Создаем выпадающий список языков
+		const languageSelect = DOM({
+			tag: 'select',
+			id: 'lang_select',
+			style: 'language-select',
+			event: ['change', async (e) => {
+				const newLanguage = e.target.value;
+				Lang.target = newLanguage;
+				Settings.settings.language = newLanguage;
+				App.error(`${Lang.text('LangTarg')}: ${Lang.list[newLanguage].name}`);
+				// Перезагружаем страницу для применения языка
+				await Lang.reinitViews();
+			}]
+		});
 
+		// Заполняем выпадающий список языками
+		Object.entries(Lang.list).forEach(([code, langData]) => {
+			languageSelect.appendChild(
+				DOM({
+					tag: 'option',
+					value: code,
+					selected: code === Lang.target,
+					text: langData.name
+				})
+			);
+		});
 		let authorizationForm = DOM({ style: 'login_box' }, DOM({ style: 'login-box-forma' }, DOM({ tag: 'div' }, DOM({ tag: 'img', style: 'login-box-forma-logo', src: 'content/img/logo_classic.webp' })),
 
+			DOM({ style: 'language-select-container' },
+					languageSelect
+				),
 			DOM({ style: 'login-box-forma-inputs' },
 				login,
 				password,
@@ -1832,7 +1811,7 @@ class View {
 		
 		body.append(backgroundImage,Castle.canvas);
 		
-		body.append(await View.castleQuest());
+		//body.append(await View.castleQuest());
 		
 		try{
 			
@@ -1883,26 +1862,141 @@ class View {
 		return body;
 
 	}
-	
-	static async quest(questId,cloneNode,test){
-		
-		let ghost = DOM();
-		
-		cloneNode.lastChild.remove();
-		
-		cloneNode.lastChild.remove();
-		
-		ghost.append(cloneNode);
-		
-		ghost.setAttribute('style','position:absolute;left:-3vw;top:-3vw;transform:scale(1.3)');
-		
-		let body = DOM();
-		
-		body.innerText = JSON.stringify(test);
-		
-		return DOM({tag:'div'},ghost,body);
-		
-	}
+	/*
+static async quest(questId, cloneNode, item) {
+  let root = document.querySelector('#wquest');
+  if (root) {
+    if (root.__wquestEscDown)  document.removeEventListener('keydown', root.__wquestEscDown, true);
+    if (root.__wquestEscUp)    document.removeEventListener('keyup',   root.__wquestEscUp,   true);
+    root.remove();
+  }
+
+  root = DOM({ id: 'wquest' });
+  document.body.appendChild(root);
+
+  const giverId = (item.giverId ?? item.questGiverId ?? item.heroId);
+  const candidates = [`content/hero/${giverId}/1.webp`];
+
+  const pickExistingImage = (urls) => new Promise(res => {
+    const tryNext = (i=0) => { if (i>=urls.length) return res(null);
+      const im = new Image(); im.onload=()=>res(urls[i]); im.onerror=()=>tryNext(i+1); im.src=urls[i]; };
+    tryNext();
+  });
+
+  const parseRewards = (rewardStr) => {
+    const out = []; const s = String(rewardStr || '').toLowerCase();
+    if (s.includes('кристал') || s.includes('прайм')) {
+      const m = s.match(/\+?\s*(\d+)\s*(?:кристал|кристалл|кристаллов|прайм)/i);
+      const hasN = /(^|\s)n(\s|$)/i.test(rewardStr) || /n\s*количество/i.test(rewardStr);
+      out.push({ type:'prime', label: m ? String(+m[1]) : (hasN ? 'N' : '—') });
+    }
+    if (s.includes('звезд') || s.includes('звёзд') || s.includes('звезда')) {
+      const m = s.match(/\+?\s*(\d+)\s*зв/i); out.push({ type:'star', label: m ? String(+m[1]) : '—' });
+    }
+    if (!out.length) { const m = s.match(/\d+/); if (m) out.push({ type:'generic', label:String(+m[0]) }); }
+    return out;
+  };
+
+  const content = DOM({ tag:'div' }); content.classList.add('wquest__content');
+
+  const titlebar = DOM({ tag:'div' }); titlebar.classList.add('wquest__titlebar');
+  const h3 = DOM({ tag:'h3' }); h3.classList.add('wquest__title'); h3.textContent = item.title || 'Задание';
+
+  const closeBtn = DOM({ tag:'button' });
+  closeBtn.type = 'button';
+  closeBtn.classList.add('close-button', 'wquest__close');
+  closeBtn.setAttribute('aria-label', 'Закрыть');
+  closeBtn.style.backgroundImage = closeBtn.style.backgroundImage || "url('content/icons/close-cropped.svg')";
+
+  titlebar.appendChild(h3);
+  titlebar.appendChild(closeBtn);
+
+  const body = DOM({ tag:'div' }); body.classList.add('wquest__body'); body.textContent = item.description || '';
+
+  const objective = DOM({ tag:'div' }); objective.classList.add('wquest__objective');
+  const objText = DOM({ tag:'div' }); objText.classList.add('wquest__objective-text');
+  objText.textContent = item.target || 'Выполните условие задания.';
+  objective.appendChild(objText);
+
+  const tokens = parseRewards(item.reward);
+  const rewards = DOM({ tag:'div' }); rewards.classList.add('wquest__rewards');
+  tokens.forEach(t => {
+    const chip = DOM({ tag:'div' }); chip.classList.add('wquest__chip');
+    const icon = DOM({ tag:'div' }); icon.classList.add('wquest__chip-icon');
+    const val  = DOM({ tag:'div' }); val.classList.add('wquest__chip-value'); val.textContent = t.label;
+    chip.appendChild(icon); chip.appendChild(val);
+    rewards.appendChild(chip);
+  });
+
+ const avatar = DOM({ tag:'div' });
+avatar.classList.add('wquest__avatar');
+
+const fallback1 = `content/hero/${giverId}/1.webp`; 
+const fallback2 = `content/img/queue/321.png`; 
+
+pickExistingImage(candidates).then(url => {
+  const mainImg = url || fallback1;
+
+  avatar.style.backgroundImage = `url("${mainImg}"), url("${fallback2}")`;
+  avatar.style.backgroundSize = 'cover, contain';        
+  avatar.style.backgroundPosition = 'center, center';    
+  avatar.style.backgroundRepeat = 'no-repeat, no-repeat';
+});
+
+content.appendChild(titlebar);
+content.appendChild(body);
+content.appendChild(objective);
+content.appendChild(rewards);
+content.appendChild(avatar);
+root.appendChild(content);
+
+
+  const closeQuest = () => {
+    if (!root) return;
+    if (root.__wquestEscDown) document.removeEventListener('keydown', root.__wquestEscDown, true);
+    if (root.__wquestEscUp)   document.removeEventListener('keyup',   root.__wquestEscUp,   true);
+    root.remove();
+    root = null;
+  };
+
+  const escTrap = (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+      closeQuest();
+      return false;
+    }
+  };
+  document.addEventListener('keydown', escTrap, true);
+  document.addEventListener('keyup',   escTrap, true);
+  root.__wquestEscDown = escTrap;
+  root.__wquestEscUp   = escTrap;
+
+  closeBtn.addEventListener('click', closeQuest);
+
+  const builtInClose = root.querySelector('.modal-close,[data-close],.btn-close');
+  if (builtInClose && !builtInClose.__wquestBound) {
+    builtInClose.__wquestBound = true;
+    builtInClose.addEventListener('click', closeQuest);
+  }
+
+  return root;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	static async castlePlay() {
 
@@ -2326,7 +2420,7 @@ class View {
     if (disabled) {
       medal.title = 'Режим временно недоступен';
     } else {
-      medal.title = 'Посмотреть статистику по режиму';
+      medal.title = Lang.text('titlestatisticmode');
       medal.setAttribute('role', 'button');
       medal.tabIndex = 0;
       const openStats = () => { Window.show('main', 'top', 0, idx); };
@@ -2351,7 +2445,7 @@ class View {
 
   const statsBtn = DOM({
     style: ['banner-icon', 'banner-icon--stat', 'button-outline'],
-    title: 'Статистика',
+    title: Lang.text('titlestatistic'),
     event: ['click', () => {
       const onEsc = (e) => {
         if (e.key === 'Escape') { Splash.hide(); document.removeEventListener('keydown', onEsc); }
@@ -2389,22 +2483,22 @@ class View {
 
   const divisionBadgeUnderStat = DOM({ style: ['banner-division-badge', 'banner-division-badge--stat'] });
   divisionBadgeUnderStat.style.backgroundImage = `url(content/ranks/${divInfo.icon}.webp)`;
-  divisionBadgeUnderStat.title =
-    'Дивизия — группа игроков под одним званием,\nкоторая играет примерно на равном винрейте матчмейкинга.';
+  divisionBadgeUnderStat.title = Lang.text('titlehint2');
 
   statCircle.append(statsBtn, divisionBadgeUnderStat);
   statWrapper.append(statRect, statCircle);
+  
+  const questionIcon  = DOM({ tag: 'div', style: ['question-icon'] });
 
   // подсказка слева
   const tooltipWrap   = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
-  const questionIcon  = DOM({ tag: 'div', style: ['question-icon'] });
   const tooltipBubble = DOM({ tag: 'div', style: ['tooltip-bubble-img'] });
   const tooltipText   = DOM({ tag: 'div', style: ['tooltip-text'] });
-  tooltipText.textContent = 'Сколько \nчеловек\nв очереди\nпо режимам.';
+  tooltipText.textContent = Lang.text('titlehint');
   tooltipBubble.append(tooltipText);
-  tooltipWrap.append(questionIcon, tooltipBubble);
+  tooltipWrap.append(tooltipBubble);
 
-  banner.append(tooltipWrap, statWrapper);
+  banner.append(statWrapper);
   return DOM({ style: 'castle-banner-online-wrapper' }, banner);
 }
 
@@ -2412,8 +2506,6 @@ class View {
 	static castleSettings() {
 
 		let builds = DOM({ style: ['castle-builds', 'button-outline'], title: "Рейтинг", event: ['click', () => View.show('top')] });
-
-		/*let ratings = DOM({ style: ['castle-top', 'button-outline'], title: "Рейтинг", event: ['click', () => Window.show('main', 'top')] });*/
 
 		let settings = DOM({
 			style: ['castle-settings-btn', 'button-outline'], title: "Вкл/Выкл графики замка", event: ['click', () => {
@@ -2424,9 +2516,7 @@ class View {
 
 		let clan = DOM({ style: ['castle-clans', 'button-outline'], title: 'Кланы', event: ['click', () => Frame.open('clan')] });
 
-		let menu = DOM({ style: ['castle-menu', 'button-outline'], event: ['click', () => Window.show('main', 'menu')] });
-
-		/*let history = DOM({ style: ['castle-history', 'button-outline'], title: 'История', event: ['click', () => Window.show('main', 'history')] });*/
+		
 
 		let farm = DOM({ style: ['castle-farm', 'button-outline'], title: 'Фарм', event: ['click', () => Window.show('main', 'farm')] });
 
@@ -2439,7 +2529,7 @@ class View {
 		input.max = '1';
 		input.step = '0.01';
 
-		let body = DOM({ style: ['castle-settings'] }, menu);
+		let body = DOM({ style: ['castle-settings'] });
 		let container = DOM({ style: ['castle-settings-container'] }, View.castleBannerOnline(), body);
 		return container;
 	}
@@ -2462,27 +2552,31 @@ class View {
 
 		View.castleBottom.addEventListener('wheel', function (event) {
 
-			let modifier = 0;
+			if (event.deltaY != 0) {
 
 			if (event.deltaMode == event.DOM_DELTA_PIXEL) {
 
-				modifier = 1;
+				event.preventDefault();
+				
+				View.scrollHero(event.deltaY / 100);
 
 			} else if (event.deltaMode == event.DOM_DELTA_LINE) {
 
-				modifier = parseInt(getComputedStyle(this).lineHeight);
+				event.preventDefault();
+				
+				View.scrollHeroLine(event.deltaY / 100);
 
 			} else if (event.deltaMode == event.DOM_DELTA_PAGE) {
 
-				modifier = this.clientHeight;
+				event.preventDefault();
+
+				let modifier = this.clientWidth;
+
+				View.castleBottom.scrollLeft += modifier;
+
+				View.updateArrows();
 
 			}
-
-			if (event.deltaY != 0) {
-
-				this.scrollLeft += modifier * event.deltaY;
-
-				event.preventDefault();
 
 			}
 
@@ -2490,131 +2584,272 @@ class View {
 
 		View.bodyCastleHeroes();
 
+		let nicknameValue = String(App?.storage?.data?.login || '').trim();
+		let nicknameMenuItem = DOM({
+			style: 'nickname-menu-item',
+			event: ['click', () => {
+				App.setNickname();
+			}], title: 'Смена никнейма'
+			}, DOM({}, nicknameValue));
+		if (nicknameValue.length > 10) {
+			nicknameMenuItem.firstChild.classList.add('castle-name-autoscroll');
+		}
+		
+		let flagMenuItem = DOM({
+			style: 'flag-menu-item',
+			event: ['click', () => {
+				App.setFraction();
+			}], title: Lang.text('titleflag')
+			});
+		let settingsMenuItem = DOM({
+			style: 'settings-menu-item',
+			event: ['click', () => {
+				Window.show('main', 'menu');
+			}], title: Lang.text('titlesettings')
+			});
+		let chatMenuItem = DOM({
+			style: 'chat-menu-item',
+			event: ['click', () => {
+				Chat.changeChatVisibility();
+			}], title: Lang.text('titlechat')
+			});
 		let heroesMenuItem = DOM({
+			style: 'heroes-menu-item',
 			event: ['click', () => {
 
 				View.bodyCastleHeroes();
 				Castle.buildMode = false;
 
-			}], title: 'Герои'
+			}], title: Lang.text('titleheroes')
 			});
 		let friendsMenuItem = DOM({
+			style: 'friends-menu-item',
 			event: ['click', () => {
 
 				View.bodyCastleFriends();
 				Castle.buildMode = false;
 
-			}], title: 'Друзья'
+			}], title: Lang.text('titlefriends')
 			});
 		let buildingsMenuItem = DOM({
+			style: 'buildings-menu-item',
 			event: ['click', () => {
 
 				View.bodyCastleBuildings();
 				Castle.buildMode = true;
 
-			}], title: 'Строительство'
+			}], title: Lang.text('titleconstruction')
 			});
-		heroesMenuItem.style.backgroundImage = `url(content/htalents/270.webp)`;
-		friendsMenuItem.style.backgroundImage = `url(content/htalents/456.webp)`;
-		buildingsMenuItem.style.backgroundImage = `url(content/icons/buildings.webp)`;
 
-		body.append(DOM({ style: 'castle-bottom-menu' }, heroesMenuItem , friendsMenuItem, buildingsMenuItem), View.castleBottom);
+		flagMenuItem.style.backgroundImage = Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`; 
+		
+		View.arrows = new Object();
+		View.arrows.ls = DOM({style: 'castle-bottom-left-scroll-single', event: ['click', () => View.scrollHero(-1)]});
+		View.arrows.ld = DOM({style: 'castle-bottom-left-scroll-double', event: ['click', () => View.scrollHeroLine(-1)]});
+		View.arrows.rs = DOM({style: 'castle-bottom-right-scroll-single', event: ['click', () => View.scrollHero(1)]});
+		View.arrows.rd = DOM({style: 'castle-bottom-right-scroll-double', event: ['click', () => View.scrollHeroLine(1)]});
+		body.append(DOM({ style: 'castle-bottom-menu' }, nicknameMenuItem, flagMenuItem, settingsMenuItem, heroesMenuItem , friendsMenuItem, buildingsMenuItem, chatMenuItem), 
+		DOM({style: 'castle-bottom-content-container'}, 
+			View.castleBottom,
+			DOM({ style: 'castle-bottom-content-left-scroll' }, 
+				View.arrows.ls,
+				View.arrows.ld,
+			),
+			DOM({ style: 'castle-bottom-content-right-scroll' }, 
+				View.arrows.rs,
+				View.arrows.rd,
+			)
+			));
+
+		View.updateArrows();
 
 		return body;
-
 	}
-	
-	static async castleQuest(){
-		
-		let body = DOM({style:'quest'});
-		
-		let request = [
-		{
-			id:1,
-			heroId:16,
-			title:'Смена власти',
-			description:'Ты силён. Я видел твои победы. Но сила без амбиций — лишь пустой звук. Один герой, возомнил себя наследником трона. Убери его. Докажи, что настоящая сила — в умении вовремя нанести удар.',
-			target:'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье не меньше трёх раз за один бой. Ваш герой не должен умереть от жертвы.',
-			reward:'+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
-			prompt:'Получить сведения в тамбуре, могут только герои класса — Убийца.',
-			status:0,
-			timer:(Date.now() + 86400000)
-			},
-			{
-			id:2,
-			heroId:1,
-			title:'Право сильнейшего',
-			description:'Пограничье видело немало поединков, но истинных воинов среди них — единицы. Один из героев запятнал свою честь, используя запрещённые приёмы в бою. Он должен быть остановлен твоим мастерством. Сразись с ним и докажи, что сила без чести — ничто. Победи его в честном дуэли, и твоя награда будет достойной.',
-			target:'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье за один бой. Ваш герой не должен умереть до того, как устранит жертву.',
-			reward:'+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
-			prompt:'Получить сведения в тамбуре, могут только герои класса — Убийца.',
-			status:0,
-			timer:(Date.now() + 86400000)
-			},
-			{
-			id:3,
-			heroId:38,
-			title:'Воздаяние Неуязвимому',
-			description:'Мой взор пронзает битвы и интриги этого мира, и я видела, как твоя сила обратила в бегство тех, кто возжелал твоей погибели. Они думали, что ты — добыча. Они ошиблись. Ты — испытание, которое они не смогли пройти. Их неудача — доказательство твоей избранности. И за это достоинство ты должен быть вознаграждён. Прими мой дар — не как плату за убийство, но как признание твоей несокрушимости',
-			target:'Выжить в условиях PvP-охоты',
-			reward:'+1 кристалл прайма',
-			prompt:'',
-			status:0,
-			timer:(Date.now() + 86400000)
-			},
-			{
-			id:4,
-			heroId:13,
-			title:'Сила единства',
-			description:'Приветствую тебя, дитя Света! Этот мир держится не только на силе клинка, но и на взаимопомощи. Я вижу, как ты сражаешься, но истинная мощь проявляется, когда мы поддерживаем друг друга. Твои союзники нуждаются в твоей помощи — исцелении, защите, усилении. Окажи 1000 поддержек в битвах, и я покажу тебе, какую силу рождает настоящее единство.',
-			target:'Оказать 1000 поддержек союзным героям.',
-			reward:'+100 кристаллов прайма',
-			prompt:'',
-			status:0,
-			timer:(Date.now() + (86400000 * 30) )
-			},
-			{
-			id:5,
-			heroId:3,
-			title:'Путь Превосходства',
-			description:'Приветствую, испытующий! Мир Прайма рожден из хаоса и крови. Сила — единственный язык, который здесь понимают все. Ты уже показал себя в битвах, но настоящая мощь требует жертв. Я бросаю тебе вызов: соверши 1000 убийств. Пусть каждый поверженный враг станет твоим шагом к величию. Докажи, что ты достоин называться истинным чемпионом Прая!',
-			target:'Совершить 1000 убийств вражеских героев.',
-			reward:'+100 кристаллов прайма',
-			prompt:'',
-			status:0,
-			timer:(Date.now() + (86400000 * 30) )
-			}
-		];
-		
-		for(let item of request){
-			
-			let hero = DOM({style:'quest-item-hero'});
-			
-			hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
-			
-			let timer = DOM({style:'quest-item-5'});
-			
-			timer.innerText = (item.timer - Date.now());
-			
-			setInterval(() => {
-				
-				timer.innerText = (item.timer - Date.now());
-				
-			},1000)
-			
-			let quest = DOM({style:'quest-item',event:['click',() => {
-				
-				Window.show('main','quest',item.id,quest.cloneNode(true),item);
-				
-			}]},DOM({style:'quest-item-1'}),hero,DOM({style:'quest-item-2'}),DOM({style:'quest-item-3'}),timer);
-			
-			body.append(quest);
-			
+
+	static currentFloatScroll = 0.0;
+
+	static scrollHero(delta) {
+
+		let modifier = parseFloat(getComputedStyle(View.castleBottom.firstChild).width) + parseFloat(getComputedStyle(View.castleBottom.firstChild).borderRightWidth);
+
+		let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
+		if (isNaN(View.currentFloatScroll)) {
+			View.currentFloatScroll = 0;
 		}
-		
-		return body;
+		View.currentFloatScroll += modifier * delta;
+		View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
+		View.castleBottom.scrollLeft = View.currentFloatScroll;
+
+		View.updateArrows();
+
+	}
+
+	static scrollHeroLine(delta) {
+
+		let width = parseFloat(getComputedStyle(View.castleBottom).width);
+
+		let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
+		if (isNaN(View.currentFloatScroll)) {
+			View.currentFloatScroll = 0;
+		}
+		View.currentFloatScroll += width * delta;
+		View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
+		View.castleBottom.scrollLeft = View.currentFloatScroll;
+
+		View.updateArrows();
 		
 	}
+
+	static updateArrows() {
+		let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
+		if (View.castleBottom.scrollLeft == 0) {
+			View.arrows.ls.classList.add('castle-bottom-content-btn-disable');
+			View.arrows.ld.classList.add('castle-bottom-content-btn-disable');
+		} else {
+			View.arrows.ls.classList.remove('castle-bottom-content-btn-disable');
+			View.arrows.ld.classList.remove('castle-bottom-content-btn-disable');
+		}
+
+		if (maxScrollLeft && View.castleBottom.scrollLeft == maxScrollLeft) {
+			View.arrows.rs.classList.add('castle-bottom-content-btn-disable');
+			View.arrows.rd.classList.add('castle-bottom-content-btn-disable');
+		} else {
+			View.arrows.rs.classList.remove('castle-bottom-content-btn-disable');
+			View.arrows.rd.classList.remove('castle-bottom-content-btn-disable');
+		}
+	}
+	/*
+	static async castleQuest(){
+
+  let body = DOM({ style:'quest' });
+
+  const list   = DOM({ style:'quest-list' });
+  const PAGE   = 4;
+  let   start  = 0;
+  const items  = [];
+
+  const btnUp = DOM({
+    style: ['quest-arrow','quest-arrow-up'],
+    event: ['click', () => { if (start > 0) { start--; render(); } }]
+  });
+
+  const btnDown = DOM({
+    style: ['quest-arrow','quest-arrow-down'],
+    event: ['click', () => {
+      if (start < Math.max(0, items.length - PAGE)) { start++; render(); }
+    }]
+  });
+
+  body.append(btnUp, list, btnDown); // порядок: ▲ список ▼
+
+  let request = [
+    {
+      id:1,
+      heroId:16,
+      title:'Смена власти',
+      description:'Ты силён. Я видел твои победы. Но сила без амбиций — лишь пустой звук. Один герой, возомнил себя наследником трона. Убери его. Докажи, что настоящая сила — в умении вовремя нанести удар.',
+      target:'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье не меньше трёх раз за один бой. Ваш герой не должен умереть от жертвы.',
+      reward:'+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
+      prompt:'Получить сведения в тамбуре, могут только герои класса — Убийца.',
+      status:0,
+      timer:(Date.now() + 86400000)
+    },
+    {
+      id:2,
+      heroId:1,
+      title:'Право сильнейшего',
+      description:'Пограничье видело немало поединков, но истинных воинов среди них — единицы. Один из героев запятнал свою честь, используя запрещённые приёмы в бою. Он должен быть остановлен твоим мастерством. Сразись с ним и докажи, что сила без чести — ничто. Победи его в честном дуэли, и твоя награда будет достойной.',
+      target:'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье за один бой. Ваш герой не должен умереть до того, как устранит жертву.',
+      reward:'+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
+      prompt:'Получить сведения в тамбуре, могут только герои класса — Убийца.',
+      status:0,
+      timer:(Date.now() + 86400000)
+    },
+    {
+      id:3,
+      heroId:38,
+      title:'Воздаяние Неуязвимому',
+      description:'Мой взор пронзает битвы и интриги этого мира, и я видела, как твоя сила обратила в бегство тех, кто возжелал твоей погибели. Они думали, что ты — добыча. Они ошиблись. Ты — испытание, которое они не смогли пройти. Их неудача — доказательство твоей избранности. И за это достоинство ты должен быть вознаграждён. Прими мой дар — не как плату за убийство, но как признание твоей несокрушимости',
+      target:'Выжить в условиях PvP-охоты',
+      reward:'+1 кристалл прайма',
+      prompt:'',
+      status:0,
+      timer:(Date.now() + 86400000)
+    },
+    {
+      id:4,
+      heroId:13,
+      title:'Сила единства',
+      description:'Приветствую тебя, дитя Света! Этот мир держится не только на силе клинка, но и на взаимопомощи. Я вижу, как ты сражаешься, но истинная мощь проявляется, когда мы поддерживаем друг друга. Твои союзники нуждаются в твоей помощи — исцелении, защите, усилении. Окажи 1000 поддержек в битвах, и я покажу тебе, какую силу рождает настоящее единство.',
+      target:'Оказать 1000 поддержек союзным героям.',
+      reward:'+100 кристаллов прайма',
+      prompt:'',
+      status:0,
+      timer:(Date.now() + (86400000 * 30))
+    },
+    {
+      id:5,
+      heroId:3,
+      title:'Путь Превосходства',
+      description:'Приветствую, испытующий! Мир Прайма рожден из хаоса и крови. Сила — единственный язык, который здесь понимают все. Ты уже показал себя в битвах, но настоящая мощь требует жертв. Я бросаю тебе вызов: соверши 1000 убийств. Пусть каждый поверженный враг станет твоим шагом к величию. Докажи, что ты достоин называться истинным чемпионом Прая!',
+      target:'Совершить 1000 убийств вражеских героев.',
+      reward:'+100 кристаллов прайма',
+      prompt:'',
+      status:0,
+      timer:(Date.now() + (86400000 * 30))
+    }
+  ];
+
+  for (let item of request) {
+
+    let hero = DOM({ style:'quest-item-hero' }, DOM({ style:'quest-item-portrait-glass' }));
+    hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
+
+    let timer = DOM({ style:'quest-item-timer' });
+    const tick = () => {
+      const ms  = item.timer - Date.now();
+      const sec = Math.max(0, Math.floor(ms / 1000));
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      timer.textContent = h > 0
+        ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`
+        : `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    };
+    tick();
+    setInterval(tick, 1000);
+
+    let quest = DOM(
+      {
+        style:'quest-item',
+        event:['click', () => {
+          // Удаляем возможные предыдущие окна и не передаём превью-ноду
+          document.querySelectorAll('#wquest').forEach(n => n.remove());
+          Window.show('main','quest', item.id, null, item);
+        }]
+      },
+      DOM({ style:'quest-item-portrait-background' }, hero, DOM({ style:'quest-item-exclamation' })),
+      timer
+    );
+
+    items.push(quest);
+    if (items.length <= PAGE) list.append(quest);
+  }
+
+  function render() {
+    list.innerHTML = '';
+    const end = Math.min(start + PAGE, items.length);
+    for (let i = start; i < end; i++) list.append(items[i]);
+    const maxStart = Math.max(0, items.length - PAGE);
+    const noScroll = items.length <= PAGE;
+    btnUp.classList.toggle('disabled', noScroll || start === 0);
+    btnDown.classList.toggle('disabled', noScroll || start >= maxStart);
+  }
+
+  render();
+  return body;
+}
+*/
 
 	static bodyCastleBuildings() {
 
@@ -2640,9 +2875,9 @@ class View {
 
 		for (let i = 1; i < Castle.buildings.length; ++i) {
 			let item = Castle.buildings[i];
-			let itemName = Castle.buildingsNames[i][selectedFaction];
+			let itemName = Lang.text(Castle.buildingsNames[i][selectedFaction]);
 			
-			const buildingName = DOM({ style: 'castle-hero-name' }, DOM({}, itemName));
+			let buildingName = DOM({ style: 'castle-hero-name' }, DOM({}, itemName));
 
 			if (itemName.length > 10) {
 				buildingName.firstChild.classList.add('castle-name-autoscroll');
@@ -2650,7 +2885,7 @@ class View {
 
 			let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
 
-			let building = DOM({ style: 'castle-hero-item' }, buildingNameBase);
+			let building = DOM({ style: 'castle-building-item' }, buildingNameBase);
 
 			building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
@@ -2667,47 +2902,46 @@ class View {
 	}
 
 	static bodyCastleHeroes() {
-
 		let preload = new PreloadImages(View.castleBottom);
 
 		App.api.silent((result) => {
-
 			MM.hero = result;
 
 			while (View.castleBottom.firstChild) {
-
 				View.castleBottom.firstChild.remove();
-
 			}
 
 			for (let item of result) {
+				// Используем новый метод для получения имени с учётом скина
+				const localizedName = Lang.heroName(item.id, item.skin);
+				const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, localizedName));
 
-				const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, item.name));
-
-				if (item.name.length > 10) {
+				if (localizedName.length > 10) {
 					heroName.firstChild.classList.add('castle-name-autoscroll');
 				}
 
-				let heroNameBase = DOM({ style: 'castle-item-hero-name' }, heroName);
+				let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
 
-				let rankIcon = DOM({ style: 'rank-icon' });
-
+				let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
 				rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-				let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
+				let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIcon);
 
-				let hero = DOM({ style: 'castle-hero-item' }, rank, heroNameBase);
+				let hero = DOM({ id: `id${item.id}`, style: ['castle-hero-item', 'hover-brightness'] }, 
+					DOM({ style: ['castle-hero-item-bg', 'hover-brightness']}), 
+					DOM({ style: ['castle-hero-item-img', 'no-hover-brightness']}), 
+					DOM({ style: ['castle-item-background', 'hover-brightness']}), 
+					DOM({ style: ['castle-item-ornament', 'hover-brightness']}), 
+					rank, 
+					heroNameBase);
 
 				hero.addEventListener('click', async () => Window.show('main', 'build', item.id, 0, true));
 
 				hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
 
 				preload.add(hero);
-
 			}
-
 		}, 'build', 'heroAll');
-
 	}
 
 	static bodyCastleFriends() {
@@ -2953,7 +3187,7 @@ class View {
 							friend.remove();
 
 						}]
-					}, 'Отменить'));
+					}, Lang.text('cancel')));
 
 				}
 
@@ -4109,10 +4343,12 @@ class Window {
 		let view = await View.inventory(true);
 		return DOM({ id: 'winventory' }, view);
 	}
+	/*
 	static async quest(questId,cloneNode,test) {
 		let view = await View.quest(questId,cloneNode,test);
-		return DOM({ id: 'wquest' }, view);
+		
 	}
+	*/
 	static async menu() {
 		return DOM({ id: 'wcastle-menu' },
 			DOM({ style: 'castle-menu-title' }, Lang.text('menu')),
@@ -4120,7 +4356,7 @@ class Window {
 			App.isAdmin() ? DOM({ style: 'castle-menu-item-button' },
 				DOM({ event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ')) : DOM(),
 			DOM({ style: 'castle-menu-item-button' },
-				DOM({ event: ['click', () => Window.show('main', 'accountPanel')] }, 'Аккаунт')),
+				DOM({ event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account'))),
 			DOM({ style: 'castle-menu-item-button' },
 				DOM({ event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences'))),
 			DOM({ style: 'castle-menu-item-button' },
@@ -4275,6 +4511,18 @@ class Window {
 					style: 'volume-percentage' 
 				}, `${Math.round(Settings.settings.soundsVolume * 100)}%`)
 			),
+			DOM({ 
+    			style: 'castle-menu-item-button',
+    			event: ['click', async (e) => {
+					const oldLanguage = Lang.target;
+        			Lang.toggle();
+        			Settings.settings.language = Lang.target;
+					App.error(`${Lang.text('LangTarg')}: ${Lang.list[oldLanguage].name} → ${Lang.list[Lang.target].name}`);
+					await Lang.reinitViews();
+					await Window.show('main', 'settings');
+    			}]
+				}, `${Lang.text('language')} (${Lang.target})`
+			)
 			// Добавленная кнопка "Клавиши"
 			/*DOM({ 
 				style: 'castle-menu-item-button',
@@ -4285,10 +4533,8 @@ class Window {
 			}, Lang.text('keys') || 'Клавиши'), // Fallback на текст, если перевод отсутствует
 			*/
 			// Кнопка "Назад"
-			DOM({ 
-				style: 'castle-menu-item-button', 
-				event: ['click', () => Window.show('main', 'menu')] 
-			}, Lang.text('back'))/*,
+			
+			/*,
 			
 			DOM({ style: 'castle-menu-label-description' }, Lang.text('soundHelp'))
 			*/
@@ -4502,33 +4748,32 @@ class Window {
 			DOM({ style: 'castle-menu-item-button', event: ['click', () => Window.show('main', 'menu')] }, Lang.text('back'))
 		);
 	}
-	static async accountPanel() {
-		return DOM({ id: 'wcastle-menu' },
-			DOM({ style: 'castle-menu-title' }, 'Аккаунт'),
-			DOM({
-				style: 'castle-menu-item-button', event: ['click', () => {
-					
-					ParentEvent.children = window.open(`https://api2.26rus-game.ru:2087/connect/${App.storage.data.token}`, `SteamAuth`, 'width=1280, height=720, top='+((screen.height-720)/2)+', left='+((screen.width-1280)/2)+', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no');
-					
-				}]
-			}, 'Привязать Steam'),
-			DOM({
-				style: 'castle-menu-item-button', event: ['click', () => {
-					
-					App.setNickname();
-					
-				}]
-			}, 'Изменить никнейм'),
-			DOM({
-				style: 'castle-menu-item-button', event: ['click', () => {
-					
-					App.setFraction();
-					
-				}]
-			}, 'Сменить сторону'),
-			DOM({ style: 'castle-menu-item-button', event: ['click', () => Window.show('main', 'menu')] }, Lang.text('back'))
-		);
-	}
+	static async accountPanel() { 
+	return DOM({ id: 'wcastle-menu' },
+		DOM({ style: 'castle-menu-title' }, Lang.text('account')),
+		DOM({
+			style: 'castle-menu-item-button', event: ['click', () => {
+				ParentEvent.children = window.open(
+					`https://api2.26rus-game.ru:2087/connect/${App.storage.data.token}`,
+					`SteamAuth`,
+					'width=1280, height=720, top='+((screen.height-720)/2)+', left='+((screen.width-1280)/2)+', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no'
+				);
+			}]
+		}, Lang.text('steamConnect')),
+		DOM({
+			style: 'castle-menu-item-button', event: ['click', () => {
+				App.setNickname();
+			}]
+		}, Lang.text('nicknameChange')),
+		DOM({
+			style: 'castle-menu-item-button', event: ['click', () => {
+				App.setFraction();
+			}]
+		}, Lang.text('sideChange')),
+		DOM({ style: 'castle-menu-item-button', event: ['click', () => Window.show('main', 'menu')] }, Lang.text('back'))
+	);
+}
+
 	
 }
 
@@ -4727,22 +4972,22 @@ class Build {
 
 	static language = {
 		sr: 'Сила/Разум',
-		hp: Lang.text('health'),
-		provorstvo: Lang.text('agility'),
-		hitrost: Lang.text('dexterity'),
+		hp: 'Здоровье',
+		provorstvo: 'Проворство',
+		hitrost: 'Хитрость',
 		regenmp: 'Регенерация энергии',
-		stoikost: Lang.text('stamina'),
-		volia: Lang.text('will'),
+		stoikost: 'Стойкость',
+		volia: 'Воля',
 		ph: 'Проворство/Хитрость',
 		sv: 'Стойкость/Воля',
-		razum: Lang.text('intelligence'),
-		sila: Lang.text('strength'),
+		razum: 'Разум',
+		sila: 'Сила',
 		speedtal: '%<speedtal></speedtal>',
 		srsv: 'Сила/Разум/Стойкость/Воля',
 		hpmp: 'Здоровье/Энергия',
 		krajahp: 'Кража здоровья',
 		regenhp: 'Регенерация здоровья',
-		mp: Lang.text('energy'),
+		mp: 'Энергия',
 		krajamp: 'Кража энергии',
 		stoikostrz: 'Стойкость на родной земле',
 		voliarz: 'Воля на родной земле',
@@ -4762,7 +5007,7 @@ class Build {
 		svvz: 'Стойкость/Воля на вражеской земле',
 		krajahpvz: 'Кража здоровья на вражеской земле',
 		vs: 'Воля/Стойкость',
-		speed: Lang.text('speed'),
+		speed: 'Скорость',
 		speedrz: 'Скорость на родной земле',
 		speedvz: 'Скорость на вражеской или нейтральной земле',
 		dopspeed: 'Дополнительный бонус к скорости',
@@ -5049,7 +5294,7 @@ class Build {
 		Build.training = DOM({
 			tag: 'button',
 			style: ['btn-skins', 'btn-hover', 'color-3'],
-			title: 'Режим тренировки',
+			title: Lang.text('titletraining'),
 			event: ['click', async () => {
 
 				try {
@@ -5078,7 +5323,7 @@ class Build {
 
 			}]
 		},
-			'Тренировка'
+			Lang.text('training')
 		);
 
 		Build.inventoryView.append(buildTalents);
@@ -5188,6 +5433,24 @@ class Build {
 				Build.heroImg.style.backgroundImage = `url(content/hero/${Build.heroId}/${hero.dataset.skin}.webp)`;
 
 				Splash.hide();
+
+				try {
+
+					let heroItem = View.castleBottom.querySelector(`#id${Build.heroId}`);
+
+					heroItem.style.backgroundImage = `url(content/hero/${Build.heroId}/${hero.dataset.skin}.webp)`;
+
+					let heroName = heroItem.querySelector('.castle-item-hero-name');
+
+					heroName.firstChild.innerText = Lang.heroName(Build.heroId, hero.dataset.skin);
+
+				} catch (e) {
+					App.error(e);
+				}
+
+				//View.bodyCastleHeroes();
+				
+				//await App.ShowCurrentViewAsync();
 
 			});
 
@@ -5919,9 +6182,8 @@ class Build {
 		Build.heroName = DOM({ tag: 'div', style: 'name' });
 
 		if (MM.hero) {
-
-			Build.heroName.innerText = MM.hero.find(h => h.id === data.id).name;
-
+			const hero = MM.hero.find(h => h.id === data.id);
+			Build.heroName.innerText = Lang.heroName(hero.id, hero.skin || 1);
 		}
 
 		Build.heroImg = DOM({ style: 'avatar' });
@@ -7343,263 +7605,247 @@ class Build {
 	}
 
 	static description(element) {
-		let descEvent = () => {
+    let descEvent = () => {
+        let positionElement = element.getBoundingClientRect();
+        let data = Build.talents[element.dataset.id];
 
-			let positionElement = element.getBoundingClientRect();
+        if (!data) {
+            console.log("Не найден талант в билде: " + element.dataset.id);
+            Build.descriptionView.style.display = 'none';
+            return;
+        }
 
-			let data = Build.talents[element.dataset.id];
+        // Определяем тип таланта и формируем ключи для перевода
+        const isHeroTalent = data.id < 0;
+        const prefix = isHeroTalent ? "htalent_" : "talent_";
+        const absId = Math.abs(data.id);
+        
+        const nameKey = `${prefix}${absId}_name`;
+        const descriptionKey = `${prefix}${absId}_description`;
 
-			if (!data) {
-				console.log("Не найден талант в билде: " + element.dataset.id)
-				Build.descriptionView.style.display = 'none';
-				return;
-			}
+        // Получаем переводы из системы Lang
+        const name = Lang.text(nameKey);
+        const description = Lang.text(descriptionKey);
 
-			if ((!data.name) || (!data.description)) {
+        // Проверяем, есть ли переводы (если вернулся ключ, значит перевода нет)
+        if (name === nameKey || description === descriptionKey) {
+            Build.descriptionView.innerHTML = `<b>Талант #${data.id}</b><div>Информация отсутствует. Сообщите пожалуйста об этом в отдельную тему Telegram сообщества Prime World Classic.</div><span>+1000 Уважение</span>`;
+            
+            let positionDescription = Build.descriptionView.getBoundingClientRect();
+            Build.descriptionView.style.zIndex = 9999;
+            Build.descriptionView.style.position = 'fixed';
+            Build.descriptionView.style.display = 'block';
+            Build.descriptionView.style.left = (positionElement.left + positionElement.height) + 'px';
+            Build.descriptionView.style.top = (positionElement.top) + 'px';
+            return;
+        }
 
-				Build.descriptionView.innerHTML = `<b>Талант #${data.id}</b><div>Информация отсутствует. Сообщите пожалуйста об этом в отдельную тему Telegram сообщества Prime World Classic.</div><span>+1000 Уважение</span>`;
+        let rgb = '';
+        switch (data.rarity) {
+            case 1: rgb = '17,105,237'; break;
+            case 2: rgb = '205,0,205'; break;
+            case 3: rgb = '237,129,5'; break;
+            case 4: rgb = '170,20,44'; break;
+        }
 
-			}
-			else {
+        let stats = '';
+        if (('stats' in data) && (data.stats)) {
+            for (let key in data.stats) {
+                if (Build.talentStatFilter(key)) {
+                    continue;
+                }
 
-				let rgb = '';
+                let statValue = parseFloat(data.stats[key]);
 
-				switch (data.rarity) {
+                if ('statsRefine' in data && 'rarity' in data) {
+                    let refineBonus = Build.getTalentRefineByRarity(data.rarity);
+                    let refineMul = parseFloat(data.statsRefine[key]);
+                    statValue += refineBonus * refineMul;
+                }
 
-					case 1: rgb = '17,105,237'; break;
+                let sign = key == 'speedtal' || key == 'speedtalrz' || key == 'speedtalvz' ? '-' : '+';
+                stats += sign + `${Math.floor(statValue * 10.0) / 10.0} ${Lang.text(key)}<br>`;
+            }
+        }
+        
+        let dataTemp = data.rarity; 
+         
+        switch (dataTemp) {
+            case 1: dataTemp = 1; break;
+            case 2: dataTemp = 2; break;
+            case 3: dataTemp = 3; break;
+            case 4: dataTemp = 4; break;
+            default: dataTemp = 0; break; 
+        }
+        
+        let talentIsClassBased = "";
+        
+        if(!dataTemp){
+            talentIsClassBased = Lang.text('classTalent') + `<br>`;
+        }
+        
+        let starOrange = window.innerHeight*0.015;
+        let starGold = window.innerHeight*0.015;
+        let talentRefineByRarity = Build.talentRefineByRarity[dataTemp==0?4:dataTemp];
+        
+        let stars = "";
+        
+        for(let i = 0; i < (talentRefineByRarity>15?0:talentRefineByRarity); i++){
+            if(Math.floor(i/5)%2 == 1){
+                stars = stars + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
+            }
+            else{
+                stars = stars + `<img src="content/icons/starGold.webp" width=${starGold} height=${starGold}>`;
+            }
+        } 
+        
+        if(talentRefineByRarity>15){
+            stars = stars + talentRefineByRarity + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
+        }
+        
+        // Используем переведенное описание
+        let descriptionWithStars = `<b>${talentIsClassBased}</b>${stars} <br><br> ${description} `;
+        
+        // Используем переведенное название
+        Build.descriptionView.innerHTML = `<b style="color:rgb(${rgb})">${name}</b><div>${descriptionWithStars}</div><span>${stats}</span>`;
 
-					case 2: rgb = '205,0,205'; break;
+        let innerChilds = Build.descriptionView.childNodes[1].childNodes;
+        let paramIterator = 0;
+        for (let outerTag of innerChilds) {
+            for (let specialTag of outerTag.childNodes) {
+                let tagString = specialTag.innerHTML ? specialTag.innerHTML : specialTag.data;
+                if (!tagString || tagString.indexOf('%s') == -1 || !data.params) {
+                    continue;
+                }
+                let params = data.params.split(';');
+                if (paramIterator >= params.length) {
+                    continue;
+                }
+                let param = params[paramIterator];
+                let paramValues = param.split(',');
 
-					case 3: rgb = '237,129,5'; break;
+                let statAffection, minValue, maxValue;
 
-					case 4: rgb = '170,20,44'; break;
+                if (paramValues.length == 5) {
+                    minValue = parseFloat(paramValues[1]);
+                    maxValue = parseFloat(paramValues[2]);
+                    statAffection = paramValues[4];
+                }
+                else if (paramValues.length == 3) {
+                    minValue = parseFloat(paramValues[0]);
+                    maxValue = parseFloat(paramValues[1]);
+                    statAffection = paramValues[2];
+                }
 
-				}
+                let resolvedStatAffection;
+                let resolvedStatAffection1;
+                let resolvedStatAffection2;
+                switch (statAffection) {
+                    case 'sr_max':
+                        resolvedStatAffection = Build.getMaxStat(['sila', 'razum']);
+                        break;
+                    case 'sv_max':
+                        resolvedStatAffection = Build.getMaxStat(['stoikost', 'volia']);
+                        break;
+                    case 'ph_max':
+                        resolvedStatAffection = Build.getMaxStat(['provorstvo', 'hitrost']);
+                        break;
+                    case 'hpmp_max':
+                        resolvedStatAffection = Build.getMaxStat(['hp', 'mp']);
+                        break;
+                    case 'sr_sum':    
+                        resolvedStatAffection1 = 'sila';
+                        resolvedStatAffection2 = 'razum';                        
+                        break;
+                    case 'ph_sum':    
+                        resolvedStatAffection1 = 'provorstvo';
+                        resolvedStatAffection2 = 'hitrost';                        
+                        break;
+                    case 'sv_sum':    
+                        resolvedStatAffection1 = 'stoikost';
+                        resolvedStatAffection2 = 'volia';                        
+                        break;    
+                    case 'hpmp_sum':    
+                        resolvedStatAffection1 = 'hp';
+                        resolvedStatAffection2 = 'mp';                        
+                        break;    
+                    default:
+                        resolvedStatAffection = statAffection;
+                        break;
+                }
 
-				let stats = '';
+                function lerp(a, b, alpha) {
+                    return a + alpha * (b - a);
+                }
+                
+                let outputString;
+                if (statAffection == 'sr_sum'||statAffection == 'ph_sum'||statAffection == 'sv_sum'||statAffection == 'hpmp_sum'){
+                    let resolvedTotalStat1 = Build.totalStat(resolvedStatAffection1);
+                    let resolvedTotalStat2 = Build.totalStat(resolvedStatAffection2);
+                    const isHpOrEnergy = resolvedStatAffection1 == 'hp' || resolvedStatAffection1 == 'mp'|| resolvedStatAffection2 == 'hp' || resolvedStatAffection2 == 'mp';
+                    const param1 = isHpOrEnergy ? 600.0 : 50.0;
+                    const param2 = isHpOrEnergy ? 6250.0 : 250.0;
+                    outputString = (lerp(minValue, maxValue, (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2)).toFixed(1);
+                    if (outputString.endsWith(('.0'))) {
+                        outputString = outputString.replace('.0', '');
+                    }
+                } else {
+                    if (resolvedStatAffection in Build.dataStats && paramValues.length == 5) {
+                        let resolvedTotalStat = Build.totalStat(resolvedStatAffection);
+                        const isHpOrEnergy = resolvedStatAffection == 'hp' || resolvedStatAffection == 'mp';
+                        const param1 = isHpOrEnergy ? 600.0 : 50.0;
+                        const param2 = isHpOrEnergy ? 6250.0 : 250.0;
+                        outputString = (lerp(minValue, maxValue, (resolvedTotalStat - param1) / param2)).toFixed(1);
+                        if (outputString.endsWith(('.0'))) {
+                            outputString = outputString.replace('.0', '');
+                        }
+                    } else {
+                        let refineBonus = Build.getTalentRefineByRarity(data.rarity);
+                        outputString = (minValue + maxValue * refineBonus).toFixed(1);
+                        if (outputString.endsWith(('.0'))) {
+                            outputString = outputString.replace('.0', '');
+                        }
+                    }
+                }
+                if (specialTag.innerHTML) {
+                    specialTag.innerHTML = tagString.replace('%s', outputString);
+                } else {
+                    outerTag.innerHTML = tagString.replace('%s', outputString);
+                }
+                paramIterator++;
+            }
+        }
 
-				if (('stats' in data) && (data.stats)) {
+        let positionDescription = Build.descriptionView.getBoundingClientRect();
+        Build.descriptionView.style.zIndex = 9999;
+        Build.descriptionView.style.position = 'fixed';
+        Build.descriptionView.style.display = 'block';
+        
+        let descriptionWidth = Build.descriptionView.offsetWidth;
+        let ofSetW = 0,ofSetH = 0;
+    
+        if(Build.descriptionView.offsetHeight + positionElement.top > window.innerHeight){
+            ofSetW = window.innerHeight - Build.descriptionView.offsetHeight - positionElement.top;
+        }
+    
+        Build.descriptionView.style.left = (positionElement.left + positionElement.height) + 'px';
+        Build.descriptionView.style.top = (positionElement.top + ofSetW) + 'px';
+    }
 
-					for (let key in data.stats) {
-						if (Build.talentStatFilter(key)) {
-							continue;
-						}
+    let descEventEnd = () => {
+        Build.descriptionView.style.display = 'none';
+    };
+    
+    element.ontouchstart = (e) => {
+        descEvent();
+    };
 
-						let statValue = parseFloat(data.stats[key]);
-
-						if ('statsRefine' in data && 'rarity' in data) {
-							let refineBonus = Build.getTalentRefineByRarity(data.rarity);
-							let refineMul = parseFloat(data.statsRefine[key]);
-							statValue += refineBonus * refineMul;
-						}
-
-						let sign = key == 'speedtal' || key == 'speedtalrz' || key == 'speedtalvz' ? '-' : '+';
-						stats += sign + `${Math.floor(statValue * 10.0) / 10.0} ${(Build.language[key]) ? Build.language[key] : key}<br>`;
-
-					}
-
-				}
-				
-				let dataTemp = data.rarity; 
-				 
-				switch (dataTemp) {
-
-					case 1: dataTemp = 1; break;
-
-					case 2: dataTemp = 2; break;
-
-					case 3: dataTemp = 3; break;
-					
-					case 4: dataTemp = 4; break;
-					
-					default: dataTemp = 0; break; 
-
-				}
-				
-				let talentIsClassBased = "";
-				
-				if(!dataTemp){
-					talentIsClassBased = Lang.text('classTalent') + `<br>`;
-				}
-				
-				let starOrange = window.innerHeight*0.015;
-				
-				let starGold = window.innerHeight*0.015;
-				
-				let talentRefineByRarity = Build.talentRefineByRarity[dataTemp==0?4:dataTemp];
-				
-				let stars = "";
-				
-				for(let i = 0; i < (talentRefineByRarity>15?0:talentRefineByRarity); i++){
-					if(Math.floor(i/5)%2 == 1){
-						stars = stars + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
-					}
-					else{
-						stars = stars + `<img src="content/icons/starGold.webp" width=${starGold} height=${starGold}>`;
-					}
-					
-				} 
-				
-				if(talentRefineByRarity>15){
-					stars = stars + talentRefineByRarity + `<img src="content/icons/starOrange27.webp" width=${starOrange} height=${starOrange}>`;
-				}
-				
-				let descriptionWithStars = `<b>${talentIsClassBased}</b>${stars} <br><br> ${data.description} `;
-				
-				Build.descriptionView.innerHTML = `<b style="color:rgb(${rgb})">${data.name}</b><div>${descriptionWithStars}</div><span>${stats}</span>`;
-
-				let innerChilds = Build.descriptionView.childNodes[1].childNodes;
-				let paramIterator = 0;
-				for (let outerTag of innerChilds) {
-					for (let specialTag of outerTag.childNodes) {
-						let tagString = specialTag.innerHTML ? specialTag.innerHTML : specialTag.data;
-						if (!tagString || tagString.indexOf('%s') == -1 || !data.params) {
-							continue;
-						}
-						let params = data.params.split(';');
-						if (paramIterator >= params.length) {
-							continue;
-						}
-						let param = params[paramIterator];
-						let paramValues = param.split(',');
-
-						let statAffection, minValue, maxValue;
-
-						if (paramValues.length == 5) {
-							//let applyTo = paramValues[0];
-							minValue = parseFloat(paramValues[1]);
-							maxValue = parseFloat(paramValues[2]);
-							//let applicator = paramValues[3];
-							statAffection = paramValues[4];
-						}
-						else if (paramValues.length == 3) {
-							minValue = parseFloat(paramValues[0]);
-							maxValue = parseFloat(paramValues[1]);
-							statAffection = paramValues[2];
-						}
-
-						let resolvedStatAffection;
-						let resolvedStatAffection1;
-						let resolvedStatAffection2;
-						switch (statAffection) {
-							case 'sr_max':
-								resolvedStatAffection = Build.getMaxStat(['sila', 'razum']);
-								break;
-							case 'sv_max':
-								resolvedStatAffection = Build.getMaxStat(['stoikost', 'volia']);
-								break;
-							case 'ph_max':
-								resolvedStatAffection = Build.getMaxStat(['provorstvo', 'hitrost']);
-								break;
-							case 'hpmp_max':
-								resolvedStatAffection = Build.getMaxStat(['hp', 'mp']);
-								break;
-							case 'sr_sum':	
-								resolvedStatAffection1 = 'sila';
-								resolvedStatAffection2 = 'razum';						
-								break;
-							case 'ph_sum':	
-								resolvedStatAffection1 = 'provorstvo';
-								resolvedStatAffection2 = 'hitrost';						
-								break;
-							case 'sv_sum':	
-								resolvedStatAffection1 = 'stoikost';
-								resolvedStatAffection2 = 'volia';						
-								break;	
-							case 'hpmp_sum':	
-								resolvedStatAffection1 = 'hp';
-								resolvedStatAffection2 = 'mp';						
-								break;	
-							default:
-								resolvedStatAffection = statAffection;
-								break;
-						}
-
-						function lerp(a, b, alpha) {
-							return a + alpha * (b - a);
-						}
-						
-						let outputString;
-						if (statAffection == 'sr_sum'||statAffection == 'ph_sum'||statAffection == 'sv_sum'||statAffection == 'hpmp_sum'){
-							let resolvedTotalStat1 = Build.totalStat(resolvedStatAffection1);
-							let resolvedTotalStat2 = Build.totalStat(resolvedStatAffection2);
-								const isHpOrEnergy = resolvedStatAffection1 == 'hp' || resolvedStatAffection1 == 'mp'|| resolvedStatAffection2 == 'hp' || resolvedStatAffection2 == 'mp';
-								const param1 = isHpOrEnergy ? 600.0 : 50.0;
-								const param2 = isHpOrEnergy ? 6250.0 : 250.0;
-								outputString = (lerp(minValue, maxValue, (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2)).toFixed(1);
-								if (outputString.endsWith(('.0'))) {
-									outputString = outputString.replace('.0', '')
-								}
-						} else {
-							if (resolvedStatAffection in Build.dataStats && paramValues.length == 5) {
-								let resolvedTotalStat = Build.totalStat(resolvedStatAffection);
-								const isHpOrEnergy = resolvedStatAffection == 'hp' || resolvedStatAffection == 'mp';
-								const param1 = isHpOrEnergy ? 600.0 : 50.0;
-								const param2 = isHpOrEnergy ? 6250.0 : 250.0;
-								outputString = (lerp(minValue, maxValue, (resolvedTotalStat - param1) / param2)).toFixed(1);
-								if (outputString.endsWith(('.0'))) {
-									outputString = outputString.replace('.0', '')
-								}
-							} else {
-								let refineBonus = Build.getTalentRefineByRarity(data.rarity);
-								outputString = (minValue + maxValue * refineBonus).toFixed(1);
-								if (outputString.endsWith(('.0'))) {
-									outputString = outputString.replace('.0', '');
-								}
-							}
-						}
-						if (specialTag.innerHTML) {
-							specialTag.innerHTML = tagString.replace('%s', outputString);
-						} else {
-							outerTag.innerHTML = tagString.replace('%s', outputString);
-						}
-						paramIterator++;
-					}
-				}
-			}
-
-			let positionDescription = Build.descriptionView.getBoundingClientRect();
-
-			Build.descriptionView.style.zIndex = 9999;
-
-			Build.descriptionView.style.position = 'fixed';
-			
-			Build.descriptionView.style.display = 'block';
-			
-			let descriptionWidth = Build.descriptionView.offsetWidth;
-			
-			let ofSetW = 0,ofSetH = 0;
-		
-			if(Build.descriptionView.offsetHeight + positionElement.top > window.innerHeight){
-				ofSetW = window.innerHeight - Build.descriptionView.offsetHeight - positionElement.top;
-			}
-		
-			Build.descriptionView.style.left = (positionElement.left + positionElement.height)+ 'px';
-			
-			Build.descriptionView.style.top = (positionElement.top + ofSetW) + 'px';
-		}
-
-		let descEventEnd = () => {
-
-			Build.descriptionView.style.display = 'none';
-
-		}
-		
-		element.ontouchstart = (e) => {
-			//e.preventDefault();
-			descEvent();
-		};
-
-		element.onmouseover = () => { descEvent() };
-
-		element.onmouseout = () => { descEventEnd() };
-
-		element.ontouchend = () => {
-			//e.preventDefault();
-			descEventEnd();
-		};
-
-	}
+    element.onmouseover = () => { descEvent() };
+    element.onmouseout = () => { descEventEnd() };
+    element.ontouchend = () => {
+        descEventEnd();
+    };
+}
 
 }
 
@@ -8049,6 +8295,19 @@ class App {
 		}
 	}
 
+	static async ShowCurrentViewAsync() {
+		if (App.storage.data.login) {
+			
+			await View.show('castle');
+			
+		}
+		else {
+
+			await View.show('authorization');
+
+		}
+	}
+
 	static OpenExternalLink(url) {
 		if (NativeAPI.status) {
 			nw.Shell.openExternal(url);
@@ -8485,7 +8744,7 @@ class Chat {
 
 	static to = 0;
 
-	static init() {
+	static initView() {
 		let scrollBtn = DOM({
 			style: 'scroll-btn',
 			event: ['click', () => {
@@ -8525,30 +8784,39 @@ class Chat {
 			}
 
 		});
+	}
+
+	static init() {
+
+		Chat.initView();
 
 		document.addEventListener('keydown', (event) => {
 
 			if (event.code == 'KeyM' && (event.ctrlKey || event.metaKey)) {
 
-				if (Chat.hide) {
-
-					Chat.body.style.display = 'block';
-
-					Chat.hide = false;
-
-				}
-				else {
-
-					Chat.body.style.display = 'none';
-
-					Chat.hide = true;
-
-				}
+				changeChatVisibility();
 
 			}
 
 		});
 
+	}
+
+	static changeChatVisibility() {
+		if (Chat.hide) {
+
+			Chat.body.style.display = 'block';
+
+			Chat.hide = false;
+
+		}
+		else {
+
+			Chat.body.style.display = 'none';
+
+			Chat.hide = true;
+
+		}
 	}
 
 	static wrapLinksInATag(message) {
@@ -9666,64 +9934,59 @@ class Castle {
 
 	static buildingsNames = [
 		["",""],
-
-		["Жемчужная ферма","Дистиллятор прайма"],
-		["Грибница","Ферма"],
-		["Каучуковое дерево","Штольня"],
-		["Прядильня","Лесопилка"],
-		["Ткацкая мастерская","Мануфактура"],
-		["Сад талантов","Кузница талантов"],
-
-		["Дом клана","Дом клана"],
-		["Ярмарка","Ярмарка"],
-		["Особняк", "Терем"],
-		["Библиотека", "Библиотека"],
-		["Склад","Склад"],
-
-		["Арена", "Арена"],
-		["Шпиль","Секретная служба"],
-		["Альков жизни", "Бастион"],
-		["Храм чистоты","Дом милосердия"],
-		["Монумент","Таран"],
-		["Чайный домик","Таверна"],
-
-		["Кошкин дом","Кошкин дом"],
-		["Домик щенка","Домик щенка"],
-		["Домик единорожка","Домик единорожка"],
-
-		["Алый цветок","Фонарь"],
-		["Янтарный цветок","Большой фонарь"],
-		["Указатель","Указатель"],
-		["Статуя","Флагшток"],
-		["Барабаны","Подзорная труба"],
-		["Пальма с птицей","Глобус"],
-		["Фонтан","Фонтан"],
-		["Лавка с фонарями","Лавка с фонарями"],
-		["Багряный куст","Куст"],
-		["Лазурный куст","Цветущий куст"],
-		["Багряное соцветие","Цветущий куст"],
-		["Пурпурное соцветие","Цветущий куст"],
-		["Живая изгородь","Живая стена"],
-		["Живая изгородь","Цветущая стена"],
-		["Живая изгородь","Цветущая стена"],
-		["Колонна","Цветущая стена"],
-		["Клумба","Клумба"],
-		["Клумба","Клумба"],
-		["Клумба","Клумба"],
-		["Клумба","Клумба"],
-		["Маленькое дерево","Круглое дерево"],
-		["Цветущая сакура","Круглое дерево"],
-		["Бонсай","Круглое дерево"],
-		["Цветущий бонсай","Круглое дерево"],
-		["Тростниковая башня","Топиарный конус"],
-		["Миниатюрный сад","Фигура жирафа"],
-		["Большая сакура","Топиарный куб"],
-		["Огромный кактус","Большое дерево"],
-		["Раффлезия","Фигура слона"],
-		["Мухоловка","Фигура единорога"],
-		["Фигурный тростник","Малый топиарный конус"],
-		["Банановая пальма","Топиарная башня"],
-		["Кокосовая пальма","Топиарный столб"],
+		["pearl_farm_ad","pearl_farm_doct"],
+		["mushroom_farm_ad","mushroom_farm_doct"],
+		["rubber_tree_ad","rubber_tree_doct"],
+		["spinning_mill_ad","spinning_mill_doct"],
+		["weaving_workshop_ad","weaving_workshop_doct"],
+		["talent_garden_ad","talent_garden_doct"],
+		["clan_house_ad","clan_house_doct"],
+		["fair_ad","fair_doct"],
+		["mansion_ad","mansion_doct"],
+		["library_ad","library_doct"],
+		["storage_ad","storage_doct"],
+		["arena_ad","arena_doct"],
+		["spire_ad","spire_doct"],
+		["alcove_ad","alcove_doct"],
+		["temple_ad","temple_doct"],
+		["monument_ad","monument_doct"],
+		["tea_house_ad","tea_house_doct"],
+		["cat_house_ad","cat_house_doct"],
+		["dog_house_ad","dog_house_doct"],
+		["unicorn_house_ad","unicorn_house_doct"],
+		["scarlet_flower_ad","scarlet_flower_doct"],
+		["amber_flower_ad","amber_flower_doct"],
+		["signpost_ad","signpost_doct"],
+		["statue_ad","statue_doct"],
+		["drums_ad","drums_doct"],
+		["palm_with_bird_ad","palm_with_bird_doct"],
+		["fountain_ad","fountain_doct"],
+		["lantern_shop_ad","lantern_shop_doct"],
+		["crimson_bush_ad","crimson_bush_doct"],
+		["azure_bush_ad","azure_bush_doct"],
+		["crimson_inflorescence_ad","crimson_inflorescence_doct"],
+		["purple_inflorescence_ad","purple_inflorescence_doct"],
+		["hedge_ad","hedge_doct"],
+		["hedge_flowering_ad","hedge_flowering_doct"],
+		["hedge_flowering2_ad","hedge_flowering2_doct"],
+		["column_ad","column_doct"],
+		["flower_bed_ad","flower_bed_doct"],
+		["flower_bed2_ad","flower_bed2_doct"],
+		["flower_bed3_ad","flower_bed3_doct"],
+		["flower_bed4_ad","flower_bed4_doct"],
+		["small_tree_ad","small_tree_doct"],
+		["blooming_sakura_ad","blooming_sakura_doct"],
+		["bonsai_ad","bonsai_doct"],
+		["blooming_bonsai_ad","blooming_bonsai_doct"],
+		["reed_tower_ad","reed_tower_doct"],
+		["miniature_garden_ad","miniature_garden_doct"],
+		["big_sakura_ad","big_sakura_doct"],
+		["huge_cactus_ad","huge_cactus_doct"],
+		["rafflesia_ad","rafflesia_doct"],
+		["flytrap_ad","flytrap_doct"],
+		["figured_reed_ad","figured_reed_doct"],
+		["banana_palm_ad","banana_palm_doct"],
+		["coconut_palm_ad","coconut_palm_doct"]
 	];
 
 	static toggleMusic(layer, value) {
@@ -10011,6 +10274,8 @@ class Castle {
 	static async initDemo(sceneName, canvas) {
 
 		Castle.currentSceneName = sceneName;
+
+		Castle.shaderFactionDef = sceneName == 'doct' ? "SCENE_DOCT" : "SCENE_AD";
 
 		window.addEventListener('resize', function (event) {
 
@@ -10395,9 +10660,9 @@ class Castle {
 
 			let definesText = await HTTP.request(`content/shaders/${shaderNames[i]}.glsl`, 'text');
 
-			let programColor = Castle.prepareShader("\n#define RENDER_PASS_COLOR\n", definesText, vsText, fsText);
+			let programColor = Castle.prepareShader(`\n#define RENDER_PASS_COLOR\n #define ${Castle.shaderFactionDef}`, definesText, vsText, fsText);
 
-			let programSM = Castle.prepareShader("\n#define RENDER_PASS_SM\n", definesText, vsText, fsText);
+			let programSM = Castle.prepareShader(`\n#define RENDER_PASS_SM\n #define ${Castle.shaderFactionDef}`, definesText, vsText, fsText);
 
 			Castle.sceneShaders[i] = { PSO: programColor, PSO_SM: programSM, attributes: Castle.scenesJson.shaderLayouts.find(value => value.name === shaderNames[i]).layout, vertStride: 0 };
 
@@ -10450,6 +10715,8 @@ class Castle {
 	}
 
 	static uniqueProgCounter = 0;
+
+	static shaderFactionDef = "INVALID_DEFINE"
 
 	static prepareShader(renderPassDefine, definesText, vsText, fsText) {
 
@@ -11106,7 +11373,8 @@ class Settings {
         globalVolume: 0.5,
         musicVolume: 0.7,
         soundsVolume: 0.7,
-		radminPriority: false
+		radminPriority: false,
+		language: 'ru'
     };
 
     static settings = JSON.parse(JSON.stringify(this.defaultSettings));
@@ -11209,6 +11477,13 @@ class Settings {
 					Sound.setVolume('sound_test', Castle.GetVolume(Castle.AUDIO_SOUNDS));
 				}
 			}
+			// 4. Применение настроек языка (если не отключено в options)
+			if (options.language !== false && typeof Lang !== 'undefined') {
+            // Обновляем текущий язык
+            if (this.settings.language && this.settings.language in Lang.list) {
+                Lang.target = this.settings.language;
+            }
+        }
 	
 		} catch (e) {
 			App.error('Ошибка применения настроек: ' + e);
@@ -11273,8 +11548,8 @@ class MM {
 		View.show('castle');
 	}
 
-	static async init() {
-
+	static initView() {
+		
 		MM.view.classList.add('mm');
 
 		MM.view.style.display = 'none';
@@ -11284,6 +11559,11 @@ class MM {
 		let button = CastleNAVBAR.init();
 
 		button.onclick = () => MM.start();
+	}
+
+	static async init() {
+
+		MM.initView();
 
 		// Linux test
 		//let testRun = DOM({style:'castle-button-play-test'}, "Test");
