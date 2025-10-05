@@ -1763,7 +1763,7 @@ class View {
 				password,
 				password2,
 				DOM({ style: 'login-box-forma-buttons' },
-					DOM({ style: 'login-box-forma-button', event: ['click', () => App.registration(fraction, invite, login, password, password2)] }, 'Зарегистрироваться'),
+					DOM({ style: 'login-box-forma-button', event: ['click', () => App.registration(fraction, invite, login, password, password2)] }, Lang.text('registration1')),
 					DOM({ style: 'login-box-forma-button', event: ['click', () => View.show('authorization')] }, Lang.text('back'))
 				)
 			),
@@ -2109,7 +2109,7 @@ root.appendChild(content);
 
 					}
 
-					status.firstChild.innerText = 'Подтвердить';
+					status.firstChild.innerText = Lang.text('confirm');
 
 				}
 

@@ -9,6 +9,7 @@ export const ru = {
 		passwordAgain: 'Еще раз пароль',
 		login: 'Войти',
 		registration: 'Регистрация',
+		registration1: 'Зарегистрироваться',
 		fraction: 'Выберите фракцию',
 		adornia: 'Королевство Адорния',
 		docts: 'Империя Доктов',
@@ -56,6 +57,7 @@ export const ru = {
 		classTalent: 'Классовый',
 		language: 'Язык',
 		LangTarg: 'Язык изменен',
+		confirm:'Подтвердить',
 
 		// Подсказки
 		titletraining: 'Тренировка',
