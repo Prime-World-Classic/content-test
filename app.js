@@ -71,7 +71,7 @@ class Lang {
 			const { en } = await import('/content/lang/en.js');
 			//const { be } = await import('/content/lang/be.js');
 
-			Lang.list = { ru, en,/* be*/ };
+			Lang.list = { ru, en/*, be*/ };
 			console.log('Languages loaded successfully:', Object.keys(Lang.list));
 
 		} catch (error) {
