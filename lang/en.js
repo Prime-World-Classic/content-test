@@ -952,7 +952,7 @@ export const en = {
 		htalent_203_description:"The hero hits the target with the least Health, dealing it <fiz>%s</fiz> and <mag>%s</mag> damage. A hit enemy cannot hide from the hero for the next <num>3</num> seconds.",
 		htalent_204_name:"Double shot",
 		htalent_204_description:"The target of the decisive shot will be stunned for <num>0.5</num> sec.<br>\r\Warning shot can be applied <num>2</num> times within <num>10</num> seconds.",
-		htalent_205_name:"Wild Beast <x1F4A7 100 ⌛️18",
+		htalent_205_name:"Wild Beast &#x1F4A7 100 ⌛️18",
 		htalent_205_description:"Rushes at the specified enemy, deals <mag>%s</mag> damage to it, forces the hero to attack for <num>1</num> sec and slows it down by <num>40%</num> for <num>5</num> sec.",
 		htalent_206_name:"Lycanthropy",
 		htalent_206_description:"Health Regeneration increases by <num>%s</num> (from Mind).<br>\n<rz>In the native land, the increase in Health regeneration is additionally increased by <num>%s</num>.</rz>",
