@@ -4522,7 +4522,7 @@ class Window {
 					await Window.show('main', 'settings');
     			}]
 				}, `${Lang.text('language')} (${Lang.target})`
-			)
+			),
 			// Добавленная кнопка "Клавиши"
 			/*DOM({ 
 				style: 'castle-menu-item-button',
@@ -4533,7 +4533,12 @@ class Window {
 			}, Lang.text('keys') || 'Клавиши'), // Fallback на текст, если перевод отсутствует
 			*/
 			// Кнопка "Назад"
-			
+			DOM({ 
+				style: 'castle-menu-item-button', 
+				event: ['click', () => {
+				Window.show('main', 'menu');
+				}]
+			}, Lang.text('back'))
 			/*,
 			
 			DOM({ style: 'castle-menu-label-description' }, Lang.text('soundHelp'))
