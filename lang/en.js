@@ -2105,7 +2105,7 @@ export const en = {
 		htalent_780_name:"Prestige",
 		htalent_780_description:"When applying a class talent, the hero becomes invulnerable to damage for <num>0.5</num> sec.",
 		htalent_781_name:"Wildfire 90 ⌛️8",
-		htalent781__description:"After <num>0.6</num> seconds, it deals <fiz>%s</fiz> damage to enemies in the specified area.",
+		htalent_781_description:"After <num>0.6</num> seconds, it deals <fiz>%s</fiz> damage to enemies in the specified area.",
 		htalent_782_name:"Mind Games 150 ⌛️19",
 		htalent_782_description:"The hero creates a clone, after which he moves to the selected point.At the same time, the tilt is moving in the opposite direction.<br>\The clone exists for <num>4</num> seconds and cannot attack or use talents.<br>\When creating a clone, Prestige talent is applied to it.",
 		htalent_783_name:"Focused Flame",
