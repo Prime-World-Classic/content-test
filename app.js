@@ -3077,13 +3077,28 @@ root.appendChild(content);
 			for (let item of result) {
 
 				const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, item.nickname));
-
+				heroName.append(DOM({tag:'span',event:['click', async () => {
+					
+					try{
+						
+						let voice = new Voice(item.id);
+						
+						await voice.call('testkey');
+						
+					}
+					catch(error){
+						
+						App.error(error);
+						
+					}
+					
+				}]},'☎️'));
 				if (item.nickname.length > 10) {
 					heroName.firstChild.classList.add('castle-name-autoscroll');
 				}
 
 				let heroNameBase = DOM({ style: 'castle-item-hero-name' }, heroName);
-
+				
 				let bottom = DOM({ style: 'castle-friend-item-bottom' });
 
 				let friend = DOM({ style: 'castle-friend-item' }, heroNameBase, bottom);
@@ -8149,7 +8164,27 @@ class Events {
 	static UChat(data) {
 
 		Chat.viewMessage(data);
-
+		
+	}
+	
+	static async VCall(data){
+		
+		let voice = new Voice(data.id);
+		
+		await voice.accept(data.offer);
+		
+	}
+	
+	static async VReady(data){
+		
+		await Voice.ready(data.id,data.answer);
+		
+	}
+	
+	static async VCandidate(data){
+		
+		await Voice.candidate(data.id,candidate);
+		
 	}
 
 }
@@ -8739,6 +8774,338 @@ class App {
 
 	}
 
+}
+
+class Voice {
+	
+	static peerConnectionConfig = {
+		// полный список stun https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b
+		iceServers:[
+		{urls:[
+		'stun:stun.l.google.com:19302',
+		'stun:stun1.l.google.com:19302',
+		'stun:stun2.l.google.com:19302',
+		'stun:stun3.l.google.com:19302',
+		'stun:stun4.l.google.com:19302'
+		]}
+		]
+		
+	};
+	
+	static mediaAudioConfigManual = {
+		echoCancellation:false,
+		noiseSuppression:false,
+		autoGainControl:false,
+		channelCount:1,
+		sampleRate:48000,
+		sampleSize:16
+	};
+	
+	static mediaAudioConfig = {
+		echoCancellation:true,
+		noiseSuppression:true,
+		autoGainControl:true,
+		channelCount:1,
+		sampleRate:16000,
+		sampleSize:16
+	};
+	
+	static mediaAudioConfigLowQality = {
+		echoCancellation:true,
+		noiseSuppression:true,
+		autoGainControl:true,
+		channelCount:1,
+		sampleRate:8000,
+		sampleSize:16
+	};
+	
+	static localStreamAudio = null;
+	
+	static manager = new Object();
+	
+	static enabled = true;
+	
+	static async initAudio(){
+		
+		if(!Voice.localStreamAudio){
+			
+			Voice.localStreamAudio = await navigator.mediaDevices.getUserMedia({audio:Voice.mediaAudioConfig,video:false});
+			
+			Voice.initEventAudio();
+			
+		}
+		
+	}
+	
+    static initEventAudio(){
+		
+		let audioContext = new AudioContext();
+		
+		let source = audioContext.createMediaStreamSource(Voice.localStreamAudio);
+
+		let analyser = audioContext.createAnalyser();
+		
+		source.connect(analyser);
+		
+		analyser.fftSize = 256;
+		
+		let bufferLength = analyser.frequencyBinCount;
+		
+		let dataArray = new Uint8Array(bufferLength);
+		
+        let checkVolume = () => {
+			
+			analyser.getByteFrequencyData(dataArray);
+			
+			let sum = 0;
+			
+			for(let i = 0; i < bufferLength; i++){
+				
+				sum += dataArray[i];
+				
+			}
+			
+			let average = sum / bufferLength;
+			
+			let event = new CustomEvent('voiceVolumeChange',{detail:average});
+			
+			window.dispatchEvent(event);
+			
+			requestAnimationFrame(checkVolume);
+			
+        };
+		
+		checkVolume();
+		
+    }
+	
+	static async ready(id,answer){
+		
+		if( !(id in Voice.manager) ){
+			
+			return;
+			
+		}
+		
+		await Voice.manager[id].setRemoteDescription(answer);
+		
+    }
+	
+	static async candidate(id,candidate){
+		
+		if( !(id in Voice.manager) ){
+			
+			return;
+			
+		}
+		
+		await Voice.manager[id].addIceCandidate(candidate); // new RTCIceCandidate()
+		
+    }
+	
+	static destroy(){
+		
+		for(let id in Voice.manager){
+			
+			Voice.manager[id].close();
+			
+		}
+		
+		if(Voice.localStreamAudio){
+			
+			for(let track of Voice.localStreamAudio.getTracks()){
+				
+				track.stop();
+				
+			}
+			
+			Voice.localStreamAudio = null;
+			
+		}
+		
+	}
+	
+	static async association(i,users,key){
+		
+		let start = false;
+		
+		for(let id of users){
+			
+			if(id == i){
+				
+				start = true;
+				
+				continue;
+				
+			}
+			
+			if(!start){
+				
+				continue;
+				
+			}
+			
+			let voice = new Voice(id);
+			
+			await voice.call(key);
+			
+		}
+		
+	}
+	
+	constructor(id){
+		
+		this.id = id;
+		
+	}
+	
+	createPeerConnection(){
+		
+		this.peer = new RTCPeerConnection(Voice.peerConnectionConfig);
+		
+		Voice.manager[this.id] = this.peer;
+		
+		for(let track of Voice.localStreamAudio.getTracks()){
+			
+			console.log(`Добавили трек: ${track.kind} (${track.id})`);
+			
+			this.peer.addTrack(track);
+			
+		}
+		
+		this.peer.ontrack = (event) => {
+			
+			console.log('Получен удаленный медиапоток',event);
+			
+			let audio = new Audio();
+			
+			audio.volume = 0.5;
+			
+			audio.srcObject = event.streams[0];
+			
+			audio.play();
+			
+		}
+		
+		this.peer.onicecandidate = async (event) => {
+			
+			if(event.candidate){
+				
+				console.log('Сгенерирован ICE кандидат:',event.candidate);
+				
+				await App.api.request('user','callCandidate',{id:this.id,candidate:event.candidate});
+				
+			}
+			else{
+				
+				console.log('Все ICE кандидаты собраны');
+				
+			}
+			
+		}
+		
+		this.peer.oniceconnectionstatechange = () => {
+			
+			switch(this.peer.iceConnectionState){
+				
+				case 'connected': console.log('Соединение установлено!'); break;
+				
+				case 'disconnected': console.log('Соединение прервано'); break;
+				
+				case 'failed':
+				
+				console.error('Соединение не удалось');
+				
+				this.close();
+				
+				break;
+				
+				case 'closed':
+				
+				console.log('Соединение закрыто');
+				
+				this.close();
+				
+				break;
+				
+			}
+			
+		}
+		
+		this.peer.onconnectionstatechange = () => {
+			
+			console.log(`Состояние соединения: ${this.peerConnection.connectionState}`);
+			
+		};
+		
+	}
+	
+	async call(key){
+		
+		if(!Voice.enabled){
+			
+			return;
+			
+		}
+		
+		if(this.id in Voice.manager){
+			
+			return;
+			
+		}
+		
+		await Voice.initAudio();
+		
+		this.createPeerConnection();
+		
+		let offer = await this.peer.createOffer({offerToReceiveAudio:true,offerToReceiveVideo:false});
+		
+		await this.peer.setLocalDescription(offer);
+		
+		await App.api.request('user','call',{id:this.id,key:key,offer:offer});
+		
+	}
+	
+	async accept(offer){
+		
+		if(!Voice.enabled){
+			
+			return;
+			
+		}
+		
+		if(this.id in Voice.manager){
+			
+			return;
+			
+		}
+		
+		await Voice.initAudio();
+		
+		this.createPeerConnection();
+		
+		await this.peer.setRemoteDescription(offer);
+		
+		let answer = await this.peer.createAnswer();
+		
+		await this.peer.setLocalDescription(answer);
+		
+		await App.api.request('user','callAccept',{id:this.id,answer:answer});
+		
+	}
+	
+	async close(){
+		
+		if(this.peer){
+			
+			this.peer.close();
+			
+		}
+		
+		delete Voice.manager[this.id];
+		
+	}
+	
 }
 
 class Chat {
