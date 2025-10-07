@@ -8979,11 +8979,19 @@ class Voice {
 			
 			let audio = new Audio();
 			
-			audio.volume = 0.5;
+			audio.srcObject = new MediaStream([event.track]);
 			
-			audio.srcObject = event.streams[0];
+			audio.autoplay = true;
+			
+			audio.controls = true;
+			
+			audio.volume = 1.0;
 			
 			audio.play();
+			
+			document.body.prepend(audio);
+			
+			audio.style.display = 'none';
 			
 		}
 		
@@ -10943,7 +10951,7 @@ class Castle {
 				Sound.play(musicName, { id: 'castle', volume: Castle.GetVolume(Castle.AUDIO_MUSIC) }, playCastleMusic)
 
 			}
-			playCastleMusic();
+			//playCastleMusic();
 		}
 
 		Castle.loadBuildings();
