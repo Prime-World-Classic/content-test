@@ -8183,7 +8183,7 @@ class Events {
 	
 	static async VCandidate(data){
 		
-		await Voice.candidate(data.id,candidate);
+		await Voice.candidate(data.id,data.candidate);
 		
 	}
 
@@ -9034,7 +9034,7 @@ class Voice {
 		
 		this.peer.onconnectionstatechange = () => {
 			
-			console.log(`Состояние соединения: ${this.peerConnection.connectionState}`);
+			console.log(`Состояние соединения: ${this.peer.connectionState}`);
 			
 		};
 		
