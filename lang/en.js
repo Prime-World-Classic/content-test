@@ -2561,7 +2561,7 @@ export const en = {
 		talent_175_name:"Predator's Rage",
 		talent_175_description:" ",
 		talent_176_name:"The Fury of Power<font color=#FFFFFF> ⌛️120</font>",
-		talent_176_description:"<num>The attacker</num><br><br>Inflicts <fiz>%s</fiz> on all enemy heroes around, and on all other creatures in <num>1.5</num> times more and demolishes trees.",
+		talent_176_description:"<num>The attacker</num><br><br>Inflicts <fiz>%s</fiz> on all enemy heroes around , and on all other creatures in <num>1.5</num> times more and demolishes trees.",
 		talent_177_name:"Internal reserves",
 		talent_177_description:"Using talent restores the hero <num>%s</num> Health and additionally in the amount of <num>20%</num> of the base Energy cost of the applied talent.",
 		talent_178_name:"Harmony",

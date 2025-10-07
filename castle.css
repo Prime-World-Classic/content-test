@@ -721,7 +721,10 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     aspect-ratio: 154/65;
     top: 3.8vh; /* Изменено с vw на vh */
     text-align: center;
-    line-height: 3vh; /* Изменено с vw на vh */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+    /* line-height: 3vh;   Заменено на центрирование по середине при помощи display: flex; */
     color: #ffe78a;
     font-family: Arial;
     font-size: 1.1vh; /* Изменено с vw на vh */
@@ -1355,6 +1358,10 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 
 .no-hover-brightness:hover {
 	filter: brightness(100%);
+}
+
+.castle-hero-rank-icon{
+	transform: scale(.8);
 }
 
 .castle-hero-item-bg {

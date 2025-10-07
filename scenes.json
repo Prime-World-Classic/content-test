@@ -5498,10 +5498,16 @@
                     "indexCount": 6,
                     "shader": "shader_pos_norm_uv16",
                     "texture": "doct4263",
-                    "tintColor": [
-                        0.7,
+                    "uvScale": [
                         0.6,
-                        1.0,
+                        0.6,
+                        0.6,
+                        0.6
+                    ],
+                    "tintColor": [
+                        0.35,
+                        0.3,
+                        0.5,
                         1.0
                     ],
                     "transform": [
@@ -6155,11 +6161,17 @@
                     "indexCount": 12807,
                     "shader": "shader_pos_color",
                     "texture": "blend4362",
+                    "uvScale": [
+                        0.001,
+                        0.001,
+                        0.001,
+                        0.001
+                    ],
                     "tintColor": [
-                        0.05,
-                        0.25,
-                        0.25,
-                        1.3
+                        0.1,
+                        0.3,
+                        0.4,
+                        1.2
                     ],
                     "blend": [
                         "SRC_ALPHA",
