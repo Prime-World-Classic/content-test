@@ -9001,7 +9001,7 @@ class Voice {
 				
 				console.log('Сгенерирован ICE кандидат:',event.candidate);
 				
-				await App.api.request('user','callCandidate',{id:this.id,candidate:event.candidate});
+				await App.api.ghost('user','callCandidate',{id:this.id,candidate:event.candidate});
 				
 			}
 			else{
