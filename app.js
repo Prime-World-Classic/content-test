@@ -3075,7 +3075,7 @@ root.appendChild(content);
 			for (let item of result) {
 
 				const heroName = DOM({ style: 'castle-hero-name' }, DOM({tag:'span'}, item.nickname));
-				heroName.append(DOM({tag:'span',event:['click', async () => {
+				heroName.prepend(DOM({tag:'span',event:['click', async () => {
 					
 					try{
 						

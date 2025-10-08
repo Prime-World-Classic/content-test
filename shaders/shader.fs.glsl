@@ -74,13 +74,17 @@ vec3 neutral(vec3 color) {
 
 void main()
 {
-#ifdef SCENE_DOCT
-  const vec3 lightColor = vec3(1.0, 1.0, 1.0) * 2.2;
-  const float shadowContrast = 0.9;
-#else
-  const vec3 lightColor = vec3(1.0, 1.0, 1.2) * 1.6;
-  const float shadowContrast = 0.8;
+#if 0
+  #ifdef SCENE_DOCT
+    const vec3 lightColor = vec3(1.0, 1.0, 1.0) * 2.2;
+    const float shadowContrast = 0.9;
+  #else
+    const vec3 lightColor = vec3(1.0, 1.0, 1.2) * 1.6;
+    const float shadowContrast = 0.8;
+  #endif
 #endif
+  const vec3 lightColor = vec3(1.0, 1.0, 1.0) * 1.6;
+  const float shadowContrast = 0.6;
 
   const float gridFalloffDistance = 50.0;
 
@@ -170,5 +174,7 @@ void main()
   snow(gl_FragColor, fragTexCoord * uvScale.zw);
   gl_FragColor.w *= posDepth * 0.002;
 #endif
+  // Exposure
+  // gl_FragColor.xyz *= pow(2.0, 0.0); // -0.5
 #endif
 }
