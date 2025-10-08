@@ -9244,16 +9244,6 @@ class Voice {
 			
 		}
 		
-		setTimeout(() => {
-			
-			if(voice.peer.iceConnectionState != 'connected'){
-				
-				this.reconnect();
-				
-			}
-			
-		},15000);
-		
 	}
 	
 	async close(){
