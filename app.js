@@ -1007,8 +1007,6 @@ class Api {
 
 		let json = JSON.parse(body);
 
-		console.log('Сообщение API', json);
-
 		if (!json) {
 
 			return;
@@ -1059,7 +1057,7 @@ class Api {
 			}
 
 			if (action in this.events) {
-				console.log('Событие API', json.from);
+				
 				try {
 
 					this.events[action](data);
@@ -3076,14 +3074,14 @@ root.appendChild(content);
 
 			for (let item of result) {
 
-				const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, item.nickname));
+				const heroName = DOM({ style: 'castle-hero-name' }, DOM({tag:'span'}, item.nickname));
 				heroName.append(DOM({tag:'span',event:['click', async () => {
 					
 					try{
 						
-						let voice = new Voice(item.id);
+						let voice = new Voice(item.id,'friend');
 						
-						await voice.call('testkey');
+						await voice.call();
 						
 					}
 					catch(error){
@@ -3092,7 +3090,7 @@ root.appendChild(content);
 						
 					}
 					
-				}]},'☎️'));
+				}]},' ☎️'));
 				if (item.nickname.length > 10) {
 					heroName.firstChild.classList.add('castle-name-autoscroll');
 				}
@@ -3209,7 +3207,7 @@ root.appendChild(content);
 				friend.dataset.url = `content/hero/empty.webp`;
 
 				preload.add(friend);
-
+				
 			}
 
 		}, 'friend', 'list');
@@ -4445,6 +4443,15 @@ class Window {
 				},
 					{ checked: Settings.settings.radminPriority }),
 				DOM({ tag: 'label', for: 'radmin-priority' }, Lang.text('radminPriority'))
+			),
+			DOM({ style: 'castle-menu-item-checkbox' },
+				DOM({
+					tag: 'input', type: 'checkbox', id: 'voice', checked: Settings.settings.voice, event: ['change', (e) => {
+						Settings.settings.voice = e.target.checked;
+					}]
+				},
+					{ checked: Settings.settings.voice }),
+				DOM({ tag: 'label', for: 'voice' }, Lang.text('voiceEnabled'))
 			),
 			DOM({ style: 'castle-menu-label' }, Lang.text('volume'),
             	DOM({
@@ -8124,14 +8131,13 @@ class Events {
 	}
 
 	static MMQueueV2(data) {
-  		console.log('[MMQueueV2] пришли данные:', data);
+		
   		View.mmQueueMap = data;
 		document.querySelectorAll('.banner-count').forEach((el, idx) => {
     	const keys = ['pvp', 'anderkrug', 'cte', 'm4', 'pve-ep2-red', 'custom-battle'];
     	const cssKey = keys[idx];
     		if (cssKey) {
      	 const val = View.getQueue(cssKey);
-		 console.log(`[${cssKey}] => ${val}`);
 		 el.textContent = val;
     }
   });
@@ -8169,9 +8175,30 @@ class Events {
 	
 	static async VCall(data){
 		
-		let voice = new Voice(data.id);
-		
-		await voice.accept(data.offer);
+		if(data.isCaller){
+			
+			let body = document.createDocumentFragment();
+			
+			body.append(DOM(`Принять звонок от ${data.isCaller}?`),DOM({style:'splash-content-button',event:['click', async () => {
+				
+				let voice = new Voice(data.id);
+				
+				await voice.accept(data.offer);
+				
+				Splash.hide();
+				
+			}]},'Да'),DOM({style:'splash-content-button',event:['click', async () => Splash.hide()] },'Нет'));
+			
+			Splash.show(body);
+			
+		}
+		else{
+			
+			let voice = new Voice(data.id);
+			
+			await voice.accept(data.offer);
+			
+		}
 		
 	}
 	
@@ -8186,7 +8213,13 @@ class Events {
 		await Voice.candidate(data.id,data.candidate);
 		
 	}
-
+	
+	static VKick(){
+		
+		Voice.destroy();
+		
+	}
+	
 }
 
 class App {
@@ -8319,6 +8352,8 @@ class App {
 			document.body.append(DOM({ id: 'ADMStat' }));
 
 		}
+		
+		Voice.init();
 
 	}
 
@@ -8762,7 +8797,7 @@ class App {
 
 	static isAdmin(id = 0) {
 
-		return [1, 2, 24, 134, 865, 2220, 292, 1853].includes(Number((id ? id : App.storage.data.id)));
+		return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(Number((id ? id : App.storage.data.id)));
 
 	}
 
@@ -8779,14 +8814,21 @@ class App {
 class Voice {
 	
 	static peerConnectionConfig = {
-		// полный список stun https://gist.github.com/sagivo/3a4b2f2c7ac6e1b5267c2f1f59ac6c6b
+		// проверка stun https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
 		iceServers:[
 		{urls:[
 		'stun:stun.l.google.com:19302',
 		'stun:stun1.l.google.com:19302',
 		'stun:stun2.l.google.com:19302',
 		'stun:stun3.l.google.com:19302',
-		'stun:stun4.l.google.com:19302'
+		'stun:stun4.l.google.com:19302',
+		'stun:stun.ideasip.com:3478',
+		'stun:stun.sipgate.net:3478',
+		'stun:stun.voipbuster.com:3478',
+		'stun:stun.voipstunt.com:3478',
+		'stun:stun.arbuz.ru:3478',
+		'stun:stun.demos.ru:3478',
+		'stun:stun.tatneft.ru:3478'
 		]}
 		]
 		
@@ -8798,6 +8840,15 @@ class Voice {
 		autoGainControl:false,
 		channelCount:1,
 		sampleRate:48000,
+		sampleSize:16
+	};
+	
+	static mediaAudioConfigHighQality = {
+		echoCancellation:true,
+		noiseSuppression:true,
+		autoGainControl:true,
+		channelCount:1,
+		sampleRate:32000,
 		sampleSize:16
 	};
 	
@@ -8823,15 +8874,29 @@ class Voice {
 	
 	static manager = new Object();
 	
-	static enabled = true;
+	static infoPanel = null;
+	
+	static init(){
+		
+		if(!Voice.infoPanel){
+			
+			Voice.infoPanel = DOM({style:'voice-info-panel'},DOM({style:'voice-volume'}),DOM({style:'voice-stream'}));
+			
+		}
+		
+		document.body.append(Voice.infoPanel);
+		
+	}
 	
 	static async initAudio(){
 		
 		if(!Voice.localStreamAudio){
 			
-			Voice.localStreamAudio = await navigator.mediaDevices.getUserMedia({audio:Voice.mediaAudioConfig,video:false});
+			Voice.localStreamAudio = await navigator.mediaDevices.getUserMedia({audio:( App.isAdmin() ? Voice.mediaAudioConfigHighQality : Voice.mediaAudioConfig ),video:false});
 			
 			Voice.initEventAudio();
+			
+			Voice.infoPanel.style.display = 'block';
 			
 		}
 		
@@ -8865,11 +8930,19 @@ class Voice {
 				
 			}
 			
-			let average = sum / bufferLength;
+			let average = Math.round(sum / bufferLength);
 			
-			let event = new CustomEvent('voiceVolumeChange',{detail:average});
+			if(average > 100){
+				
+				average = 100;
+				
+			}
 			
-			window.dispatchEvent(event);
+			if(Voice.infoPanel){
+				
+				Voice.infoPanel.firstChild.style.width = `${average}%`;
+				
+			}
 			
 			requestAnimationFrame(checkVolume);
 			
@@ -8879,6 +8952,42 @@ class Voice {
 		
     }
 	
+	static updateInfoPanel(){
+		
+		while(Voice.infoPanel.lastChild.firstChild){
+			
+			Voice.infoPanel.lastChild.firstChild.remove();
+			
+		}
+		
+		for(let id in Voice.manager){
+			
+			let item = DOM({event:['click',() => {
+				
+				Voice.manager[id].close();
+				
+				item.remove();
+				
+			}]},`Звонок id${id}... [X]`);
+			
+			Voice.manager[id].peer.onconnectionstatechange = () => {
+				
+				switch(Voice.manager[id].peer.connectionState){
+					
+					case 'connected': item.innerText = `Подключен id${id} [X]`; break;
+					
+					default: item.innerText = `Статус (${Voice.manager[id].peer.connectionState}) [X]`; break;
+					
+				}
+				
+			}
+			
+			Voice.infoPanel.lastChild.append(item);
+			
+		}
+		
+	}
+	
 	static async ready(id,answer){
 		
 		if( !(id in Voice.manager) ){
@@ -8887,7 +8996,7 @@ class Voice {
 			
 		}
 		
-		await Voice.manager[id].setRemoteDescription(answer);
+		await Voice.manager[id].peer.setRemoteDescription(answer);
 		
     }
 	
@@ -8899,7 +9008,7 @@ class Voice {
 			
 		}
 		
-		await Voice.manager[id].addIceCandidate(candidate); // new RTCIceCandidate()
+		await Voice.manager[id].peer.addIceCandidate(candidate); // new RTCIceCandidate()
 		
     }
 	
@@ -8927,6 +9036,12 @@ class Voice {
 	
 	static async association(i,users,key){
 		
+		if(!Settings.settings.voice){
+			
+			throw 'Голосовая связь отключена';
+			
+		}
+		
 		let start = false;
 		
 		for(let id of users){
@@ -8945,33 +9060,33 @@ class Voice {
 				
 			}
 			
-			let voice = new Voice(id);
+			let voice = new Voice(id,key);
 			
-			await voice.call(key);
+			await voice.call();
 			
 		}
 		
 	}
 	
-	constructor(id){
+	constructor(id,key = ''){
 		
 		this.id = id;
 		
-	}
-	
-	createPeerConnection(){
+		this.key = key;
+		
+		this.isCaller = false;
+		
+		if(this.id in Voice.manager){
+			
+			this.peer = null;
+			
+			return this;
+			
+		}
 		
 		this.peer = new RTCPeerConnection(Voice.peerConnectionConfig);
 		
-		Voice.manager[this.id] = this.peer;
-		
-		for(let track of Voice.localStreamAudio.getTracks()){
-			
-			console.log(`Добавили трек: ${track.kind} (${track.id})`);
-			
-			this.peer.addTrack(track);
-			
-		}
+		Voice.manager[this.id] = this;
 		
 		this.peer.ontrack = (event) => {
 			
@@ -9016,47 +9131,37 @@ class Voice {
 			
 			switch(this.peer.iceConnectionState){
 				
-				case 'connected': console.log('Соединение установлено!'); break;
+				case 'connected': console.log('Соединение успешно установлено'); break;
 				
-				case 'disconnected': console.log('Соединение прервано'); break;
+				case 'disconnected': this.reconnect(); break;
 				
-				case 'failed':
+				case 'failed': this.reconnect(); break;
 				
-				console.error('Соединение не удалось');
-				
-				this.close();
-				
-				break;
-				
-				case 'closed':
-				
-				console.log('Соединение закрыто');
-				
-				this.close();
-				
-				break;
+				case 'closed': this.close(); break;
 				
 			}
 			
-		}
-		
-		this.peer.onconnectionstatechange = () => {
-			
-			console.log(`Состояние соединения: ${this.peer.connectionState}`);
+			console.log(`Состояние соединения: ${this.peer.iceConnectionState}`);
 			
 		};
 		
 	}
 	
-	async call(key){
+	async call(){
 		
-		if(!Voice.enabled){
+		if(!Settings.settings.voice){
+			
+			throw 'Голосовая связь отключена';
+			
+		}
+		
+		if(!this.peer){
 			
 			return;
 			
 		}
 		
-		if(this.id in Voice.manager){
+		if(this.isCaller){
 			
 			return;
 			
@@ -9064,25 +9169,33 @@ class Voice {
 		
 		await Voice.initAudio();
 		
-		this.createPeerConnection();
+		for(let track of Voice.localStreamAudio.getTracks()){
+			
+			this.peer.addTrack(track);
+			
+		}
 		
 		let offer = await this.peer.createOffer({offerToReceiveAudio:true,offerToReceiveVideo:false});
 		
 		await this.peer.setLocalDescription(offer);
+
+		await App.api.request('user','call',{id:this.id,key:this.key,offer:offer});
 		
-		await App.api.request('user','call',{id:this.id,key:key,offer:offer});
+		this.isCaller = true;
+		
+		Voice.updateInfoPanel();
 		
 	}
 	
 	async accept(offer){
 		
-		if(!Voice.enabled){
+		if(!Settings.settings.voice){
 			
 			return;
 			
 		}
 		
-		if(this.id in Voice.manager){
+		if(!this.peer){
 			
 			return;
 			
@@ -9090,7 +9203,11 @@ class Voice {
 		
 		await Voice.initAudio();
 		
-		this.createPeerConnection();
+		for(let track of Voice.localStreamAudio.getTracks()){
+			
+			this.peer.addTrack(track);
+			
+		}
 		
 		await this.peer.setRemoteDescription(offer);
 		
@@ -9100,17 +9217,52 @@ class Voice {
 		
 		await App.api.request('user','callAccept',{id:this.id,answer:answer});
 		
+		Voice.updateInfoPanel();
+		
+	}
+	
+	async reconnect(){
+		console.log('Реконнект...');
+		this.close();
+		
+		if(!this.isCaller){
+			
+			return;
+			
+		}
+		
+		let voice = new Voice(this.id,this.key);
+		
+		try{
+			
+			voice.call();
+			
+		}
+		catch(error){
+			
+			console.log(error);
+			
+		}
+		
+		setTimeout(() => {
+			
+			if(voice.peer.iceConnectionState != 'connected'){
+				
+				this.reconnect();
+				
+			}
+			
+		},15000);
+		
 	}
 	
 	async close(){
 		
-		if(this.peer){
-			
-			this.peer.close();
-			
-		}
+		this.peer.close();
 		
 		delete Voice.manager[this.id];
+		
+		Voice.updateInfoPanel();
 		
 	}
 	
@@ -10951,7 +11103,7 @@ class Castle {
 				Sound.play(musicName, { id: 'castle', volume: Castle.GetVolume(Castle.AUDIO_MUSIC) }, playCastleMusic)
 
 			}
-			//playCastleMusic();
+			playCastleMusic();
 		}
 
 		Castle.loadBuildings();
@@ -11754,7 +11906,8 @@ class Settings {
         musicVolume: 0.7,
         soundsVolume: 0.7,
 		radminPriority: false,
-		language: 'ru'
+		language: 'ru',
+		voice: false
     };
 
     static settings = JSON.parse(JSON.stringify(this.defaultSettings));
@@ -12686,6 +12839,29 @@ class MM {
 				}
 				
 			}
+			
+		}
+		
+		try{
+			
+			let list = new Array();
+			
+			for(let key of data.map){
+				
+				if(data.users[App.storage.data.id].team == data.users[key].team){
+					
+					list.push(key);
+					
+				}
+				
+			}
+			
+			Voice.association(App.storage.data.id,list,data.id);
+			
+		}
+		catch(error){
+			
+			console.log('Voice.association',error);
 			
 		}
 		

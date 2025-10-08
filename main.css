@@ -3700,6 +3700,47 @@ border-radius:5px;
     margin: 0cqw 0.5cqw;
 }
 
+.voice-info-panel{
+	display:none;
+	position:fixed;
+	top:0%;
+	height:1vw;
+	width:100%;
+	background:rgba(255,255,255,0.3);
+	z-index:9999;
+	
+}
+
+.voice-volume {
+	
+	z-index:9999;
+	height:1vw;
+	background:rgba(102,255,0,0.9);
+	position:absolute;
+	
+}
+
+.voice-stream{
+	position:absolute;
+	z-index:9999;
+	display:flex;
+	flex-flow:column nowrap;
+	justify-content:center;
+	align-items:center;
+	width:100vw;
+	
+}
+
+.voice-stream div {
+	
+	font: 0.8vw/ 1 Verdana;
+	line-height:1vw;
+	margin: 0 1vw;
+	color:rgba(255,255,255,0.9);
+	font-weight:600;
+	cursor:pointer;
+	
+}
 
 #wcastle-menu {
 	container-type: inline-size;
