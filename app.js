@@ -8175,30 +8175,9 @@ class Events {
 	
 	static async VCall(data){
 		
-		if(data.isCaller){
+		let voice = new Voice(data.id);
 			
-			let body = document.createDocumentFragment();
-			
-			body.append(DOM(`Принять звонок от ${data.isCaller}?`),DOM({style:'splash-content-button',event:['click', async () => {
-				
-				let voice = new Voice(data.id);
-				
-				await voice.accept(data.offer);
-				
-				Splash.hide();
-				
-			}]},'Да'),DOM({style:'splash-content-button',event:['click', async () => Splash.hide()] },'Нет'));
-			
-			Splash.show(body);
-			
-		}
-		else{
-			
-			let voice = new Voice(data.id);
-			
-			await voice.accept(data.offer);
-			
-		}
+		await voice.accept(data.offer);
 		
 	}
 	
@@ -8817,19 +8796,28 @@ class Voice {
 		// проверка stun https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
 		iceServers:[
 		{urls:[
-		'stun:stun.l.google.com:19302',
-		'stun:stun1.l.google.com:19302',
-		'stun:stun2.l.google.com:19302',
-		'stun:stun3.l.google.com:19302',
-		'stun:stun4.l.google.com:19302',
-		'stun:stun.ideasip.com:3478',
-		'stun:stun.sipgate.net:3478',
-		'stun:stun.voipbuster.com:3478',
-		'stun:stun.voipstunt.com:3478',
-		'stun:stun.arbuz.ru:3478',
-		'stun:stun.demos.ru:3478',
-		'stun:stun.tatneft.ru:3478'
-		]}
+		'stun:stun.l.google.com:19302'
+		]},
+		{
+    url: 'turn:192.158.29.39:3478?transport=udp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+},
+{
+    url: 'turn:192.158.29.39:3478?transport=tcp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
+},
+{
+    url: 'turn:turn.bistri.com:80',
+    credential: 'homeo',
+    username: 'homeo'
+ },
+ {
+    url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+    credential: 'webrtc',
+    username: 'webrtc'
+}
 		]
 		
 	};
@@ -8995,7 +8983,7 @@ class Voice {
 			return;
 			
 		}
-		
+		console.log('ДОБАВЛЕН РЕМОТЕ ',answer);
 		await Voice.manager[id].peer.setRemoteDescription(answer);
 		
     }
@@ -9007,7 +8995,7 @@ class Voice {
 			return;
 			
 		}
-		
+		console.log('КАНДИДАТ ДОБАВЛЕН!!!!!!',id,candidate,Voice.manager[id].peer);
 		await Voice.manager[id].peer.addIceCandidate(candidate); // new RTCIceCandidate()
 		
     }
@@ -9071,7 +9059,7 @@ class Voice {
 	constructor(id,key = ''){
 		
 		this.id = id;
-		
+		this.second = 1;
 		this.key = key;
 		
 		this.isCaller = false;
@@ -9113,10 +9101,17 @@ class Voice {
 		this.peer.onicecandidate = async (event) => {
 			
 			if(event.candidate){
-				
+				this.second = this.second + 1;
 				console.log('Сгенерирован ICE кандидат:',event.candidate);
 				
-				await App.api.ghost('user','callCandidate',{id:this.id,candidate:event.candidate});
+				setTimeout( async () => {
+					console.log('ОТПРАВИЛИ ICE кандидат:',event.candidate);
+					await App.api.ghost('user','callCandidate',{id:this.id,candidate:event.candidate});
+					
+					
+				},this.second);
+				
+				
 				
 			}
 			else{
@@ -9133,9 +9128,9 @@ class Voice {
 				
 				case 'connected': console.log('Соединение успешно установлено'); break;
 				
-				case 'disconnected': this.reconnect(); break;
+				case 'disconnected': this.close(); break;
 				
-				case 'failed': this.reconnect(); break;
+				case 'failed': this.close(); break;
 				
 				case 'closed': this.close(); break;
 				
