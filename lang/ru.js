@@ -24,6 +24,7 @@ export const ru = {
 		windowMode: 'Оконный режим',
 		radminPriority: 'Приоритет RadminVPN',
 		threeD: '3D графика',
+		voiceEnabled: 'Голосовая связь',
 		volume: 'Общая громкость',
 		volumeMusic: 'Громкость музыки',
 		volumeSound: 'Громкость звуков',

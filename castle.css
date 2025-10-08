@@ -745,6 +745,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     color: #ffe78a;
     font-family: Arial;
     font-size: 1.4vh; /* Изменено с vw на vh */
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .castle-button-play-4 {
