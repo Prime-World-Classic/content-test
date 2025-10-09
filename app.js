@@ -8179,7 +8179,7 @@ class Events {
 			
 			let body = document.createDocumentFragment();
 			
-			body.append(DOM(`Принять звонок от ${data.isCaller}?`),DOM({style:'splash-content-button',event:['click', async () => {
+			body.append(DOM(`Звонок от ${data.isCaller}?`),DOM({style:'splash-content-button',event:['click', async () => {
 				
 				let voice = new Voice(data.id,'',data.isCaller);
 				
@@ -8187,7 +8187,7 @@ class Events {
 				
 				Splash.hide();
 				
-			}]},'Да'),DOM({style:'splash-content-button',event:['click', async () => Splash.hide()] },'Нет'));
+			}]},'Принять'),DOM({style:'splash-content-button',event:['click', async () => Splash.hide()] },'Сбросить'));
 			
 			Splash.show(body);
 			
@@ -8958,7 +8958,19 @@ class Voice {
 			
 			let state = () => {
 				
-				return (Voice.manager[id].peer.connectionState == 'connected') ? `Подключен ${name} [X]` : `${name} (${Voice.manager[id].peer.connectionState}) [X]`;
+				let status = '';
+				
+				switch(Voice.manager[id].peer.connectionState){
+					
+					case 'new': status = 'ожидание ответа'; break;
+					
+					case 'connecting': status = 'соединение'; break;
+					
+					default: status = Voice.manager[id].peer.connectionState; break;
+					
+				}
+				
+				return (Voice.manager[id].peer.connectionState == 'connected') ? `${name} [X]` : `${name} (${status}) [X]`;
 				
 			}
 			
@@ -8994,9 +9006,9 @@ class Voice {
 		
 		if(id in Voice.cacheCandidate){
 			
-			for(let candidate of Voice.cacheCandidate){
+			for(let candidate of Voice.cacheCandidate[id]){
 				
-				console.log('ОТПРАВИЛИ ICE кандидат:',candidate);
+				console.log('ОТПРАВИЛИ ICE кандидат из кэша:',candidate);
 				
 				await App.api.ghost('user','callCandidate',{id:id,candidate:candidate});
 				
@@ -9240,9 +9252,9 @@ class Voice {
 		
 		let answer = await this.peer.createAnswer();
 		
-		await this.peer.setLocalDescription(answer);
-		
 		await App.api.request('user','callAccept',{id:this.id,answer:answer});
+		
+		await this.peer.setLocalDescription(answer);
 		
 		Voice.updateInfoPanel();
 		
