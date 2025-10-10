@@ -1,6 +1,6 @@
 APP_VERSION = '0';
 
-PW_VERSION = '2.8.1';
+PW_VERSION = '2.9.0';
 
 CURRENT_MM = 'mmtest'
 
@@ -9005,6 +9005,12 @@ class Voice {
 			
 		}
 		
+		if(Voice.manager[id].timer){
+			
+			clearTimeout(Voice.manager[id].timer);
+			
+		}
+		
 		await Voice.manager[id].peer.setRemoteDescription(answer);
 		
 		if(id in Voice.cacheCandidate){
@@ -9067,9 +9073,9 @@ class Voice {
 		
 		let start = false;
 		
-		for(let id of users){
+		for(let user of users){
 			
-			if(id == i){
+			if(user.id == i){
 				
 				start = true;
 				
@@ -9083,7 +9089,7 @@ class Voice {
 				
 			}
 			
-			let voice = new Voice(id,key);
+			let voice = new Voice(user.id,key,user.name);
 			
 			await voice.call();
 			
@@ -9220,6 +9226,14 @@ class Voice {
 		let offer = await this.peer.createOffer({offerToReceiveAudio:true,offerToReceiveVideo:false});
 		
 		await this.peer.setLocalDescription(offer);
+		
+		this.timer = setTimeout(() => {
+			
+			this.timer = null;
+			
+			this.close();
+			
+		},15000);
 
 		await App.api.request('user','call',{id:this.id,key:this.key,offer:offer});
 		
@@ -12888,7 +12902,7 @@ class MM {
 				
 				if(data.users[App.storage.data.id].team == data.users[key].team){
 					
-					list.push(key);
+					list.push({id:key,name:data.users[key].nickname});
 					
 				}
 				
