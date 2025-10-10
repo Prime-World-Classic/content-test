@@ -4446,12 +4446,12 @@ class Window {
 			),
 			DOM({ style: 'castle-menu-item-checkbox' },
 				DOM({
-					tag: 'input', type: 'checkbox', id: 'voice', checked: Settings.settings.voice, event: ['change', (e) => {
-						Settings.settings.voice = e.target.checked;
+					tag: 'input', type: 'checkbox', id: 'novoice', checked: Settings.settings.novoice, event: ['change', (e) => {
+						Settings.settings.novoice = e.target.checked;
 					}]
 				},
-					{ checked: Settings.settings.voice }),
-				DOM({ tag: 'label', for: 'voice' }, Lang.text('voiceEnabled'))
+					{ checked: Settings.settings.novoice }),
+				DOM({ tag: 'label', for: 'novoice' }, Lang.text('voiceEnabled'))
 			),
 			DOM({ style: 'castle-menu-label' }, Lang.text('volume'),
             	DOM({
@@ -8863,7 +8863,9 @@ class Voice {
 		sampleSize:16
 	};
 	
-	static localStreamAudio = null;
+	static userMedia = null;
+	
+	static mic = null;
 	
 	static manager = new Object();
 	
@@ -8885,9 +8887,27 @@ class Voice {
 	
 	static async initAudio(){
 		
-		if(!Voice.localStreamAudio){
+		if(!Voice.userMedia){
 			
-			Voice.localStreamAudio = await navigator.mediaDevices.getUserMedia({audio:( App.isAdmin() ? Voice.mediaAudioConfigHighQality : Voice.mediaAudioConfig ),video:false});
+			Voice.userMedia = await navigator.mediaDevices.getUserMedia({audio:( App.isAdmin() ? Voice.mediaAudioConfigHighQality : Voice.mediaAudioConfig ),video:false});
+			
+			let tracks = Voice.userMedia.getTracks();
+			
+			if(!tracks.length){
+				
+				throw 'Отсутствие медиа потоков';
+				
+			}
+			
+			if(tracks[0].kind != 'audio'){
+				
+				throw 'Нам нужен микрофон';
+				
+			}
+			
+			Voice.mic = tracks[0];
+			
+			Voice.mic.enabled = false;
 			
 			Voice.initEventAudio();
 			
@@ -8901,7 +8921,7 @@ class Voice {
 		
 		let audioContext = new AudioContext();
 		
-		let source = audioContext.createMediaStreamSource(Voice.localStreamAudio);
+		let source = audioContext.createMediaStreamSource(Voice.userMedia);
 
 		let analyser = audioContext.createAnalyser();
 		
@@ -8954,6 +8974,22 @@ class Voice {
 			Voice.infoPanel.lastChild.firstChild.remove();
 			
 		}
+		
+		let mute = () => {
+			
+			return (Voice.mic.enabled) ? `Вы в эфире! [Х]` : `Ваш микрофон «${Voice.mic.label}» не в эфире, включить?`;
+			
+		}
+		
+		let mic = DOM({event:['click',() => {
+			
+			Voice.mic.enabled = !Voice.mic.enabled;
+			
+			mic.innerText = mute();
+			
+		}]},mute())
+		
+		Voice.infoPanel.lastChild.append(mic);
 		
 		for(let id in Voice.manager){
 			
@@ -9049,15 +9085,13 @@ class Voice {
 			
 		}
 		
-		if(Voice.localStreamAudio){
+		if(Voice.mic){
 			
-			for(let track of Voice.localStreamAudio.getTracks()){
-				
-				track.stop();
-				
-			}
+			Voice.mic.stop();
 			
-			Voice.localStreamAudio = null;
+			Voice.mic = null;
+			
+			Voice.userMedia = null;
 			
 		}
 		
@@ -9065,7 +9099,7 @@ class Voice {
 	
 	static async association(i,users,key){
 		
-		if(!Settings.settings.voice){
+		if(Settings.settings.novoice){
 			
 			throw 'Голосовая связь отключена';
 			
@@ -9197,7 +9231,7 @@ class Voice {
 	
 	async call(){
 		
-		if(!Settings.settings.voice){
+		if(Settings.settings.novoice){
 			
 			throw 'Голосовая связь отключена';
 			
@@ -9217,11 +9251,7 @@ class Voice {
 		
 		await Voice.initAudio();
 		
-		for(let track of Voice.localStreamAudio.getTracks()){
-			
-			this.peer.addTrack(track);
-			
-		}
+		this.peer.addTrack(Voice.mic);
 		
 		let offer = await this.peer.createOffer({offerToReceiveAudio:true,offerToReceiveVideo:false});
 		
@@ -9245,9 +9275,9 @@ class Voice {
 	
 	async accept(offer){
 		
-		if(!Settings.settings.voice){
+		if(Settings.settings.novoice){
 			
-			return;
+			throw 'Голосовая связь отключена';
 			
 		}
 		
@@ -9259,11 +9289,7 @@ class Voice {
 		
 		await Voice.initAudio();
 		
-		for(let track of Voice.localStreamAudio.getTracks()){
-			
-			this.peer.addTrack(track);
-			
-		}
+		this.peer.addTrack(Voice.mic);
 		
 		await this.peer.setRemoteDescription(offer);
 		
@@ -11959,7 +11985,7 @@ class Settings {
         soundsVolume: 0.7,
 		radminPriority: false,
 		language: 'ru',
-		voice: false
+		novoice: false
     };
 
     static settings = JSON.parse(JSON.stringify(this.defaultSettings));

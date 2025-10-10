@@ -3701,6 +3701,7 @@ border-radius:5px;
 }
 
 .voice-info-panel{
+	
 	display:none;
 	position:fixed;
 	top:0%;
@@ -3715,12 +3716,13 @@ border-radius:5px;
 	
 	z-index:9999;
 	height:1vw;
-	background:rgba(102,255,0,0.9);
+	background:linear-gradient(90deg, rgb(0, 255, 136), rgb(0, 204, 102));
 	position:absolute;
 	
 }
 
 .voice-stream{
+	
 	position:absolute;
 	z-index:9999;
 	display:flex;
@@ -3737,6 +3739,7 @@ border-radius:5px;
 	line-height:1vw;
 	margin: 0 1vw;
 	color:rgba(255,255,255,0.9);
+	text-shadow: 0 0 5px rgba(15, 15, 15, 0.9);
 	font-weight:600;
 	cursor:pointer;
 	
