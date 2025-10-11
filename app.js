@@ -8926,6 +8926,31 @@ class Voice {
 		
 	}
 	
+	static toggleEnabledMic(){
+		
+		if(Voice.mic){
+			
+			Voice.mic.enabled = !Voice.mic.enabled;
+			
+			if(Voice.mic.enabled){
+				
+				Sound.play('content/sounds/voice/enabled.mp3');
+				
+				Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
+				
+			}
+			else{
+				
+				Sound.play('content/sounds/voice/disabled.mp3');
+				
+				Voice.infoPanel.firstChild.lastChild.style.opacity = 1;
+				
+			}
+			
+		}
+		
+	}
+	
     static indication(source,callback){
 		
 		let audioContext = new AudioContext();
@@ -8984,20 +9009,6 @@ class Voice {
 			
 		}
 		
-		let mute = () => {
-			
-			return (Voice.mic.enabled) ? `Вы в эфире! [Х]` : `Ваш микрофон «${Voice.mic.label}» не в эфире, включить?`;
-			
-		}
-		
-		let mic = DOM({event:['click',() => {
-			
-			Voice.mic.enabled = !Voice.mic.enabled;
-			
-			mic.innerText = mute();
-			
-		}]},mute());
-		
 		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
 		
 		Voice.indication(Voice.userMedia,(percent) => {
@@ -9009,18 +9020,12 @@ class Voice {
 		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},DOM({style:'voice-info-panel-body-item-name'},App.storage.data.login),DOM({style:'voice-info-panel-body-item-status'},DOM({style:'voice-info-panel-body-item-bar'},level))));
 		
 		for(let id in Voice.manager){
-			/*
-			let item = DOM({event:['click',() => {
-				
-				Voice.manager[id].close();
-				
-				item.remove();
-				
-			}]},`2345`);
-			*/
+			
 			Voice.playerInfoPanel(id);
 			
 		}
+		
+		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-tutorial'},'Нажмите CTRL + Z, чтобы включить микрофон!'));
 		
 	}
 	
@@ -9042,25 +9047,35 @@ class Voice {
 				
 			}
 			
-			return (Voice.manager[id].peer.connectionState == 'connected') ? `${name}` : `${name} (${status})`;
+			return (Voice.manager[id].peer.connectionState == 'connected') ? `${name} [Х]` : `${name} (${status})`;
 			
 		}
 		
-		let item = DOM({style:'voice-info-panel-body-item-name'},state());
+		let item = DOM({style:'voice-info-panel-body-item-name',event:['click',() => {
+			
+			Voice.manager[id].close();
+			
+			item.remove();
+			
+		}]},state());
+		
+		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
 		
 		Voice.manager[id].peer.onconnectionstatechange = () => {
 			
 			item.innerText = state();
 			
+			if( (Voice.manager[id].peer.connectionState == 'connected') && (Voice.manager[id].stream) ){
+				
+				Voice.indication(Voice.manager[id].stream,(percent) => {
+					
+					level.style.width = `${percent}%`;
+					
+				});
+				
+			}
+			
 		}
-		
-		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
-		
-		Voice.indication(Voice.userMedia,(percent) => {
-			
-			//level.style.width = `${percent}%`;
-			
-		});
 		
 		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},item,DOM({style:'voice-info-panel-body-item-status'},DOM({style:'voice-info-panel-body-item-bar'},level))));
 		
@@ -9197,6 +9212,10 @@ class Voice {
 		
 		this.isCaller = false;
 		
+		this.stream = null;
+		
+		this.controller = null;
+		
 		if( ( this.id in Voice.manager ) || ( ( Object.keys(Voice.manager).length + 1 ) > Voice.limit ) ){
 			
 			this.peer = null;
@@ -9213,21 +9232,23 @@ class Voice {
 			
 			console.log('Получен удаленный медиапоток',event);
 			
-			let audio = new Audio();
+			this.stream = new MediaStream([event.track]);
 			
-			audio.srcObject = new MediaStream([event.track]);
+			this.controller = new Audio();
 			
-			audio.autoplay = true;
+			this.controller.srcObject = this.stream;
 			
-			audio.controls = true;
+			this.controller.autoplay = true;
 			
-			audio.volume = 1.0;
+			this.controller.controls = true;
 			
-			audio.play();
+			this.controller.volume = 1.0;
 			
-			document.body.prepend(audio);
+			this.controller.play();
 			
-			audio.style.display = 'none';
+			document.body.prepend(this.controller);
+			
+			this.controller.style.display = 'none';
 			
 		}
 		
@@ -9908,7 +9929,37 @@ class NativeAPI {
 		});
 
 		NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
-
+		
+		NativeAPI.voiceShortcut = new nw.Shortcut({
+			key: 'Ctrl+Z', active: () => {
+				
+				Voice.toggleEnabledMic();
+				
+			},
+			failed: (error) => {
+				
+				console.log(error);
+				
+			}
+		});
+		
+		NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceShortcut);
+		
+		NativeAPI.voiceDestroyShortcut = new nw.Shortcut({
+			key: 'Ctrl+K', active: () => {
+				
+				Voice.destroy();
+				
+			},
+			failed: (error) => {
+				
+				console.log(error);
+				
+			}
+		});
+		
+		NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDestroyShortcut);
+		
 		NativeAPI.loadModules();
 
 		NativeAPI.platform = NativeAPI.os.platform();
