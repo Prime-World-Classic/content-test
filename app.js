@@ -3079,7 +3079,7 @@ root.appendChild(content);
 					
 					try{
 						
-						let voice = new Voice(item.id,'friend',item.nickname);
+						let voice = new Voice(item.id,'friend',item.nickname,true);
 						
 						await voice.call();
 						
@@ -8181,11 +8181,20 @@ class Events {
 			
 			body.append(DOM(`Звонок от ${data.isCaller}?`),DOM({style:'splash-content-button',event:['click', async () => {
 				
-				let voice = new Voice(data.id,'',data.isCaller);
-				
-				await voice.accept(data.offer);
-				
-				Splash.hide();
+				try{
+					
+					let voice = new Voice(data.id,'',data.isCaller,true);
+					
+					await voice.accept(data.offer);
+					
+					Splash.hide();
+					
+				}
+				catch(error){
+					
+					App.error(error);
+					
+				}
 				
 			}]},'Принять'),DOM({style:'splash-content-button',event:['click', async () => Splash.hide()] },'Сбросить'));
 			
@@ -8216,7 +8225,7 @@ class Events {
 	
 	static VKick(){
 		
-		Voice.destroy();
+		Voice.destroy(true);
 		
 	}
 	
@@ -8873,6 +8882,8 @@ class Voice {
 	
 	static cacheCandidate = new Object();
 	
+	static limit = 5;
+	
 	static init(){
 		
 		if(!Voice.infoPanel){
@@ -9077,9 +9088,15 @@ class Voice {
 		
     }
 	
-	static destroy(){
+	static destroy(full = false){
 		
 		for(let id in Voice.manager){
+			
+			if( (!full) && (Voice.manager[id].important) ){
+				
+				continue;
+				
+			}
 			
 			Voice.manager[id].close();
 			
@@ -9087,11 +9104,26 @@ class Voice {
 		
 		if(Voice.mic){
 			
-			Voice.mic.stop();
+			if(full){
+				
+				Voice.mic.stop();
+				
+				Voice.mic = null;
+				
+				Voice.userMedia = null;
+				
+			}
+			else{
+				
+				if(!Object.keys(Voice.manager).length){
+					
+					Voice.mic.enabled = false;
+					
+				}
+				
+			}
 			
-			Voice.mic = null;
-			
-			Voice.userMedia = null;
+			Voice.updateInfoPanel();
 			
 		}
 		
@@ -9131,7 +9163,7 @@ class Voice {
 		
 	}
 	
-	constructor(id,key = '',name = ''){
+	constructor(id,key = '',name = '',important = false){
 		
 		this.id = id;
 		
@@ -9139,9 +9171,11 @@ class Voice {
 		
 		this.name = name;
 		
+		this.important = important;
+		
 		this.isCaller = false;
 		
-		if(this.id in Voice.manager){
+		if( ( this.id in Voice.manager ) || ( ( Object.keys(Voice.manager).length + 1 ) > Voice.limit ) ){
 			
 			this.peer = null;
 			
@@ -9295,7 +9329,7 @@ class Voice {
 		
 		let answer = await this.peer.createAnswer();
 		
-		await App.api.request('user','callAccept',{id:this.id,answer:answer});
+		await App.api.ghost('user','callAccept',{id:this.id,answer:answer});
 		
 		await this.peer.setLocalDescription(answer);
 		
@@ -12455,9 +12489,20 @@ class MM {
 
 		let button = DOM({
 			style: 'ready-button', event: ['click', async () => {
+				
+				try{
+					
+					Voice.destroy();
+					
+				}
+				catch(error){
+					
+					console.log(error);
+					
+				}
 
 				try {
-
+					
 					await App.api.request(CURRENT_MM, 'ready', { id: data.id });
 
 				}
