@@ -77,7 +77,22 @@ export const ru = {
 		titlestatisticmode:'Посмотреть статистику по режиму',
 		titlehint:'Сколько \nчеловек\nв очереди\nпо режимам.',
 		titlehint2:'Дивизия — группа игроков под одним званием,\nкоторая играет примерно на равном винрейте матчмейкинга.',
-
+		titleSkinsForTheHero:'Образы на героя',
+		titleCreateANewBuildTab:'Создать новую вкладку билда',
+		titleDuplicateTheCurrentBuild:'Дублировать текущий билд',
+		titleGenerateARandomBuild:'Сгенерировать случайный билд',
+		titleResetTalentsInThisBuild:'Сбросить таланты в этом билде',
+		titleActiveTalents:'Активные таланты',
+		titleTheRedQualityOfTalents:'Красное качество талантов',
+		titleTheOrangeQualityOfTalents:'Оранжевое качество талантов',
+		titleThePurpleQualityOfTalents:'Фиолетовое качество талантов',
+		titleTheBlueQualityOfTalents:'Синее качество талантов',
+		titleSmartcastIsEnabled:'Смарткаст включен',
+		titleClose:'Закрыть',
+		titleNicknameСhange:'Смена никнейма',
+		titleLandTipeRZ:'Тип земли - с учетом родной земли',
+		titleLandTipeVZ:'Тип земли - с учетом нейтральной/вражеской земли.',
+		
 		// Постройки
 		pearl_farm_ad: "Жемчужная ферма",
 		pearl_farm_doct: "Дистиллятор прайма",

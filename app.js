@@ -2587,7 +2587,7 @@ root.appendChild(content);
 			style: 'nickname-menu-item',
 			event: ['click', () => {
 				App.setNickname();
-			}], title: 'Смена никнейма'
+			}], title: Lang.text('titleNicknameСhange')
 			}, DOM({}, nicknameValue));
 		if (nicknameValue.length > 10) {
 			nicknameMenuItem.firstChild.classList.add('castle-name-autoscroll');
@@ -4017,7 +4017,7 @@ root.appendChild(content);
 		if (!isWindow) {
 			body.append(DOM({
 				style: ['build-list-close', 'close-button'],
-				title: 'Закрыть',
+				title: Lang.text('titleClose'),
 				event: ['click', () => {
 					Build.CleanInvalidDescriptions();
 					if (isWindow) {
@@ -4026,7 +4026,7 @@ root.appendChild(content);
 						View.show('builds');
 					}
 				}]
-			}, DOM({ tag: 'img', src: 'content/icons/close-cropped.svg', alt: 'Закрыть', style: 'close-image-style' }))); // Замените путь к изображению
+			}, DOM({ tag: 'img', src: 'content/icons/close-cropped.svg', alt: Lang.text('titleClose'), style: 'close-image-style' }))); // Замените путь к изображению
 		}
 
 		return isWindow ? body : DOM({ id: 'viewbuild' }, body);
@@ -4301,12 +4301,12 @@ class Window {
 		let template = await Window[method](value, value2, value3);
 		let closeButton = DOM({
 			style: 'close-button',
-			title: 'Закрыть',
+			title: 'Lang.text('titleClose')',
 			event: ['click', () => {
 				Window.close(category);
 			}]
 		},
-			DOM({ tag: 'img', src: 'content/icons/close-cropped.svg', alt: 'Закрыть', style: 'close-image-style' }));
+			DOM({ tag: 'img', src: 'content/icons/close-cropped.svg', alt: Lang.text('titleClose'), style: 'close-image-style' }));
 		template.append(closeButton);
 		if (category in Window.windows) {
 			Window.windows[category].remove();
@@ -5312,7 +5312,7 @@ class Build {
 		Build.skinView = DOM({
 			tag: 'button',
 			style: ['btn-skins', 'btn-hover', 'color-3'],
-			title: 'Образы на героя',
+			title: Lang.text('titleSkinsForTheHero'),
 			event: ['click', async () => Build.skinChange()]
 		},
 			Lang.text('skins')
@@ -5533,7 +5533,7 @@ class Build {
 		if (builds.length < 6) {
 			const create = DOM({
 				tag: 'button', style: ['build-action-item', 'btn-hover', 'color-1'],
-				title: 'Создать новую вкладку билда',
+				title: Lang.text('titleCreateANewBuildTab'),
 				event: ['click', () => Build.buildSelectName('create', 'Создать билд', { heroId: Build.heroId }, isWindow)]
 			});
 
@@ -5548,7 +5548,7 @@ class Build {
 		const duplicate = DOM({
 		tag: 'button', 
 		style: ['build-action-item', 'btn-hover', 'color-1'],
-		title: 'Дублировать текущий билд',
+		title: Lang.text('titleDuplicateTheCurrentBuild'),
 		event: ['click', async () => {
 			// Сохраняем ID текущего билда до любых действий
 			const currentBuildId = Build.id;
@@ -5652,7 +5652,7 @@ class Build {
 		{
 			const random = DOM({
 				tag: 'button', style: ['build-action-item', 'btn-hover', 'color-1'],
-				title: 'Сгенерировать случайный билд',
+				title: Lang.text('titleGenerateARandomBuild'),
 				event: ['click', async () => {
 					await App.api.request('build', 'random', { id: Build.id });
 					isWindow ? Window.show('main', 'build', Build.heroId, 0, true) : View.show('build', Build.heroId);
@@ -5670,7 +5670,7 @@ class Build {
 			const resetBuild = DOM({
 				tag: 'button', 
 				style: ['build-action-item', 'btn-hover', 'color-1'],
-				title: 'Сбросить таланты в этом билде',
+				title: Lang.text('titleResetTalentsInThisBuild'),
 				event: ['click', async () => {
 					const fragment = document.createDocumentFragment();
 					const title = DOM({ style: 'splash-text' }, 'Сбросить таланты в этом билде?');
@@ -6189,17 +6189,17 @@ class Build {
 
 		let landTypeSetting = DOM({
 			style: ['build-hero-stats-setting-land-type', 'button-outline', 'build-hero-stats-setting-land-type-rz'],
-			title: 'Тип земли - с учетом родной земли',
+			title: Lang.text('titleLandTipeRZ'),
 			event: ['click', async () => {
 				Build.applyRz = !Build.applyRz;
 				Build.applyVz = !Build.applyVz;
 				Build.updateHeroStats();
 				if (Build.applyRz) {
 					landTypeSetting.classList.replace('build-hero-stats-setting-land-type-vz', 'build-hero-stats-setting-land-type-rz');
-					landTypeSetting.title = 'Тип земли - с учетом родной земли';
+					landTypeSetting.title = Lang.text('titleLandTipeRZ');
 				} else {
 					landTypeSetting.classList.replace('build-hero-stats-setting-land-type-rz', 'build-hero-stats-setting-land-type-vz');
-					landTypeSetting.title = 'Тип земли - с учетом нейтральной/вражеской земли';
+					landTypeSetting.title = Lang.text('titleLandTipeVZ');
 				}
 			}]
 		});
@@ -6235,7 +6235,7 @@ class Build {
 
 				}
 
-				body.append(DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, 'Закрыть'));
+				body.append(DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, Lang.text('titleClose')));
 
 				Splash.show(body);
 
@@ -6726,7 +6726,7 @@ class Build {
 		];
 
 		let a = document.createElement('div');
-		a.title = 'Активные таланты';
+		a.title = Lang.text('titleActiveTalents');
 
 		a.classList.add('build-rarity-other');
 
