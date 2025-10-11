@@ -8888,7 +8888,7 @@ class Voice {
 		
 		if(!Voice.infoPanel){
 			
-			Voice.infoPanel = DOM({style:'voice-info-panel'},DOM({style:'voice-volume'}),DOM({style:'voice-stream'}));
+			Voice.infoPanel = DOM({style:'voice-info-panel'},DOM({style:'voice-info-panel-body'}));
 			
 		}
 		
@@ -8920,23 +8920,21 @@ class Voice {
 			
 			Voice.mic.enabled = false;
 			
-			Voice.initEventAudio();
-			
-			Voice.infoPanel.style.display = 'block';
+			Voice.infoPanel.style.display = 'flex';
 			
 		}
 		
 	}
 	
-    static initEventAudio(){
+    static indication(source,callback){
 		
 		let audioContext = new AudioContext();
 		
-		let source = audioContext.createMediaStreamSource(Voice.userMedia);
+		let mediaStreamSource = audioContext.createMediaStreamSource(source);
 
 		let analyser = audioContext.createAnalyser();
 		
-		source.connect(analyser);
+		mediaStreamSource.connect(analyser);
 		
 		analyser.fftSize = 256;
 		
@@ -8964,9 +8962,9 @@ class Voice {
 				
 			}
 			
-			if(Voice.infoPanel){
+			if(callback){
 				
-				Voice.infoPanel.firstChild.style.width = `${average}%`;
+				callback(average);
 				
 			}
 			
@@ -8980,9 +8978,9 @@ class Voice {
 	
 	static updateInfoPanel(){
 		
-		while(Voice.infoPanel.lastChild.firstChild){
+		while(Voice.infoPanel.firstChild.firstChild){
 			
-			Voice.infoPanel.lastChild.firstChild.remove();
+			Voice.infoPanel.firstChild.firstChild.remove();
 			
 		}
 		
@@ -8998,49 +8996,73 @@ class Voice {
 			
 			mic.innerText = mute();
 			
-		}]},mute())
+		}]},mute());
 		
-		Voice.infoPanel.lastChild.append(mic);
+		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
+		
+		Voice.indication(Voice.userMedia,(percent) => {
+			
+			level.style.width = `${percent}%`;
+			
+		});
+		
+		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},DOM({style:'voice-info-panel-body-item-name'},App.storage.data.login),DOM({style:'voice-info-panel-body-item-status'},DOM({style:'voice-info-panel-body-item-bar'},level))));
 		
 		for(let id in Voice.manager){
-			
-			let name = (Voice.manager[id].name) ? Voice.manager[id].name : `id${id}`;
-			
-			let state = () => {
-				
-				let status = '';
-				
-				switch(Voice.manager[id].peer.connectionState){
-					
-					case 'new': status = 'ожидание ответа'; break;
-					
-					case 'connecting': status = 'соединение'; break;
-					
-					default: status = Voice.manager[id].peer.connectionState; break;
-					
-				}
-				
-				return (Voice.manager[id].peer.connectionState == 'connected') ? `${name} [X]` : `${name} (${status}) [X]`;
-				
-			}
-			
+			/*
 			let item = DOM({event:['click',() => {
 				
 				Voice.manager[id].close();
 				
 				item.remove();
 				
-			}]},state());
+			}]},`2345`);
+			*/
+			Voice.playerInfoPanel(id);
 			
-			Voice.manager[id].peer.onconnectionstatechange = () => {
+		}
+		
+	}
+	
+	static playerInfoPanel(id){
+		
+		let name = (Voice.manager[id].name) ? Voice.manager[id].name : `id${id}`;
+		
+		let state = () => {
+			
+			let status = '';
+			
+			switch(Voice.manager[id].peer.connectionState){
 				
-				item.innerText = state();
+				case 'new': status = 'ожидание ответа'; break;
+				
+				case 'connecting': status = 'соединение'; break;
+				
+				default: status = Voice.manager[id].peer.connectionState; break;
 				
 			}
 			
-			Voice.infoPanel.lastChild.append(item);
+			return (Voice.manager[id].peer.connectionState == 'connected') ? `${name}` : `${name} (${status})`;
 			
 		}
+		
+		let item = DOM({style:'voice-info-panel-body-item-name'},state());
+		
+		Voice.manager[id].peer.onconnectionstatechange = () => {
+			
+			item.innerText = state();
+			
+		}
+		
+		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
+		
+		Voice.indication(Voice.userMedia,(percent) => {
+			
+			//level.style.width = `${percent}%`;
+			
+		});
+		
+		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},item,DOM({style:'voice-info-panel-body-item-status'},DOM({style:'voice-info-panel-body-item-bar'},level))));
 		
 	}
 	
