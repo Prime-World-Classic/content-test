@@ -4301,7 +4301,7 @@ class Window {
 		let template = await Window[method](value, value2, value3);
 		let closeButton = DOM({
 			style: 'close-button',
-			title: 'Lang.text('titleClose')',
+			title: Lang.text('titleClose'),
 			event: ['click', () => {
 				Window.close(category);
 			}]
