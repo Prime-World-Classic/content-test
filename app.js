@@ -4035,142 +4035,160 @@ root.appendChild(content);
 
 
 	static async talents() {
-    let body = DOM({ style: 'main' });
-    
-    // Создаем контейнер для заголовка (кнопка закрытия + поиск)
-    let header = DOM({ style: 'adm-header' });
-    
-    // Кнопка закрытия
-    let closeBtn = DOM({ 
-        style: 'close-btn',
-        event: ['click', () => View.show('castle')] 
-    }, '[X]');
-    
-    // Строка поиска
-    let searchInput = DOM({
-        tag: 'input',
-        placeholder: 'Поиск талантов...',
-        style: 'search-input'
-    });
-    
-    header.append(closeBtn, searchInput);
-    
-    let adm = DOM({ style: 'adm' }, header);
-    let result = await App.api.request('build', 'talentAll');
-    let talentContainers = [];
-    let talentsContainer = DOM({ style: 'talents-container' });
+		let body = DOM({ style: 'main' });
+		
+		// Создаем контейнер для заголовка (кнопка закрытия + поиск)
+		let header = DOM({ style: 'adm-header' });
+		
+		// Кнопка закрытия
+		let closeBtn = DOM({ 
+			style: 'close-btn',
+			event: ['click', () => View.show('castle')] 
+		}, '[X]');
+		
+		// Строка поиска
+		let searchInput = DOM({
+			tag: 'input',
+			placeholder: 'Поиск талантов...',
+			style: 'search-input'
+		});
+		
+		header.append(closeBtn, searchInput);
+		
+		let adm = DOM({ style: 'adm' }, header);
+		let result = await App.api.request('build', 'talentAll');
+		let talentContainers = [];
+		let talentsContainer = DOM({ style: 'talents-container' });
 
-    for (let item of result) {
-        let div = DOM({ tag: 'div', class: 'talent-item' });
-        div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/talents/${item.id}.webp` }));
+		for (let item of result) {
+			let div = DOM({ tag: 'div', class: 'talent-item' });
+			div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/talents/${item.id}.webp` }));
 
-        for (let key in item) {
-            if (key == 'id') continue;
-            div.append(
-                DOM({ tag: 'div' }, key),
-                App.input(async (value) => {
-                    let object = new Object();
-                    object[key] = value;
-                    await App.api.request('build', 'talentEdit', { id: item.id, object: object });
-                }, { value: item[key] })
-            );
-        }
-        
-        talentContainers.push({ element: div, data: item });
-        talentsContainer.append(div);
-    }
-    
-    const filterTalents = (searchText) => {
-        searchText = searchText.toLowerCase();
-        talentContainers.forEach(({ element, data }) => {
-            let matches = false;
-            for (let key in data) {
-                if (String(data[key]).toLowerCase().includes(searchText)) {
-                    matches = true;
-                    break;
-                }
-            }
-            element.style.display = matches ? 'flex' : 'none';
-        });
-    };
-    
-    searchInput.addEventListener('input', (e) => {
-        filterTalents(e.target.value);
-    });
-    
-    adm.append(talentsContainer);
-    body.append(adm);
-    return body;
-}
+			for (let key in item) {
+				if (key == 'id') continue;
+				
+				// Создаем контейнер для пары "ключ-значение"
+				let keyValuePair = DOM({ 
+					tag: 'div', 
+					class: 'key-value-pair' 
+				});
+				
+				keyValuePair.append(
+					DOM({ tag: 'div', class: 'key' }, key),
+					App.input(async (value) => {
+						let object = new Object();
+						object[key] = value;
+						await App.api.request('build', 'talentEdit', { id: item.id, object: object });
+					}, { value: item[key] })
+				);
+				
+				div.append(keyValuePair);
+			}
+			
+			talentContainers.push({ element: div, data: item });
+			talentsContainer.append(div);
+		}
+		
+		const filterTalents = (searchText) => {
+			searchText = searchText.toLowerCase();
+			talentContainers.forEach(({ element, data }) => {
+				let matches = false;
+				for (let key in data) {
+					if (String(data[key]).toLowerCase().includes(searchText)) {
+						matches = true;
+						break;
+					}
+				}
+				element.style.display = matches ? 'flex' : 'none';
+			});
+		};
+		
+		searchInput.addEventListener('input', (e) => {
+			filterTalents(e.target.value);
+		});
+		
+		adm.append(talentsContainer);
+		body.append(adm);
+		return body;
+	}
 
-static async talents2() {
-    let body = DOM({ style: 'main' });
-    
-    // Создаем контейнер для заголовка (кнопка закрытия + поиск)
-    let header = DOM({ style: 'adm-header' });
-    
-    // Кнопка закрытия
-    let closeBtn = DOM({ 
-        style: 'close-btn',
-        event: ['click', () => View.show('castle')] 
-    }, '[X]');
-    
-    // Строка поиска
-    let searchInput = DOM({
-        tag: 'input',
-        placeholder: 'Поиск геройских талантов...',
-        style: 'search-input'
-    });
-    
-    header.append(closeBtn, searchInput);
-    
-    let adm = DOM({ style: 'adm' }, header);
-    let result = await App.api.request('build', 'talentHeroAll');
-    let talentContainers = [];
-    let talentsContainer = DOM({ style: 'talents-container' });
+	static async talents2() {
+		let body = DOM({ style: 'main' });
+		
+		// Создаем контейнер для заголовка (кнопка закрытия + поиск)
+		let header = DOM({ style: 'adm-header' });
+		
+		// Кнопка закрытия
+		let closeBtn = DOM({ 
+			style: 'close-btn',
+			event: ['click', () => View.show('castle')] 
+		}, '[X]');
+		
+		// Строка поиска
+		let searchInput = DOM({
+			tag: 'input',
+			placeholder: 'Поиск геройских талантов...',
+			style: 'search-input'
+		});
+		
+		header.append(closeBtn, searchInput);
+		
+		let adm = DOM({ style: 'adm' }, header);
+		let result = await App.api.request('build', 'talentHeroAll');
+		let talentContainers = [];
+		let talentsContainer = DOM({ style: 'talents-container' });
 
-    for (let item of result) {
-        let div = DOM({ tag: 'div', class: 'talent-item' });
-        div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/htalents/${item.id}.webp` }));
+		for (let item of result) {
+			let div = DOM({ tag: 'div', class: 'talent-item' });
+			div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/htalents/${item.id}.webp` }));
 
-        for (let key in item) {
-            if (key == 'id') continue;
-            div.append(
-                DOM({ tag: 'div' }, key),
-                App.input(async (value) => {
-                    let object = new Object();
-                    object[key] = value;
-                    await App.api.request('build', 'talentHeroEdit', { id: item.id, object: object });
-                }, { value: item[key] })
-            );
-        }
-        
-        talentContainers.push({ element: div, data: item });
-        talentsContainer.append(div);
-    }
-    
-    const filterTalents = (searchText) => {
-        searchText = searchText.toLowerCase();
-        talentContainers.forEach(({ element, data }) => {
-            let matches = false;
-            for (let key in data) {
-                if (String(data[key]).toLowerCase().includes(searchText)) {
-                    matches = true;
-                    break;
-                }
-            }
-            element.style.display = matches ? 'flex' : 'none';
-        });
-    };
-    
-    searchInput.addEventListener('input', (e) => {
-        filterTalents(e.target.value);
-    });
-    
-    adm.append(talentsContainer);
-    body.append(adm);
-    return body;
-}
+			for (let key in item) {
+				if (key == 'id') continue;
+				
+				// Создаем контейнер для пары "ключ-значение"
+				let keyValuePair = DOM({ 
+					tag: 'div', 
+					class: 'key-value-pair' 
+				});
+				
+				keyValuePair.append(
+					DOM({ tag: 'div', class: 'key' }, key),
+					App.input(async (value) => {
+						let object = new Object();
+						object[key] = value;
+						await App.api.request('build', 'talentHeroEdit', { id: item.id, object: object });
+					}, { value: item[key] })
+				);
+				
+				div.append(keyValuePair);
+			}
+			
+			talentContainers.push({ element: div, data: item });
+			talentsContainer.append(div);
+		}
+		
+		const filterTalents = (searchText) => {
+			searchText = searchText.toLowerCase();
+			talentContainers.forEach(({ element, data }) => {
+				let matches = false;
+				for (let key in data) {
+					if (String(data[key]).toLowerCase().includes(searchText)) {
+						matches = true;
+						break;
+					}
+				}
+				element.style.display = matches ? 'flex' : 'none';
+			});
+		};
+		
+		searchInput.addEventListener('input', (e) => {
+			filterTalents(e.target.value);
+		});
+		
+		adm.append(talentsContainer);
+		body.append(adm);
+		return body;
+	}
 
 	static async users() {
 
