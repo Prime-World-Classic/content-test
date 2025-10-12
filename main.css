@@ -1263,7 +1263,7 @@ button.build-action-item:hover {
 
 .adm div {
 	display: flex;
-	flex-wrap: nowrap;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 0.75rem;
 	padding: 0.5rem 0.75rem;
