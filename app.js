@@ -8197,11 +8197,11 @@ class Events {
 			
 			let body = document.createDocumentFragment();
 			
-			body.append(DOM(`Звонок от ${data.isCaller}?`),DOM({style:'splash-content-button',event:['click', async () => {
+			body.append(DOM(`Звонок от ${data.name}?`),DOM({style:'splash-content-button',event:['click', async () => {
 				
 				try{
 					
-					let voice = new Voice(data.id,'',data.isCaller,true);
+					let voice = new Voice(data.id,'',data.name,true);
 					
 					await voice.accept(data.offer);
 					
@@ -8221,7 +8221,7 @@ class Events {
 		}
 		else{
 			
-			let voice = new Voice(data.id);
+			let voice = new Voice(data.id,'',data.name);
 			
 			await voice.accept(data.offer);
 			
@@ -8843,7 +8843,7 @@ class Voice {
 	static peerConnectionConfig = {
 		// проверка stun https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
 		iceServers:[
-		{url:'turn:81.88.210.30:3478',credential:'pw',username:'pw'}
+		{urls:['turn:81.88.210.30:3478'],credential:'pw',username:'pw'}
 		/*
 		{url:'turn:192.158.29.39:3478?transport=udp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
 		{url:'turn:192.158.29.39:3478?transport=tcp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
@@ -8900,7 +8900,7 @@ class Voice {
 	
 	static cacheCandidate = new Object();
 	
-	static limit = 5;
+	static limit = 10;
 	
 	static init(){
 		
@@ -8918,19 +8918,41 @@ class Voice {
 		
 		if(!Voice.userMedia){
 			
-			Voice.userMedia = await navigator.mediaDevices.getUserMedia({audio:( App.isAdmin() ? Voice.mediaAudioConfigHighQality : Voice.mediaAudioConfig ),video:false});
+			Voice.infoPanel.style.display = 'flex';
 			
-			let tracks = Voice.userMedia.getTracks();
+			try{
+				
+				Voice.userMedia = await navigator.mediaDevices.getUserMedia({audio:( App.isAdmin() ? Voice.mediaAudioConfigHighQality : Voice.mediaAudioConfig ),video:false});
+				
+			}
+			catch(error){
+				
+				return App.error(`Не можем получить доступ к медиа устройствам: ${error}`);
+				
+			}
+			
+			let tracks = new Array();
+			
+			try{
+				
+				tracks = Voice.userMedia.getTracks();
+				
+			}
+			catch(error){
+				
+				return App.error(`Не можем получить дорожки потоков: ${error}`);
+				
+			}
 			
 			if(!tracks.length){
 				
-				throw 'Отсутствие медиа потоков';
+				return App.error('Отсутствие медиа потоков');
 				
 			}
 			
 			if(tracks[0].kind != 'audio'){
 				
-				throw 'Нам нужен микрофон';
+				return App.error('Не можем найти микрофон по умолчанию');
 				
 			}
 			
@@ -8938,32 +8960,32 @@ class Voice {
 			
 			Voice.mic.enabled = false;
 			
-			Voice.infoPanel.style.display = 'flex';
-			
 		}
 		
 	}
 	
 	static toggleEnabledMic(){
 		
-		if(Voice.mic){
+		if(!Voice.mic){
 			
-			Voice.mic.enabled = !Voice.mic.enabled;
+			return App.error('Мы не смогли определить ваш микрофон по умолчанию');
 			
-			if(Voice.mic.enabled){
-				
-				Sound.play('content/sounds/voice/enabled.mp3');
-				
-				Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
-				
-			}
-			else{
-				
-				Sound.play('content/sounds/voice/disabled.mp3');
-				
-				Voice.infoPanel.firstChild.lastChild.style.opacity = 1;
-				
-			}
+		}
+		
+		Voice.mic.enabled = !Voice.mic.enabled;
+		
+		if(Voice.mic.enabled){
+			
+			Sound.play('content/sounds/voice/enabled.mp3');
+			
+			Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
+			
+		}
+		else{
+			
+			Sound.play('content/sounds/voice/disabled.mp3');
+			
+			Voice.infoPanel.firstChild.lastChild.style.opacity = 1;
 			
 		}
 		
@@ -9029,13 +9051,24 @@ class Voice {
 		
 		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
 		
-		Voice.indication(Voice.userMedia,(percent) => {
-			
-			level.style.width = `${percent}%`;
-			
-		});
+		let bar = DOM({style:'voice-info-panel-body-item-bar'},level);
 		
-		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},DOM({style:'voice-info-panel-body-item-name'},App.storage.data.login),DOM({style:'voice-info-panel-body-item-status'},DOM({style:'voice-info-panel-body-item-bar'},level))));
+		if(Voice.mic){
+			
+			Voice.indication(Voice.userMedia,(percent) => {
+				
+				level.style.width = `${percent}%`;
+				
+			});
+			
+		}
+		else{
+			
+			bar.classList.add('voice-info-panel-body-item-nostream');
+			
+		}
+		
+		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},DOM({style:'voice-info-panel-body-item-name',event:['click',() => Voice.toggleEnabledMic()]},App.storage.data.login),DOM({style:'voice-info-panel-body-item-status'},bar)));
 		
 		for(let id in Voice.manager){
 			
@@ -9045,9 +9078,13 @@ class Voice {
 		
 		let tutorial = DOM({style:'voice-info-panel-body-tutorial'},'Нажмите CTRL + Z, чтобы включить микрофон!');
 		
-		if(Voice.mic.enabled){
+		if(Voice.mic){
 			
-			tutorial.style.opacity = 0;
+			if(Voice.mic.enabled){
+				
+				tutorial.style.opacity = 0;
+				
+			}
 			
 		}
 		
@@ -9087,6 +9124,8 @@ class Voice {
 		
 		let level = DOM({style:'voice-info-panel-body-item-bar-level'});
 		
+		let bar = DOM({style:'voice-info-panel-body-item-bar'},level);
+		
 		let indication = () => {
 			
 			if( (Voice.manager[id].peer.connectionState == 'connected') && (Voice.manager[id].stream) ){
@@ -9096,6 +9135,25 @@ class Voice {
 					level.style.width = `${percent}%`;
 					
 				});
+				
+			}
+			
+			if(Voice.manager[id].stream){
+				
+				if(bar.classList.contains('voice-info-panel-body-item-nostream')){
+					
+					bar.classList.remove('voice-info-panel-body-item-nostream');
+					
+				}
+				
+			}
+			else{
+				
+				if(!bar.classList.contains('voice-info-panel-body-item-nostream')){
+					
+					bar.classList.add('voice-info-panel-body-item-nostream');
+					
+				}
 				
 			}
 			
@@ -9111,7 +9169,7 @@ class Voice {
 			
 		}
 		
-		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},item,DOM({style:'voice-info-panel-body-item-status'},DOM({style:'voice-info-panel-body-item-bar'},level))));
+		Voice.infoPanel.firstChild.append(DOM({style:'voice-info-panel-body-item'},item,DOM({style:'voice-info-panel-body-item-status'},bar)));
 		
 	}
 	
@@ -9188,7 +9246,11 @@ class Voice {
 				
 				if(!Object.keys(Voice.manager).length){
 					
-					Voice.mic.enabled = false;
+					if(Voice.mic){
+						
+						Voice.mic.enabled = false;
+						
+					}
 					
 				}
 				
@@ -9362,7 +9424,11 @@ class Voice {
 		
 		await Voice.initAudio();
 		
-		this.peer.addTrack(Voice.mic);
+		if(Voice.mic){
+			
+			this.peer.addTrack(Voice.mic);
+			
+		}
 		
 		let offer = await this.peer.createOffer({offerToReceiveAudio:true,offerToReceiveVideo:false});
 		
@@ -9400,7 +9466,11 @@ class Voice {
 		
 		await Voice.initAudio();
 		
-		this.peer.addTrack(Voice.mic);
+		if(Voice.mic){
+			
+			this.peer.addTrack(Voice.mic);
+			
+		}
 		
 		await this.peer.setRemoteDescription(offer);
 		
