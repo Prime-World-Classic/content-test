@@ -65,7 +65,7 @@ export const en = {
 		continue:'Continue',
 		fullscreenEnabled:'Fullscreen enabled',
 		fullscreenDisabled:'Window mode enabled',
-``		smartcastDescription:'Right-click on the talent in this lane to turn on/off the smartcast (using the skill without confirmation)',
+		smartcastDescription:'Right-click on the talent in this lane to turn on/off the smartcast (using the skill without confirmation)',
 
 		// Подсказки
 		titletraining: 'Training mode',
