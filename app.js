@@ -4004,7 +4004,7 @@ root.appendChild(content);
 				),
 				DOM({ style: 'build-active-bar-container' },
 					Build.activeBarView,
-					DOM({ style: 'build-active-bar-hint' }, 'Нажмите правой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст (применение навыка без подтверждения)')
+					DOM({ style: 'build-active-bar-hint' }, Lang.text('smartcastDescription'))
 				)
 			),
 			DOM({ style: 'build-right' },
