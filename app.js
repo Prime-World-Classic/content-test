@@ -1,8 +1,8 @@
 APP_VERSION = '0';
 
-PW_VERSION = '2.9.3';
+PW_VERSION = '2.9.2';
 
-CURRENT_MM = 'mmtest'
+CURRENT_MM = 'mm'
 
 class ParentEvent {
 	
@@ -12673,7 +12673,7 @@ class MM {
 
 			try {
 
-				let request = await App.api.request(CURRENT_MM, 'start', { hero: MM.activeSelectHero, version: PW_VERSION, mode: CastleNAVBAR.mode, mac: NativeAPI.getMACAdress() });
+				let request = await App.api.request(CURRENT_MM, 'start', { hero: MM.activeSelectHero, version: '2.9.3', mode: CastleNAVBAR.mode, mac: NativeAPI.getMACAdress() });
 				
 				CastleNAVBAR.division(request.division);
 				
