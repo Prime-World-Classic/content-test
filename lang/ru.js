@@ -90,6 +90,7 @@ export const ru = {
 		titleThePurpleQualityOfTalents:'Фиолетовое качество талантов',
 		titleTheBlueQualityOfTalents:'Синее качество талантов',
 		titleSmartcastIsEnabled:'Смарткаст включен',
+		titleSmartcastIsDisabled:'Смарткаст выключен',
 		titleClose:'Закрыть',
 		titleNicknameСhange:'Смена никнейма',
 		titleLandTipeRZ:'Тип земли - с учетом родной земли',

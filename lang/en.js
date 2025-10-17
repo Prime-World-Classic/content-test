@@ -68,7 +68,7 @@ export const en = {
 
 		// Подсказки
 		titletraining: 'Training mode',
-		training: 'Тренировка',
+		training: 'Training',
 		titleflag: 'Choosing a faction',
 		titlesettings: 'Settings',
 		titlechat: 'Chat Display',
@@ -90,6 +90,7 @@ export const en = {
 		titleThePurpleQualityOfTalents:'The purple quality of talents',
 		titleTheBlueQualityOfTalents:'The blue quality of talents',
 		titleSmartcastIsEnabled:'Smartcast is enabled',
+		titleSmartcastIsDisabled:'Smartcast is disabled',
 		titleClose:'Close',
 		titleNicknameСhange:'Nickname change',
 		titleLandTipeRZ:'The type of land is based on the native land',

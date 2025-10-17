@@ -6896,7 +6896,7 @@ class Build {
 	static async enableSmartCast(element, sendRequest) {
 		element.classList.add('smartcast');
 		element.dataset.active = 1;
-		element.title = 'Смарткаст включён';
+		element.title = Lang.text('titleSmartcastIsEnabled');
 		if (sendRequest) {
 			await Build.requestSmartcast(element);
 		}
@@ -6905,7 +6905,7 @@ class Build {
 	static async disableSmartCast(element, sendRequest) {
 		element.classList.remove('smartcast');
 		element.dataset.active = 0;
-		element.title = 'Смарткаст выключён';
+		element.title = Lang.text('titleSmartcastIsDisabled');
 		if (sendRequest) {
 			await Build.requestSmartcast(element);
 		}
