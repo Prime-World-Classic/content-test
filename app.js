@@ -4438,7 +4438,7 @@ class Window {
 					}]
 				},
 					{ checked: Settings.settings.fullscreen }),
-				DOM({ tag: 'label', for: 'fullscreen-toggle' }, Lang.text('windowMode'))
+				DOM({ tag: 'label', for: 'fullscreen-toggle' }, Lang.text('windowMode') + ' (F11)')
 			),
 			DOM({ style: 'castle-menu-item-checkbox' },
             	DOM({
@@ -12258,6 +12258,61 @@ class Settings {
             App.error('Ошибка сохранения настроек: ' + e);
         }
     }
+	
+	// Инициализация глобальных горячих клавиш
+    static initGlobalHotkeys() {
+        console.log('Initializing global hotkeys...');
+        
+        document.addEventListener('keydown', (e) => {
+            // F11 - переключение полноэкранного режима
+            if (e.key === 'F11') {
+                e.preventDefault();
+                e.stopPropagation();
+                this.toggleFullscreen();
+            }
+        });
+        
+        console.log('Global hotkeys initialized - F11 for fullscreen toggle');
+    }
+
+    // Метод для переключения полноэкранного режима
+    static toggleFullscreen() {
+        if (!this.settings) {
+            console.warn('Settings not initialized');
+            return;
+        }
+        
+        this.settings.fullscreen = !this.settings.fullscreen;
+        console.log(`Toggling fullscreen: ${this.settings.fullscreen ? 'ON' : 'OFF'}`);
+        
+        // Применяем настройки
+        this.ApplySettings({render: false, audio: false});
+        
+        // Синхронизируем UI если открыты настройки
+        this.syncFullscreenUI();
+        
+        // Показываем уведомление пользователю
+        this.showFullscreenNotification();
+    }
+
+    // Синхронизация UI чекбокса
+    static syncFullscreenUI() {
+        const fullscreenToggle = document.getElementById('fullscreen-toggle');
+        if (fullscreenToggle) {
+            fullscreenToggle.checked = !this.settings.fullscreen;
+            console.log('Updated fullscreen toggle UI');
+        }
+    }
+
+    // Показать уведомление о переключении режима
+    static showFullscreenNotification() {
+        if (typeof App !== 'undefined' && App.notify) {
+            const message = this.settings.fullscreen ? 
+                (Lang.text('fullscreenEnabled') || 'Fullscreen enabled') : 
+                (Lang.text('fullscreenDisabled') || 'Window mode enabled');
+            App.notify(message);
+        }
+    }
 
     static async ApplySettings(options = {}) {
 		// Установка значений по умолчанию для options
@@ -12316,6 +12371,9 @@ class Settings {
         await this.ReadSettings();
         await this.ApplySettings();
         
+		// Инициализируем глобальные горячие клавиши
+        this.initGlobalHotkeys();
+		
         window.addEventListener('beforeunload', () => {
             this.WriteSettings();
         });

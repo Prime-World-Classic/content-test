@@ -63,6 +63,8 @@ export const ru = {
 		LangTarg: 'Язык изменен',
 		confirm:'Подтвердить',
 		continue:'Продолжить',
+		fullscreenEnabled:'Включен полноэкранный режим',
+		fullscreenDisabled:'Включен оконный режим',
 
 		// Подсказки
 		titletraining: 'Тренировка',

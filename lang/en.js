@@ -63,6 +63,8 @@ export const en = {
 		training: 'Training',
 		confirm:'Confirm',
 		continue:'Continue',
+		fullscreenEnabled:'Fullscreen enabled',
+		fullscreenDisabled:'Window mode enabled',
 
 		// Подсказки
 		titletraining: 'Training mode',
