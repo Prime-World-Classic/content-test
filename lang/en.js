@@ -65,6 +65,7 @@ export const en = {
 		continue:'Continue',
 		fullscreenEnabled:'Fullscreen enabled',
 		fullscreenDisabled:'Window mode enabled',
+		talentConflict:'The selected talent conflicts with another talent in the build!!',
 		smartcastDescription:'Right-click on the talent in this lane to turn on/off the smartcast (using the skill without confirmation)',
 
 		// Подсказки
