@@ -10,6 +10,7 @@ import { NativeAPI } from './nativeApi.js';
 import { MM } from './mm.js';
 import { Splash } from './splash.js';
 import { Window } from './window.js';
+import { Castle } from './castle.js';
 
 export class App {
     static APP_VERSION = '0';
@@ -178,9 +179,15 @@ export class App {
 	
 	static say(text) {
 		
-		if ('speechSynthesis' in window) {
+		if ( !('speechSynthesis' in window) ) {
 			
-			return false;
+			return;
+			
+		}
+		
+		if(window.speechSynthesis.speaking){
+			
+			window.speechSynthesis.cancel();
 			
 		}
 		
@@ -190,13 +197,11 @@ export class App {
 		
 		synthesis.pitch = 1.0;
 		
-		synthesis.volume = 0.5;
+		synthesis.volume = Castle.GetVolume(Castle.AUDIO_SOUNDS);
 		
 		synthesis.lang = 'ru-RU';
 		
 		window.speechSynthesis.speak(synthesis);
-		
-		return true;
 		
 	}
 

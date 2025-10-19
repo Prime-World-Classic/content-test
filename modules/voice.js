@@ -2,6 +2,7 @@ import { DOM } from './dom.js';
 import { App } from './app.js';
 import { Settings } from './settings.js';
 import { Sound } from './sound.js';
+import { Castle } from './castle.js';
 
 export class Voice {
 
@@ -155,14 +156,14 @@ export class Voice {
 
 		if (Voice.mic.enabled) {
 
-			Sound.play('content/sounds/voice/enabled.mp3');
+			Sound.play('content/sounds/voice/enabled.mp3',{ id: 'Voice_enabled', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
 
 			Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
 
 		}
 		else {
 
-			Sound.play('content/sounds/voice/disabled.mp3');
+			Sound.play('content/sounds/voice/disabled.mp3',{ id: 'Voice_disabled', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
 
 			Voice.infoPanel.firstChild.lastChild.style.opacity = 1;
 
@@ -413,6 +414,8 @@ export class Voice {
 			Voice.manager[id].close();
 
 		}
+		
+		App.say(`Звонки успешно сброшены за исключением ваших друзей`);
 
 		if (Voice.mic) {
 
@@ -459,7 +462,7 @@ export class Voice {
 				
 			}
 			
-			App.say(`Звук прибавлен на ${volumeLevel * 100}%`);
+			App.say(`${Math.round(volumeLevel * 100)}%`);
 			
 		}
 		else{
@@ -472,7 +475,7 @@ export class Voice {
 				
 			}
 			
-			App.say(`Звук убавлен на ${volumeLevel * 100}%`);
+			App.say(`${Math.round(volumeLevel * 100)}%`);
 			
 		}
 		
