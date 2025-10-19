@@ -311,6 +311,8 @@ export class Castle {
         ["coconut_palm_ad", "coconut_palm_doct"]
     ];
 
+    static filter = RegExp('', '');
+
     static toggleMusic(layer, value) {
         Castle.music[layer] = value ? value : !Castle.music[layer];
         if (Castle.music.includes(false)) {
@@ -355,6 +357,10 @@ export class Castle {
         Castle.doMove = false
         setTimeout(_ => { Castle.wasMoved = false }, 100);
 
+    }
+
+    static updateFilter(pattern, flags) {
+        Castle.filter = RegExp(pattern, flags);
     }
 
     static moveMouse(event) {
@@ -1343,7 +1349,9 @@ export class Castle {
     }
 
     static prepareAndDrawObject(obj, isSMPass, rotation, translation, tintOverride, scaleOverride) {
-
+        if (!Castle.filter.test(obj.meshName)) {
+            return;
+        }
         let meshData = obj.meshData;
         let associatedTexture = obj.textureId;
         let associatedTexture2 = obj.texture2Id;

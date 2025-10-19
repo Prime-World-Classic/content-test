@@ -513,7 +513,23 @@ export class Window {
 					View.show('users'); // Логика для управления пользователями
 				}]
 			}, 'Пользователи'),
+			DOM({
+				style: 'castle-menu-item-button', event: ['click', () => {
+					Window.show('main', 'castleDebug'); // Логика для управления пользователями
+				}]
+			}, 'Замок дебаг'),
 			DOM({ style: 'castle-menu-item-button', event: ['click', () => Window.show('main', 'menu')] }, Lang.text('back'))
+		);
+	}
+	static async castleDebug() {
+		let pattern = DOM({tag: 'input'});
+		let flags = DOM({tag: 'input'});
+		pattern.addEventListener('input', () => { Castle.updateFilter(pattern.value, flags.value) });
+		flags.addEventListener('input', () => { Castle.updateFilter(pattern.value, flags.value) });
+		return DOM( { id: 'wcastle-render-debug' },
+			DOM({ style: 'castle-menu-label' }, "Поиск построек по JS RegExp"),
+			DOM({ style: 'castle-menu-label' }, 'Паттерн ', pattern), 
+			DOM({ style: 'castle-menu-label' }, 'Флаги ', flags)
 		);
 	}
 	static async accountPanel() {

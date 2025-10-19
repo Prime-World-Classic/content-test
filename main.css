@@ -3818,7 +3818,7 @@ border-radius:5px;
 	
 }
 
-#wcastle-menu {
+#wcastle-menu, #wcastle-render-debug {
 	container-type: inline-size;
 	position: absolute;
 	margin-top: 18cqh;
@@ -3838,6 +3838,9 @@ border-radius:5px;
 	align-items: center;
 	justify-content: center;
 	padding: 1cqh 1cqh;
+}
+#wcastle-render-debug {
+	bottom: 0;
 }
 #wsteamauth {
 	container-type: inline-size;
