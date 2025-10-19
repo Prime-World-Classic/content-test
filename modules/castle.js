@@ -223,18 +223,128 @@ export class Castle {
     ];
 
     static defaultPlacedBuildings = [
-        {
-            id: 10,
-            rot: 0,
-            posX: 20,
-            posY: 18
-        },
-        {
-            id: 6,
-            rot: 0,
-            posX: 10,
-            posY: 27
-        }
+        
+		  {
+			"id": "2",
+			"rot": 0,
+			"posX": 39,
+			"posY": 1
+		  },
+		  {
+			"id": "1",
+			"rot": 0,
+			"posX": 31,
+			"posY": 1
+		  },
+		  {
+			"id": "3",
+			"rot": 2,
+			"posX": 25,
+			"posY": 3
+		  },
+		  {
+			"id": "5",
+			"rot": 2,
+			"posX": 39,
+			"posY": 7
+		  },
+		  {
+			"id": "11",
+			"rot": 0,
+			"posX": 27,
+			"posY": 15
+		  },
+		  {
+			"id": "13",
+			"rot": 0,
+			"posX": 0,
+			"posY": 17
+		  },
+		  {
+			"id": "14",
+			"rot": 0,
+			"posX": 5,
+			"posY": 17
+		  },
+		  {
+			"id": "15",
+			"rot": 0,
+			"posX": 0,
+			"posY": 22
+		  },
+		  {
+			"id": "16",
+			"rot": 0,
+			"posX": 5,
+			"posY": 22
+		  },
+		  {
+			"id": "17",
+			"rot": 0,
+			"posX": 0,
+			"posY": 27
+		  },
+		  {
+			"id": "18",
+			"rot": 2,
+			"posX": 34,
+			"posY": 21
+		  },
+		  {
+			"id": "19",
+			"rot": 2,
+			"posX": 28,
+			"posY": 21
+		  },
+		  {
+			"id": "6",
+			"rot": 0,
+			"posX": 10,
+			"posY": 29
+		  },
+		  {
+			"id": "20",
+			"rot": 2,
+			"posX": 33,
+			"posY": 9
+		  },
+		  {
+			"id": "27",
+			"rot": 0,
+			"posX": 5,
+			"posY": 27
+		  },
+		  {
+			"id": "25",
+			"rot": 0,
+			"posX": 0,
+			"posY": 33
+		  },
+		  {
+			"id": "10",
+			"rot": 0,
+			"posX": 21,
+			"posY": 20
+		  },
+		  {
+			"id": "8",
+			"rot": 0,
+			"posX": 25,
+			"posY": 9
+		  },
+		  {
+			"id": "7",
+			"rot": 0,
+			"posX": 18,
+			"posY": 14
+		  },
+		  {
+			"id": "12",
+			"rot": 2,
+			"posX": 40,
+			"posY": 14
+		  }
+
     ];
 
     static placedBuildings = [];
