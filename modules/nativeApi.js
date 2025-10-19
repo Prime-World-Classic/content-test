@@ -107,7 +107,7 @@ export class NativeAPI {
         NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDestroyShortcut);
 		
         NativeAPI.voiceUpVolume = new nw.Shortcut({
-            key: 'Ctrl+>', active: () => {
+            key: 'Ctrl+Period', active: () => {
 
                 Voice.volumeControl(true);
 				
@@ -122,7 +122,7 @@ export class NativeAPI {
         NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceUpVolume);
 		
         NativeAPI.voiceDownVolume = new nw.Shortcut({
-            key: 'Ctrl+<', active: () => {
+            key: 'Ctrl+Comma', active: () => {
 
                 Voice.volumeControl(false);
 				
