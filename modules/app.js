@@ -131,26 +131,21 @@ export class App {
             if (e.key === 'Escape') {
                 e.preventDefault();
                 e.stopPropagation();
-                
-                console.log('Escape pressed'); // для отладки
-                
+                    
                 // 1. Сначала закрываем Splash если открыт
                 if (typeof Splash !== 'undefined' && Splash.body && Splash.body.style.display === 'flex') {
-                    console.log('Closing Splash');
                     Splash.hide();
                     return;
                 }
                 
                 // 2. Затем закрываем окна по одному в обратном порядке
                 if (typeof Window !== 'undefined' && Window.anyOpen && Window.anyOpen()) {
-                    console.log('Closing last window');
                     Window.closeLast(); // Закрываем только последнее окно
                 }
                 // 3. Если окон нет - открываем настройки
                 else {
-                    console.log('No windows open - opening settings');
                     if (typeof Window !== 'undefined' && Window.show) {
-                        Window.show('main', 'settings');
+                        Window.show('main', 'menu');
                     }
                 }
             }
@@ -180,8 +175,33 @@ export class App {
         Voice.init();
 
     }
+	
+	static say(text) {
+		
+		if ('speechSynthesis' in window) {
+			
+			return false;
+			
+		}
+		
+		let synthesis = new SpeechSynthesisUtterance(text);
+		
+		synthesis.rate = 1.0;
+		
+		synthesis.pitch = 1.0;
+		
+		synthesis.volume = 0.5;
+		
+		synthesis.lang = 'ru-RU';
+		
+		window.speechSynthesis.speak(synthesis);
+		
+		return true;
+		
+	}
 
     static ShowCurrentView() {
+        console.log("ShowCurrentView")
         if (App.storage.data.login) {
 
             View.show('castle');

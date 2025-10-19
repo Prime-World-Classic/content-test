@@ -24,14 +24,14 @@ export class Voice {
 		noiseSuppression: false,
 		autoGainControl: false,
 		channelCount: 1,
-		sampleRate: 48000,
-		sampleSize: 16
+		sampleRate: 44100,
+		sampleSize: 24
 	};
 
 	static mediaAudioConfigHighQality = {
 		echoCancellation: true,
 		noiseSuppression: true,
-		autoGainControl: true,
+		autoGainControl: false,
 		channelCount: 1,
 		sampleRate: 32000,
 		sampleSize: 16
@@ -40,7 +40,7 @@ export class Voice {
 	static mediaAudioConfig = {
 		echoCancellation: true,
 		noiseSuppression: true,
-		autoGainControl: true,
+		autoGainControl: false,
 		channelCount: 1,
 		sampleRate: 16000,
 		sampleSize: 16
@@ -49,7 +49,7 @@ export class Voice {
 	static mediaAudioConfigLowQality = {
 		echoCancellation: true,
 		noiseSuppression: true,
-		autoGainControl: true,
+		autoGainControl: false,
 		channelCount: 1,
 		sampleRate: 8000,
 		sampleSize: 16
@@ -66,6 +66,10 @@ export class Voice {
 	static cacheCandidate = new Object();
 
 	static limit = 10;
+	
+	static volumeLevel = 1.0;
+	
+	static volumeLevelStep = 0.2;
 
 	static init() {
 
@@ -91,7 +95,7 @@ export class Voice {
 		
 		try {
 			
-			Voice.userMedia = await navigator.mediaDevices.getUserMedia({ audio: (App.isAdmin() ? Voice.mediaAudioConfigHighQality : Voice.mediaAudioConfig), video: false });
+			Voice.userMedia = await navigator.mediaDevices.getUserMedia({ audio: ( App.isAdmin() ? ( ( App.storage.data.id == 1 ) ? Voice.mediaAudioConfigManual : Voice.mediaAudioConfigHighQality ) : Voice.mediaAudioConfig ), video: false });
 			
 		}
 		catch (error) {
@@ -251,20 +255,22 @@ export class Voice {
 
 		}
 
-		let tutorial = DOM({ style: 'voice-info-panel-body-tutorial' }, 'Нажмите CTRL + Z, чтобы включить микрофон!');
+		let tutorial = DOM({ style: 'voice-info-panel-body-tutorial' });
 
 		if (Voice.mic) {
+			
+			tutorial.innerText = `Нажмите Ctrl+Z, чтобы включить ${Voice.mic.label}`;
 
 			if (Voice.mic.enabled) {
 
 				tutorial.style.opacity = 0;
-
+				
 			}
-
+			
 		}
 
 		Voice.infoPanel.firstChild.append(tutorial);
-
+		
 	}
 
 	static playerInfoPanel(id) {
@@ -438,6 +444,47 @@ export class Voice {
 		}
 
 	}
+	
+	static volumeControl(increase = false) {
+		
+		let volumeLevel = 0.0;
+		
+		if(increase){
+			
+			volumeLevel = ( Voice.volumeLevel + Voice.volumeLevelStep );
+			
+			if( volumeLevel > 1.0 ){
+				
+				return;
+				
+			}
+			
+			App.say(`Звук прибавлен на ${volumeLevel * 100}%`);
+			
+		}
+		else{
+			
+			volumeLevel = ( Voice.volumeLevel - Voice.volumeLevelStep );
+			
+			if( volumeLevel < 0.0 ){
+				
+				return;
+				
+			}
+			
+			App.say(`Звук убавлен на ${volumeLevel * 100}%`);
+			
+		}
+		
+		for (let id in Voice.manager) {
+			
+			Voice.manager[id].controller.volume = volumeLevel;
+			
+		}
+		
+		Voice.volumeLevel = volumeLevel;
+		
+	}
 
 	static async association(i, users, key) {
 
@@ -515,7 +562,7 @@ export class Voice {
 
 			this.controller.controls = true;
 
-			this.controller.volume = 1.0;
+			this.controller.volume = Voice.volumeLevel;
 
 			this.controller.play();
 

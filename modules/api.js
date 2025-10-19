@@ -99,9 +99,7 @@ export class Api {
 
                     console.log(`Успешно подключились к ${this.MAIN_HOST}...`);
 
-                    if (this.MAIN_HOST != this.host[0]) {
-                        App.ShowCurrentView();
-                    }
+                    App.ShowCurrentView();
 
                     resolve();
 

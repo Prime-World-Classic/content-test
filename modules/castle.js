@@ -829,7 +829,7 @@ export class Castle {
                 meshName: obj.mesh, meshData: {}, shader: obj.shader, shaderId: {}, blend: obj.blend,
                 tintColor: obj.tintColor, uvScale: obj.uvScale, uvScroll: obj.uvScroll,
                 texture: obj.texture, texture_2: obj.texture_2, texture_3: obj.texture_3, texture_4: obj.texture_4,
-                textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, transform: obj.transform, indexCount: obj.indexCount
+                textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, objRotation: obj.objRotation, transform: obj.transform, indexCount: obj.indexCount
             });
 
             Castle.loadObjectResources(shaderNames, texNames, obj);
@@ -864,7 +864,7 @@ export class Castle {
                     meshName: obj.mesh, meshData: {}, shader: obj.shader, shaderId: {}, blend: obj.blend,
                     tintColor: obj.tintColor, uvScale: obj.uvScale, uvScroll: obj.uvScroll,
                     texture: obj.texture, texture_2: obj.texture_2, texture_3: obj.texture_3, texture_4: obj.texture_4,
-                    textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, transform: obj.transform, indexCount: obj.indexCount
+                    textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, objRotation: obj.objRotation, transform: obj.transform, indexCount: obj.indexCount
                 });
 
                 Castle.loadObjectResources(shaderNames, texNames, obj);
@@ -1366,7 +1366,8 @@ export class Castle {
             textures, meshData.vertices, meshData.indexCount,
             meshData.vertStride, Castle.sceneShaders[obj.shaderId].attributes,
             obj.strip, obj.transform, isSMPass,
-            obj.blend, obj.tintColor, obj.uvScale, uvScroll, rotation, translation, tintOverride, scaleOverride, obj.meshName == 'grid_9_01.bin');
+            obj.blend, obj.tintColor, obj.uvScale, uvScroll, 
+            obj.objRotation, rotation, translation, tintOverride, scaleOverride, obj.meshName == 'grid_9_01.bin');
 
     }
 
@@ -1521,7 +1522,16 @@ export class Castle {
 
     }
 
-    static drawObject(program, textures, vertices, indexCount, vertStride, attributes, strip, transform, isSMPass, blend, tintColor, uvScale, uvScroll, rotation, translation, tintOverride, scaleOverride, isGrid) {
+	static fmod(dividend, divisor) {
+		if (divisor === 0) {
+			// Handle division by zero based on desired behavior (e.g., return NaN or throw an error)
+			return NaN;
+		}
+		return dividend - Math.floor(dividend / divisor) * divisor;
+	}
+
+    static drawObject(program, textures, vertices, indexCount, vertStride, attributes, strip, transform, isSMPass, blend, tintColor, uvScale, uvScroll, 
+        objectRotation, rotation, translation, tintOverride, scaleOverride, isGrid) {
 
         if (blend) {
 
@@ -1594,12 +1604,37 @@ export class Castle {
 
         Castle.gl.uniform2fv(uvScrollLocation, uvScrollValue);
 
-        let worldMatrix = transform ? transform : new Float32Array([
+        let worldMatrix = new Float32Array(16);
+        mat4.identity(worldMatrix);
+
+        if (objectRotation) {
+
+            var objRotationMatrixX = new Float32Array(16);
+            var objRotationMatrixY = new Float32Array(16);
+            var objRotationMatrixZ = new Float32Array(16);
+            mat4.identity(objRotationMatrixX);
+            mat4.identity(objRotationMatrixY);
+            mat4.identity(objRotationMatrixZ);
+
+            mat4.fromRotation(objRotationMatrixX, Castle.fmod(objectRotation[0] * Castle.currentTime, 360.0), [1, 0, 0]);
+
+            mat4.fromRotation(objRotationMatrixY, Castle.fmod(objectRotation[1] * Castle.currentTime, 360.0), [0, 1, 0]);
+
+            mat4.fromRotation(objRotationMatrixZ, Castle.fmod(objectRotation[2] * Castle.currentTime, 360.0), [0, 0, 1]);
+
+            mat4.mul(worldMatrix, objRotationMatrixX, worldMatrix);
+            mat4.mul(worldMatrix, objRotationMatrixY, worldMatrix);
+            mat4.mul(worldMatrix, objRotationMatrixZ, worldMatrix);
+            
+        }
+
+        let transformMatrix = transform ? transform : new Float32Array([
             1, 0, 0, 0,
             0, 0, 1, 0,
             0, -1, 0, 0,
             0, 0, 0, 1
         ]);
+        mat4.mul(worldMatrix, worldMatrix, transformMatrix);
 
         var worldMatrix2 = new Float32Array(16);
 
