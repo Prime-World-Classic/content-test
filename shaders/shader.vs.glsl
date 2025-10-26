@@ -47,6 +47,11 @@ varying float posDepth;
 uniform mat4 mWorld;
 uniform mat4 mViewProj;
 
+uniform vec4 startFreq;
+uniform vec4 endAmp;
+uniform vec4 animDirVertFreq;
+uniform vec4 time;
+
 // Pizdos. Ebaniy webgl cannot convert half to float natively
 // Also there's no bitwise operations so I had to use floats only
 vec2 half_to_float(vec2 h)
@@ -60,6 +65,21 @@ vec2 half_to_float(vec2 h)
   vec2 fraction = 1.0 + fractionBits / 1024.0;
   return sign * exponent * fraction;
 }
+
+float minimum_distance(vec3 v, vec3 w, vec3 p) {
+  // Return minimum distance between line segment vw and point p
+  float l2 = dot(v-w, v-w);  // i.e. |w-v|^2 -  avoid a sqrt
+  //if (l2 == 0.0) return distance(p, v);   // v == w case
+  // Consider the line extending the segment, parameterized as v + t (w - v).
+  // We find projection of point p onto the line. 
+  // It falls where t = [(p-v) . (w-v)] / |w-v|^2
+  // We clamp t from [0,1] to handle points outside the segment vw.
+  float t = max(0.0, min(1.0, dot(p - v, w - v) / l2));
+  vec3 projection = v + t * (w - v);  // Projection falls on the segment
+  return distance(p, projection);
+}
+
+float rand(float n){return fract(sin(n) * 43758.5453123);}
 
 void main()
 {
@@ -80,9 +100,18 @@ void main()
 #ifdef VS_COLOR
   fragColor = vertColor / 255.0;
 #endif
+// Vertex animation
+  vec3 animatedVertPosition = vertPosition;
+// 1. Weight animation
+  float weight = minimum_distance(startFreq.xyz, endAmp.xyz, vertPosition);
+// 2. Wave animation
+  float animation = sin((fract((vertPosition.x + vertPosition.y + vertPosition.z) * animDirVertFreq.w) + time.x) * startFreq.w) * endAmp.w * weight;
+// 3. Add up animated value
+  animatedVertPosition += (animDirVertFreq.xyz * animation);
 
 // Transforms
-  vec4 worldPos = mWorld * vec4(vertPosition, 1.0);
+  
+  vec4 worldPos = mWorld * vec4(animatedVertPosition, 1.0);
   gl_Position = mViewProj * worldPos;
 #ifdef VS_NORMAL
   vec4 worldNormal = mWorld * vec4(normalize(vertNormal), 0.0);

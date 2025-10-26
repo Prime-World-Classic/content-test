@@ -119,11 +119,13 @@ export class Castle {
 
     static fixedCameraHeightValues = [0, 0, 0, 0, 350, 350, 350];
 
-    static initialFixedValue = 1.0;
+    static START_FIXED_VALUE = 1.0;
 
-    static currentFixedValue = 1.0;
+    static initialFixedValue = Castle.START_FIXED_VALUE;
 
-    static targetFixedValue = 1.0;
+    static currentFixedValue = Castle.START_FIXED_VALUE;
+
+    static targetFixedValue = Castle.START_FIXED_VALUE;
 
     static cameraAnimationSpeed = 4.0;
 
@@ -945,7 +947,9 @@ export class Castle {
                 meshName: obj.mesh, meshData: {}, shader: obj.shader, shaderId: {}, blend: obj.blend,
                 tintColor: obj.tintColor, uvScale: obj.uvScale, uvScroll: obj.uvScroll,
                 texture: obj.texture, texture_2: obj.texture_2, texture_3: obj.texture_3, texture_4: obj.texture_4,
-                textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, objRotation: obj.objRotation, transform: obj.transform, indexCount: obj.indexCount
+                textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, 
+                objRotation: obj.objRotation, startFreq: obj.startFreq, endAmp: obj.endAmp, animDir: obj.animDir,
+                transform: obj.transform, indexCount: obj.indexCount
             });
 
             Castle.loadObjectResources(shaderNames, texNames, obj);
@@ -980,7 +984,9 @@ export class Castle {
                     meshName: obj.mesh, meshData: {}, shader: obj.shader, shaderId: {}, blend: obj.blend,
                     tintColor: obj.tintColor, uvScale: obj.uvScale, uvScroll: obj.uvScroll,
                     texture: obj.texture, texture_2: obj.texture_2, texture_3: obj.texture_3, texture_4: obj.texture_4,
-                    textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, objRotation: obj.objRotation, transform: obj.transform, indexCount: obj.indexCount
+                    textureId: {}, texture2Id: {}, texture3Id: {}, texture4Id: {}, strip: obj.strip, 
+                    objRotation: obj.objRotation, startFreq: obj.startFreq, endAmp: obj.endAmp,  animDir: obj.animDir,
+                    transform: obj.transform, indexCount: obj.indexCount
                 });
 
                 Castle.loadObjectResources(shaderNames, texNames, obj);
@@ -1275,6 +1281,19 @@ export class Castle {
 
         sceneObjectsContainer[objectId].meshData = { vertices: vertices, vertStride: vertStride, indexCount: meshFloat.length / (vertStride / 4) };
 
+        // Add up first vertex as base offset
+        if (sceneObjectsContainer[objectId].startFreq) {
+            sceneObjectsContainer[objectId].startFreq[0] += meshFloat[0];
+            sceneObjectsContainer[objectId].startFreq[1] += meshFloat[1];
+            sceneObjectsContainer[objectId].startFreq[2] += meshFloat[2];
+        }
+        
+        if (sceneObjectsContainer[objectId].endAmp) {
+            sceneObjectsContainer[objectId].endAmp[0] += meshFloat[0];
+            sceneObjectsContainer[objectId].endAmp[1] += meshFloat[1];
+            sceneObjectsContainer[objectId].endAmp[2] += meshFloat[2];
+        }
+
         //console.log('Loaded mesh ' + meshName);
 
     }
@@ -1485,7 +1504,9 @@ export class Castle {
             meshData.vertStride, Castle.sceneShaders[obj.shaderId].attributes,
             obj.strip, obj.transform, isSMPass,
             obj.blend, obj.tintColor, obj.uvScale, uvScroll, 
-            obj.objRotation, rotation, translation, tintOverride, scaleOverride, obj.meshName == 'grid_9_01.bin');
+            obj.objRotation, rotation, translation, tintOverride, scaleOverride, obj.meshName == 'grid_9_01.bin',
+            obj.startFreq, obj.endAmp, obj.animDir
+        );
 
     }
 
@@ -1649,7 +1670,7 @@ export class Castle {
 	}
 
     static drawObject(program, textures, vertices, indexCount, vertStride, attributes, strip, transform, isSMPass, blend, tintColor, uvScale, uvScroll, 
-        objectRotation, rotation, translation, tintOverride, scaleOverride, isGrid) {
+        objectRotation, rotation, translation, tintOverride, scaleOverride, isGrid, startFreqValue, endAmpValue, animDir) {
 
         if (blend) {
 
@@ -1709,6 +1730,20 @@ export class Castle {
         let uvScaleLocation = Castle.getUniformLocation(program, 'uvScale');
 
         Castle.gl.uniform4fv(uvScaleLocation, uvScaleValue);
+        
+        // Programmable vertex animation
+        let uStartFreqValue = startFreqValue ? startFreqValue : [0, 0, 0, 0];
+        let uEndAmpValue = endAmpValue ? endAmpValue : [0, 0, 0, 0];
+        let animDirVertFreqValue = animDir ? animDir : [0, 0, 0, 0];
+        let startFreq = Castle.getUniformLocation(program, 'startFreq');
+        Castle.gl.uniform4fv(startFreq, uStartFreqValue);
+        let endAmp = Castle.getUniformLocation(program, 'endAmp');
+        Castle.gl.uniform4fv(endAmp, uEndAmpValue);
+        let animDirVertFreq = Castle.getUniformLocation(program, 'animDirVertFreq');
+        Castle.gl.uniform4fv(animDirVertFreq, animDirVertFreqValue);
+        let time = Castle.getUniformLocation(program, 'time');
+        let timeValue = [Castle.currentTime, 0, 0, 0];
+        Castle.gl.uniform4fv(time, timeValue);
 
         if (uvScroll[0] > 0) {
 

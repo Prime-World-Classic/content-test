@@ -15,7 +15,7 @@ import { Castle } from './castle.js';
 export class App {
     static APP_VERSION = '0';
 
-    static PW_VERSION = '2.9.4';
+    static PW_VERSION = '2.10.0';
 
     static CURRENT_MM = 'mmtest'
 
