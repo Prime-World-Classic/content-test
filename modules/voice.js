@@ -401,7 +401,7 @@ export class Voice {
 
 	}
 
-	static destroy(full = false) {
+	static destroy(full = false, say = false) {
 
 		for (let id in Voice.manager) {
 
@@ -415,7 +415,11 @@ export class Voice {
 
 		}
 		
-		App.say(`Звонки успешно сброшены за исключением ваших друзей`);
+		if(say){
+			
+			App.say(`Звонки успешно сброшены за исключением ваших друзей`);
+			
+		}
 
 		if (Voice.mic) {
 
