@@ -94,7 +94,7 @@ export class NativeAPI {
         NativeAPI.voiceDestroyShortcut = new nw.Shortcut({
             key: 'Ctrl+K', active: () => {
 
-                Voice.destroy();
+                Voice.destroy(false,true);
 
             },
             failed: (error) => {
