@@ -1,4 +1,4 @@
-
+import { App } from './app.js';
 
 export function DOM(properties) {
 
@@ -16,6 +16,24 @@ export function DOM(properties) {
             if (property == 'tag') continue;
 
             switch (property) {
+
+                case 'domaudio':
+
+                    if (properties.domaudio.constructor.name == "DomAudio") {
+
+                            parent.addEventListener("mouseover", () => properties.domaudio?.eventMouseOverCallback());
+
+                            parent.addEventListener("mousedown", () => properties.domaudio?.eventMouseDownCallback());
+
+                            parent.addEventListener("mouseup", () => properties.domaudio?.eventMouseUpCallback());
+
+                    } else {
+
+                        App.error("Передан некорректный объект. Ожидается DomAudio")
+
+                    }
+
+                    break;
 
                 case 'style':
 

@@ -672,7 +672,13 @@ export class MM {
 
         }
 
-        MM.lobbyHeroes = DOM({ style: 'mm-lobby-middle-hero' }, DOM({ style: 'mm-lobby-middle-hero-prompt' }, 'ЛКМ (ВЫБРАТЬ) / ПКМ (ЗАБЛОКИРОВАТЬ)'));
+        MM.lobbyHeroes = DOM({ style: 'mm-lobby-middle-hero' });
+		
+		if(data.banhero){
+			
+			MM.lobbyHeroes.append(DOM({ style: 'mm-lobby-middle-hero-prompt' }, 'ЛКМ (ВЫБРАТЬ) / ПКМ (ЗАБЛОКИРОВАТЬ)'));
+			
+		}
 
         //let preload = new PreloadImages(MM.lobbyHeroes);
 

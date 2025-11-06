@@ -99,9 +99,9 @@ input,select{
 	background-image: url('icons/tg.svg');
 	background-repeat: no-repeat;
 	position: relative;
-	width: 6cqh;
-	margin-left: -7cqh;
-	bottom: 0.8cqh;
+	width: 4.8cqh;
+	margin-left: -0.5cqh;
+	bottom: 0.5cqh;
 	height: 6cqh;
 }
 
@@ -110,10 +110,10 @@ input,select{
 	background-image: url('icons/steam.webp');
 	background-size: cover;
 	display: inline-block;
-	height: 1.5em;
-	width: 1.5em;
+	height: 1.3em;
+	width: 1.3em;
 	margin-right: 0.2em;
-	margin-bottom: -0.4em;
+	margin-bottom: -0.3em;
 	margin-top: -0.75em;
 }
 
@@ -316,27 +316,45 @@ select option {
 .login-box-forma-inputs{
 	display: flex;
 	flex-direction: column;
-	width:20cqw;
+	background-image: url(img/main.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	padding-top: 8vh;
+	/*width:20cqw;*/
 }
 
 input::placeholder{
 	color:rgba(0,0,0,0.3)
 }
 
+.login-box-forma-inputs select{
+	background-image: url(img/button.png);
+	background-size: 98% 98%;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	padding: 1.5vmin 0;
+	color:#fff;
+}
+
+.login-box-forma-inputs input{
+	background:rgba(255,255,255,0.5);
+	color: rgba(0,0,0,0.9);
+}
+
 .login-box-forma-inputs input, .login-box-forma-inputs select{
 	transition: all 0.3s ease-out;
-	width:100%;
-	padding: 2vmin 0;
-	margin-bottom:15px;
+	width: auto;
+	/*padding: 1vmin 0;*/
+	margin-left: 4%;
+	margin-right: 4%;
+	margin-bottom: 2vh;
 	font: 1.5rem / 1 Tahoma;
-	background:rgba(255,255,255,0.5);
 	border:none;
-	border-radius:50px;
-	color:rgba(0,0,0,0.9);
+	border-radius:5vh;
 	text-align:center;
 }
 
-.login-box-forma-inputs input:hover, .login-box-forma-inputs select:hover{
+.login-box-forma-inputs input:hover{
 	background:rgba(255,255,255,0.8);
 }
 
@@ -351,24 +369,33 @@ input::placeholder{
 }
 
 .login-box-forma-buttons div{
-	margin-right:1cqh;
-	margin-left: 1cqh;
+	margin-right:2cqh;
+	margin-left: 2cqh;
 	margin-bottom: 2cqh;
 }
 
 .login-box-forma-button{
 	flex-grow:1;
 	transition: all 0.3s ease-out;
+	background-image: url(img/button.png);
+	background-size: 98% 98%;
+	background-repeat: no-repeat;
+	background-color: transparent;
 	padding: 2vmin 2vmin;
-	border-radius:50px;
-	font: 1.3rem / 1 Tahoma;
+	/*border-radius:50px;*/
+	font: 1.3rem / 0.5 Tahoma;
 	text-align:center;
-	background:rgba(255,255,255,0.2);
-	color:rgba(0,0,0,0.7);
+	/*background:rgba(255,255,255,0.2);*/
+	color: #fff;
 }
 
-.login-box-forma-button:hover{
-	background:rgba(255,255,255,0.5);
+.login-box-forma-button:hover, .login-box-forma-inputs select:hover{
+	/*background:rgba(255,255,255,0.5);*/
+	background-image: url(img/button1.png);
+	background-size: 98% 98%;
+	background-repeat: no-repeat;
+	background-color: transparent;
+	transform:scale(1.02);
 }
 
 .language-select-container {
@@ -1140,11 +1167,11 @@ button.build-action-item:hover {
 	height: 0cqh;
 	position:absolute;
 	bottom: 0;
-	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
-	bottom: -10cqh;
+	text-shadow:rgb(49 196 190 / 95%) 0 0 5px;
+	bottom: 96cqh;
 	text-align:center;
-	margin-bottom:20cqh;
-	color:rgba(255,255,255,0.5);
+	/*margin-bottom:108cqh;*/
+	color:rgb(11 125 155 / 75%);
 }
 
 .rarity1{}
