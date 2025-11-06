@@ -16,7 +16,6 @@ import { MM } from './mm.js';
 import { PreloadImages } from './preloadImages.js';
 import { Game } from './game.js';
 import { Splash } from './splash.js';
-import { DomAudio } from './domAudio.js';
 
 export class View {
     static mmQueueMap = {};
@@ -1052,22 +1051,18 @@ root.appendChild(content);
         }
 
         let flagMenuItem = DOM({
-            domaudio: new DomAudio(() => {App.error("Кастомный звук при наведении курсора")}), // своя реализация функции при наведении курсора
             style: 'flag-menu-item',
             event: ['click', () => {
                 App.setFraction();
-            }],
-            title: Lang.text('titleflag')
+            }], title: Lang.text('titleflag')
         });
         let settingsMenuItem = DOM({
-            domaudio: new DomAudio(null, undefined, undefined), // нет звука при наведении курсора
             style: 'settings-menu-item',
             event: ['click', () => {
                 Window.show('main', 'menu');
             }], title: Lang.text('titlesettings')
         });
         let chatMenuItem = DOM({
-            domaudio: new DomAudio(), // все звуки по умолчанию
             style: 'chat-menu-item',
             event: ['click', () => {
                 Chat.changeChatVisibility();
