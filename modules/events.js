@@ -293,9 +293,9 @@ export class Events {
 
 		let body = document.createDocumentFragment();
 
-		let button = DOM({ style: 'splash-content-button', event: ['click', async () => Splash.hide()] }, 'Больше так не буду');
+		let button = DOM({ style: 'splash-content-button', event: ['click', async () => Splash.hide()] }, Lang.text('titleafk'));
 
-		body.append(DOM(`${data.party ? 'Один из участников пати был АФК, поэтому вы исключены из подбора матча' : 'Вы были исключены из матчмейкинга за АФК!'}`), button);
+		body.append(DOM(`${data.party ? Lang.text('titleafk1') : Lang.text('titleafk2')}`), button);
 
 		Splash.show(body);
 

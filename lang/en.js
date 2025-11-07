@@ -98,6 +98,9 @@ export const en = {
 		titleNicknameСhange:'Nickname change',
 		titleLandTipeRZ:"The type of land is based on the native land",
 		titleLandTipeVZ:"The type of land is based on neutral/enemy land",
+		titleafk:"OK",
+		titleafk1:"One of the party participants was AFK, so you are excluded from the match selection",
+		titleafk2:"You have been excluded from matchmaking for AFK!",
 
 		// Постройки
 		pearl_farm_ad: "Pearl Farm",
