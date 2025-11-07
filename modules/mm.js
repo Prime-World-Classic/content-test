@@ -358,7 +358,7 @@ export class MM {
         MM.soundEvent();
 
         let button = DOM({
-            style: 'ready-button', event: ['click', async () => {
+            style: 'mm-ready-button', event: ['click', async () => {
 
                 try {
 
@@ -396,7 +396,7 @@ export class MM {
 
         button.style.fontSize = '2cqw';
 
-        button.animate({ transform: ['scale(1)', 'scale(0.8)', 'scale(1.2)', 'scale(1)'] }, { duration: 500, iterations: Infinity, easing: 'ease-in-out' });
+        button.animate({ transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] }, { duration: 500, iterations: Infinity, easing: 'ease-in-out' });
 
         body.append(button);
 
@@ -551,7 +551,7 @@ export class MM {
         MM.lobbyBuildTab = DOM({ style: 'lobby-build-tab' });
 
         MM.lobbyConfirm = DOM({
-            style: 'ready-button', event: ['click', async () => {
+            style: 'mm-ready-button', event: ['click', async () => {
 
                 try {
 
@@ -571,13 +571,13 @@ export class MM {
                 }
 
             }]
-        }, 'Подтвердить');
+        }, Lang.text('ready2'));
 
         MM.lobbyConfirm.style.opacity = 0;
 
-        MM.lobbyConfirm.style.width = '50%';
+        MM.lobbyConfirm.style.width = '60%';
 
-        MM.lobbyConfirm.animate({ transform: ['scale(1)', 'scale(0.8)', 'scale(1.2)', 'scale(1)'] }, { duration: 2000, iterations: Infinity, easing: 'ease-in-out' });
+        MM.lobbyConfirm.animate({ transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] }, { duration: 2000, iterations: Infinity, easing: 'ease-in-out' });
 
         lobbyBuild.append(MM.lobbyConfirm, MM.lobbyBuildField, MM.lobbyBuildTab);
 

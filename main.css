@@ -1751,20 +1751,19 @@ text-align:center;
         font-size: 1.3rem;
     }
 }
-.mm-timer{
-	
+
+.mm-timer {
 	display:flex;
 	flex-flow:row nowrap;
 	justify-content:center;
 	align-items:center;
-	background:rgba(255,50,0,0.9);
+	/*background:rgba(255,50,0,0.9);*/
 	font:2.5rem / 1 Tahoma;
-	color:rgba(255,255,255,0.9);
+	color:rgba(255,255,255,0.6);
 	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
 	padding:1cqh 1cqw;
-	border-radius:15px;
-	box-shadow:0 0 25px rgba(0,0,0,0.3);
-	
+	/*border-radius:15px;
+	box-shadow:0 0 25px rgba(0,0,0,0.3);*/
 }
 
 .mm-ready{
@@ -1774,39 +1773,61 @@ text-align:center;
 	
 }
 
-.mm-ready-count{
-	
-	font:5rem / 1 Tahoma;
+.mm-ready-count {
+	font:4rem / 1 Tahoma;
 	color:rgba(255,255,255,0.9);
 	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
 	text-align:center;
-	padding:6cqh 1cqw;
-	font-weight:800;
-	
-	
+	margin-top: 1cqh;
+	margin-bottom: 1cqh;
+	padding:4cqh 1cqw;
+	font-weight: 600;
+	background-image: url(img/b3.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
 }
 
 .mm-ready-button {
-	
-	width:300px;
-	margin:auto;
-	color:rgba(255,255,255,0.5);
-	text-shadow:rgba(0,0,0,0.3) 0 0 5px;
-	font: 3rem / 1 Tahoma;
-	text-align:center;
-	transition: all 0.3s ease-out;
-	padding:0.9cqh 1cqw;
-	border-radius:15px;
-	box-shadow:0 0 25px rgba(0,0,0,0.3);
-	
+	font: 1.3cqw / 1 Tahoma;
+	padding:0.8cqw;
+	font-weight: 600;
+	color:rgba(255,255,255,0.9);
+	text-shadow: rgba(0, 0, 0, 0.5) 0 0 0.5cqw;
+	position: relative;
+	display: inline-block;
+	width: 100%;
+	text-align: center;
+	box-sizing: border-box;
+	background-image: url(img/button3.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	/*background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+	background-size: 400%;
+	border-radius: 1cqw;
+	z-index: 1;
+	animation: ready 8s linear infinite;*/
 }
 
-.mm-ready-button:hover {
-	
-background:rgba(51,255,51,0.5);
-color:rgba(255,255,255,0.9);
-transform: translate(0,-3px);
-box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
+.mm-ready-button:hover{
+	/*content: "";
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	bottom: -5px;
+	left: -5px;
+	z-index: -1;*/
+	background-image: url(img/button1.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	transform:scale(1.02);
+	/*background: linear-gradient(90deg, #03a9f4, #f441a5, #ffeb3b, #03a9f4);
+	background-size: 400%;
+	border-radius: 40px;
+	opacity: 0;
+	transition: .5s;
+	filter: blur(20px);
+	opacity: 1;
+	animation: ready 8s linear infinite;*/
 }
 
 .mm-lobby{
@@ -2131,10 +2152,11 @@ box-shadow: 0 20px 40px 0 rgba(51,255,51,0.8);
 	
 }
 
-.lobby-timer > .mm-timer{
-	
+.lobby-timer > .mm-timer {
+	background-image: url(img/timer.png);
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
 	font: 1.5cqw / 1 Tahoma;
-	
 }
 
 .lobby-select-hero{
