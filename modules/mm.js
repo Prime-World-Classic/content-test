@@ -519,6 +519,8 @@ export class MM {
     }
 
     static async lobby(data) {
+		
+		MM.targetBanHeroId = 0;
 
         if (!MM.hero) {
 
