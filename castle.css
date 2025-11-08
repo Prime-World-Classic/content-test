@@ -1616,15 +1616,23 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .quest-item-exclamation{
-	position: absolute;
-	width:80cqw;
-	height:80cqw;
 	background-image: url('img/quest/3.png');
 	animation: questanim 1s linear infinite;
+	width:80cqw;
+	height:80cqw;
 	position: absolute;
 	right: -30cqw;
 	bottom: -20cqw;
-	
+}
+
+.quest-item-completed{
+	background-image: url('img/quest/4.png');
+	background-size: contain;
+	width:50cqw;
+	height:50cqw;
+	position: absolute;
+	right: -10cqw;
+	bottom: 0cqw;
 }
 
 .quest-item-timer{

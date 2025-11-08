@@ -3465,7 +3465,7 @@ border-radius:5px;
   text-align:left;
   overflow:visible;
 }
-.wquest__avatar {
+.wquest__avatar, .quest_container {
   position: absolute;
   top: -6cqh;         
   left: -4cqh;       
@@ -3478,6 +3478,11 @@ border-radius:5px;
   box-shadow: 0 0 0 2px rgba(255,255,255,.55),
               inset 0 0 0 2px rgba(212,186,92,.9);
   z-index: 10;
+}
+.wquest__avatar {
+  position: relative;
+  top: 0;         
+  left: 0;       
 }
 /* --- Контейнер наград --- */
 .wquest__rewards {
@@ -3635,7 +3640,6 @@ border-radius:5px;
   border-radius:50%;
   display:inline-grid;
   place-items:center;
-  background-image: url("img/queue/DiamondBlue.png") ;
 
 }
 
