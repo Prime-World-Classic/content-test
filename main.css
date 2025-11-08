@@ -1625,7 +1625,8 @@ text-align:center;
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	margin-top: 5cqmin;
-	margin-left: 25%;
+	margin-left: auto;
+	margin-right: auto;
 	padding: 1.8cqmin;
 	font-size: 1.3rem;
 	/*background: rgba(255, 255, 255, 0.15);*/
@@ -2036,52 +2037,40 @@ text-align:center;
 	
 }
 
-.mm-lobby-middle-hero-line{
-	
+.mm-lobby-middle-hero-line {
 	display:flex;
 	flex-flow:row nowrap;
 	justify-content:center;
 	align-items:center;
 	width:33.33cqw;
 	margin:1cqw 0;
-	font: 1.5cqw / 1 Tahoma;
-    color: rgba(255,255,255,0.8);
-    text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-	
-	
-	
+	font: 1.3cqw / 1 Tahoma;
+	color: rgba(255,255,255,0.8);
+	text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
 }
 
-.mm-lobby-middle-hero-line div:first-child{
-	
+.mm-lobby-middle-hero-line div:first-child {
 	border-radius:50% 0 0 50%;
-	
 }
 
-.mm-lobby-middle-hero-line div:last-child{
-	
+.mm-lobby-middle-hero-line div:last-child {
 	border-radius:0 50% 50% 0;
-	
 }
 
-.mm-lobby-middle-hero-line-icon{
-	
-	width: 3cqw;
-    height: 3cqw;
-    background-position: center;
-    background-repeat: no-repeat;
-	background-size: 70%;
+.mm-lobby-middle-hero-line-icon {
+	width: 2cqw;
+	height: 2cqw;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: 60%;
 	background-color: rgba(34, 68, 68, 0.9);
-    
-	
 }
 
-.mm-lobby-middle-hero-line-name{
-	height: 3cqw;
-	line-height: 3cqw;
-	padding:0 1cqw;
+.mm-lobby-middle-hero-line-name {
+	height: 2cqw;
+	line-height: 2cqw;
+	padding:0 2cqw;
 	background-color: rgba(34, 68, 68, 0.9);
-	
 }
 
 .mm-lobby-header-team{
