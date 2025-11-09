@@ -69,6 +69,9 @@ export const en = {
 		talentConflict:'The selected talent conflicts with another talent in the build!!',
 		smartcastDescription:'Right-click on the talent in this lane to turn on/off the smartcast (using the skill without confirmation)',
 
+		// Квесты
+		qDays: "d.",
+
 		// Подсказки
 		titletraining: "Training mode",
 		training: "Training",

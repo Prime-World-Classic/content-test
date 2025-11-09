@@ -44,7 +44,7 @@ export class View {
 
     static updateProgress = false;
 	
-	static castleQuestBody = DOM({ style: 'quest' });
+	static castleQuestBody = DOM({ style: ['quest', 'left-offset-no-shift'] });
 	
 	static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] },DOM({style: 'quest-counter'},''));
 	
@@ -1096,14 +1096,18 @@ export class View {
 
             let timer = DOM({ style: 'quest-item-timer' });
             const tick = () => {
-                const ms = item.timer;
-                const sec = Math.max(0, Math.floor(ms / 1000));
-                const h = Math.floor(sec / 3600);
-                const m = Math.floor((sec % 3600) / 60);
-                const s = sec % 60;
-                timer.textContent = h > 0
-                    ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-                    : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+				item.timer = (item.timer - 1000);
+                const totalMilliseconds = item.timer;
+                const days = Math.floor(totalMilliseconds / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((totalMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((totalMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((totalMilliseconds % (1000 * 60)) / 1000);
+
+                const formattedDays = days ? String(days).padStart(2, '0') + ` ${Lang.text('qDays')}` : '';
+                const formattedHours = String(hours).padStart(2, '0');
+                const formattedMinutes = String(minutes).padStart(2, '0');
+                const formattedSeconds = String(seconds).padStart(2, '0');
+                timer.textContent = `${formattedDays} ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
             };
             tick();
             setInterval(tick, 1000);

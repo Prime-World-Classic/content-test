@@ -1580,7 +1580,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .quest{
 	
 	position:absolute;
-	left:0;
 	top: 17vh;
 	display:flex;
 	align-items:center;

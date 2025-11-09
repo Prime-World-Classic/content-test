@@ -3799,9 +3799,7 @@ border-radius:5px;
 }
 
 .voice-info-panel{
-	
 	position:fixed;
-	left:0%;
 	top:25vh;
 	width:10vw;
 	height:50vh;
@@ -3810,6 +3808,16 @@ border-radius:5px;
 	justify-content:center;
 	z-index:9996;
 	
+}
+
+.left-offset-with-shift {
+	position:absolute;
+	left:10vh;
+}
+
+.left-offset-no-shift {
+	position:absolute;
+	left:0vh;
 }
 
 .voice-info-panel-body{

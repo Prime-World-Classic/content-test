@@ -142,6 +142,12 @@ export class MM {
         Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, true);
 
         MM.view.style.display = 'none';
+        
+        Voice.infoPanel.classList.remove('left-offset-no-shift');
+        Voice.infoPanel.classList.add('left-offset-with-shift');
+        
+        View.castleQuestBody.classList.remove('left-offset-with-shift');
+        View.castleQuestBody.classList.add('left-offset-no-shift');
 
     }
 
@@ -535,6 +541,12 @@ export class MM {
         }
 
         MM.searchActive(false);
+        
+        Voice.infoPanel.classList.remove('left-offset-with-shift');
+        Voice.infoPanel.classList.add('left-offset-no-shift');
+        
+        View.castleQuestBody.classList.remove('left-offset-no-shift');
+        View.castleQuestBody.classList.add('left-offset-with-shift');
 
         MM.lobbyUsers = data.users;
 

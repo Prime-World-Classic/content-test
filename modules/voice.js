@@ -76,7 +76,7 @@ export class Voice {
 
 		if (!Voice.infoPanel) {
 
-			Voice.infoPanel = DOM({ style: 'voice-info-panel' }, DOM({ style: 'voice-info-panel-body' }));
+			Voice.infoPanel = DOM({ style: ['voice-info-panel', 'left-offset-with-shift'] }, DOM({ style: 'voice-info-panel-body' }));
 
 		}
 
