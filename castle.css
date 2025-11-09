@@ -279,12 +279,24 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
   margin-top: -2.6cqh;
   margin-right: 1.2cqh;
   position: absolute;   
-  width: 6.9vh;
-  height: 6.9vh;
+  width: 9vh;
+  height: 9vh;
   background: url('./img/queue/Cristal.png') no-repeat center/contain;
   top: 0.4cqh;   
-  left: -8.1cqh; 
+  left: -8.5cqh; 
   z-index: 5;
+  display: flex;
+  flex-direction: column;
+}
+
+.quest-counter {
+    font-size: 1.6cqh;
+	line-height: 3.2cqh;
+	font-weight: 800;
+    color: #ffffffab;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: auto;
 }
 
 
@@ -1645,7 +1657,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	text-align:center;
 	color:rgba(255,255,255,0.9);
 	position: relative;
-	bottom: 0;
+	bottom: 20cqh;
 	
 }
 

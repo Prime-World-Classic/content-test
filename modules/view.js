@@ -43,6 +43,8 @@ export class View {
     static defaultOptionAnimation = { duration: 150, fill: 'both', easing: 'ease-out' };
 
     static updateProgress = false;
+	
+	static castleQuestBody = DOM({ style: 'quest' });
 
     static setCss(name = 'content/style.css') {
 
@@ -264,9 +266,18 @@ export class View {
 
         }
 
-        body.append(backgroundImage, Castle.canvas);
-
-        body.append(await View.castleQuest());
+        body.append(backgroundImage, Castle.canvas, View.castleQuestBody);
+		
+		try{
+			
+			await View.castleQuestUpdate();
+			
+		}
+		catch(error){
+			
+			App.error(error);
+			
+		}
 
         try {
 
@@ -809,7 +820,6 @@ export class View {
         statCircle.append(statsBtn, divisionBadgeUnderStat);
         statWrapper.append(statRect, statCircle);
 
-        const questionIcon = DOM({ tag: 'div', style: ['question-icon'] });
 
         // подсказка слева
         const tooltipWrap = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
@@ -820,6 +830,10 @@ export class View {
         tooltipWrap.append(tooltipBubble);
 
         banner.append(statWrapper);
+
+        View.questionIcon = DOM({ tag: 'div', style: ['question-icon'] }, DOM({style: 'quest-counter'}, String(App?.storage?.data?.crystal || '0').trim()));
+        banner.append(View.questionIcon);
+
         return DOM({ style: 'castle-banner-online-wrapper' }, banner);
     }
 
@@ -1040,30 +1054,11 @@ export class View {
         }
     }
 
-    static async castleQuest() {
+    static async castleQuestUpdate() {
+		
+		let request = await App.api.request('quest','list');
 
-        let body = DOM({ style: 'quest' });
-
-        const list = DOM({ style: 'quest-list' });
-        const PAGE = 4;
-        let start = 0;
-        const items = [];
-
-        const btnUp = DOM({
-            style: ['quest-arrow', 'quest-arrow-up'],
-            event: ['click', () => { if (start > 0) { start--; render(); } }]
-        });
-
-        const btnDown = DOM({
-            style: ['quest-arrow', 'quest-arrow-down'],
-            event: ['click', () => {
-                if (start < Math.max(0, items.length - PAGE)) { start++; render(); }
-            }]
-        });
-
-        body.append(btnUp, list, btnDown); // порядок: ▲ список ▼
-
-        let request = [
+        request = [
             {
                 id: 1,
                 heroId: 16,
@@ -1097,7 +1092,9 @@ export class View {
                 rewardText: '+1 кристалл прайма',
                 reward: {'crystal': 1},
                 prompt: '',
-                status: 0,
+                score: 1,
+                total: 2,
+                status: 2,
                 timer: (Date.now() + 86400000)
             },
             {
@@ -1125,6 +1122,36 @@ export class View {
                 timer: (Date.now() + (86400000 * 30))
             }
         ];
+		
+		while(View.castleQuestBody.firstChild){
+			
+			View.castleQuestBody.firstChild.remove();
+			
+		}
+		
+        const list = DOM({ style: 'quest-list' });
+        const PAGE = 4;
+        let start = 0;
+        const items = [];
+
+        const btnUp = DOM({
+            style: ['quest-arrow', 'quest-arrow-up'],
+            event: ['click', () => { if (start > 0) { start--; render(); } }]
+        });
+
+        const btnDown = DOM({
+            style: ['quest-arrow', 'quest-arrow-down'],
+            event: ['click', () => {
+                if (start < Math.max(0, items.length - PAGE)) { start++; render(); }
+            }]
+        });
+
+
+        if (request.length > PAGE) {
+            View.castleQuestBody.append(btnUp, list, btnDown); // порядок: ▲ список ▼
+        } else {
+            View.castleQuestBody.append(list); // порядок: ▲ список ▼
+        }
 
         for (let item of request) {
 
@@ -1133,7 +1160,7 @@ export class View {
 
             let timer = DOM({ style: 'quest-item-timer' });
             const tick = () => {
-                const ms = item.timer - Date.now();
+                const ms = item.timer;
                 const sec = Math.max(0, Math.floor(ms / 1000));
                 const h = Math.floor(sec / 3600);
                 const m = Math.floor((sec % 3600) / 60);
@@ -1154,8 +1181,9 @@ export class View {
                         Window.show('main', 'quest', item);
                     }]
                 },
-                DOM({ style: 'quest-item-portrait-background' }, hero, DOM({ style: item.status == 0 ? 'quest-item-exclamation' :  'quest-item-completed'})),
-                timer
+                DOM({ style: 'quest-item-portrait-background' }, hero,
+                     item.status == 1 ? "" : DOM({ style: item.status == 0 ? 'quest-item-exclamation' : 'quest-item-completed'})),
+                item.status == 1 ? timer : ""
             );
 
             items.push(quest);
@@ -1171,12 +1199,11 @@ export class View {
             btnUp.classList.toggle('disabled', noScroll || start === 0);
             btnDown.classList.toggle('disabled', noScroll || start >= maxStart);
         }
-
+		
         render();
-        return body;
+		
     }
-
-
+	
     static bodyCastleBuildings() {
 
         while (View.castleBottom.firstChild) {

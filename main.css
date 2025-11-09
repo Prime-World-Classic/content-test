@@ -3567,6 +3567,8 @@ border-radius:5px;
 #wquest .wquest__portrait-img{ width:100%; height:100%; object-fit:cover; display:block; }
 
 #wquest .wquest__titlebar{
+	width: 100%;
+	margin-bottom: 3cqh;
   background:linear-gradient(to bottom, rgba(255,221,120,.25), rgba(255,221,120,.06));
   border-radius:1.2cqh;
   padding:1.4cqh 1.8cqh;
@@ -3581,7 +3583,6 @@ border-radius:5px;
   text-shadow:0 0.3cqh 0.6cqh rgba(0,0,0,.55);
 }
 #wquest .wquest__subtitle{
-  margin:.6cqh 0 0 0;
   font-size:1.6cqh;
   color:rgba(255,255,255,.85);
   text-align:center;
@@ -3589,6 +3590,7 @@ border-radius:5px;
 
 #wquest .wquest__body{
   background:rgba(0,0,0,.18);
+	margin-bottom: 3cqh;
   border:0.15cqh solid rgba(255,255,255,.12);
   border-radius:1.2cqh;
   padding:2.0cqh;
@@ -3648,6 +3650,37 @@ border-radius:5px;
   #wquest .wquest__portrait{ top:-4cqh; left:-4cqh; width:15cqh; }
 }
 
+.wquest__content {
+	display: flex;
+	flex-direction: column;
+	container-type: inline-size;
+	align-items: center;
+	justify-items: center;
+}
+
+
+.quest-accept-button {
+	font-weight: 600;
+	color:rgba(255,255,255,0.9);
+	text-shadow: rgba(0, 0, 0, 0.5) 0 0 0.5cqw;
+	position: relative;
+	background-image: url(img/button3.png);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+.quest-button-text {
+	font: 2.3cqh / 1 Tahoma;
+	width: 25cqw;
+	padding:1.8cqh;
+	text-align: center;
+}
+
+.quest-accept-button:hover{
+	background-image: url(img/button1.png);
+	background-repeat: no-repeat;
+	transform:scale(1.02);
+}
 
 
 

@@ -99,20 +99,28 @@ export class Window {
 	}
 	
 	static async quest(item) {
+		
+		let quest = item; //await App.api.request('quest','get',{id:item.id});
+		
 		let root = DOM({ id: 'wquest' });
 		
 		const content = DOM({ style: 'wquest__content' });
 
 		const titlebar = DOM({ style: 'wquest__titlebar' });
-		const h3 = DOM({ tag: 'h3', style: 'wquest__title' }, item.title);
+		const h3 = DOM({ tag: 'h3', style: 'wquest__title' }, quest.title);
 
 		titlebar.appendChild(h3);
 
-		const body = DOM({ style: 'wquest__body' }, item.description);
+		const body = DOM({ style: 'wquest__body' }, quest.description);
 
 		const objective = DOM({ style: 'wquest__objective' });
-		const objText = DOM({ style: 'wquest__objective' }, item.target);
+		const objText = DOM({ style: 'wquest__objective' }, quest.target);
 		objective.appendChild(objText);
+
+		if (quest.total) {
+			const counter = DOM({}, quest.score, " / ", quest.total);
+			objText.append(counter);
+		}
 
 		const tokens = item.reward;
 		const rewards = DOM({ style: 'wquest__rewards' });
@@ -152,6 +160,40 @@ export class Window {
 		content.appendChild(objective);
 		content.appendChild(rewards);
 		content.appendChild(avatarContainer);
+		
+		switch(quest.status){
+			
+			case 0:
+			
+			content.appendChild(DOM({style: "quest-accept-button", event: ['click', async () => {
+				
+				await App.api.request('quest','start',{id:quest.id});
+				
+				Window.close('main');
+				
+				View.castleQuestUpdate();
+				
+			}]}, DOM({style: "quest-button-text"},'Начать')));
+			
+			break;
+			
+			case 2:
+			
+			content.appendChild(DOM({style: "quest-accept-button", event: ['click', async () => {
+				
+				await App.api.request('quest','finish',{id:quest.id});
+				
+				Window.close('main');
+				
+				View.castleQuestUpdate();
+				
+			}]}, DOM({style: "quest-button-text"},'Завершить')));
+			
+			
+			break;
+			
+		}
+		
 		root.appendChild(content);
 
 		return root;
