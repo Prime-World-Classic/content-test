@@ -45,7 +45,9 @@ export class View {
     static updateProgress = false;
 	
 	static castleQuestBody = DOM({ style: 'quest' });
-
+	
+	static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] },DOM({style: 'quest-counter'},''));
+	
     static setCss(name = 'content/style.css') {
 
         let css = DOM({ tag: 'link', rel: 'stylesheet', href: name });
@@ -829,10 +831,7 @@ export class View {
         tooltipBubble.append(tooltipText);
         tooltipWrap.append(tooltipBubble);
 
-        banner.append(statWrapper);
-
-        View.questionIcon = DOM({ tag: 'div', style: ['question-icon'] }, DOM({style: 'quest-counter'}, String(App?.storage?.data?.crystal || '0').trim()));
-        banner.append(View.questionIcon);
+        banner.append(statWrapper,View.castleTotalCrystal);
 
         return DOM({ style: 'castle-banner-online-wrapper' }, banner);
     }
@@ -1057,71 +1056,8 @@ export class View {
     static async castleQuestUpdate() {
 		
 		let request = await App.api.request('quest','list');
-
-        request = [
-            {
-                id: 1,
-                heroId: 16,
-                title: 'Смена власти',
-                description: 'Ты силён. Я видел твои победы. Но сила без амбиций — лишь пустой звук. Один герой, возомнил себя наследником трона. Убери его. Докажи, что настоящая сила — в умении вовремя нанести удар.',
-                target: 'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье не меньше трёх раз за один бой. Ваш герой не должен умереть от жертвы.',
-                rewardText: '+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
-                reward: {'crystal': 1},
-                prompt: 'Получить сведения в тамбуре, могут только герои класса — Убийца.',
-                status: 0,
-                timer: (Date.now() + 86400000)
-            },
-            {
-                id: 2,
-                heroId: 1,
-                title: 'Право сильнейшего',
-                description: 'Пограничье видело немало поединков, но истинных воинов среди них — единицы. Один из героев запятнал свою честь, используя запрещённые приёмы в бою. Он должен быть остановлен твоим мастерством. Сразись с ним и докажи, что сила без чести — ничто. Победи его в честном дуэли, и твоя награда будет достойной.',
-                target: 'Получить сведения в тамбуре, идентифицировать героя и устранить жертву на поле боя в пограничье за один бой. Ваш герой не должен умереть до того, как устранит жертву.',
-                rewardText: '+ N количество кристаллов прайма, где N — уровень винрейта жертвы.',
-                reward: {'crystal': 1},
-                prompt: 'Получить сведения в тамбуре, могут только герои класса — Убийца.',
-                status: 1,
-                timer: (Date.now() + 86400000)
-            },
-            {
-                id: 3,
-                heroId: 38,
-                title: 'Воздаяние Неуязвимому',
-                description: 'Мой взор пронзает битвы и интриги этого мира, и я видела, как твоя сила обратила в бегство тех, кто возжелал твоей погибели. Они думали, что ты — добыча. Они ошиблись. Ты — испытание, которое они не смогли пройти. Их неудача — доказательство твоей избранности. И за это достоинство ты должен быть вознаграждён. Прими мой дар — не как плату за убийство, но как признание твоей несокрушимости',
-                target: 'Выжить в условиях PvP-охоты',
-                rewardText: '+1 кристалл прайма',
-                reward: {'crystal': 1},
-                prompt: '',
-                score: 1,
-                total: 2,
-                status: 2,
-                timer: (Date.now() + 86400000)
-            },
-            {
-                id: 4,
-                heroId: 13,
-                title: 'Сила единства',
-                description: 'Приветствую тебя, дитя Света! Этот мир держится не только на силе клинка, но и на взаимопомощи. Я вижу, как ты сражаешься, но истинная мощь проявляется, когда мы поддерживаем друг друга. Твои союзники нуждаются в твоей помощи — исцелении, защите, усилении. Окажи 1000 поддержек в битвах, и я покажу тебе, какую силу рождает настоящее единство.',
-                target: 'Оказать 1000 поддержек союзным героям.',
-                rewardText: '+100 кристаллов прайма',
-                reward: {'crystal': 1},
-                prompt: '',
-                status: 0,
-                timer: (Date.now() + (86400000 * 30))
-            },
-            {
-                id: 5,
-                heroId: 3,
-                title: 'Путь Превосходства',
-                description: 'Приветствую, испытующий! Мир Прайма рожден из хаоса и крови. Сила — единственный язык, который здесь понимают все. Ты уже показал себя в битвах, но настоящая мощь требует жертв. Я бросаю тебе вызов: соверши 1000 убийств. Пусть каждый поверженный враг станет твоим шагом к величию. Докажи, что ты достоин называться истинным чемпионом Прая!',
-                target: 'Совершить 1000 убийств вражеских героев.',
-                rewardText: '+100 кристаллов прайма',
-                reward: {'crystal': 1},
-                prompt: '',
-                status: 0,
-                timer: (Date.now() + (86400000 * 30))
-            }
-        ];
+		
+		View.castleTotalCrystal.firstChild.innerText = request.crystal;
 		
 		while(View.castleQuestBody.firstChild){
 			
@@ -1147,13 +1083,13 @@ export class View {
         });
 
 
-        if (request.length > PAGE) {
+        if (request.quests.length > PAGE) {
             View.castleQuestBody.append(btnUp, list, btnDown); // порядок: ▲ список ▼
         } else {
             View.castleQuestBody.append(list); // порядок: ▲ список ▼
         }
 
-        for (let item of request) {
+        for (let item of request.quests) {
 
             let hero = DOM({ style: 'quest-item-hero' }, DOM({ style: 'quest-item-portrait-glass' }));
             hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
