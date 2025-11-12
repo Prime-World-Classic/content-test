@@ -73,9 +73,22 @@ export const ru = {
 		qDays: "д.",
 
 		// Магаз
+		shop_shop: "Ярмарка",
+		shop_collection: "Коллекция",
+
+		shop_use: "Выбрать",
+		shop_in_use: "Выбрано",
+
 		shop_skins: "Скины",
 		shop_flags: "Флаги",
 		shop_frames: "Рамки",
+		bomber_S1: "Детоняша",     
+		flag_adornia: "Адорния",  
+		flag_doct: "Докт",     
+		flag_prime: "Прайм",    
+		flag_rak: "Рак",      
+		frame_classic: "Классика", 
+
 		
 
 		// Подсказки

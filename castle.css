@@ -1754,6 +1754,17 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
   overflow:scroll;
 }
 
+.shop_header {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+}
+
+.shop_header_item {
+	font-size: x-large;
+	font-weight: 800;
+}
+
 .shop_category {
 }
 
@@ -1775,6 +1786,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .shop_item_name {
+	width: 120cqw;
 	text-align: center;
 }
 
@@ -1786,7 +1798,11 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	background-repeat: no-repeat;
 }
 
+.shop_item_price_container {
+}
+
 .shop_item_price {
+	width: 120cqw;
 	text-align: center;
 	display: flex;
 	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));

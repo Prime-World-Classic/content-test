@@ -73,9 +73,21 @@ export const en = {
 		qDays: "d.",
 
 		// Магаз
+		shop_shop: "Fair",
+		shop_collection: "Collection",
+
+		shop_use: "Use",
+		shop_in_use: "In use",
+
 		shop_skins: "Skins",
 		shop_flags: "Flags",
 		shop_frames: "Frames",
+		bomber_S1: "Explonya",     
+		flag_adornia: "Adornia",  
+		flag_doct: "Doct",     
+		flag_prime: "Prime",    
+		flag_rak: "Crab",      
+		frame_classic: "Classic", 
 
 		// Подсказки
 		titletraining: "Training mode",
