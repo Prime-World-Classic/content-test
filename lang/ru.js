@@ -89,6 +89,9 @@ export const ru = {
 		flag_rak: "Рак",      
 		frame_classic: "Классика", 
 
+
+		// Переводы
+		select_faction: "Выбор Фракции",
 		
 
 		// Подсказки

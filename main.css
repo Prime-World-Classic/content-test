@@ -1619,9 +1619,8 @@ text-align:center;
 	background:rgba(255,255,255,0.8);
 }
 
-.splash-content-button {
+.splash-content-button, .splash-content-button-red {
 	width: 30cqh;
-	background-image: url(img/button1.png);
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	margin-top: 5cqmin;
@@ -1635,6 +1634,14 @@ text-align:center;
 	/*border-radius: 50px;*/
 	cursor: pointer;
 	transition: all 0.25s ease-out;
+}
+
+.splash-content-button {
+	background-image: url(img/button1.png);
+}
+
+.splash-content-button-red {
+	background-image: url(img/button3.png);
 }
 
 /* Адаптация для маленьких экранов */
@@ -1652,7 +1659,7 @@ text-align:center;
     padding: 0.5cqmin 0;
 }*/
 
-.splash-content-button:hover {
+.splash-content-button:hover, .splash-content-button-red:hover {
 	/*background: rgba(255, 255, 255, 0.25);*/
 	transform: translateY(-2px);
 }

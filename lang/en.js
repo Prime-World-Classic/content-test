@@ -89,6 +89,9 @@ export const en = {
 		flag_rak: "Crab",      
 		frame_classic: "Classic", 
 
+		// Переводы
+		select_faction: "Select faction",
+
 		// Подсказки
 		titletraining: "Training mode",
 		training: "Training",

@@ -1254,7 +1254,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .settings-menu-item {
 	left: 6.1cqw;
 	top: 5.8cqh;
-	background-image: url('icons/settings.png'),url('content/img/queue/321.png');
+	background-image: url('icons/settings.png'),url('img/queue/321.png');
 	background-color: #00fff279;
 	width:18cqh;
 	height:18cqh;
@@ -1751,43 +1751,118 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .shop_with_scroll {
-  overflow:scroll;
+  	overflow-y: auto;
+	scrollbar-color: rgb(234, 230, 123) rgba(255, 166, 0, 0);
+  	scrollbar-width: 1cqw;
 }
 
 .shop_header {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-evenly;
+	container-type: size;
+	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
+	border:0.1cqh solid rgba(0, 255, 255, 0.5);
+	border-bottom: 0.1cqh solid rgba(255, 166, 0, 0.5);
+	display: flex;
+	height: 2.5cqh;
+	justify-content: space-between;
 }
 
 .shop_header_item {
-	font-size: x-large;
-	font-weight: 800;
+	height: 100cqh;
+	line-height: 100cqh;
+	width: calc(96cqw / 2);
+	font-size: 80cqh;
+	font-weight: 400;
+	text-align: center;
+	display: block;
+}
+
+.shop_header_selected {
+	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
+	filter: brightness(170%);
+}
+.shop_header_not_selected:hover {
+	filter: brightness(120%);
+	transform: scale(1.1);
+	transition: all 0.3s ease-out;
+}
+
+.shop_separator {
+	position: absolute;
+	left: 50cqw;
+	width: 100cqh;
+	height: 100cqh;
+	container-type: inline-size;
+}
+
+.shop_separator_left{
+	position: absolute;
+	left: -30cqh;
+	width: 100cqh;
+	height: 100cqh;
+	background-image: url('img/shop/separator.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+.shop_separator_center{
+	position: absolute;
+	width: 100cqh;
+	height: 100cqh;
+	background-image: url('img/queue/DiamondBlue.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+.shop_separator_right{
+	position: absolute;
+	left: 30cqh;
+	width: 100cqh;
+	height: 100cqh;
+	background-image: url('img/shop/separator.png');
+	background-repeat: no-repeat;
+	background-size: contain;
+	transform: scaleX(-1);
 }
 
 .shop_category {
+	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.1),rgba(6,41,56, 0.1));
+	border-left:0.1cqh solid rgba(0, 255, 255, 0.5)cyan;
+	border-right:0.1cqh solid rgba(0, 255, 255, 0.5);
 }
 
 .shop_category_header {
-	font-size: xx-large;
+	font-size: 2cqh;
+	font-weight: 800;
 	text-align: left;
-	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
+	padding-left: 1cqh;
+
+	line-height: 2.5cqh;
+	background-image:linear-gradient(180deg, rgba(17, 153, 177, 0.7),rgba(6,41,56, 0.5));
 }
 
 .shop_items {
 	display: flex;
+	flex-wrap: wrap;
 }
 
-.shop_item {
+.shop_item, .shop_item_disabled {
 	width: 10cqw;
+	margin-top: 1cqw;
+	margin-bottom: 1cqw;
 	margin-right: 3cqw;
 	margin-left: 3cqw;
 	container-type: inline-size;
 }
 
+.shop_item_disabled {
+	filter: grayscale();
+}
+
 .shop_item_name {
+	margin-top: -15cqw;
 	width: 120cqw;
 	text-align: center;
+	text-shadow: 1px 1px 2px black;
 }
 
 .shop_item_img {
@@ -1799,24 +1874,33 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .shop_item_price_container {
+	width: 120cqw;
+	overflow: hidden;
+	border-radius: 10%;
+	border:0.1cqh solid rgba(236, 195, 117, 0.63);
+	container-type: inline-size;
+}
+.shop_item .shop_item_price_container:hover {
+	filter: brightness(120%);
+	transform: scale(1.02);
+	transition: all 0.1s ease-out;
 }
 
 .shop_item_price {
-	width: 120cqw;
+	font-size: 16cqw;
+	font-weight: 800;
 	text-align: center;
 	display: flex;
-	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
-	border:0.1cqh solid rgb(165, 249, 255);
-	border-radius: 10%;
+	background-image:linear-gradient(180deg, rgb(17, 177, 156, 0.8),rgba(6,41,56, 0.5), rgba(17, 177, 156, 0.8));
 	align-items: center;
 	justify-content: center;
 	padding: 0.2cqh;
 }
 
 .shop_item_price_icon {
-	width: 40cqw;
-	height: 40cqw;
+	width: 16cqw;
+	height: 16cqw;
+	background-size: 16cqw;
 	background-image: url('img/queue/DiamondBlue.png');
-	background-size: 40cqw;
 	background-repeat: no-repeat;
 }

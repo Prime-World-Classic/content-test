@@ -11,6 +11,7 @@ import { MM } from './mm.js';
 import { Splash } from './splash.js';
 import { Window } from './window.js';
 import { Castle } from './castle.js';
+import { Lang } from './lang.js';
 
 export class App {
     static APP_VERSION = '0';
@@ -354,7 +355,7 @@ export class App {
         let template = document.createDocumentFragment();
 
 
-        const title = DOM({ tag: 'h2', style: 'faction-title' }, 'Выбор Фракции');
+        const title = DOM({ tag: 'h2', style: 'faction-title' }, Lang.text('select_faction'));
         Object.assign(title.style, {
             textAlign: 'center',
             color: '#fff',
