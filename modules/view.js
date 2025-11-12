@@ -46,7 +46,13 @@ export class View {
 	
 	static castleQuestBody = DOM({ style: ['quest', 'left-offset-no-shift'] });
 	
-	static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] },DOM({style: 'quest-counter'},''));
+	static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({style: 'quest-counter'},''));
+
+    static castleCrystalContainer = DOM({style: ['crystal-container', 'crystal-container-anim'], 
+        event: ['click', () => {
+            View.castleCrystalContainer.classList.remove('crystal-container-anim');
+            Window.show('main', 'shop');
+        }] }, View.castleTotalCrystal);
 	
     static setCss(name = 'content/style.css') {
 
@@ -831,7 +837,7 @@ export class View {
         tooltipBubble.append(tooltipText);
         tooltipWrap.append(tooltipBubble);
 
-        banner.append(statWrapper,View.castleTotalCrystal);
+        banner.append(statWrapper,View.castleCrystalContainer);
 
         return DOM({ style: 'castle-banner-online-wrapper' }, banner);
     }

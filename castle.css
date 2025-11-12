@@ -275,23 +275,41 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
   z-index: 2;
 }
 
-.question-icon {
-  margin-top: -2.6cqh;
-  margin-right: 1.2cqh;
+@keyframes questionPulse {
+  0%   { transform: scale(1.00) }
+  100% { transform: scale(1.02) }
+}
+.crystal-container {
   position: absolute;   
-  width: 9vh;
-  height: 9vh;
-  background: url('./img/queue/Cristal.png') no-repeat center/contain;
   top: 0.4cqh;   
   left: -8.5cqh; 
+  margin-top: -2.6cqh;
+  margin-right: 1.2cqh;
+  width: 9vh;
+  height: 9vh;
+  container-type: size;
+}
+.crystal-container-anim {
+  animation: questionPulse .45s ease-in-out alternate infinite,
+             medalTwinkleHover 2.4s ease-in-out infinite;
+}
+.question-icon {
+	width: 100cqw;
+	height: 100cqh;
+  background: url('./img/queue/Cristal.png') no-repeat center/contain;
   z-index: 5;
   display: flex;
   flex-direction: column;
 }
 
+
+.question-icon:hover  {
+	filter: brightness(120%);
+}
+
 .quest-counter {
-    font-size: 1.6cqh;
-	line-height: 3.2cqh;
+    font-size: 1.6vh;
+	line-height: 3.2vh;
 	font-weight: 800;
     color: #ffffffab;
 	margin-left: auto;
@@ -1709,4 +1727,80 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	.castle-settings {
 		flex-direction: column;
 	}
+}
+
+#wshop {
+  position:absolute;
+  left:50%;
+  top:15cqh;
+  transform:translateX(-50%);
+  z-index:9999;
+  width:80cqh;
+  max-width:92vw;
+  height:60cqh;
+  border-radius:2cqh;
+  border:0.25cqh solid rgb(208,180,96);
+  background-image:linear-gradient(to bottom, rgba(4,32,42,.96), rgba(18,69,73,.92) 40%, rgba(21,51,59,.90) 60%, rgba(18,69,73,.92));
+  box-shadow:0 0.6cqh 1.8cqh rgba(0,0,0,.45), inset 0 0 0.7cqh rgba(255,255,255,.06);
+  display:grid;
+  padding: 1cqh;
+  color:#e7f7f9;
+  text-align:left;
+  overflow:visible;
+  container-type: inline-size;
+}
+
+.shop_with_scroll {
+  overflow:scroll;
+}
+
+.shop_category {
+}
+
+.shop_category_header {
+	font-size: xx-large;
+	text-align: left;
+	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
+}
+
+.shop_items {
+	display: flex;
+}
+
+.shop_item {
+	width: 10cqw;
+	margin-right: 3cqw;
+	margin-left: 3cqw;
+	container-type: inline-size;
+}
+
+.shop_item_name {
+	text-align: center;
+}
+
+.shop_item_img {
+	width: 100cqw;
+	height: 100cqw;
+	margin: 10cqw;
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.shop_item_price {
+	text-align: center;
+	display: flex;
+	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
+	border:0.1cqh solid rgb(165, 249, 255);
+	border-radius: 10%;
+	align-items: center;
+	justify-content: center;
+	padding: 0.2cqh;
+}
+
+.shop_item_price_icon {
+	width: 40cqw;
+	height: 40cqw;
+	background-image: url('img/queue/DiamondBlue.png');
+	background-size: 40cqw;
+	background-repeat: no-repeat;
 }

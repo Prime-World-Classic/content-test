@@ -72,6 +72,11 @@ export const en = {
 		// Квесты
 		qDays: "d.",
 
+		// Магаз
+		shop_skins: "Skins",
+		shop_flags: "Flags",
+		shop_frames: "Frames",
+
 		// Подсказки
 		titletraining: "Training mode",
 		training: "Training",

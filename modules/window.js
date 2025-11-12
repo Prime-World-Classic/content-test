@@ -97,6 +97,41 @@ export class Window {
 		let view = await View.inventory(true);
 		return DOM({ id: 'winventory' }, view);
 	}
+
+	static async shop() {
+		let request = {
+			skins: [ { name: 'Детоняша', img: 'hero/65/2', price: 220 } ],
+			flags: [ 
+				{ name: 'Адорнийцы', img: 'flags/adornia', price: 10 },
+				{ name: 'Докты', img: 'flags/dokt', price: 10 },
+				{ name: 'Прайм', img: 'flags/prime', price: 10 },
+				{ name: 'Рак', img: 'flags/rak', price: 10 },
+			],
+			frames: [
+				{ name: 'Классическая', img: 'frames/1', price: 100 },
+			],
+		};
+		function processRequest(category, dom) {
+			for (const rItem of request[category]) {
+				let itemName = DOM({style: 'shop_item_name'}, rItem.name)
+				let item = DOM({style: 'shop_item_img'});
+				item.style.backgroundImage = `url("content/${rItem.img}.webp")`;
+				dom.appendChild(DOM({style: 'shop_item'}, itemName, item, DOM({style: 'shop_item_price', event: ['click', async () => App.error(`Покупочка ${rItem.name}`)]}, DOM({style: 'shop_item_price_icon'}), rItem.price)));
+			}
+		}
+
+		let skinItems = DOM({style: 'shop_items'});
+		let flagItems = DOM({style: 'shop_items'});
+		let frameItems = DOM({style: 'shop_items'});
+		processRequest('skins', skinItems);
+		processRequest('flags', flagItems);
+		processRequest('frames', frameItems);
+		let skins = DOM({style: 'shop_category'}, DOM({style: 'shop_category_header'}, Lang.text('shop_skins')), skinItems);
+		let flags = DOM({style: 'shop_category'}, DOM({style: 'shop_category_header'}, Lang.text('shop_flags')), flagItems);
+		let frames = DOM({style: 'shop_category'}, DOM({style: 'shop_category_header'}, Lang.text('shop_frames')), frameItems);
+		let wnd = DOM({id: 'wshop'}, DOM({style: 'shop_with_scroll'}, skins, flags, frames));
+		return wnd;
+	}
 	
 	static async quest(item) {
 		
