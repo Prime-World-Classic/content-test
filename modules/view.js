@@ -2294,7 +2294,9 @@ export class View {
     static async build(heroId, targetId = 0, isWindow = false) {
 
         const body = DOM({ style: 'build-horizontal' });
-
+		
+		requestAnimationFrame(() => Voice.updatePanelPosition());
+		
         await Build.init(heroId, targetId, isWindow);
 
         body.append(

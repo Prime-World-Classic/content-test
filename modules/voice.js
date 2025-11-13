@@ -73,15 +73,17 @@ export class Voice {
 	static volumeLevelStep = 0.2;
 
 	static init() {
-
+		
 		if (!Voice.infoPanel) {
-
+			
 			Voice.infoPanel = DOM({ style: ['voice-info-panel', 'left-offset-with-shift'] }, DOM({ style: 'voice-info-panel-body' }));
-
+			
 		}
-
+		
 		document.body.append(Voice.infoPanel);
-
+		
+		requestAnimationFrame(() => Voice.updatePanelPosition());
+		
 	}
 
 	static async initLocalMedia() {
@@ -490,6 +492,24 @@ export class Voice {
 		}
 		
 		Voice.volumeLevel = volumeLevel;
+		
+	}
+	
+	static updatePanelPosition() {
+		
+		if (!Voice.infoPanel) return;
+		
+		const isBuildWindowOpen = document.getElementById('wbuild') !== null;
+		
+		if (isBuildWindowOpen) {
+			
+			Voice.infoPanel.classList.remove('left-offset-with-shift');
+			
+		} else {
+			
+			Voice.infoPanel.classList.add('left-offset-with-shift');
+			
+		}
 		
 	}
 

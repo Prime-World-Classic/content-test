@@ -1,6 +1,7 @@
 import { DOM } from './dom.js';
 import { Lang } from './lang.js';
 import { Division } from './division.js';
+import { App } from './app.js';
 
 export class CastleNAVBAR {
 
@@ -54,7 +55,7 @@ export class CastleNAVBAR {
 
         }
 
-        CastleNAVBAR.body.children[5].innerText = Lang.text('fight');
+        CastleNAVBAR.body.children[5].innerText = App.CURRENT_MM == 'mmtest' ? (Lang.text('fight') + ' test') : Lang.text('fight');
         /*
         CastleNAVBAR.body.children[5].onclick = () => {
             

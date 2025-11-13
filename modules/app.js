@@ -131,6 +131,7 @@ export class App {
 		
 		document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
+				requestAnimationFrame(() => Voice.updatePanelPosition());
                 e.preventDefault();
                 e.stopPropagation();
                     

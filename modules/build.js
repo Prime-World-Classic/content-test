@@ -122,7 +122,7 @@ export class Build {
 			}]
 		}, `Украсть билд?`);
 
-		let bottom = DOM({ style: 'build-bottom' }, get, DOM({ event: ['click', () => Splash.hide()] }, `[Х]`));
+		let bottom = DOM({ style: 'build-bottom' }, get, DOM({ event: ['click', () => {Splash.hide(); requestAnimationFrame(() => Voice.updatePanelPosition());}] }, `[Х]`));
 
 		if (animate) {
 
