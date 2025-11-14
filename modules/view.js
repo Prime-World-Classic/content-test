@@ -758,7 +758,7 @@ export class View {
             });
 
             if (disabled) {
-                medal.title = 'Режим временно недоступен';
+                medal.title = Lang.text('titlestatisticmodeUnavailable');
             } else {
                 medal.title = Lang.text('titlestatisticmode');
                 medal.setAttribute('role', 'button');
@@ -1260,7 +1260,7 @@ export class View {
             let buttonAdd = DOM({
                 style: 'castle-friend-item',
                 onclick: () => {
-                    let input = DOM({ tag: 'input', style: 'search-input', placeholder: 'Ник игрока' });
+                    let input = DOM({ tag: 'input', style: 'search-input', placeholder: Lang.text('friendNicknamePlaceholder')});
                     let body = DOM({ style: 'search-body' });
 
                     // Создаём крестик для закрытия (как в buildSelectName)
@@ -1495,7 +1495,7 @@ export class View {
                 }
                 else if (item.status == 3) {
 
-                    friend.append(DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, 'Ожидание')));
+                    friend.append(DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('friendAcceptWaiting'))));
 
                     friend.style.filter = 'grayscale(1)';
 
@@ -2005,7 +2005,7 @@ export class View {
 
         let top = DOM({ style: isSplah ? 'wtop-scroll' : 'top-scroll' },
             DOM({
-                style: 'top-filter', title: 'Выберите героя, чтобы отсортировать игроков зала славы', event: ['click', async () => {
+                style: 'top-filter', title: Lang.text('titleClickToViewHeroRating'), event: ['click', async () => {
 
                     let request = await App.api.request('build', 'heroAll');
 
@@ -2050,6 +2050,10 @@ export class View {
 
                 }]
             }, DOM({ tag: 'div' }), DOM({ tag: 'div' })));
+			
+			const topFilter = top.querySelector('.top-filter');
+			
+			topFilter.style.setProperty('--filter-text', `'${Lang.text('clickToViewHeroRating')}'`);
 
         top.firstChild.classList.add('animation1');
 
@@ -2313,7 +2317,7 @@ export class View {
                 ),
                 DOM({ style: 'build-active-bar-container' },
                     Build.activeBarView,
-                    DOM({ style: 'build-active-bar-hint' }, 'Нажмите правой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст (применение навыка без подтверждения)')
+                    DOM({ style: 'build-active-bar-hint' }, Lang.text('smartcastDescription'))
                 )
             ),
             DOM({ style: 'build-right' },

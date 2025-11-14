@@ -105,7 +105,7 @@ export class Build {
 
 				if (!state) {
 
-					get.innerText = 'Перезаписать текущий билд?';
+					get.innerText = Lang.text('overwriteBuild');
 
 					state = true;
 
@@ -120,7 +120,7 @@ export class Build {
 				Splash.hide();
 
 			}]
-		}, `Украсть билд?`);
+		}, Lang.text('stealBuild'));
 
 		let bottom = DOM({ style: 'build-bottom' }, get, DOM({ event: ['click', () => {Splash.hide(); requestAnimationFrame(() => Voice.updatePanelPosition());}] }, `[Х]`));
 
@@ -300,10 +300,10 @@ export class Build {
 		// ================================================
 
 		const buttonTalents = document.createElement('button');
-		buttonTalents.innerText = 'Таланты';
-		buttonTalents.title = 'TODO еще не готово - команда PW Classic работает над этим';
+		buttonTalents.innerText = Lang.text('talents');
+		buttonTalents.title = Lang.text('todoInProgress');
 		buttonTalents.classList.add('btn-talents', 'btn-hover', 'color-1');
-		buttonTalents.title = 'Библиотека талантов';
+		buttonTalents.title = Lang.text('talentLibrary');
 
 		const separator = document.createElement('div');
 		separator.innerText = '|';
@@ -311,8 +311,8 @@ export class Build {
 
 
 		const buttonSets = document.createElement('button');
-		buttonSets.innerText = 'Сеты';
-		buttonSets.title = 'TODO еще не готово - команда PW Classic работает над этим';
+		buttonSets.innerText = Lang.text('sets');
+		buttonSets.title = Lang.text('todoInProgress');
 		buttonSets.classList.add('btn-sets', 'btn-hover', 'color-1');
 
 		buttonSets.addEventListener('click', () => Build.sets());
@@ -354,7 +354,7 @@ export class Build {
 					}
 					else {
 
-						App.error('Необходима Windows версия лаунчера');
+						App.error(Lang.text('windowsLauncherRequired'));
 
 					}
 
@@ -516,7 +516,7 @@ export class Build {
 
 		let template = document.createDocumentFragment();
 
-		let name = DOM({ tag: 'input', placeholder: 'Наименование билда' });
+		let name = DOM({ tag: 'input', placeholder: Lang.text('buildNamePlaceholder') });
 
 		let button = DOM({
 			style: 'splash-content-button', event: ['click', async () => {
@@ -551,7 +551,7 @@ export class Build {
 			const create = DOM({
 				tag: 'button', style: ['build-action-item', 'btn-hover', 'color-1'],
 				title: Lang.text('titleCreateANewBuildTab'),
-				event: ['click', () => Build.buildSelectName('create', 'Создать билд', { heroId: Build.heroId }, isWindow)]
+				event: ['click', () => Build.buildSelectName('create', Lang.text('createBuild'), { heroId: Build.heroId }, isWindow)]
 			});
 
 			let createBg = DOM({ style: ['btn-create', 'build-action-item-background'] });
@@ -572,8 +572,8 @@ export class Build {
 
 				const fragment = document.createDocumentFragment();
 				const title = DOM({ style: 'splash-text' }, builds.length >= 6
-					? 'Достигнут лимит билдов (6). Выберите билд для замены:'
-					: 'Выберите билд для замены или создайте новый:');
+					? Lang.text('buildLimitReached')
+					: Lang.text('selectBuildToReplace'));
 				fragment.append(title);
 
 				// Показываем все билды кроме текущего
@@ -609,7 +609,7 @@ export class Build {
 							close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
 							let template = document.createDocumentFragment();
-							let name = DOM({ tag: 'input', placeholder: 'Наименование билда' });
+							let name = DOM({ tag: 'input', placeholder: Lang.text('buildNamePlaceholder') });
 
 							let button = DOM({
 								style: 'splash-content-button',
@@ -636,12 +636,12 @@ export class Build {
 									Splash.hide();
 									isWindow ? Window.show('main', 'build', Build.heroId, 0, true) : View.show('build', Build.heroId);
 								}]
-							}, 'Создать и дублировать');
+							}, Lang.text('createAndDuplicate'));
 
 							template.append(name, button, close);
 							Splash.show(template);
 						}]
-					}, 'Дублировать в новый билд');
+					}, Lang.text('duplicateToNewBuild'));
 					fragment.append(createNewBtn);
 				}
 
@@ -690,7 +690,7 @@ export class Build {
 				title: Lang.text('titleResetTalentsInThisBuild'),
 				event: ['click', async () => {
 					const fragment = document.createDocumentFragment();
-					const title = DOM({ style: 'splash-text' }, 'Сбросить таланты в этом билде?');
+					const title = DOM({ style: 'splash-text' }, Lang.text('resetTalentsTitle'));
 					fragment.append(title);
 
 					// Красная кнопка сброса
@@ -702,7 +702,7 @@ export class Build {
 							Splash.hide();
 							isWindow ? Window.show('main', 'build', Build.heroId, 0, true) : View.show('build', Build.heroId);
 						}]
-					}, 'Сбросить');
+					}, Lang.text('reset'));
 
 					// Явно задаём красный цвет
 					reset.style.backgroundColor = '#7b001c';
@@ -750,7 +750,7 @@ export class Build {
 			);
 			item.addEventListener('contextmenu', (e) => {
 				e.preventDefault();
-				Build.buildSelectName('rename', 'Переименовать билд', { id: build.id }, isWindow);
+				Build.buildSelectName('rename', Lang.text('renameBuild'), { id: build.id }, isWindow);
 			});
 
 			const div = DOM({ tag: 'div', style: 'button-build--wrapper' }, item);
@@ -1054,8 +1054,8 @@ export class Build {
 						// Node already here
 						return;
 					}
-					const home = DOM({ style: 'home' }, 'Родная');
-					const enemy = DOM({ style: 'enemy' }, 'Вражеская');
+					const home = DOM({ style: 'home' }, Lang.text('native'));
+					const enemy = DOM({ style: 'enemy' }, Lang.text('enemy'));
 					if (Build.applyRz) {
 						home.classList.add('highlight');
 					} else if (Build.applyVz) {
@@ -1117,16 +1117,13 @@ export class Build {
 			}
 
 			if (key === 'considerStacks') {
-				item.title = `Учитывание талантов, которые дают постепенную прибавку к определенному параметру Ваших характеристик
-(например таланты оранжевого качества "Убийственная логика", Неудержимая сила")`
+				item.title = Lang.text('gradualTalentsTitle')
 			}
 			if (key === 'considerBuff') {
-				item.title = `Учитывание талантов, которые действуют "на всех союзников/врагов" кратковременно или постоянно, активно или пассивно
-(например таланты красного качества "Гимн решительности", Воодушевляющий гимн")`
+				item.title = Lang.text('aoeTalentsTitle')
 			}
 			if (key === 'groundType') {
-				item.title = `Учитывание талантов, которые дают дополнительный баф от типа территории (земли) - родная, вражеская/нейтральная 
-(например таланты красного качества "Оберег жизни", "Сияние естества")`
+				item.title = Lang.text('territoryTalentsTitle')
 			}
 
 			if (key === 'considerStacks' || key === 'considerBuff') {
@@ -1157,7 +1154,7 @@ export class Build {
 
 			if (!['hp', 'mp', 'speed', 'damage', 'critProb', 'attackSpeed', 'punching', 'protectionBody', 'protectionSpirit', 'considerStacks', 'considerBuff', 'groundType'].includes(key)) {
 				const daw = DOM({
-					tag: 'img', style: 'build-hero-stats-daw', title: 'Сделать характеристику приоритетной', event: ['click', async () => {
+					tag: 'img', style: 'build-hero-stats-daw', title: Lang.text('makeStatPriorityTitle'), event: ['click', async () => {
 
 						if (daw.dataset.status != 0) {
 
@@ -1863,7 +1860,7 @@ export class Build {
 
 			button.style.background = `rgba(${item.color},0.6)`;
 
-			button.title = `${item.name} качество талантов`;
+			button.title = Lang.text('talentQualityTitle').replace('{name}', item.name);
 
 			Build.rarityView.append(button);
 

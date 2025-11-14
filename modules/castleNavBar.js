@@ -244,7 +244,7 @@ export class CastleNAVBAR {
 
         CastleNAVBAR.body.children[0].style.display = 'none';
 
-        CastleNAVBAR.body.children[5].innerText = Lang.text('fight');
+        CastleNAVBAR.body.children[5].innerText = App.CURRENT_MM == 'mmtest' ? (Lang.text('fight') + ' test') : Lang.text('fight');
 
         //CastleNAVBAR.body.children[5].style.fontSize = '1.4vw';
 

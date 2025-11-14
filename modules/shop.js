@@ -5,15 +5,15 @@ export class Shop {
         1: { 'name': 'bomber_S1', 'icon': 'hero/65/2.webp' },
     }
     static frame = {
-        1: { 'name': 'frame_0', 'icon': 'frames/0_4.png' },
-        2: { 'name': 'frame_1', 'icon': 'frames/1_4.png' },
-        3: { 'name': 'frame_2', 'icon': 'frames/2_4.png' },
-        4: { 'name': 'frame_3', 'icon': 'frames/3_4.png' },
-        5: { 'name': 'frame_4', 'icon': 'frames/4_4.png' },
-        6: { 'name': 'frame_5', 'icon': 'frames/5_4.png' },
-        7: { 'name': 'frame_6', 'icon': 'frames/6_4.png' },
-        8: { 'name': 'frame_7', 'icon': 'frames/7_4.png' },
-        9: { 'name': 'frame_8', 'icon': 'frames/8_4.png' },
+        1: { 'name': 'frame_0', 'icon': 'frames/0_' },
+        2: { 'name': 'frame_1', 'icon': 'frames/1_' },
+        3: { 'name': 'frame_2', 'icon': 'frames/2_' },
+        4: { 'name': 'frame_3', 'icon': 'frames/3_' },
+        5: { 'name': 'frame_4', 'icon': 'frames/4_' },
+        6: { 'name': 'frame_5', 'icon': 'frames/5_' },
+        7: { 'name': 'frame_6', 'icon': 'frames/6_' },
+        8: { 'name': 'frame_7', 'icon': 'frames/7_' },
+        9: { 'name': 'frame_8', 'icon': 'frames/8_' },
     }
     static flag = {
         1: { 'externalId': 'admin', 'icon': 'flags/admin.png', 'name': 'Админ', 'type': 'adminFlags' },

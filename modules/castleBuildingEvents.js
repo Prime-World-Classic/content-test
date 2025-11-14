@@ -7,4 +7,7 @@ export class CastleBuildingsEvents {
 	static talent_farm() {
 		Window.show('main', 'farm');
 	}
+	static fair() {
+		Window.show('main', 'shop');
+	}
 }

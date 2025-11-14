@@ -3,6 +3,7 @@ import { App } from './app.js';
 import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { Castle } from './castle.js';
+import { Lang } from './lang.js';
 
 export class Voice {
 
@@ -103,7 +104,7 @@ export class Voice {
 		}
 		catch (error) {
 			
-			return App.error(`Не можем получить доступ к медиа устройствам: ${error}`);
+			return App.error(Lang.text('mediaDevicesError').replace('{error}', error));
 			
 		}
 		
@@ -116,19 +117,19 @@ export class Voice {
 		}
 		catch (error) {
 			
-			return App.error(`Не можем получить дорожки потоков: ${error}`);
+			return App.error(Lang.text('streamTracksError').replace('{error}', error));
 			
 		}
 		
 		if (!tracks.length) {
 			
-			return App.error('Отсутствие медиа потоков');
+			return App.error(Lang.text('mediaTracksLack'));
 			
 		}
 		
 		if (tracks[0].kind != 'audio') {
 			
-			return App.error('Не можем найти микрофон по умолчанию');
+			return App.error(Lang.text('cantDefaultMic'));
 			
 		}
 		
@@ -150,7 +151,7 @@ export class Voice {
 		
 		if (!Voice.mic) {
 			
-			return App.error('Мы не смогли определить ваш микрофон по умолчанию');
+			return App.error(Lang.text('cantDefaultMic'));
 			
 		}
 		
@@ -262,7 +263,7 @@ export class Voice {
 
 		if (Voice.mic) {
 			
-			tutorial.innerText = `Нажмите Ctrl+Z, чтобы включить ${Voice.mic.label}`;
+			tutorial.innerText = Lang.text('enableMic').replace('{Voice.mic.label}', Voice.mic.label);
 
 			if (Voice.mic.enabled) {
 
@@ -286,9 +287,9 @@ export class Voice {
 
 			switch (Voice.manager[id].peer.connectionState) {
 
-				case 'new': status = 'ожидание ответа'; break;
+				case 'new': status = Lang.text('waitingResponse'); break;
 
-				case 'connecting': status = 'соединение'; break;
+				case 'connecting': status = Lang.text('voiceConnecting'); break;
 
 				default: status = Voice.manager[id].peer.connectionState; break;
 
@@ -419,7 +420,7 @@ export class Voice {
 		
 		if(say){
 			
-			App.say(`Звонки успешно сброшены за исключением ваших друзей`);
+			App.say(Lang.text('callsDropped'));
 			
 		}
 
@@ -517,7 +518,7 @@ export class Voice {
 
 		if (Settings.settings.novoice) {
 
-			throw 'Голосовая связь отключена';
+			throw Lang.text('voiceDisabled');
 
 		}
 
@@ -657,7 +658,7 @@ export class Voice {
 
 		if (Settings.settings.novoice) {
 
-			throw 'Голосовая связь отключена';
+			throw Lang.text('voiceDisabled');
 
 		}
 
@@ -705,7 +706,7 @@ export class Voice {
 
 		if (Settings.settings.novoice) {
 
-			throw 'Голосовая связь отключена';
+			throw Lang.text('voiceDisabled');
 
 		}
 

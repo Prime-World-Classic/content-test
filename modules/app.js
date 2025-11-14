@@ -201,7 +201,7 @@ export class App {
 		
 		synthesis.volume = Castle.GetVolume(Castle.AUDIO_SOUNDS);
 		
-		synthesis.lang = 'ru-RU';
+		synthesis.lang = Lang.text('synthesisLang');
 		
 		window.speechSynthesis.speak(synthesis);
 		
