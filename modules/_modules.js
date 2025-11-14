@@ -1,5 +1,5 @@
-import { ParentEvent } from './parentEvent.js';
 import { Lang } from './lang.js';
+import { ParentEvent } from './parentEvent.js';
 import { View } from './view.js';
 import { App } from './app.js';
 import { PWGame } from './pwgame.js';
@@ -31,53 +31,50 @@ window.addEventListener('message', (event) => {
 
 });
 
-Splash.init();
+Lang.init().then(() => {
+	Splash.init();
 
-NativeAPI.init();
+	NativeAPI.init();
 
-NativeAPI.update((data) => {
+	NativeAPI.update((data) => {
 
-	if (View.updateProgress) {
+		if (View.updateProgress) {
 
-		Splash.hide();
+			Splash.hide();
 
+		}
+
+		if (data.update) {
+
+			View.updateProgress = View.progress();
+
+			View.updateProgress.firstChild.style.width = data.total + '%';
+
+			View.updateProgress.lastChild.innerText = `${data.title} ${data.total}%...`;
+
+		}
+
+	});
+
+	let testRadminConnection = async () => {
+		let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
+		if (hasConnection) {
+			PWGame.radminHasConnection = true;
+		}
 	}
-
-	if (data.update) {
-
-		View.updateProgress = View.progress();
-
-		View.updateProgress.firstChild.style.width = data.total + '%';
-
-		View.updateProgress.lastChild.innerText = `${data.title} ${data.total}%...`;
-
+	let testMainConnection = async () => {
+		let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.MAIN_GAME_SERVER_IP]);
+		if (hasConnection) {
+			PWGame.mainServerHasConnection = true;
+		}
 	}
+	setTimeout(_ => {
+		testRadminConnection();
+		testMainConnection();
+	}, 3000);
 
-});
-
-let testRadminConnection = async () => {
-	let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
-	if (hasConnection) {
-		PWGame.radminHasConnection = true;
-	}
-}
-let testMainConnection = async () => {
-	let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.MAIN_GAME_SERVER_IP]);
-	if (hasConnection) {
-		PWGame.mainServerHasConnection = true;
-	}
-}
-setTimeout(_ => {
-	testRadminConnection();
-	testMainConnection();
-}, 3000);
-
-Settings.init().then(() => {
-
-	Lang.init().then(() => {
-
-		App.findBestHostAndInit();
-
-	})
+	Settings.init().then(() => {	
+        App.findBestHostAndInit();
+    });
 
 });
