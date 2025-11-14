@@ -1447,7 +1447,7 @@ export class View {
 
                         let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, Lang.text('friendCancle'));
 
-                        body.append(DOM(Lang.text('removeFriendText').replace('{nickname}', item.nickname)), b1, b2);
+                        body.append(DOM(Lang.text('friendRemoveText').replace('{nickname}', item.nickname)), b1, b2);
 
                         Splash.show(body);
 
