@@ -68,7 +68,19 @@ export const en = {
 		fullscreenDisabled:'Window mode enabled',
 		talentConflict:'The selected talent conflicts with another talent in the build!!',
 		smartcastDescription:'Right-click on the talent in this lane to turn on/off the smartcast (using the skill without confirmation)',
-
+		
+		//Друзья
+		
+		callAFriend:"Call",
+		inviteToAGroup:"Party",
+		friendIsOffline:"Offline",
+		friendAccept:"Accept",
+		friendDecline:"Decline",
+		friendRemove:"Remove",
+		friendCancle:"Cancle",
+		friendRemoveText:"Remove {nickname} from friends?",
+		friendAcceptText:"Invitation sent to {nickname}",
+		
 		// Квесты
 		qDays: "d.",
 
@@ -83,11 +95,16 @@ export const en = {
 		shop_flags: "Flags",
 		shop_frames: "Frames",
 		bomber_S1: "Explonya",     
-		flag_adornia: "Adornia",  
-		flag_doct: "Doct",     
-		flag_prime: "Prime",    
-		flag_rak: "Crab",      
-		frame_classic: "Classic", 
+		
+		frame_0: "Classic", 
+		frame_1: "Summber", 
+		frame_2: "Autumn", 
+		frame_3: "Winter", 
+		frame_4: "Spring", 
+		frame_5: "Cave", 
+		frame_6: "Secret", 
+		frame_7: "Dragon", 
+		frame_8: "Interseason", 
 
 		// Переводы
 		select_faction: "Select faction",

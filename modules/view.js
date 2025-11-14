@@ -1389,9 +1389,9 @@ export class View {
 
                 if (item.status == 1) {
 
-                    let group = DOM({ style: 'castle-friend-add-group' }, (item.online) ? 'Группа' : 'Не в сети');
+                    let group = DOM({ style: 'castle-friend-add-group' }, (item.online) ? Lang.text('inviteToAGroup') : Lang.text('friendIsOffline'));
 					
-					let call = DOM({ style: 'castle-friend-add-group' }, 'Звонок');
+					let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
 
                     if (!item.online) {
 						
@@ -1406,7 +1406,7 @@ export class View {
 
                             await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id });
 
-                            App.notify(`Приглашение отправлено игроку ${item.nickname}`);
+                            App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
 							
                         }
 						
@@ -1443,11 +1443,11 @@ export class View {
                                 Splash.hide();
 
                             }]
-                        }, 'Удалить');
+                        }, Lang.text('friendRemove'));
 
-                        let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, 'Отмена');
+                        let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, Lang.text('friendCancle'));
 
-                        body.append(DOM(`Удалить ${item.nickname} из друзей?`), b1, b2);
+                        body.append(DOM(Lang.text('removeFriendText').replace('{nickname}', item.nickname)), b1, b2);
 
                         Splash.show(body);
 
@@ -1476,13 +1476,13 @@ export class View {
 
                                     await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id });
 
-                                    App.notify(`Приглашение отправлено игроку ${item.nickname}`);
+                                    App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
 
                                 }]
-                            }, 'Группа'));
+                            }, Lang.text('inviteToAGroup')));
 
                         }]
-                    }, 'Принять'), DOM({
+                    }, Lang.text('friendAccept')), DOM({
                         style: 'castle-friend-cancel', event: ['click', async () => {
 
                             await App.api.request('friend', 'remove', { id: item.id });
@@ -1490,7 +1490,7 @@ export class View {
                             friend.remove();
 
                         }]
-                    }, 'Отклонить'));
+                    }, Lang.text('friendDecline'));
 
                 }
                 else if (item.status == 3) {

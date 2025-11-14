@@ -113,8 +113,11 @@ export class Window {
 		for (const rItem of request) {
 			const categoryName = Shop.categories[rItem.categoryId]
 			let item = DOM({style: 'shop_item_img'});
-			item.style.backgroundImage = `url("content/${ Shop[categoryName][rItem.targetId].icon }")`;
-			const translatedName = Lang.text(Shop[categoryName][rItem.targetId].name);
+			console.log(categoryName)
+			console.log(rItem)
+			console.log(Shop[categoryName][rItem.id])
+			item.style.backgroundImage = `url("content/${ Shop[categoryName][rItem.id].icon }")`;
+			const translatedName = Lang.text(Shop[categoryName][rItem.id].name);
 			category[categoryName].appendChild(
 				DOM({style: rItem.enabled ? 'shop_item' : 'shop_item_disabled'}, 
 					item, 
@@ -127,7 +130,7 @@ export class Window {
 								Splash.show(DOM({}, DOM({style: 'splash-item-container'}, item), DOM({style: 'splash-item-text'}, `Купить ${translatedName} за ${rItem.price}`, DOM({style: 'splash-item-text'}, DOM({style: 'shop_item_price_icon'}), "?")), 
 									DOM({style: 'splash-content-button', event: ['click', async () => {
 										Splash.hide();
-										App.error(`Покупочка ${Shop[categoryName][rItem.targetId].name}`); // TODO: REQUEST
+										App.error(`Покупочка ${Shop[categoryName][rItem.id].name}`); // TODO: REQUEST
 										Window.show('main', 'shop');
 									}]}, "Купить"), 
 									DOM({style: 'splash-content-button-red', event: ['click', async () => {
@@ -140,7 +143,7 @@ export class Window {
 								Splash.show(DOM({}, DOM({style: 'splash-item-container'}, item), `Экипировать ${translatedName}?`, 
 									DOM({style: 'splash-content-button', event: ['click', async () => {
 										Splash.hide();
-										App.error(`Экипировочка ${Shop[categoryName][rItem.targetId].name}`); // TODO: REQUEST
+										App.error(`Экипировочка ${Shop[categoryName][rItem.id].name}`); // TODO: REQUEST
 										Window.show('main', 'collection');
 									}]}, "Экипировать"), 
 									DOM({style: 'splash-content-button-red', event: ['click', async () => {
@@ -177,11 +180,20 @@ export class Window {
 	static async shop() {
 		// enabled: - не приобретено ли уже? делает кнопку активации недоступной
 		let request = [
-			{ targetId: 0, categoryId: 0, enabled: true, price: 220 }, // скин
-			{ targetId: 0, categoryId: 2, enabled: false, price: 100 }, // рамка
 		];
-		for (const f of Shop.flag) {
-			request.push({ targetId: f.id, price: 10, categoryId: 1, enabled: true})
+		for (let fid in Shop.skin) {
+			const f = Shop.skin[fid];
+			request.push({ id: fid, price: 220, categoryId: 0, enabled: true})
+		}
+		for (let fid in Shop.frame) {
+			const f = Shop.frame[fid];
+			request.push({ id: fid, price: 100, categoryId: 2, enabled: true})
+		}
+		for (let fid in Shop.flag) {
+			const f = Shop.flag[fid];
+			if (f.type == 'customFlags') {
+				request.push({ id: fid, price: 100, categoryId: 1, enabled: true})
+			}
 		}
 		return this.processShopAndCollection(request, true);
 	}
@@ -189,11 +201,20 @@ export class Window {
 	static async collection() {
 		// enabled - не экипировано ли уже? делает кнопку активации недоступной
 		let request = [
-			{ targetId: 0, categoryId: 0, enabled: true}, // скин
-			{ targetId: 0, categoryId: 2, enabled: false}, // рамка
 		];
-		for (const f of Shop.flag) {
-			request.push({ targetId: f.id, categoryId: 1, enabled: f.id % 2 == 1})
+		for (let fid in Shop.skin) {
+			const f = Shop.skin[fid];
+			request.push({ id: fid, price: 220, categoryId: 0, enabled: true})
+		}
+		for (let fid in Shop.frame) {
+			const f = Shop.frame[fid];
+			request.push({ id: fid, categoryId: 2, enabled: fid != 1})
+		}
+		for (let fid in Shop.flag) {
+			const f = Shop.flag[fid];
+			if (f.type == 'customFlags') {
+				request.push({ id: fid, categoryId: 1, enabled: fid != 1})
+			}
 		}
 		return this.processShopAndCollection(request, false);
 	}

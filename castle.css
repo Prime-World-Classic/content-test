@@ -1869,9 +1869,11 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 
 .shop_item_name {
-	margin-top: -15cqw;
+	margin-top: -10cqw;
+	margin-bottom: 2cqw;
 	width: 100cqw;
 	text-align: center;
+	font-size: 10cqh;
 	text-shadow: 1cqw 1cqw 5cqw black, -1cqw 1cqw 5cqw black, 1cqw -1cqw 5cqw black, -1cqw -1cqw 5cqw black;
 	overflow: hidden;
 	white-space:nowrap;

@@ -68,7 +68,19 @@ export const ru = {
 		fullscreenDisabled:'Включен оконный режим',
 		talentConflict:'Выбранный талант конфликтует с другим талантом в билде!!',
 		smartcastDescription:'Нажмите правой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст (применение навыка без подтверждения)',
-
+		
+		//Друзья
+		
+		callAFriend:"Звонок",
+		inviteToAGroup:"Группа",
+		friendIsOffline:"Не в сети",
+		friendAccept:"Принять",
+		friendDecline:"Отклонить",
+		friendRemove:"Удалить",
+		friendCancle:"Отмена",
+		friendRemoveText:"Удалить {nickname} из друзей?",
+		friendAcceptText:"Приглашение отправлено игроку {nickname}",
+		
 		// Квесты
 		qDays: "д.",
 
@@ -83,11 +95,16 @@ export const ru = {
 		shop_flags: "Флаги",
 		shop_frames: "Рамки",
 		bomber_S1: "Детоняша",     
-		flag_adornia: "Адорния",  
-		flag_doct: "Докт",     
-		flag_prime: "Прайм",    
-		flag_rak: "Рак",      
-		frame_classic: "Классика", 
+		
+		frame_0: "Классическая", 
+		frame_1: "Летняя", 
+		frame_2: "Осенняя", 
+		frame_3: "Зимняя", 
+		frame_4: "Весенняя", 
+		frame_5: "Подземная", 
+		frame_6: "Таинственная", 
+		frame_7: "Драконья", 
+		frame_8: "Межсезонная", 
 
 
 		// Переводы
