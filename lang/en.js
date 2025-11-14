@@ -51,6 +51,86 @@ export const en = {
 		fullscreenDisabled:'Window mode enabled',
 		clickToViewHeroRating: 'Click to view rating by individual heroes',
 		
+		//Settings
+		settingsFileAccessError: 'Settings file access error: ',
+		settingsNativeApiNotInitialized: 'NativeAPI not initialized! Using default settings',
+		settingsReadError: 'Settings read error: ',
+		settingsSaveError: 'Cannot save settings: path or NativeAPI unavailable',
+		settingsSaveFailed: 'Settings save error: ',
+		settingsApplyError: 'Settings apply error: ',
+		
+		//Rank
+		rankRecruit: 'Recruit',
+		rankMercenary: 'Mercenary',
+		rankPrivate: 'Private',
+		rankCorporal: 'Corporal',
+		rankSergeant: 'Sergeant',
+		rankLieutenant: 'Lieutenant',
+		rankCaptain: 'Captain',
+		rankMajor: 'Major',
+		rankLieutenantColonel: 'Lieutenant Colonel',
+		rankColonel: 'Colonel',
+		rankGeneral: 'General',
+		rankMarshal: 'Marshal',
+		rankGod: 'God',
+		
+		//pwgame
+		pwgameUpdateFailed: 'Failed to update the game! Contact PWClassic support',
+		pwgameFilesCorrupted: 'Game files are corrupted! Contact PWClassic support',
+		pwgameServerUnavailable: 'Game server is unavailable!',
+		
+		//mm
+		mmCheck: 'Check',
+		mmLauncherDownload: 'Download and install the latest Windows version of the <a href="https://pw.26rus-game.ru/" class="launcher-link">launcher</a> just once, now you won\'t need to perform any additional actions to update the game, the launcher will do everything automatically.',
+		mmWindowsLauncherRequired: 'Windows launcher version required!',
+		mmBrowserSupportDiscontinued: 'We have discontinued browser-based matchmaking and Prime World game launch as players regularly encountered issues with it.',
+		mmLauncherMigratedToWindows: 'We have completely migrated the browser launcher to a full-fledged Windows application with automatic Prime World client updates.',
+		mmMatchFound: 'Match found',
+		mmOverwriteBuild: 'Overwrite current build?',
+		mmGenerating: 'Generating...',
+		mmRandomBuild: 'Random build',
+		mmConfirm: 'Confirm',
+		mmMouseControls: 'LMB (SELECT) / RMB (BAN)',
+		
+		//NativeApi
+		updateCheckComplete: 'Game update and file check completed',
+		fileCheckFailed: 'File check failed: ',
+		gameUpdate: 'Game update',
+		launcherUpdate: 'Launcher update',
+		downloadingArchives1: 'Downloading game archives 1/8',
+		downloadingArchives2: 'Downloading game archives 2/8',
+		downloadingArchives3: 'Downloading game archives 3/8',
+		downloadingArchives4: 'Downloading game archives 4/8',
+		downloadingArchives5: 'Downloading game archives 5/8',
+		downloadingArchives6: 'Downloading game archives 6/8',
+		downloadingArchives7: 'Downloading game archives 7/8',
+		downloadingArchives8: 'Downloading game archives 8/8',
+		downloadingGameArchives: 'Downloading game archives',
+		checkingUpdatesAndFiles: 'Checking updates and game files... Please wait',
+		fileCheckCorrupted: 'File check corrupted: ',
+		updateError: 'Update error: ',
+		
+		//Api
+		connectionLostError: 'Connection lost, please wait... [{count}]',
+		connectionClosedError: 'Connection closed... Reconnecting in progress, please wait... [{count}]',
+		connectionRestoringError: 'Please wait, connection is restoring [{host}]',
+		unknownMessageStructure: 'Unknown message structure -> {json}',
+		requestAlreadyPending: 'Request already pending, please wait for server response (15 seconds)... | {method} -> {object}',
+		requestFailedConnectionError: 'Request failed, internet connection error',
+		requestTimeoutError: 'Internet connection error, request timeout for {object} -> {method}',
+		
+		//App
+		 apiConnectionError: 'No connection to Prime World Classic API server',
+		loginRequiredError: 'Login is required',
+		passwordRequiredError: 'Password is required',
+		nicknameChangeCooldown: 'Nickname can be changed once every two weeks',
+		nicknamePlaceholder: 'Nickname',
+		apply: 'Apply',
+		adorians: 'Adornians',
+		dokts: 'Dokts',
+		missingValuesError: 'Not all values are specified',
+		passwordsMismatchError: 'Passwords do not match',
+		
 		//Билд
 		health: 'Health',
 		energy: 'Energy',
@@ -109,6 +189,9 @@ export const en = {
 		friendAcceptText:"Invitation sent to {nickname}",
 		friendNicknamePlaceholder:"Nickname",
 		friendAcceptWaiting:"Waiting",
+		friendInvitesToLobby: '{nickname} invites you to lobby',
+		friendCallFrom: 'Call from {name}?',
+		friendDropCall: 'Drop call',
 		
 		//Войс
 		

@@ -51,6 +51,86 @@ export const ru = {
 		fullscreenDisabled:'Включен оконный режим',
 		clickToViewHeroRating: 'Нажмите сюда, чтобы посмотреть рейтинг по отдельным героям',
 		
+		//Settings
+		settingsFileAccessError: 'Ошибка доступа к файлу настроек: ',
+		settingsNativeApiNotInitialized: 'NativeAPI не инициализирован! Используются настройки по умолчанию',
+		settingsReadError: 'Ошибка чтения настроек: ',
+		settingsSaveError: 'Не могу сохранить настройки: путь или NativeAPI недоступны',
+		settingsSaveFailed: 'Ошибка сохранения настроек: ',
+		settingsApplyError: 'Ошибка применения настроек: ',
+		
+		//Rank
+		rankRecruit: 'Рекрут',
+		rankMercenary: 'Наёмник',
+		rankPrivate: 'Рядовой',
+		rankCorporal: 'Капрал',
+		rankSergeant: 'Сержант',
+		rankLieutenant: 'Лейтенант',
+		rankCaptain: 'Капитан',
+		rankMajor: 'Майор',
+		rankLieutenantColonel: 'Подполковник',
+		rankColonel: 'Полковник',
+		rankGeneral: 'Генерал',
+		rankMarshal: 'Маршал',
+		rankGod: 'Бог',
+			
+		//pwgame
+		pwgameUpdateFailed: 'Не удалось обновить игру! Обратитесь в поддержку PWClassic',
+		pwgameFilesCorrupted: 'Файлы игры повреждены! Обратитесь в поддержку PWClassic',
+		pwgameServerUnavailable: 'Игровой сервер недоступен!',
+		
+		//mm
+		mmCheck: 'Проверка',
+		mmLauncherDownload: 'Загрузите и установите последнюю Windows версию <a href="https://pw.26rus-game.ru/" class="launcher-link">лаунчера</a> всего один раз, теперь вам не нужно будет делать лишних действий по обновлению игры, лаунчер все сделает автоматически.',
+		mmWindowsLauncherRequired: 'Необходима Windows версия лаунчера!',
+		mmBrowserSupportDiscontinued: 'Мы отказались от поиска боя и запуска игры Prime World через браузер, так как у игроков регулярно возникали с этим проблемы.',
+		mmLauncherMigratedToWindows: 'Мы полностью перенесли браузерный лаунчер в полноценное Windows приложение с автоматическим обновлением клиентской части Prime World.',
+		mmMatchFound: 'Бой найден',
+		mmOverwriteBuild: 'Перезаписать текущий билд?',
+		mmGenerating: 'Генерация...',
+		mmRandomBuild: 'Случайный билд',
+		mmConfirm: 'Подтвердить',
+		mmMouseControls: 'ЛКМ (ВЫБРАТЬ) / ПКМ (ЗАБЛОКИРОВАТЬ)',
+		
+		//NativeApi
+		updateCheckComplete: 'Проверка обновлений и файлов игры завершена',
+		fileCheckFailed: 'Проверка файлов не выполнена: ',
+		gameUpdate: 'Обновление игры',
+		launcherUpdate: 'Обновление лаунчера',
+		downloadingArchives1: 'Загрузка игровых архивов 1/8',
+		downloadingArchives2: 'Загрузка игровых архивов 2/8',
+		downloadingArchives3: 'Загрузка игровых архивов 3/8',
+		downloadingArchives4: 'Загрузка игровых архивов 4/8',
+		downloadingArchives5: 'Загрузка игровых архивов 5/8',
+		downloadingArchives6: 'Загрузка игровых архивов 6/8',
+		downloadingArchives7: 'Загрузка игровых архивов 7/8',
+		downloadingArchives8: 'Загрузка игровых архивов 8/8',
+		downloadingGameArchives: 'Загрузка игровых архивов',
+		checkingUpdatesAndFiles: 'Проверка обновлений и файлов игры... Подождите',
+		fileCheckCorrupted: 'Неисправна проверка файлов: ',
+		updateError: 'Ошибка обновления: ',
+		
+		//Api
+		connectionLostError: 'Разрыв соединения, подождите... [{count}]',
+		connectionClosedError: 'Закрыто соединение... Выполняется переподключение, подождите... [{count}]',
+		connectionRestoringError: 'Подождите, подключение восстанавливается [{host}]',
+		unknownMessageStructure: 'Неизвестная структура сообщения -> {json}',
+		requestAlreadyPending: 'Запрос уже выполнен, пожалуйста дождитесь ответа от сервера (15 секунд)... | {method} -> {object}',
+		requestFailedConnectionError: 'Запрос не выполнен, ошибка интернет соединения',
+		requestTimeoutError: 'Ошибка интернет соединения, время ожидания ответа на запрос {object} -> {method} истекло',
+		
+		//App
+		apiConnectionError: 'Нет соединения с API сервером Prime World Classic',
+		loginRequiredError: 'Необходимо указать логин',
+		passwordRequiredError: 'Необходимо указать пароль',
+		nicknameChangeCooldown: 'Сменить никнейм можно один раз в две недели',
+		nicknamePlaceholder: 'Никнейм',
+		apply: 'Применить',
+		adorians: 'Адорнийцы',
+		dokts: 'Докты',
+		missingValuesError: 'Не все значения указаны',
+		passwordsMismatchError: 'Пароли не совпадают',
+		
 		//Билд	
 		health: 'Здоровье',
 		energy: 'Энергия',
@@ -107,6 +187,9 @@ export const ru = {
 		friendAcceptText:"Приглашение отправлено игроку {nickname}",
 		friendNicknamePlaceholder:"Ник игрока",
 		friendAcceptWaiting:"Ожидание",
+		friendInvitesToLobby: '{nickname} приглашает вас в лобби',
+		friendCallFrom: 'Звонок от {name}?',
+		friendDropCall: 'Сбросить',
 		
 		//Войс
 		enableMic:"Нажмите Ctrl+Z или на свой Ник, чтобы включить: {Voice.mic.label}",
