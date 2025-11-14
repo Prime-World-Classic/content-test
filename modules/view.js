@@ -1490,7 +1490,7 @@ export class View {
                             friend.remove();
 
                         }]
-                    }, Lang.text('friendDecline'));
+                    }, Lang.text('friendDecline')));
 
                 }
                 else if (item.status == 3) {
