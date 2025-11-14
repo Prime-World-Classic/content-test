@@ -2,6 +2,7 @@ import { App } from './app.js';
 import { Voice } from './voice.js';
 import { PWGame } from './pwgame.js';
 import { Settings } from './settings.js';
+import { Lang } from './lang.js';
 
 export class NativeAPI {
 
@@ -256,10 +257,10 @@ export class NativeAPI {
         spawn.on('close', (code) => {
             if ((code == 0)) {
                 PWGame.isValidated = true;
-                App.notify('Проверка обновлений и файлов игры завершена');
+                App.notify(Lang.text('updateCheckComplete'));
             } else {
                 PWGame.isTestHashesFailed = true;
-                App.error('Проверка файлов не выполнена: ' + code);
+                App.error(Lang.text('fileCheckFailed') + code);
             }
         });
     }
@@ -268,12 +269,12 @@ export class NativeAPI {
         let outputs = data.toString().split('\n');  // I have used space, you can use any thing.
         for (let o of outputs) {
             if (o == 'Updating game files') {
-                this.title = 'Обновление игры';
+                this.title = Lang.text('gameUpdate');
                 this.curLabel = 'game';
                 continue;
             }
             if (o == 'Updating launcher') {
-                this.title = 'Обновление лаунчера';
+                this.title = Lang.text('launcherUpdate');
                 this.curLabel = 'content';
                 continue;
             }
@@ -322,20 +323,20 @@ export class NativeAPI {
 
                     switch (json.data) {
 
-                        case 'game': this.title = 'Обновление игры'; this.curLabel = json.data; break;
+                        case 'game': this.title = Lang.text('gameUpdate'); this.curLabel = json.data; break;
 
-                        case 'content': this.title = 'Обновление лаунчера'; this.curLabel = json.data; break;
+                        case 'content': this.title = Lang.text('launcherUpdate'); this.curLabel = json.data; break;
 
-                        case 'game_data0': this.title = 'Загрузка игровых архивов 1/8'; this.curLabel = json.data; break;
-                        case 'game_data1': this.title = 'Загрузка игровых архивов 2/8'; this.curLabel = json.data; break;
-                        case 'game_data2': this.title = 'Загрузка игровых архивов 3/8'; this.curLabel = json.data; break;
-                        case 'game_data3': this.title = 'Загрузка игровых архивов 4/8'; this.curLabel = json.data; break;
-                        case 'game_data4': this.title = 'Загрузка игровых архивов 5/8'; this.curLabel = json.data; break;
-                        case 'game_data5': this.title = 'Загрузка игровых архивов 6/8'; this.curLabel = json.data; break;
-                        case 'game_data6': this.title = 'Загрузка игровых архивов 7/8'; this.curLabel = json.data; break;
-                        case 'game_data7': this.title = 'Загрузка игровых архивов 8/8'; this.curLabel = json.data; break;
+                        case 'game_data0': this.title = Lang.text('downloadingArchives1'); this.curLabel = json.data; break;
+                        case 'game_data1': this.title = Lang.text('downloadingArchives2'); this.curLabel = json.data; break;
+                        case 'game_data2': this.title = Lang.text('downloadingArchives3'); this.curLabel = json.data; break;
+                        case 'game_data3': this.title = Lang.text('downloadingArchives4'); this.curLabel = json.data; break;
+                        case 'game_data4': this.title = Lang.text('downloadingArchives5'); this.curLabel = json.data; break;
+                        case 'game_data5': this.title = Lang.text('downloadingArchives6'); this.curLabel = json.data; break;
+                        case 'game_data6': this.title = Lang.text('downloadingArchives7'); this.curLabel = json.data; break;
+                        case 'game_data7': this.title = Lang.text('downloadingArchives8'); this.curLabel = json.data; break;
 
-                        default: this.title = 'Загрузка игровых архивов'; this.curLabel = json.data; break;
+                        default: this.title = Lang.text('downloadingGameArchives'); this.curLabel = json.data; break;
 
                     }
 
@@ -363,7 +364,7 @@ export class NativeAPI {
 
         let spawn = NativeAPI.childProcess.spawn(updaterPath);
 
-        App.notify('Проверка обновлений и файлов игры... Подождите');
+        App.notify(Lang.text('checkingUpdatesAndFiles'));
 
         spawn.stdout.on('data', (data) => {
             if (isLinuxUpdate) {
@@ -385,11 +386,11 @@ export class NativeAPI {
                     NativeAPI.testHashes();
                 }
                 catch (e) {
-                    App.error('Неисправна проверка файлов: ' + e);
+                    App.error(Lang.text('fileCheckCorrupted') + e);
                 }
             } else {
                 PWGame.isUpdateFailed = true;
-                App.error('Ошибка обновления: ' + code);
+                App.error(Lang.text('updateError') + code);
 
             }
 

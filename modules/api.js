@@ -1,4 +1,5 @@
 import { App } from './app.js';
+import { Lang } from './lang.js';
 
 export class Api {
 
@@ -82,7 +83,7 @@ export class Api {
 
                 this.WebSocket.onerror = (event) => {
                     console.log(`Разрыв соединения ${this.MAIN_HOST}...`, event);
-                    App.error(`Разрыв соединения, подождите... [${this.DISCONNECT_TOTAL}]`, event);
+                    App.error(Lang.text('connectionLostError').replace('{count}', this.DISCONNECT_TOTAL), event);
                 };
 
                 this.WebSocket.onclose = () => {
@@ -115,7 +116,7 @@ export class Api {
 
     async disconnect() {
         console.log(`Закрываем соединение ${this.MAIN_HOST}...`);
-        App.error(`Закрыто соедниение... Выполняется переподключение, подождите... [${this.DISCONNECT_TOTAL}]`);
+        App.error(Lang.text('connectionClosedError').replace('{count}', this.DISCONNECT_TOTAL));
         if (!this.WebSocket) {
 
             return;
@@ -165,7 +166,7 @@ export class Api {
                 break;
             }
         }
-        App.error(`Подождите, подключение восстанавливается [${currentHost}]`);
+        App.error(Lang.text('connectionRestoringError').replace('{host}', currentHost));
 
         this.MAIN_HOST = this.host[(currentHost + 1) % this.host.length];
 
@@ -242,7 +243,7 @@ export class Api {
         }
         else {
 
-            throw `Неизвестная структура сообщения -> ${JSON.stringify(json)}`;
+            throw Lang.text('unknownMessageStructure').replace('{json}', JSON.stringify(json));
 
         }
 
@@ -254,7 +255,7 @@ export class Api {
 
             if ((this.awaiting[key].object == object) && (this.awaiting[key].method == method)) {
 
-                throw `Запрос уже выполнен, пожалуйста дождитесь ответа от сервера (15 секунд)... | ${method} -> ${object}`;
+                throw Lang.text('requestAlreadyPending').replace('{method}', method).replace('{object}', object);
 
             }
 
@@ -269,7 +270,7 @@ export class Api {
         }
         catch (error) {
 
-            throw `Запрос не выполнен, ошибка интернет соединения`;
+            throw Lang.text('requestFailedConnectionError');
 
         }
 
@@ -279,7 +280,7 @@ export class Api {
 
                 delete this.awaiting[identify];
 
-                reject(`Ошибка интернет соединения, время ожидания ответа на запрос ${object} -> ${method} истекло`);
+                reject(Lang.text('requestTimeoutError').replace('{object}', object).replace('{method}', method));
 
             }, 15000);
 

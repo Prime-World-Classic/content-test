@@ -195,7 +195,7 @@ export class MM {
 
         if (!PWGame.gameServerHasConnection || !PWGame.isUpToDate || !PWGame.isValidated) {
 
-            MM.button.firstChild.innerText = 'Проверка';
+            MM.button.firstChild.innerText = Lang.text('mmCheck');
 
         }
 
@@ -243,16 +243,16 @@ export class MM {
 
             const downloadMessage = DOM({
                 tag: 'p',
-                innerHTML: 'Загрузите и установите последнюю Windows версию <a href="https://pw.26rus-game.ru/" class="launcher-link">лаунчера</a> всего один раз, теперь вам не нужно будет делать лишних действий по обновлению игры, лаунчер все сделает автоматически.'
+                innerHTML: Lang.text('mmLauncherDownload')
             });
 
             const splashContent = DOM({
                 style: 'splash-content-window'
             });
 
-            const heading = DOM({ tag: 'h1' }, 'Необходима Windows версия лаунчера!');
-            const paragraph1 = DOM({ tag: 'p' }, 'Мы отказались от поиска боя и запуска игры Prime World через браузер, так как у игроков регулярно возникали с этим проблемы.');
-            const paragraph2 = DOM({ tag: 'p' }, 'Мы полностью перенесли браузерный лаунчер в полноценное Windows приложение с автоматическим обновлением клиентской части Prime World.');
+            const heading = DOM({ tag: 'h1' }, Lang.text('mmWindowsLauncherRequired'));
+            const paragraph1 = DOM({ tag: 'p' }, Lang.text('mmBrowserSupportDiscontinued'));
+            const paragraph2 = DOM({ tag: 'p' }, Lang.text('mmLauncherMigratedToWindows'));
 
             // Создаем кнопку закрытия
             const closeButton = DOM({
@@ -351,7 +351,7 @@ export class MM {
 
         let body = DOM({ style: 'mm-ready' }, Timer.body, DOM({ id: `MMReady`, style: 'mm-ready-count' }, `0/${data.limit}`));
 
-        await Timer.start(data.id, 'Бой найден', () => {
+        await Timer.start(data.id, Lang.text('mmMatchFound'), () => {
 
             MM.close();
 
@@ -481,7 +481,7 @@ export class MM {
 
                 if (notify) {
 
-                    random.innerText = 'Перезаписать текущий билд?';
+                    random.innerText = Lang.text('mmOverwriteBuild');
 
                     notify = false;
 
@@ -489,7 +489,7 @@ export class MM {
 
                 }
 
-                random.innerText = 'Генерация...';
+                random.innerText = Lang.text('mmGenerating');
 
                 let build = await App.api.request('build', 'rebuild', { id: target });
 
@@ -513,10 +513,10 @@ export class MM {
 
                 }
 
-                random.innerText = 'Случайный билд';
+                random.innerText = Lang.text('mmRandomBuild');
 
             }]
-        }, 'Случайный билд');
+        }, Lang.text('mmRandomBuild'));
 
         random.style.width = 'auto';
 
@@ -578,7 +578,7 @@ export class MM {
 
                     setTimeout(() => {
 
-                        MM.lobbyConfirm.innerText = 'Подтвердить';
+                        MM.lobbyConfirm.innerText = Lang.text('mmConfirm');
 
                     }, 1500);
 
@@ -690,7 +690,7 @@ export class MM {
 		
 		if(data.banhero){
 			
-			MM.lobbyHeroes.append(DOM({ style: 'mm-lobby-middle-hero-prompt' }, 'ЛКМ (ВЫБРАТЬ) / ПКМ (ЗАБЛОКИРОВАТЬ)'));
+			MM.lobbyHeroes.append(DOM({ style: 'mm-lobby-middle-hero-prompt' }, Lang.text('mmMouseControls')));
 			
 		}
 

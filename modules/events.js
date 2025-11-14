@@ -190,11 +190,11 @@ export class Events {
 				Splash.hide();
 
 			}]
-		}, 'Принять');
+		}, Lang.text('friendAccept'));
 
-		let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, 'Отмена');
+		let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, Lang.text('friendCancle'));
 
-		body.append(DOM(`${data.nickname} приглашает вас в лобби`), b1, b2)
+		body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2)
 
 		Splash.show(body);
 
@@ -313,7 +313,7 @@ export class Events {
 
 			let body = document.createDocumentFragment();
 
-			body.append(DOM(`Звонок от ${data.name}?`), DOM({
+			body.append(DOM(Lang.text('friendCallFrom').replace('{name}', data.name)), DOM({
 				style: 'splash-content-button', event: ['click', async () => {
 
 					try {
@@ -332,7 +332,7 @@ export class Events {
 					}
 
 				}]
-			}, 'Принять'), DOM({ style: 'splash-content-button', event: ['click', async () => Splash.hide()] }, 'Сбросить'));
+			}, Lang.text('friendAccept')), DOM({ style: 'splash-content-button', event: ['click', async () => Splash.hide()] }, Lang.text('friendDropCall')));
 
 			Splash.show(body);
 

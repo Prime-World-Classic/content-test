@@ -30,7 +30,7 @@ export class Settings {
             await NativeAPI.fileSystem.promises.access(this.settingsFilePath);
             return true;
         } catch (e) {
-            App.error('Ошибка доступа к файлу настроек: ' + e);
+            App.error(Lang.text('settingsFileAccessError') + e);
             await this.writeDefaultSettings();
             return false;
         }
@@ -43,7 +43,7 @@ export class Settings {
 
     static async ReadSettings() {
         if (!NativeAPI.status) {
-            App.error('NativeAPI не инициализирован! Используются настройки по умолчанию');
+            App.error(Lang.text('settingsNativeApiNotInitialized'));
             this.settings = { ...this.defaultSettings };
             return;
         }
@@ -54,14 +54,14 @@ export class Settings {
                 this.settings = { ...this.defaultSettings, ...JSON.parse(data) };
             }
         } catch (e) {
-            App.error('Ошибка чтения настроек: ' + e);
+            App.error(Lang.text('settingsReadError') + e);
             this.settings = { ...this.defaultSettings };
         }
     }
 
     static async WriteSettings() {
         if (!this.settingsFilePath || !NativeAPI.status) {
-            App.error('Не могу сохранить настройки: путь или NativeAPI недоступны');
+            App.error(Lang.text('settingsSaveError'));
             return;
         }
 
@@ -72,7 +72,7 @@ export class Settings {
                 'utf-8'
             );
         } catch (e) {
-            App.error('Ошибка сохранения настроек: ' + e);
+            App.error(Lang.text('settingsSaveFailed') + e);
         }
     }
 
@@ -180,7 +180,7 @@ export class Settings {
             }
 
         } catch (e) {
-            App.error('Ошибка применения настроек: ' + e);
+            App.error(Lang.text('settingsApplyError') + e);
         }
     }
 

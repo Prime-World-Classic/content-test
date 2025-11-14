@@ -1,9 +1,29 @@
-
+import { Lang } from './lang.js';
 
 export class Rank {
-
-    static name = ['', 'Рекрут', 'Наёмник', 'Рядовой', 'Капрал', 'Сержант', 'Лейтенант', 'Капитан', 'Майор', 'Подполковник', 'Полковник', 'Генерал', 'Маршал', 'Бог'];
-
+	static _names = null;
+	
+	static get name() {		
+        if (!Rank._names) {
+            Rank._names = [	'', 	
+					Lang.text('rankRecruit'), 
+					Lang.text('rankMercenary'),
+					Lang.text('rankPrivate'),
+					Lang.text('rankCorporal'),
+					Lang.text('rankSergeant'),
+					Lang.text('rankLieutenant'),
+					Lang.text('rankCaptain'),
+					Lang.text('rankMajor'),
+					Lang.text('rankLieutenantColonel'), 
+					Lang.text('rankColonel'), 
+					Lang.text('rankGeneral'), 
+					Lang.text('rankMarshal'), 
+					Lang.text('rankGod')];
+        }
+		
+        return Rank._names;
+    }
+	
     static icon(rating) {
 
         if (rating <= 1199) {
