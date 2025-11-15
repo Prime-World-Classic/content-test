@@ -1,5 +1,4 @@
 import { DOM } from './dom.js';
-import { Lang } from './lang.js';
 import { News } from './news.js';
 import { Store } from './store.js';
 import { Api } from './api.js';
@@ -12,6 +11,7 @@ import { MM } from './mm.js';
 import { Splash } from './splash.js';
 import { Window } from './window.js';
 import { Castle } from './castle.js';
+import { Lang } from './lang.js';
 
 export class App {
     static APP_VERSION = '0';

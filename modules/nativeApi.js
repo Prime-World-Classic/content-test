@@ -350,57 +350,60 @@ export class NativeAPI {
 
     static async update(callback) {
 
-        if (!NativeAPI.status) {
+		if (!NativeAPI.status) {
 
-            return false;
+			return false;
 
-        }
+		}
 
-        const isLinuxUpdate = NativeAPI.platform == 'linux';
+		const isLinuxUpdate = NativeAPI.platform == 'linux';
 
-        const updaterPath = isLinuxUpdate ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
+		const updaterPath = isLinuxUpdate ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
 
-        await NativeAPI.fileSystem.promises.access(updaterPath);
+		await NativeAPI.fileSystem.promises.access(updaterPath);
 
-        let spawn = NativeAPI.childProcess.spawn(updaterPath);
+		let spawn = NativeAPI.childProcess.spawn(updaterPath);
 
-        App.notify(Lang.text('checkingUpdatesAndFiles'));
+		spawn.stdout.on('data', (data) => {
+			if (isLinuxUpdate) {
+				this.updateLinux(data, callback)
+			} else {
+				this.updateWindows(data, callback)
+			}
+		});
 
-        spawn.stdout.on('data', (data) => {
-            if (isLinuxUpdate) {
-                this.updateLinux(data, callback)
-            } else {
-                this.updateWindows(data, callback)
-            }
-        });
+		spawn.on('close', async (code) => {
 
-        spawn.on('close', async (code) => {
+			callback({ update: false, title: '', total: 0 });
 
-            callback({ update: false, title: '', total: 0 });
+			NativeAPI.progress(-1);
 
-            NativeAPI.progress(-1);
+			if ((code == 0 || code == null)) {
+				PWGame.isUpToDate = true;
+				try {
+					NativeAPI.testHashes();
+				}
+				catch (e) {
+					App.error(Lang.text('fileCheckCorrupted') + e);
+				}
+			} else {
+				PWGame.isUpdateFailed = true;
+				App.error(Lang.text('updateError') + code);
 
-            if ((code == 0 || code == null)) {
-                PWGame.isUpToDate = true;
-                try {
-                    NativeAPI.testHashes();
-                }
-                catch (e) {
-                    App.error(Lang.text('fileCheckCorrupted') + e);
-                }
-            } else {
-                PWGame.isUpdateFailed = true;
-                App.error(Lang.text('updateError') + code);
+			}
 
-            }
+			if (this.updated) {
+				NativeAPI.reset();
+			}
 
-            if (this.updated) {
-                NativeAPI.reset();
-            }
+		});
 
-        });
+		// А уведомление показываем с задержкой
+		setTimeout(() => {
+			App.notify(Lang.text('checkingUpdatesAndFiles'));
+		}, 1000);
 
-    }
+	}
 
     static analysis() {
 
