@@ -115,12 +115,21 @@ export class Window {
 			let isEnabled = rItem.enabled;
 			const categoryName = Shop.categories[rItem.categoryId];
 			const isFrame = categoryName == 'frame';
+			const isFlag = categoryName == 'flag';
+			const isSkin = categoryName == 'skin';
 			let item = DOM({ style: isFrame ? 'shop_item_img_frame' : 'shop_item_img' });
+			let itemSrc = DOM({ style: 'shop_item_img' });
 			console.log(categoryName)
 			console.log(rItem)
 			console.log(Shop[categoryName][rItem.id])
 			item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}")`;
 			const translatedName = Lang.text(Shop[categoryName][rItem.id].name);
+			let srcTranslatedName = "";
+			if (isSkin) {
+				const heroId = Shop[categoryName][rItem.id].icon.split('/')[1];
+				itemSrc.style.backgroundImage = `url("content/hero/${heroId}/1.webp")`;
+				srcTranslatedName = Lang.text(`hero_${heroId}_name`);
+			}
 			let shopItemBackground = DOM();
 			if (isFrame) {
 				shopItemBackground = DOM({ style: 'shop_item_img' });
@@ -146,49 +155,62 @@ export class Window {
 						isEnabled = false;
 					}
 				} else {
-					shopItemBackground.style.backgroundImage = `url("content/hero/1/1.webp")`
-						item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${1}.png")`;
-						isEnabled = false;
+					shopItemBackground.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${1}.png")`;
+					item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${1}.png")`;
 				}
-			};
-			category[categoryName].appendChild(DOM({ style: isEnabled ? 'shop_item' : isShop ? 'shop_item_disabled' : 'shop_item_equipped' },
-				DOM({style: 'shop_item_img_container'}, shopItemBackground, item),
-				DOM({ style: 'shop_item_name', title: translatedName }, translatedName),
+			} 
+			if (isFlag) {
+				shopItemBackground = DOM({ style: 'shop_item_img_flag' });
+				shopItemBackground.style.backgroundImage = item.style.backgroundImage;
+				item.style.backgroundImage = `url("content/img/b7.png")`
+			}
+			if (isSkin) {
+				shopItemBackground = DOM({ style: 'shop_item_img_skin' });
+				shopItemBackground.style.backgroundImage = `url("content/img/b2.png")`
+			}
+			let shopItemContainerStyle = [isEnabled ? 'shop_item_container' : isShop ? 'shop_item_container_disabled' : 'shop_item_container_equipped'];
+			if (isSkin) {
+				shopItemContainerStyle.push('show_item_container_double');
+			}
+			let shopItem = DOM({style: shopItemContainerStyle}, 
+				isSkin ? DOM({ style: 'shop_item' },
+					DOM({style: 'shop_item_img_container'}, shopItemBackground.cloneNode(), itemSrc),
+					DOM({ style: 'shop_item_name', title: translatedName }, isSkin ? srcTranslatedName : '')
+				) : DOM(),
+				DOM({ style: 'shop_item' },
+					DOM({style: 'shop_item_img_container'}, shopItemBackground, item),
+					DOM({ style: 'shop_item_name', title: translatedName }, isSkin ? translatedName : '')
+				),
+				isSkin ? DOM({style: 'shop_item_arrow'}) : DOM(),
 				DOM(
 					{
 						style: 'shop_item_price_container', event: ['click', async () => {
 							if (!isEnabled) { return; }
 							if (isShop) {
-								Window.close('main');
-								Splash.show(DOM({}, DOM({ style: 'splash-item-container' }, item), DOM({ style: 'splash-item-text' }, `Купить ${translatedName} за ${rItem.price}`, DOM({ style: 'splash-item-text' }, DOM({ style: 'shop_item_price_icon' }), "?")),
+								Splash.show(DOM({}, DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode() ), DOM({ style: 'splash-item-text' }, `Купить ${translatedName}`, DOM({ tag: 'br' }), `за ${rItem.price}`, DOM({ tag: 'img', src: 'content/img/queue/DiamondBlue.png', style: 'splash_shop_item_price_icon' }), `?`),
 									DOM({
 										style: 'splash-content-button', event: ['click', async () => {
 											Splash.hide();
 											App.error(`Покупочка ${Shop[categoryName][rItem.id].name}`); // TODO: REQUEST
-											Window.show('main', 'shop');
 										}]
 									}, "Купить"),
 									DOM({
 										style: 'splash-content-button-red', event: ['click', async () => {
 											Splash.hide();
-											Window.show('main', 'shop');
 										}]
 									}, "Отмена")
 								))
 							} else {
-								Window.close('main');
-								Splash.show(DOM({}, DOM({ style: 'splash-item-container' }, item), `Экипировать ${translatedName}?`,
+								Splash.show(DOM({}, DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode() ), `Экипировать ${translatedName}?`,
 									DOM({
 										style: 'splash-content-button', event: ['click', async () => {
 											Splash.hide();
 											App.error(`Экипировочка ${Shop[categoryName][rItem.id].name}`); // TODO: REQUEST
-											Window.show('main', 'collection');
 										}]
 									}, "Экипировать"),
 									DOM({
 										style: 'splash-content-button-red', event: ['click', async () => {
 											Splash.hide();
-											Window.show('main', 'collection');
 										}]
 									}, "Отмена")
 								))
@@ -203,9 +225,9 @@ export class Window {
 					)
 				)
 			)
-			);
+			category[categoryName].appendChild(shopItem);
 		}
-		let shopSeparator = DOM({ style: 'shop_separator' }, DOM({ style: 'shop_separator_center' }), DOM({ style: 'shop_separator_left' }), DOM({ style: 'shop_separator_right' }));
+		let shopSeparator = DOM({ style: 'shop_separator' }, DOM({ style: 'shop_separator_left' }), DOM({ style: 'shop_separator_right' }), DOM({ style: 'shop_separator_center' }));
 
 		let shopHeader = DOM({ style: 'shop_header' },
 			DOM({ style: ['shop_header_item', isShop ? 'shop_header_selected' : 'shop_header_not_selected'], event: ['click', async () => Window.show('main', 'shop')] }, Lang.text('shop_shop')),
