@@ -237,8 +237,10 @@ export class Window {
 		let skins = DOM({ style: 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_skins')), category.skin);
 		let flags = DOM({ style: 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_flags')), category.flag);
 		let frames = DOM({ style: 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_frames')), category.frame);
-		let wnd = DOM({ id: 'wshop' }, shopHeader, DOM({ style: 'shop_with_scroll' }, skins, flags, frames));
-		return wnd;
+		if (App.isAdmin()) {
+			let wnd = DOM({ id: 'wshop' }, shopHeader, DOM({ style: 'shop_with_scroll' }, skins, flags, frames));
+			return wnd;
+        }
 	}
 
 	static async shop() {
