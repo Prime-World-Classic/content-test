@@ -202,6 +202,8 @@ export const ru = {
 		callsDropped:"Звонки успешно сброшены за исключением ваших друзей",
 		voiceDisabled:"Голосовая связь отключена",
 		synthesisLang:"ru-RU",
+		hotkeyDropCalls:"Ctrl+K - сбросить все звонки кроме друзей",
+		hotkeyVolumeControl:"Ctrl+↑/↓ - повысить/понизить громкость",
 		
 		// Квесты
 		qDays: "д.",

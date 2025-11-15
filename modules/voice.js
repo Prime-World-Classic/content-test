@@ -161,17 +161,19 @@ export class Voice {
 
 			Sound.play('content/sounds/voice/enabled.mp3',{ id: 'Voice_enabled', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
 
-			Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
+			//Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
 
 		}
 		else {
 
 			Sound.play('content/sounds/voice/disabled.mp3',{ id: 'Voice_disabled', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
 
-			Voice.infoPanel.firstChild.lastChild.style.opacity = 1;
+			//Voice.infoPanel.firstChild.lastChild.style.opacity = 1;
 
 		}
-
+		
+		Voice.updateInfoPanel();
+	 
 	}
 
 	static indication(source, callback) {
@@ -258,17 +260,19 @@ export class Voice {
 			Voice.playerInfoPanel(id);
 
 		}
-
+		
 		let tutorial = DOM({ style: 'voice-info-panel-body-tutorial' });
 
 		if (Voice.mic) {
 			
-			tutorial.innerText = Lang.text('enableMic').replace('{Voice.mic.label}', Voice.mic.label);
-
 			if (Voice.mic.enabled) {
-
-				tutorial.style.opacity = 0;
 				
+				tutorial.innerText = Lang.text('hotkeyDropCalls') + '\n' + Lang.text('hotkeyVolumeControl');
+					
+			} else {
+				
+				tutorial.innerText = Lang.text('hotkeyDropCalls') + '\n' + Lang.text('hotkeyVolumeControl')  + '\n────────────\n' + Lang.text('enableMic').replace('{Voice.mic.label}', Voice.mic.label);
+					
 			}
 			
 		}

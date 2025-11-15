@@ -205,6 +205,8 @@ export const en = {
 		callsDropped:"Calls successfully dropped except for your friends",
 		voiceDisabled:"Voice communication is disabled",
 		synthesisLang:"en-US",
+		hotkeyDropCalls:"Ctrl+K - drop all calls except friends",
+		hotkeyVolumeControl:"Ctrl+↑/↓ - increase/decrease volume",
 		
 		// Квесты
 		qDays: "d.",

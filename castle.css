@@ -1992,7 +1992,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .shop_item_price_container {
 	position: absolute;
 	top: 80cqh;
-	width: 90cqw;
+	width: 60cqh;
 	height: 15cqh;
 	overflow: hidden;
 	border-radius: 10%;
