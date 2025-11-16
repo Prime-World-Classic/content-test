@@ -584,7 +584,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
     position: relative;
     top: 4.7vh;
     transform: scale(1.9);
-	z-index: 10;
 }
 
 .castle-button-play-mode,
@@ -1803,6 +1802,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	width: 100cqh;
 	height: 100cqh;
 	container-type: inline-size;
+	pointer-events: none; 
 }
 
 .shop_separator_left{
