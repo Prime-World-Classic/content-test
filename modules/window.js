@@ -103,8 +103,9 @@ export class Window {
 		return DOM({ id: 'winventory' }, view);
 	}
 
-	static processShopAndCollection(request, isShop) {
-		let topHeroVictoryCount = { heroId: 34, victoryCount: 100 }; // TODO: await App.api.request(App.CURRENT_MM, 'getHeroWithVictoryCount', { userId:  });
+	static async processShopAndCollection(request, isShop) {
+		//let req = await App.api.request(App.CURRENT_MM, 'getHeroWithVictoryCount');;
+		let topHeroVictoryCount = { heroId: 34, skinId: 1, frameType: 4 }; // TODO: await App.api.request(App.CURRENT_MM, 'getHeroWithVictoryCount');
 		let category = {
 			skin: DOM({ style: 'shop_items' }),
 			flag: DOM({ style: 'shop_items' }),
@@ -119,44 +120,21 @@ export class Window {
 			const isSkin = categoryName == 'skin';
 			let item = DOM({ style: isFrame ? 'shop_item_img_frame' : 'shop_item_img' });
 			let itemSrc = DOM({ style: 'shop_item_img' });
-			console.log(categoryName)
-			console.log(rItem)
-			console.log(Shop[categoryName][rItem.id])
-			item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}")`;
-			const translatedName = Lang.text(Shop[categoryName][rItem.id].name);
+			let itemIcon = Shop.getIcon(rItem.categoryId, isFrame ? `${rItem.externalId}/${topHeroVictoryCount.frameType}` : rItem.externalId);
+			item.style.backgroundImage = itemIcon[0];
+			let itemName = Shop.getName(rItem.categoryId, rItem.externalId);
+			const translatedName = Lang.text(itemName[0]);
 			let srcTranslatedName = "";
 			if (isSkin) {
-				const heroId = Shop[categoryName][rItem.id].icon.split('/')[1];
-				itemSrc.style.backgroundImage = `url("content/hero/${heroId}/1.webp")`;
-				srcTranslatedName = Lang.text(`hero_${heroId}_name`);
+				itemSrc.style.backgroundImage = itemIcon[1]; //`url("content/hero/${heroId}/1.webp")`;
+				srcTranslatedName = Lang.text(itemName[1]);
 			}
 			let shopItemBackground = DOM();
 			if (isFrame) {
 				shopItemBackground = DOM({ style: 'shop_item_img' });
-				let frameType = 0;
-				if (topHeroVictoryCount && topHeroVictoryCount.heroId) {
-					shopItemBackground.style.backgroundImage = `url("content/hero/${topHeroVictoryCount.heroId}/1.webp")`
-					if (topHeroVictoryCount.victoryCount >= 25) {
-						frameType = 1;
-					}
-					if (topHeroVictoryCount.victoryCount >= 50) {
-						frameType = 2;
-					}
-					if (topHeroVictoryCount.victoryCount >= 75) {
-						frameType = 3;
-					}
-					if (topHeroVictoryCount.victoryCount >= 100) {
-						frameType = 4;
-					}
-					if (frameType) {
-						item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${frameType}.png")`;
-					} else {
-						item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${1}.png")`;
-						isEnabled = false;
-					}
-				} else {
-					shopItemBackground.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${1}.png")`;
-					item.style.backgroundImage = `url("content/${Shop[categoryName][rItem.id].icon}${1}.png")`;
+				shopItemBackground.style.backgroundImage = `url("content/hero/${topHeroVictoryCount.heroId}/${topHeroVictoryCount.skinId}.webp")`
+				if (topHeroVictoryCount.frameType == 0) {
+					isEnabled = false;
 				}
 			} 
 			if (isFlag) {
@@ -172,26 +150,36 @@ export class Window {
 			if (isSkin) {
 				shopItemContainerStyle.push('show_item_container_double');
 			}
-			let shopItem = DOM({style: shopItemContainerStyle}, 
+			let shopItem = DOM({style: shopItemContainerStyle, title: translatedName}, 
 				isSkin ? DOM({ style: 'shop_item' },
 					DOM({style: 'shop_item_img_container'}, shopItemBackground.cloneNode(), itemSrc),
-					DOM({ style: 'shop_item_name', title: translatedName }, isSkin ? srcTranslatedName : '')
+					DOM({ style: 'shop_item_name' }, isSkin ? srcTranslatedName : '')
 				) : DOM(),
 				DOM({ style: 'shop_item' },
 					DOM({style: 'shop_item_img_container'}, shopItemBackground, item),
-					DOM({ style: 'shop_item_name', title: translatedName }, isSkin ? translatedName : '')
+					DOM({ style: 'shop_item_name' }, isSkin ? translatedName : '')
 				),
 				isSkin ? DOM({style: 'shop_item_arrow'}) : DOM(),
 				DOM(
 					{
 						style: 'shop_item_price_container', event: ['click', async () => {
-							if (!isEnabled) { return; }
+							if (!shopItem.classList.contains('shop_item_container')) { return; }
 							if (isShop) {
 								Splash.show(DOM({}, DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode() ), DOM({ style: 'splash-item-text' }, `Купить ${translatedName}`, DOM({ tag: 'br' }), `за ${rItem.price}`, DOM({ tag: 'img', src: 'content/img/queue/DiamondBlue.png', style: 'splash_shop_item_price_icon' }), `?`),
 									DOM({
 										style: 'splash-content-button', event: ['click', async () => {
 											Splash.hide();
-											App.error(`Покупочка ${Shop[categoryName][rItem.id].name}`); // TODO: REQUEST
+											let crystalLeft;
+											try {
+												crystalLeft = await App.api.request('shop','buy',{id:rItem.id});
+											}
+											catch (e) {
+												App.error(e);
+												return;
+											}
+											View.castleTotalCrystal.firstChild.innerText = crystalLeft;
+											shopItem.classList.add('shop_item_container_disabled');
+											shopItem.classList.remove('shop_item_container');
 										}]
 									}, "Купить"),
 									DOM({
@@ -205,7 +193,23 @@ export class Window {
 									DOM({
 										style: 'splash-content-button', event: ['click', async () => {
 											Splash.hide();
-											App.error(`Экипировочка ${Shop[categoryName][rItem.id].name}`); // TODO: REQUEST
+											try {
+												await App.api.request('shop','apply',{id:rItem.id});
+											}
+											catch (e) {
+												App.error(e);
+												return;
+											}
+											shopItem.classList.add('shop_item_container_equipped');
+											shopItem.classList.remove('shop_item_container');
+											shopItem.lastChild.firstChild.innerText = Lang.text("shop_in_use");
+											for (const collectionItem of category[categoryName].childNodes) {
+												if (collectionItem != shopItem) {
+													collectionItem.classList.add('shop_item_container');
+													collectionItem.classList.remove('shop_item_container_equipped');
+													collectionItem.lastChild.firstChild.innerText = Lang.text("shop_use");
+												}
+											}
 										}]
 									}, "Экипировать"),
 									DOM({
@@ -234,9 +238,9 @@ export class Window {
 			DOM({ style: ['shop_header_item', !isShop ? 'shop_header_selected' : 'shop_header_not_selected'], event: ['click', async () => Window.show('main', 'collection')] }, Lang.text('shop_collection')),
 			shopSeparator.cloneNode(true));
 
-		let skins = DOM({ style: 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_skins')), category.skin);
-		let flags = DOM({ style: 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_flags')), category.flag);
-		let frames = DOM({ style: 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_frames')), category.frame);
+		let skins = DOM({ style: category.skin.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_skins')), category.skin);
+		let flags = DOM({ style: category.flag.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_flags')), category.flag);
+		let frames = DOM({ style: category.frame.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_frames')), category.frame);
 		if (App.isAdmin()) {
 			let wnd = DOM({ id: 'wshop' }, shopHeader, DOM({ style: 'shop_with_scroll' }, skins, flags, frames));
 			return wnd;
@@ -244,45 +248,14 @@ export class Window {
 	}
 
 	static async shop() {
-		// enabled: - не приобретено ли уже? делает кнопку активации недоступной
-		let request = [
-		];
-		for (let fid in Shop.skin) {
-			const f = Shop.skin[fid];
-			request.push({ id: fid, price: 220, categoryId: 0, enabled: true})
-		}
-		for (let fid in Shop.frame) {
-			const f = Shop.frame[fid];
-			request.push({ id: fid, price: 100, categoryId: 2, enabled: fid != 1})
-		}
-		for (let fid in Shop.flag) {
-			const f = Shop.flag[fid];
-			if (f.type == 'customFlags') {
-				request.push({ id: fid, price: 100, categoryId: 1, enabled: true})
-			}
-		}
-		return this.processShopAndCollection(request, true);
+		let request = await App.api.request('shop','available');
+		return await this.processShopAndCollection(request, true);
 	}
 
 	static async collection() {
-		// enabled - не экипировано ли уже? делает кнопку активации недоступной
-		let request = [
-		];
-		for (let fid in Shop.skin) {
-			const f = Shop.skin[fid];
-			request.push({ id: fid, price: 220, categoryId: 0, enabled: true})
-		}
-		for (let fid in Shop.frame) {
-			const f = Shop.frame[fid];
-			request.push({ id: fid, categoryId: 2, enabled: fid != 1})
-		}
-		for (let fid in Shop.flag) {
-			const f = Shop.flag[fid];
-			if (f.type == 'customFlags') {
-				request.push({ id: fid, categoryId: 1, enabled: fid != 1})
-			}
-		}
-		return this.processShopAndCollection(request, false);
+		let request = await App.api.request('shop','purchase');
+
+		return await this.processShopAndCollection(request, false);
 	}
 	
 	static async quest(item) {

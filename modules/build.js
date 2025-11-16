@@ -462,13 +462,13 @@ export class Build {
 
 		let preload = new PreloadImages(bodyHero);
 
-		for (let i = 0; i < Build.dataRequest.hero.skin.total; i++) {
+		for (const i of Build.dataRequest.hero.skin.list) {
 
 			let hero = DOM();
 
-			hero.dataset.url = `content/hero/${Build.heroId}/${(i + 1)}.webp`;
+			hero.dataset.url = `content/hero/${Build.heroId}/${i}.webp`;
 
-			hero.dataset.skin = (i + 1);
+			hero.dataset.skin = i;
 
 			hero.addEventListener('click', async () => {
 

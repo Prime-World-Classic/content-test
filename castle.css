@@ -1755,7 +1755,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	width: 100cqw;
 	display: flex;
 	flex-direction: column;
-  	overflow-y: scroll;
+  	overflow-y: auto;
 	overflow-x: hidden;
 	scrollbar-color: rgb(234, 230, 123) rgba(255, 166, 0, 0);
   	scrollbar-width: 1cqw;
@@ -1837,6 +1837,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.1),rgba(6,41,56, 0.1));
 	border-left:0.1cqh solid rgba(0, 255, 255, 0.5)cyan;
 	border-right:0.1cqh solid rgba(0, 255, 255, 0.5);
+}
+.shop_category_hidden {
+	display: none;
 }
 
 .shop_category_header {
