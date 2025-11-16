@@ -456,6 +456,32 @@ export class Build {
 
 	}
 
+	static async changeSkinForHero(heroId, skinId) {
+
+		await App.api.request('build', 'skinChange', { hero: heroId, skin: skinId });
+
+		MM.hero.filter((hero) => { return hero.id == heroId })[0].skin = skinId;
+
+		try {
+
+			let heroItem = View.castleBottom.querySelector(`#id${heroId}`);
+
+			heroItem.style.backgroundImage = `url(content/hero/${heroId}/${skinId}.webp)`;
+
+			let heroName = heroItem.querySelector('.castle-item-hero-name');
+
+			heroName.firstChild.innerText = Lang.heroName(heroId, skinId);
+
+		} catch (e) {
+			App.error(e);
+		}
+
+		//View.bodyCastleHeroes();
+
+		//await App.ShowCurrentViewAsync();
+
+	}
+
 	static skinChange() {
 
 		let bodyHero = DOM({ style: 'skin-change' });
@@ -472,29 +498,11 @@ export class Build {
 
 			hero.addEventListener('click', async () => {
 
-				await App.api.request('build', 'skinChange', { hero: Build.heroId, skin: hero.dataset.skin });
+				Build.changeSkinForHero(Build.heroId, hero.dataset.skin);
 
 				Build.heroImg.style.backgroundImage = `url(content/hero/${Build.heroId}/${hero.dataset.skin}.webp)`;
 
 				Splash.hide();
-
-				try {
-
-					let heroItem = View.castleBottom.querySelector(`#id${Build.heroId}`);
-
-					heroItem.style.backgroundImage = `url(content/hero/${Build.heroId}/${hero.dataset.skin}.webp)`;
-
-					let heroName = heroItem.querySelector('.castle-item-hero-name');
-
-					heroName.firstChild.innerText = Lang.heroName(Build.heroId, hero.dataset.skin);
-
-				} catch (e) {
-					App.error(e);
-				}
-
-				//View.bodyCastleHeroes();
-
-				//await App.ShowCurrentViewAsync();
 
 			});
 

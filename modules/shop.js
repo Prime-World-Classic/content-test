@@ -27,7 +27,12 @@ export class Shop {
         let frameType_frameId = externalId.split('/');
         let frameType = Number(frameType_frameId[0]);
         let frameId = Math.max(0, Number(frameType_frameId[1]) - 1);
-        return [`url("content/frames/${frameType + frameId}.png")`];
+        return [
+            `url("content/frames/${frameType + 0}.png")`,
+            `url("content/frames/${frameType + 1}.png")`,
+            `url("content/frames/${frameType + 2}.png")`,
+            `url("content/frames/${frameType + 3}.png")`,
+        ];
     }
     static getSkinIcon(externalId) {
         let heroId_skinId = externalId.split('/');

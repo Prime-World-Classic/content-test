@@ -232,6 +232,11 @@ export const en = {
 		frame_28:"Secret frame", 
 		frame_32:"Dragon frame", 
 		frame_36:"Interseason frame", 
+		
+		frame_req_1: "25 wins",
+		frame_req_2: "50 wins",
+		frame_req_3: "75 wins",
+		frame_req_4: "100 wins",
 
 		// Магазин-флаги
 		flag_admin: "Admin", 
