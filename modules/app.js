@@ -652,7 +652,7 @@ export class App {
 
     static isAdmin(id = 0) {
 
-        return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(Number((id ? id : App.storage.data.id)));
+        return [1, 2, 24, 134, 865, 2220, 292, 1853, 6179, 12781].includes(Number((id ? id : App.storage.data.id)));
 
     }
 
