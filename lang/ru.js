@@ -51,6 +51,14 @@ export const ru = {
 		fullscreenDisabled:'Включен оконный режим',
 		clickToViewHeroRating: 'Нажмите сюда, чтобы посмотреть рейтинг по отдельным героям',
 		
+		// Window
+		windowShopBuyItem: "Купить ",
+		windowShopItemPrice: "за {rItem.price}",
+		windowShopBuy: "Купить",
+		windowShopCancel: "Отмена",
+		windowShopEquip: "Экипировать",
+		windowShopEquipItem: "Экипировать ",
+		
 		//Settings
 		settingsFileAccessError: 'Ошибка доступа к файлу настроек: ',
 		settingsNativeApiNotInitialized: 'NativeAPI не инициализирован! Используются настройки по умолчанию',

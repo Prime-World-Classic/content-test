@@ -51,6 +51,14 @@ export const en = {
 		fullscreenDisabled:'Window mode enabled',
 		clickToViewHeroRating: 'Click to view rating by individual heroes',
 		
+		// Window
+		windowShopBuyItem: "Buy ",
+		windowShopItemPrice: "for {rItem.price}",
+		windowShopBuy: "Buy",
+		windowShopCancel: "Cancel",
+		windowShopEquip: "Equip",
+		windowShopEquipItem: "Equip ",
+		
 		//Settings
 		settingsFileAccessError: 'Settings file access error: ',
 		settingsNativeApiNotInitialized: 'NativeAPI not initialized! Using default settings',
