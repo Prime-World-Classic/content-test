@@ -1869,6 +1869,11 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	justify-content: center;
 }
 
+.shop_items_frames {
+	flex-direction: column;
+	align-items: center;
+}
+
 .shop_item_container, .shop_item_container_disabled, .shop_item_container_equipped {
 	container-type: size;
 	width: 14.2cqw;
@@ -2020,6 +2025,10 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 .splash-shop-item-name {
 	color: rgba(236, 195, 117, 1);
+	display: inline;
+}
+.splash-shop-item-hint {
+	color: rgb(236, 161, 117);
 	display: inline;
 }
 

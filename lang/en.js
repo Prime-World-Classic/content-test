@@ -220,9 +220,11 @@ export const en = {
 
 		shop_skins: "Skins",
 		shop_flags: "Flags",
-		shop_frames: "Frames",
-		bomber_S1: "Explonya",     
+		shop_frames: "Frames", 
+
+		frame_hint: "The frame will be active when the hero has 25+ wins",  
 		
+		frame_0: "No frame", 
 		frame_4: "Classic frame", 
 		frame_8: "Summber frame", 
 		frame_12:"Autumn frame", 
@@ -233,6 +235,7 @@ export const en = {
 		frame_32:"Dragon frame", 
 		frame_36:"Interseason frame", 
 		
+		frame_no_frame: "No frame",
 		frame_req_1: "25 wins",
 		frame_req_2: "50 wins",
 		frame_req_3: "75 wins",

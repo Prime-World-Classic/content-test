@@ -218,7 +218,10 @@ export const ru = {
 		shop_skins: "Скины",
 		shop_flags: "Флаги",
 		shop_frames: "Рамки",
+
+		frame_hint: "Рамка активируется, когда у героя будет 25+ побед",
 				
+		frame_0: "Без рамки", 
 		frame_4: "Классическая рамка", 
 		frame_8: "Летняя рамка", 
 		frame_12: "Осенняя рамка", 
@@ -229,6 +232,7 @@ export const ru = {
 		frame_32: "Драконья рамка", 
 		frame_36: "Межсезонная рамка",
 		
+		frame_no_frame: "Нет рамки",
 		frame_req_1: "25 побед",
 		frame_req_2: "50 побед",
 		frame_req_3: "75 побед",
