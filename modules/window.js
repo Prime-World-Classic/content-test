@@ -12,6 +12,7 @@ import { Shop } from './shop.js';
 import { Voice } from './voice.js';
 import { MM } from './mm.js';
 import { Build } from './build.js';
+import { Timer } from './timer.js';
 
 
 export class Window {
@@ -132,7 +133,7 @@ export class Window {
 			let itemIcon = Shop.getIcon(rItem.categoryId, isFrame ? `${rItem.externalId}/${topHeroVictoryCount.frameId}` : rItem.externalId);
 			item.style.backgroundImage = itemIcon[0];
 			let itemName = Shop.getName(rItem.categoryId, rItem.externalId);
-			const translatedName = isFlag ? rItem.externalId : Lang.text(itemName[0]);
+			const translatedName = Lang.text(itemName[0]);
 			let srcTranslatedName = "";
 			let frameItems = [item.cloneNode(),item.cloneNode(),item.cloneNode(),item.cloneNode()]
 			if (isSkin) {
@@ -186,7 +187,7 @@ export class Window {
 				) : DOM(),
 				!isFrame ? DOM({ style: 'shop_item' },
 					DOM({style: 'shop_item_img_container'}, shopItemBackground, item),
-					DOM({ style: 'shop_item_name' }, isSkin || isFlag ? translatedName : isFrame ? Lang.text('frame_req_1') : '')
+					DOM({ style: 'shop_item_name' }, isSkin ? translatedName : isFrame ? Lang.text('frame_req_1') : '')
 				) : DOM(),
 				isFrame ? DOM({ style: 'shop_item' }, DOM({style: 'shop_item_img_container'}, shopItemBackground.cloneNode(), frameItems[0]), DOM({ style: 'shop_item_name' }, showQuadFrame ? Lang.text('frame_req_1') : Lang.text('frame_no_frame'))) : DOM(),
 				showQuadFrame ? DOM({ style: 'shop_item' }, DOM({style: 'shop_item_img_container'}, shopItemBackground.cloneNode(), frameItems[1]), DOM({ style: 'shop_item_name' }, Lang.text('frame_req_2'))) : DOM(),
@@ -304,17 +305,48 @@ export class Window {
 			DOM({ style: ['shop_header_item', !isShop ? 'shop_header_selected' : 'shop_header_not_selected'], event: ['click', async () => Window.show('main', 'collection')] }, Lang.text('shop_collection')),
 			shopSeparator.cloneNode(true));
 
+		function getTimeLeftBeforeUpdate() {
+			const now = new Date();
+
+			const utcDate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+
+			const offset = (24 - 3) * 60 * 60 * 1000; // + 24 часа + 3 часа Мск
+
+			const roundedDate = new Date(utcDate.getTime() + offset);
+
+			const timeLeft = roundedDate.getTime() - now.getTime();
+			return Timer.getFormattedTimer(timeLeft);
+		}
+
+		let shopTimeLeft = DOM({style: 'shop_bottom_time'}, getTimeLeftBeforeUpdate());
+
+		let shopBottom = DOM({style: 'shop_bottom'}, Lang.text("shop_bottom"), shopTimeLeft);
+
+		function updateEverySecond() {
+			setTimeout(() => {
+				
+				shopTimeLeft.innerText = getTimeLeftBeforeUpdate();
+				updateEverySecond();
+				
+			},1000);
+		}
+		if (isShop) {
+			updateEverySecond();
+		}
+
 		let skins = DOM({ style: category.skin.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_skins')), category.skin);
 		let flags = DOM({ style: category.flag.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_flags')), category.flag);
 		let frames = DOM({ style: category.frame.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_frames')), category.frame);
+
 		if (App.isAdmin()) {
-			let wnd = DOM({ id: 'wshop' }, shopHeader, DOM({ style: 'shop_with_scroll' }, skins, flags, frames));
+			let wnd = DOM({ id: 'wshop' }, shopHeader, DOM({ style: ['shop_with_scroll', isShop ? 'shop_with_scroll_shop' : '_dummy_'] }, skins, flags, frames), isShop ? shopBottom : DOM());
 			return wnd;
         }
 	}
 
 	static async shop() {
 		let request = await App.api.request('shop','available');
+		//request.sort((x,y) => x.id - y.id );
 		return await this.processShopAndCollection(request, true);
 	}
 

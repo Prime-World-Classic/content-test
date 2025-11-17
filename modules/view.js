@@ -16,6 +16,7 @@ import { MM } from './mm.js';
 import { PreloadImages } from './preloadImages.js';
 import { Game } from './game.js';
 import { Splash } from './splash.js';
+import { Timer } from './timer.js';
 
 export class View {
     static mmQueueMap = {};
@@ -1103,17 +1104,7 @@ export class View {
             let timer = DOM({ style: 'quest-item-timer' });
             const tick = () => {
 				item.timer = (item.timer - 1000);
-                const totalMilliseconds = item.timer;
-                const days = Math.floor(totalMilliseconds / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((totalMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((totalMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((totalMilliseconds % (1000 * 60)) / 1000);
-
-                const formattedDays = days ? String(days).padStart(2, '0') + ` ${Lang.text('qDays')}` : '';
-                const formattedHours = String(hours).padStart(2, '0');
-                const formattedMinutes = String(minutes).padStart(2, '0');
-                const formattedSeconds = String(seconds).padStart(2, '0');
-                timer.textContent = `${formattedDays} ${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+                timer.textContent = Timer.getFormattedTimer(item.timer);
             };
             tick();
             setInterval(tick, 1000);
@@ -1823,7 +1814,7 @@ export class View {
                 nickname.append(DOM({
                     tag: 'span', event: ['click', async () => {
 
-                        await App.api.request(App.CURRENT_MM, 'leaveParty', { id: MM.partyId });
+                            await App.api.request(App.CURRENT_MM, 'leaveParty', { id: MM.partyId });
 
                         View.show('castle');
 

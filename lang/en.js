@@ -230,6 +230,8 @@ export const en = {
 		shop_flags: "Flags",
 		shop_frames: "Frames", 
 
+		shop_bottom: "The shop will be updated in",
+
 		frame_hint: "The frame will be active when the hero has 25+ wins",  
 		
 		frame_0: "No frame", 

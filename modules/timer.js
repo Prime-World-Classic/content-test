@@ -77,4 +77,45 @@ export class Timer {
 
 	}
 
+	static oneSecond = 1000;
+	static oneMinute = this.oneSecond * 60;
+	static oneHour = this.oneMinute * 60;
+	static oneDay = this.oneHour * 24;
+
+    static getFormattedTimeDays(timer) {
+		return Math.floor((timer / this.oneDay));
+    }
+
+    static getFormattedTimeHours(timer) {
+		return Math.floor((timer / this.oneHour) % 24);
+    }
+
+    static getFormattedTimeMinutes(timer) {
+		return Math.floor((timer / this.oneMinute) % 60);
+    }
+
+    static getFormattedTimeSeconds(timer) {
+		return Math.floor((timer / this.oneSecond) % 60);
+    }
+
+	static getFormattedTimer(timer) {
+		const days = this.getFormattedTimeDays(timer);
+		const hours = this.getFormattedTimeHours(timer);
+		const minutes = this.getFormattedTimeMinutes(timer);
+		const seconds = this.getFormattedTimeSeconds(timer);
+		let formattedDate = '';
+		if (days) {
+			formattedDate += `${String(days).padStart(2, '0')}:`
+		}
+		if (days || hours){
+			formattedDate += `${String(hours).padStart(2, '0')}:`
+		}
+		if (days || hours || minutes){
+			formattedDate += `${String(minutes).padStart(2, '0')}:`
+		}
+		if (days || hours || minutes || seconds){
+			formattedDate += `${String(seconds).padStart(2, '0')}`
+		}
+        return formattedDate;
+	}
 }
