@@ -461,6 +461,8 @@ export const en = {
 		flag_japan: "Japan", 
 		flag_chile: "Chile", 
 		flag_mozambique: "Mozambique", 
+		
+		flag_tester: "Tester", 
 
 		// Переводы
 		select_faction: "Select faction",

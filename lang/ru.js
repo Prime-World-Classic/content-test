@@ -458,6 +458,8 @@ export const ru = {
 		flag_japan: "Япония",
 		flag_chile: "Чили",
 		flag_mozambique: "Мозамбик",
+		
+		flag_tester: "Тестер",
 
 		// Переводы
 		select_faction: "Выбор Фракции",
