@@ -305,34 +305,9 @@ export class Window {
 			DOM({ style: ['shop_header_item', !isShop ? 'shop_header_selected' : 'shop_header_not_selected'], event: ['click', async () => Window.show('main', 'collection')] }, Lang.text('shop_collection')),
 			shopSeparator.cloneNode(true));
 
-		function getTimeLeftBeforeUpdate() {
-			const now = new Date();
-
-			const utcDate = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
-
-			const offset = (24 - 3) * 60 * 60 * 1000; // + 24 часа + 3 часа Мск
-
-			const roundedDate = new Date(utcDate.getTime() + offset);
-
-			const timeLeft = roundedDate.getTime() - now.getTime();
-			return Timer.getFormattedTimer(timeLeft);
-		}
-
-		let shopTimeLeft = DOM({style: 'shop_bottom_time'}, getTimeLeftBeforeUpdate());
+		let shopTimeLeft = DOM({style: 'shop_bottom_time'}, Timer.getFormattedTimer(Shop.timeBeforeUpdate));
 
 		let shopBottom = DOM({style: 'shop_bottom'}, Lang.text("shop_bottom"), shopTimeLeft);
-
-		function updateEverySecond() {
-			setTimeout(() => {
-				
-				shopTimeLeft.innerText = getTimeLeftBeforeUpdate();
-				updateEverySecond();
-				
-			},1000);
-		}
-		if (isShop) {
-			updateEverySecond();
-		}
 
 		let skins = DOM({ style: category.skin.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_skins')), category.skin);
 		let flags = DOM({ style: category.flag.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category' }, DOM({ style: 'shop_category_header' }, Lang.text('shop_flags')), category.flag);
@@ -340,6 +315,30 @@ export class Window {
 
 		if (App.isAdmin()) {
 			let wnd = DOM({ id: 'wshop' }, shopHeader, DOM({ style: ['shop_with_scroll', isShop ? 'shop_with_scroll_shop' : '_dummy_'] }, skins, flags, frames), isShop ? shopBottom : DOM());
+
+			await Shop.retrieveLastUpdate();
+
+			wnd.timeLeft = Shop.timeBeforeUpdate;
+
+			function checkUpdate() {
+				setTimeout(_ => {
+					if (!wnd) {
+						return;
+					}
+
+					if (wnd.timeLeft <= 0) {
+						Window.show('main', 'shop');
+						return;
+					}
+				
+					shopTimeLeft.innerText = Timer.getFormattedTimer(wnd.timeLeft);
+					wnd.timeLeft -= 1000;
+					checkUpdate();
+				}, 1000);
+			}
+
+			checkUpdate();
+
 			return wnd;
         }
 	}

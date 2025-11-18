@@ -1,10 +1,48 @@
 import { App } from './app.js';
+import { View } from './view.js';
 
 export class Shop {
     static categories = {
         1: 'flag',
         2: 'frame',
         3: 'skin',
+    }
+    static timeBeforeUpdate = 0;
+
+    static getCurrentDateMsk() {
+
+		const hour = 60 * 60 * 1000;
+
+		const dateNow = new Date();
+
+		const dateNowMsk = new Date(dateNow.getTime() + 3 * hour);
+
+		return new Date(Date.UTC(dateNowMsk.getFullYear(), dateNowMsk.getMonth(), dateNowMsk.getDate()));
+
+    }
+
+    static async retrieveLastUpdate(){
+
+        Shop.timeBeforeUpdate = await App.api.request('shop','getTimeBeforeUpdateForUser');
+        if (Shop.timeoutEvent) {
+            clearTimeout(Shop.timeoutEvent);
+        }
+
+        if (Shop.timeBeforeUpdate > 0) {
+            Shop.timeoutEvent = setTimeout(_ => {
+                if (View.castleCrystalContainer) {
+                    View.castleCrystalContainer.classList.add('crystal-container-anim');
+                }
+            }, Shop.timeBeforeUpdate);
+        } else {
+            Shop.requireAnimation = true;
+            setTimeout(_ => {
+                if (View.castleCrystalContainer) {
+                    View.castleCrystalContainer.classList.add('crystal-container-anim');
+                }
+            }, 1000);
+        }
+        
     }
 
     static getIcon(categoryId, externalId) {

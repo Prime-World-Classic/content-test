@@ -1730,7 +1730,7 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 
 #wshop {
 	position:absolute;
-	left:50%;
+	left:49.72cqw;
 	top:15cqh;
 	transform:translateX(-50%);
 	width:80cqh;
@@ -1759,6 +1759,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	scrollbar-color: rgb(234, 230, 123) rgba(255, 166, 0, 0);
   	scrollbar-width: 1cqw;
 }
+.shop_with_scroll_shop {
+	margin-bottom: 3cqh;
+}
 
 .shop_header {
 	width: 100cqw;
@@ -1768,11 +1771,12 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	flex-direction: row;
 	container-type: size;
 	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.5),rgba(6,41,56, 0.5));
-	border:0.1cqh solid rgba(0, 255, 255, 0.5);
-	border-bottom: 0.1cqh solid rgba(255, 166, 0, 0.5);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	border:0.1cqh solid rgba(0, 255, 255, 0.4);
+	border-left: 0;
+	border-right: 0;
 }
 
 .shop_header_item {
@@ -1835,8 +1839,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 
 .shop_category {
 	background-image:linear-gradient(180deg, rgba(12, 92, 107, 0.1),rgba(6,41,56, 0.1));
-	border-left:0.1cqh solid rgba(0, 255, 255, 0.5);
-	border-right:0.1cqh solid rgba(0, 255, 255, 0.5);
 }
 .shop_category_hidden {
 	display: none;
@@ -2077,9 +2079,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	width: 5cqh;
 	height: 5cqh;
 }
-.shop_with_scroll_shop {
-	margin-bottom: 3cqh;
-}
 .shop_bottom {
 	position: absolute;
 	bottom: 0;
@@ -2090,6 +2089,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	border-bottom-left-radius: 10%;
+	border-bottom-right-radius: 10%;
 }
 .shop_bottom_time {
 	color: rgba(236, 195, 117, 1);

@@ -17,6 +17,7 @@ import { PreloadImages } from './preloadImages.js';
 import { Game } from './game.js';
 import { Splash } from './splash.js';
 import { Timer } from './timer.js';
+import { Shop } from './shop.js';
 
 export class View {
     static mmQueueMap = {};
@@ -48,12 +49,6 @@ export class View {
 	static castleQuestBody = DOM({ style: ['quest', 'left-offset-no-shift'] });
 	
 	static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({style: 'quest-counter'},''));
-
-    static castleCrystalContainer = DOM({style: ['crystal-container', 'crystal-container-anim'], 
-        event: ['click', () => {
-            View.castleCrystalContainer.classList.remove('crystal-container-anim');
-            Window.show('main', 'shop');
-        }] }, View.castleTotalCrystal);
 	
     static setCss(name = 'content/style.css') {
 
@@ -252,6 +247,8 @@ export class View {
     static async castle() {
 
         document.body.classList.add('noselect');
+
+        Shop.retrieveLastUpdate();   
 
         View.setCss('content/castle.css');
 
@@ -837,6 +834,12 @@ export class View {
         tooltipText.textContent = Lang.text('titlehint');
         tooltipBubble.append(tooltipText);
         tooltipWrap.append(tooltipBubble);
+
+        View.castleCrystalContainer = DOM({style: ['crystal-container', Shop.requireAnimation ? 'crystal-container-anim' : '_dummy_'], 
+        event: ['click', () => {
+            View.castleCrystalContainer.classList.remove('crystal-container-anim');
+            Window.show('main', 'shop');
+        }] }, View.castleTotalCrystal);
 
         banner.append(statWrapper,View.castleCrystalContainer);
 
