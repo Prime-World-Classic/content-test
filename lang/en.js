@@ -58,6 +58,8 @@ export const en = {
 		windowShopCancel: "Cancel",
 		windowShopEquip: "Equip",
 		windowShopEquipItem: "Equip ",
+		windowShopUnequip: "Unequip",
+		windowShopUnequipItem: "Unequip ",
 		
 		//Settings
 		settingsFileAccessError: 'Settings file access error: ',
@@ -461,9 +463,14 @@ export const en = {
 		flag_japan: "Japan", 
 		flag_chile: "Chile", 
 		flag_mozambique: "Mozambique", 
+		flag_tester: "Tester PWC", 
+		flag_bublik: "Bagel",
+		flag_father_christmas: "Father Christmas", 
+		flag_fir: "Fir Tree",
+		flag_oblochko: "Cloud",
+		flag_snow: "Snowflake",
+		flag_snowman: "Snowman",
 		
-		flag_tester: "Tester", 
-
 		// Переводы
 		select_faction: "Select faction",
 

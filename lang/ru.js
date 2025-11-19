@@ -58,6 +58,8 @@ export const ru = {
 		windowShopCancel: "Отмена",
 		windowShopEquip: "Экипировать",
 		windowShopEquipItem: "Экипировать ",
+		windowShopUnequip: "Снять",
+		windowShopUnequipItem: "Снять ",
 		
 		//Settings
 		settingsFileAccessError: 'Ошибка доступа к файлу настроек: ',
@@ -457,9 +459,14 @@ export const ru = {
 		flag_jamaica: "Ямайка",
 		flag_japan: "Япония",
 		flag_chile: "Чили",
-		flag_mozambique: "Мозамбик",
-		
-		flag_tester: "Тестер",
+		flag_mozambique: "Мозамбик",		
+		flag_tester: "Тестер PWC",
+		flag_bublik: "Бублик",
+		flag_father_christmas: "Дед мороз",
+		flag_fir: "Ёлка",
+		flag_oblochko: "Облочко",
+		flag_snow: "Снежинка",
+		flag_snowman: "Снеговик",
 
 		// Переводы
 		select_faction: "Выбор Фракции",

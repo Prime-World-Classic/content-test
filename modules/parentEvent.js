@@ -1,52 +1,41 @@
-import { View } from './view.js';
-import { App } from './app.js';
+import { View } from "./view.js";
+import { App } from "./app.js";
 
 export class ParentEvent {
+  static children;
 
-	static children;
+  static async authorization(body) {
+    if (!body.id) {
+      if (ParentEvent.children) {
+        ParentEvent.children.close();
+      }
 
-	static async authorization(body) {
+      if ("error" in body) {
+        App.error(body.error);
+      }
 
-		if (!body.id) {
+      return;
+    }
 
-			if (ParentEvent.children) {
+    await App.storage.set({
+      id: body.id,
+      token: body.token,
+      login: body.login,
+      fraction: body.fraction,
+    });
 
-				ParentEvent.children.close();
+    if (ParentEvent.children) {
+      ParentEvent.children.close();
+    }
 
-			}
+    View.show("castle");
+  }
 
-			if ('error' in body) {
+  static async bind(body) {
+    if (ParentEvent.children) {
+      ParentEvent.children.close();
+    }
 
-				App.error(body.error);
-
-			}
-
-			return;
-
-		}
-
-		await App.storage.set({ id: body.id, token: body.token, login: body.login, fraction: body.fraction });
-
-		if (ParentEvent.children) {
-
-			ParentEvent.children.close();
-
-		}
-
-		View.show('castle');
-
-	}
-
-	static async bind(body) {
-
-		if (ParentEvent.children) {
-
-			ParentEvent.children.close();
-
-		}
-
-		App.notify(body);
-
-	}
-
+    App.notify(body);
+  }
 }
