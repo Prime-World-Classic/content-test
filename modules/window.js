@@ -17,7 +17,6 @@ import { Timer } from "./timer.js";
 import { domAudioPresets } from "./domAudioPresets.js";
 
 export class Window {
-  static currentTranslatedName = null;
   static windows = {};
   static windowOrder = [];
   static async show(category, method, value, value2, value3) {
@@ -143,27 +142,8 @@ export class Window {
         App.CURRENT_MM,
         "getHeroWithFrameId"
       );
-      if (
-        Window.currentTranslatedName === null ||
-        Window.currentTranslatedName === undefined
-      ) {
-        Window.currentTranslatedName = Lang.text("frame_0");
-      }
-      for (const item of request) {
-        if (item.categoryId === 2 && !item.enabled) {
-          const frameKey = `frame_${item.externalId}`;
-          Window.currentTranslatedName = Lang.text(frameKey);
-          break;
-        }
-      }
     } catch (e) {
       App.error(e);
-      if (
-        Window.currentTranslatedName === null ||
-        Window.currentTranslatedName === undefined
-      ) {
-        Window.currentTranslatedName = Lang.text("frame_0");
-      }
     }
     let category = {
       skin: DOM({ style: "shop_items" }),
@@ -380,7 +360,7 @@ export class Window {
                             "click",
                             async () => {
                               Splash.hide();
-                              let crystalLeft;
+                              let crystalLeft = null;
                               try {
                                 crystalLeft = await App.api.request(
                                   "shop",
@@ -398,8 +378,11 @@ export class Window {
                                 App.error(e);
                                 return;
                               }
-                              View.castleTotalCrystal.firstChild.innerText =
-                                crystalLeft;
+                              if (Number.isInteger(crystalLeft)) {
+                                View.castleTotalCrystal.firstChild.innerText = crystalLeft;
+                              } else {
+                                App.error(`Неизвестное число кристаллов: ${crystalLeft}`);
+                              }
                               shopItem.classList.add(
                                 "shop_item_container_disabled"
                               );
@@ -439,7 +422,7 @@ export class Window {
                       DOM(
                         { style: "splash-shop-item-name" },
                         isFrame && !showQuadFrame
-                          ? `${Window.currentTranslatedName}`
+                          ? Lang.text("windowShopCurrentFrame")
                           : `${translatedName}`
                       ),
                       "?",
@@ -465,14 +448,10 @@ export class Window {
                                       "applyDefault",
                                       { categoryId: rItem.categoryId }
                                     );
-                                    Window.currentTranslatedName =
-                                      Lang.text("frame_0");
                                   } else {
                                     await App.api.request("shop", "apply", {
                                       id: rItem.id,
                                     });
-                                    Window.currentTranslatedName =
-                                      translatedName;
                                   }
                                 }
                               } catch (e) {

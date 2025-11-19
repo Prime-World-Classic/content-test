@@ -60,6 +60,7 @@ export const ru = {
 		windowShopEquipItem: "Экипировать ",
 		windowShopUnequip: "Снять",
 		windowShopUnequipItem: "Снять ",
+		windowShopCurrentFrame: "текущую рамку",
 		
 		//Settings
 		settingsFileAccessError: 'Ошибка доступа к файлу настроек: ',

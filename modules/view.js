@@ -1342,8 +1342,11 @@ export class View {
   static async castleQuestUpdate() {
     let request = await App.api.request("quest", "list");
 
-    View.castleTotalCrystal.firstChild.innerText = request.crystal;
-
+    if (Number.isInteger(request.crystal)) {
+      View.castleTotalCrystal.firstChild.innerText = request.crystal;
+    } else {
+      App.error(`Неизвестное число кристаллов: ${JSON.stringify(request)}`);
+    }
     while (View.castleQuestBody.firstChild) {
       View.castleQuestBody.firstChild.remove();
     }

@@ -60,6 +60,7 @@ export const en = {
 		windowShopEquipItem: "Equip ",
 		windowShopUnequip: "Unequip",
 		windowShopUnequipItem: "Unequip ",
+		windowShopCurrentFrame: "the current frame",
 		
 		//Settings
 		settingsFileAccessError: 'Settings file access error: ',
