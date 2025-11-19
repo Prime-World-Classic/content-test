@@ -2126,3 +2126,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 .castle_building_bubble:hover {
 	filter: brightness(120%);
 }
+.shop_category:first-child {
+	display: none;
+}
