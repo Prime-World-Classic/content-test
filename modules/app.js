@@ -23,7 +23,7 @@ export class App {
   static RIGA = "wss://pwclassic.isgood.host:443";
   static MOSCOW = "wss://api2.26rus-game.ru:8443";
   static CLOUDFLARE = "wss://api.26rus-game.ru:8443";
-  static hostList = [this.CLOUDFLARE];
+  static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE];
   static bestHost = -1;
 
   static async findBestHostAndInit() {
