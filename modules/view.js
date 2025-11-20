@@ -1154,7 +1154,7 @@ export class View {
 
     let flagMenuItem = DOM({
       domaudio: new DomAudio(() => {
-        App.error("Кастомный звук при наведении курсора");
+        //App.error("Кастомный звук при наведении курсора");
       }), // своя реализация функции при наведении курсора
       style: "flag-menu-item",
       event: [
