@@ -471,6 +471,7 @@ export const en = {
 		flag_oblochko: "Cloud",
 		flag_snow: "Snowflake",
 		flag_snowman: "Snowman",
+		flag_tester_yellow: "Tester PWC",
 		
 		// Переводы
 		select_faction: "Select faction",

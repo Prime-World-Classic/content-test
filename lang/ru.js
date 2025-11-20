@@ -468,6 +468,7 @@ export const ru = {
 		flag_oblochko: "Облочко",
 		flag_snow: "Снежинка",
 		flag_snowman: "Снеговик",
+		flag_tester_yellow: "Тестер PWC",
 
 		// Переводы
 		select_faction: "Выбор Фракции",
