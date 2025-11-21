@@ -568,6 +568,8 @@ export class MM {
       });
 
       player.dataset.hero = data.users[key].hero;
+	  
+	  player.dataset.skin = 1;
 
       let hero = DOM({ style: "mm-lobby-header-team-player-hero" });
 
@@ -704,7 +706,7 @@ export class MM {
         style: "mm-lobby-middle-hero-item",
       });
 
-      hero.style.backgroundImage = `url("content/hero/${item.id}/1.webp")`;
+      hero.style.backgroundImage = `url("content/hero/${item.id}/${( item.skin ? item.skin : 1)}.webp")`;
 
       hero.onclick = async () => {
         MM.targetHeroId = item.id;
@@ -903,11 +905,13 @@ export class MM {
     if (findOldPlayer) {
       findOldPlayer.dataset.hero = data.heroId;
 
-      if("skin" in data){
+      if( ("skin" in data) && (data.skin) ){
 
         skinId = data.skin;
 
       }
+	  
+	  findOldPlayer.dataset.skin = skinId;
 	  
 	  if('frameId' in data){
 		  
@@ -1015,7 +1019,7 @@ export class MM {
   static eventChangeHero(data) {
     let findPlayer = document.getElementById(`PLAYER${data.id}`), skinId = 1;
 
-    if("skin" in data){
+    if( ("skin" in data) (data.skin) ){
 
       skinId = data.skin;
 
@@ -1032,6 +1036,8 @@ export class MM {
 		}
 		
       findPlayer.dataset.hero = data.heroId;
+	  
+	  findPlayer.dataset.skin = skinId;
 
       findPlayer.firstChild.style.backgroundImage = url;
 

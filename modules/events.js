@@ -101,7 +101,7 @@ export class Events {
 
               item.style.backgroundImage =
                 findPlayer.dataset.hero != 0
-                  ? `url(content/hero/${findPlayer.dataset.hero}/1.webp)`
+                  ? `url(content/hero/${findPlayer.dataset.hero}/${findPlayer.dataset.skin}.webp)`
                   : `url(content/hero/empty.webp)`;
 
               item.style.transform = "scale(1.5)";
