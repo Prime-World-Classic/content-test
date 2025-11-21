@@ -2112,7 +2112,7 @@ text-align:center;
 	
 }
 
-.mm-status-commander-1,.mm-status-commander-2,.mm-status-commander-3{
+.mm-frame{
 	
 	position:absolute;
 	width:100%;
@@ -2120,27 +2120,9 @@ text-align:center;
 	background-position:center;
 	background-repeat:no-repeat;
 	background-size:cover;
-	transform:scale(1.2);
+	transform:scale(1.4);
 	border-radius:50%;
 	z-index:1;
-	
-}
-
-.mm-status-commander-1{
-	
-	background-image:url('img/winrate/1.png');
-	
-}
-
-.mm-status-commander-2{
-	
-	background-image:url('img/winrate/2.png');
-	
-}
-
-.mm-status-commander-3{
-	
-	background-image:url('img/winrate/3.png');
 	
 }
 

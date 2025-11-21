@@ -588,20 +588,12 @@ export class MM {
         rankIcon
       );
 
-      hero.append(rank);
+      hero.append(rank,DOM({style:'mm-frame'}));
 
       if ("commander" in data.users[key]) {
-        hero.append(
-          DOM({
-            style: `mm-status-commander-${Winrate.icon(
-              data.users[key].winrate
-            )}`,
-          })
-        );
-
-        name.setAttribute("style", "color:rgba(255,215,0,0.9)");
+		name.setAttribute("style", "color:rgba(255,215,0,0.9)");
       }
-
+	  
       let banhero = DOM({ style: "mm-player-ban" });
 
       if (data.users[key].banhero) {
@@ -906,12 +898,24 @@ export class MM {
       MM.searchActive(true);
     });
 
-    let findOldPlayer = document.getElementById(`PLAYER${data.userId}`);
+    let findOldPlayer = document.getElementById(`PLAYER${data.userId}`), skinId = 1;
 
     if (findOldPlayer) {
       findOldPlayer.dataset.hero = data.heroId;
 
-      findOldPlayer.firstChild.style.backgroundImage = `url(content/hero/${data.heroId}/1.webp)`;
+      if("skin" in data){
+
+        skinId = data.skin;
+
+      }
+	  
+	  if('frameId' in data){
+		  
+		  findOldPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
+		  
+	  }
+
+      findOldPlayer.firstChild.style.backgroundImage = `url(content/hero/${data.heroId}/${skinId}.webp)`;
 
       findOldPlayer.firstChild.firstChild.firstChild.innerText = data.rating;
 
@@ -1009,11 +1013,24 @@ export class MM {
   }
 
   static eventChangeHero(data) {
-    let findPlayer = document.getElementById(`PLAYER${data.id}`);
+    let findPlayer = document.getElementById(`PLAYER${data.id}`), skinId = 1;
 
-    let url = `url(content/hero/${data.heroId}/1.webp)`;
+    if("skin" in data){
+
+      skinId = data.skin;
+
+    }
+
+    let url = `url(content/hero/${data.heroId}/${skinId}.webp)`;
 
     if (findPlayer) {
+		
+		if('frameId' in data){
+		  
+		  findPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
+			
+		}
+		
       findPlayer.dataset.hero = data.heroId;
 
       findPlayer.firstChild.style.backgroundImage = url;
