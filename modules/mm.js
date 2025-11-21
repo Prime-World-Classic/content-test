@@ -1019,7 +1019,7 @@ export class MM {
   static eventChangeHero(data) {
     let findPlayer = document.getElementById(`PLAYER${data.id}`), skinId = 1;
 
-    if( ("skin" in data) (data.skin) ){
+    if( ("skin" in data) && (data.skin) ){
 
       skinId = data.skin;
 
