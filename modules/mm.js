@@ -27,7 +27,7 @@ export class MM {
   static button = DOM(
     { tag: "div" },
     DOM({ tag: "div" }),
-    DOM({ id: "MMQueue" }, "0")
+    DOM({ id: "MMQueue" }, "0"),
   );
 
   static renderBody = false;
@@ -221,15 +221,15 @@ export class MM {
 
       const heading = DOM(
         { tag: "h1" },
-        Lang.text("mmWindowsLauncherRequired")
+        Lang.text("mmWindowsLauncherRequired"),
       );
       const paragraph1 = DOM(
         { tag: "p" },
-        Lang.text("mmBrowserSupportDiscontinued")
+        Lang.text("mmBrowserSupportDiscontinued"),
       );
       const paragraph2 = DOM(
         { tag: "p" },
-        Lang.text("mmLauncherMigratedToWindows")
+        Lang.text("mmLauncherMigratedToWindows"),
       );
 
       // Создаем кнопку закрытия
@@ -246,7 +246,7 @@ export class MM {
         heading,
         paragraph1,
         paragraph2,
-        downloadMessage
+        downloadMessage,
       );
 
       // Добавляем стили для ссылки
@@ -320,7 +320,7 @@ export class MM {
     let body = DOM(
       { style: "mm-ready" },
       Timer.body,
-      DOM({ id: `MMReady`, style: "mm-ready-count" }, `0/${data.limit}`)
+      DOM({ id: `MMReady`, style: "mm-ready-count" }, `0/${data.limit}`),
     );
 
     await Timer.start(data.id, Lang.text("mmMatchFound"), () => {
@@ -361,14 +361,14 @@ export class MM {
           },
         ],
       },
-      Lang.text("ready")
+      Lang.text("ready"),
     );
 
     button.style.fontSize = "2cqw";
 
     button.animate(
       { transform: ["scale(1)", "scale(0.98)", "scale(1.02)", "scale(1)"] },
-      { duration: 500, iterations: Infinity, easing: "ease-in-out" }
+      { duration: 500, iterations: Infinity, easing: "ease-in-out" },
     );
 
     body.append(button);
@@ -410,12 +410,12 @@ export class MM {
               }
 
               MM.lobbyBuildField.append(
-                Build.viewModel(build.body, false, false)
+                Build.viewModel(build.body, false, false),
               );
             },
           ],
         },
-        build.name
+        build.name,
       );
 
       if (build.target) {
@@ -459,7 +459,7 @@ export class MM {
               }
 
               MM.lobbyBuildField.append(
-                Build.viewModel(build.body, false, false)
+                Build.viewModel(build.body, false, false),
               );
 
               notify = true;
@@ -474,7 +474,7 @@ export class MM {
             },
           ],
         },
-        Lang.text("mmRandomBuild")
+        Lang.text("mmRandomBuild"),
       );
 
     random.style.width = "auto";
@@ -539,7 +539,7 @@ export class MM {
           },
         ],
       },
-      Lang.text("ready2")
+      Lang.text("ready2"),
     );
 
     MM.lobbyConfirm.style.opacity = 0;
@@ -548,7 +548,7 @@ export class MM {
 
     MM.lobbyConfirm.animate(
       { transform: ["scale(1)", "scale(0.98)", "scale(1.02)", "scale(1)"] },
-      { duration: 2000, iterations: Infinity, easing: "ease-in-out" }
+      { duration: 2000, iterations: Infinity, easing: "ease-in-out" },
     );
 
     lobbyBuild.append(MM.lobbyConfirm, MM.lobbyBuildField, MM.lobbyBuildTab);
@@ -568,34 +568,34 @@ export class MM {
       });
 
       player.dataset.hero = data.users[key].hero;
-	  
-	  player.dataset.skin = 1;
+
+      player.dataset.skin = 1;
 
       let hero = DOM({ style: "mm-lobby-header-team-player-hero" });
 
       let name = DOM(
         { style: "mm-lobby-header-team-player-name" },
-        `${data.users[key].nickname}`
+        `${data.users[key].nickname}`,
       );
 
       let rankIcon = DOM({ style: "rank-icon" });
 
       rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        data.users[key].rating
+        data.users[key].rating,
       )}.webp)`;
 
       let rank = DOM(
         { style: "rank" },
         DOM({ style: "rank-lvl" }, data.users[key].rating),
-        rankIcon
+        rankIcon,
       );
 
-      hero.append(rank,DOM({style:'mm-frame'}));
+      hero.append(rank, DOM({ style: "mm-frame" }));
 
       if ("commander" in data.users[key]) {
-		name.setAttribute("style", "color:rgba(255,215,0,0.9)");
+        name.setAttribute("style", "color:rgba(255,215,0,0.9)");
       }
-	  
+
       let banhero = DOM({ style: "mm-player-ban" });
 
       if (data.users[key].banhero) {
@@ -615,7 +615,7 @@ export class MM {
       if (key == data.target) {
         MM.lobbyPlayerAnimate = player.animate(
           { transform: ["scale(1)", "scale(0.8)", "scale(1.1)", "scale(1)"] },
-          { duration: 2000, iterations: Infinity, easing: "ease-in-out" }
+          { duration: 2000, iterations: Infinity, easing: "ease-in-out" },
         );
       }
 
@@ -628,7 +628,7 @@ export class MM {
               key,
               player.dataset.hero,
               data.users[key].nickname,
-              false
+              false,
             );
           }
         };
@@ -653,8 +653,8 @@ export class MM {
       MM.lobbyHeroes.append(
         DOM(
           { style: "mm-lobby-middle-hero-prompt" },
-          Lang.text("mmMouseControls")
-        )
+          Lang.text("mmMouseControls"),
+        ),
       );
     }
 
@@ -679,13 +679,13 @@ export class MM {
         let rankIcon = DOM({ style: "mm-lobby-middle-hero-line-icon" });
 
         rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-          item.rating
+          item.rating,
         )}.webp)`;
 
         let rankIcon2 = DOM({ style: "mm-lobby-middle-hero-line-icon" });
 
         rankIcon2.style.backgroundImage = `url(content/ranks/${Rank.icon(
-          item.rating
+          item.rating,
         )}.webp)`;
 
         MM.lobbyHeroes.append(
@@ -693,8 +693,8 @@ export class MM {
             { style: "mm-lobby-middle-hero-line" },
             rankIcon,
             DOM({ style: "mm-lobby-middle-hero-line-name" }, getRankName),
-            rankIcon2
-          )
+            rankIcon2,
+          ),
         );
 
         activeRankName = getRankName;
@@ -730,7 +730,7 @@ export class MM {
 
       let rank = DOM(
         { style: "rank" },
-        DOM({ style: "rank-lvl" }, item.rating)
+        DOM({ style: "rank-lvl" }, item.rating),
       );
 
       hero.append(rank);
@@ -792,14 +792,14 @@ export class MM {
             { style: "mm-lobby-middle-chat-map" },
             data.mode == 0
               ? MM.renderMap(data.users[App.storage.data.id].team)
-              : DOM()
+              : DOM(),
           ),
           MM.chatBody,
-          chatInput
+          chatInput,
         ),
         lobbyBuild,
-        MM.lobbyHeroes
-      )
+        MM.lobbyHeroes,
+      ),
     );
 
     Sound.play("content/sounds/tambur.ogg", {
@@ -829,7 +829,7 @@ export class MM {
 
       if (data.users[key].banhero) {
         let findHero = document.getElementById(
-          `HERO${data.users[key].banhero}`
+          `HERO${data.users[key].banhero}`,
         );
 
         if (findHero) {
@@ -900,24 +900,21 @@ export class MM {
       MM.searchActive(true);
     });
 
-    let findOldPlayer = document.getElementById(`PLAYER${data.userId}`), skinId = 1;
+    let findOldPlayer = document.getElementById(`PLAYER${data.userId}`),
+      skinId = 1;
 
     if (findOldPlayer) {
       findOldPlayer.dataset.hero = data.heroId;
 
-      if( ("skin" in data) && (data.skin) ){
-
+      if ("skin" in data && data.skin) {
         skinId = data.skin;
-
       }
-	  
-	  findOldPlayer.dataset.skin = skinId;
-	  
-	  if('frameId' in data){
-		  
-		  findOldPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
-		  
-	  }
+
+      findOldPlayer.dataset.skin = skinId;
+
+      if ("frameId" in data) {
+        findOldPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
+      }
 
       findOldPlayer.firstChild.style.backgroundImage = `url(content/hero/${data.heroId}/${skinId}.webp)`;
 
@@ -940,7 +937,7 @@ export class MM {
       if (findPlayer) {
         MM.lobbyPlayerAnimate = findPlayer.animate(
           { transform: ["scale(1)", "scale(0.8)", "scale(1.2)", "scale(1)"] },
-          { duration: 500, iterations: Infinity, easing: "ease-in-out" }
+          { duration: 500, iterations: Infinity, easing: "ease-in-out" },
         );
       }
     }
@@ -1017,34 +1014,30 @@ export class MM {
   }
 
   static eventChangeHero(data) {
-    let findPlayer = document.getElementById(`PLAYER${data.id}`), skinId = 1;
+    let findPlayer = document.getElementById(`PLAYER${data.id}`),
+      skinId = 1;
 
-    if( ("skin" in data) && (data.skin) ){
-
+    if ("skin" in data && data.skin) {
       skinId = data.skin;
-
     }
 
     let url = `url(content/hero/${data.heroId}/${skinId}.webp)`;
 
     if (findPlayer) {
-		
-		if('frameId' in data){
-		  
-		  findPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
-			
-		}
-		
+      if ("frameId" in data) {
+        findPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
+      }
+
       findPlayer.dataset.hero = data.heroId;
-	  
-	  findPlayer.dataset.skin = skinId;
+
+      findPlayer.dataset.skin = skinId;
 
       findPlayer.firstChild.style.backgroundImage = url;
 
       findPlayer.firstChild.firstChild.firstChild.innerText = data.rating;
 
       findPlayer.firstChild.firstChild.lastChild.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        data.rating
+        data.rating,
       )}.webp)`;
     }
 

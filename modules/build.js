@@ -123,7 +123,7 @@ export class Build {
           },
         ],
       },
-      Lang.text("stealBuild")
+      Lang.text("stealBuild"),
     );
 
     let bottom = DOM(
@@ -139,8 +139,8 @@ export class Build {
             },
           ],
         },
-        `[Х]`
-      )
+        `[Х]`,
+      ),
     );
 
     if (animate) {
@@ -154,9 +154,9 @@ export class Build {
         { style: "div" },
         DOM({ style: "build-top" }, nickname),
         container,
-        bottom
+        bottom,
       ),
-      false
+      false,
     );
   }
 
@@ -224,7 +224,7 @@ export class Build {
 
       let animate = element.animate(
         { opacity: [0, 1], transform: ["scale(3)", "scale(1)"] },
-        { delay: delay, duration: 350, fill: "both", easing: "ease-out" }
+        { delay: delay, duration: 350, fill: "both", easing: "ease-out" },
       );
 
       if (number == elements1.length) {
@@ -244,7 +244,7 @@ export class Build {
                   duration: 350,
                   fill: "both",
                   easing: "ease-out",
-                }
+                },
               );
 
               if (number == elements2.length) {
@@ -336,7 +336,7 @@ export class Build {
         title: Lang.text("titleSkinsForTheHero"),
         event: ["click", async () => Build.skinChange()],
       },
-      Lang.text("skins")
+      Lang.text("skins"),
     );
 
     Build.training = DOM(
@@ -370,7 +370,7 @@ export class Build {
           },
         ],
       },
-      Lang.text("training")
+      Lang.text("training"),
     );
 
     Build.inventoryView.append(buildTalents);
@@ -551,7 +551,7 @@ export class Build {
           },
         ],
       },
-      btnName
+      btnName,
     );
 
     template.append(name, button, close);
@@ -572,7 +572,7 @@ export class Build {
               "create",
               Lang.text("createBuild"),
               { heroId: Build.heroId },
-              isWindow
+              isWindow,
             ),
         ],
       });
@@ -602,7 +602,7 @@ export class Build {
             { style: "splash-text" },
             builds.length >= 6
               ? Lang.text("buildLimitReached")
-              : Lang.text("selectBuildToReplace")
+              : Lang.text("selectBuildToReplace"),
           );
           fragment.append(title);
 
@@ -629,7 +629,7 @@ export class Build {
                     },
                   ],
                 },
-                build.name
+                build.name,
               );
               fragment.append(btn);
             });
@@ -679,7 +679,7 @@ export class Build {
                             const createResponse = await App.api.request(
                               "build",
                               "create",
-                              createData
+                              createData,
                             );
                             console.log(currentBuildId);
                             console.log(createResponse);
@@ -697,13 +697,13 @@ export class Build {
                                   "build",
                                   Build.heroId,
                                   0,
-                                  true
+                                  true,
                                 )
                               : View.show("build", Build.heroId);
                           },
                         ],
                       },
-                      Lang.text("createAndDuplicate")
+                      Lang.text("createAndDuplicate"),
                     );
 
                     template.append(name, button, close);
@@ -711,7 +711,7 @@ export class Build {
                   },
                 ],
               },
-              Lang.text("duplicateToNewBuild")
+              Lang.text("duplicateToNewBuild"),
             );
             fragment.append(createNewBtn);
           }
@@ -773,7 +773,7 @@ export class Build {
             const fragment = document.createDocumentFragment();
             const title = DOM(
               { style: "splash-text" },
-              Lang.text("resetTalentsTitle")
+              Lang.text("resetTalentsTitle"),
             );
             fragment.append(title);
 
@@ -793,7 +793,7 @@ export class Build {
                   },
                 ],
               },
-              Lang.text("reset")
+              Lang.text("reset"),
             );
 
             // Явно задаём красный цвет
@@ -848,7 +848,7 @@ export class Build {
             },
           ],
         },
-        DOM({}, `${build.name}`)
+        DOM({}, `${build.name}`),
       );
       item.addEventListener("contextmenu", (e) => {
         e.preventDefault();
@@ -856,7 +856,7 @@ export class Build {
           "rename",
           Lang.text("renameBuild"),
           { id: build.id },
-          isWindow
+          isWindow,
         );
       });
 
@@ -1097,7 +1097,7 @@ export class Build {
           ],
         },
         DOM({ tag: "div" }, template[key]),
-        DOM({ tag: "div" }, data.stats[key] || 0)
+        DOM({ tag: "div" }, data.stats[key] || 0),
       );
 
       if (key === "groundType") {
@@ -1342,13 +1342,13 @@ export class Build {
           if (Build.applyRz) {
             landTypeSetting.classList.replace(
               "build-hero-stats-setting-land-type-vz",
-              "build-hero-stats-setting-land-type-rz"
+              "build-hero-stats-setting-land-type-rz",
             );
             landTypeSetting.title = Lang.text("titleLandTipeRZ");
           } else {
             landTypeSetting.classList.replace(
               "build-hero-stats-setting-land-type-rz",
-              "build-hero-stats-setting-land-type-vz"
+              "build-hero-stats-setting-land-type-vz",
             );
             landTypeSetting.title = Lang.text("titleLandTipeVZ");
           }
@@ -1385,8 +1385,8 @@ export class Build {
                   object: object,
                 });
               },
-              { value: request[key] }
-            )
+              { value: request[key] },
+            ),
           );
         }
 
@@ -1396,8 +1396,8 @@ export class Build {
               style: "splash-content-button",
               event: ["click", () => Splash.hide()],
             },
-            Lang.text("titleClose")
-          )
+            Lang.text("titleClose"),
+          ),
         );
 
         Splash.show(body);
@@ -1413,13 +1413,13 @@ export class Build {
     let rankIcon = DOM({ style: "rank-icon" });
 
     rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-      data.rating
+      data.rating,
     )}.webp)`;
 
     let rank = DOM(
       { style: "rank" },
       DOM({ style: "rank-lvl" }, data.rating),
-      rankIcon
+      rankIcon,
     );
 
     Build.heroImg.append(rank);
@@ -1428,7 +1428,7 @@ export class Build {
       { style: "build-hero-avatar-and-name" },
       Build.heroImg,
       Build.skinView,
-      Build.training
+      Build.training,
     );
 
     Build.heroView.append(wrapper, stats);
@@ -1450,7 +1450,7 @@ export class Build {
 
     for (let key2 in Build.dataStats) {
       Build.dataStats[key2].lastChild.innerText = Math.round(
-        Build.totalStat(key2)
+        Build.totalStat(key2),
       );
     }
 
@@ -1627,7 +1627,7 @@ export class Build {
       } else if (key == "srsv") {
         registerStat(
           Build.getMaxStat(["sila", "razum", "stoikost", "volia"]),
-          key
+          key,
         );
       } else if (key == "hpmp") {
         registerStat(Build.getMaxStat(["hp", "mp"]), key);
@@ -1641,7 +1641,7 @@ export class Build {
         if (keyStat == "speed") {
           Build.calculationStats[keyStat] = Math.max(
             Build.calculationStats[keyStat],
-            statChange
+            statChange,
           );
         } else {
           Build.calculationStats[keyStat] += fold ? statChange : -statChange;
@@ -1673,12 +1673,12 @@ export class Build {
       if (animation) {
         Build.dataStats[key2].animate(
           { transform: ["scale(1)", "scale(1.5)", "scale(1)"] },
-          { duration: 250, fill: "both", easing: "ease-out" }
+          { duration: 250, fill: "both", easing: "ease-out" },
         );
 
         Build.heroImg.animate(
           { transform: ["scale(1)", "scale(1.5)", "scale(1)"] },
-          { duration: 250, fill: "both", easing: "ease-out" }
+          { duration: 250, fill: "both", easing: "ease-out" },
         );
       }
     }
@@ -1731,7 +1731,7 @@ export class Build {
           item.parentElement.childNodes[l].classList.remove("highlight");
           document
             .querySelector(
-              `[data-level="${item.parentElement.childNodes[l].dataset["id"]}"`
+              `[data-level="${item.parentElement.childNodes[l].dataset["id"]}"`,
             )
             .classList.remove("highlight");
         }
@@ -1847,7 +1847,7 @@ export class Build {
         ) {
           data.stats[paramValues[2] + "buff"] = parseFloat(paramValues[0]);
           data.statsRefine[paramValues[2] + "buff"] = parseFloat(
-            paramValues[1]
+            paramValues[1],
           );
         }
       }
@@ -1908,7 +1908,7 @@ export class Build {
       },
       "build",
       "inventory",
-      { buildId: Build.id }
+      { buildId: Build.id },
     );
   }
 
@@ -2027,7 +2027,7 @@ export class Build {
 
       button.title = Lang.text("talentQualityTitle").replace(
         "{name}",
-        item.name
+        item.name,
       );
 
       Build.rarityView.append(button);
@@ -2117,7 +2117,7 @@ export class Build {
         let position = Math.abs(item) - 1;
 
         let findTalent = Build.fieldView.querySelector(
-          `[data-position = "${position}"]`
+          `[data-position = "${position}"]`,
         );
 
         if (findTalent && findTalent.firstChild) {
@@ -2235,7 +2235,7 @@ export class Build {
 
   static sortInventory() {
     for (let itemContainer of Build.inventoryView.querySelectorAll(
-      ".build-talent-item-container"
+      ".build-talent-item-container",
     )) {
       Build.applySorting(itemContainer);
     }
@@ -2397,7 +2397,7 @@ export class Build {
           datasetPosition,
           targetElem,
           clone,
-          smartCast
+          smartCast,
         ) => {
           await App.api.request("build", "setActive", {
             buildId: Build.id,
@@ -2456,7 +2456,7 @@ export class Build {
             newPosition,
             container,
             clone,
-            isSmartCast
+            isSmartCast,
           );
 
           return activeBarPosition;
@@ -2582,7 +2582,7 @@ export class Build {
                     activeBarPosition = await editActive(
                       swapParentNode.dataset.position,
                       elemBelow.dataset.position,
-                      element.cloneNode(true)
+                      element.cloneNode(true),
                     );
                   }
                   if (performSwap) {
@@ -2596,7 +2596,7 @@ export class Build {
                         elemBelow.dataset.position,
                         swapParentNode.dataset.position,
                         swapParentNode.firstChild.cloneNode(true),
-                        activeBarPosition
+                        activeBarPosition,
                       );
                     }
                     await App.api.request("build", "setZero", {
@@ -2646,7 +2646,7 @@ export class Build {
                         Number(elemBelow.dataset.position) + 1,
                         elemBelow.dataset.position,
                         targetActiveContainer,
-                        element.cloneNode(true)
+                        element.cloneNode(true),
                       );
                     }
                   }
@@ -2696,7 +2696,7 @@ export class Build {
 
             let containedTalent = DOM(
               { style: "build-talent-item-container" },
-              element
+              element,
             );
 
             Build.applySorting(containedTalent);
@@ -2737,7 +2737,7 @@ export class Build {
           let elemBelow = elementFromPoint(event.clientX, event.clientY);
 
           let isSwap = elemBelow.parentNode.classList.contains(
-            "build-active-bar-item"
+            "build-active-bar-item",
           );
 
           elementSetDisplay(element, "block");
@@ -2788,7 +2788,7 @@ export class Build {
                     positionRaw,
                     targetElem,
                     clone,
-                    smartCast
+                    smartCast,
                   );
 
                   if (swapClone) {
@@ -2798,7 +2798,7 @@ export class Build {
                       swapPositionRaw,
                       swapElemParent,
                       swapClone,
-                      swapSmartCast
+                      swapSmartCast,
                     );
                   }
                 }
@@ -3081,7 +3081,7 @@ export class Build {
             outputString = lerp(
               minValue,
               maxValue,
-              (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2
+              (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2,
             ).toFixed(1);
             if (outputString.endsWith(".0")) {
               outputString = outputString.replace(".0", "");
@@ -3099,7 +3099,7 @@ export class Build {
               outputString = lerp(
                 minValue,
                 maxValue,
-                (resolvedTotalStat - param1) / param2
+                (resolvedTotalStat - param1) / param2,
               ).toFixed(1);
               if (outputString.endsWith(".0")) {
                 outputString = outputString.replace(".0", "");

@@ -12,7 +12,7 @@ export const domAudioPresets = {
       });
     },
     function up() {},
-    function input() {}
+    function input() {},
   ),
   closeButton: new DomAudio(
     function over() {},
@@ -23,7 +23,7 @@ export const domAudioPresets = {
       });
     },
     function up() {},
-    function input() {}
+    function input() {},
   ),
   bigButton: new DomAudio(
     function over() {},
@@ -34,7 +34,7 @@ export const domAudioPresets = {
       });
     },
     function up() {},
-    function input() {}
+    function input() {},
   ),
   deafultInput: new DomAudio(
     function over() {},
@@ -53,7 +53,7 @@ export const domAudioPresets = {
         loop: false,
       });
     },
-    function change() {}
+    function change() {},
   ),
   defaultSelect: new DomAudio(
     function over() {},
@@ -71,6 +71,6 @@ export const domAudioPresets = {
         id: "ui-select",
         volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
-    }
+    },
   ),
 };

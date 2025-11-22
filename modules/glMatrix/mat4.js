@@ -124,7 +124,7 @@ export function fromValues(
   m30,
   m31,
   m32,
-  m33
+  m33,
 ) {
   let out = new glMatrix.ARRAY_TYPE(16);
   out[0] = m00;
@@ -185,7 +185,7 @@ export function set(
   m30,
   m31,
   m32,
-  m33
+  m33,
 ) {
   out[0] = m00;
   out[1] = m01;
@@ -1930,21 +1930,21 @@ export function str(a) {
 export function frob(a) {
   return Math.sqrt(
     a[0] * a[0] +
-    a[1] * a[1] +
-    a[2] * a[2] +
-    a[3] * a[3] +
-    a[4] * a[4] +
-    a[5] * a[5] +
-    a[6] * a[6] +
-    a[7] * a[7] +
-    a[8] * a[8] +
-    a[9] * a[9] +
-    a[10] * a[10] +
-    a[11] * a[11] +
-    a[12] * a[12] +
-    a[13] * a[13] +
-    a[14] * a[14] +
-    a[15] * a[15]
+      a[1] * a[1] +
+      a[2] * a[2] +
+      a[3] * a[3] +
+      a[4] * a[4] +
+      a[5] * a[5] +
+      a[6] * a[6] +
+      a[7] * a[7] +
+      a[8] * a[8] +
+      a[9] * a[9] +
+      a[10] * a[10] +
+      a[11] * a[11] +
+      a[12] * a[12] +
+      a[13] * a[13] +
+      a[14] * a[14] +
+      a[15] * a[15],
   );
 }
 

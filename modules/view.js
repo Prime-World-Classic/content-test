@@ -60,7 +60,7 @@ export class View {
 
   static castleTotalCrystal = DOM(
     { tag: "div", style: ["question-icon"] },
-    DOM({ style: "quest-counter" }, "")
+    DOM({ style: "quest-counter" }, ""),
   );
 
   static setCss(name = "content/style.css") {
@@ -97,7 +97,7 @@ export class View {
 
           View.activeAnimation = template.animate(
             View.defaultAnimation,
-            View.defaultOptionAnimation
+            View.defaultOptionAnimation,
           );
 
           document.body.append(template);
@@ -115,7 +115,7 @@ export class View {
 
         View.activeAnimation = template.animate(
           View.defaultAnimation,
-          View.defaultOptionAnimation
+          View.defaultOptionAnimation,
         );
 
         document.body.append(template);
@@ -177,7 +177,7 @@ export class View {
           value: code,
           selected: code === Lang.target,
           text: langData.name,
-        })
+        }),
       );
     });
 
@@ -191,7 +191,7 @@ export class View {
             tag: "img",
             style: "login-box-forma-logo",
             src: "content/img/logo_classic.webp",
-          })
+          }),
         ),
 
         DOM({ style: "language-select-container" }, languageSelect),
@@ -207,7 +207,7 @@ export class View {
                 style: "login-box-forma-button",
                 event: ["click", () => App.authorization(login, password)],
               },
-              Lang.text("login")
+              Lang.text("login"),
             ),
             DOM(
               {
@@ -215,8 +215,8 @@ export class View {
                 style: "login-box-forma-button",
                 event: ["click", () => View.show("registration")],
               },
-              Lang.text("registration")
-            )
+              Lang.text("registration"),
+            ),
           ),
           DOM(
             { style: "login-box-forma-buttons" },
@@ -226,15 +226,15 @@ export class View {
                 style: ["login-box-forma-button", "steamauth"],
                 event: ["click", () => Window.show("main", "steamauth")],
               },
-              Lang.text("authorizationSteam")
-            )
-          )
-        )
+              Lang.text("authorizationSteam"),
+            ),
+          ),
+        ),
       ),
       DOM(
         { style: "author" },
-        `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`
-      )
+        `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`,
+      ),
     );
 
     return authorizationForm;
@@ -254,10 +254,10 @@ export class View {
       { domaudio: domAudioPresets.defaultSelect, tag: "select" },
       DOM(
         { tag: "option", value: 0, disabled: true, selected: true },
-        Lang.text("fraction")
+        Lang.text("fraction"),
       ),
       DOM({ tag: "option", value: 1 }, Lang.text("adornia")),
-      DOM({ tag: "option", value: 2 }, Lang.text("docts"))
+      DOM({ tag: "option", value: 2 }, Lang.text("docts")),
     );
 
     let tgBotUrl = "https://t.me/primeworldclassic_bot";
@@ -280,7 +280,7 @@ export class View {
     let inviteContainer = DOM(
       { style: "invite-input" },
       invite,
-      telegramBotLink
+      telegramBotLink,
     );
 
     let login = DOM({
@@ -332,11 +332,11 @@ export class View {
                       invite,
                       login,
                       password,
-                      password2
+                      password2,
                     ),
                 ],
               },
-              Lang.text("registration1")
+              Lang.text("registration1"),
             ),
             DOM(
               {
@@ -344,9 +344,9 @@ export class View {
                 style: "login-box-forma-button",
                 event: ["click", () => View.show("authorization")],
               },
-              Lang.text("back")
-            )
-          )
+              Lang.text("back"),
+            ),
+          ),
         ),
         DOM(
           { style: "login-box-forma-right" },
@@ -357,19 +357,19 @@ export class View {
           }),
           DOM(
             { style: "login-box-form-invite-text" },
-            `Получить инвайт-код через QR-код`
+            `Получить инвайт-код через QR-код`,
           ),
           DOM({
             tag: "img",
             style: "login-box-forma-logo",
             src: "content/img/pwclassicbot.png",
-          })
-        )
+          }),
+        ),
       ),
       DOM(
         { style: "author" },
-        `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`
-      )
+        `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`,
+      ),
     );
   }
 
@@ -400,7 +400,7 @@ export class View {
       if (!Castle.gl) {
         await Castle.initDemo(
           App.storage.data.fraction == 1 ? "ad" : "doct",
-          Castle.canvas
+          Castle.canvas,
         );
       }
     } catch (error) {
@@ -413,7 +413,7 @@ export class View {
       backgroundImage,
       Castle.canvas,
       Castle.buildingBubbles,
-      View.castleQuestBody
+      View.castleQuestBody,
     );
 
     try {
@@ -516,7 +516,7 @@ export class View {
 
       const rankIcon = DOM({ style: "rank-icon" });
       rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        player.rating
+        player.rating,
       )}.webp)`;
 
       item.style.backgroundImage = player.hero
@@ -528,7 +528,7 @@ export class View {
       let rank = DOM(
         { style: "rank" },
         DOM({ style: "rank-lvl" }, player.rating),
-        rankIcon
+        rankIcon,
       );
 
       if (player.rating) {
@@ -542,7 +542,7 @@ export class View {
             "castle-party-middle-item-not-ready",
           ],
         },
-        DOM({}, "Не готов")
+        DOM({}, "Не готов"),
       );
 
       if (player.id) {
@@ -551,14 +551,14 @@ export class View {
 
           status.classList.replace(
             "castle-party-middle-item-not-ready",
-            "castle-party-middle-item-ready"
+            "castle-party-middle-item-ready",
           );
         } else if (MM.partyId == player.id) {
           status.firstChild.innerText = Lang.text("ready");
 
           status.classList.replace(
             "castle-party-middle-item-not-ready",
-            "castle-party-middle-item-ready"
+            "castle-party-middle-item-ready",
           );
         } else if (player.id == App.storage.data.id) {
           status.onclick = async () => {
@@ -615,17 +615,17 @@ export class View {
 
       let nicknameText = DOM(
         {},
-        `${player.nickname ? player.nickname : "Добавить"}`
+        `${player.nickname ? player.nickname : "Добавить"}`,
       );
 
       let nicknameHideOverflowContainer = DOM(
         { style: "castle-party-middle-item-nickname-hidden-overflow" },
-        nicknameText
+        nicknameText,
       );
 
       let nickname = DOM(
         { style: "castle-party-middle-item-nickname" },
-        nicknameHideOverflowContainer
+        nicknameHideOverflowContainer,
       );
 
       let playerX = DOM(
@@ -636,7 +636,7 @@ export class View {
         },
         nickname,
         item,
-        status
+        status,
       );
 
       if (p > 0 && !players[p - 1].id) {
@@ -664,7 +664,7 @@ export class View {
 
         if (player.nickname.length > 15) {
           nickname.firstChild.firstChild.classList.add(
-            "castle-name-autoscroll"
+            "castle-name-autoscroll",
           );
         }
 
@@ -685,7 +685,7 @@ export class View {
 
         if (player.nickname.length > 15) {
           nickname.firstChild.firstChild.classList.add(
-            "castle-name-autoscroll"
+            "castle-name-autoscroll",
           );
         }
 
@@ -996,9 +996,9 @@ export class View {
                 style: "iframe-stats-navbar",
                 event: ["click", () => Splash.hide()],
               }),
-              DOM({ tag: "iframe", src, style: "iframe-stats-frame" })
+              DOM({ tag: "iframe", src, style: "iframe-stats-frame" }),
             ),
-            false
+            false,
           );
         },
       ],
@@ -1041,7 +1041,7 @@ export class View {
           },
         ],
       },
-      View.castleTotalCrystal
+      View.castleTotalCrystal,
     );
 
     banner.append(statWrapper, View.castleCrystalContainer);
@@ -1092,7 +1092,7 @@ export class View {
     let container = DOM(
       { style: ["castle-settings-container"] },
       View.castleBannerOnline(),
-      body
+      body,
     );
     return container;
   }
@@ -1146,7 +1146,7 @@ export class View {
         ],
         title: Lang.text("titleNicknameСhange"),
       },
-      DOM({}, nicknameValue)
+      DOM({}, nicknameValue),
     );
     if (nicknameValue.length > 10) {
       nicknameMenuItem.firstChild.classList.add("castle-name-autoscroll");
@@ -1258,7 +1258,7 @@ export class View {
         heroesMenuItem,
         friendsMenuItem,
         buildingsMenuItem,
-        chatMenuItem
+        chatMenuItem,
       ),
       DOM(
         { style: "castle-bottom-content-container" },
@@ -1266,14 +1266,14 @@ export class View {
         DOM(
           { style: "castle-bottom-content-left-scroll" },
           View.arrows.ls,
-          View.arrows.ld
+          View.arrows.ld,
         ),
         DOM(
           { style: "castle-bottom-content-right-scroll" },
           View.arrows.rs,
-          View.arrows.rd
-        )
-      )
+          View.arrows.rd,
+        ),
+      ),
     );
 
     View.updateArrows();
@@ -1287,7 +1287,7 @@ export class View {
     let modifier =
       parseFloat(getComputedStyle(View.castleBottom.firstChild).width) +
       parseFloat(
-        getComputedStyle(View.castleBottom.firstChild).borderRightWidth
+        getComputedStyle(View.castleBottom.firstChild).borderRightWidth,
       );
 
     let maxScrollLeft =
@@ -1299,7 +1299,7 @@ export class View {
     View.currentFloatScroll = Castle.clamp(
       View.currentFloatScroll,
       0,
-      maxScrollLeft
+      maxScrollLeft,
     );
     View.castleBottom.scrollLeft = View.currentFloatScroll;
 
@@ -1318,7 +1318,7 @@ export class View {
     View.currentFloatScroll = Castle.clamp(
       View.currentFloatScroll,
       0,
-      maxScrollLeft
+      maxScrollLeft,
     );
     View.castleBottom.scrollLeft = View.currentFloatScroll;
 
@@ -1397,7 +1397,7 @@ export class View {
     for (let item of request.quests) {
       let hero = DOM(
         { style: "quest-item-hero" },
-        DOM({ style: "quest-item-portrait-glass" })
+        DOM({ style: "quest-item-portrait-glass" }),
       );
       hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
 
@@ -1431,9 +1431,9 @@ export class View {
                   item.status == 0
                     ? "quest-item-exclamation"
                     : "quest-item-completed",
-              })
+              }),
         ),
-        item.status == 1 ? timer : ""
+        item.status == 1 ? timer : "",
       );
 
       items.push(quest);
@@ -1483,7 +1483,7 @@ export class View {
 
       let buildingNameBase = DOM(
         { style: "castle-item-hero-name" },
-        buildingName
+        buildingName,
       );
 
       let building = DOM({ style: "castle-building-item" }, buildingNameBase);
@@ -1516,7 +1516,7 @@ export class View {
           const localizedName = Lang.heroName(item.id, item.skin);
           const heroName = DOM(
             { style: "castle-hero-name" },
-            DOM({}, localizedName)
+            DOM({}, localizedName),
           );
 
           if (localizedName.length > 10) {
@@ -1525,18 +1525,18 @@ export class View {
 
           let heroNameBase = DOM(
             { style: ["castle-item-hero-name", "hover-brightness"] },
-            heroName
+            heroName,
           );
 
           let rankIcon = DOM({ style: "castle-hero-rank-icon" });
           rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-            item.rating
+            item.rating,
           )}.webp)`;
 
           let rank = DOM(
             { style: "castle-hero-rank" },
             DOM({ style: "castle-hero-rank-lvl" }, item.rating),
-            rankIcon
+            rankIcon,
           );
 
           let hero = DOM(
@@ -1549,11 +1549,11 @@ export class View {
             DOM({ style: ["castle-hero-item-img", "no-hover-brightness"] }),
             DOM({ style: ["castle-item-ornament", "hover-brightness"] }),
             rank,
-            heroNameBase
+            heroNameBase,
           );
 
           hero.addEventListener("click", async () =>
-            Window.show("main", "build", item.id, 0, true)
+            Window.show("main", "build", item.id, 0, true),
           );
 
           hero.dataset.url = `content/hero/${item.id}/${
@@ -1564,7 +1564,7 @@ export class View {
         }
       },
       "build",
-      "heroAll"
+      "heroAll",
     );
   }
 
@@ -1626,14 +1626,14 @@ export class View {
 
                           App.notify(
                             `Заявка в друзья ${item.nickname} отправлена`,
-                            1000
+                            1000,
                           );
 
                           Splash.hide();
                         },
                       ],
                     },
-                    item.nickname
+                    item.nickname,
                   );
 
                   if ("blocked" in item) {
@@ -1664,7 +1664,7 @@ export class View {
                               },
                             ],
                           },
-                          item.blocked ? "Разблокировать" : "Заблокировать"
+                          item.blocked ? "Разблокировать" : "Заблокировать",
                         ),
                         DOM(
                           {
@@ -1679,7 +1679,7 @@ export class View {
                               },
                             ],
                           },
-                          item.mute ? "Убрать мут" : "Мут чата"
+                          item.mute ? "Убрать мут" : "Мут чата",
                         ),
                         DOM(
                           {
@@ -1690,18 +1690,18 @@ export class View {
                                 let password = await App.api.request(
                                   "user",
                                   "restore",
-                                  { id: item.id }
+                                  { id: item.id },
                                 );
                                 App.notify(
-                                  `Скопировано в буфер обмена! Пароль: ${password}`
+                                  `Скопировано в буфер обмена! Пароль: ${password}`,
                                 );
                                 navigator.clipboard.writeText(password);
                               },
                             ],
                           },
-                          "Сброс пароля"
+                          "Сброс пароля",
                         ),
-                        closeButton // Добавляем крестик вместо кнопки "Назад"
+                        closeButton, // Добавляем крестик вместо кнопки "Назад"
                       );
 
                       Splash.show(body);
@@ -1728,8 +1728,8 @@ export class View {
           },
           DOM(
             { style: "castle-friend-item-middle" },
-            DOM({ style: "castle-friend-add" }, "+")
-          )
+            DOM({ style: "castle-friend-add" }, "+"),
+          ),
         );
 
         preload.add(buttonAdd);
@@ -1739,7 +1739,7 @@ export class View {
         for (let item of result) {
           const heroName = DOM(
             { style: "castle-hero-name" },
-            DOM({ tag: "span" }, item.nickname)
+            DOM({ tag: "span" }, item.nickname),
           );
 
           if (item.nickname.length > 10) {
@@ -1753,7 +1753,7 @@ export class View {
           let friend = DOM(
             { style: "castle-friend-item" },
             heroNameBase,
-            bottom
+            bottom,
           );
 
           if (item.status == 1) {
@@ -1761,12 +1761,12 @@ export class View {
               { style: "castle-friend-add-group" },
               item.online
                 ? Lang.text("inviteToAGroup")
-                : Lang.text("friendIsOffline")
+                : Lang.text("friendIsOffline"),
             );
 
             let call = DOM(
               { style: "castle-friend-add-group" },
-              Lang.text("callAFriend")
+              Lang.text("callAFriend"),
             );
 
             if (!item.online) {
@@ -1782,8 +1782,8 @@ export class View {
                 App.notify(
                   Lang.text("friendAcceptText").replace(
                     "{nickname}",
-                    item.nickname
-                  )
+                    item.nickname,
+                  ),
                 );
               };
 
@@ -1817,7 +1817,7 @@ export class View {
                     },
                   ],
                 },
-                Lang.text("friendRemove")
+                Lang.text("friendRemove"),
               );
 
               let b2 = DOM(
@@ -1825,18 +1825,18 @@ export class View {
                   style: "splash-content-button",
                   event: ["click", () => Splash.hide()],
                 },
-                Lang.text("friendCancle")
+                Lang.text("friendCancle"),
               );
 
               body.append(
                 DOM(
                   Lang.text("friendRemoveText").replace(
                     "{nickname}",
-                    item.nickname
-                  )
+                    item.nickname,
+                  ),
                 ),
                 b1,
-                b2
+                b2,
               );
 
               Splash.show(body);
@@ -1871,25 +1871,25 @@ export class View {
                                 await App.api.request(
                                   App.CURRENT_MM,
                                   "inviteParty",
-                                  { id: item.id }
+                                  { id: item.id },
                                 );
 
                                 App.notify(
                                   Lang.text("friendAcceptText").replace(
                                     "{nickname}",
-                                    item.nickname
-                                  )
+                                    item.nickname,
+                                  ),
                                 );
                               },
                             ],
                           },
-                          Lang.text("inviteToAGroup")
-                        )
+                          Lang.text("inviteToAGroup"),
+                        ),
                       );
                     },
                   ],
                 },
-                Lang.text("friendAccept")
+                Lang.text("friendAccept"),
               ),
               DOM(
                 {
@@ -1905,8 +1905,8 @@ export class View {
                     },
                   ],
                 },
-                Lang.text("friendDecline")
-              )
+                Lang.text("friendDecline"),
+              ),
             );
           } else if (item.status == 3) {
             friend.append(
@@ -1914,9 +1914,9 @@ export class View {
                 { style: "castle-friend-item-middle" },
                 DOM(
                   { style: "castle-friend-request" },
-                  Lang.text("friendAcceptWaiting")
-                )
-              )
+                  Lang.text("friendAcceptWaiting"),
+                ),
+              ),
             );
 
             friend.style.filter = "grayscale(1)";
@@ -1936,8 +1936,8 @@ export class View {
                     },
                   ],
                 },
-                Lang.text("cancel")
-              )
+                Lang.text("cancel"),
+              ),
             );
           }
 
@@ -1947,7 +1947,7 @@ export class View {
         }
       },
       "friend",
-      "list"
+      "list",
     );
   }
 
@@ -1963,7 +1963,7 @@ export class View {
           },
         ],
       },
-      "Выйти из аккаунта"
+      "Выйти из аккаунта",
     );
 
     let close = DOM({ event: ["click", () => Splash.hide()] }, "Отмена");
@@ -1973,7 +1973,7 @@ export class View {
     if (NativeAPI.status) {
       let exit = DOM(
         { event: ["click", () => NativeAPI.exit()] },
-        Lang.text("exit")
+        Lang.text("exit"),
       );
 
       wrap = DOM({ style: "wrap" }, logout, exit, close);
@@ -2002,7 +2002,7 @@ export class View {
         src: "content/img/logo.webp",
         event: ["click", () => View.show("castle")],
       }),
-      playButton
+      playButton,
     );
 
     if (App.isAdmin()) {
@@ -2027,7 +2027,7 @@ export class View {
                       },
                     ],
                   },
-                  "Таланты (обычные)"
+                  "Таланты (обычные)",
                 ),
                 DOM(
                   {
@@ -2041,7 +2041,7 @@ export class View {
                       },
                     ],
                   },
-                  "Таланты (классовые)"
+                  "Таланты (классовые)",
                 ),
                 DOM(
                   {
@@ -2055,22 +2055,22 @@ export class View {
                       },
                     ],
                   },
-                  "Пользователи"
+                  "Пользователи",
                 ),
                 DOM(
                   {
                     style: "splash-content-button",
                     event: ["click", () => Splash.hide()],
                   },
-                  "[X]"
-                )
+                  "[X]",
+                ),
               );
 
               Splash.show(body);
             },
           ],
         },
-        "Админ"
+        "Админ",
       );
 
       adm.classList.add("animation1");
@@ -2086,34 +2086,34 @@ export class View {
           style: "main-header-item",
           event: ["click", () => View.show("castle")],
         },
-        Castle.gl ? "Замок" : "Лобби"
+        Castle.gl ? "Замок" : "Лобби",
       ),
       DOM(
         {
           style: "main-header-item",
           event: ["click", () => View.show("builds")],
         },
-        "Билды"
+        "Билды",
       ),
       /*DOM({ style: 'main-header-item', event: ['click', () => View.show('history')] }, 'История'),*/
       DOM(
         { style: "main-header-item", event: ["click", () => View.show("top")] },
-        "Рейтинг"
+        "Рейтинг",
       ),
       DOM(
         {
           style: "main-header-item",
           event: ["click", () => View.show("game")],
         },
-        "Фарм"
+        "Фарм",
       ),
       DOM(
         {
           style: "main-header-item",
           event: ["click", () => View.exitOrLogout()],
         },
-        "Выйти"
-      )
+        "Выйти",
+      ),
     );
 
     return menu;
@@ -2140,7 +2140,7 @@ export class View {
           let rank = DOM({ style: "top-item-hero-rank" });
 
           rank.style.backgroundImage = `url(content/ranks/${Rank.icon(
-            player.rating
+            player.rating,
           )}.webp)`;
 
           let hero = DOM({ style: "top-item-hero" }, rank);
@@ -2161,8 +2161,8 @@ export class View {
             DOM(
               { style: "top-item-player" },
               DOM(`#${number}. ${player.nickname}`),
-              DOM(`${player.rating}`)
-            )
+              DOM(`${player.rating}`),
+            ),
           );
 
           if (number == 1) {
@@ -2193,7 +2193,7 @@ export class View {
         }
       },
       App.CURRENT_MM,
-      "top"
+      "top",
     );
 
     let party = DOM({ style: "party" }, middle);
@@ -2231,20 +2231,20 @@ export class View {
       let rankIcon = DOM({ style: "rank-icon" });
 
       rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        item.rating
+        item.rating,
       )}.webp)`;
 
       let rank = DOM(
         { style: "rank" },
         DOM({ style: "rank-lvl" }, item.rating),
-        rankIcon
+        rankIcon,
       );
 
       img.append(rank);
 
       let status = DOM(
         { style: "party-middle-item-not-ready" },
-        DOM({}, "Не готов")
+        DOM({}, "Не готов"),
       );
 
       if (item.id) {
@@ -2253,14 +2253,14 @@ export class View {
 
           status.classList.replace(
             "party-middle-item-not-ready",
-            "party-middle-item-ready"
+            "party-middle-item-ready",
           );
         } else if (MM.partyId == item.id) {
           status.firstChild.innerText = Lang.text("ready");
 
           status.classList.replace(
             "party-middle-item-not-ready",
-            "party-middle-item-ready"
+            "party-middle-item-ready",
           );
         } else if (item.id == App.storage.data.id) {
           status.onclick = async () => {
@@ -2312,14 +2312,14 @@ export class View {
 
       let nickname = DOM(
         { style: "party-middle-item-nickname" },
-        `${item.nickname ? item.nickname : "Добавить"}`
+        `${item.nickname ? item.nickname : "Добавить"}`,
       );
 
       let player = DOM(
         { id: `PP${item.id}`, style: "party-middle-item" },
         nickname,
         img,
-        status
+        status,
       ); // TODO use this for lvl and rank
       // let player = DOM({id:`PP${item.id}`,style:'party-middle-item'},nickname,img,status);
 
@@ -2343,8 +2343,8 @@ export class View {
                 },
               ],
             },
-            "[X]"
-          )
+            "[X]",
+          ),
         );
       }
 
@@ -2367,8 +2367,8 @@ export class View {
                 },
               ],
             },
-            "[X]"
-          )
+            "[X]",
+          ),
         );
       }
 
@@ -2442,8 +2442,8 @@ export class View {
                   },
                 ],
               },
-              Lang.text("back")
-            )
+              Lang.text("back"),
+            ),
           );
 
           input.addEventListener("input", async () => {
@@ -2470,15 +2470,15 @@ export class View {
 
                         App.notify(
                           `Приглашение отправлено игроку ${item.nickname}`,
-                          1000
+                          1000,
                         );
 
                         // Splash.hide();
                       },
                     ],
                   },
-                  item.nickname
-                )
+                  item.nickname,
+                ),
               );
             }
           });
@@ -2589,15 +2589,15 @@ export class View {
           ],
         },
         DOM({ tag: "div" }),
-        DOM({ tag: "div" })
-      )
+        DOM({ tag: "div" }),
+      ),
     );
 
     const topFilter = top.querySelector(".top-filter");
 
     topFilter.style.setProperty(
       "--filter-text",
-      `'${Lang.text("clickToViewHeroRating")}'`
+      `'${Lang.text("clickToViewHeroRating")}'`,
     );
 
     top.firstChild.classList.add("animation1");
@@ -2614,7 +2614,7 @@ export class View {
       let rank = DOM({ style: "top-item-hero-rank" });
 
       rank.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        player.rating
+        player.rating,
       )}.webp)`;
 
       let hero = DOM({ style: "top-item-hero" }, rank);
@@ -2635,8 +2635,8 @@ export class View {
         DOM(
           { style: "top-item-player" },
           DOM(`#${number}. ${player.nickname}`),
-          DOM(`${player.rating}`)
-        )
+          DOM(`${player.rating}`),
+        ),
       );
 
       top.append(item);
@@ -2724,19 +2724,19 @@ export class View {
           let rankIcon = DOM({ style: "rank-icon" });
 
           rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-            item.rating
+            item.rating,
           )}.webp)`;
 
           let rank = DOM(
             { style: "rank" },
             DOM({ style: "rank-lvl" }, item.rating),
-            rankIcon
+            rankIcon,
           );
 
           const hero = DOM(
             { style: "hero-item" },
             DOM({ tag: "span", style: "name" }, item.name),
-            rank
+            rank,
           );
 
           hero.addEventListener("click", () => View.show("build", item.id));
@@ -2755,7 +2755,7 @@ export class View {
         }
       },
       "build",
-      "heroAll"
+      "heroAll",
     );
 
     body.append(View.header(), DOM({ style: "main-body-full" }, hero));
@@ -2781,7 +2781,7 @@ export class View {
         }
       },
       "gamev2",
-      "inventory"
+      "inventory",
     );
 
     if (!isWindow) {
@@ -2794,30 +2794,30 @@ export class View {
               style: "main-header-item",
               event: ["click", () => View.show("castle")],
             },
-            App.storage.data.login
+            App.storage.data.login,
           ),
           DOM(
             {
               style: "main-header-item",
               event: ["click", () => View.show("inventory")],
             },
-            "Осколки"
+            "Осколки",
           ),
           DOM(
             {
               style: "main-header-item",
               event: ["click", () => View.show("game")],
             },
-            "Фарм"
+            "Фарм",
           ),
           DOM(
             {
               style: "main-header-item",
               event: ["click", () => View.exitOrLogout()],
             },
-            "Выйти"
-          )
-        )
+            "Выйти",
+          ),
+        ),
       );
     } else {
       body.append(DOM({ style: "inventory-header" }, Lang.text("library")));
@@ -2864,7 +2864,7 @@ export class View {
           },
         ],
       },
-      "Начать фарм"
+      "Начать фарм",
     );
 
     let dscription = DOM(
@@ -2872,21 +2872,21 @@ export class View {
       DOM({ tag: "h1" }, "Лорды и леди!"),
       DOM(
         { tag: "p" },
-        "— необходимо собрать 1000 осколков одного и того же таланта, чтобы получить 1 талант для билда;"
+        "— необходимо собрать 1000 осколков одного и того же таланта, чтобы получить 1 талант для билда;",
       ),
       DOM({ tag: "p" }, "— на одну карту рассчитано 100 ходов;"),
       //DOM({tag:'p'},'— кулдаун между играми 60 минут;'),
       DOM(
         { tag: "p" },
-        "— чтобы сделать ход, переставляйте два соседних таланта местами. Если такая перестановка приводит к образованию комбинации, то «выстроившиеся»‎ таланты исчезают, и на их место падают таланты верхних рядов;"
+        "— чтобы сделать ход, переставляйте два соседних таланта местами. Если такая перестановка приводит к образованию комбинации, то «выстроившиеся»‎ таланты исчезают, и на их место падают таланты верхних рядов;",
       ),
       DOM(
         { tag: "p" },
-        "— засчитывается комбинация минимум из трёх одинаковых талантов;"
+        "— засчитывается комбинация минимум из трёх одинаковых талантов;",
       ),
       DOM(
         { tag: "p" },
-        "— если за 100 ходов серебряных монет будет 150, даётся +100 дополнительных ходов;"
+        "— если за 100 ходов серебряных монет будет 150, даётся +100 дополнительных ходов;",
       ),
       //DOM({tag:'p'},'— в рейтинге на главной страничке отображается сумма всех очков на одного игрока за всё время.'),
       button,
@@ -2897,8 +2897,8 @@ export class View {
               style: "game-button",
               event: ["click", () => View.show("castle")],
             },
-            Lang.text("back")
-          )
+            Lang.text("back"),
+          ),
     );
 
     body.append(dscription);
@@ -2924,24 +2924,24 @@ export class View {
           DOM(
             { style: "build-field-container" },
             Build.levelView,
-            Build.fieldView
-          )
+            Build.fieldView,
+          ),
         ),
         DOM(
           { style: "build-active-bar-container" },
           Build.activeBarView,
           DOM(
             { style: "build-active-bar-hint" },
-            Lang.text("smartcastDescription")
-          )
-        )
+            Lang.text("smartcastDescription"),
+          ),
+        ),
       ),
       DOM(
         { style: "build-right" },
         Build.talentsAndSetsView,
         Build.rarityView,
-        Build.inventoryView
-      )
+        Build.inventoryView,
+      ),
     );
 
     if (!isWindow) {
@@ -2967,8 +2967,8 @@ export class View {
             src: "content/icons/close-cropped.svg",
             alt: Lang.text("titleClose"),
             style: "close-image-style",
-          })
-        )
+          }),
+        ),
       ); // Замените путь к изображению
     }
 
@@ -2987,7 +2987,7 @@ export class View {
         style: "close-btn",
         event: ["click", () => View.show("castle")],
       },
-      "[X]"
+      "[X]",
     );
 
     // Строка поиска
@@ -3008,7 +3008,7 @@ export class View {
       let div = DOM({ tag: "div", class: "talent-item" });
       div.append(
         DOM(`id${item.id}`),
-        DOM({ tag: "img", src: `content/talents/${item.id}.webp` })
+        DOM({ tag: "img", src: `content/talents/${item.id}.webp` }),
       );
 
       for (let key in item) {
@@ -3031,8 +3031,8 @@ export class View {
                 object: object,
               });
             },
-            { value: item[key] }
-          )
+            { value: item[key] },
+          ),
         );
 
         div.append(keyValuePair);
@@ -3077,7 +3077,7 @@ export class View {
         style: "close-btn",
         event: ["click", () => View.show("castle")],
       },
-      "[X]"
+      "[X]",
     );
 
     // Строка поиска
@@ -3098,7 +3098,7 @@ export class View {
       let div = DOM({ tag: "div", class: "talent-item" });
       div.append(
         DOM(`id${item.id}`),
-        DOM({ tag: "img", src: `content/htalents/${item.id}.webp` })
+        DOM({ tag: "img", src: `content/htalents/${item.id}.webp` }),
       );
 
       for (let key in item) {
@@ -3121,8 +3121,8 @@ export class View {
                 object: object,
               });
             },
-            { value: item[key] }
-          )
+            { value: item[key] },
+          ),
         );
 
         div.append(keyValuePair);
@@ -3179,7 +3179,7 @@ export class View {
           },
         ],
       },
-      "Filter only banned"
+      "Filter only banned",
     );
 
     let userMute = DOM(
@@ -3200,7 +3200,7 @@ export class View {
               let users = document.getElementsByClassName("user-item");
 
               let userTag = Array.from(users).findIndex(
-                (x) => x.firstChild.innerText === "id" + userId
+                (x) => x.firstChild.innerText === "id" + userId,
               );
 
               let userNickname = users[userTag].children[3].value;
@@ -3218,22 +3218,25 @@ export class View {
                         await App.api.request("user", "mute", { id: userId });
 
                         App.notify(
-                          "Выдан мут игроку " + userNickname + "; id: " + userId
+                          "Выдан мут игроку " +
+                            userNickname +
+                            "; id: " +
+                            userId,
                         );
 
                         Splash.hide();
                       },
                     ],
                   },
-                  "Да"
+                  "Да",
                 ),
                 DOM(
                   {
                     style: "splash-content-button",
                     event: ["click", async () => Splash.hide()],
                   },
-                  "Нет"
-                )
+                  "Нет",
+                ),
               );
 
               Splash.show(body);
@@ -3241,7 +3244,7 @@ export class View {
           },
         ],
       },
-      ""
+      "",
     );
 
     let body = DOM({ style: "main" }),
@@ -3249,7 +3252,7 @@ export class View {
         { style: "adm" },
         DOM({ event: ["click", () => View.show("castle")] }, "[X]"),
         filter,
-        userMute
+        userMute,
       );
 
     let result = await App.api.request("user", "all");
@@ -3283,8 +3286,8 @@ export class View {
                 object: object,
               });
             },
-            { value: item[key] }
-          )
+            { value: item[key] },
+          ),
         );
       }
 
@@ -3304,13 +3307,13 @@ export class View {
 
                 prompt(
                   "Сброс пароля произведен успешно",
-                  `Пароль: ${password}`
+                  `Пароль: ${password}`,
                 );
               },
             ],
           },
-          `RESTORE`
-        )
+          `RESTORE`,
+        ),
       );
 
       adm.append(div);

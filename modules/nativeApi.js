@@ -118,11 +118,11 @@ export class NativeAPI {
     NativeAPI.platform = NativeAPI.os.platform();
 
     window.addEventListener("error", (event) =>
-      NativeAPI.write("error.txt", event.error.toString())
+      NativeAPI.write("error.txt", event.error.toString()),
     );
 
     window.addEventListener("unhandledrejection", (event) =>
-      NativeAPI.write("unhandledrejection.txt", event.reason.stack)
+      NativeAPI.write("unhandledrejection.txt", event.reason.stack),
     );
   }
 
@@ -154,7 +154,7 @@ export class NativeAPI {
           if (callback) {
             callback();
           }
-        }
+        },
       );
     });
   }

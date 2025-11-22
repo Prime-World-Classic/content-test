@@ -514,7 +514,7 @@ export function fromEuler(out, x, y, z, order = glMatrix.ANGLE_ORDER) {
       break;
 
     default:
-      throw new Error('Unknown angle order ' + order);
+      throw new Error("Unknown angle order " + order);
   }
 
   return out;
@@ -682,7 +682,7 @@ export const exactEquals = vec4.exactEquals;
  * @returns {Boolean} True if the quaternions are equal, false otherwise.
  */
 export function equals(a, b) {
-    return Math.abs(vec4.dot(a, b)) >= 1 - glMatrix.EPSILON;
+  return Math.abs(vec4.dot(a, b)) >= 1 - glMatrix.EPSILON;
 }
 
 /**

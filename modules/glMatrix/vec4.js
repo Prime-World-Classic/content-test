@@ -497,7 +497,6 @@ export function transformMat4(out, a, m) {
  * @returns {vec4} out
  */
 export function transformQuat(out, a, q) {
-
   // Fast Vector Rotation using Quaternions by Robert Eisele
   // https://raw.org/proof/vector-rotation-using-quaternions/
 
@@ -645,10 +644,10 @@ export const sqrLen = squaredLength;
  * @returns {Array} a
  * @function
  */
-export const forEach = (function() {
+export const forEach = (function () {
   let vec = create();
 
-  return function(a, stride, offset, count, fn, arg) {
+  return function (a, stride, offset, count, fn, arg) {
     let i, l;
     if (!stride) {
       stride = 4;

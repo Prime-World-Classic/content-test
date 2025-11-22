@@ -91,7 +91,7 @@ export class PWGame {
         PWGame.PATH,
         PWGame.WORKING_DIR_PATH,
         ["protocol", PWGame.currentPlayPwProtocol],
-        callback
+        callback,
       );
     }
   }

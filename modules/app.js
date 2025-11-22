@@ -276,7 +276,7 @@ export class App {
 
     let title = DOM(
       { tag: "div", style: "castle-menu-text" },
-      Lang.text("nicknameChangeCooldown")
+      Lang.text("nicknameChangeCooldown"),
     );
 
     let name = DOM({
@@ -317,7 +317,7 @@ export class App {
           },
         ],
       },
-      Lang.text("apply")
+      Lang.text("apply"),
     );
 
     template.append(title, name, button, close);
@@ -337,7 +337,7 @@ export class App {
 
     const title = DOM(
       { tag: "h2", style: "faction-title" },
-      Lang.text("select_faction")
+      Lang.text("select_faction"),
     );
     Object.assign(title.style, {
       textAlign: "center",
@@ -423,7 +423,7 @@ export class App {
 
       const nameLabel = DOM(
         { tag: "div", style: "faction-name" },
-        faction.name
+        faction.name,
       );
       Object.assign(nameLabel.style, {
         textAlign: "center",
@@ -470,7 +470,7 @@ export class App {
           },
         ],
       },
-      Lang.text("apply")
+      Lang.text("apply"),
     );
 
     const resizeHandler = () => {
@@ -608,7 +608,7 @@ export class App {
     setTimeout(() => {
       let body = DOM(
         { style: "notify-message" },
-        DOM({ tag: "div" }, `${message}`)
+        DOM({ tag: "div" }, `${message}`),
       );
 
       setTimeout(() => {
@@ -621,7 +621,7 @@ export class App {
 
   static isAdmin(id = 0) {
     return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(
-      Number(id ? id : App.storage.data.id)
+      Number(id ? id : App.storage.data.id),
     );
   }
 

@@ -47,7 +47,7 @@ export class ARAM {
   static briefing(heroId, roleId, callback) {
     let hero = DOM(
       { style: "aram-briefing-left" },
-      DOM({ style: "aram-random" })
+      DOM({ style: "aram-random" }),
     );
 
     hero.style.backgroundImage = `url(content/hero/empty.webp)`;
@@ -64,12 +64,12 @@ export class ARAM {
 
         Sound.play(
           `content/hero/${heroId}/revive/${App.getRandomInt(1, 4)}.ogg`,
-          { volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) }
+          { volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) },
         );
 
         hero.firstChild.animate(
           { opacity: [1, 0] },
-          { duration: 5000, fill: "forwards", easing: "ease-out" }
+          { duration: 5000, fill: "forwards", easing: "ease-out" },
         );
 
         // hero.animate({ backgroundSize: ['100%', '125%'] }, { duration: 1500, fill: 'forwards', easing: 'ease-in' });
@@ -115,17 +115,17 @@ export class ARAM {
     let h1 = DOM({ tag: "h1" }, "Без права на ошибку");
     let text = DOM(
       { tag: "div" },
-      "Одна ошибка в ARAM — равномерна гибели всей команды. Восстановить запас здоровья или энергии героя на главной базе нельзя."
+      "Одна ошибка в ARAM — равномерна гибели всей команды. Восстановить запас здоровья или энергии героя на главной базе нельзя.",
     );
     let bodyText = DOM(
       { style: "aram-text" },
-      DOM({ style: "aram-text-center" }, h1, text)
+      DOM({ style: "aram-text-center" }, h1, text),
     );
 
     setTimeout(() => {
       let animate = bodyText.animate(
         { opacity: [0, 1] },
-        { duration: 1650, fill: "forwards", easing: "ease-out" }
+        { duration: 1650, fill: "forwards", easing: "ease-out" },
       );
 
       animate.onfinish = () => {
@@ -170,7 +170,7 @@ export class ARAM {
     setTimeout(() => {
       let animate = part.animate(
         { backdropFilter: ["blur(5vmax)", "blur(0)"] },
-        { duration: 5000, fill: "forwards", easing: "ease-in-out" }
+        { duration: 5000, fill: "forwards", easing: "ease-in-out" },
       );
 
       animate.onfinish = () => {
@@ -179,7 +179,7 @@ export class ARAM {
         setTimeout(() => {
           background.animate(
             { transform: ["scale(1)", "scale(1.9)"] },
-            { duration: 1000, easing: "ease-out", fill: "forwards" }
+            { duration: 1000, easing: "ease-out", fill: "forwards" },
           );
 
           setTimeout(() => {

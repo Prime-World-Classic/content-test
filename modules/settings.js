@@ -24,11 +24,11 @@ export class Settings {
     const homeDir = NativeAPI.os.homedir();
     this.pwcLauncherSettingsDir = NativeAPI.path.join(
       homeDir,
-      "Prime World Classic"
+      "Prime World Classic",
     );
     this.settingsFilePath = NativeAPI.path.join(
       this.pwcLauncherSettingsDir,
-      "launcher.cfg"
+      "launcher.cfg",
     );
 
     try {
@@ -60,7 +60,7 @@ export class Settings {
       if (await this.ensureSettingsFile()) {
         const data = await NativeAPI.fileSystem.promises.readFile(
           this.settingsFilePath,
-          "utf-8"
+          "utf-8",
         );
         this.settings = { ...this.defaultSettings, ...JSON.parse(data) };
       }
@@ -80,7 +80,7 @@ export class Settings {
       await NativeAPI.fileSystem.promises.writeFile(
         this.settingsFilePath,
         JSON.stringify(this.settings, null, 2),
-        "utf-8"
+        "utf-8",
       );
     } catch (e) {
       App.error(Lang.text("settingsSaveFailed") + e);
@@ -112,7 +112,7 @@ export class Settings {
 
     this.settings.fullscreen = !this.settings.fullscreen;
     console.log(
-      `Toggling fullscreen: ${this.settings.fullscreen ? "ON" : "OFF"}`
+      `Toggling fullscreen: ${this.settings.fullscreen ? "ON" : "OFF"}`,
     );
 
     // Применяем настройки

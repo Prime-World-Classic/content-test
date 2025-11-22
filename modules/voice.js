@@ -75,7 +75,7 @@ export class Voice {
     if (!Voice.infoPanel) {
       Voice.infoPanel = DOM(
         { style: ["voice-info-panel", "left-offset-with-shift"] },
-        DOM({ style: "voice-info-panel-body" })
+        DOM({ style: "voice-info-panel-body" }),
       );
     }
 
@@ -102,7 +102,7 @@ export class Voice {
       });
     } catch (error) {
       return App.error(
-        Lang.text("mediaDevicesError").replace("{error}", error)
+        Lang.text("mediaDevicesError").replace("{error}", error),
       );
     }
 
@@ -112,7 +112,7 @@ export class Voice {
       tracks = Voice.userMedia.getTracks();
     } catch (error) {
       return App.error(
-        Lang.text("streamTracksError").replace("{error}", error)
+        Lang.text("streamTracksError").replace("{error}", error),
       );
     }
 
@@ -226,10 +226,10 @@ export class Voice {
             style: "voice-info-panel-body-item-name",
             event: ["click", () => Voice.toggleEnabledMic()],
           },
-          App.storage.data.login
+          App.storage.data.login,
         ),
-        DOM({ style: "voice-info-panel-body-item-status" }, bar)
-      )
+        DOM({ style: "voice-info-panel-body-item-status" }, bar),
+      ),
     );
 
     for (let id in Voice.manager) {
@@ -294,7 +294,7 @@ export class Voice {
           },
         ],
       },
-      state()
+      state(),
     );
 
     let level = DOM({ style: "voice-info-panel-body-item-bar-level" });
@@ -334,8 +334,8 @@ export class Voice {
       DOM(
         { style: "voice-info-panel-body-item" },
         item,
-        DOM({ style: "voice-info-panel-body-item-status" }, bar)
-      )
+        DOM({ style: "voice-info-panel-body-item-status" }, bar),
+      ),
     );
   }
 

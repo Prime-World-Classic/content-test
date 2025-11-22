@@ -4,7 +4,7 @@ export function DOM(properties) {
   let parent = document.createElement(
     typeof properties == "object" && "tag" in properties
       ? properties.tag
-      : "div"
+      : "div",
   );
 
   if (typeof properties == "string") {
@@ -17,23 +17,23 @@ export function DOM(properties) {
         case "domaudio":
           if (properties.domaudio.constructor.name == "DomAudio") {
             parent.addEventListener("mouseover", () =>
-              properties.domaudio?.eventMouseOverCallback()
+              properties.domaudio?.eventMouseOverCallback(),
             );
 
             parent.addEventListener("mousedown", () =>
-              properties.domaudio?.eventMouseDownCallback()
+              properties.domaudio?.eventMouseDownCallback(),
             );
 
             parent.addEventListener("mouseup", () =>
-              properties.domaudio?.eventMouseUpCallback()
+              properties.domaudio?.eventMouseUpCallback(),
             );
 
             parent.addEventListener("input", () =>
-              properties.domaudio?.eventInputCallback()
+              properties.domaudio?.eventInputCallback(),
             );
 
             parent.addEventListener("change", () =>
-              properties.domaudio?.eventChangeCallback()
+              properties.domaudio?.eventChangeCallback(),
             );
           } else {
             App.error("Передан некорректный объект. Ожидается DomAudio");

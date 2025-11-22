@@ -56,7 +56,7 @@ export class Game {
         event: ["click", (e) => Game.click(e)],
       },
       Game.scoring,
-      Game.field
+      Game.field,
     );
 
     Game.viewScore = DOM({ style: "game-view-score" });
@@ -94,7 +94,7 @@ export class Game {
     if (!isSplah) {
       Game.viewInfo.append(
         DOM({ event: ["click", () => Game.eventBack()] }, "Вернуться назад"),
-        DOM({}, ` | `)
+        DOM({}, ` | `),
       );
     }
 
@@ -102,7 +102,7 @@ export class Game {
       Game.viewTotalScore,
       Game.viewMoves,
       DOM({}, ` | `),
-      DOM({ event: ["click", () => Game.eventFinish()] }, "Завершить игру")
+      DOM({ event: ["click", () => Game.eventFinish()] }, "Завершить игру"),
     );
 
     Game.scoring.append(Game.viewScore);
@@ -146,7 +146,7 @@ export class Game {
 
     Game.dataScore[id].animate(
       { transform: ["scale(1)", "scale(1.5)", "scale(1)"] },
-      { duration: 250, fill: "both", easing: "ease-out" }
+      { duration: 250, fill: "both", easing: "ease-out" },
     );
   }
 
@@ -189,8 +189,8 @@ export class Game {
     Game.field.append(
       DOM(
         { style: "unit-container", event: ["click", (e) => Game.click(e)] },
-        unit
-      )
+        unit,
+      ),
     );
 
     return unit;
@@ -210,8 +210,8 @@ export class Game {
     Game.field.append(
       DOM(
         { style: "unit-container", event: ["click", (e) => Game.click(e)] },
-        unit
-      )
+        unit,
+      ),
     );
 
     return unit;
@@ -280,7 +280,7 @@ export class Game {
           opacity: [0, 1],
           transform: ["scale(2.5)", "scale(0.9)"],
         },
-        { delay: delay, duration: 250, fill: "both", easing: "ease-out" }
+        { delay: delay, duration: 250, fill: "both", easing: "ease-out" },
       );
 
       delay += 5;
@@ -309,7 +309,7 @@ export class Game {
                 opacity: [0, state],
                 transform: ["scale(0.3)", "scale(1)", "scale(0.9)"],
               },
-              { duration: 500, fill: "both", easing: "ease-in" }
+              { duration: 500, fill: "both", easing: "ease-in" },
             );
           }
 
@@ -360,7 +360,7 @@ export class Game {
 
       Game.targetAnimate = Game.target.animate(
         { transform: ["scale(0.9)", "scale(1.1)", "scale(0.9)"] },
-        { duration: 500, iterations: Infinity }
+        { duration: 500, iterations: Infinity },
       );
     }
   }
@@ -410,7 +410,7 @@ export class Game {
         top: [`${Game.position(data1[0])}`, `${Game.position(data2[0])}`],
         left: [`${Game.position(data1[1])}`, `${Game.position(data2[1])}`],
       },
-      { duration: 250, fill: "both" }
+      { duration: 250, fill: "both" },
     );
 
     let element2Animate = element2.animate(
@@ -418,7 +418,7 @@ export class Game {
         top: [`${Game.position(data2[0])}`, `${Game.position(data1[0])}`],
         left: [`${Game.position(data2[1])}`, `${Game.position(data1[1])}`],
       },
-      { duration: 250, fill: "both" }
+      { duration: 250, fill: "both" },
     );
 
     element1Animate.onfinish = async () => {
@@ -482,7 +482,7 @@ export class Game {
 
         let animate = findUnit.animate(
           { opacity: [1, 0], transform: ["scale(0.9)", "scale(3)"] },
-          { duration: 250, fill: "both", easing: "ease-out" }
+          { duration: 250, fill: "both", easing: "ease-out" },
         );
 
         if (number == data.hide.length) {
@@ -549,7 +549,7 @@ export class Game {
             opacity: [currentState, Game.background[item.x][item.y]],
             transform: ["scale(0.9)", "scale(1.6)", "scale(0.9)"],
           },
-          { duration: 500, fill: "both", easing: "ease-out" }
+          { duration: 500, fill: "both", easing: "ease-out" },
         );
 
         if (number == hideBackground.length) {
@@ -593,7 +593,7 @@ export class Game {
               "rotate(0) scale(0.9)",
             ],
           },
-          { duration: 250, fill: "both", easing: "ease-in" }
+          { duration: 250, fill: "both", easing: "ease-in" },
         );
 
         if (number == data.length) {
@@ -625,7 +625,7 @@ export class Game {
             opacity: [0, 1],
             transform: ["rotate(0) scale(0.9)", "rotate(360deg) scale(0.9)"],
           },
-          { duration: 250, fill: "both", easing: "ease-in" }
+          { duration: 250, fill: "both", easing: "ease-in" },
         );
 
         if (number == data.length) {

@@ -11,7 +11,7 @@ export class Store {
           indexes: [{ name: "objects", path: "object" }],
         },
       ],
-      5
+      5,
     );
 
     return await Store.db.init();

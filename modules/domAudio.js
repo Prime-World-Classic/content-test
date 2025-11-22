@@ -37,7 +37,7 @@ export class DomAudio {
     mousedown = DomAudio.eventMouseDown,
     mouseup = DomAudio.eventMouseUp,
     input = DomAudio.eventInput,
-    change = DomAudio.eventChange
+    change = DomAudio.eventChange,
   ) {
     this.eventMouseOverCallback = mouseover;
 

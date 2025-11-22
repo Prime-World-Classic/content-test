@@ -44,7 +44,7 @@ export class Api {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
         console.log(
-          `Попытка соединения ${this.MAIN_HOST} (${this.DISCONNECT_TOTAL})...`
+          `Попытка соединения ${this.MAIN_HOST} (${this.DISCONNECT_TOTAL})...`,
         );
 
         if (this.WebSocket) {
@@ -60,7 +60,7 @@ export class Api {
         }
 
         this.WebSocket = new WebSocket(
-          `${this.MAIN_HOST}/${App.storage.data.token}`
+          `${this.MAIN_HOST}/${App.storage.data.token}`,
         );
 
         this.WebSocket.onmessage = (event) => this.message(event.data);
@@ -70,9 +70,9 @@ export class Api {
           App.error(
             Lang.text("connectionLostError").replace(
               "{count}",
-              this.DISCONNECT_TOTAL
+              this.DISCONNECT_TOTAL,
             ),
-            event
+            event,
           );
         };
 
@@ -102,8 +102,8 @@ export class Api {
     App.error(
       Lang.text("connectionClosedError").replace(
         "{count}",
-        this.DISCONNECT_TOTAL
-      )
+        this.DISCONNECT_TOTAL,
+      ),
     );
     if (!this.WebSocket) {
       return;
@@ -146,7 +146,7 @@ export class Api {
       }
     }
     App.error(
-      Lang.text("connectionRestoringError").replace("{host}", currentHost)
+      Lang.text("connectionRestoringError").replace("{host}", currentHost),
     );
 
     this.MAIN_HOST = this.host[(currentHost + 1) % this.host.length];
@@ -196,7 +196,7 @@ export class Api {
     } else {
       throw Lang.text("unknownMessageStructure").replace(
         "{json}",
-        JSON.stringify(json)
+        JSON.stringify(json),
       );
     }
   }
@@ -228,7 +228,7 @@ export class Api {
         reject(
           Lang.text("requestTimeoutError")
             .replace("{object}", object)
-            .replace("{method}", method)
+            .replace("{method}", method),
         );
       }, 15000);
 
@@ -258,7 +258,7 @@ export class Api {
       if (infinity) {
         setTimeout(
           () => this.silent(callback, object, method, data, true),
-          3000
+          3000,
         );
       }
 
@@ -309,13 +309,13 @@ export class Api {
           method: method,
           data: data,
           version: `${App.PW_VERSION}.${App.APP_VERSION}`,
-        })
+        }),
       );
     } else {
       if (retryCount < 5) {
         setTimeout(
           () => this.say(request, object, method, data, retryCount + 1),
-          3000
+          3000,
         );
       }
     }

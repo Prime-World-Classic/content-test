@@ -542,7 +542,6 @@ export function transformMat3(out, a, m) {
  * @returns {vec3} out
  */
 export function transformQuat(out, a, q) {
-
   // Fast Vector Rotation using Quaternions by Robert Eisele
   // https://raw.org/proof/vector-rotation-using-quaternions/
 
@@ -673,7 +672,9 @@ export function angle(a, b) {
     bx = b[0],
     by = b[1],
     bz = b[2],
-    mag = Math.sqrt((ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz)),
+    mag = Math.sqrt(
+      (ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz),
+    ),
     cosine = mag && dot(a, b) / mag;
   return Math.acos(Math.min(Math.max(cosine, -1), 1));
 }

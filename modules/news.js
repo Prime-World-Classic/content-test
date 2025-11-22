@@ -6,7 +6,7 @@ export class News {
     News.db = new DataBase(
       "list",
       [{ name: "list", options: { keyPath: "id" } }],
-      1
+      1,
     );
 
     await News.db.init();

@@ -21,8 +21,8 @@ export class Shop {
       Date.UTC(
         dateNowMsk.getFullYear(),
         dateNowMsk.getMonth(),
-        dateNowMsk.getDate()
-      )
+        dateNowMsk.getDate(),
+      ),
     );
   }
 
@@ -36,7 +36,7 @@ export class Shop {
   static async retrieveLastUpdate() {
     Shop.timeBeforeUpdate = await App.api.request(
       "shop",
-      "getTimeBeforeUpdateForUser"
+      "getTimeBeforeUpdateForUser",
     );
     if (Shop.timeoutEvent) {
       clearTimeout(Shop.timeoutEvent);
@@ -65,7 +65,7 @@ export class Shop {
         return Shop.getSkinIcon(externalId);
       default:
         App.error(
-          `Некорректный categoryId ${categoryId} для предмета ${externalId}`
+          `Некорректный categoryId ${categoryId} для предмета ${externalId}`,
         );
         return [""];
     }

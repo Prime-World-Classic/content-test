@@ -42,7 +42,7 @@ export class Window {
         src: "content/icons/close-cropped.svg",
         alt: Lang.text("titleClose"),
         style: "close-image-style",
-      })
+      }),
     );
     template.append(closeButton);
     if (category in Window.windows) {
@@ -102,14 +102,14 @@ export class Window {
                     (screen.height - 720) / 2 +
                     ", left=" +
                     (screen.width - 1280) / 2 +
-                    ", toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no"
+                    ", toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no",
                 );
               },
             ],
           },
-          Lang.text("continue")
-        )
-      )
+          Lang.text("continue"),
+        ),
+      ),
     );
   }
   static async build(heroId, targetId = 0, isWindow = false) {
@@ -140,7 +140,7 @@ export class Window {
     try {
       topHeroVictoryCount = await App.api.request(
         App.CURRENT_MM,
-        "getHeroWithFrameId"
+        "getHeroWithFrameId",
       );
     } catch (e) {
       App.error(e);
@@ -167,7 +167,7 @@ export class Window {
         rItem.categoryId,
         isFrame
           ? `${rItem.externalId}/${topHeroVictoryCount.frameId}`
-          : rItem.externalId
+          : rItem.externalId,
       );
       item.style.backgroundImage = itemIcon[0];
       let itemName = Shop.getName(rItem.categoryId, rItem.externalId);
@@ -202,7 +202,7 @@ export class Window {
 
         if (topHeroVictoryCount.frameId == 0 && !isDefault) {
           additionalMessage.appendChild(
-            DOM({ style: "splash-shop-item-hint" }, Lang.text("frame_hint"))
+            DOM({ style: "splash-shop-item-hint" }, Lang.text("frame_hint")),
           );
         }
         if (topHeroVictoryCount.frameId > 0 && !isDefault) {
@@ -223,8 +223,8 @@ export class Window {
         isEnabled
           ? "shop_item_container"
           : isShop
-          ? "shop_item_container_disabled"
-          : "shop_item_container_equipped",
+            ? "shop_item_container_disabled"
+            : "shop_item_container_equipped",
       ];
       const showQuadFrame = isFrame && !isDefault;
       if (isSkin) {
@@ -241,9 +241,9 @@ export class Window {
               DOM(
                 { style: "shop_item_img_container" },
                 shopItemBackground.cloneNode(),
-                itemSrc
+                itemSrc,
               ),
-              DOM({ style: "shop_item_name" }, isSkin ? srcTranslatedName : "")
+              DOM({ style: "shop_item_name" }, isSkin ? srcTranslatedName : ""),
             )
           : DOM(),
         !isFrame
@@ -252,16 +252,16 @@ export class Window {
               DOM(
                 { style: "shop_item_img_container" },
                 shopItemBackground,
-                item
+                item,
               ),
               DOM(
                 { style: "shop_item_name" },
                 isSkin
                   ? translatedName
                   : isFrame
-                  ? Lang.text("frame_req_1")
-                  : ""
-              )
+                    ? Lang.text("frame_req_1")
+                    : "",
+              ),
             )
           : DOM(),
         isFrame
@@ -270,14 +270,14 @@ export class Window {
               DOM(
                 { style: "shop_item_img_container" },
                 shopItemBackground.cloneNode(),
-                frameItems[0]
+                frameItems[0],
               ),
               DOM(
                 { style: "shop_item_name" },
                 showQuadFrame
                   ? Lang.text("frame_req_1")
-                  : Lang.text("frame_no_frame")
-              )
+                  : Lang.text("frame_no_frame"),
+              ),
             )
           : DOM(),
         showQuadFrame
@@ -286,9 +286,9 @@ export class Window {
               DOM(
                 { style: "shop_item_img_container" },
                 shopItemBackground.cloneNode(),
-                frameItems[1]
+                frameItems[1],
               ),
-              DOM({ style: "shop_item_name" }, Lang.text("frame_req_2"))
+              DOM({ style: "shop_item_name" }, Lang.text("frame_req_2")),
             )
           : DOM(),
         showQuadFrame
@@ -297,9 +297,9 @@ export class Window {
               DOM(
                 { style: "shop_item_img_container" },
                 shopItemBackground.cloneNode(),
-                frameItems[2]
+                frameItems[2],
               ),
-              DOM({ style: "shop_item_name" }, Lang.text("frame_req_3"))
+              DOM({ style: "shop_item_name" }, Lang.text("frame_req_3")),
             )
           : DOM(),
         showQuadFrame
@@ -308,9 +308,9 @@ export class Window {
               DOM(
                 { style: "shop_item_img_container" },
                 shopItemBackground.cloneNode(),
-                frameItems[3]
+                frameItems[3],
               ),
-              DOM({ style: "shop_item_name" }, Lang.text("frame_req_4"))
+              DOM({ style: "shop_item_name" }, Lang.text("frame_req_4")),
             )
           : DOM(),
         isSkin ? DOM({ style: "shop_item_arrow" }) : DOM(),
@@ -331,19 +331,19 @@ export class Window {
                         { style: "splash-item-container" },
                         isFlag
                           ? shopItemBackground.cloneNode()
-                          : item.cloneNode()
+                          : item.cloneNode(),
                       ),
                       DOM(
                         { style: "splash-item-text" },
                         Lang.text("windowShopBuyItem"),
                         DOM(
                           { style: "splash-shop-item-name" },
-                          `${translatedName}`
+                          `${translatedName}`,
                         ),
                         DOM({ tag: "br" }),
                         Lang.text("windowShopItemPrice").replace(
                           "{rItem.price}",
-                          rItem.price
+                          rItem.price,
                         ),
                         DOM({
                           tag: "img",
@@ -351,7 +351,7 @@ export class Window {
                           style: "splash_shop_item_price_icon",
                         }),
                         `?`,
-                        DOM({}, additionalMessage)
+                        DOM({}, additionalMessage),
                       ),
                       DOM(
                         {
@@ -365,7 +365,7 @@ export class Window {
                                 crystalLeft = await App.api.request(
                                   "shop",
                                   "buy",
-                                  { id: rItem.id }
+                                  { id: rItem.id },
                                 );
                                 if (isSkin) {
                                   let heroId_skinId =
@@ -379,18 +379,21 @@ export class Window {
                                 return;
                               }
                               if (Number.isInteger(crystalLeft)) {
-                                View.castleTotalCrystal.firstChild.innerText = crystalLeft;
+                                View.castleTotalCrystal.firstChild.innerText =
+                                  crystalLeft;
                               } else {
-                                App.error(`Неизвестное число кристаллов: ${crystalLeft}`);
+                                App.error(
+                                  `Неизвестное число кристаллов: ${crystalLeft}`,
+                                );
                               }
                               shopItem.classList.add(
-                                "shop_item_container_disabled"
+                                "shop_item_container_disabled",
                               );
                               shopItem.classList.remove("shop_item_container");
                             },
                           ],
                         },
-                        Lang.text("windowShopBuy")
+                        Lang.text("windowShopBuy"),
                       ),
                       DOM(
                         {
@@ -402,9 +405,9 @@ export class Window {
                             },
                           ],
                         },
-                        Lang.text("windowShopCancel")
-                      )
-                    )
+                        Lang.text("windowShopCancel"),
+                      ),
+                    ),
                   );
                 } else {
                   Splash.show(
@@ -414,7 +417,7 @@ export class Window {
                         { style: "splash-item-container" },
                         isFlag
                           ? shopItemBackground.cloneNode()
-                          : item.cloneNode()
+                          : item.cloneNode(),
                       ),
                       isFrame && !showQuadFrame
                         ? Lang.text("windowShopUnequipItem")
@@ -423,7 +426,7 @@ export class Window {
                         { style: "splash-shop-item-name" },
                         isFrame && !showQuadFrame
                           ? Lang.text("windowShopCurrentFrame")
-                          : `${translatedName}`
+                          : `${translatedName}`,
                       ),
                       "?",
                       DOM({}, additionalMessage),
@@ -446,7 +449,7 @@ export class Window {
                                     await App.api.request(
                                       "shop",
                                       "applyDefault",
-                                      { categoryId: rItem.categoryId }
+                                      { categoryId: rItem.categoryId },
                                     );
                                   } else {
                                     await App.api.request("shop", "apply", {
@@ -459,7 +462,7 @@ export class Window {
                                 return;
                               }
                               shopItem.classList.add(
-                                "shop_item_container_equipped"
+                                "shop_item_container_equipped",
                               );
                               shopItem.classList.remove("shop_item_container");
                               shopItem.lastChild.firstChild.innerText =
@@ -469,10 +472,10 @@ export class Window {
                               ].childNodes) {
                                 if (collectionItem != shopItem) {
                                   collectionItem.classList.add(
-                                    "shop_item_container"
+                                    "shop_item_container",
                                   );
                                   collectionItem.classList.remove(
-                                    "shop_item_container_equipped"
+                                    "shop_item_container_equipped",
                                   );
                                   collectionItem.lastChild.firstChild.innerText =
                                     Lang.text("shop_use");
@@ -483,7 +486,7 @@ export class Window {
                         },
                         isFrame && !showQuadFrame
                           ? Lang.text("windowShopUnequip")
-                          : Lang.text("windowShopEquip")
+                          : Lang.text("windowShopEquip"),
                       ),
                       DOM(
                         {
@@ -495,9 +498,9 @@ export class Window {
                             },
                           ],
                         },
-                        Lang.text("windowShopCancel")
-                      )
-                    )
+                        Lang.text("windowShopCancel"),
+                      ),
+                    ),
                   );
                 }
               },
@@ -507,13 +510,13 @@ export class Window {
             ? DOM(
                 { style: "shop_item_price" },
                 DOM({ style: "shop_item_price_icon" }),
-                rItem.price
+                rItem.price,
               )
             : DOM(
                 { style: "shop_item_price" },
-                isEnabled ? Lang.text("shop_use") : Lang.text("shop_in_use")
-              )
-        )
+                isEnabled ? Lang.text("shop_use") : Lang.text("shop_in_use"),
+              ),
+        ),
       );
       return shopItem;
     }
@@ -525,7 +528,7 @@ export class Window {
       { style: "shop_separator" },
       DOM({ style: "shop_separator_left" }),
       DOM({ style: "shop_separator_right" }),
-      DOM({ style: "shop_separator_center" })
+      DOM({ style: "shop_separator_center" }),
     );
 
     let shopHeader = DOM(
@@ -538,7 +541,7 @@ export class Window {
           ],
           event: ["click", async () => Window.show("main", "shop")],
         },
-        Lang.text("shop_shop")
+        Lang.text("shop_shop"),
       ),
       DOM(
         {
@@ -548,20 +551,20 @@ export class Window {
           ],
           event: ["click", async () => Window.show("main", "collection")],
         },
-        Lang.text("shop_collection")
+        Lang.text("shop_collection"),
       ),
-      shopSeparator.cloneNode(true)
+      shopSeparator.cloneNode(true),
     );
 
     let shopTimeLeft = DOM(
       { style: "shop_bottom_time" },
-      Timer.getFormattedTimer(Shop.timeBeforeUpdate)
+      Timer.getFormattedTimer(Shop.timeBeforeUpdate),
     );
 
     let shopBottom = DOM(
       { style: "shop_bottom" },
       Lang.text("shop_bottom"),
-      shopTimeLeft
+      shopTimeLeft,
     );
 
     let skins = DOM(
@@ -572,7 +575,7 @@ export class Window {
             : "shop_category",
       },
       DOM({ style: "shop_category_header" }, Lang.text("shop_skins")),
-      category.skin
+      category.skin,
     );
     let flags = DOM(
       {
@@ -582,7 +585,7 @@ export class Window {
             : "shop_category",
       },
       DOM({ style: "shop_category_header" }, Lang.text("shop_flags")),
-      category.flag
+      category.flag,
     );
     let frames = DOM(
       {
@@ -592,7 +595,7 @@ export class Window {
             : "shop_category",
       },
       DOM({ style: "shop_category_header" }, Lang.text("shop_frames")),
-      category.frame
+      category.frame,
     );
 
     if (App.isAdmin()) {
@@ -608,9 +611,9 @@ export class Window {
           },
           skins,
           flags,
-          frames
+          frames,
         ),
-        isShop ? shopBottom : DOM()
+        isShop ? shopBottom : DOM(),
       );
 
       await Shop.retrieveLastUpdate();
@@ -734,8 +737,8 @@ export class Window {
                 },
               ],
             },
-            DOM({ style: "quest-button-text" }, "Начать")
-          )
+            DOM({ style: "quest-button-text" }, "Начать"),
+          ),
         );
 
         break;
@@ -756,8 +759,8 @@ export class Window {
                 },
               ],
             },
-            DOM({ style: "quest-button-text" }, "Завершить")
-          )
+            DOM({ style: "quest-button-text" }, "Завершить"),
+          ),
         );
 
         break;
@@ -779,30 +782,30 @@ export class Window {
               { style: "castle-menu-item-button" },
               DOM(
                 { event: ["click", () => Window.show("main", "adminPanel")] },
-                "Админ"
-              )
+                "Админ",
+              ),
             )
           : DOM(),
         DOM(
           { style: "castle-menu-item-button" },
           DOM(
             { event: ["click", () => Window.show("main", "accountPanel")] },
-            Lang.text("account")
-          )
+            Lang.text("account"),
+          ),
         ),
         DOM(
           { style: "castle-menu-item-button" },
           DOM(
             { event: ["click", () => Window.show("main", "settings")] },
-            Lang.text("preferences")
-          )
+            Lang.text("preferences"),
+          ),
         ),
         DOM(
           { style: "castle-menu-item-button" },
           DOM(
             { event: ["click", () => Window.show("main", "support")] },
-            Lang.text("support")
-          )
+            Lang.text("support"),
+          ),
         ),
         DOM(
           {
@@ -815,7 +818,7 @@ export class Window {
               },
             ],
           },
-          Lang.text("accountSwitch")
+          Lang.text("accountSwitch"),
         ),
         DOM(
           {
@@ -829,11 +832,11 @@ export class Window {
               },
             ],
           },
-          Lang.text("exit")
+          Lang.text("exit"),
         ),
         DOM(
           { style: "castle-menu-label" },
-          `${Lang.text("version")}: v.${App.PW_VERSION}`
+          `${Lang.text("version")}: v.${App.PW_VERSION}`,
         ),
         DOM(
           { style: "menu-icons" },
@@ -849,7 +852,7 @@ export class Window {
               src: "content/icons/vk.webp",
               alt: "VK",
               style: "menu-icons",
-            })
+            }),
           ),
           DOM(
             {
@@ -863,7 +866,7 @@ export class Window {
               src: "content/icons/telegram.webp",
               alt: "Telegram",
               style: "menu-icons",
-            })
+            }),
           ),
           DOM(
             {
@@ -877,7 +880,7 @@ export class Window {
               src: "content/icons/discord.webp",
               alt: "Discord",
               style: "menu-icons",
-            })
+            }),
           ),
           DOM(
             {
@@ -891,10 +894,10 @@ export class Window {
               src: "content/icons/steam2.webp",
               alt: "Steam",
               style: "menu-icons",
-            })
-          )
-        )
-      )
+            }),
+          ),
+        ),
+      ),
     );
   }
 
@@ -922,12 +925,12 @@ export class Window {
                 },
               ],
             },
-            { checked: Settings.settings.fullscreen }
+            { checked: Settings.settings.fullscreen },
           ),
           DOM(
             { tag: "label", for: "fullscreen-toggle" },
-            Lang.text("windowMode") + " (F11)"
-          )
+            Lang.text("windowMode") + " (F11)",
+          ),
         ),
         DOM(
           { style: "castle-menu-item-checkbox" },
@@ -944,7 +947,7 @@ export class Window {
               },
             ],
           }),
-          DOM({ tag: "label", for: "render-toggle" }, Lang.text("threeD"))
+          DOM({ tag: "label", for: "render-toggle" }, Lang.text("threeD")),
         ),
         DOM(
           { style: "castle-menu-item-checkbox" },
@@ -961,12 +964,12 @@ export class Window {
                 },
               ],
             },
-            { checked: Settings.settings.radminPriority }
+            { checked: Settings.settings.radminPriority },
           ),
           DOM(
             { tag: "label", for: "radmin-priority" },
-            Lang.text("radminPriority")
-          )
+            Lang.text("radminPriority"),
+          ),
         ),
         DOM(
           { style: "castle-menu-item-checkbox" },
@@ -983,9 +986,9 @@ export class Window {
                 },
               ],
             },
-            { checked: Settings.settings.novoice }
+            { checked: Settings.settings.novoice },
           ),
-          DOM({ tag: "label", for: "novoice" }, Lang.text("voiceEnabled"))
+          DOM({ tag: "label", for: "novoice" }, Lang.text("voiceEnabled")),
         ),
         DOM(
           { style: "castle-menu-label" },
@@ -1006,9 +1009,9 @@ export class Window {
                 Settings.ApplySettings({ render: false, window: false });
 
                 document.getElementById(
-                  "global-volume-percentage"
+                  "global-volume-percentage",
                 ).textContent = `${Math.round(
-                  Settings.settings.globalVolume * 100
+                  Settings.settings.globalVolume * 100,
                 )}%`;
               },
             ],
@@ -1019,8 +1022,8 @@ export class Window {
               id: "global-volume-percentage",
               style: "volume-percentage",
             },
-            `${Math.round(Settings.settings.globalVolume * 100)}%`
-          )
+            `${Math.round(Settings.settings.globalVolume * 100)}%`,
+          ),
         ),
         DOM(
           { style: "castle-menu-label" },
@@ -1040,11 +1043,8 @@ export class Window {
                   parseFloat(e.target.value) / 100;
                 Settings.ApplySettings({ render: false, window: false });
 
-                document.getElementById(
-                  "music-volume-percentage"
-                ).textContent = `${Math.round(
-                  Settings.settings.musicVolume * 100
-                )}%`;
+                document.getElementById("music-volume-percentage").textContent =
+                  `${Math.round(Settings.settings.musicVolume * 100)}%`;
               },
             ],
           }),
@@ -1054,8 +1054,8 @@ export class Window {
               id: "music-volume-percentage",
               style: "volume-percentage",
             },
-            `${Math.round(Settings.settings.musicVolume * 100)}%`
-          )
+            `${Math.round(Settings.settings.musicVolume * 100)}%`,
+          ),
         ),
         DOM(
           { style: "castle-menu-label" },
@@ -1085,14 +1085,14 @@ export class Window {
                     },
                     () => {
                       Castle.testSoundIsPlaying = false;
-                    }
+                    },
                   );
                 }
 
                 document.getElementById(
-                  "sounds-volume-percentage"
+                  "sounds-volume-percentage",
                 ).textContent = `${Math.round(
-                  Settings.settings.soundsVolume * 100
+                  Settings.settings.soundsVolume * 100,
                 )}%`;
               },
             ],
@@ -1103,8 +1103,8 @@ export class Window {
               id: "sounds-volume-percentage",
               style: "volume-percentage",
             },
-            `${Math.round(Settings.settings.soundsVolume * 100)}%`
-          )
+            `${Math.round(Settings.settings.soundsVolume * 100)}%`,
+          ),
         ),
         DOM(
           {
@@ -1118,14 +1118,14 @@ export class Window {
                 App.error(
                   `${Lang.text("LangTarg")}: ${Lang.list[oldLanguage].name} → ${
                     Lang.list[Lang.target].name
-                  }`
+                  }`,
                 );
                 await Lang.reinitViews();
                 await Window.show("main", "settings");
               },
             ],
           },
-          `${Lang.text("language")} (${Lang.target})`
+          `${Lang.text("language")} (${Lang.target})`,
         ),
         // Добавленная кнопка "Клавиши"
         /*DOM({ 
@@ -1147,13 +1147,13 @@ export class Window {
               },
             ],
           },
-          Lang.text("back")
-        )
+          Lang.text("back"),
+        ),
         /*,
 				
 				DOM({ style: 'castle-menu-label-description' }, Lang.text('soundHelp'))
 				*/
-      )
+      ),
     );
   }
 
@@ -1161,7 +1161,7 @@ export class Window {
     async function findConfigFile() {
       const possiblePaths = [
         `${nw.App.getDataPath(
-          "documents"
+          "documents",
         )}/My Games/Prime World Classic/input_new.cfg`,
         `${process.env.USERPROFILE}/Documents/My Games/Prime World Classic/input_new.cfg`,
         `${process.env.USERPROFILE}/OneDrive/Documents/My Games/Prime World Classic/input_new.cfg`,
@@ -1188,16 +1188,16 @@ export class Window {
           { style: "castle-menu-error" },
           Lang.text(
             "keybindings_error",
-            "Не удалось найти файл конфигурации клавиш"
-          )
+            "Не удалось найти файл конфигурации клавиш",
+          ),
         ),
         DOM(
           {
             class: "castle-menu-item-button",
             event: ["click", () => Window.show("settings", "menu")],
           },
-          Lang.text("back", "Назад")
-        )
+          Lang.text("back", "Назад"),
+        ),
       );
     }
 
@@ -1223,7 +1223,7 @@ export class Window {
       { id: "wcastle-keybindings" },
       DOM(
         { style: "castle-menu-title" },
-        Lang.text("keybindings_title", "Настройка клавиш")
+        Lang.text("keybindings_title", "Настройка клавиш"),
       ),
 
       configReadError
@@ -1231,10 +1231,10 @@ export class Window {
             { style: "castle-menu-error" },
             Lang.text(
               "keybindings_error",
-              "Не удалось прочитать файл конфигурации клавиш. Проверьте путь:"
+              "Не удалось прочитать файл конфигурации клавиш. Проверьте путь:",
             ) +
               " " +
-              configPath
+              configPath,
           )
         : DOM(
             {},
@@ -1247,7 +1247,7 @@ export class Window {
                 { style: "castle-menu-label keybinding-row" },
                 DOM(
                   { style: "keybinding-label" },
-                  Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`)
+                  Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`),
                 ),
                 DOM({
                   tag: "input",
@@ -1282,18 +1282,18 @@ export class Window {
                         e.target.classList.add("input-success");
                         setTimeout(
                           () => e.target.classList.remove("input-success"),
-                          200
+                          200,
                         );
                       } else {
                         e.target.classList.add("input-error");
                         setTimeout(
                           () => e.target.classList.remove("input-error"),
-                          200
+                          200,
                         );
                       }
                     },
                   ],
-                })
+                }),
               );
             }),
 
@@ -1317,13 +1317,13 @@ export class Window {
                       btn.classList.remove("action-success");
                       btn.textContent = Lang.text(
                         "reset_defaults",
-                        "Сбросить на 1-0"
+                        "Сбросить на 1-0",
                       );
                     }, 1000);
                   },
                 ],
               },
-              Lang.text("reset_defaults", "Сбросить на 1-0")
+              Lang.text("reset_defaults", "Сбросить на 1-0"),
             ),
 
             DOM(
@@ -1362,8 +1362,8 @@ export class Window {
                   },
                 ],
               },
-              Lang.text("save", "Сохранить")
-            )
+              Lang.text("save", "Сохранить"),
+            ),
           ),
 
       DOM(
@@ -1371,8 +1371,8 @@ export class Window {
           class: "castle-menu-item-button",
           event: ["click", () => Window.show("settings", "menu")],
         },
-        Lang.text("back", "Назад")
-      )
+        Lang.text("back", "Назад"),
+      ),
     );
   }
 
@@ -1397,7 +1397,7 @@ export class Window {
               src: "content/icons/vk.webp",
               alt: "VK",
               style: "support-icon",
-            })
+            }),
           ),
           DOM(
             {
@@ -1411,7 +1411,7 @@ export class Window {
               src: "content/icons/telegram.webp",
               alt: "Telegram",
               style: "support-icon",
-            })
+            }),
           ),
           DOM(
             {
@@ -1425,17 +1425,17 @@ export class Window {
               src: "content/icons/discord.webp",
               alt: "Discord",
               style: "support-icon",
-            })
-          )
+            }),
+          ),
         ),
         DOM(
           {
             style: "castle-menu-item-button",
             event: ["click", () => Window.show("main", "menu")],
           },
-          Lang.text("back")
-        )
-      )
+          Lang.text("back"),
+        ),
+      ),
     );
   }
   static async adminPanel() {
@@ -1452,7 +1452,7 @@ export class Window {
             },
           ],
         },
-        "Таланты (обычные)"
+        "Таланты (обычные)",
       ),
       DOM(
         {
@@ -1464,7 +1464,7 @@ export class Window {
             },
           ],
         },
-        "Таланты (классовые)"
+        "Таланты (классовые)",
       ),
       DOM(
         {
@@ -1476,7 +1476,7 @@ export class Window {
             },
           ],
         },
-        "Пользователи"
+        "Пользователи",
       ),
       DOM(
         {
@@ -1488,15 +1488,15 @@ export class Window {
             },
           ],
         },
-        "Замок дебаг"
+        "Замок дебаг",
       ),
       DOM(
         {
           style: "castle-menu-item-button",
           event: ["click", () => Window.show("main", "menu")],
         },
-        Lang.text("back")
-      )
+        Lang.text("back"),
+      ),
     );
   }
   static async castleDebug() {
@@ -1512,7 +1512,7 @@ export class Window {
       { id: "wcastle-render-debug" },
       DOM({ style: "castle-menu-label" }, "Поиск построек по JS RegExp"),
       DOM({ style: "castle-menu-label" }, "Паттерн ", pattern),
-      DOM({ style: "castle-menu-label" }, "Флаги ", flags)
+      DOM({ style: "castle-menu-label" }, "Флаги ", flags),
     );
   }
   static async accountPanel() {
@@ -1532,12 +1532,12 @@ export class Window {
                   (screen.height - 720) / 2 +
                   ", left=" +
                   (screen.width - 1280) / 2 +
-                  ", toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no"
+                  ", toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no",
               );
             },
           ],
         },
-        Lang.text("steamConnect")
+        Lang.text("steamConnect"),
       ),
       DOM(
         {
@@ -1549,7 +1549,7 @@ export class Window {
             },
           ],
         },
-        Lang.text("nicknameChange")
+        Lang.text("nicknameChange"),
       ),
       DOM(
         {
@@ -1561,15 +1561,15 @@ export class Window {
             },
           ],
         },
-        Lang.text("sideChange")
+        Lang.text("sideChange"),
       ),
       DOM(
         {
           style: "castle-menu-item-button",
           event: ["click", () => Window.show("main", "menu")],
         },
-        Lang.text("back")
-      )
+        Lang.text("back"),
+      ),
     );
   }
 }

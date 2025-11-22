@@ -146,20 +146,20 @@ export class Events {
           },
         ],
       },
-      Lang.text("friendAccept")
+      Lang.text("friendAccept"),
     );
 
     let b2 = DOM(
       { style: "splash-content-button", event: ["click", () => Splash.hide()] },
-      Lang.text("friendCancle")
+      Lang.text("friendCancle"),
     );
 
     body.append(
       DOM(
-        Lang.text("friendInvitesToLobby").replace("{nickname}", data.nickname)
+        Lang.text("friendInvitesToLobby").replace("{nickname}", data.nickname),
       ),
       b1,
-      b2
+      b2,
     );
 
     Splash.show(body);
@@ -180,7 +180,7 @@ export class Events {
       find.children[1].firstChild.firstChild.innerText = data.rating;
 
       find.children[1].firstChild.firstChild.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        data.rating
+        data.rating,
       )}.webp)`;
     }
   }
@@ -197,12 +197,12 @@ export class Events {
 
       find.children[2].classList.replace(
         "party-middle-item-not-ready",
-        "party-middle-item-ready"
+        "party-middle-item-ready",
       );
 
       find.children[2].classList.replace(
         "castle-party-middle-item-not-ready",
-        "castle-party-middle-item-ready"
+        "castle-party-middle-item-ready",
       );
     }
   }
@@ -256,12 +256,12 @@ export class Events {
         style: "splash-content-button",
         event: ["click", async () => Splash.hide()],
       },
-      Lang.text("titleafk")
+      Lang.text("titleafk"),
     );
 
     body.append(
       DOM(`${data.party ? Lang.text("titleafk1") : Lang.text("titleafk2")}`),
-      button
+      button,
     );
 
     Splash.show(body);
@@ -295,15 +295,15 @@ export class Events {
               },
             ],
           },
-          Lang.text("friendAccept")
+          Lang.text("friendAccept"),
         ),
         DOM(
           {
             style: "splash-content-button",
             event: ["click", async () => Splash.hide()],
           },
-          Lang.text("friendDropCall")
-        )
+          Lang.text("friendDropCall"),
+        ),
       );
 
       Splash.show(body);

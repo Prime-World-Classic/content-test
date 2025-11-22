@@ -44,7 +44,7 @@ Lang.init().then(() => {
 
   let testRadminConnection = async () => {
     let hasConnection = await PWGame.testServerConnection(
-      PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]
+      PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP],
     );
     if (hasConnection) {
       PWGame.radminHasConnection = true;
@@ -52,7 +52,7 @@ Lang.init().then(() => {
   };
   let testMainConnection = async () => {
     let hasConnection = await PWGame.testServerConnection(
-      PWGame.gameServerIps[PWGame.MAIN_GAME_SERVER_IP]
+      PWGame.gameServerIps[PWGame.MAIN_GAME_SERVER_IP],
     );
     if (hasConnection) {
       PWGame.mainServerHasConnection = true;

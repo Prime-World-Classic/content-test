@@ -54,7 +54,7 @@ export class Lang {
           "Language detected from locale:",
           locale,
           "->",
-          Lang.target
+          Lang.target,
         );
         break;
       }

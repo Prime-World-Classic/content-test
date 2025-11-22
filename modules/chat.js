@@ -23,7 +23,7 @@ export class Chat {
         ],
         title: "Прокрутить чат вниз", // Добавляем описание при наведении
       },
-      "▼"
+      "▼",
     ); // Замените '▼' на нужный вам текст или символ для кнопки прокрутки
 
     let input = DOM({
@@ -158,7 +158,7 @@ export class Chat {
         ],
       },
       nickname,
-      message
+      message,
     );
 
     item.addEventListener("contextmenu", () => {
@@ -179,15 +179,15 @@ export class Chat {
                 },
               ],
             },
-            "Да"
+            "Да",
           ),
           DOM(
             {
               style: "splash-content-button",
               event: ["click", async () => Splash.hide()],
             },
-            "Нет"
-          )
+            "Нет",
+          ),
         );
 
         Splash.show(body);

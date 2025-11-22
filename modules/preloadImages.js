@@ -29,7 +29,7 @@ export class PreloadImages {
     this.callback = callback;
 
     this.observer = new IntersectionObserver((entries) =>
-      this.preload(entries)
+      this.preload(entries),
     );
   }
 
@@ -57,7 +57,7 @@ export class PreloadImages {
 
           let animation = entry.target.animate(
             { opacity: [0, 1], transform: ["scale(0.9)", "scale(1)"] },
-            { duration: 500, easing: "ease-out", fill: "forwards" }
+            { duration: 500, easing: "ease-out", fill: "forwards" },
           );
 
           if (this.callback) {

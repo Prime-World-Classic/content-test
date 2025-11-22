@@ -16,7 +16,7 @@ export class DataBase {
 
     request.addEventListener(
       "upgradeneeded",
-      async (event) => await this.upgrade(event)
+      async (event) => await this.upgrade(event),
     );
 
     return new Promise((resolve, reject) => {
@@ -160,7 +160,7 @@ export class DataBase {
 
         case "getIndexAll":
           requests.push(
-            this.getIndexAll(table, object[table].key, object[table].id)
+            this.getIndexAll(table, object[table].key, object[table].id),
           );
           break;
 
@@ -260,7 +260,7 @@ export class DataBase {
         }
       } catch (e) {
         console.log(
-          `Ошибочка, которую мы скрыли: ${e} :ибо как проверить на наличие таблицы? ;>`
+          `Ошибочка, которую мы скрыли: ${e} :ибо как проверить на наличие таблицы? ;>`,
         );
       }
     }

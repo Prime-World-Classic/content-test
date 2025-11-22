@@ -1,6 +1,6 @@
 interface IndexedCollection extends Iterable<number> {
-    readonly length: number;
-    [index: number]: number;
+  readonly length: number;
+  [index: number]: number;
 }
 
 // prettier-ignore
@@ -88,7 +88,9 @@ declare type ReadonlyQuat2 =
   | IndexedCollection;
 
 declare type ReadonlyVec2 = readonly [number, number] | IndexedCollection;
-declare type ReadonlyVec3 = readonly [number, number, number] | IndexedCollection;
+declare type ReadonlyVec3 =
+  | readonly [number, number, number]
+  | IndexedCollection;
 declare type ReadonlyVec4 =
   | readonly [number, number, number, number]
   | IndexedCollection;
