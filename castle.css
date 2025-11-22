@@ -1203,10 +1203,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	background-image: url('img/menu.png');
 	background-size: contain;
 	background-repeat: no-repeat;
-	width: 22vh;
-	max-width: 10vw;
-	height: calc(22vh * 1.10);
-	max-height: calc(10vw * 1.10);
+	width: calc(max(11vw, 16vh));
+	height: calc(max(11vw, 16vh) * 1.10);
 	container-type: size;
 }
 
@@ -1285,16 +1283,16 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	position: absolute;
 	bottom: 6.4cqh;
 	container-type: size;
-	width: 1.85cqh;
-	height: calc(1.85cqh * 39.0 / 24.0 * 2);
+	width: calc(max(1.85cqw * 18 / 43, 1.85cqh));
+	height: calc(max(1.85cqw * 18 / 43, 1.85cqh) * 39.0 / 24.0 * 2);
 }
 
 .castle-bottom-content-left-scroll {
-	left: -2cqh;
+	left: calc(min(-1.85cqw * 18 / 43, -1.85cqh));
 }
 
 .castle-bottom-content-right-scroll {
-	right: -1.8cqh;
+	right: calc(min(-1.85cqw * 18 / 43, -1.85cqh));
 }
 
 .castle-bottom-content-left-scroll div:not(.castle-bottom-content-btn-disable):hover, 
@@ -1338,9 +1336,9 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 
 .castle-bottom-content-container {
 	position: absolute;
-	left: 12vw;
+	left: calc(max(12vw, 17vh));
 	bottom: 0;
-	width: calc(round(down, 86vw, 9.9vh + 0.2vh) - 0.2vh * 2); /* castle-hero-item width: 9.9vh + 0.2vh*2 */
+	width: calc(round(down, 100vw - 1.85vh - max(12vw, 17vh), max(9.9vw * 18 / 43, 9.9vh))); /* castle-hero-item width: 9.9vh + 0.2vh*2 */
 }
 
 .castle-bottom-content{
@@ -1348,16 +1346,15 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	align-items:center;
 	flex-flow:row nowrap;
 	overflow-x:scroll;
-	border-left: 0.2vh solid rgba(142, 150, 96);
-	border-right: 0.2vh solid rgba(142, 150, 96);
-	border-top: 0.2vh solid rgb(142, 150, 96);
+	border: 0.1vh solid rgba(142, 150, 96, 1);
+	border-bottom: 0;
 	background-image:linear-gradient(0deg, rgba(12, 92, 107, 1),rgba(6,41,56,1));
 }
 
 .castle-hero-item, .castle-friend-item, .castle-building-item{
-	width: 9.9vh;
-	min-width: 9.9vh;
-	height:13.5cqh;
+	min-width: calc(max(9.9vw * 18 / 43, 9.9vh));
+	max-width: calc(max(9.9vw * 18 / 43, 9.9vh));
+	height:calc(max(9.9vw * 18 / 43, 9.9vh) * 13.5 / 9.9);
 	position: relative;
 	bottom: 0cqh;
 	background-size:80%;
@@ -1365,7 +1362,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	background-repeat:no-repeat;
 	container-type: size;
 	margin-top: -0.2vh;
-	border-right: 0.2vh solid rgb(142, 150, 96);
 	border-top: 0.2vh solid rgb(142, 150, 96);
 	border-bottom: 0.2vh solid rgba(142, 150, 96);
 	display: flex;
@@ -1381,7 +1377,6 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	height: 100%;
 	background-image:linear-gradient(0deg, rgba(12, 92, 107, 1),rgba(6,41,56,1));
 	background-size: 100%;
-	z-index: -1;
 }
 
 .castle-hero-item:has(.hover-brightness):not(.no-hover-brightness):hover .hover-brightness {
@@ -1412,9 +1407,10 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 	top: 0;
 	background-image: url('img/item-ornament.svg');
 	background-repeat:no-repeat;
-	background-size: 100cqw;
-	width: 200cqw;
+	background-size: cover;
+	width: calc(100cqw - max(0.1vw, 0.2vh));
 	height: 100cqh;
+	border-right: max(0.1vw, 0.2vh) solid rgb(142, 150, 96);
 }
 
 .castle-hero-item-img {
@@ -1972,8 +1968,8 @@ html,body{cursor:url('img/cursor.png') 0 0,default}
 }
 .shop_item_img_frame {
 	position: absolute;
-	top: -8cqw;
-	left: -18cqw;
+	top: -10cqw;
+	left: -20cqw;
 	width: 140cqw;
 	height: 140cqw;
 	background-size: contain;

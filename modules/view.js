@@ -1538,9 +1538,9 @@ export class View {
               id: `id${item.id}`,
               style: ["castle-hero-item", "hover-brightness"],
             },
+            DOM({ style: ["castle-item-background", "hover-brightness"] }),
             DOM({ style: ["castle-hero-item-bg", "hover-brightness"] }),
             DOM({ style: ["castle-hero-item-img", "no-hover-brightness"] }),
-            DOM({ style: ["castle-item-background", "hover-brightness"] }),
             DOM({ style: ["castle-item-ornament", "hover-brightness"] }),
             rank,
             heroNameBase

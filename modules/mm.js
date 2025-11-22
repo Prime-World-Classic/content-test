@@ -706,7 +706,7 @@ export class MM {
         style: "mm-lobby-middle-hero-item",
       });
 
-      hero.style.backgroundImage = `url("content/hero/${item.id}/${( item.skin ? item.skin : 1)}.webp")`;
+      hero.style.backgroundImage = `url("content/hero/${item.id}/1.webp")`; // ${( item.skin ? item.skin : 1)}
 
       hero.onclick = async () => {
         MM.targetHeroId = item.id;
