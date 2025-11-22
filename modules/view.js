@@ -1193,6 +1193,8 @@ export class View {
         "click",
         () => {
           View.bodyCastleHeroes();
+          View.castleBottom.scrollLeft = 0;
+          View.updateArrows();
           Castle.buildMode = false;
         },
       ],
@@ -1204,6 +1206,8 @@ export class View {
         "click",
         () => {
           View.bodyCastleFriends();
+          View.castleBottom.scrollLeft = 0;
+          View.updateArrows();
           Castle.buildMode = false;
         },
       ],
@@ -1215,6 +1219,8 @@ export class View {
         "click",
         () => {
           View.bodyCastleBuildings();
+          View.castleBottom.scrollLeft = 0;
+          View.updateArrows();
           Castle.buildMode = true;
         },
       ],
