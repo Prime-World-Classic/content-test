@@ -1108,6 +1108,7 @@ export class Window {
         ),
         DOM(
           {
+            domaudio: domAudioPresets.defaultButton,
             style: "castle-menu-item-button",
             event: [
               "click",
@@ -1139,6 +1140,7 @@ export class Window {
         // Кнопка "Назад"
         DOM(
           {
+            domaudio: domAudioPresets.defaultButton,
             style: "castle-menu-item-button",
             event: [
               "click",
@@ -1193,6 +1195,7 @@ export class Window {
         ),
         DOM(
           {
+            domaudio: domAudioPresets.defaultButton,
             class: "castle-menu-item-button",
             event: ["click", () => Window.show("settings", "menu")],
           },
@@ -1299,6 +1302,7 @@ export class Window {
 
             DOM(
               {
+                domaudio: domAudioPresets.defaultButton,
                 class: "castle-menu-item-button reset-btn",
                 event: [
                   "click",
@@ -1328,6 +1332,7 @@ export class Window {
 
             DOM(
               {
+                domaudio: domAudioPresets.defaultButton,
                 class: "castle-menu-item-button save-btn",
                 event: [
                   "click",
@@ -1444,6 +1449,7 @@ export class Window {
       DOM({ style: "castle-menu-title" }, "Админ Панель"),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1456,6 +1462,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1468,6 +1475,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1480,6 +1488,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1492,6 +1501,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: ["click", () => Window.show("main", "menu")],
         },
@@ -1521,6 +1531,7 @@ export class Window {
       DOM({ style: "castle-menu-title" }, Lang.text("account")),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1541,6 +1552,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1553,6 +1565,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: [
             "click",
@@ -1565,6 +1578,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "castle-menu-item-button",
           event: ["click", () => Window.show("main", "menu")],
         },

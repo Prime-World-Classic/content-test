@@ -16,6 +16,7 @@ import { Settings } from "./settings.js";
 import { Sound } from "./sound.js";
 import { PreloadImages } from "./preloadImages.js";
 import { DOM } from "./dom.js";
+import { SOUNDS_LIBRARY } from "./soundsLibrary.js";
 
 export class Castle {
   static canvas;
@@ -632,6 +633,10 @@ export class Castle {
       Castle.placedBuildings.push(Object.assign({}, Castle.phantomBuilding));
       Castle.isStaticSMCached = false;
       Castle.WriteBuildings();
+      Sound.play(SOUNDS_LIBRARY.BUY, {
+        id: "ui-buy",
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+      });
     }
   }
 
@@ -642,6 +647,10 @@ export class Castle {
         building.rot = (building.rot + 1) % 4;
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
+        Sound.play(SOUNDS_LIBRARY.CLICK, {
+          id: "ui-click",
+          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+        });
         return;
       }
     }
@@ -654,6 +663,10 @@ export class Castle {
         Castle.placedBuildings.splice(b, 1);
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
+        Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, {
+          id: "ui-close",
+          volume: Castle.GetVolume(),
+        });
         return;
       }
     }
@@ -771,7 +784,9 @@ export class Castle {
             );
           } else {
             if (Castle.outlinedBuilding.name in CastleBuildingsEvents) {
-              CastleBuildingsEvents[Castle.outlinedBuilding.name]();
+              CastleBuildingsEvents[Castle.outlinedBuilding.name](
+                Castle.GetVolume(Castle.AUDIO_SOUNDS),
+              );
             }
           }
         }

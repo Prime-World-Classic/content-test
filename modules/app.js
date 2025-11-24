@@ -69,6 +69,22 @@ export class App {
     }, 30000);
   }
 
+
+  /**
+   * Preloads all sounds in SOUNDS_LIBRARY
+   * @returns {Promise<void>} A promise that resolves when all sounds are preloaded
+   */
+  static async initSounds() {
+    const tasks = [];
+
+    for (const name in SOUNDS_LIBRARY) {
+      const src = SOUNDS_LIBRARY[name];
+      tasks.push(Sound.preload(name, src));
+    }
+
+    await Promise.all(tasks);
+  }
+
   static async init() {
     // wss://api2.26rus-game.ru:8443 - Москва (основа)
     // wss://relay.26rus-game.ru:8443 - Рига (Прокси)
@@ -265,6 +281,7 @@ export class App {
 
   static setNickname() {
     const close = DOM({
+      domaudio: domAudioPresets.defaultButton,
       tag: "div",
       style: "close-button",
       event: ["click", () => Splash.hide()],
@@ -280,6 +297,7 @@ export class App {
     );
 
     let name = DOM({
+      domaudio: domAudioPresets.defaultInput,
       tag: "input",
       placeholder: Lang.text("nicknamePlaceholder"),
       value: App.storage.data.login,
@@ -287,6 +305,7 @@ export class App {
 
     let button = DOM(
       {
+        domaudio: domAudioPresets.bigButton,
         style: "splash-content-button",
         event: [
           "click",
@@ -327,6 +346,7 @@ export class App {
 
   static setFraction() {
     const close = DOM({
+      domaudio: domAudioPresets.closeButton,
       tag: "div",
       style: "close-button",
       event: ["click", () => Splash.hide()],
@@ -335,10 +355,7 @@ export class App {
 
     let template = document.createDocumentFragment();
 
-    const title = DOM(
-      { tag: "h2", style: "faction-title" },
-      Lang.text("select_faction"),
-    );
+    const title = DOM({ tag: "h2", style: "faction-title" }, "Выбор Фракции");
     Object.assign(title.style, {
       textAlign: "center",
       color: "#fff",
@@ -375,6 +392,7 @@ export class App {
 
     factions.forEach((faction) => {
       const factionElement = DOM({
+        domaudio: domAudioPresets.defaultButton,
         tag: "div",
         style: "faction-item",
         event: [
@@ -447,6 +465,7 @@ export class App {
 
     const button = DOM(
       {
+        domaudio: domAudioPresets.bigButton,
         style: "splash-content-button",
         event: [
           "click",

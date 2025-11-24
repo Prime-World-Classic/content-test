@@ -139,13 +139,13 @@ export class View {
 
     let login = DOM({
         tag: "input",
-        domaudio: domAudioPresets.deafultInput,
+        domaudio: domAudioPresets.defaultInput,
         placeholder: Lang.text("nickname"),
         event: numEnterEvent,
       }),
       password = DOM({
         tag: "input",
-        domaudio: domAudioPresets.deafultInput,
+        domaudio: domAudioPresets.defaultInput,
         placeholder: Lang.text("password"),
         type: "password",
         event: numEnterEvent,
@@ -272,7 +272,7 @@ export class View {
 
     let invite = DOM({
       tag: "input",
-      domaudio: domAudioPresets.deafultInput,
+      domaudio: domAudioPresets.defaultInput,
       placeholder: Lang.text("code"),
       event: numEnterEvent,
     });
@@ -285,14 +285,14 @@ export class View {
 
     let login = DOM({
       tag: "input",
-      domaudio: domAudioPresets.deafultInput,
+      domaudio: domAudioPresets.defaultInput,
       placeholder: Lang.text("nickname"),
       event: numEnterEvent,
     });
 
     let password = DOM({
       tag: "input",
-      domaudio: domAudioPresets.deafultInput,
+      domaudio: domAudioPresets.defaultInput,
       placeholder: Lang.text("password"),
       type: "password",
       event: numEnterEvent,
@@ -300,7 +300,7 @@ export class View {
 
     let password2 = DOM({
       tag: "input",
-      domaudio: domAudioPresets.deafultInput,
+      domaudio: domAudioPresets.defaultInput,
       placeholder: Lang.text("passwordAgain"),
       type: "password",
       event: numEnterEvent,
@@ -384,8 +384,6 @@ export class View {
   static async castle() {
     document.body.classList.add("noselect");
 
-    Shop.retrieveLastUpdate();
-
     View.setCss("content/castle.css");
 
     let body = DOM({ tag: "div", id: "castle-body" });
@@ -393,7 +391,6 @@ export class View {
 
     if (!Castle.canvas) {
       Castle.canvas = DOM({ tag: "canvas", id: "castle-game-surface" });
-      Castle.buildingBubbles = DOM({ style: "castle-buildings-bubbles" });
     }
 
     try {
@@ -510,6 +507,7 @@ export class View {
       let player = players[p];
 
       let item = DOM({
+        domaudio: domAudioPresets.defaultButton,
         style: "castle-play-lobby-player",
         data: { id: player.id },
       });
@@ -706,7 +704,10 @@ export class View {
 
           request.push({ id: 0 });
 
-          let bodyHero = DOM({ style: "party-hero" });
+          let bodyHero = DOM({
+            domaudio: domAudioPresets.defaultButton,
+            style: "party-hero",
+          });
 
           let preload = new PreloadImages(bodyHero);
 
@@ -1486,7 +1487,13 @@ export class View {
         buildingName,
       );
 
-      let building = DOM({ style: "castle-building-item" }, buildingNameBase);
+      let building = DOM(
+        {
+          domaudio: domAudioPresets.defaultButton,
+          style: "castle-building-item",
+        },
+        buildingNameBase,
+      );
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
@@ -1541,12 +1548,13 @@ export class View {
 
           let hero = DOM(
             {
+              domaudio: domAudioPresets.defaultButton,
               id: `id${item.id}`,
               style: ["castle-hero-item", "hover-brightness"],
             },
-            DOM({ style: ["castle-item-background", "hover-brightness"] }),
             DOM({ style: ["castle-hero-item-bg", "hover-brightness"] }),
             DOM({ style: ["castle-hero-item-img", "no-hover-brightness"] }),
+            DOM({ style: ["castle-item-background", "hover-brightness"] }),
             DOM({ style: ["castle-item-ornament", "hover-brightness"] }),
             rank,
             heroNameBase,
@@ -1584,14 +1592,16 @@ export class View {
             style: "castle-friend-item",
             onclick: () => {
               let input = DOM({
+                domaudio: domAudioPresets.defaultInput,
                 tag: "input",
                 style: "search-input",
-                placeholder: Lang.text("friendNicknamePlaceholder"),
+                placeholder: "Ник игрока",
               });
               let body = DOM({ style: "search-body" });
 
               // Создаём крестик для закрытия (как в buildSelectName)
               let closeButton = DOM({
+                domaudio: domAudioPresets.closeButton,
                 tag: "div",
                 style: "close-button",
                 event: ["click", () => Splash.hide()],
@@ -1642,6 +1652,7 @@ export class View {
 
                       // Создаём крестик для закрытия
                       const closeButton = DOM({
+                        domaudio: domAudioPresets.closeButton,
                         tag: "div",
                         style: "close-button",
                         event: ["click", () => Splash.hide()],
@@ -1727,7 +1738,10 @@ export class View {
             },
           },
           DOM(
-            { style: "castle-friend-item-middle" },
+            {
+              domaudio: domAudioPresets.defaultButton,
+              style: "castle-friend-item-middle",
+            },
             DOM({ style: "castle-friend-add" }, "+"),
           ),
         );
@@ -2547,6 +2561,7 @@ export class View {
       { style: isSplah ? "wtop-scroll" : "top-scroll" },
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: "top-filter",
           title: Lang.text("titleClickToViewHeroRating"),
           event: [
@@ -2556,7 +2571,10 @@ export class View {
 
               request.push({ id: 0 });
 
-              let bodyHero = DOM({ style: "party-hero" });
+              let bodyHero = DOM({
+                domaudio: domAudioPresets.defaultButton,
+                style: "party-hero",
+              });
 
               let preload = new PreloadImages(bodyHero);
 
@@ -2613,18 +2631,15 @@ export class View {
     for (let player of result) {
       let rank = DOM({ style: "top-item-hero-rank" });
 
-      rank.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        player.rating,
-      )}.webp)`;
+      rank.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
 
       let hero = DOM({ style: "top-item-hero" }, rank);
 
-      hero.style.backgroundImage = `url(content/hero/${player.hero}/${
-        player.skin ? player.skin : 1
-      }.webp)`;
+      hero.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
 
       let item = DOM(
         {
+          domaudio: domAudioPresets.defaultButton,
           style: "top-item",
           event: [
             "click",
@@ -2832,6 +2847,7 @@ export class View {
 
     let button = DOM(
       {
+        domaudio: domAudioPresets.defaultButton,
         style: "game-button",
         event: [
           "click",
@@ -2948,6 +2964,7 @@ export class View {
       body.append(
         DOM(
           {
+            domaudio: domAudioPresets.closeButton,
             style: ["build-list-close", "close-button"],
             title: Lang.text("titleClose"),
             event: [
