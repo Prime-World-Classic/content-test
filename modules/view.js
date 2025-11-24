@@ -391,6 +391,7 @@ export class View {
 
     if (!Castle.canvas) {
       Castle.canvas = DOM({ tag: "canvas", id: "castle-game-surface" });
+      Castle.buildingBubbles = DOM({ style: "castle-buildings-bubbles" });
     }
 
     try {

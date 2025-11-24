@@ -12,6 +12,9 @@ import { Splash } from "./splash.js";
 import { Window } from "./window.js";
 import { Castle } from "./castle.js";
 import { Lang } from "./lang.js";
+import { Sound } from "./sound.js";
+import { SOUNDS_LIBRARY } from "./soundsLibrary.js";
+import { domAudioPresets } from "./domAudioPresets.js";
 
 export class App {
   static APP_VERSION = "0";
@@ -94,6 +97,8 @@ export class App {
     await News.init();
 
     await Store.init();
+
+    await App.initSounds();
 
     App.storage = new Store("u3");
 
