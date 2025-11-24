@@ -966,6 +966,7 @@ export const en = {
     volia: "Will",
     ph: "Agility/Cunning",
     sv: "Stamina/Will",
+	svn: "Stamina/Will (to the lowest)",
     razum: "Intellect",
     sila: "Strength",
     speedtal: "%<speedtal></speedtal>",

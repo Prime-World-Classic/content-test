@@ -1564,6 +1564,32 @@ export class Build {
 
     return maxStat;
   }
+  
+  static getMinStat(stats) {
+    const fakeStat = 999;
+    let minStat = stats[0];
+    let minValue = Build.totalStat(minStat);
+    if (minStat in Build.profileStats) {
+      minValue += Build.profileStats[minStat] * fakeStat;
+    }
+ 
+    for (let s = 1; s < stats.length; s++) {
+      let possibleMinStat = Build.totalStat(stats[s]);
+      if (stats[s] in Build.profileStats) {
+        possibleMinStat += Build.profileStats[stats[s]] * fakeStat;
+      }
+      if (possibleMinStat < minValue) {
+       minStat = stats[s];
+       minValue = Build.totalStat(minStat);
+        if (minStat in Build.profileStats) {
+          minValue += Build.profileStats[minStat] * fakeStat;
+        }
+      }
+    }
+
+    return minStat;
+  }
+  
 
   static getSumStat(stats) {
     let sumStat = stats[0];
@@ -1625,12 +1651,11 @@ export class Build {
       } else if (key == "sv") {
         registerStat(Build.getMaxStat(["stoikost", "volia"]), key);
       } else if (key == "srsv") {
-        registerStat(
-          Build.getMaxStat(["sila", "razum", "stoikost", "volia"]),
-          key,
-        );
+        registerStat(Build.getMaxStat(["sila", "razum", "stoikost", "volia"]),key,);
       } else if (key == "hpmp") {
         registerStat(Build.getMaxStat(["hp", "mp"]), key);
+      } else if (key == "svn") {
+        registerStat(Build.getMinStat(["volia", "stoikost"]), key);
       } else {
         registerStat(key, key);
       }
