@@ -9,10 +9,6 @@ import { MM } from "./mm.js";
 import { PreloadImages } from "./preloadImages.js";
 import { Game } from "./game.js";
 import { Splash } from "./splash.js";
-import { domAudioPresets } from "./domAudioPresets.js";
-import { Sound } from "./sound.js";
-import { SOUNDS_LIBRARY } from "./soundsLibrary.js";
-import { Castle } from "./castle.js";
 
 export class Build {
   static loading = false;
@@ -91,7 +87,6 @@ export class Build {
     });
 
     let container = DOM({
-      domaudio: domAudioPresets.defaultButton,
       event: [
         "click",
         async () => {
@@ -109,7 +104,6 @@ export class Build {
     let state = false;
     let get = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         event: [
           "click",
           async () => {
@@ -144,8 +138,6 @@ export class Build {
               requestAnimationFrame(() => Voice.updatePanelPosition());
             },
           ],
-          domaudio: domAudioPresets.defaultButton,
-          event: ["click", () => Splash.hide()],
         },
         `[Х]`,
       ),
@@ -339,7 +331,6 @@ export class Build {
 
     Build.skinView = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         tag: "button",
         style: ["btn-skins", "btn-hover", "color-3"],
         title: Lang.text("titleSkinsForTheHero"),
@@ -350,7 +341,6 @@ export class Build {
 
     Build.training = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         tag: "button",
         style: ["btn-skins", "btn-hover", "color-3"],
         title: Lang.text("titletraining"),
@@ -525,7 +515,6 @@ export class Build {
 
   static buildSelectName(method, btnName, data, isWindow) {
     const close = DOM({
-      domaudio: domAudioPresets.closeButton,
       tag: "div",
       style: "close-button",
       event: ["click", () => Splash.hide()],
@@ -536,14 +525,12 @@ export class Build {
     let template = document.createDocumentFragment();
 
     let name = DOM({
-      domaudio: domAudioPresets.defaultInput,
       tag: "input",
       placeholder: Lang.text("buildNamePlaceholder"),
     });
 
     let button = DOM(
       {
-        domaudio: domAudioPresets.bigButton,
         style: "splash-content-button",
         event: [
           "click",
@@ -575,7 +562,6 @@ export class Build {
   static buildActions(builds, isWindow) {
     if (builds.length < 6) {
       const create = DOM({
-        domaudio: domAudioPresets.bigButton,
         tag: "button",
         style: ["build-action-item", "btn-hover", "color-1"],
         title: Lang.text("titleCreateANewBuildTab"),
@@ -603,7 +589,6 @@ export class Build {
 
     const duplicate = DOM({
       tag: "button",
-      domaudio: domAudioPresets.bigButton,
       style: ["build-action-item", "btn-hover", "color-1"],
       title: Lang.text("titleDuplicateTheCurrentBuild"),
       event: [
@@ -628,7 +613,6 @@ export class Build {
               const btn = DOM(
                 {
                   tag: "button",
-                  domaudio: domAudioPresets.bigButton,
                   style: ["build-replace-btn", "btn-hover"],
                   event: [
                     "click",
@@ -655,7 +639,6 @@ export class Build {
             const createNewBtn = DOM(
               {
                 tag: "button",
-                domaudio: domAudioPresets.bigButton,
                 style: ["build-replace-btn", "btn-hover", "color-1"],
                 event: [
                   "click",
@@ -664,7 +647,6 @@ export class Build {
 
                     // Создаем форму для имени нового билда
                     const close = DOM({
-                      domaudio: domAudioPresets.closeButton,
                       tag: "div",
                       style: "close-button",
                       event: ["click", () => Splash.hide()],
@@ -680,7 +662,6 @@ export class Build {
 
                     let button = DOM(
                       {
-                        domaudio: domAudioPresets.bigButton,
                         style: "splash-content-button",
                         event: [
                           "click",
@@ -737,7 +718,6 @@ export class Build {
 
           // Добавляем крестик для закрытия вместо кнопки "Отмена"
           const closeButton = DOM({
-            domaudio: domAudioPresets.closeButton,
             tag: "div",
             style: "close-button",
             event: ["click", () => Splash.hide()],
@@ -759,7 +739,6 @@ export class Build {
     // Кнопка случайного билда
     {
       const random = DOM({
-        domaudio: domAudioPresets.bigButton,
         tag: "button",
         style: ["build-action-item", "btn-hover", "color-1"],
         title: Lang.text("titleGenerateARandomBuild"),
@@ -786,7 +765,6 @@ export class Build {
     {
       const resetBuild = DOM({
         tag: "button",
-        domaudio: domAudioPresets.bigButton,
         style: ["build-action-item", "btn-hover", "color-1"],
         title: Lang.text("titleResetTalentsInThisBuild"),
         event: [
@@ -803,7 +781,6 @@ export class Build {
             const reset = DOM(
               {
                 tag: "button",
-                domaudio: domAudioPresets.bigButton,
                 style: ["build-replace-btn", "btn-hover"],
                 event: [
                   "click",
@@ -833,7 +810,6 @@ export class Build {
             fragment.append(reset);
 
             let closeButton = DOM({
-              domaudio: domAudioPresets.closeButton,
               tag: "div",
               style: "close-button",
               event: ["click", () => Splash.hide()],
@@ -861,7 +837,6 @@ export class Build {
     for (let build of builds) {
       const item = DOM(
         {
-          domaudio: domAudioPresets.bigButton,
           tag: "button",
           style: ["build-tab-item", "btn-hover"],
           event: [
@@ -986,7 +961,6 @@ export class Build {
     for (const key in template) {
       const item = DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: "build-hero-stats-item",
           event: [
             "click",
@@ -1296,10 +1270,9 @@ export class Build {
         ].includes(key)
       ) {
         const daw = DOM({
-          domaudio: domAudioPresets.defaultButton,
           tag: "img",
           style: "build-hero-stats-daw",
-          title: "Сделать характеристику приоритетной",
+          title: Lang.text("makeStatPriorityTitle"),
           event: [
             "click",
             async () => {
@@ -1354,7 +1327,6 @@ export class Build {
     }
 
     let landTypeSetting = DOM({
-      domaudio: domAudioPresets.defaultButton,
       style: [
         "build-hero-stats-setting-land-type",
         "button-outline",
@@ -1421,7 +1393,6 @@ export class Build {
         body.append(
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: "splash-content-button",
               event: ["click", () => Splash.hide()],
             },
@@ -1727,10 +1698,6 @@ export class Build {
       item.id = `bl${i}`;
 
       item.addEventListener("click", (e) => {
-        Sound.play(SOUNDS_LIBRARY.CLICK_OPEN_BIG, {
-          id: "ui-big-click",
-          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-        });
         if (item.dataset.active == 1) {
           Build.removeSortInventory("level", item.dataset.id);
 
@@ -1858,10 +1825,7 @@ export class Build {
   }
 
   static templateViewTalent(data) {
-    const talent = DOM({
-      domaudio: domAudioPresets.defaultButton,
-      style: "build-talent-item",
-    });
+    const talent = DOM({ style: "build-talent-item" });
 
     if (data.txtNum) {
       let params = data.txtNum.split(";");
@@ -1948,36 +1912,14 @@ export class Build {
     );
   }
 
-  // возможно стоит переписать на DOM метод для единообразия?
   static rarity() {
     const element = [
-      {
-        domaudio: domAudioPresets.smallButton,
-        id: "4",
-        name: "Красное",
-        color: "170,20,44",
-      },
-      {
-        domaudio: domAudioPresets.smallButton,
-        id: "3",
-        name: "Оранжевое",
-        color: "237,129,5",
-      },
-      {
-        domaudio: domAudioPresets.smallButton,
-        id: "2",
-        name: "Фиолетовое",
-        color: "205,0,205",
-      },
-      {
-        domaudio: domAudioPresets.smallButton,
-        id: "1",
-        name: "Синее",
-        color: "17,105,237",
-      },
+      { id: "4", name: "Красное", color: "170,20,44" },
+      { id: "3", name: "Оранжевое", color: "237,129,5" },
+      { id: "2", name: "Фиолетовое", color: "205,0,205" },
+      { id: "1", name: "Синее", color: "17,105,237" },
     ];
 
-    // поч для одних элементов мы юзаем фактори метод DOM, а для других - createElement?
     let a = document.createElement("div");
     a.title = Lang.text("titleActiveTalents");
 
@@ -2146,7 +2088,6 @@ export class Build {
 
     for (let item of data) {
       const element = DOM({
-        domaudio: domAudioPresets.defaultButton,
         data: { index: index },
         style: "build-active-bar-item",
         event: [
@@ -2681,10 +2622,6 @@ export class Build {
                       });
                     }
                     Build.setStat(data, true);
-                    Sound.play(SOUNDS_LIBRARY.BUY, {
-                      id: "ui-buy",
-                      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-                    });
                   }
 
                   await App.api.request("build", "set", {
@@ -2780,10 +2717,6 @@ export class Build {
                 null;
 
               Build.setStat(data, true);
-              Sound.play(SOUNDS_LIBRARY.BUY, {
-                id: "ui-buy",
-                volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-              });
 
               if (data.id < 0) {
                 delete Build.fieldConflict[Math.abs(data.id)];

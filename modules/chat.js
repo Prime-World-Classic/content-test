@@ -3,7 +3,6 @@ import { Lang } from "./lang.js";
 import { App } from "./app.js";
 import { NativeAPI } from "./nativeApi.js";
 import { Splash } from "./splash.js";
-import { domAudioPresets } from "./domAudioPresets.js";
 
 export class Chat {
   static body;
@@ -29,7 +28,6 @@ export class Chat {
 
     let input = DOM({
       tag: "input",
-      domaudio: domAudioPresets.defaultInput,
       style: "chat-input",
       placeholder: Lang.text("enterTextAndPressEnter"),
     });
@@ -147,7 +145,6 @@ export class Chat {
 
     let item = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         style: "chat-body-item",
         event: [
           "click",
@@ -172,7 +169,6 @@ export class Chat {
           DOM(`Выдать мут чата ${data.nickname}?`),
           DOM(
             {
-              domAudioPresets: domAudioPresets.bigButton,
               style: "splash-content-button",
               event: [
                 "click",
