@@ -1095,7 +1095,7 @@ export const ru = {
       "Получая урон, равный <num>10%</num> максимального Здоровья, герой на <num>12</num> сек увеличивает свои Стойкость и Волю на <num>0.5</num> и дополнительно <num>%s</num> (от наибольшего из Силы и Разума).<br>\nЭффект складывается до <num>10</num> раз.",
     htalent_31_name: "Начертательная алхимия",
     htalent_31_description:
-      "За каждое успешное применение таланта Едкое вещество или Порция клея на врагов герой получает один из уникальных ингредиентов: Серу или Ртуть. Находясь в алхимическом круге с <num>4</num> ингредиентами, герой автоматически призывает своего клона (дальность атаки - 17) соответствующего последнему полученному ингредиенту. Атаки Серы наносят <fiz>%s</fiz> урона, а Ртути <mag>%s</mag> урона.
+      "За каждое успешное применение таланта Едкое вещество или Порция клея на врагов герой получает один из уникальных ингредиентов: Серу или Ртуть. Находясь в алхимическом круге с <num>4</num> ингредиентами, герой автоматически призывает своего клона (дальность атаки - 17) соответствующего последнему полученному ингредиенту. Атаки Серы наносят <fiz>%s</fiz> урона, а Ртути <mag>%s</mag> урона.",
     htalent_32_name: "Владыка архонтов",
     htalent_32_description:
       "Каждые <num>40</num> сек герой призывает <num>1</num> нового архонта, атаки которого наносят <fiz>%s</fiz>, и имеющего <num>%s</num> Здоровья (от наибольшего из Силы и Разума). Герою не могут служить более <num>3</num> архонтов.<br><rz>Призывая архонта с родной земли, восстанавливает себе <num>%s</num> Здоровья (от наибольшего из Силы и Разума).</rz>",
@@ -2154,7 +2154,7 @@ export const ru = {
       'Создает в указанном месте Звездные врата или взрывает уже существующие, нанося <fiz>%s</fiz> урона всем врагам вокруг, <rz> восстанавливая <num>%s</num> (макс. <num>%s</num>) Энергии (от Максимальной энергии) за каждого задетого врага </rz>и увеличивая текущее время востановления таланта до <num>8</num> сек.<br>При взаимодействии с вратами союзники перемещаются за них и в течение <num>6</num> сек не могут взаимодействовать с вратами повторно.<br>Поддерживает не более <num>2</num> врат одновременно.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Звездное провидение: Взрыв врат не увеличивает время таланта.</font>',
     htalent_384_name: "Ускорение частиц",
     htalent_384_description:
-      "Талант Сгусток энергии уменьшает время ультимативного таланта на <num>3</num> сек за каждого вражеского героя, задетого взрывом. <br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Звездное провидение: наносит дополнительный урон <num>%s</num> (от Разума).</font>',
+      "Талант Сгусток энергии уменьшает время ультимативного таланта на <num>3</num> сек за каждого вражеского героя, задетого взрывом. <br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Звездное провидение: наносит дополнительный урон <num>%s</num> (от Разума).</font>",
     htalent_385_name: "Гиперпространство",
     htalent_385_description:
       "Взаимодействие с вратами увеличивает Скорость союзников на <num>20%</num> на <num>6</num> сек, а взрыв оглушает врагов на <num>1</num> сек.",
@@ -3910,7 +3910,7 @@ export const ru = {
     talent_176_name: "Неистовство силы<font color=#FFFFFF> ⌛️120</font>",
     talent_176_description:
       "<num>Атакующий</num><br><br>Наносит всем вражеским героям вокруг <fiz>%s</fiz>, а остальным существам - в <num>1.5</num> раза больше и сносит деревья.",
-    talent_177_name: "Внутренние резервы"<font color=#FFFFFF> ⌛️2</font>,
+    talent_177_name: "Внутренние резервы<font color=#FFFFFF> ⌛️2</font>",
     talent_177_description:
       "Использование таланта восстанавливает герою <num>%s</num> Здоровья и дополнительно в количестве <num>25%</num> от базовой стоимости Энергии примененного таланта.",
     talent_178_name: "Гармония",
@@ -4591,22 +4591,22 @@ export const ru = {
       "<num>Защитный</num><br><br>При активации восстанавливает <num>%s</num> Здоровья и дополнительно <num>%s</num> Здоровья за каждый уровень Героя.",
     talent_429_name: "Спиннер Силы",
     talent_429_description:
-      'Сила Героя каждую минуту увеличивается на <font color=#dcca64>0.75</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font>' <br> Не может быть установлен Совместно с талантом "Приток прайма",
+      'Сила Героя каждую минуту увеличивается на <font color=#dcca64>0.75</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font> <br> Не может быть установлен Совместно с талантом "Приток прайма"',
     talent_430_name: "Спиннер Разума",
     talent_430_description:
-      'Разум Героя каждую минуту увеличивается на <font color=#dcca64>0.75</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font>' <br> Не может быть установлен Совместно с талантом "Приток прайма",
+      'Разум Героя каждую минуту увеличивается на <font color=#dcca64>0.75</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font> <br> Не может быть установлен Совместно с талантом "Приток прайма"',
     talent_431_name: "Спиннер Проворства",
     talent_431_description:
-      'Проворство Героя каждую минуту увеличивается на <font color=#dcca64>0.55</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font>' <br> Не может быть установлен Совместно с талантом "Приток прайма",
+      'Проворство Героя каждую минуту увеличивается на <font color=#dcca64>0.55</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font> <br> Не может быть установлен Совместно с талантом "Приток прайма"',
     talent_432_name: "Спиннер Хитрости",
     talent_432_description:
-      'Хитрость Героя каждую минуту увеличивается на <font color=#dcca64>0.55</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font>' <br> Не может быть установлен Совместно с талантом "Приток прайма",
+      'Хитрость Героя каждую минуту увеличивается на <font color=#dcca64>0.55</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font> <br> Не может быть установлен Совместно с талантом "Приток прайма"',
     talent_433_name: "Спиннер Стойкости",
     talent_433_description:
-      'Стойкость Героя каждую минуту увеличивается на <font color=#dcca64>0.37</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font>' <br> Не может быть установлен Совместно с талантом "Приток прайма",
+      'Стойкость Героя каждую минуту увеличивается на <font color=#dcca64>0.37</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font> <br> Не может быть установлен Совместно с талантом "Приток прайма"',
     talent_434_name: "Спиннер Воли",
     talent_434_description:
-      'Воля Героя каждую минуту увеличивается на <font color=#dcca64>0.37</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font>' <br> Не может быть установлен Совместно с талантом "Приток прайма",
+      'Воля Героя каждую минуту увеличивается на <font color=#dcca64>0.37</font>. Предельная суммарная прибавка — <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Спиннеры Героев"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Каждые <num>4</num> сек. дает <prime>+1</prime></font> <br> Не может быть установлен Совместно с талантом "Приток прайма"',
     talent_435_name: "Жуткая сила",
     talent_435_description:
       '<font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Жуткая пора"</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5><num>+6</num> к наибольшему из Силы и Разума</font> <br> <font color=#FF9966>3 таланта</font> <br> <font color=#A5A5A5><num>+6</num> к наибольшему из Проворства и Хитрости</font>',
@@ -4694,7 +4694,7 @@ export const ru = {
       'Во время действия таланта <tn>Проклятье ужаса</tn> цель получает на <num>15%</num> больше урона.<br> <br> <font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Проклятье ужаса"</font>',
     talent_464_name: "Стабильное могущество",
     talent_464_description:
-      '<font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Стабильная защита"</font><font color=#FFFFFF> ⌛️0,7</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Герой игнорирует <num>15</num> урона от атаки врага</font> <br> <font color=#FF9966>3 таланта</font> <br> <font color=#A5A5A5>Герой суммарно игнорирует <num>30</num> урона от атаки врага</font> <br> <font color=#FF9966>4 таланта</font> <br> <font color=#A5A5A5>Герой суммарно игнорирует <num>55</num> урона от атаки врага и снижает его Скорость от любого урона на <num>20%</num> на <num>2</num> сек</font>,
+      '<font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Стабильная защита"</font><font color=#FFFFFF> ⌛️0,7</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Герой игнорирует <num>15</num> урона от атаки врага</font> <br> <font color=#FF9966>3 таланта</font> <br> <font color=#A5A5A5>Герой суммарно игнорирует <num>30</num> урона от атаки врага</font> <br> <font color=#FF9966>4 таланта</font> <br> <font color=#A5A5A5>Герой суммарно игнорирует <num>55</num> урона от атаки врага и снижает его Скорость от любого урона на <num>20%</num> на <num>2</num> сек</font>',
     talent_465_name: "Стабильное здоровье",
     talent_465_description:
       '<font color=#A5A5A5>Сет</font> <font color=#ff8c00>"Стабильная защита"</font><font color=#FFFFFF> ⌛️0,7</font> <br> <br> <font color=#FF9966>2 таланта</font> <br> <font color=#A5A5A5>Герой игнорирует <num>15</num> урона от атаки врага</font> <br> <font color=#FF9966>3 таланта</font> <br> <font color=#A5A5A5>Герой суммарно игнорирует <num>30</num> урона от атаки врага</font> <br> <font color=#FF9966>4 таланта</font> <br> <font color=#A5A5A5>Герой суммарно игнорирует <num>55</num> урона от атаки врага и снижает его Скорость от любого урона на <num>20%</num> на <num>2</num> сек</font>',
