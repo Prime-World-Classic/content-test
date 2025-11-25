@@ -1,4 +1,4 @@
-import * as glMatrix from "./common.js";
+import * as glMatrix from './common.js';
 
 /**
  * 4x4 Matrix<br>Format: column-major, when typed out it looks like row-major<br>The matrices are being post multiplied.
@@ -108,24 +108,7 @@ export function copy(out, a) {
  * @param {Number} m33 Component in column 3, row 3 position (index 15)
  * @returns {mat4} A new mat4
  */
-export function fromValues(
-  m00,
-  m01,
-  m02,
-  m03,
-  m10,
-  m11,
-  m12,
-  m13,
-  m20,
-  m21,
-  m22,
-  m23,
-  m30,
-  m31,
-  m32,
-  m33,
-) {
+export function fromValues(m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
   let out = new glMatrix.ARRAY_TYPE(16);
   out[0] = m00;
   out[1] = m01;
@@ -168,25 +151,7 @@ export function fromValues(
  * @param {Number} m33 Component in column 3, row 3 position (index 15)
  * @returns {mat4} out
  */
-export function set(
-  out,
-  m00,
-  m01,
-  m02,
-  m03,
-  m10,
-  m11,
-  m12,
-  m13,
-  m20,
-  m21,
-  m22,
-  m23,
-  m30,
-  m31,
-  m32,
-  m33,
-) {
+export function set(out, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
   out[0] = m00;
   out[1] = m01;
   out[2] = m02;
@@ -322,8 +287,7 @@ export function invert(out, a) {
   let b11 = a22 * a33 - a23 * a32;
 
   // Calculate the determinant
-  let det =
-    b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+  let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
 
   if (!det) {
     return null;
@@ -1885,39 +1849,39 @@ export function targetTo(out, eye, target, up) {
  */
 export function str(a) {
   return (
-    "mat4(" +
+    'mat4(' +
     a[0] +
-    ", " +
+    ', ' +
     a[1] +
-    ", " +
+    ', ' +
     a[2] +
-    ", " +
+    ', ' +
     a[3] +
-    ", " +
+    ', ' +
     a[4] +
-    ", " +
+    ', ' +
     a[5] +
-    ", " +
+    ', ' +
     a[6] +
-    ", " +
+    ', ' +
     a[7] +
-    ", " +
+    ', ' +
     a[8] +
-    ", " +
+    ', ' +
     a[9] +
-    ", " +
+    ', ' +
     a[10] +
-    ", " +
+    ', ' +
     a[11] +
-    ", " +
+    ', ' +
     a[12] +
-    ", " +
+    ', ' +
     a[13] +
-    ", " +
+    ', ' +
     a[14] +
-    ", " +
+    ', ' +
     a[15] +
-    ")"
+    ')'
   );
 }
 
@@ -2132,38 +2096,22 @@ export function equals(a, b) {
     b15 = b[15];
 
   return (
-    Math.abs(a0 - b0) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
-    Math.abs(a1 - b1) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
-    Math.abs(a2 - b2) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) &&
-    Math.abs(a3 - b3) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3)) &&
-    Math.abs(a4 - b4) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a4), Math.abs(b4)) &&
-    Math.abs(a5 - b5) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a5), Math.abs(b5)) &&
-    Math.abs(a6 - b6) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a6), Math.abs(b6)) &&
-    Math.abs(a7 - b7) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a7), Math.abs(b7)) &&
-    Math.abs(a8 - b8) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a8), Math.abs(b8)) &&
-    Math.abs(a9 - b9) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a9), Math.abs(b9)) &&
-    Math.abs(a10 - b10) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a10), Math.abs(b10)) &&
-    Math.abs(a11 - b11) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a11), Math.abs(b11)) &&
-    Math.abs(a12 - b12) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a12), Math.abs(b12)) &&
-    Math.abs(a13 - b13) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a13), Math.abs(b13)) &&
-    Math.abs(a14 - b14) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a14), Math.abs(b14)) &&
-    Math.abs(a15 - b15) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a15), Math.abs(b15))
+    Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+    Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+    Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2)) &&
+    Math.abs(a3 - b3) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a3), Math.abs(b3)) &&
+    Math.abs(a4 - b4) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a4), Math.abs(b4)) &&
+    Math.abs(a5 - b5) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a5), Math.abs(b5)) &&
+    Math.abs(a6 - b6) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a6), Math.abs(b6)) &&
+    Math.abs(a7 - b7) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a7), Math.abs(b7)) &&
+    Math.abs(a8 - b8) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a8), Math.abs(b8)) &&
+    Math.abs(a9 - b9) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a9), Math.abs(b9)) &&
+    Math.abs(a10 - b10) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a10), Math.abs(b10)) &&
+    Math.abs(a11 - b11) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a11), Math.abs(b11)) &&
+    Math.abs(a12 - b12) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a12), Math.abs(b12)) &&
+    Math.abs(a13 - b13) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a13), Math.abs(b13)) &&
+    Math.abs(a14 - b14) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a14), Math.abs(b14)) &&
+    Math.abs(a15 - b15) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a15), Math.abs(b15))
   );
 }
 

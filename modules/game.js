@@ -1,5 +1,5 @@
-import { DOM } from "./dom.js";
-import { App } from "./app.js";
+import { DOM } from './dom.js';
+import { App } from './app.js';
 
 export class Game {
   static sizeX = 10;
@@ -20,15 +20,15 @@ export class Game {
 
   static init(body, object, isSplah) {
     if (object) {
-      if ("back" in object) {
+      if ('back' in object) {
         Game.eventBack = object.back;
       }
 
-      if ("finish" in object) {
+      if ('finish' in object) {
         Game.eventFinish = object.finish;
       }
 
-      if ("exit" in object) {
+      if ('exit' in object) {
         Game.eventExit = object.exit;
       }
     }
@@ -36,32 +36,32 @@ export class Game {
     Game.units = new Array();
 
     Game.info = DOM({
-      style: "game-info",
-      event: ["click", (e) => Game.click(e)],
+      style: 'game-info',
+      event: ['click', (e) => Game.click(e)],
     });
 
     Game.scoring = DOM({
-      style: "game-scoring",
-      event: ["click", (e) => Game.click(e)],
+      style: 'game-scoring',
+      event: ['click', (e) => Game.click(e)],
     });
 
     Game.field = DOM({
-      style: "game-field",
-      event: ["click", (e) => Game.click(e)],
+      style: 'game-field',
+      event: ['click', (e) => Game.click(e)],
     });
 
     Game.fieldScoringContainer = DOM(
       {
-        style: "game-field-scoring-container",
-        event: ["click", (e) => Game.click(e)],
+        style: 'game-field-scoring-container',
+        event: ['click', (e) => Game.click(e)],
       },
       Game.scoring,
       Game.field,
     );
 
-    Game.viewScore = DOM({ style: "game-view-score" });
+    Game.viewScore = DOM({ style: 'game-view-score' });
 
-    Game.viewInfo = DOM({ style: "game-view-info" });
+    Game.viewInfo = DOM({ style: 'game-view-info' });
 
     Game.viewMoves = DOM();
 
@@ -81,7 +81,7 @@ export class Game {
 
     Game.totalScore = 0;
 
-    if ("score" in object) {
+    if ('score' in object) {
       for (let id in object.score) {
         Game.score(id, object.score[id]);
       }
@@ -92,17 +92,14 @@ export class Game {
     Game.viewTotalScore.innerText = `Оcколки: ${Game.totalScore} | `;
 
     if (!isSplah) {
-      Game.viewInfo.append(
-        DOM({ event: ["click", () => Game.eventBack()] }, "Вернуться назад"),
-        DOM({}, ` | `),
-      );
+      Game.viewInfo.append(DOM({ event: ['click', () => Game.eventBack()] }, 'Вернуться назад'), DOM({}, ` | `));
     }
 
     Game.viewInfo.append(
       Game.viewTotalScore,
       Game.viewMoves,
       DOM({}, ` | `),
-      DOM({ event: ["click", () => Game.eventFinish()] }, "Завершить игру"),
+      DOM({ event: ['click', () => Game.eventFinish()] }, 'Завершить игру'),
     );
 
     Game.scoring.append(Game.viewScore);
@@ -118,15 +115,15 @@ export class Game {
   }
 
   static score(id, number) {
-    if (!id || id == "0") {
+    if (!id || id == '0') {
       return;
     }
 
     if (!(id in Game.dataScore)) {
       let unit = DOM({
-        style: [`rarity${Game.rarity[id]}`, "game-rarity-general"],
+        style: [`rarity${Game.rarity[id]}`, 'game-rarity-general'],
       });
-      let text = DOM({ style: "game-text" });
+      let text = DOM({ style: 'game-text' });
 
       unit.style.backgroundImage = `url(content/talents/${id}.webp)`;
 
@@ -141,38 +138,31 @@ export class Game {
 
     Game.viewTotalScore.innerText = `Оcколки: ${Game.totalScore} | `;
 
-    Game.dataScore[id].firstChild.innerText =
-      Number(Game.dataScore[id].innerText) + number;
+    Game.dataScore[id].firstChild.innerText = Number(Game.dataScore[id].innerText) + number;
 
-    Game.dataScore[id].animate(
-      { transform: ["scale(1)", "scale(1.5)", "scale(1)"] },
-      { duration: 250, fill: "both", easing: "ease-out" },
-    );
+    Game.dataScore[id].animate({ transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] }, { duration: 250, fill: 'both', easing: 'ease-out' });
   }
 
   static position(coordinate) {
-    return coordinate ? `${coordinate * 100}cqh` : "0";
+    return coordinate ? `${coordinate * 100}cqh` : '0';
   }
 
   static createUnit(id, x, y) {
-    let unit = DOM({ style: "game-unit-item", id: `${x}:${y}` });
+    let unit = DOM({ style: 'game-unit-item', id: `${x}:${y}` });
 
-    let rarity = "";
+    let rarity = '';
 
     switch (Game.rarity[id]) {
       case 2:
-        rarity =
-          "0 0 20cqh rgba(174,80,251,0.8), inset 10cqh 10cqh 15cqh rgba(174,80,251,0.5)";
+        rarity = '0 0 20cqh rgba(174,80,251,0.8), inset 10cqh 10cqh 15cqh rgba(174,80,251,0.5)';
         break;
 
       case 3:
-        rarity =
-          "0 0 20cqh rgba(255,156,32,0.8), inset 10cqh 10cqh 15cqh rgba(255,156,32,0.5)";
+        rarity = '0 0 20cqh rgba(255,156,32,0.8), inset 10cqh 10cqh 15cqh rgba(255,156,32,0.5)';
         break;
 
       case 4:
-        rarity =
-          "0 0 20cqh rgba(255,26,26,0.8), inset 10cqh 10cqh 15cqh rgba(255,26,26,0.5)";
+        rarity = '0 0 20cqh rgba(255,26,26,0.8), inset 10cqh 10cqh 15cqh rgba(255,26,26,0.5)';
         break;
     }
 
@@ -186,18 +176,13 @@ export class Game {
 
     unit.style.left = `${Game.position(y)}`;
 
-    Game.field.append(
-      DOM(
-        { style: "unit-container", event: ["click", (e) => Game.click(e)] },
-        unit,
-      ),
-    );
+    Game.field.append(DOM({ style: 'unit-container', event: ['click', (e) => Game.click(e)] }, unit));
 
     return unit;
   }
 
   static createBackgroundUnit(x, y) {
-    let unit = DOM({ style: "game-unit-bg", id: `${x}:${y}` });
+    let unit = DOM({ style: 'game-unit-bg', id: `${x}:${y}` });
 
     unit.id = `BG:${x}:${y}`;
 
@@ -207,12 +192,7 @@ export class Game {
 
     unit.style.left = `${Game.position(y)}`;
 
-    Game.field.append(
-      DOM(
-        { style: "unit-container", event: ["click", (e) => Game.click(e)] },
-        unit,
-      ),
-    );
+    Game.field.append(DOM({ style: 'unit-container', event: ['click', (e) => Game.click(e)] }, unit));
 
     return unit;
   }
@@ -278,9 +258,9 @@ export class Game {
           top: [topOffset, unit.style.top],
           left: [leftOffset, unit.style.left],
           opacity: [0, 1],
-          transform: ["scale(2.5)", "scale(0.9)"],
+          transform: ['scale(2.5)', 'scale(0.9)'],
         },
-        { delay: delay, duration: 250, fill: "both", easing: "ease-out" },
+        { delay: delay, duration: 250, fill: 'both', easing: 'ease-out' },
       );
 
       delay += 5;
@@ -307,9 +287,9 @@ export class Game {
             item.body.animate(
               {
                 opacity: [0, state],
-                transform: ["scale(0.3)", "scale(1)", "scale(0.9)"],
+                transform: ['scale(0.3)', 'scale(1)', 'scale(0.9)'],
               },
-              { duration: 500, fill: "both", easing: "ease-in" },
+              { duration: 500, fill: 'both', easing: 'ease-in' },
             );
           }
 
@@ -330,7 +310,7 @@ export class Game {
       return;
     }
 
-    let data = event.target.id.split(":");
+    let data = event.target.id.split(':');
 
     if (!Game.map[data[0]][data[1]]) {
       return;
@@ -359,7 +339,7 @@ export class Game {
       Game.target = event.target;
 
       Game.targetAnimate = Game.target.animate(
-        { transform: ["scale(0.9)", "scale(1.1)", "scale(0.9)"] },
+        { transform: ['scale(0.9)', 'scale(1.1)', 'scale(0.9)'] },
         { duration: 500, iterations: Infinity },
       );
     }
@@ -368,8 +348,8 @@ export class Game {
   static async move(element1, element2) {
     Game.blocked = true;
 
-    let data1 = element1.id.split(":"),
-      data2 = element2.id.split(":");
+    let data1 = element1.id.split(':'),
+      data2 = element2.id.split(':');
 
     let protect = false;
 
@@ -388,7 +368,7 @@ export class Game {
       return;
     }
 
-    let request = await App.api.request("gamev2", "move2", {
+    let request = await App.api.request('gamev2', 'move2', {
       x1: data1[0],
       y1: data1[1],
       x2: data2[0],
@@ -410,7 +390,7 @@ export class Game {
         top: [`${Game.position(data1[0])}`, `${Game.position(data2[0])}`],
         left: [`${Game.position(data1[1])}`, `${Game.position(data2[1])}`],
       },
-      { duration: 250, fill: "both" },
+      { duration: 250, fill: 'both' },
     );
 
     let element2Animate = element2.animate(
@@ -418,25 +398,25 @@ export class Game {
         top: [`${Game.position(data2[0])}`, `${Game.position(data1[0])}`],
         left: [`${Game.position(data2[1])}`, `${Game.position(data1[1])}`],
       },
-      { duration: 250, fill: "both" },
+      { duration: 250, fill: 'both' },
     );
 
     element1Animate.onfinish = async () => {
       if (request.render.length) {
         for (let item of request.render) {
           switch (item.action) {
-            case "hide":
+            case 'hide':
               await Game.hideAnimate(item.data);
 
               await Game.backgroundAnimate(item.data);
 
               break;
 
-            case "move":
+            case 'move':
               await Game.moveAnimate(item.data);
               break;
 
-            case "add":
+            case 'add':
               await Game.dropAnimate(item.data);
               break;
           }
@@ -481,8 +461,8 @@ export class Game {
         }
 
         let animate = findUnit.animate(
-          { opacity: [1, 0], transform: ["scale(0.9)", "scale(3)"] },
-          { duration: 250, fill: "both", easing: "ease-out" },
+          { opacity: [1, 0], transform: ['scale(0.9)', 'scale(3)'] },
+          { duration: 250, fill: 'both', easing: 'ease-out' },
         );
 
         if (number == data.hide.length) {
@@ -547,9 +527,9 @@ export class Game {
         let animate = item.body.animate(
           {
             opacity: [currentState, Game.background[item.x][item.y]],
-            transform: ["scale(0.9)", "scale(1.6)", "scale(0.9)"],
+            transform: ['scale(0.9)', 'scale(1.6)', 'scale(0.9)'],
           },
-          { duration: 500, fill: "both", easing: "ease-out" },
+          { duration: 500, fill: 'both', easing: 'ease-out' },
         );
 
         if (number == hideBackground.length) {
@@ -587,13 +567,9 @@ export class Game {
         let animate = findUnit.animate(
           {
             top: [`${Game.position(unit.x1)}`, `${Game.position(unit.x2)}`],
-            transform: [
-              "rotate(0) scale(0.9)",
-              `rotate(${Game.getRandomInt(-180, 180)}deg) scale(0.9)`,
-              "rotate(0) scale(0.9)",
-            ],
+            transform: ['rotate(0) scale(0.9)', `rotate(${Game.getRandomInt(-180, 180)}deg) scale(0.9)`, 'rotate(0) scale(0.9)'],
           },
-          { duration: 250, fill: "both", easing: "ease-in" },
+          { duration: 250, fill: 'both', easing: 'ease-in' },
         );
 
         if (number == data.length) {
@@ -623,9 +599,9 @@ export class Game {
         let animate = createUnit.animate(
           {
             opacity: [0, 1],
-            transform: ["rotate(0) scale(0.9)", "rotate(360deg) scale(0.9)"],
+            transform: ['rotate(0) scale(0.9)', 'rotate(360deg) scale(0.9)'],
           },
-          { duration: 250, fill: "both", easing: "ease-in" },
+          { duration: 250, fill: 'both', easing: 'ease-in' },
         );
 
         if (number == data.length) {

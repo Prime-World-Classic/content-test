@@ -1,12 +1,12 @@
-import { App } from "./app.js";
-import { Castle } from "./castle.js";
-import { View } from "./view.js";
+import { App } from './app.js';
+import { Castle } from './castle.js';
+import { View } from './view.js';
 
 export class Shop {
   static categories = {
-    1: "flag",
-    2: "frame",
-    3: "skin",
+    1: 'flag',
+    2: 'frame',
+    3: 'skin',
   };
   static timeBeforeUpdate = 0;
 
@@ -17,33 +17,24 @@ export class Shop {
 
     const dateNowMsk = new Date(dateNow.getTime() + 3 * hour);
 
-    return new Date(
-      Date.UTC(
-        dateNowMsk.getFullYear(),
-        dateNowMsk.getMonth(),
-        dateNowMsk.getDate(),
-      ),
-    );
+    return new Date(Date.UTC(dateNowMsk.getFullYear(), dateNowMsk.getMonth(), dateNowMsk.getDate()));
   }
 
   static notifyShopIsUpdated() {
     if (View.castleCrystalContainer) {
-      View.castleCrystalContainer.classList.add("crystal-container-anim");
+      View.castleCrystalContainer.classList.add('crystal-container-anim');
     }
-    Castle.SetBuildingNotification("fair", true);
+    Castle.SetBuildingNotification('fair', true);
   }
 
   static async retrieveLastUpdate() {
-    Shop.timeBeforeUpdate = await App.api.request(
-      "shop",
-      "getTimeBeforeUpdateForUser",
-    );
+    Shop.timeBeforeUpdate = await App.api.request('shop', 'getTimeBeforeUpdateForUser');
     if (Shop.timeoutEvent) {
       clearTimeout(Shop.timeoutEvent);
     }
 
     if (Shop.timeBeforeUpdate > 0) {
-      Castle.SetBuildingNotification("fair", false);
+      Castle.SetBuildingNotification('fair', false);
       Shop.timeoutEvent = setTimeout((_) => {
         Shop.notifyShopIsUpdated();
       }, Shop.timeBeforeUpdate);
@@ -64,17 +55,15 @@ export class Shop {
       case 3:
         return Shop.getSkinIcon(externalId);
       default:
-        App.error(
-          `Некорректный categoryId ${categoryId} для предмета ${externalId}`,
-        );
-        return [""];
+        App.error(`Некорректный categoryId ${categoryId} для предмета ${externalId}`);
+        return [''];
     }
   }
   static getFlagIcon(externalId) {
     return [`url("content/flags/${externalId}.png")`];
   }
   static getFrameIcon(externalId) {
-    let frameType_frameId = externalId.split("/");
+    let frameType_frameId = externalId.split('/');
     let frameType = Number(frameType_frameId[0]);
     let frameId = Math.max(0, Number(frameType_frameId[1]) - 1);
     return [
@@ -85,24 +74,21 @@ export class Shop {
     ];
   }
   static getSkinIcon(externalId) {
-    let heroId_skinId = externalId.split("/");
+    let heroId_skinId = externalId.split('/');
     let heroId = heroId_skinId[0];
     let skinId = heroId_skinId[1];
-    return [
-      `url("content/hero/${heroId}/${skinId}.webp")`,
-      `url("content/hero/${heroId}/1.webp")`,
-    ];
+    return [`url("content/hero/${heroId}/${skinId}.webp")`, `url("content/hero/${heroId}/1.webp")`];
   }
 
   static getName(categoryId, externalId) {
     if (categoryId == 3) {
-      let heroId_skinId = externalId.split("/");
+      let heroId_skinId = externalId.split('/');
       let heroId = heroId_skinId[0];
       let skinId = heroId_skinId[1];
       let name = `hero_${heroId}_skin_${skinId}_name`;
       let srcName = `hero_${heroId}_name`;
       return [name, srcName];
     }
-    return [`${this.categories[categoryId]}_${externalId.replace("/", "_")}`];
+    return [`${this.categories[categoryId]}_${externalId.replace('/', '_')}`];
   }
 }

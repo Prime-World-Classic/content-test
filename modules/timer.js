@@ -1,5 +1,5 @@
-import { DOM } from "./dom.js";
-import { App } from "./app.js";
+import { DOM } from './dom.js';
+import { App } from './app.js';
 
 export class Timer {
   static intervalId = false;
@@ -7,7 +7,7 @@ export class Timer {
   static init() {
     Timer.sb = DOM(`${name} 00:00`);
 
-    Timer.body = DOM({ style: "mm-timer" }, Timer.sb);
+    Timer.body = DOM({ style: 'mm-timer' }, Timer.sb);
   }
 
   static async start(id, name, callback) {
@@ -17,7 +17,7 @@ export class Timer {
 
     Timer.message = name;
 
-    Timer.timeFinish = await App.api.request(App.CURRENT_MM, "getTimer", {
+    Timer.timeFinish = await App.api.request(App.CURRENT_MM, 'getTimer', {
       id: id,
       time: Date.now(),
     });
@@ -38,9 +38,7 @@ export class Timer {
 
     let seconds = Math.round(Math.abs(Date.now() - Timer.timeFinish) / 1000);
 
-    Timer.sb.innerText = `${Timer.message} 00:${
-      seconds < 10 ? "0" : ""
-    }${seconds}`;
+    Timer.sb.innerText = `${Timer.message} 00:${seconds < 10 ? '0' : ''}${seconds}`;
   }
 
   static end() {
@@ -89,18 +87,18 @@ export class Timer {
     const hours = this.getFormattedTimeHours(timer);
     const minutes = this.getFormattedTimeMinutes(timer);
     const seconds = this.getFormattedTimeSeconds(timer);
-    let formattedDate = "";
+    let formattedDate = '';
     if (days) {
-      formattedDate += `${String(days).padStart(2, "0")}:`;
+      formattedDate += `${String(days).padStart(2, '0')}:`;
     }
     if (days || hours) {
-      formattedDate += `${String(hours).padStart(2, "0")}:`;
+      formattedDate += `${String(hours).padStart(2, '0')}:`;
     }
     if (days || hours || minutes) {
-      formattedDate += `${String(minutes).padStart(2, "0")}:`;
+      formattedDate += `${String(minutes).padStart(2, '0')}:`;
     }
     if (days || hours || minutes || seconds) {
-      formattedDate += `${String(seconds).padStart(2, "0")}`;
+      formattedDate += `${String(seconds).padStart(2, '0')}`;
     }
     return formattedDate;
   }

@@ -1,4 +1,4 @@
-import * as glMatrix from "./common.js";
+import * as glMatrix from './common.js';
 
 /**
  * 3 Dimensional Vector
@@ -672,9 +672,7 @@ export function angle(a, b) {
     bx = b[0],
     by = b[1],
     bz = b[2],
-    mag = Math.sqrt(
-      (ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz),
-    ),
+    mag = Math.sqrt((ax * ax + ay * ay + az * az) * (bx * bx + by * by + bz * bz)),
     cosine = mag && dot(a, b) / mag;
   return Math.acos(Math.min(Math.max(cosine, -1), 1));
 }
@@ -699,7 +697,7 @@ export function zero(out) {
  * @returns {String} string representation of the vector
  */
 export function str(a) {
-  return "vec3(" + a[0] + ", " + a[1] + ", " + a[2] + ")";
+  return 'vec3(' + a[0] + ', ' + a[1] + ', ' + a[2] + ')';
 }
 
 /**
@@ -728,12 +726,9 @@ export function equals(a, b) {
     b1 = b[1],
     b2 = b[2];
   return (
-    Math.abs(a0 - b0) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
-    Math.abs(a1 - b1) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
-    Math.abs(a2 - b2) <=
-      glMatrix.EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2))
+    Math.abs(a0 - b0) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a0), Math.abs(b0)) &&
+    Math.abs(a1 - b1) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a1), Math.abs(b1)) &&
+    Math.abs(a2 - b2) <= glMatrix.EPSILON * Math.max(1.0, Math.abs(a2), Math.abs(b2))
   );
 }
 

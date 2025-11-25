@@ -1,13 +1,9 @@
-import { DataBase } from "./database.js";
+import { DataBase } from './database.js';
 
 export class News {
   // создаем локальную базу данных
   static async init() {
-    News.db = new DataBase(
-      "list",
-      [{ name: "list", options: { keyPath: "id" } }],
-      1,
-    );
+    News.db = new DataBase('list', [{ name: 'list', options: { keyPath: 'id' } }], 1);
 
     await News.db.init();
   }
@@ -20,16 +16,16 @@ export class News {
 
     id = Number(id);
 
-    if (await News.db.get("list", id)) {
+    if (await News.db.get('list', id)) {
       return;
     }
     // id - угикальный ключ, text - текст, status - прочитано да/нет, иначе уведомление?
-    await News.db.add("list", { id: id, text: text, status: 0 });
+    await News.db.add('list', { id: id, text: text, status: 0 });
   }
 
   static async update() {
     //let request = await App.api.request('user','news');
-    let request = [{ id: "Привет мир!", text: "Тестовая новость с сервера" }]; // демо данные
+    let request = [{ id: 'Привет мир!', text: 'Тестовая новость с сервера' }]; // демо данные
 
     for (let item of request) {
       News.create(item.id, item.text);
@@ -37,7 +33,7 @@ export class News {
   }
   // выводим все новости
   static async view() {
-    let list = await News.db.getAll("list"),
+    let list = await News.db.getAll('list'),
       notifications = 0;
 
     for (let item of list) {
@@ -54,18 +50,18 @@ export class News {
   }
 
   static async set(id, object) {
-    if ("id" in object) {
-      throw "Нельзя перезаписать идентификатор";
+    if ('id' in object) {
+      throw 'Нельзя перезаписать идентификатор';
     }
 
     id = Number(id);
 
-    let item = await News.db.get("list", id);
+    let item = await News.db.get('list', id);
 
     if (!item) {
-      throw "Новость не найдена";
+      throw 'Новость не найдена';
     }
 
-    await News.db.add("list", Object.assign(item, object));
+    await News.db.add('list', Object.assign(item, object));
   }
 }

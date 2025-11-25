@@ -79,18 +79,10 @@ declare type ReadonlyMat4 =
     ]
   | IndexedCollection;
 
-declare type ReadonlyQuat =
-  | readonly [number, number, number, number]
-  | IndexedCollection;
+declare type ReadonlyQuat = readonly [number, number, number, number] | IndexedCollection;
 
-declare type ReadonlyQuat2 =
-  | readonly [number, number, number, number, number, number, number, number]
-  | IndexedCollection;
+declare type ReadonlyQuat2 = readonly [number, number, number, number, number, number, number, number] | IndexedCollection;
 
 declare type ReadonlyVec2 = readonly [number, number] | IndexedCollection;
-declare type ReadonlyVec3 =
-  | readonly [number, number, number]
-  | IndexedCollection;
-declare type ReadonlyVec4 =
-  | readonly [number, number, number, number]
-  | IndexedCollection;
+declare type ReadonlyVec3 = readonly [number, number, number] | IndexedCollection;
+declare type ReadonlyVec4 = readonly [number, number, number, number] | IndexedCollection;

@@ -1,48 +1,34 @@
-import { App } from "./app.js";
+import { App } from './app.js';
 
 export function DOM(properties) {
-  let parent = document.createElement(
-    typeof properties == "object" && "tag" in properties
-      ? properties.tag
-      : "div",
-  );
+  let parent = document.createElement(typeof properties == 'object' && 'tag' in properties ? properties.tag : 'div');
 
-  if (typeof properties == "string") {
+  if (typeof properties == 'string') {
     parent.append(properties);
   } else {
     for (let property in properties) {
-      if (property == "tag") continue;
+      if (property == 'tag') continue;
 
       switch (property) {
-        case "domaudio":
-          if (properties.domaudio.constructor.name == "DomAudio") {
-            parent.addEventListener("mouseover", () =>
-              properties.domaudio?.eventMouseOverCallback(),
-            );
+        case 'domaudio':
+          if (properties.domaudio.constructor.name == 'DomAudio') {
+            parent.addEventListener('mouseover', () => properties.domaudio?.eventMouseOverCallback());
 
-            parent.addEventListener("mousedown", () =>
-              properties.domaudio?.eventMouseDownCallback(),
-            );
+            parent.addEventListener('mousedown', () => properties.domaudio?.eventMouseDownCallback());
 
-            parent.addEventListener("mouseup", () =>
-              properties.domaudio?.eventMouseUpCallback(),
-            );
+            parent.addEventListener('mouseup', () => properties.domaudio?.eventMouseUpCallback());
 
-            parent.addEventListener("input", () =>
-              properties.domaudio?.eventInputCallback(),
-            );
+            parent.addEventListener('input', () => properties.domaudio?.eventInputCallback());
 
-            parent.addEventListener("change", () =>
-              properties.domaudio?.eventChangeCallback(),
-            );
+            parent.addEventListener('change', () => properties.domaudio?.eventChangeCallback());
           } else {
-            App.error("Передан некорректный объект. Ожидается DomAudio");
+            App.error('Передан некорректный объект. Ожидается DomAudio');
           }
 
           break;
 
-        case "style":
-          if (typeof properties.style === "string") {
+        case 'style':
+          if (typeof properties.style === 'string') {
             parent.classList.add(properties.style);
           } else {
             parent.classList.add(...properties.style);
@@ -50,14 +36,14 @@ export function DOM(properties) {
 
           break;
 
-        case "data":
+        case 'data':
           for (let key in properties.data) {
             parent.dataset[key] = properties.data[key];
           }
 
           break;
 
-        case "event":
+        case 'event':
           parent.addEventListener(properties.event[0], properties.event[1]);
 
           break;

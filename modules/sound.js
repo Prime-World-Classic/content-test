@@ -2,7 +2,7 @@ export class Sound {
   static all = new Object();
 
   static play(source, object = new Object(), callback) {
-    if ("id" in object && object.id) {
+    if ('id' in object && object.id) {
       if (object.id in Sound.all) {
         Sound.stop(object.id);
       }
@@ -10,30 +10,30 @@ export class Sound {
 
     let audio = new Audio();
 
-    if ("loop" in object) {
+    if ('loop' in object) {
       audio.loop = object.loop ? true : false;
     }
 
-    audio.preload = "auto";
+    audio.preload = 'auto';
     audio.load();
     audio.src = source;
 
-    audio.addEventListener("canplaythrough", () => {
+    audio.addEventListener('canplaythrough', () => {
       audio.play();
     });
 
     if (callback) {
-      audio.addEventListener("ended", (event) => {
+      audio.addEventListener('ended', (event) => {
         callback();
       });
     }
 
-    if ("id" in object && object.id) {
+    if ('id' in object && object.id) {
       if (!(object.id in Sound.all)) {
         Sound.all[object.id] = audio;
       }
 
-      if ("volume" in object) {
+      if ('volume' in object) {
         Sound.setVolume(object.id, object.volume);
       }
     }

@@ -1,25 +1,25 @@
-import { DOM } from "./dom.js";
-import { Lang } from "./lang.js";
-import { CastleNAVBAR } from "./castleNavBar.js";
-import { Window } from "./window.js";
-import { Rank } from "./rank.js";
-import { Division } from "./division.js";
-import { Build } from "./build.js";
-import { App } from "./app.js";
-import { Voice } from "./voice.js";
-import { Chat } from "./chat.js";
-import { PWGame } from "./pwgame.js";
-import { NativeAPI } from "./nativeApi.js";
-import { Castle } from "./castle.js";
-import { Settings } from "./settings.js";
-import { MM } from "./mm.js";
-import { PreloadImages } from "./preloadImages.js";
-import { Game } from "./game.js";
-import { Splash } from "./splash.js";
-import { Timer } from "./timer.js";
-import { Shop } from "./shop.js";
-import { DomAudio } from "./domAudio.js";
-import { domAudioPresets } from "./domAudioPresets.js";
+import { DOM } from './dom.js';
+import { Lang } from './lang.js';
+import { CastleNAVBAR } from './castleNavBar.js';
+import { Window } from './window.js';
+import { Rank } from './rank.js';
+import { Division } from './division.js';
+import { Build } from './build.js';
+import { App } from './app.js';
+import { Voice } from './voice.js';
+import { Chat } from './chat.js';
+import { PWGame } from './pwgame.js';
+import { NativeAPI } from './nativeApi.js';
+import { Castle } from './castle.js';
+import { Settings } from './settings.js';
+import { MM } from './mm.js';
+import { PreloadImages } from './preloadImages.js';
+import { Game } from './game.js';
+import { Splash } from './splash.js';
+import { Timer } from './timer.js';
+import { Shop } from './shop.js';
+import { DomAudio } from './domAudio.js';
+import { domAudioPresets } from './domAudioPresets.js';
 
 export class View {
   static mmQueueMap = {};
@@ -30,11 +30,11 @@ export class View {
       anderkrug: 1,
       cte: 2,
       m4: 3,
-      "pve-ep2-red": 4,
-      "custom-battle": 5,
+      'pve-ep2-red': 4,
+      'custom-battle': 5,
     };
     const index = map[cssKey];
-    return (View.mmQueueMap.mode && View.mmQueueMap.mode[index]) || "-";
+    return (View.mmQueueMap.mode && View.mmQueueMap.mode[index]) || '-';
   }
   static activeTemplate = false;
 
@@ -43,28 +43,25 @@ export class View {
   static animationIsEnabled = false;
 
   static defaultAnimation = {
-    transform: ["scale(1.1)", "scale(1)"],
+    transform: ['scale(1.1)', 'scale(1)'],
     opacity: [0, 1],
-    backdropFilter: ["blur(0)", "blur(1cqh)"],
+    backdropFilter: ['blur(0)', 'blur(1cqh)'],
   };
 
   static defaultOptionAnimation = {
     duration: 150,
-    fill: "both",
-    easing: "ease-out",
+    fill: 'both',
+    easing: 'ease-out',
   };
 
   static updateProgress = false;
 
-  static castleQuestBody = DOM({ style: ["quest", "left-offset-no-shift"] });
+  static castleQuestBody = DOM({ style: ['quest', 'left-offset-no-shift'] });
 
-  static castleTotalCrystal = DOM(
-    { tag: "div", style: ["question-icon"] },
-    DOM({ style: "quest-counter" }, ""),
-  );
+  static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
-  static setCss(name = "content/style.css") {
-    let css = DOM({ tag: "link", rel: "stylesheet", href: name });
+  static setCss(name = 'content/style.css') {
+    let css = DOM({ tag: 'link', rel: 'stylesheet', href: name });
 
     document.head.appendChild(css);
   }
@@ -74,9 +71,9 @@ export class View {
       return;
     }
 
-    Window.close("main");
+    Window.close('main');
 
-    Castle.toggleRender(Castle.RENDER_LAYER_LAUNCHER, method == "castle");
+    Castle.toggleRender(Castle.RENDER_LAYER_LAUNCHER, method == 'castle');
 
     try {
       var template = await View[method](value, value2, value3);
@@ -90,15 +87,12 @@ export class View {
       if (View.animationIsEnabled) {
         View.activeAnimation.reverse();
 
-        View.activeAnimation.addEventListener("finish", () => {
+        View.activeAnimation.addEventListener('finish', () => {
           View.active.remove();
 
           View.active = template;
 
-          View.activeAnimation = template.animate(
-            View.defaultAnimation,
-            View.defaultOptionAnimation,
-          );
+          View.activeAnimation = template.animate(View.defaultAnimation, View.defaultOptionAnimation);
 
           document.body.append(template);
         });
@@ -113,10 +107,7 @@ export class View {
       if (View.animationIsEnabled) {
         View.active = template;
 
-        View.activeAnimation = template.animate(
-          View.defaultAnimation,
-          View.defaultOptionAnimation,
-        );
+        View.activeAnimation = template.animate(View.defaultAnimation, View.defaultOptionAnimation);
 
         document.body.append(template);
       } else {
@@ -129,40 +120,40 @@ export class View {
 
   static authorization() {
     let numEnterEvent = [
-      "keyup",
+      'keyup',
       async (event) => {
-        if (event.code === "Enter" || event.code === "NumpadEnter") {
+        if (event.code === 'Enter' || event.code === 'NumpadEnter') {
           App.authorization(login, password);
         }
       },
     ];
 
     let login = DOM({
-        tag: "input",
+        tag: 'input',
         domaudio: domAudioPresets.deafultInput,
-        placeholder: Lang.text("nickname"),
+        placeholder: Lang.text('nickname'),
         event: numEnterEvent,
       }),
       password = DOM({
-        tag: "input",
+        tag: 'input',
         domaudio: domAudioPresets.deafultInput,
-        placeholder: Lang.text("password"),
-        type: "password",
+        placeholder: Lang.text('password'),
+        type: 'password',
         event: numEnterEvent,
       });
     // Создаем выпадающий список языков
     const languageSelect = DOM({
-      tag: "select",
+      tag: 'select',
       domaudio: domAudioPresets.defaultSelect,
-      id: "lang_select",
-      style: "language-select",
+      id: 'lang_select',
+      style: 'language-select',
       event: [
-        "change",
+        'change',
         async (e) => {
           const newLanguage = e.target.value;
           Lang.target = newLanguage;
           Settings.settings.language = newLanguage;
-          App.error(`${Lang.text("LangTarg")}: ${Lang.list[newLanguage].name}`);
+          App.error(`${Lang.text('LangTarg')}: ${Lang.list[newLanguage].name}`);
           // Перезагружаем страницу для применения языка
           await Lang.reinitViews();
         },
@@ -173,7 +164,7 @@ export class View {
     Object.entries(Lang.list).forEach(([code, langData]) => {
       languageSelect.appendChild(
         DOM({
-          tag: "option",
+          tag: 'option',
           value: code,
           selected: code === Lang.target,
           text: langData.name,
@@ -182,59 +173,56 @@ export class View {
     });
 
     let authorizationForm = DOM(
-      { style: "login_box" },
+      { style: 'login_box' },
       DOM(
-        { style: "login-box-forma" },
+        { style: 'login-box-forma' },
         DOM(
-          { tag: "div" },
+          { tag: 'div' },
           DOM({
-            tag: "img",
-            style: "login-box-forma-logo",
-            src: "content/img/logo_classic.webp",
+            tag: 'img',
+            style: 'login-box-forma-logo',
+            src: 'content/img/logo_classic.webp',
           }),
         ),
 
-        DOM({ style: "language-select-container" }, languageSelect),
+        DOM({ style: 'language-select-container' }, languageSelect),
         DOM(
-          { style: "login-box-forma-inputs" },
+          { style: 'login-box-forma-inputs' },
           login,
           password,
           DOM(
-            { style: "login-box-forma-buttons" },
+            { style: 'login-box-forma-buttons' },
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
-                style: "login-box-forma-button",
-                event: ["click", () => App.authorization(login, password)],
+                style: 'login-box-forma-button',
+                event: ['click', () => App.authorization(login, password)],
               },
-              Lang.text("login"),
+              Lang.text('login'),
             ),
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
-                style: "login-box-forma-button",
-                event: ["click", () => View.show("registration")],
+                style: 'login-box-forma-button',
+                event: ['click', () => View.show('registration')],
               },
-              Lang.text("registration"),
+              Lang.text('registration'),
             ),
           ),
           DOM(
-            { style: "login-box-forma-buttons" },
+            { style: 'login-box-forma-buttons' },
             DOM(
               {
                 domaudio: domAudioPresets.bigButton,
-                style: ["login-box-forma-button", "steamauth"],
-                event: ["click", () => Window.show("main", "steamauth")],
+                style: ['login-box-forma-button', 'steamauth'],
+                event: ['click', () => Window.show('main', 'steamauth')],
               },
-              Lang.text("authorizationSteam"),
+              Lang.text('authorizationSteam'),
             ),
           ),
         ),
       ),
-      DOM(
-        { style: "author" },
-        `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`,
-      ),
+      DOM({ style: 'author' }, `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`),
     );
 
     return authorizationForm;
@@ -242,139 +230,116 @@ export class View {
 
   static registration() {
     let numEnterEvent = [
-      "keyup",
+      'keyup',
       async (event) => {
-        if (event.code === "Enter" || event.code === "NumpadEnter") {
+        if (event.code === 'Enter' || event.code === 'NumpadEnter') {
           App.registration(fraction, invite, login, password, password2);
         }
       },
     ];
 
     let fraction = DOM(
-      { domaudio: domAudioPresets.defaultSelect, tag: "select" },
-      DOM(
-        { tag: "option", value: 0, disabled: true, selected: true },
-        Lang.text("fraction"),
-      ),
-      DOM({ tag: "option", value: 1 }, Lang.text("adornia")),
-      DOM({ tag: "option", value: 2 }, Lang.text("docts")),
+      { domaudio: domAudioPresets.defaultSelect, tag: 'select' },
+      DOM({ tag: 'option', value: 0, disabled: true, selected: true }, Lang.text('fraction')),
+      DOM({ tag: 'option', value: 1 }, Lang.text('adornia')),
+      DOM({ tag: 'option', value: 2 }, Lang.text('docts')),
     );
 
-    let tgBotUrl = "https://t.me/primeworldclassic_bot";
+    let tgBotUrl = 'https://t.me/primeworldclassic_bot';
 
     let telegramBotLink = DOM({
-      style: "telegram-bot",
-      tag: "a",
-      target: "_blank",
+      style: 'telegram-bot',
+      tag: 'a',
+      target: '_blank',
       href: tgBotUrl,
-      event: ["click", (e) => NativeAPI.linkHandler(e)],
+      event: ['click', (e) => NativeAPI.linkHandler(e)],
     });
 
     let invite = DOM({
-      tag: "input",
+      tag: 'input',
       domaudio: domAudioPresets.deafultInput,
-      placeholder: Lang.text("code"),
+      placeholder: Lang.text('code'),
       event: numEnterEvent,
     });
 
-    let inviteContainer = DOM(
-      { style: "invite-input" },
-      invite,
-      telegramBotLink,
-    );
+    let inviteContainer = DOM({ style: 'invite-input' }, invite, telegramBotLink);
 
     let login = DOM({
-      tag: "input",
+      tag: 'input',
       domaudio: domAudioPresets.deafultInput,
-      placeholder: Lang.text("nickname"),
+      placeholder: Lang.text('nickname'),
       event: numEnterEvent,
     });
 
     let password = DOM({
-      tag: "input",
+      tag: 'input',
       domaudio: domAudioPresets.deafultInput,
-      placeholder: Lang.text("password"),
-      type: "password",
+      placeholder: Lang.text('password'),
+      type: 'password',
       event: numEnterEvent,
     });
 
     let password2 = DOM({
-      tag: "input",
+      tag: 'input',
       domaudio: domAudioPresets.deafultInput,
-      placeholder: Lang.text("passwordAgain"),
-      type: "password",
+      placeholder: Lang.text('passwordAgain'),
+      type: 'password',
       event: numEnterEvent,
     });
 
     return DOM(
-      { style: "login_box" },
+      { style: 'login_box' },
       DOM(
-        { style: "login-box-forma" },
+        { style: 'login-box-forma' },
 
         DOM(
-          { style: "login-box-forma-inputs" },
+          { style: 'login-box-forma-inputs' },
           fraction,
           inviteContainer,
           login,
           password,
           password2,
           DOM(
-            { style: "login-box-forma-buttons" },
+            { style: 'login-box-forma-buttons' },
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
-                style: "login-box-forma-button",
-                event: [
-                  "click",
-                  () =>
-                    App.registration(
-                      fraction,
-                      invite,
-                      login,
-                      password,
-                      password2,
-                    ),
-                ],
+                style: 'login-box-forma-button',
+                event: ['click', () => App.registration(fraction, invite, login, password, password2)],
               },
-              Lang.text("registration1"),
+              Lang.text('registration1'),
             ),
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
-                style: "login-box-forma-button",
-                event: ["click", () => View.show("authorization")],
+                style: 'login-box-forma-button',
+                event: ['click', () => View.show('authorization')],
               },
-              Lang.text("back"),
+              Lang.text('back'),
             ),
           ),
         ),
         DOM(
-          { style: "login-box-forma-right" },
+          { style: 'login-box-forma-right' },
           DOM({
-            tag: "img",
-            style: "login-box-forma-logo",
-            src: "content/img/logo_classic.webp",
+            tag: 'img',
+            style: 'login-box-forma-logo',
+            src: 'content/img/logo_classic.webp',
           }),
-          DOM(
-            { style: "login-box-form-invite-text" },
-            `Получить инвайт-код через QR-код`,
-          ),
+          DOM({ style: 'login-box-form-invite-text' }, `Получить инвайт-код через QR-код`),
           DOM({
-            tag: "img",
-            style: "login-box-forma-logo",
-            src: "content/img/pwclassicbot.png",
+            tag: 'img',
+            style: 'login-box-forma-logo',
+            src: 'content/img/pwclassicbot.png',
           }),
         ),
       ),
-      DOM(
-        { style: "author" },
-        `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`,
-      ),
+      DOM({ style: 'author' }, `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`),
     );
   }
 
   static progress() {
-    let body = DOM({ style: "progress" }, DOM({ style: "animation1" }), DOM());
+    let body = DOM({ style: 'progress' }, DOM({ style: 'animation1' }), DOM());
 
     Splash.show(body, false);
 
@@ -382,26 +347,23 @@ export class View {
   }
 
   static async castle() {
-    document.body.classList.add("noselect");
+    document.body.classList.add('noselect');
 
     Shop.retrieveLastUpdate();
 
-    View.setCss("content/castle.css");
+    View.setCss('content/castle.css');
 
-    let body = DOM({ tag: "div", id: "castle-body" });
-    let backgroundImage = DOM({ tag: "div", id: "castle-background-img" });
+    let body = DOM({ tag: 'div', id: 'castle-body' });
+    let backgroundImage = DOM({ tag: 'div', id: 'castle-background-img' });
 
     if (!Castle.canvas) {
-      Castle.canvas = DOM({ tag: "canvas", id: "castle-game-surface" });
-      Castle.buildingBubbles = DOM({ style: "castle-buildings-bubbles" });
+      Castle.canvas = DOM({ tag: 'canvas', id: 'castle-game-surface' });
+      Castle.buildingBubbles = DOM({ style: 'castle-buildings-bubbles' });
     }
 
     try {
       if (!Castle.gl) {
-        await Castle.initDemo(
-          App.storage.data.fraction == 1 ? "ad" : "doct",
-          Castle.canvas,
-        );
+        await Castle.initDemo(App.storage.data.fraction == 1 ? 'ad' : 'doct', Castle.canvas);
       }
     } catch (error) {
       // если замок не работает на устройстве, тогда рендерим старую версию главной страницы
@@ -409,12 +371,7 @@ export class View {
       App.error(error);
     }
 
-    body.append(
-      backgroundImage,
-      Castle.canvas,
-      Castle.buildingBubbles,
-      View.castleQuestBody,
-    );
+    body.append(backgroundImage, Castle.canvas, Castle.buildingBubbles, View.castleQuestBody);
 
     try {
       await View.castleQuestUpdate();
@@ -427,7 +384,7 @@ export class View {
 
       body.append(castlePlay);
     } catch (error) {
-      if (String(error).search(new RegExp(`session is not valid`, "i")) != -1) {
+      if (String(error).search(new RegExp(`session is not valid`, 'i')) != -1) {
         await App.exit();
 
         NativeAPI.reset();
@@ -458,15 +415,15 @@ export class View {
   }
 
   static async castlePlay() {
-    let body = DOM({ style: "castle-play" });
+    let body = DOM({ style: 'castle-play' });
 
     let play = MM.play();
 
-    play.classList.remove("main-header-item");
+    play.classList.remove('main-header-item');
 
-    play.classList.remove("button-play");
+    play.classList.remove('button-play');
 
-    play.classList.add("castle-button-play");
+    play.classList.add('castle-button-play');
     /*
         if(!play.children.length){
             
@@ -474,9 +431,9 @@ export class View {
             
         }
         */
-    let lobby = DOM({ style: "castle-play-lobby" });
+    let lobby = DOM({ style: 'castle-play-lobby' });
 
-    let data = await App.api.request(App.CURRENT_MM, "loadParty"),
+    let data = await App.api.request(App.CURRENT_MM, 'loadParty'),
       players = new Array();
 
     MM.partyId = data.id;
@@ -510,26 +467,16 @@ export class View {
       let player = players[p];
 
       let item = DOM({
-        style: "castle-play-lobby-player",
+        style: 'castle-play-lobby-player',
         data: { id: player.id },
       });
 
-      const rankIcon = DOM({ style: "rank-icon" });
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        player.rating,
-      )}.webp)`;
+      const rankIcon = DOM({ style: 'rank-icon' });
+      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
 
-      item.style.backgroundImage = player.hero
-        ? `url(content/hero/${player.hero}/${
-            player.skin ? player.skin : 1
-          }.webp)`
-        : "";
+      item.style.backgroundImage = player.hero ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)` : '';
 
-      let rank = DOM(
-        { style: "rank" },
-        DOM({ style: "rank-lvl" }, player.rating),
-        rankIcon,
-      );
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, player.rating), rankIcon);
 
       if (player.rating) {
         item.append(rank);
@@ -537,29 +484,20 @@ export class View {
 
       let status = DOM(
         {
-          style: [
-            "castle-party-middle-item-ready-notready",
-            "castle-party-middle-item-not-ready",
-          ],
+          style: ['castle-party-middle-item-ready-notready', 'castle-party-middle-item-not-ready'],
         },
-        DOM({}, "Не готов"),
+        DOM({}, 'Не готов'),
       );
 
       if (player.id) {
         if (player.ready) {
-          status.firstChild.innerText = Lang.text("ready");
+          status.firstChild.innerText = Lang.text('ready');
 
-          status.classList.replace(
-            "castle-party-middle-item-not-ready",
-            "castle-party-middle-item-ready",
-          );
+          status.classList.replace('castle-party-middle-item-not-ready', 'castle-party-middle-item-ready');
         } else if (MM.partyId == player.id) {
-          status.firstChild.innerText = Lang.text("ready");
+          status.firstChild.innerText = Lang.text('ready');
 
-          status.classList.replace(
-            "castle-party-middle-item-not-ready",
-            "castle-party-middle-item-ready",
-          );
+          status.classList.replace('castle-party-middle-item-not-ready', 'castle-party-middle-item-ready');
         } else if (player.id == App.storage.data.id) {
           status.onclick = async () => {
             if (NativeAPI.status) {
@@ -583,24 +521,21 @@ export class View {
               PWGame.gameConnectionTestIsActive = false;
             }
 
-            await App.api.request(App.CURRENT_MM, "readyParty", {
+            await App.api.request(App.CURRENT_MM, 'readyParty', {
               id: MM.partyId,
             });
 
             status.onclick = false;
           };
 
-          status.firstChild.innerText = Lang.text("confirm");
+          status.firstChild.innerText = Lang.text('confirm');
         }
 
         item.style.backgroundImage = player.hero
-          ? `url(content/hero/${player.hero}/${
-              player.skin ? player.skin : 1
-            }.webp)`
+          ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`
           : `url(content/hero/empty.webp)`;
       } else {
-        item.innerHTML =
-          '<div class="castle-play-lobby-empty"><div>+</div></div>';
+        item.innerHTML = '<div class="castle-play-lobby-empty"><div>+</div></div>';
 
         status.style.opacity = 0;
 
@@ -609,29 +544,20 @@ export class View {
         //rank.style.opacity = 0;
       }
 
-      let removeButton = DOM({ style: "castle-party-remove" });
+      let removeButton = DOM({ style: 'castle-party-remove' });
 
       removeButton.style.backgroundImage = `url(content/icons/close-cropped.svg)`;
 
-      let nicknameText = DOM(
-        {},
-        `${player.nickname ? player.nickname : "Добавить"}`,
-      );
+      let nicknameText = DOM({}, `${player.nickname ? player.nickname : 'Добавить'}`);
 
-      let nicknameHideOverflowContainer = DOM(
-        { style: "castle-party-middle-item-nickname-hidden-overflow" },
-        nicknameText,
-      );
+      let nicknameHideOverflowContainer = DOM({ style: 'castle-party-middle-item-nickname-hidden-overflow' }, nicknameText);
 
-      let nickname = DOM(
-        { style: "castle-party-middle-item-nickname" },
-        nicknameHideOverflowContainer,
-      );
+      let nickname = DOM({ style: 'castle-party-middle-item-nickname' }, nicknameHideOverflowContainer);
 
       let playerX = DOM(
         {
           id: `PP${player.id}`,
-          style: "castle-party-middle-item",
+          style: 'castle-party-middle-item',
           title: nickname.innerText,
         },
         nickname,
@@ -640,65 +566,54 @@ export class View {
       );
 
       if (p > 0 && !players[p - 1].id) {
-        playerX.style.display = "none";
+        playerX.style.display = 'none';
       }
 
       if (player.nickname.length > 20) {
-        nickname.firstChild.firstChild.classList.add("castle-name-autoscroll");
+        nickname.firstChild.firstChild.classList.add('castle-name-autoscroll');
       }
 
       playerX.dataset.id = player.id;
 
-      nickname.firstChild.firstChild.classList.add("castle-player-nickname");
+      nickname.firstChild.firstChild.classList.add('castle-player-nickname');
 
-      if (
-        MM.partyId == App.storage.data.id &&
-        playerX.dataset.id != App.storage.data.id &&
-        playerX.dataset.id != 0
-      ) {
-        removeButton.addEventListener("click", async () => {
-          await App.api.request(App.CURRENT_MM, "leaderKickParty", {
+      if (MM.partyId == App.storage.data.id && playerX.dataset.id != App.storage.data.id && playerX.dataset.id != 0) {
+        removeButton.addEventListener('click', async () => {
+          await App.api.request(App.CURRENT_MM, 'leaderKickParty', {
             id: playerX.dataset.id,
           });
         });
 
         if (player.nickname.length > 15) {
-          nickname.firstChild.firstChild.classList.add(
-            "castle-name-autoscroll",
-          );
+          nickname.firstChild.firstChild.classList.add('castle-name-autoscroll');
         }
 
         nickname.append(removeButton);
       }
 
-      if (
-        MM.partyId != App.storage.data.id &&
-        playerX.dataset.id == App.storage.data.id
-      ) {
-        removeButton.addEventListener("click", async () => {
-          await App.api.request(App.CURRENT_MM, "leaveParty", {
+      if (MM.partyId != App.storage.data.id && playerX.dataset.id == App.storage.data.id) {
+        removeButton.addEventListener('click', async () => {
+          await App.api.request(App.CURRENT_MM, 'leaveParty', {
             id: MM.partyId,
           });
 
-          View.show("castle");
+          View.show('castle');
         });
 
         if (player.nickname.length > 15) {
-          nickname.firstChild.firstChild.classList.add(
-            "castle-name-autoscroll",
-          );
+          nickname.firstChild.firstChild.classList.add('castle-name-autoscroll');
         }
 
         nickname.append(removeButton);
       }
 
-      item.addEventListener("click", async () => {
+      item.addEventListener('click', async () => {
         if (item.dataset.id == App.storage.data.id) {
           if (MM.active) {
             return;
           }
 
-          let request = await App.api.request("build", "heroAll");
+          let request = await App.api.request('build', 'heroAll');
 
           // request.sort((a, b) => b.rating - a.rating);
 
@@ -706,16 +621,16 @@ export class View {
 
           request.push({ id: 0 });
 
-          let bodyHero = DOM({ style: "party-hero" });
+          let bodyHero = DOM({ style: 'party-hero' });
 
           let preload = new PreloadImages(bodyHero);
 
           for (let item2 of request) {
             let hero = DOM();
 
-            hero.addEventListener("click", async () => {
+            hero.addEventListener('click', async () => {
               try {
-                await App.api.request(App.CURRENT_MM, "heroParty", {
+                await App.api.request(App.CURRENT_MM, 'heroParty', {
                   id: MM.partyId,
                   hero: item2.id,
                 });
@@ -724,9 +639,7 @@ export class View {
               }
 
               item.style.backgroundImage = item2.id
-                ? `url(content/hero/${item2.id}/${
-                    item2.skin ? item2.skin : 1
-                  }.webp)`
+                ? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
                 : `url(content/hero/empty.webp)`;
 
               MM.activeSelectHero = item2.id;
@@ -735,9 +648,7 @@ export class View {
             });
 
             if (item2.id) {
-              hero.dataset.url = `content/hero/${item2.id}/${
-                item2.skin ? item2.skin : 1
-              }.webp`;
+              hero.dataset.url = `content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp`;
             } else {
               hero.dataset.url = `content/hero/empty.webp`;
             }
@@ -809,9 +720,7 @@ export class View {
   static castleBannerOnline() {
     const getDivisionId = () =>
       (window.User && (User.divisionId || User.rank || User.rating)) ||
-      (window.Settings &&
-        Settings.user &&
-        (Settings.user.divisionId || Settings.user.rank)) ||
+      (window.Settings && Settings.user && (Settings.user.divisionId || Settings.user.rank)) ||
       10;
 
     const isFiniteNumber = (v) => Number.isFinite(v) && !Number.isNaN(v);
@@ -821,14 +730,14 @@ export class View {
         players = 0;
 
       try {
-        if (typeof View?.getQueue === "function") {
+        if (typeof View?.getQueue === 'function') {
           const v = Number(View.getQueue(cssKey));
           if (isFiniteNumber(v)) party = v;
         }
       } catch (_) {}
 
       try {
-        if (typeof View?.getTotalQueue === "function") {
+        if (typeof View?.getTotalQueue === 'function') {
           const t = Number(View.getTotalQueue(cssKey));
           if (isFiniteNumber(t)) players = t;
         }
@@ -843,54 +752,50 @@ export class View {
       anderkrug: 1,
       cte: 2,
       m4: 3,
-      "custom-battle": 4,
-      "pve-ep2-red": 5,
+      'custom-battle': 4,
+      'pve-ep2-red': 5,
     };
 
     // тип медалей
     const medalMap = {
-      pvp: "gold",
-      anderkrug: "gold",
-      cte: "gold",
-      m4: "gold",
-      "pve-ep2-red": "gold",
-      "custom-battle": "silver",
+      pvp: 'gold',
+      anderkrug: 'gold',
+      cte: 'gold',
+      m4: 'gold',
+      'pve-ep2-red': 'gold',
+      'custom-battle': 'silver',
     };
 
     const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
       cssKey,
-      label: () =>
-        typeof View?.getQueue === "function" ? View.getQueue(cssKey) : 0,
+      label: () => (typeof View?.getQueue === 'function' ? View.getQueue(cssKey) : 0),
     }));
 
-    const banner = DOM({ style: ["castle-banner-online"] });
-    banner.append(DOM({ style: ["banner-ornament"] }));
+    const banner = DOM({ style: ['castle-banner-online'] });
+    banner.append(DOM({ style: ['banner-ornament'] }));
 
     // --- элементы по режимам ---
     bannerItems.forEach((item, idx) => {
-      const wrap = DOM({ style: ["banner-item"] });
+      const wrap = DOM({ style: ['banner-item'] });
 
       // иконка режима
       const icon = DOM({
-        style: ["banner-icon", `banner-icon--${item.cssKey}`],
+        style: ['banner-icon', `banner-icon--${item.cssKey}`],
       });
       wrap.append(icon);
 
       // счётчик: всегда стартует с "0/0"
-      const lbl = DOM({ tag: "div", style: ["banner-count", "is-loading"] });
-      lbl.textContent = "0/0";
-      lbl.title =
-        "Отображение очереди по режимам:\n" +
-        "слева — игроков в поиске,\n" +
-        "справа — количество групп (пати).";
+      const lbl = DOM({ tag: 'div', style: ['banner-count', 'is-loading'] });
+      lbl.textContent = '0/0';
+      lbl.title = 'Отображение очереди по режимам:\n' + 'слева — игроков в поиске,\n' + 'справа — количество групп (пати).';
       wrap.append(lbl);
 
       const onQueuesUpdated = () => {
         const { players, party } = safeQueueCounts(item.cssKey);
         lbl.textContent = `${players}/${party}`;
-        if (players || party) lbl.classList.remove("is-loading");
+        if (players || party) lbl.classList.remove('is-loading');
       };
-      window.addEventListener?.("queues:updated", onQueuesUpdated);
+      window.addEventListener?.('queues:updated', onQueuesUpdated);
 
       let ticks = 0;
       const iv = setInterval(() => {
@@ -902,7 +807,7 @@ export class View {
           lbl.textContent = next;
         }
         if (players || party) {
-          lbl.classList.remove("is-loading");
+          lbl.classList.remove('is-loading');
         }
         if (players || party || ticks >= 30) {
           clearInterval(iv);
@@ -910,30 +815,26 @@ export class View {
       }, 500);
 
       // медаль/кнопка
-      const type = medalMap[item.cssKey] || "gold";
-      const disabled = type === "silver";
+      const type = medalMap[item.cssKey] || 'gold';
+      const disabled = type === 'silver';
 
       const medal = DOM({
-        tag: "span",
-        style: [
-          "banner-medal",
-          `banner-medal--${type}`,
-          disabled ? "is-disabled" : null,
-        ].filter(Boolean),
+        tag: 'span',
+        style: ['banner-medal', `banner-medal--${type}`, disabled ? 'is-disabled' : null].filter(Boolean),
       });
 
       if (disabled) {
-        medal.title = Lang.text("titlestatisticmodeUnavailable");
+        medal.title = Lang.text('titlestatisticmodeUnavailable');
       } else {
-        medal.title = Lang.text("titlestatisticmode");
-        medal.setAttribute("role", "button");
+        medal.title = Lang.text('titlestatisticmode');
+        medal.setAttribute('role', 'button');
         medal.tabIndex = 0;
         const openStats = () => {
-          Window.show("main", "top", 0, idx);
+          Window.show('main', 'top', 0, idx);
         };
-        medal.addEventListener("click", openStats);
-        medal.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
+        medal.addEventListener('click', openStats);
+        medal.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             openStats();
           }
@@ -944,59 +845,59 @@ export class View {
       banner.append(wrap);
 
       if (idx < bannerItems.length - 1) {
-        banner.append(DOM({ tag: "div", style: ["banner-separator"] }));
+        banner.append(DOM({ tag: 'div', style: ['banner-separator'] }));
       }
     });
 
     // --- блок статистики/кнопка Stat ---
-    const statWrapper = DOM({ style: ["banner-stat-wrapper"] });
-    const statRect = DOM({ style: ["banner-stat-rect"] });
-    const statCircle = DOM({ style: ["banner-stat-circle"] });
+    const statWrapper = DOM({ style: ['banner-stat-wrapper'] });
+    const statRect = DOM({ style: ['banner-stat-rect'] });
+    const statCircle = DOM({ style: ['banner-stat-circle'] });
 
     const statsBtn = DOM({
-      style: ["banner-icon", "banner-icon--stat", "button-outline"],
-      title: Lang.text("titlestatistic"),
+      style: ['banner-icon', 'banner-icon--stat', 'button-outline'],
+      title: Lang.text('titlestatistic'),
       event: [
-        "click",
+        'click',
         () => {
           const onEsc = (e) => {
-            if (e.key === "Escape") {
+            if (e.key === 'Escape') {
               Splash.hide();
-              document.removeEventListener("keydown", onEsc);
+              document.removeEventListener('keydown', onEsc);
             }
           };
-          document.addEventListener("keydown", onEsc, { once: true });
+          document.addEventListener('keydown', onEsc, { once: true });
 
-          const BASE = "https://pw2.26rus-game.ru/stats/";
+          const BASE = 'https://pw2.26rus-game.ru/stats/';
           const id = Number(App?.storage?.data?.id) || 0;
-          const login = String(App?.storage?.data?.login || "").trim();
+          const login = String(App?.storage?.data?.login || '').trim();
 
           const qs = new URLSearchParams();
-          if (id > 0) qs.set("user_id", String(id));
-          else if (login) qs.set("login", login);
-          else qs.set("user_id", "0");
-          qs.set("tab", "info");
-          qs.set("q", "");
-          qs.set("_", Date.now().toString());
+          if (id > 0) qs.set('user_id', String(id));
+          else if (login) qs.set('login', login);
+          else qs.set('user_id', '0');
+          qs.set('tab', 'info');
+          qs.set('q', '');
+          qs.set('_', Date.now().toString());
 
           const src = `${BASE}?${qs.toString()}`;
 
           Splash.show(
             DOM(
               {
-                style: "iframe-stats",
+                style: 'iframe-stats',
                 event: [
-                  "click",
+                  'click',
                   (e) => {
                     if (e.target === e.currentTarget) Splash.hide();
                   },
                 ],
               },
               DOM({
-                style: "iframe-stats-navbar",
-                event: ["click", () => Splash.hide()],
+                style: 'iframe-stats-navbar',
+                event: ['click', () => Splash.hide()],
               }),
-              DOM({ tag: "iframe", src, style: "iframe-stats-frame" }),
+              DOM({ tag: 'iframe', src, style: 'iframe-stats-frame' }),
             ),
             false,
           );
@@ -1006,38 +907,32 @@ export class View {
 
     // бейдж дивизии под кнопкой Stat
     const divId = getDivisionId();
-    const divInfo =
-      typeof Division?.get === "function"
-        ? Division.get(divId)
-        : { name: "Дивизион", icon: 1 };
+    const divInfo = typeof Division?.get === 'function' ? Division.get(divId) : { name: 'Дивизион', icon: 1 };
 
     const divisionBadgeUnderStat = DOM({
-      style: ["banner-division-badge", "banner-division-badge--stat"],
+      style: ['banner-division-badge', 'banner-division-badge--stat'],
     });
     divisionBadgeUnderStat.style.backgroundImage = `url(content/ranks/${divInfo.icon}.webp)`;
-    divisionBadgeUnderStat.title = Lang.text("titlehint2");
+    divisionBadgeUnderStat.title = Lang.text('titlehint2');
 
     statCircle.append(statsBtn, divisionBadgeUnderStat);
     statWrapper.append(statRect, statCircle);
 
     // подсказка слева
-    const tooltipWrap = DOM({ tag: "div", style: ["tooltip-wrap-left"] });
-    const tooltipBubble = DOM({ tag: "div", style: ["tooltip-bubble-img"] });
-    const tooltipText = DOM({ tag: "div", style: ["tooltip-text"] });
-    tooltipText.textContent = Lang.text("titlehint");
+    const tooltipWrap = DOM({ tag: 'div', style: ['tooltip-wrap-left'] });
+    const tooltipBubble = DOM({ tag: 'div', style: ['tooltip-bubble-img'] });
+    const tooltipText = DOM({ tag: 'div', style: ['tooltip-text'] });
+    tooltipText.textContent = Lang.text('titlehint');
     tooltipBubble.append(tooltipText);
     tooltipWrap.append(tooltipBubble);
 
     View.castleCrystalContainer = DOM(
       {
-        style: [
-          "crystal-container",
-          Shop.requireAnimation ? "crystal-container-anim" : "_dummy_",
-        ],
+        style: ['crystal-container', Shop.requireAnimation ? 'crystal-container-anim' : '_dummy_'],
         event: [
-          "click",
+          'click',
           () => {
-            Window.show("main", "shop");
+            Window.show('main', 'shop');
           },
         ],
       },
@@ -1046,59 +941,55 @@ export class View {
 
     banner.append(statWrapper, View.castleCrystalContainer);
 
-    return DOM({ style: "castle-banner-online-wrapper" }, banner);
+    return DOM({ style: 'castle-banner-online-wrapper' }, banner);
   }
 
   static castleSettings() {
     let builds = DOM({
-      style: ["castle-builds", "button-outline"],
-      title: "Рейтинг",
-      event: ["click", () => View.show("top")],
+      style: ['castle-builds', 'button-outline'],
+      title: 'Рейтинг',
+      event: ['click', () => View.show('top')],
     });
 
     let settings = DOM({
-      style: ["castle-settings-btn", "button-outline"],
-      title: "Вкл/Выкл графики замка",
+      style: ['castle-settings-btn', 'button-outline'],
+      title: 'Вкл/Выкл графики замка',
       event: [
-        "click",
+        'click',
         () => {
-          let wrapper = DOM({ style: ["castle-settings-window"] });
+          let wrapper = DOM({ style: ['castle-settings-window'] });
           settings.append(wrapper);
         },
       ],
     });
 
     let clan = DOM({
-      style: ["castle-clans", "button-outline"],
-      title: "Кланы",
-      event: ["click", () => Frame.open("clan")],
+      style: ['castle-clans', 'button-outline'],
+      title: 'Кланы',
+      event: ['click', () => Frame.open('clan')],
     });
 
     let farm = DOM({
-      style: ["castle-farm", "button-outline"],
-      title: "Фарм",
-      event: ["click", () => Window.show("main", "farm")],
+      style: ['castle-farm', 'button-outline'],
+      title: 'Фарм',
+      event: ['click', () => Window.show('main', 'farm')],
     });
 
-    let input = DOM({ style: "castle-input", tag: "input" });
+    let input = DOM({ style: 'castle-input', tag: 'input' });
 
-    input.type = "range";
+    input.type = 'range';
 
-    input.min = "0";
-    input.max = "1";
-    input.step = "0.01";
+    input.min = '0';
+    input.max = '1';
+    input.step = '0.01';
 
-    let body = DOM({ style: ["castle-settings"] });
-    let container = DOM(
-      { style: ["castle-settings-container"] },
-      View.castleBannerOnline(),
-      body,
-    );
+    let body = DOM({ style: ['castle-settings'] });
+    let container = DOM({ style: ['castle-settings-container'] }, View.castleBannerOnline(), body);
     return container;
   }
 
   static castleChat() {
-    let body = DOM({ style: "castle-chat" }, Chat.body);
+    let body = DOM({ style: 'castle-chat' }, Chat.body);
 
     return body;
   }
@@ -1106,11 +997,11 @@ export class View {
   static castleHeroes() {
     let tab = 1;
 
-    let body = DOM({ style: "castle-bottom" });
+    let body = DOM({ style: 'castle-bottom' });
 
-    View.castleBottom = DOM({ style: "castle-bottom-content" });
+    View.castleBottom = DOM({ style: 'castle-bottom-content' });
 
-    View.castleBottom.addEventListener("wheel", function (event) {
+    View.castleBottom.addEventListener('wheel', function (event) {
       if (event.deltaY != 0) {
         if (event.deltaMode == event.DOM_DELTA_PIXEL) {
           event.preventDefault();
@@ -1134,63 +1025,63 @@ export class View {
 
     View.bodyCastleHeroes();
 
-    let nicknameValue = String(App?.storage?.data?.login || "").trim();
+    let nicknameValue = String(App?.storage?.data?.login || '').trim();
     let nicknameMenuItem = DOM(
       {
-        style: "nickname-menu-item",
+        style: 'nickname-menu-item',
         event: [
-          "click",
+          'click',
           () => {
             App.setNickname();
           },
         ],
-        title: Lang.text("titleNicknameСhange"),
+        title: Lang.text('titleNicknameСhange'),
       },
       DOM({}, nicknameValue),
     );
     if (nicknameValue.length > 10) {
-      nicknameMenuItem.firstChild.classList.add("castle-name-autoscroll");
+      nicknameMenuItem.firstChild.classList.add('castle-name-autoscroll');
     }
 
     let flagMenuItem = DOM({
       domaudio: new DomAudio(() => {
         //App.error("Кастомный звук при наведении курсора");
       }), // своя реализация функции при наведении курсора
-      style: "flag-menu-item",
+      style: 'flag-menu-item',
       event: [
-        "click",
+        'click',
         () => {
           App.setFraction();
         },
       ],
-      title: Lang.text("titleflag"),
+      title: Lang.text('titleflag'),
     });
     let settingsMenuItem = DOM({
       domaudio: new DomAudio(null, undefined, undefined), // нет звука при наведении курсора
-      style: "settings-menu-item",
+      style: 'settings-menu-item',
       event: [
-        "click",
+        'click',
         () => {
-          Window.show("main", "menu");
+          Window.show('main', 'menu');
         },
       ],
-      title: Lang.text("titlesettings"),
+      title: Lang.text('titlesettings'),
     });
     let chatMenuItem = DOM({
       domaudio: new DomAudio(), // все звуки по умолчанию
-      style: "chat-menu-item",
+      style: 'chat-menu-item',
       event: [
-        "click",
+        'click',
         () => {
           Chat.changeChatVisibility();
         },
       ],
-      title: Lang.text("titlechat"),
+      title: Lang.text('titlechat'),
     });
     let heroesMenuItem = DOM({
-      style: "heroes-menu-item",
+      style: 'heroes-menu-item',
       event: [
-        "click",
+        'click',
         () => {
           View.bodyCastleHeroes();
           View.castleBottom.scrollLeft = 0;
@@ -1198,12 +1089,12 @@ export class View {
           Castle.buildMode = false;
         },
       ],
-      title: Lang.text("titleheroes"),
+      title: Lang.text('titleheroes'),
     });
     let friendsMenuItem = DOM({
-      style: "friends-menu-item",
+      style: 'friends-menu-item',
       event: [
-        "click",
+        'click',
         () => {
           View.bodyCastleFriends();
           View.castleBottom.scrollLeft = 0;
@@ -1211,12 +1102,12 @@ export class View {
           Castle.buildMode = false;
         },
       ],
-      title: Lang.text("titlefriends"),
+      title: Lang.text('titlefriends'),
     });
     let buildingsMenuItem = DOM({
-      style: "buildings-menu-item",
+      style: 'buildings-menu-item',
       event: [
-        "click",
+        'click',
         () => {
           View.bodyCastleBuildings();
           View.castleBottom.scrollLeft = 0;
@@ -1224,34 +1115,32 @@ export class View {
           Castle.buildMode = true;
         },
       ],
-      title: Lang.text("titleconstruction"),
+      title: Lang.text('titleconstruction'),
     });
 
     flagMenuItem.style.backgroundImage =
-      Castle.currentSceneName == "doct"
-        ? `url(content/icons/Human_logo_over.webp)`
-        : `url(content/icons/Elf_logo_over.webp)`;
+      Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`;
 
     View.arrows = new Object();
     View.arrows.ls = DOM({
-      style: "castle-bottom-left-scroll-single",
-      event: ["click", () => View.scrollHero(-1)],
+      style: 'castle-bottom-left-scroll-single',
+      event: ['click', () => View.scrollHero(-1)],
     });
     View.arrows.ld = DOM({
-      style: "castle-bottom-left-scroll-double",
-      event: ["click", () => View.scrollHeroLine(-1)],
+      style: 'castle-bottom-left-scroll-double',
+      event: ['click', () => View.scrollHeroLine(-1)],
     });
     View.arrows.rs = DOM({
-      style: "castle-bottom-right-scroll-single",
-      event: ["click", () => View.scrollHero(1)],
+      style: 'castle-bottom-right-scroll-single',
+      event: ['click', () => View.scrollHero(1)],
     });
     View.arrows.rd = DOM({
-      style: "castle-bottom-right-scroll-double",
-      event: ["click", () => View.scrollHeroLine(1)],
+      style: 'castle-bottom-right-scroll-double',
+      event: ['click', () => View.scrollHeroLine(1)],
     });
     body.append(
       DOM(
-        { style: "castle-bottom-menu" },
+        { style: 'castle-bottom-menu' },
         nicknameMenuItem,
         flagMenuItem,
         settingsMenuItem,
@@ -1261,18 +1150,10 @@ export class View {
         chatMenuItem,
       ),
       DOM(
-        { style: "castle-bottom-content-container" },
+        { style: 'castle-bottom-content-container' },
         View.castleBottom,
-        DOM(
-          { style: "castle-bottom-content-left-scroll" },
-          View.arrows.ls,
-          View.arrows.ld,
-        ),
-        DOM(
-          { style: "castle-bottom-content-right-scroll" },
-          View.arrows.rs,
-          View.arrows.rd,
-        ),
+        DOM({ style: 'castle-bottom-content-left-scroll' }, View.arrows.ls, View.arrows.ld),
+        DOM({ style: 'castle-bottom-content-right-scroll' }, View.arrows.rs, View.arrows.rd),
       ),
     );
 
@@ -1286,21 +1167,14 @@ export class View {
   static scrollHero(delta) {
     let modifier =
       parseFloat(getComputedStyle(View.castleBottom.firstChild).width) +
-      parseFloat(
-        getComputedStyle(View.castleBottom.firstChild).borderRightWidth,
-      );
+      parseFloat(getComputedStyle(View.castleBottom.firstChild).borderRightWidth);
 
-    let maxScrollLeft =
-      View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
+    let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
     if (isNaN(View.currentFloatScroll)) {
       View.currentFloatScroll = 0;
     }
     View.currentFloatScroll += modifier * delta;
-    View.currentFloatScroll = Castle.clamp(
-      View.currentFloatScroll,
-      0,
-      maxScrollLeft,
-    );
+    View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
     View.castleBottom.scrollLeft = View.currentFloatScroll;
 
     View.updateArrows();
@@ -1309,44 +1183,38 @@ export class View {
   static scrollHeroLine(delta) {
     let width = parseFloat(getComputedStyle(View.castleBottom).width);
 
-    let maxScrollLeft =
-      View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
+    let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
     if (isNaN(View.currentFloatScroll)) {
       View.currentFloatScroll = 0;
     }
     View.currentFloatScroll += width * delta;
-    View.currentFloatScroll = Castle.clamp(
-      View.currentFloatScroll,
-      0,
-      maxScrollLeft,
-    );
+    View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
     View.castleBottom.scrollLeft = View.currentFloatScroll;
 
     View.updateArrows();
   }
 
   static updateArrows() {
-    let maxScrollLeft =
-      View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
+    let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
     if (View.castleBottom.scrollLeft == 0) {
-      View.arrows.ls.classList.add("castle-bottom-content-btn-disable");
-      View.arrows.ld.classList.add("castle-bottom-content-btn-disable");
+      View.arrows.ls.classList.add('castle-bottom-content-btn-disable');
+      View.arrows.ld.classList.add('castle-bottom-content-btn-disable');
     } else {
-      View.arrows.ls.classList.remove("castle-bottom-content-btn-disable");
-      View.arrows.ld.classList.remove("castle-bottom-content-btn-disable");
+      View.arrows.ls.classList.remove('castle-bottom-content-btn-disable');
+      View.arrows.ld.classList.remove('castle-bottom-content-btn-disable');
     }
 
     if (maxScrollLeft && View.castleBottom.scrollLeft == maxScrollLeft) {
-      View.arrows.rs.classList.add("castle-bottom-content-btn-disable");
-      View.arrows.rd.classList.add("castle-bottom-content-btn-disable");
+      View.arrows.rs.classList.add('castle-bottom-content-btn-disable');
+      View.arrows.rd.classList.add('castle-bottom-content-btn-disable');
     } else {
-      View.arrows.rs.classList.remove("castle-bottom-content-btn-disable");
-      View.arrows.rd.classList.remove("castle-bottom-content-btn-disable");
+      View.arrows.rs.classList.remove('castle-bottom-content-btn-disable');
+      View.arrows.rd.classList.remove('castle-bottom-content-btn-disable');
     }
   }
 
   static async castleQuestUpdate() {
-    let request = await App.api.request("quest", "list");
+    let request = await App.api.request('quest', 'list');
 
     if (Number.isInteger(request.crystal)) {
       View.castleTotalCrystal.firstChild.innerText = request.crystal;
@@ -1357,15 +1225,15 @@ export class View {
       View.castleQuestBody.firstChild.remove();
     }
 
-    const list = DOM({ style: "quest-list" });
+    const list = DOM({ style: 'quest-list' });
     const PAGE = 4;
     let start = 0;
     const items = [];
 
     const btnUp = DOM({
-      style: ["quest-arrow", "quest-arrow-up"],
+      style: ['quest-arrow', 'quest-arrow-up'],
       event: [
-        "click",
+        'click',
         () => {
           if (start > 0) {
             start--;
@@ -1376,9 +1244,9 @@ export class View {
     });
 
     const btnDown = DOM({
-      style: ["quest-arrow", "quest-arrow-down"],
+      style: ['quest-arrow', 'quest-arrow-down'],
       event: [
-        "click",
+        'click',
         () => {
           if (start < Math.max(0, items.length - PAGE)) {
             start++;
@@ -1395,13 +1263,10 @@ export class View {
     }
 
     for (let item of request.quests) {
-      let hero = DOM(
-        { style: "quest-item-hero" },
-        DOM({ style: "quest-item-portrait-glass" }),
-      );
+      let hero = DOM({ style: 'quest-item-hero' }, DOM({ style: 'quest-item-portrait-glass' }));
       hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
 
-      let timer = DOM({ style: "quest-item-timer" });
+      let timer = DOM({ style: 'quest-item-timer' });
       const tick = () => {
         item.timer = item.timer - 1000;
         timer.textContent = Timer.getFormattedTimer(item.timer);
@@ -1411,29 +1276,26 @@ export class View {
 
       let quest = DOM(
         {
-          style: "quest-item",
+          style: 'quest-item',
           event: [
-            "click",
+            'click',
             () => {
               // Удаляем возможные предыдущие окна и не передаём превью-ноду
-              document.querySelectorAll("#wquest").forEach((n) => n.remove());
-              Window.show("main", "quest", item);
+              document.querySelectorAll('#wquest').forEach((n) => n.remove());
+              Window.show('main', 'quest', item);
             },
           ],
         },
         DOM(
-          { style: "quest-item-portrait-background" },
+          { style: 'quest-item-portrait-background' },
           hero,
           item.status == 1
-            ? ""
+            ? ''
             : DOM({
-                style:
-                  item.status == 0
-                    ? "quest-item-exclamation"
-                    : "quest-item-completed",
+                style: item.status == 0 ? 'quest-item-exclamation' : 'quest-item-completed',
               }),
         ),
-        item.status == 1 ? timer : "",
+        item.status == 1 ? timer : '',
       );
 
       items.push(quest);
@@ -1441,13 +1303,13 @@ export class View {
     }
 
     function render() {
-      list.innerHTML = "";
+      list.innerHTML = '';
       const end = Math.min(start + PAGE, items.length);
       for (let i = start; i < end; i++) list.append(items[i]);
       const maxStart = Math.max(0, items.length - PAGE);
       const noScroll = items.length <= PAGE;
-      btnUp.classList.toggle("disabled", noScroll || start === 0);
-      btnDown.classList.toggle("disabled", noScroll || start >= maxStart);
+      btnUp.classList.toggle('disabled', noScroll || start === 0);
+      btnDown.classList.toggle('disabled', noScroll || start >= maxStart);
     }
 
     render();
@@ -1459,10 +1321,10 @@ export class View {
     }
 
     let selectedFaction = -1;
-    if (Castle.currentSceneName == "ad") {
+    if (Castle.currentSceneName == 'ad') {
       selectedFaction = 0;
     }
-    if (Castle.currentSceneName == "doct") {
+    if (Castle.currentSceneName == 'doct') {
       selectedFaction = 1;
     }
     if (selectedFaction == -1) {
@@ -1475,24 +1337,21 @@ export class View {
       let item = Castle.buildings[i];
       let itemName = Lang.text(Castle.buildingsNames[i][selectedFaction]);
 
-      let buildingName = DOM({ style: "castle-hero-name" }, DOM({}, itemName));
+      let buildingName = DOM({ style: 'castle-hero-name' }, DOM({}, itemName));
 
       if (itemName.length > 10) {
-        buildingName.firstChild.classList.add("castle-name-autoscroll");
+        buildingName.firstChild.classList.add('castle-name-autoscroll');
       }
 
-      let buildingNameBase = DOM(
-        { style: "castle-item-hero-name" },
-        buildingName,
-      );
+      let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
 
-      let building = DOM({ style: "castle-building-item" }, buildingNameBase);
+      let building = DOM({ style: 'castle-building-item' }, buildingNameBase);
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
       building.dataset.buildingId = i;
 
-      building.addEventListener("click", async () => {
+      building.addEventListener('click', async () => {
         Castle.phantomBuilding.id = building.dataset.buildingId;
       });
 
@@ -1514,57 +1373,41 @@ export class View {
         for (let item of result) {
           // Используем новый метод для получения имени с учётом скина
           const localizedName = Lang.heroName(item.id, item.skin);
-          const heroName = DOM(
-            { style: "castle-hero-name" },
-            DOM({}, localizedName),
-          );
+          const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, localizedName));
 
           if (localizedName.length > 10) {
-            heroName.firstChild.classList.add("castle-name-autoscroll");
+            heroName.firstChild.classList.add('castle-name-autoscroll');
           }
 
-          let heroNameBase = DOM(
-            { style: ["castle-item-hero-name", "hover-brightness"] },
-            heroName,
-          );
+          let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
 
-          let rankIcon = DOM({ style: "castle-hero-rank-icon" });
-          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-            item.rating,
-          )}.webp)`;
+          let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
+          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-          let rank = DOM(
-            { style: "castle-hero-rank" },
-            DOM({ style: "castle-hero-rank-lvl" }, item.rating),
-            rankIcon,
-          );
+          let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIcon);
 
           let hero = DOM(
             {
               id: `id${item.id}`,
-              style: ["castle-hero-item", "hover-brightness"],
+              style: ['castle-hero-item', 'hover-brightness'],
             },
-            DOM({ style: ["castle-item-background", "hover-brightness"] }),
-            DOM({ style: ["castle-hero-item-bg", "hover-brightness"] }),
-            DOM({ style: ["castle-hero-item-img", "no-hover-brightness"] }),
-            DOM({ style: ["castle-item-ornament", "hover-brightness"] }),
+            DOM({ style: ['castle-item-background', 'hover-brightness'] }),
+            DOM({ style: ['castle-hero-item-bg', 'hover-brightness'] }),
+            DOM({ style: ['castle-hero-item-img', 'no-hover-brightness'] }),
+            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
             rank,
             heroNameBase,
           );
 
-          hero.addEventListener("click", async () =>
-            Window.show("main", "build", item.id, 0, true),
-          );
+          hero.addEventListener('click', async () => Window.show('main', 'build', item.id, 0, true));
 
-          hero.dataset.url = `content/hero/${item.id}/${
-            item.skin ? item.skin : 1
-          }.webp`;
+          hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
 
           preload.add(hero);
         }
       },
-      "build",
-      "heroAll",
+      'build',
+      'heroAll',
     );
   }
 
@@ -1577,32 +1420,31 @@ export class View {
           View.castleBottom.firstChild.remove();
         }
         // status 1 - друг, 2 - запрос дружбы, 3 - дружбу отправил, игрок еще не подтвердил
-        console.log("ДРУЗЬЯ", result);
+        console.log('ДРУЗЬЯ', result);
 
         let buttonAdd = DOM(
           {
-            style: "castle-friend-item",
+            style: 'castle-friend-item',
             onclick: () => {
               let input = DOM({
-                tag: "input",
-                style: "search-input",
-                placeholder: Lang.text("friendNicknamePlaceholder"),
+                tag: 'input',
+                style: 'search-input',
+                placeholder: Lang.text('friendNicknamePlaceholder'),
               });
-              let body = DOM({ style: "search-body" });
+              let body = DOM({ style: 'search-body' });
 
               // Создаём крестик для закрытия (как в buildSelectName)
               let closeButton = DOM({
-                tag: "div",
-                style: "close-button",
-                event: ["click", () => Splash.hide()],
+                tag: 'div',
+                style: 'close-button',
+                event: ['click', () => Splash.hide()],
               });
-              closeButton.style.backgroundImage =
-                "url(content/icons/close-cropped.svg)";
+              closeButton.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
-              let search = DOM({ style: "search" }, input, body, closeButton);
+              let search = DOM({ style: 'search' }, input, body, closeButton);
 
-              input.addEventListener("input", async () => {
-                let request = await App.api.request("user", "find", {
+              input.addEventListener('input', async () => {
+                let request = await App.api.request('user', 'find', {
                   nickname: input.value,
                 });
 
@@ -1616,18 +1458,15 @@ export class View {
                   let template = DOM(
                     {
                       event: [
-                        "click",
+                        'click',
                         async () => {
-                          await App.api.request("friend", "request", {
+                          await App.api.request('friend', 'request', {
                             id: item.id,
                           });
 
                           View.bodyCastleFriends();
 
-                          App.notify(
-                            `Заявка в друзья ${item.nickname} отправлена`,
-                            1000,
-                          );
+                          App.notify(`Заявка в друзья ${item.nickname} отправлена`, 1000);
 
                           Splash.hide();
                         },
@@ -1636,70 +1475,63 @@ export class View {
                     item.nickname,
                   );
 
-                  if ("blocked" in item) {
+                  if ('blocked' in item) {
                     template.oncontextmenu = () => {
                       let body = document.createDocumentFragment();
 
                       // Создаём крестик для закрытия
                       const closeButton = DOM({
-                        tag: "div",
-                        style: "close-button",
-                        event: ["click", () => Splash.hide()],
+                        tag: 'div',
+                        style: 'close-button',
+                        event: ['click', () => Splash.hide()],
                       });
-                      closeButton.style.backgroundImage =
-                        "url(content/icons/close-cropped.svg)";
+                      closeButton.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
                       body.append(
                         DOM({}, item.nickname),
                         DOM(
                           {
-                            style: "splash-content-button",
+                            style: 'splash-content-button',
                             event: [
-                              "click",
+                              'click',
                               async () => {
-                                await App.api.request("user", "blocked", {
+                                await App.api.request('user', 'blocked', {
                                   id: item.id,
                                 });
                                 Splash.hide();
                               },
                             ],
                           },
-                          item.blocked ? "Разблокировать" : "Заблокировать",
+                          item.blocked ? 'Разблокировать' : 'Заблокировать',
                         ),
                         DOM(
                           {
-                            style: "splash-content-button",
+                            style: 'splash-content-button',
                             event: [
-                              "click",
+                              'click',
                               async () => {
-                                await App.api.request("user", "mute", {
+                                await App.api.request('user', 'mute', {
                                   id: item.id,
                                 });
                                 Splash.hide();
                               },
                             ],
                           },
-                          item.mute ? "Убрать мут" : "Мут чата",
+                          item.mute ? 'Убрать мут' : 'Мут чата',
                         ),
                         DOM(
                           {
-                            style: "splash-content-button",
+                            style: 'splash-content-button',
                             event: [
-                              "click",
+                              'click',
                               async () => {
-                                let password = await App.api.request(
-                                  "user",
-                                  "restore",
-                                  { id: item.id },
-                                );
-                                App.notify(
-                                  `Скопировано в буфер обмена! Пароль: ${password}`,
-                                );
+                                let password = await App.api.request('user', 'restore', { id: item.id });
+                                App.notify(`Скопировано в буфер обмена! Пароль: ${password}`);
                                 navigator.clipboard.writeText(password);
                               },
                             ],
                           },
-                          "Сброс пароля",
+                          'Сброс пароля',
                         ),
                         closeButton, // Добавляем крестик вместо кнопки "Назад"
                       );
@@ -1709,11 +1541,11 @@ export class View {
                     };
 
                     if (item.mute) {
-                      template.style.color = "yellow";
+                      template.style.color = 'yellow';
                     }
 
                     if (item.blocked) {
-                      template.style.color = "red";
+                      template.style.color = 'red';
                     }
                   }
 
@@ -1726,10 +1558,7 @@ export class View {
               input.focus();
             },
           },
-          DOM(
-            { style: "castle-friend-item-middle" },
-            DOM({ style: "castle-friend-add" }, "+"),
-          ),
+          DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-add' }, '+')),
         );
 
         preload.add(buttonAdd);
@@ -1737,59 +1566,39 @@ export class View {
         buttonAdd.dataset.url = `content/hero/empty.webp`;
 
         for (let item of result) {
-          const heroName = DOM(
-            { style: "castle-hero-name" },
-            DOM({ tag: "span" }, item.nickname),
-          );
+          const heroName = DOM({ style: 'castle-hero-name' }, DOM({ tag: 'span' }, item.nickname));
 
           if (item.nickname.length > 10) {
-            heroName.firstChild.classList.add("castle-name-autoscroll");
+            heroName.firstChild.classList.add('castle-name-autoscroll');
           }
 
-          let heroNameBase = DOM({ style: "castle-item-hero-name" }, heroName);
+          let heroNameBase = DOM({ style: 'castle-item-hero-name' }, heroName);
 
-          let bottom = DOM({ style: "castle-friend-item-bottom" });
+          let bottom = DOM({ style: 'castle-friend-item-bottom' });
 
-          let friend = DOM(
-            { style: "castle-friend-item" },
-            heroNameBase,
-            bottom,
-          );
+          let friend = DOM({ style: 'castle-friend-item' }, heroNameBase, bottom);
 
           if (item.status == 1) {
-            let group = DOM(
-              { style: "castle-friend-add-group" },
-              item.online
-                ? Lang.text("inviteToAGroup")
-                : Lang.text("friendIsOffline"),
-            );
+            let group = DOM({ style: 'castle-friend-add-group' }, item.online ? Lang.text('inviteToAGroup') : Lang.text('friendIsOffline'));
 
-            let call = DOM(
-              { style: "castle-friend-add-group" },
-              Lang.text("callAFriend"),
-            );
+            let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
 
             if (!item.online) {
-              group.style.filter = "grayscale(1)";
+              group.style.filter = 'grayscale(1)';
 
-              call.style.filter = "grayscale(1)";
+              call.style.filter = 'grayscale(1)';
             } else {
               group.onclick = async () => {
-                await App.api.request(App.CURRENT_MM, "inviteParty", {
+                await App.api.request(App.CURRENT_MM, 'inviteParty', {
                   id: item.id,
                 });
 
-                App.notify(
-                  Lang.text("friendAcceptText").replace(
-                    "{nickname}",
-                    item.nickname,
-                  ),
-                );
+                App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
               };
 
               call.onclick = async () => {
                 try {
-                  let voice = new Voice(item.id, "friend", item.nickname, true);
+                  let voice = new Voice(item.id, 'friend', item.nickname, true);
 
                   await voice.call();
                 } catch (error) {
@@ -1803,11 +1612,11 @@ export class View {
 
               let b1 = DOM(
                 {
-                  style: "splash-content-button",
+                  style: 'splash-content-button',
                   event: [
-                    "click",
+                    'click',
                     async () => {
-                      await App.api.request("friend", "remove", {
+                      await App.api.request('friend', 'remove', {
                         id: item.id,
                       });
 
@@ -1817,27 +1626,18 @@ export class View {
                     },
                   ],
                 },
-                Lang.text("friendRemove"),
+                Lang.text('friendRemove'),
               );
 
               let b2 = DOM(
                 {
-                  style: "splash-content-button",
-                  event: ["click", () => Splash.hide()],
+                  style: 'splash-content-button',
+                  event: ['click', () => Splash.hide()],
                 },
-                Lang.text("friendCancle"),
+                Lang.text('friendCancle'),
               );
 
-              body.append(
-                DOM(
-                  Lang.text("friendRemoveText").replace(
-                    "{nickname}",
-                    item.nickname,
-                  ),
-                ),
-                b1,
-                b2,
-              );
+              body.append(DOM(Lang.text('friendRemoveText').replace('{nickname}', item.nickname)), b1, b2);
 
               Splash.show(body);
 
@@ -1849,11 +1649,11 @@ export class View {
             bottom.append(
               DOM(
                 {
-                  style: "castle-friend-confirm",
+                  style: 'castle-friend-confirm',
                   event: [
-                    "click",
+                    'click',
                     async () => {
-                      await App.api.request("friend", "accept", {
+                      await App.api.request('friend', 'accept', {
                         id: item.id,
                       });
 
@@ -1864,40 +1664,31 @@ export class View {
                       bottom.append(
                         DOM(
                           {
-                            style: "castle-friend-add-group",
+                            style: 'castle-friend-add-group',
                             event: [
-                              "click",
+                              'click',
                               async () => {
-                                await App.api.request(
-                                  App.CURRENT_MM,
-                                  "inviteParty",
-                                  { id: item.id },
-                                );
+                                await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id });
 
-                                App.notify(
-                                  Lang.text("friendAcceptText").replace(
-                                    "{nickname}",
-                                    item.nickname,
-                                  ),
-                                );
+                                App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
                               },
                             ],
                           },
-                          Lang.text("inviteToAGroup"),
+                          Lang.text('inviteToAGroup'),
                         ),
                       );
                     },
                   ],
                 },
-                Lang.text("friendAccept"),
+                Lang.text('friendAccept'),
               ),
               DOM(
                 {
-                  style: "castle-friend-cancel",
+                  style: 'castle-friend-cancel',
                   event: [
-                    "click",
+                    'click',
                     async () => {
-                      await App.api.request("friend", "remove", {
+                      await App.api.request('friend', 'remove', {
                         id: item.id,
                       });
 
@@ -1905,30 +1696,24 @@ export class View {
                     },
                   ],
                 },
-                Lang.text("friendDecline"),
+                Lang.text('friendDecline'),
               ),
             );
           } else if (item.status == 3) {
             friend.append(
-              DOM(
-                { style: "castle-friend-item-middle" },
-                DOM(
-                  { style: "castle-friend-request" },
-                  Lang.text("friendAcceptWaiting"),
-                ),
-              ),
+              DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('friendAcceptWaiting'))),
             );
 
-            friend.style.filter = "grayscale(1)";
+            friend.style.filter = 'grayscale(1)';
 
             bottom.append(
               DOM(
                 {
-                  style: "castle-friend-cancel",
+                  style: 'castle-friend-cancel',
                   event: [
-                    "click",
+                    'click',
                     async () => {
-                      await App.api.request("friend", "remove", {
+                      await App.api.request('friend', 'remove', {
                         id: item.id,
                       });
 
@@ -1936,7 +1721,7 @@ export class View {
                     },
                   ],
                 },
-                Lang.text("cancel"),
+                Lang.text('cancel'),
               ),
             );
           }
@@ -1946,8 +1731,8 @@ export class View {
           preload.add(friend);
         }
       },
-      "friend",
-      "list",
+      'friend',
+      'list',
     );
   }
 
@@ -1955,7 +1740,7 @@ export class View {
     let logout = DOM(
       {
         event: [
-          "click",
+          'click',
           async () => {
             App.exit();
 
@@ -1963,23 +1748,20 @@ export class View {
           },
         ],
       },
-      "Выйти из аккаунта",
+      'Выйти из аккаунта',
     );
 
-    let close = DOM({ event: ["click", () => Splash.hide()] }, "Отмена");
+    let close = DOM({ event: ['click', () => Splash.hide()] }, 'Отмена');
 
-    let wrap = DOM({ style: "wrap" }, logout, close);
+    let wrap = DOM({ style: 'wrap' }, logout, close);
 
     if (NativeAPI.status) {
-      let exit = DOM(
-        { event: ["click", () => NativeAPI.exit()] },
-        Lang.text("exit"),
-      );
+      let exit = DOM({ event: ['click', () => NativeAPI.exit()] }, Lang.text('exit'));
 
-      wrap = DOM({ style: "wrap" }, logout, exit, close);
+      wrap = DOM({ style: 'wrap' }, logout, exit, close);
     }
 
-    let dom = DOM({ style: "div" }, "", wrap);
+    let dom = DOM({ style: 'div' }, '', wrap);
 
     Splash.show(dom);
   }
@@ -1987,20 +1769,20 @@ export class View {
   static header() {
     let play = MM.play();
 
-    play.classList.add("main-header-item");
+    play.classList.add('main-header-item');
 
-    play.classList.add("button-play");
+    play.classList.add('button-play');
 
-    play.classList.remove("castle-button-play");
+    play.classList.remove('castle-button-play');
 
-    let playButton = DOM({ style: "menu-button-play" }, play);
+    let playButton = DOM({ style: 'menu-button-play' }, play);
 
     let menu = DOM(
-      { style: "main-header" },
+      { style: 'main-header' },
       DOM({
-        tag: "img",
-        src: "content/img/logo.webp",
-        event: ["click", () => View.show("castle")],
+        tag: 'img',
+        src: 'content/img/logo.webp',
+        event: ['click', () => View.show('castle')],
       }),
       playButton,
     );
@@ -2008,61 +1790,61 @@ export class View {
     if (App.isAdmin()) {
       let adm = DOM(
         {
-          style: "main-header-item",
+          style: 'main-header-item',
           event: [
-            "click",
+            'click',
             () => {
               let body = document.createDocumentFragment();
 
               body.append(
                 DOM(
                   {
-                    style: "splash-content-button",
+                    style: 'splash-content-button',
                     event: [
-                      "click",
+                      'click',
                       () => {
-                        View.show("talents");
+                        View.show('talents');
 
                         Splash.hide();
                       },
                     ],
                   },
-                  "Таланты (обычные)",
+                  'Таланты (обычные)',
                 ),
                 DOM(
                   {
-                    style: "splash-content-button",
+                    style: 'splash-content-button',
                     event: [
-                      "click",
+                      'click',
                       () => {
-                        View.show("talents2");
+                        View.show('talents2');
 
                         Splash.hide();
                       },
                     ],
                   },
-                  "Таланты (классовые)",
+                  'Таланты (классовые)',
                 ),
                 DOM(
                   {
-                    style: "splash-content-button",
+                    style: 'splash-content-button',
                     event: [
-                      "click",
+                      'click',
                       () => {
-                        View.show("users");
+                        View.show('users');
 
                         Splash.hide();
                       },
                     ],
                   },
-                  "Пользователи",
+                  'Пользователи',
                 ),
                 DOM(
                   {
-                    style: "splash-content-button",
-                    event: ["click", () => Splash.hide()],
+                    style: 'splash-content-button',
+                    event: ['click', () => Splash.hide()],
                   },
-                  "[X]",
+                  '[X]',
                 ),
               );
 
@@ -2070,12 +1852,12 @@ export class View {
             },
           ],
         },
-        "Админ",
+        'Админ',
       );
 
-      adm.classList.add("animation1");
+      adm.classList.add('animation1');
 
-      adm.style.color = "rgba(255,255,255,1)";
+      adm.style.color = 'rgba(255,255,255,1)';
 
       menu.append(adm);
     }
@@ -2083,36 +1865,33 @@ export class View {
     menu.append(
       DOM(
         {
-          style: "main-header-item",
-          event: ["click", () => View.show("castle")],
+          style: 'main-header-item',
+          event: ['click', () => View.show('castle')],
         },
-        Castle.gl ? "Замок" : "Лобби",
+        Castle.gl ? 'Замок' : 'Лобби',
       ),
       DOM(
         {
-          style: "main-header-item",
-          event: ["click", () => View.show("builds")],
+          style: 'main-header-item',
+          event: ['click', () => View.show('builds')],
         },
-        "Билды",
+        'Билды',
       ),
       /*DOM({ style: 'main-header-item', event: ['click', () => View.show('history')] }, 'История'),*/
+      DOM({ style: 'main-header-item', event: ['click', () => View.show('top')] }, 'Рейтинг'),
       DOM(
-        { style: "main-header-item", event: ["click", () => View.show("top")] },
-        "Рейтинг",
+        {
+          style: 'main-header-item',
+          event: ['click', () => View.show('game')],
+        },
+        'Фарм',
       ),
       DOM(
         {
-          style: "main-header-item",
-          event: ["click", () => View.show("game")],
+          style: 'main-header-item',
+          event: ['click', () => View.exitOrLogout()],
         },
-        "Фарм",
-      ),
-      DOM(
-        {
-          style: "main-header-item",
-          event: ["click", () => View.exitOrLogout()],
-        },
-        "Выйти",
+        'Выйти',
       ),
     );
 
@@ -2120,9 +1899,9 @@ export class View {
   }
 
   static async main(data) {
-    let body = DOM({ style: "main" });
+    let body = DOM({ style: 'main' });
 
-    let middle = DOM({ style: "party-middle" });
+    let middle = DOM({ style: 'party-middle' });
 
     // const chatInput = DOM({tag: 'input', placeholder: 'Enter your message here', style: 'chat-input'});
     // const chatMessages = DOM({style: 'chat-input'});
@@ -2130,45 +1909,34 @@ export class View {
 
     // let party = DOM({style:'party'},middle, chat);
 
-    let top = DOM({ style: "top" });
+    let top = DOM({ style: 'top' });
 
     App.api.silent(
       (result) => {
         let number = 1;
 
         for (let player of result) {
-          let rank = DOM({ style: "top-item-hero-rank" });
+          let rank = DOM({ style: 'top-item-hero-rank' });
 
-          rank.style.backgroundImage = `url(content/ranks/${Rank.icon(
-            player.rating,
-          )}.webp)`;
+          rank.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
 
-          let hero = DOM({ style: "top-item-hero" }, rank);
+          let hero = DOM({ style: 'top-item-hero' }, rank);
 
-          hero.style.backgroundImage = `url(content/hero/${player.hero}/${
-            player.skin ? player.skin : 1
-          }.webp)`;
+          hero.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
 
           let item = DOM(
             {
-              style: "top-item",
-              event: [
-                "click",
-                () => Build.view(player.id, player.hero, player.nickname),
-              ],
+              style: 'top-item',
+              event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
             },
             hero,
-            DOM(
-              { style: "top-item-player" },
-              DOM(`#${number}. ${player.nickname}`),
-              DOM(`${player.rating}`),
-            ),
+            DOM({ style: 'top-item-player' }, DOM(`#${number}. ${player.nickname}`), DOM(`${player.rating}`)),
           );
 
           if (number == 1) {
             //item.style.background = 'rgba(255,50,0,0.9)';
 
-            item.classList.add("animation1");
+            item.classList.add('animation1');
           }
           /*
                 else if(number == 2){
@@ -2193,14 +1961,14 @@ export class View {
         }
       },
       App.CURRENT_MM,
-      "top",
+      'top',
     );
 
-    let party = DOM({ style: "party" }, middle);
+    let party = DOM({ style: 'party' }, middle);
 
     let players = new Array();
 
-    data = data ? data : await App.api.request(App.CURRENT_MM, "loadParty");
+    data = data ? data : await App.api.request(App.CURRENT_MM, 'loadParty');
 
     MM.partyId = data.id;
 
@@ -2221,47 +1989,32 @@ export class View {
 
     if (players.length < 5) {
       while (players.length < 5) {
-        players.push({ id: 0, hero: 0, nickname: "", ready: 0 });
+        players.push({ id: 0, hero: 0, nickname: '', ready: 0 });
       }
     }
 
     for (let item of players) {
-      let img = DOM({ style: "party-middle-item-middle" });
+      let img = DOM({ style: 'party-middle-item-middle' });
 
-      let rankIcon = DOM({ style: "rank-icon" });
+      let rankIcon = DOM({ style: 'rank-icon' });
 
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        item.rating,
-      )}.webp)`;
+      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-      let rank = DOM(
-        { style: "rank" },
-        DOM({ style: "rank-lvl" }, item.rating),
-        rankIcon,
-      );
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
 
       img.append(rank);
 
-      let status = DOM(
-        { style: "party-middle-item-not-ready" },
-        DOM({}, "Не готов"),
-      );
+      let status = DOM({ style: 'party-middle-item-not-ready' }, DOM({}, 'Не готов'));
 
       if (item.id) {
         if (item.ready) {
-          status.firstChild.innerText = Lang.text("ready");
+          status.firstChild.innerText = Lang.text('ready');
 
-          status.classList.replace(
-            "party-middle-item-not-ready",
-            "party-middle-item-ready",
-          );
+          status.classList.replace('party-middle-item-not-ready', 'party-middle-item-ready');
         } else if (MM.partyId == item.id) {
-          status.firstChild.innerText = Lang.text("ready");
+          status.firstChild.innerText = Lang.text('ready');
 
-          status.classList.replace(
-            "party-middle-item-not-ready",
-            "party-middle-item-ready",
-          );
+          status.classList.replace('party-middle-item-not-ready', 'party-middle-item-ready');
         } else if (item.id == App.storage.data.id) {
           status.onclick = async () => {
             if (NativeAPI.status) {
@@ -2287,21 +2040,21 @@ export class View {
               return;
             }
 
-            await App.api.request(App.CURRENT_MM, "readyParty", {
+            await App.api.request(App.CURRENT_MM, 'readyParty', {
               id: MM.partyId,
             });
 
             status.onclick = false;
           };
 
-          status.innerText = "Подтвердить";
+          status.innerText = 'Подтвердить';
         }
 
         img.style.backgroundImage = item.hero
           ? `url(content/hero/${item.hero}/${item.skin ? item.skin : 1}.webp)`
           : `url(content/hero/empty.webp)`;
       } else {
-        img.innerText = "+";
+        img.innerText = '+';
 
         status.style.opacity = 0;
 
@@ -2310,90 +2063,75 @@ export class View {
         //rank.style.opacity = 0;
       }
 
-      let nickname = DOM(
-        { style: "party-middle-item-nickname" },
-        `${item.nickname ? item.nickname : "Добавить"}`,
-      );
+      let nickname = DOM({ style: 'party-middle-item-nickname' }, `${item.nickname ? item.nickname : 'Добавить'}`);
 
-      let player = DOM(
-        { id: `PP${item.id}`, style: "party-middle-item" },
-        nickname,
-        img,
-        status,
-      ); // TODO use this for lvl and rank
+      let player = DOM({ id: `PP${item.id}`, style: 'party-middle-item' }, nickname, img, status); // TODO use this for lvl and rank
       // let player = DOM({id:`PP${item.id}`,style:'party-middle-item'},nickname,img,status);
 
       player.dataset.id = item.id;
 
-      if (
-        MM.partyId == App.storage.data.id &&
-        player.dataset.id != App.storage.data.id &&
-        player.dataset.id != 0
-      ) {
+      if (MM.partyId == App.storage.data.id && player.dataset.id != App.storage.data.id && player.dataset.id != 0) {
         nickname.append(
           DOM(
             {
-              tag: "span",
+              tag: 'span',
               event: [
-                "click",
+                'click',
                 async () => {
-                  await App.api.request(App.CURRENT_MM, "leaderKickParty", {
+                  await App.api.request(App.CURRENT_MM, 'leaderKickParty', {
                     id: player.dataset.id,
                   });
                 },
               ],
             },
-            "[X]",
+            '[X]',
           ),
         );
       }
 
-      if (
-        MM.partyId != App.storage.data.id &&
-        player.dataset.id == App.storage.data.id
-      ) {
+      if (MM.partyId != App.storage.data.id && player.dataset.id == App.storage.data.id) {
         nickname.append(
           DOM(
             {
-              tag: "span",
+              tag: 'span',
               event: [
-                "click",
+                'click',
                 async () => {
-                  await App.api.request(App.CURRENT_MM, "leaveParty", {
+                  await App.api.request(App.CURRENT_MM, 'leaveParty', {
                     id: MM.partyId,
                   });
 
-                  View.show("castle");
+                  View.show('castle');
                 },
               ],
             },
-            "[X]",
+            '[X]',
           ),
         );
       }
 
-      img.addEventListener("click", async () => {
+      img.addEventListener('click', async () => {
         if (player.dataset.id == App.storage.data.id) {
           if (MM.active) {
             return;
           }
 
-          let request = await App.api.request("build", "heroAll");
+          let request = await App.api.request('build', 'heroAll');
 
           MM.hero = request;
 
           request.push({ id: 0 });
 
-          let bodyHero = DOM({ style: "party-hero" });
+          let bodyHero = DOM({ style: 'party-hero' });
 
           let preload = new PreloadImages(bodyHero);
 
           for (let item of request) {
             let hero = DOM();
 
-            hero.addEventListener("click", async () => {
+            hero.addEventListener('click', async () => {
               try {
-                await App.api.request(App.CURRENT_MM, "heroParty", {
+                await App.api.request(App.CURRENT_MM, 'heroParty', {
                   id: MM.partyId,
                   hero: item.id,
                 });
@@ -2407,9 +2145,7 @@ export class View {
             });
 
             if (item.id) {
-              hero.dataset.url = `content/hero/${item.id}/${
-                item.skin ? item.skin : 1
-              }.webp`;
+              hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
             } else {
               hero.dataset.url = `content/hero/empty.webp`;
             }
@@ -2420,34 +2156,31 @@ export class View {
           Splash.show(bodyHero, false);
         }
 
-        if (
-          player.dataset.id == 0 &&
-          (!MM.partyId || MM.partyId == App.storage.data.id)
-        ) {
-          let input = DOM({ tag: "input", style: "search-input" });
+        if (player.dataset.id == 0 && (!MM.partyId || MM.partyId == App.storage.data.id)) {
+          let input = DOM({ tag: 'input', style: 'search-input' });
 
-          let body = DOM({ style: "search-body" });
+          let body = DOM({ style: 'search-body' });
 
           let search = DOM(
-            { style: "search" },
+            { style: 'search' },
             input,
             body,
             DOM(
               {
-                style: "search-bottom",
+                style: 'search-bottom',
                 event: [
-                  "click",
+                  'click',
                   () => {
                     Splash.hide();
                   },
                 ],
               },
-              Lang.text("back"),
+              Lang.text('back'),
             ),
           );
 
-          input.addEventListener("input", async () => {
-            let request = await App.api.request(App.CURRENT_MM, "findUser", {
+          input.addEventListener('input', async () => {
+            let request = await App.api.request(App.CURRENT_MM, 'findUser', {
               name: input.value,
             });
 
@@ -2462,16 +2195,13 @@ export class View {
                 DOM(
                   {
                     event: [
-                      "click",
+                      'click',
                       async () => {
-                        await App.api.request(App.CURRENT_MM, "inviteParty", {
+                        await App.api.request(App.CURRENT_MM, 'inviteParty', {
                           id: item.id,
                         });
 
-                        App.notify(
-                          `Приглашение отправлено игроку ${item.nickname}`,
-                          1000,
-                        );
+                        App.notify(`Приглашение отправлено игроку ${item.nickname}`, 1000);
 
                         // Splash.hide();
                       },
@@ -2492,7 +2222,7 @@ export class View {
       middle.append(player);
     }
 
-    body.append(View.header(), DOM({ style: "main-body-column" }, top, party));
+    body.append(View.header(), DOM({ style: 'main-body-column' }, top, party));
 
     return body;
   }
@@ -2531,32 +2261,32 @@ export class View {
     }
     */
   static async top(hero = 0, isSplah = false, mode = 0) {
-    let body = DOM({ style: "main" });
+    let body = DOM({ style: 'main' });
 
-    let result = await App.api.request(App.CURRENT_MM, "top", {
+    let result = await App.api.request(App.CURRENT_MM, 'top', {
       limit: 100,
       hero: hero,
       mode: mode,
     });
 
     if (!result) {
-      throw "Рейтинг отсутствует";
+      throw 'Рейтинг отсутствует';
     }
 
     let top = DOM(
-      { style: isSplah ? "wtop-scroll" : "top-scroll" },
+      { style: isSplah ? 'wtop-scroll' : 'top-scroll' },
       DOM(
         {
-          style: "top-filter",
-          title: Lang.text("titleClickToViewHeroRating"),
+          style: 'top-filter',
+          title: Lang.text('titleClickToViewHeroRating'),
           event: [
-            "click",
+            'click',
             async () => {
-              let request = await App.api.request("build", "heroAll");
+              let request = await App.api.request('build', 'heroAll');
 
               request.push({ id: 0 });
 
-              let bodyHero = DOM({ style: "party-hero" });
+              let bodyHero = DOM({ style: 'party-hero' });
 
               let preload = new PreloadImages(bodyHero);
 
@@ -2564,18 +2294,16 @@ export class View {
                 let hero = DOM();
 
                 if (item.id) {
-                  hero.dataset.url = `content/hero/${item.id}/${
-                    item.skin ? item.skin : 1
-                  }.webp`;
+                  hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
                 } else {
                   hero.dataset.url = `content/hero/empty.webp`;
                 }
 
-                hero.addEventListener("click", async () => {
+                hero.addEventListener('click', async () => {
                   if (isSplah) {
-                    Window.show("main", "top", item.id, mode);
+                    Window.show('main', 'top', item.id, mode);
                   } else {
-                    View.show("top", item.id, false, mode);
+                    View.show('top', item.id, false, mode);
                   }
 
                   Splash.hide();
@@ -2588,55 +2316,39 @@ export class View {
             },
           ],
         },
-        DOM({ tag: "div" }),
-        DOM({ tag: "div" }),
+        DOM({ tag: 'div' }),
+        DOM({ tag: 'div' }),
       ),
     );
 
-    const topFilter = top.querySelector(".top-filter");
+    const topFilter = top.querySelector('.top-filter');
 
-    topFilter.style.setProperty(
-      "--filter-text",
-      `'${Lang.text("clickToViewHeroRating")}'`,
-    );
+    topFilter.style.setProperty('--filter-text', `'${Lang.text('clickToViewHeroRating')}'`);
 
-    top.firstChild.classList.add("animation1");
+    top.firstChild.classList.add('animation1');
 
-    top.firstChild.firstChild.style.backgroundImage = `url(content/hero/${
-      result[0].hero
-    }/${result[0].skin ? result[0].skin : 1}.webp)`;
+    top.firstChild.firstChild.style.backgroundImage = `url(content/hero/${result[0].hero}/${result[0].skin ? result[0].skin : 1}.webp)`;
 
     top.firstChild.lastChild.innerText = `#1. ${result[0].nickname}`;
 
     let number = 1;
 
     for (let player of result) {
-      let rank = DOM({ style: "top-item-hero-rank" });
+      let rank = DOM({ style: 'top-item-hero-rank' });
 
-      rank.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        player.rating,
-      )}.webp)`;
+      rank.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
 
-      let hero = DOM({ style: "top-item-hero" }, rank);
+      let hero = DOM({ style: 'top-item-hero' }, rank);
 
-      hero.style.backgroundImage = `url(content/hero/${player.hero}/${
-        player.skin ? player.skin : 1
-      }.webp)`;
+      hero.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
 
       let item = DOM(
         {
-          style: "top-item",
-          event: [
-            "click",
-            () => Build.view(player.id, player.hero, player.nickname),
-          ],
+          style: 'top-item',
+          event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
         },
         hero,
-        DOM(
-          { style: "top-item-player" },
-          DOM(`#${number}. ${player.nickname}`),
-          DOM(`${player.rating}`),
-        ),
+        DOM({ style: 'top-item-player' }, DOM(`#${number}. ${player.nickname}`), DOM(`${player.rating}`)),
       );
 
       top.append(item);
@@ -2653,9 +2365,9 @@ export class View {
   }
 
   static builds() {
-    let body = DOM({ style: "main" });
+    let body = DOM({ style: 'main' });
 
-    let hero = DOM({ style: "hero" });
+    let hero = DOM({ style: 'hero' });
 
     let preload = new PreloadImages(hero, (element) => {
       /*
@@ -2721,25 +2433,15 @@ export class View {
 
         for (const item of result) {
           //item.rating = App.getRandomInt(1100,3000);
-          let rankIcon = DOM({ style: "rank-icon" });
+          let rankIcon = DOM({ style: 'rank-icon' });
 
-          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-            item.rating,
-          )}.webp)`;
+          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-          let rank = DOM(
-            { style: "rank" },
-            DOM({ style: "rank-lvl" }, item.rating),
-            rankIcon,
-          );
+          let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
 
-          const hero = DOM(
-            { style: "hero-item" },
-            DOM({ tag: "span", style: "name" }, item.name),
-            rank,
-          );
+          const hero = DOM({ style: 'hero-item' }, DOM({ tag: 'span', style: 'name' }, item.name), rank);
 
-          hero.addEventListener("click", () => View.show("build", item.id));
+          hero.addEventListener('click', () => View.show('build', item.id));
 
           hero.dataset.id = item.id;
 
@@ -2747,26 +2449,24 @@ export class View {
 
           hero.dataset.total = item.total;
 
-          hero.dataset.url = `content/hero/${item.id}/${
-            item.skin ? item.skin : 1
-          }.webp`;
+          hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
 
           preload.add(hero);
         }
       },
-      "build",
-      "heroAll",
+      'build',
+      'heroAll',
     );
 
-    body.append(View.header(), DOM({ style: "main-body-full" }, hero));
+    body.append(View.header(), DOM({ style: 'main-body-full' }, hero));
 
     return body;
   }
 
   static inventory(isWindow) {
-    let body = DOM({ style: "main" });
+    let body = DOM({ style: 'main' });
 
-    let inventory = DOM({ style: "inventory" });
+    let inventory = DOM({ style: 'inventory' });
 
     App.api.silent(
       (result) => {
@@ -2775,70 +2475,70 @@ export class View {
 
           unit.style.backgroundImage = `url(content/talents/${item.id}.webp)`;
 
-          unit.append(DOM({ tag: "span" }, item.score));
+          unit.append(DOM({ tag: 'span' }, item.score));
 
           inventory.append(unit);
         }
       },
-      "gamev2",
-      "inventory",
+      'gamev2',
+      'inventory',
     );
 
     if (!isWindow) {
       body.append(
         DOM(
-          { style: "main-header" },
-          DOM({ tag: "img", src: "content/img/logo.webp" }),
+          { style: 'main-header' },
+          DOM({ tag: 'img', src: 'content/img/logo.webp' }),
           DOM(
             {
-              style: "main-header-item",
-              event: ["click", () => View.show("castle")],
+              style: 'main-header-item',
+              event: ['click', () => View.show('castle')],
             },
             App.storage.data.login,
           ),
           DOM(
             {
-              style: "main-header-item",
-              event: ["click", () => View.show("inventory")],
+              style: 'main-header-item',
+              event: ['click', () => View.show('inventory')],
             },
-            "Осколки",
+            'Осколки',
           ),
           DOM(
             {
-              style: "main-header-item",
-              event: ["click", () => View.show("game")],
+              style: 'main-header-item',
+              event: ['click', () => View.show('game')],
             },
-            "Фарм",
+            'Фарм',
           ),
           DOM(
             {
-              style: "main-header-item",
-              event: ["click", () => View.exitOrLogout()],
+              style: 'main-header-item',
+              event: ['click', () => View.exitOrLogout()],
             },
-            "Выйти",
+            'Выйти',
           ),
         ),
       );
     } else {
-      body.append(DOM({ style: "inventory-header" }, Lang.text("library")));
+      body.append(DOM({ style: 'inventory-header' }, Lang.text('library')));
     }
-    body.append(DOM({ style: "main-body-full" }, inventory));
+    body.append(DOM({ style: 'main-body-full' }, inventory));
 
     return body;
   }
 
   static game(isWindow) {
-    let body = DOM({ style: "game" });
+    let body = DOM({ style: 'game' });
 
     let button = DOM(
       {
-        style: "game-button",
+        style: 'game-button',
         event: [
-          "click",
+          'click',
           async () => {
-            let request = await App.api.request("gamev2", "start");
+            let request = await App.api.request('gamev2', 'start');
 
-            if ("error" in request) {
+            if ('error' in request) {
               button.innerText = `Начать фарм можно будет через ${request.error} мин.`;
 
               return;
@@ -2847,57 +2547,48 @@ export class View {
             dscription.remove();
 
             request.back = () => {
-              View.show("castle");
+              View.show('castle');
             };
 
             request.finish = async () => {
-              await App.api.request("gamev2", "finish");
+              await App.api.request('gamev2', 'finish');
 
-              isWindow ? Window.close("main") : View.show("castle");
+              isWindow ? Window.close('main') : View.show('castle');
             };
 
             request.exit = () => {
-              View.show("castle");
+              View.show('castle');
             };
 
             Game.init(body, request, isWindow);
           },
         ],
       },
-      "Начать фарм",
+      'Начать фарм',
     );
 
     let dscription = DOM(
-      { style: "game-description" },
-      DOM({ tag: "h1" }, "Лорды и леди!"),
-      DOM(
-        { tag: "p" },
-        "— необходимо собрать 1000 осколков одного и того же таланта, чтобы получить 1 талант для билда;",
-      ),
-      DOM({ tag: "p" }, "— на одну карту рассчитано 100 ходов;"),
+      { style: 'game-description' },
+      DOM({ tag: 'h1' }, 'Лорды и леди!'),
+      DOM({ tag: 'p' }, '— необходимо собрать 1000 осколков одного и того же таланта, чтобы получить 1 талант для билда;'),
+      DOM({ tag: 'p' }, '— на одну карту рассчитано 100 ходов;'),
       //DOM({tag:'p'},'— кулдаун между играми 60 минут;'),
       DOM(
-        { tag: "p" },
-        "— чтобы сделать ход, переставляйте два соседних таланта местами. Если такая перестановка приводит к образованию комбинации, то «выстроившиеся»‎ таланты исчезают, и на их место падают таланты верхних рядов;",
+        { tag: 'p' },
+        '— чтобы сделать ход, переставляйте два соседних таланта местами. Если такая перестановка приводит к образованию комбинации, то «выстроившиеся»‎ таланты исчезают, и на их место падают таланты верхних рядов;',
       ),
-      DOM(
-        { tag: "p" },
-        "— засчитывается комбинация минимум из трёх одинаковых талантов;",
-      ),
-      DOM(
-        { tag: "p" },
-        "— если за 100 ходов серебряных монет будет 150, даётся +100 дополнительных ходов;",
-      ),
+      DOM({ tag: 'p' }, '— засчитывается комбинация минимум из трёх одинаковых талантов;'),
+      DOM({ tag: 'p' }, '— если за 100 ходов серебряных монет будет 150, даётся +100 дополнительных ходов;'),
       //DOM({tag:'p'},'— в рейтинге на главной страничке отображается сумма всех очков на одного игрока за всё время.'),
       button,
       isWindow
         ? DOM()
         : DOM(
             {
-              style: "game-button",
-              event: ["click", () => View.show("castle")],
+              style: 'game-button',
+              event: ['click', () => View.show('castle')],
             },
-            Lang.text("back"),
+            Lang.text('back'),
           ),
     );
 
@@ -2907,126 +2598,107 @@ export class View {
   }
 
   static async build(heroId, targetId = 0, isWindow = false) {
-    const body = DOM({ style: "build-horizontal" });
+    const body = DOM({ style: 'build-horizontal' });
 
     requestAnimationFrame(() => Voice.updatePanelPosition());
 
     await Build.init(heroId, targetId, isWindow);
 
     body.append(
-      DOM({ style: "build-left" }, Build.heroView),
+      DOM({ style: 'build-left' }, Build.heroView),
       DOM(
-        { style: "build-center" },
+        { style: 'build-center' },
         Build.buildActionsView,
+        DOM({ style: 'build-field-with-tabs' }, Build.listView, DOM({ style: 'build-field-container' }, Build.levelView, Build.fieldView)),
         DOM(
-          { style: "build-field-with-tabs" },
-          Build.listView,
-          DOM(
-            { style: "build-field-container" },
-            Build.levelView,
-            Build.fieldView,
-          ),
-        ),
-        DOM(
-          { style: "build-active-bar-container" },
+          { style: 'build-active-bar-container' },
           Build.activeBarView,
-          DOM(
-            { style: "build-active-bar-hint" },
-            Lang.text("smartcastDescription"),
-          ),
+          DOM({ style: 'build-active-bar-hint' }, Lang.text('smartcastDescription')),
         ),
       ),
-      DOM(
-        { style: "build-right" },
-        Build.talentsAndSetsView,
-        Build.rarityView,
-        Build.inventoryView,
-      ),
+      DOM({ style: 'build-right' }, Build.talentsAndSetsView, Build.rarityView, Build.inventoryView),
     );
 
     if (!isWindow) {
       body.append(
         DOM(
           {
-            style: ["build-list-close", "close-button"],
-            title: Lang.text("titleClose"),
+            style: ['build-list-close', 'close-button'],
+            title: Lang.text('titleClose'),
             event: [
-              "click",
+              'click',
               () => {
                 Build.CleanInvalidDescriptions();
                 if (isWindow) {
-                  View.show("castle");
+                  View.show('castle');
                 } else {
-                  View.show("builds");
+                  View.show('builds');
                 }
               },
             ],
           },
           DOM({
-            tag: "img",
-            src: "content/icons/close-cropped.svg",
-            alt: Lang.text("titleClose"),
-            style: "close-image-style",
+            tag: 'img',
+            src: 'content/icons/close-cropped.svg',
+            alt: Lang.text('titleClose'),
+            style: 'close-image-style',
           }),
         ),
       ); // Замените путь к изображению
     }
 
-    return isWindow ? body : DOM({ id: "viewbuild" }, body);
+    return isWindow ? body : DOM({ id: 'viewbuild' }, body);
   }
 
   static async talents() {
-    let body = DOM({ style: "main" });
+    let body = DOM({ style: 'main' });
 
     // Создаем контейнер для заголовка (кнопка закрытия + поиск)
-    let header = DOM({ style: "adm-header" });
+    let header = DOM({ style: 'adm-header' });
 
     // Кнопка закрытия
     let closeBtn = DOM(
       {
-        style: "close-btn",
-        event: ["click", () => View.show("castle")],
+        style: 'close-btn',
+        event: ['click', () => View.show('castle')],
       },
-      "[X]",
+      '[X]',
     );
 
     // Строка поиска
     let searchInput = DOM({
-      tag: "input",
-      placeholder: "Поиск талантов...",
-      style: "search-input",
+      tag: 'input',
+      placeholder: 'Поиск талантов...',
+      style: 'search-input',
     });
 
     header.append(closeBtn, searchInput);
 
-    let adm = DOM({ style: "adm" }, header);
-    let result = await App.api.request("build", "talentAll");
+    let adm = DOM({ style: 'adm' }, header);
+    let result = await App.api.request('build', 'talentAll');
     let talentContainers = [];
-    let talentsContainer = DOM({ style: "talents-container" });
+    let talentsContainer = DOM({ style: 'talents-container' });
 
     for (let item of result) {
-      let div = DOM({ tag: "div", class: "talent-item" });
-      div.append(
-        DOM(`id${item.id}`),
-        DOM({ tag: "img", src: `content/talents/${item.id}.webp` }),
-      );
+      let div = DOM({ tag: 'div', class: 'talent-item' });
+      div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/talents/${item.id}.webp` }));
 
       for (let key in item) {
-        if (key == "id") continue;
+        if (key == 'id') continue;
 
         // Создаем контейнер для пары "ключ-значение"
         let keyValuePair = DOM({
-          tag: "div",
-          class: "key-value-pair",
+          tag: 'div',
+          class: 'key-value-pair',
         });
 
         keyValuePair.append(
-          DOM({ tag: "div", class: "key" }, key),
+          DOM({ tag: 'div', class: 'key' }, key),
           App.input(
             async (value) => {
               let object = new Object();
               object[key] = value;
-              await App.api.request("build", "talentEdit", {
+              await App.api.request('build', 'talentEdit', {
                 id: item.id,
                 object: object,
               });
@@ -3052,11 +2724,11 @@ export class View {
             break;
           }
         }
-        element.style.display = matches ? "flex" : "none";
+        element.style.display = matches ? 'flex' : 'none';
       });
     };
 
-    searchInput.addEventListener("input", (e) => {
+    searchInput.addEventListener('input', (e) => {
       filterTalents(e.target.value);
     });
 
@@ -3066,57 +2738,54 @@ export class View {
   }
 
   static async talents2() {
-    let body = DOM({ style: "main" });
+    let body = DOM({ style: 'main' });
 
     // Создаем контейнер для заголовка (кнопка закрытия + поиск)
-    let header = DOM({ style: "adm-header" });
+    let header = DOM({ style: 'adm-header' });
 
     // Кнопка закрытия
     let closeBtn = DOM(
       {
-        style: "close-btn",
-        event: ["click", () => View.show("castle")],
+        style: 'close-btn',
+        event: ['click', () => View.show('castle')],
       },
-      "[X]",
+      '[X]',
     );
 
     // Строка поиска
     let searchInput = DOM({
-      tag: "input",
-      placeholder: "Поиск геройских талантов...",
-      style: "search-input",
+      tag: 'input',
+      placeholder: 'Поиск геройских талантов...',
+      style: 'search-input',
     });
 
     header.append(closeBtn, searchInput);
 
-    let adm = DOM({ style: "adm" }, header);
-    let result = await App.api.request("build", "talentHeroAll");
+    let adm = DOM({ style: 'adm' }, header);
+    let result = await App.api.request('build', 'talentHeroAll');
     let talentContainers = [];
-    let talentsContainer = DOM({ style: "talents-container" });
+    let talentsContainer = DOM({ style: 'talents-container' });
 
     for (let item of result) {
-      let div = DOM({ tag: "div", class: "talent-item" });
-      div.append(
-        DOM(`id${item.id}`),
-        DOM({ tag: "img", src: `content/htalents/${item.id}.webp` }),
-      );
+      let div = DOM({ tag: 'div', class: 'talent-item' });
+      div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/htalents/${item.id}.webp` }));
 
       for (let key in item) {
-        if (key == "id") continue;
+        if (key == 'id') continue;
 
         // Создаем контейнер для пары "ключ-значение"
         let keyValuePair = DOM({
-          tag: "div",
-          class: "key-value-pair",
+          tag: 'div',
+          class: 'key-value-pair',
         });
 
         keyValuePair.append(
-          DOM({ tag: "div", class: "key" }, key),
+          DOM({ tag: 'div', class: 'key' }, key),
           App.input(
             async (value) => {
               let object = new Object();
               object[key] = value;
-              await App.api.request("build", "talentHeroEdit", {
+              await App.api.request('build', 'talentHeroEdit', {
                 id: item.id,
                 object: object,
               });
@@ -3142,11 +2811,11 @@ export class View {
             break;
           }
         }
-        element.style.display = matches ? "flex" : "none";
+        element.style.display = matches ? 'flex' : 'none';
       });
     };
 
-    searchInput.addEventListener("input", (e) => {
+    searchInput.addEventListener('input', (e) => {
       filterTalents(e.target.value);
     });
 
@@ -3159,35 +2828,29 @@ export class View {
     let filter = DOM(
       {
         event: [
-          "click",
+          'click',
           () => {
-            let users = document.getElementsByClassName("user-item");
+            let users = document.getElementsByClassName('user-item');
             for (let user in users) {
-              if (
-                users[user].className &&
-                users[user].className == "user-item"
-              ) {
-                let isBlocked =
-                  users[user].getElementsByClassName("userParam-blocked")[0]
-                    .nextSibling.value != "0";
+              if (users[user].className && users[user].className == 'user-item') {
+                let isBlocked = users[user].getElementsByClassName('userParam-blocked')[0].nextSibling.value != '0';
                 if (!isBlocked) {
-                  users[user].style.display =
-                    users[user].style.display == "none" ? "inherit" : "none";
+                  users[user].style.display = users[user].style.display == 'none' ? 'inherit' : 'none';
                 }
               }
             }
           },
         ],
       },
-      "Filter only banned",
+      'Filter only banned',
     );
 
     let userMute = DOM(
       {
-        tag: "input",
-        placeholder: "mute",
+        tag: 'input',
+        placeholder: 'mute',
         event: [
-          "contextmenu",
+          'contextmenu',
           (e) => {
             e.preventDefault();
             if (App.isAdmin()) {
@@ -3197,11 +2860,9 @@ export class View {
                 return;
               }
 
-              let users = document.getElementsByClassName("user-item");
+              let users = document.getElementsByClassName('user-item');
 
-              let userTag = Array.from(users).findIndex(
-                (x) => x.firstChild.innerText === "id" + userId,
-              );
+              let userTag = Array.from(users).findIndex((x) => x.firstChild.innerText === 'id' + userId);
 
               let userNickname = users[userTag].children[3].value;
 
@@ -3211,31 +2872,26 @@ export class View {
                 DOM(`Выдать мут чата ${userNickname}?`),
                 DOM(
                   {
-                    style: "splash-content-button",
+                    style: 'splash-content-button',
                     event: [
-                      "click",
+                      'click',
                       async () => {
-                        await App.api.request("user", "mute", { id: userId });
+                        await App.api.request('user', 'mute', { id: userId });
 
-                        App.notify(
-                          "Выдан мут игроку " +
-                            userNickname +
-                            "; id: " +
-                            userId,
-                        );
+                        App.notify('Выдан мут игроку ' + userNickname + '; id: ' + userId);
 
                         Splash.hide();
                       },
                     ],
                   },
-                  "Да",
+                  'Да',
                 ),
                 DOM(
                   {
-                    style: "splash-content-button",
-                    event: ["click", async () => Splash.hide()],
+                    style: 'splash-content-button',
+                    event: ['click', async () => Splash.hide()],
                   },
-                  "Нет",
+                  'Нет',
                 ),
               );
 
@@ -3244,44 +2900,39 @@ export class View {
           },
         ],
       },
-      "",
+      '',
     );
 
-    let body = DOM({ style: "main" }),
-      adm = DOM(
-        { style: "adm" },
-        DOM({ event: ["click", () => View.show("castle")] }, "[X]"),
-        filter,
-        userMute,
-      );
+    let body = DOM({ style: 'main' }),
+      adm = DOM({ style: 'adm' }, DOM({ event: ['click', () => View.show('castle')] }, '[X]'), filter, userMute);
 
-    let result = await App.api.request("user", "all");
+    let result = await App.api.request('user', 'all');
 
     for (let item of result) {
-      let div = DOM({ tag: "div", className: "user-item" });
+      let div = DOM({ tag: 'div', className: 'user-item' });
 
       div.append(DOM(`id${item.id}`), DOM(`inv ${item.invite}`));
 
       for (let key in item) {
-        if (["id", "invite"].includes(key)) {
+        if (['id', 'invite'].includes(key)) {
           continue;
         }
 
-        if (key == "added") {
-          div.append(DOM(`${new Date(item.added).toLocaleString("ru-RU")}`));
+        if (key == 'added') {
+          div.append(DOM(`${new Date(item.added).toLocaleString('ru-RU')}`));
 
           continue;
         }
 
         div.append(
-          DOM({ tag: "div", className: "userParam-" + key }, key),
+          DOM({ tag: 'div', className: 'userParam-' + key }, key),
           App.input(
             async (value) => {
               let object = new Object();
 
               object[key] = value;
 
-              await App.api.request("user", "edit", {
+              await App.api.request('user', 'edit', {
                 id: item.id,
                 object: object,
               });
@@ -3295,20 +2946,17 @@ export class View {
         DOM(
           {
             event: [
-              "click",
+              'click',
               async () => {
                 if (!confirm(`Сброс пароля «${item.nickname}»?`)) {
                   return;
                 }
 
-                let password = await App.api.request("user", "restore", {
+                let password = await App.api.request('user', 'restore', {
                   id: item.id,
                 });
 
-                prompt(
-                  "Сброс пароля произведен успешно",
-                  `Пароль: ${password}`,
-                );
+                prompt('Сброс пароля произведен успешно', `Пароль: ${password}`);
               },
             ],
           },

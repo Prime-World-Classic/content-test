@@ -1,8 +1,8 @@
-import { App } from "./app.js";
-import { Voice } from "./voice.js";
-import { PWGame } from "./pwgame.js";
-import { Settings } from "./settings.js";
-import { Lang } from "./lang.js";
+import { App } from './app.js';
+import { Voice } from './voice.js';
+import { PWGame } from './pwgame.js';
+import { Settings } from './settings.js';
+import { Lang } from './lang.js';
 
 export class NativeAPI {
   static status = false;
@@ -15,13 +15,13 @@ export class NativeAPI {
   static lastBranchV = null;
 
   static modules = {
-    fileSystem: "fs",
-    childProcess: "child_process",
-    os: "os",
-    path: "path",
-    crypto: "crypto",
-    net: "net",
-    http: "http",
+    fileSystem: 'fs',
+    childProcess: 'child_process',
+    os: 'os',
+    path: 'path',
+    crypto: 'crypto',
+    net: 'net',
+    http: 'http',
   };
 
   static setDefaultWindow() {
@@ -33,7 +33,7 @@ export class NativeAPI {
 
     NativeAPI.window.setResizable(true);
 
-    NativeAPI.window.setPosition("center");
+    NativeAPI.window.setPosition('center');
 
     NativeAPI.window.enterFullscreen();
   }
@@ -56,7 +56,7 @@ export class NativeAPI {
     NativeAPI.app = nw.App;
 
     NativeAPI.altEnterShortcut = new nw.Shortcut({
-      key: "Alt+Enter",
+      key: 'Alt+Enter',
       active: () => {
         Settings.settings.fullscreen = !Settings.settings.fullscreen;
         Settings.ApplySettings();
@@ -66,7 +66,7 @@ export class NativeAPI {
     NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
 
     NativeAPI.voiceShortcut = new nw.Shortcut({
-      key: "Ctrl+Z",
+      key: 'Ctrl+Z',
       active: () => {
         Voice.toggleEnabledMic();
       },
@@ -78,7 +78,7 @@ export class NativeAPI {
     NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceShortcut);
 
     NativeAPI.voiceDestroyShortcut = new nw.Shortcut({
-      key: "Ctrl+K",
+      key: 'Ctrl+K',
       active: () => {
         Voice.destroy(false, true);
       },
@@ -90,7 +90,7 @@ export class NativeAPI {
     NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDestroyShortcut);
 
     NativeAPI.voiceUpVolume = new nw.Shortcut({
-      key: "Ctrl+Up",
+      key: 'Ctrl+Up',
       active: () => {
         Voice.volumeControl(true);
       },
@@ -102,7 +102,7 @@ export class NativeAPI {
     NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceUpVolume);
 
     NativeAPI.voiceDownVolume = new nw.Shortcut({
-      key: "Ctrl+Down",
+      key: 'Ctrl+Down',
       active: () => {
         Voice.volumeControl(false);
       },
@@ -117,13 +117,9 @@ export class NativeAPI {
 
     NativeAPI.platform = NativeAPI.os.platform();
 
-    window.addEventListener("error", (event) =>
-      NativeAPI.write("error.txt", event.error.toString()),
-    );
+    window.addEventListener('error', (event) => NativeAPI.write('error.txt', event.error.toString()));
 
-    window.addEventListener("unhandledrejection", (event) =>
-      NativeAPI.write("unhandledrejection.txt", event.reason.stack),
-    );
+    window.addEventListener('unhandledrejection', (event) => NativeAPI.write('unhandledrejection.txt', event.reason.stack));
   }
 
   static loadModules() {
@@ -140,22 +136,17 @@ export class NativeAPI {
 
       let workingDirPath = NativeAPI.path.join(cwd, workingDir);
       let executablePath = NativeAPI.path.join(cwd, exeFile);
-      NativeAPI.childProcess.execFile(
-        executablePath,
-        args,
-        { cwd: workingDirPath },
-        (error, stdout, stderr) => {
-          if (error) {
-            reject(error);
-          }
+      NativeAPI.childProcess.execFile(executablePath, args, { cwd: workingDirPath }, (error, stdout, stderr) => {
+        if (error) {
+          reject(error);
+        }
 
-          resolve(stdout);
+        resolve(stdout);
 
-          if (callback) {
-            callback();
-          }
-        },
-      );
+        if (callback) {
+          callback();
+        }
+      });
     });
   }
 
@@ -198,7 +189,7 @@ export class NativeAPI {
   }
 
   static testHashes() {
-    if (NativeAPI.platform == "linux") {
+    if (NativeAPI.platform == 'linux') {
       PWGame.isValidated = true;
       return; // No hash check for linux
     }
@@ -206,32 +197,32 @@ export class NativeAPI {
 
     let spawn = NativeAPI.childProcess.spawn(PWGame.PATH_TEST_HASHES);
 
-    spawn.on("close", (code) => {
+    spawn.on('close', (code) => {
       if (code == 0) {
         PWGame.isValidated = true;
-        App.notify(Lang.text("updateCheckComplete"));
+        App.notify(Lang.text('updateCheckComplete'));
       } else {
         PWGame.isTestHashesFailed = true;
-        App.error(Lang.text("fileCheckFailed") + code);
+        App.error(Lang.text('fileCheckFailed') + code);
       }
     });
   }
 
   static updateLinux(data, callback) {
-    let outputs = data.toString().split("\n"); // I have used space, you can use any thing.
+    let outputs = data.toString().split('\n'); // I have used space, you can use any thing.
     for (let o of outputs) {
-      if (o == "Updating game files") {
-        this.title = Lang.text("gameUpdate");
-        this.curLabel = "game";
+      if (o == 'Updating game files') {
+        this.title = Lang.text('gameUpdate');
+        this.curLabel = 'game';
         continue;
       }
-      if (o == "Updating launcher") {
-        this.title = Lang.text("launcherUpdate");
-        this.curLabel = "content";
+      if (o == 'Updating launcher') {
+        this.title = Lang.text('launcherUpdate');
+        this.curLabel = 'content';
         continue;
       }
 
-      if (o.startsWith("* main")) {
+      if (o.startsWith('* main')) {
         if (this.lastBranchV == null) {
           this.lastBranchV = o;
         } else {
@@ -239,8 +230,8 @@ export class NativeAPI {
         }
       }
 
-      if (o.startsWith("Receiving objects:")) {
-        let percent = parseInt(o.substring(19, o.indexOf("%")));
+      if (o.startsWith('Receiving objects:')) {
+        let percent = parseInt(o.substring(19, o.indexOf('%')));
 
         callback({ update: true, title: this.title, total: percent });
 
@@ -250,14 +241,14 @@ export class NativeAPI {
   }
 
   static updateWindows(data, callback) {
-    let progressDataElements = data.toString().substring(1).split("#");
+    let progressDataElements = data.toString().substring(1).split('#');
 
     for (let progressDataElement of progressDataElements) {
       let json = JSON.parse(progressDataElement);
 
       if (json.type) {
-        if (json.type == "bar") {
-          if (this.curLabel == "content") {
+        if (json.type == 'bar') {
+          if (this.curLabel == 'content') {
             this.updated = true;
           }
 
@@ -268,53 +259,53 @@ export class NativeAPI {
           });
 
           NativeAPI.progress(Number(json.data) / 100);
-        } else if (json.type == "label") {
+        } else if (json.type == 'label') {
           switch (json.data) {
-            case "game":
-              this.title = Lang.text("gameUpdate");
+            case 'game':
+              this.title = Lang.text('gameUpdate');
               this.curLabel = json.data;
               break;
 
-            case "content":
-              this.title = Lang.text("launcherUpdate");
+            case 'content':
+              this.title = Lang.text('launcherUpdate');
               this.curLabel = json.data;
               break;
 
-            case "game_data0":
-              this.title = Lang.text("downloadingArchives1");
+            case 'game_data0':
+              this.title = Lang.text('downloadingArchives1');
               this.curLabel = json.data;
               break;
-            case "game_data1":
-              this.title = Lang.text("downloadingArchives2");
+            case 'game_data1':
+              this.title = Lang.text('downloadingArchives2');
               this.curLabel = json.data;
               break;
-            case "game_data2":
-              this.title = Lang.text("downloadingArchives3");
+            case 'game_data2':
+              this.title = Lang.text('downloadingArchives3');
               this.curLabel = json.data;
               break;
-            case "game_data3":
-              this.title = Lang.text("downloadingArchives4");
+            case 'game_data3':
+              this.title = Lang.text('downloadingArchives4');
               this.curLabel = json.data;
               break;
-            case "game_data4":
-              this.title = Lang.text("downloadingArchives5");
+            case 'game_data4':
+              this.title = Lang.text('downloadingArchives5');
               this.curLabel = json.data;
               break;
-            case "game_data5":
-              this.title = Lang.text("downloadingArchives6");
+            case 'game_data5':
+              this.title = Lang.text('downloadingArchives6');
               this.curLabel = json.data;
               break;
-            case "game_data6":
-              this.title = Lang.text("downloadingArchives7");
+            case 'game_data6':
+              this.title = Lang.text('downloadingArchives7');
               this.curLabel = json.data;
               break;
-            case "game_data7":
-              this.title = Lang.text("downloadingArchives8");
+            case 'game_data7':
+              this.title = Lang.text('downloadingArchives8');
               this.curLabel = json.data;
               break;
 
             default:
-              this.title = Lang.text("downloadingGameArchives");
+              this.title = Lang.text('downloadingGameArchives');
               this.curLabel = json.data;
               break;
           }
@@ -328,17 +319,15 @@ export class NativeAPI {
       return false;
     }
 
-    const isLinuxUpdate = NativeAPI.platform == "linux";
+    const isLinuxUpdate = NativeAPI.platform == 'linux';
 
-    const updaterPath = isLinuxUpdate
-      ? PWGame.PATH_UPDATE_LINUX
-      : PWGame.PATH_UPDATE;
+    const updaterPath = isLinuxUpdate ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
 
     await NativeAPI.fileSystem.promises.access(updaterPath);
 
     let spawn = NativeAPI.childProcess.spawn(updaterPath);
 
-    spawn.stdout.on("data", (data) => {
+    spawn.stdout.on('data', (data) => {
       if (isLinuxUpdate) {
         this.updateLinux(data, callback);
       } else {
@@ -346,8 +335,8 @@ export class NativeAPI {
       }
     });
 
-    spawn.on("close", async (code) => {
-      callback({ update: false, title: "", total: 0 });
+    spawn.on('close', async (code) => {
+      callback({ update: false, title: '', total: 0 });
 
       NativeAPI.progress(-1);
 
@@ -356,11 +345,11 @@ export class NativeAPI {
         try {
           NativeAPI.testHashes();
         } catch (e) {
-          App.error(Lang.text("fileCheckCorrupted") + e);
+          App.error(Lang.text('fileCheckCorrupted') + e);
         }
       } else {
         PWGame.isUpdateFailed = true;
-        App.error(Lang.text("updateError") + code);
+        App.error(Lang.text('updateError') + code);
       }
 
       if (this.updated) {
@@ -370,7 +359,7 @@ export class NativeAPI {
 
     // А уведомление показываем с задержкой
     setTimeout(() => {
-      App.notify(Lang.text("checkingUpdatesAndFiles"));
+      App.notify(Lang.text('checkingUpdatesAndFiles'));
     }, 1000);
   }
 
@@ -379,7 +368,7 @@ export class NativeAPI {
       return false;
     }
 
-    let username = "",
+    let username = '',
       cpus = NativeAPI.os.cpus();
 
     try {
@@ -390,7 +379,7 @@ export class NativeAPI {
 
     return {
       hostname: NativeAPI.os.hostname(),
-      core: { model: cpus.length ? cpus[0].model : "", total: cpus.length },
+      core: { model: cpus.length ? cpus[0].model : '', total: cpus.length },
       memory: Math.round(NativeAPI.os.totalmem() / 1024 / 1024),
       version: NativeAPI.os.version(),
       release: NativeAPI.os.release(),
@@ -409,7 +398,7 @@ export class NativeAPI {
       let networkInterfaces = NativeAPI.os.networkInterfaces();
 
       for (let key in networkInterfaces) {
-        if (["Radmin VPN"].includes(`${key}`)) {
+        if (['Radmin VPN'].includes(`${key}`)) {
           continue;
         }
 
@@ -418,11 +407,7 @@ export class NativeAPI {
             continue;
           }
 
-          if (
-            !("mac" in networkInterface) ||
-            !networkInterface.mac ||
-            networkInterface.mac == "00:00:00:00:00:00"
-          ) {
+          if (!('mac' in networkInterface) || !networkInterface.mac || networkInterface.mac == '00:00:00:00:00:00') {
             continue;
           }
 
@@ -439,7 +424,7 @@ export class NativeAPI {
   }
 
   static getLocale() {
-    let result = "";
+    let result = '';
 
     if (!NativeAPI.status) {
       return result;
@@ -460,7 +445,7 @@ export class NativeAPI {
 
       socket.setTimeout(timeout);
 
-      socket.on("connect", () => {
+      socket.on('connect', () => {
         const end = performance.now();
 
         socket.end();
@@ -474,9 +459,9 @@ export class NativeAPI {
         resolve(-1);
       }
 
-      socket.on("timeout", handleError);
+      socket.on('timeout', handleError);
 
-      socket.on("error", handleError);
+      socket.on('error', handleError);
     });
   }
 

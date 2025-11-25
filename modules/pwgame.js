@@ -1,19 +1,19 @@
-import { App } from "./app.js";
-import { NativeAPI } from "./nativeApi.js";
-import { Settings } from "./settings.js";
+import { App } from './app.js';
+import { NativeAPI } from './nativeApi.js';
+import { Settings } from './settings.js';
 
 export class PWGame {
-  static PATH = "../Game/Bin/PW_Game.exe";
+  static PATH = '../Game/Bin/PW_Game.exe';
 
-  static WORKING_DIR_PATH = "../Game/Bin/";
+  static WORKING_DIR_PATH = '../Game/Bin/';
 
-  static LUTRIS_EXEC = "lutris lutris:rungame/prime-world";
+  static LUTRIS_EXEC = 'lutris lutris:rungame/prime-world';
 
-  static PATH_UPDATE = "../Tools/PW_NanoUpdater.exe";
+  static PATH_UPDATE = '../Tools/PW_NanoUpdater.exe';
 
-  static PATH_UPDATE_LINUX = "../update.sh";
+  static PATH_UPDATE_LINUX = '../update.sh';
 
-  static PATH_TEST_HASHES = "./content/PW_HashTest.exe";
+  static PATH_TEST_HASHES = './content/PW_HashTest.exe';
 
   static gameServerHasConnection = false;
 
@@ -36,7 +36,7 @@ export class PWGame {
   static gameServerConnectionCheckTimeout = 1000 * 60 * 100; // 100 minutes
 
   static currentPlayPwProtocol =
-    "pwclassic://runGame/Tester00Tester00Tester00Tester004c8fa55b5ee54d6ddbaab2373f8a6a74d7f9c5d739bdd79da12f3beda73c7115/2.0.0/0";
+    'pwclassic://runGame/Tester00Tester00Tester00Tester004c8fa55b5ee54d6ddbaab2373f8a6a74d7f9c5d739bdd79da12f3beda73c7115/2.0.0/0';
 
   static protocolServer;
 
@@ -49,18 +49,18 @@ export class PWGame {
       }
 
       PWGame.protocolServer = http.createServer((req, res) => {
-        if (req.url === "/getConnectionData" && req.method === "POST") {
-          res.writeHead(200, { "Content-Type": "text/plain" });
+        if (req.url === '/getConnectionData' && req.method === 'POST') {
+          res.writeHead(200, { 'Content-Type': 'text/plain' });
           res.end(JSON.stringify({ protocol: PWGame.currentPlayPwProtocol }));
 
           //PWGame.protocolServer.close(() => {});
         } else {
-          res.writeHead(404, { "Content-Type": "text/plain" });
-          res.end("Not Found");
+          res.writeHead(404, { 'Content-Type': 'text/plain' });
+          res.end('Not Found');
         }
       });
 
-      PWGame.protocolServer.listen(34980, "127.0.0.1", () => {});
+      PWGame.protocolServer.listen(34980, '127.0.0.1', () => {});
     } catch (e) {
       App.error(e, 30000);
     }
@@ -81,18 +81,13 @@ export class PWGame {
 
     PWGame.openProtocolSocket();
 
-    if (NativeAPI.platform == "linux") {
+    if (NativeAPI.platform == 'linux') {
       let spawn = await NativeAPI.childProcess.exec(PWGame.LUTRIS_EXEC);
-      spawn.on("close", async (code) => {
+      spawn.on('close', async (code) => {
         callback();
       });
     } else {
-      await NativeAPI.exec(
-        PWGame.PATH,
-        PWGame.WORKING_DIR_PATH,
-        ["protocol", PWGame.currentPlayPwProtocol],
-        callback,
-      );
+      await NativeAPI.exec(PWGame.PATH, PWGame.WORKING_DIR_PATH, ['protocol', PWGame.currentPlayPwProtocol], callback);
     }
   }
 
@@ -110,10 +105,10 @@ export class PWGame {
 
   static async checkUpdates() {
     if (PWGame.isUpdateFailed) {
-      throw "Не удалось обновить игру! Обратитесь в поддержку PWClassic";
+      throw 'Не удалось обновить игру! Обратитесь в поддержку PWClassic';
     }
     if (PWGame.isTestHashesFailed) {
-      throw "Файлы игры повреждены! Обратитесь в поддержку PWClassic";
+      throw 'Файлы игры повреждены! Обратитесь в поддержку PWClassic';
     }
     if (!PWGame.isUpToDate) {
       //throw 'Проверка обновления не завершена! Подождите';
@@ -124,9 +119,9 @@ export class PWGame {
   }
 
   static gameServerIps = [
-    "http://81.88.210.30:27302/api",
-    "http://26.133.141.83:27302/api", // test connection to Radmin IP
-    "http://46.32.186.159:27302/api",
+    'http://81.88.210.30:27302/api',
+    'http://26.133.141.83:27302/api', // test connection to Radmin IP
+    'http://46.32.186.159:27302/api',
   ];
   static MAIN_GAME_SERVER_IP = 0;
   static RADMIN_GAME_SERVER_IP = 1;
@@ -134,14 +129,14 @@ export class PWGame {
 
   static async testServerConnection(serverIp) {
     const data = {
-      method: "checkConnection",
+      method: 'checkConnection',
     };
     try {
       let response = await fetch(serverIp, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
       });
       return true;
@@ -168,7 +163,7 @@ export class PWGame {
       }
     }
     if (!PWGame.gameServerHasConnection) {
-      throw "Игровой сервер недоступен!";
+      throw 'Игровой сервер недоступен!';
     }
   }
 }

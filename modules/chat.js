@@ -1,8 +1,8 @@
-import { DOM } from "./dom.js";
-import { Lang } from "./lang.js";
-import { App } from "./app.js";
-import { NativeAPI } from "./nativeApi.js";
-import { Splash } from "./splash.js";
+import { DOM } from './dom.js';
+import { Lang } from './lang.js';
+import { App } from './app.js';
+import { NativeAPI } from './nativeApi.js';
+import { Splash } from './splash.js';
 
 export class Chat {
   static body;
@@ -14,45 +14,40 @@ export class Chat {
   static initView() {
     let scrollBtn = DOM(
       {
-        style: "scroll-btn",
+        style: 'scroll-btn',
         event: [
-          "click",
+          'click',
           () => {
             Chat.scroll(true);
           },
         ],
-        title: "Прокрутить чат вниз", // Добавляем описание при наведении
+        title: 'Прокрутить чат вниз', // Добавляем описание при наведении
       },
-      "▼",
+      '▼',
     ); // Замените '▼' на нужный вам текст или символ для кнопки прокрутки
 
     let input = DOM({
-      tag: "input",
-      style: "chat-input",
-      placeholder: Lang.text("enterTextAndPressEnter"),
+      tag: 'input',
+      style: 'chat-input',
+      placeholder: Lang.text('enterTextAndPressEnter'),
     });
 
-    Chat.input = DOM({ style: "chat-input-container" }, input, scrollBtn);
+    Chat.input = DOM({ style: 'chat-input-container' }, input, scrollBtn);
 
-    Chat.body = DOM({ style: "chat" }, DOM({ style: "chat-body" }), Chat.input);
+    Chat.body = DOM({ style: 'chat' }, DOM({ style: 'chat-body' }), Chat.input);
 
     const handleSend = async (event) => {
-      if (
-        event.key === "Enter" ||
-        event.keyCode === 13 ||
-        event.code === "Enter" ||
-        event.code === "NumpadEnter"
-      ) {
+      if (event.key === 'Enter' || event.keyCode === 13 || event.code === 'Enter' || event.code === 'NumpadEnter') {
         event.preventDefault();
         await Chat.sendMessage();
       }
     };
 
-    input.addEventListener("keyup", handleSend);
-    input.addEventListener("keypress", handleSend);
-    input.addEventListener("keydown", handleSend);
+    input.addEventListener('keyup', handleSend);
+    input.addEventListener('keypress', handleSend);
+    input.addEventListener('keydown', handleSend);
 
-    input.addEventListener("input", () => {
+    input.addEventListener('input', () => {
       if (!Chat.input.firstChild.value) {
         Chat.to = 0;
       }
@@ -62,8 +57,8 @@ export class Chat {
   static init() {
     Chat.initView();
 
-    document.addEventListener("keydown", (event) => {
-      if (event.code == "KeyM" && (event.ctrlKey || event.metaKey)) {
+    document.addEventListener('keydown', (event) => {
+      if (event.code == 'KeyM' && (event.ctrlKey || event.metaKey)) {
         changeChatVisibility();
       }
     });
@@ -71,11 +66,11 @@ export class Chat {
 
   static changeChatVisibility() {
     if (Chat.hide) {
-      Chat.body.style.display = "block";
+      Chat.body.style.display = 'block';
 
       Chat.hide = false;
     } else {
-      Chat.body.style.display = "none";
+      Chat.body.style.display = 'none';
 
       Chat.hide = true;
     }
@@ -87,13 +82,13 @@ export class Chat {
   }
 
   static viewMessage(data) {
-    let nickname = DOM({ tag: "div" }, data.nickname + ": ");
+    let nickname = DOM({ tag: 'div' }, data.nickname + ': ');
 
-    let message = DOM({ tag: "div" });
+    let message = DOM({ tag: 'div' });
 
     if (data.id == 1) {
-      if (String(data.message).slice(0, 5) == "https") {
-        message.append(DOM({ tag: "img", src: data.message }));
+      if (String(data.message).slice(0, 5) == 'https') {
+        message.append(DOM({ tag: 'img', src: data.message }));
       } else {
         message.innerText = `${data.message}`;
       }
@@ -102,52 +97,49 @@ export class Chat {
     }
 
     if (App.isAdmin(data.id)) {
-      if (
-        String(data.message).includes("https") &&
-        !String(data.message).includes(".gif")
-      ) {
+      if (String(data.message).includes('https') && !String(data.message).includes('.gif')) {
         message.innerHTML = this.wrapLinksInATag(message.innerHTML);
       }
       if (NativeAPI.status) {
-        message.addEventListener("click", (e) => NativeAPI.linkHandler(e));
+        message.addEventListener('click', (e) => NativeAPI.linkHandler(e));
       }
     }
 
     if (data.to == -1) {
-      message.style.color = "rgb(255,50,0)";
+      message.style.color = 'rgb(255,50,0)';
 
       message.style.fontWeight = 600;
 
-      message.style.fontStyle = "italic";
+      message.style.fontStyle = 'italic';
     } else if (data.to == App.storage.data.id) {
-      message.style.color = "rgba(51,255,0,0.9)";
+      message.style.color = 'rgba(51,255,0,0.9)';
     }
 
     if (data.id == 1) {
-      nickname.style.color = "transparent";
+      nickname.style.color = 'transparent';
 
       nickname.style.fontWeight = 600;
 
-      nickname.classList.add("owner-text");
+      nickname.classList.add('owner-text');
     } else if (data.id == -2) {
-      nickname.style.color = "transparent";
+      nickname.style.color = 'transparent';
 
       nickname.style.fontWeight = 600;
 
-      nickname.classList.add("telegrambot-text");
+      nickname.classList.add('telegrambot-text');
     } else if (App.isAdmin(data.id)) {
-      nickname.style.color = "transparent";
+      nickname.style.color = 'transparent';
 
       nickname.style.fontWeight = 600;
 
-      nickname.classList.add("administration-text");
+      nickname.classList.add('administration-text');
     }
 
     let item = DOM(
       {
-        style: "chat-body-item",
+        style: 'chat-body-item',
         event: [
-          "click",
+          'click',
           () => {
             Chat.to = data.id;
 
@@ -161,7 +153,7 @@ export class Chat {
       message,
     );
 
-    item.addEventListener("contextmenu", () => {
+    item.addEventListener('contextmenu', () => {
       if (App.isAdmin()) {
         let body = document.createDocumentFragment();
 
@@ -169,24 +161,24 @@ export class Chat {
           DOM(`Выдать мут чата ${data.nickname}?`),
           DOM(
             {
-              style: "splash-content-button",
+              style: 'splash-content-button',
               event: [
-                "click",
+                'click',
                 async () => {
-                  await App.api.request("user", "mute", { id: data.id });
+                  await App.api.request('user', 'mute', { id: data.id });
 
                   Splash.hide();
                 },
               ],
             },
-            "Да",
+            'Да',
           ),
           DOM(
             {
-              style: "splash-content-button",
-              event: ["click", async () => Splash.hide()],
+              style: 'splash-content-button',
+              event: ['click', async () => Splash.hide()],
             },
-            "Нет",
+            'Нет',
           ),
         );
 
@@ -206,26 +198,24 @@ export class Chat {
       return;
     }
 
-    await App.api.request("user", "chat", {
+    await App.api.request('user', 'chat', {
       message: Chat.input.firstChild.value,
       to: Chat.to,
     });
 
     Chat.to = 0;
 
-    Chat.input.firstChild.value = "";
+    Chat.input.firstChild.value = '';
   }
 
   static scroll(forceScroll = false) {
     if (
       Chat.body.firstChild.children.length &&
-      (forceScroll ||
-        Chat.body.firstChild.firstChild.offsetTop ==
-          Chat.body.firstChild.firstChild.offsetHeight)
+      (forceScroll || Chat.body.firstChild.firstChild.offsetTop == Chat.body.firstChild.firstChild.offsetHeight)
     ) {
       Chat.body.firstChild.firstChild.scrollIntoView({
-        block: "end",
-        behavior: "smooth",
+        block: 'end',
+        behavior: 'smooth',
       });
     }
   }

@@ -1,18 +1,18 @@
-import { App } from "./app.js";
-import { Lang } from "./lang.js";
+import { App } from './app.js';
+import { Lang } from './lang.js';
 
 export class Api {
   constructor(host, bestHost, events) {
-    if (!("WebSocket" in window)) {
-      throw "Отсутствует поддержка WebSocket";
+    if (!('WebSocket' in window)) {
+      throw 'Отсутствует поддержка WebSocket';
     }
 
     if (!Array.isArray(host)) {
-      throw "Необходим массив хостов";
+      throw 'Необходим массив хостов';
     }
 
     if (!host.length) {
-      throw "Не указан хост";
+      throw 'Не указан хост';
     }
 
     this.WebSocket;
@@ -43,9 +43,7 @@ export class Api {
   async connect(delay = 0) {
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
-        console.log(
-          `Попытка соединения ${this.MAIN_HOST} (${this.DISCONNECT_TOTAL})...`,
-        );
+        console.log(`Попытка соединения ${this.MAIN_HOST} (${this.DISCONNECT_TOTAL})...`);
 
         if (this.WebSocket) {
           if (this.WebSocket.readyState == 1) {
@@ -59,21 +57,13 @@ export class Api {
           this.hostChange();
         }
 
-        this.WebSocket = new WebSocket(
-          `${this.MAIN_HOST}/${App.storage.data.token}`,
-        );
+        this.WebSocket = new WebSocket(`${this.MAIN_HOST}/${App.storage.data.token}`);
 
         this.WebSocket.onmessage = (event) => this.message(event.data);
 
         this.WebSocket.onerror = (event) => {
           console.log(`Разрыв соединения ${this.MAIN_HOST}...`, event);
-          App.error(
-            Lang.text("connectionLostError").replace(
-              "{count}",
-              this.DISCONNECT_TOTAL,
-            ),
-            event,
-          );
+          App.error(Lang.text('connectionLostError').replace('{count}', this.DISCONNECT_TOTAL), event);
         };
 
         this.WebSocket.onclose = () => {
@@ -99,20 +89,12 @@ export class Api {
 
   async disconnect() {
     console.log(`Закрываем соединение ${this.MAIN_HOST}...`);
-    App.error(
-      Lang.text("connectionClosedError").replace(
-        "{count}",
-        this.DISCONNECT_TOTAL,
-      ),
-    );
+    App.error(Lang.text('connectionClosedError').replace('{count}', this.DISCONNECT_TOTAL));
     if (!this.WebSocket) {
       return;
     }
 
-    if (
-      Date.now() - this.DISCONNECT_LAST_DATE <
-      this.DISCONNECT_LAST_DATE_LIMIT_MS
-    ) {
+    if (Date.now() - this.DISCONNECT_LAST_DATE < this.DISCONNECT_LAST_DATE_LIMIT_MS) {
       this.DISCONNECT_TOTAL++;
     }
 
@@ -145,9 +127,7 @@ export class Api {
         break;
       }
     }
-    App.error(
-      Lang.text("connectionRestoringError").replace("{host}", currentHost),
-    );
+    App.error(Lang.text('connectionRestoringError').replace('{host}', currentHost));
 
     this.MAIN_HOST = this.host[(currentHost + 1) % this.host.length];
   }
@@ -159,7 +139,7 @@ export class Api {
       return;
     }
 
-    if ("response" in json) {
+    if ('response' in json) {
       let { request, data, error } = json.response;
 
       if (!(request in this.awaiting)) {
@@ -173,16 +153,16 @@ export class Api {
       }
 
       delete this.awaiting[request];
-    } else if ("from" in json) {
+    } else if ('from' in json) {
       // request
 
       let { action, data } = json.from;
 
-      if ("queue" in json) {
+      if ('queue' in json) {
         try {
           this.WebSocket.send(JSON.stringify({ queue: json.queue }));
         } catch (error) {
-          console.log("API (queue)", error);
+          console.log('API (queue)', error);
         }
       }
 
@@ -190,26 +170,18 @@ export class Api {
         try {
           this.events[action](data);
         } catch (error) {
-          console.log("API (events/action)", error);
+          console.log('API (events/action)', error);
         }
       }
     } else {
-      throw Lang.text("unknownMessageStructure").replace(
-        "{json}",
-        JSON.stringify(json),
-      );
+      throw Lang.text('unknownMessageStructure').replace('{json}', JSON.stringify(json));
     }
   }
 
   async request(object, method, data) {
     for (let key in this.awaiting) {
-      if (
-        this.awaiting[key].object == object &&
-        this.awaiting[key].method == method
-      ) {
-        throw Lang.text("requestAlreadyPending")
-          .replace("{method}", method)
-          .replace("{object}", object);
+      if (this.awaiting[key].object == object && this.awaiting[key].method == method) {
+        throw Lang.text('requestAlreadyPending').replace('{method}', method).replace('{object}', object);
       }
     }
 
@@ -218,18 +190,14 @@ export class Api {
     try {
       await this.say(identify, object, method, data);
     } catch (error) {
-      throw Lang.text("requestFailedConnectionError");
+      throw Lang.text('requestFailedConnectionError');
     }
 
     return await new Promise((resolve, reject) => {
       let rejectTimerId = setTimeout(() => {
         delete this.awaiting[identify];
 
-        reject(
-          Lang.text("requestTimeoutError")
-            .replace("{object}", object)
-            .replace("{method}", method),
-        );
+        reject(Lang.text('requestTimeoutError').replace('{object}', object).replace('{method}', method));
       }, 15000);
 
       this.awaiting[identify] = {
@@ -256,10 +224,7 @@ export class Api {
       await this.say(identify, object, method, data);
     } catch (error) {
       if (infinity) {
-        setTimeout(
-          () => this.silent(callback, object, method, data, true),
-          3000,
-        );
+        setTimeout(() => this.silent(callback, object, method, data, true), 3000);
       }
 
       return;
@@ -299,7 +264,7 @@ export class Api {
     return;
   }
 
-  async say(request, object, method, data = "", retryCount = 0) {
+  async say(request, object, method, data = '', retryCount = 0) {
     if (this.WebSocket.readyState === this.WebSocket.OPEN) {
       this.WebSocket.send(
         JSON.stringify({
@@ -313,10 +278,7 @@ export class Api {
       );
     } else {
       if (retryCount < 5) {
-        setTimeout(
-          () => this.say(request, object, method, data, retryCount + 1),
-          3000,
-        );
+        setTimeout(() => this.say(request, object, method, data, retryCount + 1), 3000);
       }
     }
   }

@@ -1,21 +1,21 @@
-import * as glMatrix from "./glMatrix/common.js";
-import * as vec2 from "./glMatrix/vec2.js";
-import * as vec3 from "./glMatrix/vec3.js";
-import * as vec4 from "./glMatrix/vec4.js";
+import * as glMatrix from './glMatrix/common.js';
+import * as vec2 from './glMatrix/vec2.js';
+import * as vec3 from './glMatrix/vec3.js';
+import * as vec4 from './glMatrix/vec4.js';
 
-import * as mat4 from "./glMatrix/mat4.js";
+import * as mat4 from './glMatrix/mat4.js';
 
-import * as quat from "./glMatrix/quat.js";
+import * as quat from './glMatrix/quat.js';
 
-import { Window } from "./window.js";
-import { App } from "./app.js";
-import { HTTP } from "./http.js";
-import { NativeAPI } from "./nativeApi.js";
-import { CastleBuildingsEvents } from "./castleBuildingEvents.js";
-import { Settings } from "./settings.js";
-import { Sound } from "./sound.js";
-import { PreloadImages } from "./preloadImages.js";
-import { DOM } from "./dom.js";
+import { Window } from './window.js';
+import { App } from './app.js';
+import { HTTP } from './http.js';
+import { NativeAPI } from './nativeApi.js';
+import { CastleBuildingsEvents } from './castleBuildingEvents.js';
+import { Settings } from './settings.js';
+import { Sound } from './sound.js';
+import { PreloadImages } from './preloadImages.js';
+import { DOM } from './dom.js';
 
 export class Castle {
   static canvas;
@@ -133,11 +133,9 @@ export class Castle {
 
   static fov = Castle.fixedFovValues[Math.floor(Castle.currentFixedValue)];
 
-  static rotationTilt =
-    Castle.fixedRotationTiltValues[Math.floor(Castle.currentFixedValue)];
+  static rotationTilt = Castle.fixedRotationTiltValues[Math.floor(Castle.currentFixedValue)];
 
-  static cameraHeight =
-    Castle.fixedCameraHeightValues[Math.floor(Castle.currentFixedValue)];
+  static cameraHeight = Castle.fixedCameraHeightValues[Math.floor(Castle.currentFixedValue)];
 
   static doMove = false;
   static wasMoved = false;
@@ -170,184 +168,184 @@ export class Castle {
   static buildMode = false;
 
   static buildings = [
-    "grid",
+    'grid',
 
-    "crystal_farm",
-    "food_farm",
-    "heavy_farm",
-    "light_farm",
-    "silver_farm",
-    "talent_farm",
+    'crystal_farm',
+    'food_farm',
+    'heavy_farm',
+    'light_farm',
+    'silver_farm',
+    'talent_farm',
 
-    "clan_house",
-    "fair",
-    "house",
-    "library",
-    "storage",
+    'clan_house',
+    'fair',
+    'house',
+    'library',
+    'storage',
 
-    "agility",
-    "cunning",
-    "health",
-    "intelligence",
-    "strength",
-    "tavern",
+    'agility',
+    'cunning',
+    'health',
+    'intelligence',
+    'strength',
+    'tavern',
 
-    "cat",
-    "dog",
-    "unicorn",
+    'cat',
+    'dog',
+    'unicorn',
 
-    "deco_0",
-    "deco_1",
-    "deco_2",
-    "deco_3",
-    "deco_4",
-    "deco_5",
-    "deco_6",
-    "deco_7",
-    "deco_8",
-    "deco_9",
-    "deco_10",
-    "deco_11",
-    "deco_12",
-    "deco_13",
-    "deco_14",
-    "deco_15",
-    "deco_16",
-    "deco_17",
-    "deco_18",
-    "deco_19",
-    "deco_20",
-    "deco_21",
-    "deco_22",
-    "deco_23",
-    "deco_24",
-    "deco_25",
-    "deco_26",
-    "deco_27",
-    "deco_28",
-    "deco_29",
-    "deco_30",
-    "deco_31",
-    "deco_32",
+    'deco_0',
+    'deco_1',
+    'deco_2',
+    'deco_3',
+    'deco_4',
+    'deco_5',
+    'deco_6',
+    'deco_7',
+    'deco_8',
+    'deco_9',
+    'deco_10',
+    'deco_11',
+    'deco_12',
+    'deco_13',
+    'deco_14',
+    'deco_15',
+    'deco_16',
+    'deco_17',
+    'deco_18',
+    'deco_19',
+    'deco_20',
+    'deco_21',
+    'deco_22',
+    'deco_23',
+    'deco_24',
+    'deco_25',
+    'deco_26',
+    'deco_27',
+    'deco_28',
+    'deco_29',
+    'deco_30',
+    'deco_31',
+    'deco_32',
   ];
 
   static defaultPlacedBuildings = [
     {
-      id: "2",
+      id: '2',
       rot: 0,
       posX: 39,
       posY: 1,
     },
     {
-      id: "1",
+      id: '1',
       rot: 0,
       posX: 31,
       posY: 1,
     },
     {
-      id: "3",
+      id: '3',
       rot: 2,
       posX: 25,
       posY: 3,
     },
     {
-      id: "5",
+      id: '5',
       rot: 2,
       posX: 39,
       posY: 7,
     },
     {
-      id: "11",
+      id: '11',
       rot: 0,
       posX: 27,
       posY: 15,
     },
     {
-      id: "13",
+      id: '13',
       rot: 0,
       posX: 0,
       posY: 17,
     },
     {
-      id: "14",
+      id: '14',
       rot: 0,
       posX: 5,
       posY: 17,
     },
     {
-      id: "15",
+      id: '15',
       rot: 0,
       posX: 0,
       posY: 22,
     },
     {
-      id: "16",
+      id: '16',
       rot: 0,
       posX: 5,
       posY: 22,
     },
     {
-      id: "17",
+      id: '17',
       rot: 0,
       posX: 0,
       posY: 27,
     },
     {
-      id: "18",
+      id: '18',
       rot: 2,
       posX: 34,
       posY: 21,
     },
     {
-      id: "19",
+      id: '19',
       rot: 2,
       posX: 28,
       posY: 21,
     },
     {
-      id: "6",
+      id: '6',
       rot: 0,
       posX: 10,
       posY: 29,
     },
     {
-      id: "20",
+      id: '20',
       rot: 2,
       posX: 33,
       posY: 9,
     },
     {
-      id: "27",
+      id: '27',
       rot: 0,
       posX: 5,
       posY: 27,
     },
     {
-      id: "25",
+      id: '25',
       rot: 0,
       posX: 0,
       posY: 33,
     },
     {
-      id: "10",
+      id: '10',
       rot: 0,
       posX: 21,
       posY: 20,
     },
     {
-      id: "8",
+      id: '8',
       rot: 0,
       posX: 25,
       posY: 9,
     },
     {
-      id: "7",
+      id: '7',
       rot: 0,
       posX: 18,
       posY: 14,
     },
     {
-      id: "12",
+      id: '12',
       rot: 2,
       posX: 40,
       posY: 14,
@@ -374,71 +372,71 @@ export class Castle {
   static phantomBuildingIsAllowedToBuild = false;
 
   static buildingsNames = [
-    ["", ""],
-    ["pearl_farm_ad", "pearl_farm_doct"],
-    ["mushroom_farm_ad", "mushroom_farm_doct"],
-    ["rubber_tree_ad", "rubber_tree_doct"],
-    ["spinning_mill_ad", "spinning_mill_doct"],
-    ["weaving_workshop_ad", "weaving_workshop_doct"],
-    ["talent_garden_ad", "talent_garden_doct"],
-    ["clan_house_ad", "clan_house_doct"],
-    ["fair_ad", "fair_doct"],
-    ["mansion_ad", "mansion_doct"],
-    ["library_ad", "library_doct"],
-    ["storage_ad", "storage_doct"],
-    ["arena_ad", "arena_doct"],
-    ["spire_ad", "spire_doct"],
-    ["alcove_ad", "alcove_doct"],
-    ["temple_ad", "temple_doct"],
-    ["monument_ad", "monument_doct"],
-    ["tea_house_ad", "tea_house_doct"],
-    ["cat_house_ad", "cat_house_doct"],
-    ["dog_house_ad", "dog_house_doct"],
-    ["unicorn_house_ad", "unicorn_house_doct"],
-    ["scarlet_flower_ad", "scarlet_flower_doct"],
-    ["amber_flower_ad", "amber_flower_doct"],
-    ["signpost_ad", "signpost_doct"],
-    ["statue_ad", "statue_doct"],
-    ["drums_ad", "drums_doct"],
-    ["palm_with_bird_ad", "palm_with_bird_doct"],
-    ["fountain_ad", "fountain_doct"],
-    ["lantern_shop_ad", "lantern_shop_doct"],
-    ["crimson_bush_ad", "crimson_bush_doct"],
-    ["azure_bush_ad", "azure_bush_doct"],
-    ["crimson_inflorescence_ad", "crimson_inflorescence_doct"],
-    ["purple_inflorescence_ad", "purple_inflorescence_doct"],
-    ["hedge_ad", "hedge_doct"],
-    ["hedge_flowering_ad", "hedge_flowering_doct"],
-    ["hedge_flowering2_ad", "hedge_flowering2_doct"],
-    ["column_ad", "column_doct"],
-    ["flower_bed_ad", "flower_bed_doct"],
-    ["flower_bed2_ad", "flower_bed2_doct"],
-    ["flower_bed3_ad", "flower_bed3_doct"],
-    ["flower_bed4_ad", "flower_bed4_doct"],
-    ["small_tree_ad", "small_tree_doct"],
-    ["blooming_sakura_ad", "blooming_sakura_doct"],
-    ["bonsai_ad", "bonsai_doct"],
-    ["blooming_bonsai_ad", "blooming_bonsai_doct"],
-    ["reed_tower_ad", "reed_tower_doct"],
-    ["miniature_garden_ad", "miniature_garden_doct"],
-    ["big_sakura_ad", "big_sakura_doct"],
-    ["huge_cactus_ad", "huge_cactus_doct"],
-    ["rafflesia_ad", "rafflesia_doct"],
-    ["flytrap_ad", "flytrap_doct"],
-    ["figured_reed_ad", "figured_reed_doct"],
-    ["banana_palm_ad", "banana_palm_doct"],
-    ["coconut_palm_ad", "coconut_palm_doct"],
+    ['', ''],
+    ['pearl_farm_ad', 'pearl_farm_doct'],
+    ['mushroom_farm_ad', 'mushroom_farm_doct'],
+    ['rubber_tree_ad', 'rubber_tree_doct'],
+    ['spinning_mill_ad', 'spinning_mill_doct'],
+    ['weaving_workshop_ad', 'weaving_workshop_doct'],
+    ['talent_garden_ad', 'talent_garden_doct'],
+    ['clan_house_ad', 'clan_house_doct'],
+    ['fair_ad', 'fair_doct'],
+    ['mansion_ad', 'mansion_doct'],
+    ['library_ad', 'library_doct'],
+    ['storage_ad', 'storage_doct'],
+    ['arena_ad', 'arena_doct'],
+    ['spire_ad', 'spire_doct'],
+    ['alcove_ad', 'alcove_doct'],
+    ['temple_ad', 'temple_doct'],
+    ['monument_ad', 'monument_doct'],
+    ['tea_house_ad', 'tea_house_doct'],
+    ['cat_house_ad', 'cat_house_doct'],
+    ['dog_house_ad', 'dog_house_doct'],
+    ['unicorn_house_ad', 'unicorn_house_doct'],
+    ['scarlet_flower_ad', 'scarlet_flower_doct'],
+    ['amber_flower_ad', 'amber_flower_doct'],
+    ['signpost_ad', 'signpost_doct'],
+    ['statue_ad', 'statue_doct'],
+    ['drums_ad', 'drums_doct'],
+    ['palm_with_bird_ad', 'palm_with_bird_doct'],
+    ['fountain_ad', 'fountain_doct'],
+    ['lantern_shop_ad', 'lantern_shop_doct'],
+    ['crimson_bush_ad', 'crimson_bush_doct'],
+    ['azure_bush_ad', 'azure_bush_doct'],
+    ['crimson_inflorescence_ad', 'crimson_inflorescence_doct'],
+    ['purple_inflorescence_ad', 'purple_inflorescence_doct'],
+    ['hedge_ad', 'hedge_doct'],
+    ['hedge_flowering_ad', 'hedge_flowering_doct'],
+    ['hedge_flowering2_ad', 'hedge_flowering2_doct'],
+    ['column_ad', 'column_doct'],
+    ['flower_bed_ad', 'flower_bed_doct'],
+    ['flower_bed2_ad', 'flower_bed2_doct'],
+    ['flower_bed3_ad', 'flower_bed3_doct'],
+    ['flower_bed4_ad', 'flower_bed4_doct'],
+    ['small_tree_ad', 'small_tree_doct'],
+    ['blooming_sakura_ad', 'blooming_sakura_doct'],
+    ['bonsai_ad', 'bonsai_doct'],
+    ['blooming_bonsai_ad', 'blooming_bonsai_doct'],
+    ['reed_tower_ad', 'reed_tower_doct'],
+    ['miniature_garden_ad', 'miniature_garden_doct'],
+    ['big_sakura_ad', 'big_sakura_doct'],
+    ['huge_cactus_ad', 'huge_cactus_doct'],
+    ['rafflesia_ad', 'rafflesia_doct'],
+    ['flytrap_ad', 'flytrap_doct'],
+    ['figured_reed_ad', 'figured_reed_doct'],
+    ['banana_palm_ad', 'banana_palm_doct'],
+    ['coconut_palm_ad', 'coconut_palm_doct'],
   ];
 
-  static filter = RegExp("", "");
+  static filter = RegExp('', '');
 
   static toggleMusic(layer, value) {
     Castle.music[layer] = value ? value : !Castle.music[layer];
     if (Castle.music.includes(false)) {
-      Sound.pause("castle");
+      Sound.pause('castle');
     } else {
-      Sound.unpause("castle");
-      Sound.setVolume("castle", Castle.GetVolume(Castle.AUDIO_MUSIC));
+      Sound.unpause('castle');
+      Sound.setVolume('castle', Castle.GetVolume(Castle.AUDIO_MUSIC));
     }
   }
 
@@ -456,14 +454,9 @@ export class Castle {
 
     Castle.initialFixedValue = Castle.currentFixedValue;
     // Setup new target
-    Castle.targetFixedValue =
-      Castle.currentFixedValue + (event.deltaY > 0 ? -1 : +1);
+    Castle.targetFixedValue = Castle.currentFixedValue + (event.deltaY > 0 ? -1 : +1);
 
-    Castle.targetFixedValue = Castle.clamp(
-      Castle.targetFixedValue,
-      0,
-      Castle.fixedFovValues.length - 1,
-    );
+    Castle.targetFixedValue = Castle.clamp(Castle.targetFixedValue, 0, Castle.fixedFovValues.length - 1);
   }
 
   static prepareMove(event) {
@@ -503,26 +496,13 @@ export class Castle {
     Castle.cursorPosition[1] = event.offsetY;
 
     let shift = [Castle.gridTranslation[0], Castle.gridTranslation[1]];
-    if (
-      Castle.phantomBuilding.id > 0 &&
-      Castle.gridCursorPosX &&
-      Castle.gridCursorPosX
-    ) {
-      const size =
-        Castle.sceneBuildings[Castle.buildings[Castle.phantomBuilding.id]]
-          .size[0];
-      Castle.phantomBuilding.posX = Math.floor(
-        (shift[0] - Castle.gridCursorPosX) / 7.0 - size / 2.0,
-      );
-      Castle.phantomBuilding.posY =
-        Math.floor((shift[1] - Castle.gridCursorPosZ) / 7.0 - size / 2.0) + 17;
+    if (Castle.phantomBuilding.id > 0 && Castle.gridCursorPosX && Castle.gridCursorPosX) {
+      const size = Castle.sceneBuildings[Castle.buildings[Castle.phantomBuilding.id]].size[0];
+      Castle.phantomBuilding.posX = Math.floor((shift[0] - Castle.gridCursorPosX) / 7.0 - size / 2.0);
+      Castle.phantomBuilding.posY = Math.floor((shift[1] - Castle.gridCursorPosZ) / 7.0 - size / 2.0) + 17;
       Castle.phantomBuildingSize = size;
 
-      Castle.phantomBuildingIsAllowedToBuild = Castle.isBuildingAllowed(
-        Castle.phantomBuilding.posX,
-        Castle.phantomBuilding.posY,
-        size,
-      );
+      Castle.phantomBuildingIsAllowedToBuild = Castle.isBuildingAllowed(Castle.phantomBuilding.posX, Castle.phantomBuilding.posY, size);
     }
   }
 
@@ -615,13 +595,10 @@ export class Castle {
   static UpdateAllowedToBuildGrid() {
     Castle.allowedToBuildGrid = Array.from(Array(47), () => new Array(38));
     for (const placedBuilding of Castle.placedBuildings) {
-      const pbSize =
-        Castle.sceneBuildings[Castle.buildings[placedBuilding.id]].size[0];
+      const pbSize = Castle.sceneBuildings[Castle.buildings[placedBuilding.id]].size[0];
       for (let i = 0; i < pbSize; ++i) {
         for (let j = 0; j < pbSize; ++j) {
-          Castle.allowedToBuildGrid[placedBuilding.posX + i][
-            placedBuilding.posY + j
-          ] = 1;
+          Castle.allowedToBuildGrid[placedBuilding.posX + i][placedBuilding.posY + j] = 1;
         }
       }
     }
@@ -661,14 +638,14 @@ export class Castle {
 
   static GetLauncherFilePath(fileName) {
     const homeDir = NativeAPI.os.homedir();
-    let pwcLauncherDir = NativeAPI.path.join(homeDir, "Prime World Classic");
+    let pwcLauncherDir = NativeAPI.path.join(homeDir, 'Prime World Classic');
     return NativeAPI.path.join(pwcLauncherDir, fileName);
   }
 
   static async ensureCastleFile() {
     const homeDir = NativeAPI.os.homedir();
-    let pwcLauncherDir = NativeAPI.path.join(homeDir, "Prime World Classic");
-    let castleFilePath = Castle.GetLauncherFilePath("castle.cfg");
+    let pwcLauncherDir = NativeAPI.path.join(homeDir, 'Prime World Classic');
+    let castleFilePath = Castle.GetLauncherFilePath('castle.cfg');
     try {
       await NativeAPI.fileSystem.promises.mkdir(pwcLauncherDir, {
         recursive: true,
@@ -682,9 +659,7 @@ export class Castle {
   }
 
   static async WriteDefaultBuildings() {
-    Castle.placedBuildings = JSON.parse(
-      JSON.stringify(Castle.defaultPlacedBuildings),
-    );
+    Castle.placedBuildings = JSON.parse(JSON.stringify(Castle.defaultPlacedBuildings));
     await Castle.WriteBuildings();
   }
 
@@ -695,13 +670,10 @@ export class Castle {
       return;
     }
 
-    let castleFilePath = Castle.GetLauncherFilePath("castle.cfg");
+    let castleFilePath = Castle.GetLauncherFilePath('castle.cfg');
     try {
       if (await Castle.ensureCastleFile()) {
-        const data = await NativeAPI.fileSystem.promises.readFile(
-          castleFilePath,
-          "utf-8",
-        );
+        const data = await NativeAPI.fileSystem.promises.readFile(castleFilePath, 'utf-8');
         Castle.placedBuildings = JSON.parse(data);
       }
     } catch (e) {
@@ -716,13 +688,9 @@ export class Castle {
       return;
     }
 
-    let castleFilePath = Castle.GetLauncherFilePath("castle.cfg");
+    let castleFilePath = Castle.GetLauncherFilePath('castle.cfg');
     try {
-      await NativeAPI.fileSystem.promises.writeFile(
-        castleFilePath,
-        JSON.stringify(Castle.placedBuildings, null, 2),
-        "utf-8",
-      );
+      await NativeAPI.fileSystem.promises.writeFile(castleFilePath, JSON.stringify(Castle.placedBuildings, null, 2), 'utf-8');
     } catch (e) {
       App.error(e);
     }
@@ -733,7 +701,7 @@ export class Castle {
     await Castle.ReadBuildings();
     Castle.isBuildingsLoaded = true;
 
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener('beforeunload', () => {
       Castle.WriteBuildings();
     });
   }
@@ -741,10 +709,10 @@ export class Castle {
   static async initDemo(sceneName, canvas) {
     Castle.currentSceneName = sceneName;
 
-    Castle.shaderFactionDef = sceneName == "doct" ? "SCENE_DOCT" : "SCENE_AD";
+    Castle.shaderFactionDef = sceneName == 'doct' ? 'SCENE_DOCT' : 'SCENE_AD';
 
     window.addEventListener(
-      "resize",
+      'resize',
       function (event) {
         canvas.width = document.body.offsetWidth;
 
@@ -759,16 +727,13 @@ export class Castle {
       true,
     );
 
-    canvas.addEventListener("click", function (event) {
+    canvas.addEventListener('click', function (event) {
       if (Castle.phantomBuilding.id > 0) {
         Castle.placePhantomBuilding();
       } else {
         if (Castle.outlinedBuilding && !Castle.wasMoved) {
           if (Castle.buildMode) {
-            Castle.findAndRotateBuilding(
-              Castle.outlinedBuilding.position[0],
-              Castle.outlinedBuilding.position[1],
-            );
+            Castle.findAndRotateBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
           } else {
             if (Castle.outlinedBuilding.name in CastleBuildingsEvents) {
               CastleBuildingsEvents[Castle.outlinedBuilding.name]();
@@ -798,24 +763,21 @@ export class Castle {
       Castle.phantomBuilding.posX = 0;
       Castle.phantomBuilding.posY = 1000;
       if (Castle.buildMode && Castle.outlinedBuilding) {
-        Castle.findAndDeleteBuilding(
-          Castle.outlinedBuilding.position[0],
-          Castle.outlinedBuilding.position[1],
-        );
+        Castle.findAndDeleteBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
       }
     };
 
-    canvas.addEventListener("mousemove", Castle.moveMouse);
+    canvas.addEventListener('mousemove', Castle.moveMouse);
 
-    Castle.gl = canvas.getContext("webgl");
+    Castle.gl = canvas.getContext('webgl');
 
     if (!Castle.gl) {
-      console.log("WebGL not supported, falling back on experimental-webgl");
-      Castle.gl = canvas.getContext("experimental-webgl");
+      console.log('WebGL not supported, falling back on experimental-webgl');
+      Castle.gl = canvas.getContext('experimental-webgl');
     }
 
     if (!Castle.gl) {
-      console.error("Your browser does not support WebGL");
+      console.error('Your browser does not support WebGL');
       return 1;
     }
 
@@ -828,16 +790,14 @@ export class Castle {
     Castle.viewMatrix2 = new Float32Array(16);
     Castle.projMatrix = new Float32Array(16);
     Castle.viewProjMatr = new Float32Array(16);
-    Castle.flipMatr = new Float32Array([
-      -1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
-    ]);
+    Castle.flipMatr = new Float32Array([-1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
     Castle.canvasWidth = canvas.width;
     Castle.canvasHeight = canvas.height;
     Castle.cursorPosition = [Castle.canvasWidth, Castle.canvasHeight];
 
     Castle.isSMEnabled = true;
 
-    const ext = Castle.gl.getExtension("WEBGL_depth_texture");
+    const ext = Castle.gl.getExtension('WEBGL_depth_texture');
 
     if (!ext) {
       Castle.isSMEnabled = false;
@@ -849,24 +809,16 @@ export class Castle {
       let lightViewMatrix2 = new Float32Array(16);
       let lightProjMatrix = new Float32Array(16);
       Castle.lightViewProjMatrix = new Float32Array(16);
-      mat4.ortho(
-        lightProjMatrix,
-        -400,
-        400,
-        -400,
-        400,
-        Castle.zNearSM,
-        Castle.zFarSM,
-      );
+      mat4.ortho(lightProjMatrix, -400, 400, -400, 400, Castle.zNearSM, Castle.zFarSM);
 
       let smCamParams = [
         {
-          name: "ad",
+          name: 'ad',
           camPos: [-1239.6, -151, -1433],
           camRot: [-2.29, 2.813, 3.14],
         },
         {
-          name: "doct",
+          name: 'doct',
           camPos: [-1395.8, -291.7, -1338.5],
           camRot: [-2.4, -1.423, 3.14],
         },
@@ -886,11 +838,7 @@ export class Castle {
       mat4.fromRotationTranslation(lightViewMatrix, quatZ, vec3.create());
       mat4.translate(lightViewMatrix, lightViewMatrix, smCam.camPos);
       mat4.multiply(lightViewMatrix2, Castle.flipMatr, lightViewMatrix);
-      mat4.multiply(
-        Castle.lightViewProjMatrix,
-        lightProjMatrix,
-        lightViewMatrix2,
-      );
+      mat4.multiply(Castle.lightViewProjMatrix, lightProjMatrix, lightViewMatrix2);
 
       Castle.gridTexture = Castle.gl.createTexture();
       Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, Castle.gridTexture);
@@ -905,26 +853,10 @@ export class Castle {
         Castle.gl.UNSIGNED_BYTE,
         null,
       ); // data
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_MAG_FILTER,
-        Castle.gl.NEAREST,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_MIN_FILTER,
-        Castle.gl.NEAREST,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_WRAP_S,
-        Castle.gl.CLAMP_TO_EDGE,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_WRAP_T,
-        Castle.gl.CLAMP_TO_EDGE,
-      );
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MAG_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.CLAMP_TO_EDGE);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, Castle.gl.CLAMP_TO_EDGE);
 
       // Setup textures
       Castle.depthTexture = Castle.gl.createTexture();
@@ -940,26 +872,10 @@ export class Castle {
         Castle.gl.UNSIGNED_INT, // type
         null,
       ); // data
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_MAG_FILTER,
-        Castle.gl.NEAREST,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_MIN_FILTER,
-        Castle.gl.NEAREST,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_WRAP_S,
-        Castle.gl.REPEAT,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_WRAP_T,
-        Castle.gl.REPEAT,
-      );
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MAG_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.REPEAT);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, Castle.gl.REPEAT);
 
       Castle.depthFramebuffer = Castle.gl.createFramebuffer();
       Castle.gl.bindFramebuffer(Castle.gl.FRAMEBUFFER, Castle.depthFramebuffer);
@@ -984,26 +900,10 @@ export class Castle {
         Castle.gl.UNSIGNED_BYTE,
         null,
       );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_MAG_FILTER,
-        Castle.gl.NEAREST,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_MIN_FILTER,
-        Castle.gl.NEAREST,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_WRAP_S,
-        Castle.gl.REPEAT,
-      );
-      Castle.gl.texParameteri(
-        Castle.gl.TEXTURE_2D,
-        Castle.gl.TEXTURE_WRAP_T,
-        Castle.gl.REPEAT,
-      );
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MAG_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.REPEAT);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, Castle.gl.REPEAT);
 
       // attach it to the framebuffer
       Castle.gl.framebufferTexture2D(
@@ -1021,16 +921,13 @@ export class Castle {
 
     let sceneMeshesToLoadCount = -1; // Initial value. Scene must have objects
 
-    let result = await HTTP.request("content/scenes.json");
+    let result = await HTTP.request('content/scenes.json');
 
     Castle.scenesJson = result;
 
-    Castle.currentScene = result.scenes.find(
-      (value) => value.sceneName === sceneName,
-    );
+    Castle.currentScene = result.scenes.find((value) => value.sceneName === sceneName);
 
-    sceneMeshesToLoadCount =
-      Castle.currentScene.objects.length + Castle.currentScene.buildings.length; // Set scene objects count to some valid value
+    sceneMeshesToLoadCount = Castle.currentScene.objects.length + Castle.currentScene.buildings.length; // Set scene objects count to some valid value
 
     let loadedBuildings = [];
 
@@ -1073,9 +970,7 @@ export class Castle {
     mat4.identity(Castle.identityMatrix);
 
     for (let building of Castle.currentScene.buildings) {
-      let buildingTranslation = building.translation
-        ? building.translation
-        : [0, 0];
+      let buildingTranslation = building.translation ? building.translation : [0, 0];
 
       for (let obj of building.objects) {
         obj.transform[3] -= buildingTranslation[0];
@@ -1126,46 +1021,26 @@ export class Castle {
       sceneMeshesToLoadCount--;
     }
 
-    await Castle.loadResources(
-      Castle.sceneObjects,
-      Castle.sceneBuildings,
-      shaderNames,
-      texNames,
-    );
+    await Castle.loadResources(Castle.sceneObjects, Castle.sceneBuildings, shaderNames, texNames);
 
     //var canvas = globalCanvas; //document.getElementById('game-surface');
 
-    Castle.globalCanvas.classList.add("castle-fade-in");
+    Castle.globalCanvas.classList.add('castle-fade-in');
 
-    if (NativeAPI.fileSystem && !("castle" in Sound.all)) {
-      var soundFiles = NativeAPI.fileSystem.readdirSync(
-        "content/sounds/" + sceneName,
-      );
+    if (NativeAPI.fileSystem && !('castle' in Sound.all)) {
+      var soundFiles = NativeAPI.fileSystem.readdirSync('content/sounds/' + sceneName);
 
       let playCastleMusic = function () {
-        let musicName =
-          "content/sounds/" +
-          sceneName +
-          "/" +
-          soundFiles[Math.floor(Math.random() * soundFiles.length)];
-        Sound.stop("castle");
-        Sound.play(
-          musicName,
-          { id: "castle", volume: Castle.GetVolume(Castle.AUDIO_MUSIC) },
-          playCastleMusic,
-        );
+        let musicName = 'content/sounds/' + sceneName + '/' + soundFiles[Math.floor(Math.random() * soundFiles.length)];
+        Sound.stop('castle');
+        Sound.play(musicName, { id: 'castle', volume: Castle.GetVolume(Castle.AUDIO_MUSIC) }, playCastleMusic);
       };
       playCastleMusic();
     }
 
     Castle.loadBuildings();
 
-    Castle.MainLoop(
-      Castle.sceneObjects,
-      Castle.sceneBuildings,
-      Castle.sceneShaders,
-      Castle.sceneTextures,
-    );
+    Castle.MainLoop(Castle.sceneObjects, Castle.sceneBuildings, Castle.sceneShaders, Castle.sceneTextures);
   }
 
   static loadObjectResources(shaderNames, texNames, obj) {
@@ -1200,31 +1075,16 @@ export class Castle {
     return uniformLocation;
   }
 
-  static async loadResources(
-    sceneObjects,
-    sceneBuildings,
-    notUniqeShaderNames,
-    notUniqeTexNames,
-  ) {
+  static async loadResources(sceneObjects, sceneBuildings, notUniqeShaderNames, notUniqeTexNames) {
     let shaderNames = [...new Set(notUniqeShaderNames)];
     let texNames = [...new Set(notUniqeTexNames)];
 
     function remapIndices(sceneObjectsContainer, objId) {
-      sceneObjectsContainer[objId].shaderId = shaderNames.findIndex(
-        (value) => value === sceneObjectsContainer[objId].shader,
-      );
-      sceneObjectsContainer[objId].textureId = texNames.findIndex(
-        (value) => value === sceneObjectsContainer[objId].texture,
-      );
-      sceneObjectsContainer[objId].texture2Id = texNames.findIndex(
-        (value) => value === sceneObjectsContainer[objId].texture_2,
-      );
-      sceneObjectsContainer[objId].texture3Id = texNames.findIndex(
-        (value) => value === sceneObjectsContainer[objId].texture_3,
-      );
-      sceneObjectsContainer[objId].texture4Id = texNames.findIndex(
-        (value) => value === sceneObjectsContainer[objId].texture_4,
-      );
+      sceneObjectsContainer[objId].shaderId = shaderNames.findIndex((value) => value === sceneObjectsContainer[objId].shader);
+      sceneObjectsContainer[objId].textureId = texNames.findIndex((value) => value === sceneObjectsContainer[objId].texture);
+      sceneObjectsContainer[objId].texture2Id = texNames.findIndex((value) => value === sceneObjectsContainer[objId].texture_2);
+      sceneObjectsContainer[objId].texture3Id = texNames.findIndex((value) => value === sceneObjectsContainer[objId].texture_3);
+      sceneObjectsContainer[objId].texture4Id = texNames.findIndex((value) => value === sceneObjectsContainer[objId].texture_4);
     }
 
     for (var objId = 0; objId < sceneObjects.length; objId++) {
@@ -1247,15 +1107,12 @@ export class Castle {
 
     Castle.sceneShaders = new Array(shaderNames.length);
 
-    let vsText = await HTTP.request(`content/shaders/shader.vs.glsl`, "text");
+    let vsText = await HTTP.request(`content/shaders/shader.vs.glsl`, 'text');
 
-    let fsText = await HTTP.request(`content/shaders/shader.fs.glsl`, "text");
+    let fsText = await HTTP.request(`content/shaders/shader.fs.glsl`, 'text');
 
     for (let i = 0; i < shaderNames.length; ++i) {
-      let definesText = await HTTP.request(
-        `content/shaders/${shaderNames[i]}.glsl`,
-        "text",
-      );
+      let definesText = await HTTP.request(`content/shaders/${shaderNames[i]}.glsl`, 'text');
 
       let programColor = Castle.prepareShader(
         `\n#define RENDER_PASS_COLOR\n #define ${Castle.shaderFactionDef}`,
@@ -1264,19 +1121,12 @@ export class Castle {
         fsText,
       );
 
-      let programSM = Castle.prepareShader(
-        `\n#define RENDER_PASS_SM\n #define ${Castle.shaderFactionDef}`,
-        definesText,
-        vsText,
-        fsText,
-      );
+      let programSM = Castle.prepareShader(`\n#define RENDER_PASS_SM\n #define ${Castle.shaderFactionDef}`, definesText, vsText, fsText);
 
       Castle.sceneShaders[i] = {
         PSO: programColor,
         PSO_SM: programSM,
-        attributes: Castle.scenesJson.shaderLayouts.find(
-          (value) => value.name === shaderNames[i],
-        ).layout,
+        attributes: Castle.scenesJson.shaderLayouts.find((value) => value.name === shaderNames[i]).layout,
         vertStride: 0,
       };
 
@@ -1284,9 +1134,7 @@ export class Castle {
     }
 
     for (let i = 0; i < texNames.length; ++i) {
-      Castle.sceneTextures[i] = Castle.loadTexture(
-        await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`),
-      );
+      Castle.sceneTextures[i] = Castle.loadTexture(await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`));
 
       loaded.texture++;
     }
@@ -1308,8 +1156,7 @@ export class Castle {
 
       totalMeshes += building.length;
 
-      let buildingTransp =
-        Castle.sceneBuildings[buildingMain].transparentObjects;
+      let buildingTransp = Castle.sceneBuildings[buildingMain].transparentObjects;
 
       for (let objId = 0; objId < buildingTransp.length; ++objId) {
         await Castle.loadMesh(shaderNames, buildingTransp, objId);
@@ -1321,42 +1168,28 @@ export class Castle {
 
   static uniqueProgCounter = 0;
 
-  static shaderFactionDef = "INVALID_DEFINE";
+  static shaderFactionDef = 'INVALID_DEFINE';
 
   static prepareShader(renderPassDefine, definesText, vsText, fsText) {
     let vertexShader = Castle.gl.createShader(Castle.gl.VERTEX_SHADER),
       fragmentShader = Castle.gl.createShader(Castle.gl.FRAGMENT_SHADER);
 
-    Castle.gl.shaderSource(
-      vertexShader,
-      definesText + renderPassDefine + vsText,
-    );
+    Castle.gl.shaderSource(vertexShader, definesText + renderPassDefine + vsText);
 
-    Castle.gl.shaderSource(
-      fragmentShader,
-      definesText + renderPassDefine + fsText,
-    );
+    Castle.gl.shaderSource(fragmentShader, definesText + renderPassDefine + fsText);
 
     Castle.gl.compileShader(vertexShader);
 
     if (!Castle.gl.getShaderParameter(vertexShader, Castle.gl.COMPILE_STATUS)) {
-      console.error(
-        "ERROR compiling vertex shader!",
-        Castle.gl.getShaderInfoLog(vertexShader),
-      );
+      console.error('ERROR compiling vertex shader!', Castle.gl.getShaderInfoLog(vertexShader));
 
       return 1;
     }
 
     Castle.gl.compileShader(fragmentShader);
 
-    if (
-      !Castle.gl.getShaderParameter(fragmentShader, Castle.gl.COMPILE_STATUS)
-    ) {
-      console.error(
-        "ERROR compiling fragment shader!",
-        Castle.gl.getShaderInfoLog(fragmentShader),
-      );
+    if (!Castle.gl.getShaderParameter(fragmentShader, Castle.gl.COMPILE_STATUS)) {
+      console.error('ERROR compiling fragment shader!', Castle.gl.getShaderInfoLog(fragmentShader));
 
       return 1;
     }
@@ -1373,23 +1206,15 @@ export class Castle {
     Castle.gl.linkProgram(program.prog);
 
     if (!Castle.gl.getProgramParameter(program.prog, Castle.gl.LINK_STATUS)) {
-      console.error(
-        "ERROR linking program!",
-        Castle.gl.getProgramInfoLog(program.prog),
-      );
+      console.error('ERROR linking program!', Castle.gl.getProgramInfoLog(program.prog));
 
       return 1;
     }
 
     Castle.gl.validateProgram(program.prog);
 
-    if (
-      !Castle.gl.getProgramParameter(program.prog, Castle.gl.VALIDATE_STATUS)
-    ) {
-      console.error(
-        "ERROR validating program!",
-        Castle.gl.getProgramInfoLog(program.prog),
-      );
+    if (!Castle.gl.getProgramParameter(program.prog, Castle.gl.VALIDATE_STATUS)) {
+      console.error('ERROR validating program!', Castle.gl.getProgramInfoLog(program.prog));
 
       return 1;
     }
@@ -1409,38 +1234,15 @@ export class Castle {
 
     Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, texture);
 
-    Castle.gl.texParameteri(
-      Castle.gl.TEXTURE_2D,
-      Castle.gl.TEXTURE_WRAP_S,
-      Castle.gl.REPEAT,
-    );
+    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.REPEAT);
 
-    Castle.gl.texParameteri(
-      Castle.gl.TEXTURE_2D,
-      Castle.gl.TEXTURE_WRAP_T,
-      Castle.gl.REPEAT,
-    );
+    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, Castle.gl.REPEAT);
 
-    Castle.gl.texParameteri(
-      Castle.gl.TEXTURE_2D,
-      Castle.gl.TEXTURE_MIN_FILTER,
-      Castle.gl.LINEAR,
-    );
+    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.LINEAR);
 
-    Castle.gl.texParameteri(
-      Castle.gl.TEXTURE_2D,
-      Castle.gl.TEXTURE_MAG_FILTER,
-      Castle.gl.LINEAR,
-    );
+    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MAG_FILTER, Castle.gl.LINEAR);
 
-    Castle.gl.texImage2D(
-      Castle.gl.TEXTURE_2D,
-      0,
-      Castle.gl.RGBA,
-      Castle.gl.RGBA,
-      Castle.gl.UNSIGNED_BYTE,
-      image,
-    );
+    Castle.gl.texImage2D(Castle.gl.TEXTURE_2D, 0, Castle.gl.RGBA, Castle.gl.RGBA, Castle.gl.UNSIGNED_BYTE, image);
 
     Castle.gl.generateMipmap(Castle.gl.TEXTURE_2D);
 
@@ -1448,10 +1250,7 @@ export class Castle {
   }
 
   static async loadMesh(shaderNames, sceneObjectsContainer, objectId) {
-    let meshData = await HTTP.request(
-      `content/meshes/${sceneObjectsContainer[objectId].meshName}`,
-      "arrayBuffer",
-    );
+    let meshData = await HTTP.request(`content/meshes/${sceneObjectsContainer[objectId].meshName}`, 'arrayBuffer');
 
     let vertices = Castle.gl.createBuffer();
 
@@ -1459,15 +1258,10 @@ export class Castle {
 
     Castle.gl.bindBuffer(Castle.gl.ARRAY_BUFFER, vertices);
 
-    Castle.gl.bufferData(
-      Castle.gl.ARRAY_BUFFER,
-      meshFloat,
-      Castle.gl.STATIC_DRAW,
-    );
+    Castle.gl.bufferData(Castle.gl.ARRAY_BUFFER, meshFloat, Castle.gl.STATIC_DRAW);
 
     let attributes = Castle.scenesJson.shaderLayouts.find(
-      (value) =>
-        value.name === shaderNames[sceneObjectsContainer[objectId].shaderId],
+      (value) => value.name === shaderNames[sceneObjectsContainer[objectId].shaderId],
     ).layout;
 
     let vertStride = 0;
@@ -1479,7 +1273,7 @@ export class Castle {
     let indexCount = meshFloat.length / (vertStride / 4);
 
     if (indexCount != sceneObjectsContainer[objectId].indexCount) {
-      console.error("Fatal error getting index count (" + meshName + ")");
+      console.error('Fatal error getting index count (' + meshName + ')');
     }
 
     sceneObjectsContainer[objectId].meshData = {
@@ -1506,7 +1300,7 @@ export class Castle {
 
   static MainLoop(sceneObjects, sceneBuildings, sceneShaders, sceneTextures) {
     if (Castle.sceneBuildings) {
-      var gridBuilding = Castle.sceneBuildings["grid"];
+      var gridBuilding = Castle.sceneBuildings['grid'];
 
       var gridTransform = gridBuilding.transparentObjects[0].transform;
 
@@ -1534,17 +1328,9 @@ export class Castle {
 
     // Update cam behaviour
 
-    let factor = Castle.clamp(
-      Castle.cameraAnimationSpeed * Castle.deltaTime,
-      0,
-      1,
-    );
+    let factor = Castle.clamp(Castle.cameraAnimationSpeed * Castle.deltaTime, 0, 1);
 
-    Castle.currentFixedValue = Castle.lerp(
-      Castle.currentFixedValue,
-      Castle.targetFixedValue,
-      factor,
-    );
+    Castle.currentFixedValue = Castle.lerp(Castle.currentFixedValue, Castle.targetFixedValue, factor);
 
     let targetFovs = [
       Castle.fixedFovValues[Math.round(Castle.initialFixedValue)],
@@ -1579,26 +1365,20 @@ export class Castle {
         position: [building.posX, building.posY],
         name: Castle.buildings[building.id],
         translation: [
-          Castle.zeroTranslation[0] +
-            (building.posX * 7.0 + (mesh.size[0] / 2.0) * 7.0),
+          Castle.zeroTranslation[0] + (building.posX * 7.0 + (mesh.size[0] / 2.0) * 7.0),
           1,
-          Castle.zeroTranslation[1] +
-            ((building.posY - 17) * 7.0 + (mesh.size[1] / 2.0) * 7.0),
+          Castle.zeroTranslation[1] + ((building.posY - 17) * 7.0 + (mesh.size[1] / 2.0) * 7.0),
         ],
       });
     }
     if (Castle.buildMode && Castle.phantomBuilding.id > 0) {
-      var mesh = Castle.sceneBuildings["grid"];
+      var mesh = Castle.sceneBuildings['grid'];
       buildingsToDraw.push({
         mesh: mesh,
         rotation: 0,
         position: [0, 0],
-        name: "grid",
-        translation: [
-          Castle.zeroTranslation[0] + (mesh.size[0] / 2.0) * 7.0,
-          1,
-          Castle.zeroTranslation[1] + (mesh.size[1] / 2.0) * 7.0,
-        ],
+        name: 'grid',
+        translation: [Castle.zeroTranslation[0] + (mesh.size[0] / 2.0) * 7.0, 1, Castle.zeroTranslation[1] + (mesh.size[1] / 2.0) * 7.0],
       });
     }
 
@@ -1618,32 +1398,22 @@ export class Castle {
           position: [building.posX, building.posY],
           name: Castle.buildings[building.id],
           translation: [
-            Castle.zeroTranslation[0] +
-              (building.posX * 7.0 + (mesh.size[0] / 2.0) * 7.0),
+            Castle.zeroTranslation[0] + (building.posX * 7.0 + (mesh.size[0] / 2.0) * 7.0),
             1,
-            Castle.zeroTranslation[1] +
-              ((building.posY - 17) * 7.0 + (mesh.size[1] / 2.0) * 7.0),
+            Castle.zeroTranslation[1] + ((building.posY - 17) * 7.0 + (mesh.size[1] / 2.0) * 7.0),
           ],
         });
         outlinedBuilding = buildingsToDraw.length - 1;
       } else {
         for (let i = 0; i < buildingsToDraw.length; ++i) {
           let building = buildingsToDraw[i];
-          let shift = [
-            Castle.zeroTranslation[0] + Castle.gridTranslation[0],
-            Castle.zeroTranslation[1] + Castle.gridTranslation[1],
-          ];
+          let shift = [Castle.zeroTranslation[0] + Castle.gridTranslation[0], Castle.zeroTranslation[1] + Castle.gridTranslation[1]];
           if (
-            shift[0] - Castle.gridCursorPosX >
-              building.translation[0] - (building.mesh.size[0] / 2) * 7 &&
-            shift[0] - Castle.gridCursorPosX <
-              building.translation[0] + (building.mesh.size[1] / 2) * 7 &&
-            shift[1] - Castle.gridCursorPosZ >
-              building.translation[2] - (building.mesh.size[1] / 2) * 7 &&
-            shift[1] - Castle.gridCursorPosZ <
-              building.translation[2] + (building.mesh.size[1] / 2) * 7 &&
-            (buildingsToDraw[i].name in CastleBuildingsEvents ||
-              Castle.buildMode)
+            shift[0] - Castle.gridCursorPosX > building.translation[0] - (building.mesh.size[0] / 2) * 7 &&
+            shift[0] - Castle.gridCursorPosX < building.translation[0] + (building.mesh.size[1] / 2) * 7 &&
+            shift[1] - Castle.gridCursorPosZ > building.translation[2] - (building.mesh.size[1] / 2) * 7 &&
+            shift[1] - Castle.gridCursorPosZ < building.translation[2] + (building.mesh.size[1] / 2) * 7 &&
+            (buildingsToDraw[i].name in CastleBuildingsEvents || Castle.buildMode)
           ) {
             outlinedBuilding = i;
             Castle.outlinedBuilding = buildingsToDraw[outlinedBuilding];
@@ -1653,19 +1423,9 @@ export class Castle {
       }
     }
 
-    if (
-      Castle.isSMEnabled &&
-      !Castle.isStaticSMCached &&
-      Castle.sceneObjects &&
-      Castle.isBuildingsLoaded
-    ) {
+    if (Castle.isSMEnabled && !Castle.isStaticSMCached && Castle.sceneObjects && Castle.isBuildingsLoaded) {
       Castle.gl.bindFramebuffer(Castle.gl.FRAMEBUFFER, Castle.depthFramebuffer);
-      Castle.gl.viewport(
-        0,
-        0,
-        Castle.depthTextureSize,
-        Castle.depthTextureSize,
-      );
+      Castle.gl.viewport(0, 0, Castle.depthTextureSize, Castle.depthTextureSize);
       Castle.gl.clear(Castle.gl.COLOR_BUFFER_BIT | Castle.gl.DEPTH_BUFFER_BIT);
 
       for (let i = 0; i < Castle.sceneObjects.length; ++i) {
@@ -1676,12 +1436,7 @@ export class Castle {
       for (let buildingToDraw of buildingsToDraw) {
         for (let i = 0; i < buildingToDraw.mesh.objects.length; ++i) {
           if (!buildingToDraw.outlined) {
-            Castle.prepareAndDrawObject(
-              buildingToDraw.mesh.objects[i],
-              true,
-              buildingToDraw.rotation,
-              buildingToDraw.translation,
-            );
+            Castle.prepareAndDrawObject(buildingToDraw.mesh.objects[i], true, buildingToDraw.rotation, buildingToDraw.translation);
           }
         }
       }
@@ -1711,17 +1466,11 @@ export class Castle {
         if (Castle.buildMode) {
           outlineColor = Castle.BUILDING_OUTLINE_SELECTION;
           if (Castle.phantomBuilding.id > 0) {
-            outlineColor = Castle.phantomBuildingIsAllowedToBuild
-              ? Castle.BUILDING_OUTLINE_GOOD
-              : Castle.BUILDING_OUTLINE_BAD;
+            outlineColor = Castle.phantomBuildingIsAllowedToBuild ? Castle.BUILDING_OUTLINE_GOOD : Castle.BUILDING_OUTLINE_BAD;
           }
         }
         for (let i = 0; i < buildingToDraw.mesh.objects.length; ++i) {
-          let outlinedTranslation = [
-            buildingToDraw.translation[0],
-            buildingToDraw.translation[1],
-            buildingToDraw.translation[2],
-          ];
+          let outlinedTranslation = [buildingToDraw.translation[0], buildingToDraw.translation[1], buildingToDraw.translation[2]];
           outlinedTranslation[1] -= 6.0 / buildingToDraw.mesh.size[0];
           Castle.prepareAndDrawObject(
             buildingToDraw.mesh.objects[i],
@@ -1738,12 +1487,7 @@ export class Castle {
 
       for (let buildingToDraw of buildingsToDraw) {
         for (let i = 0; i < buildingToDraw.mesh.objects.length; ++i) {
-          Castle.prepareAndDrawObject(
-            buildingToDraw.mesh.objects[i],
-            false,
-            buildingToDraw.rotation,
-            buildingToDraw.translation,
-          );
+          Castle.prepareAndDrawObject(buildingToDraw.mesh.objects[i], false, buildingToDraw.rotation, buildingToDraw.translation);
         }
       }
 
@@ -1752,11 +1496,7 @@ export class Castle {
       }
 
       for (let buildingToDraw of buildingsToDraw) {
-        for (
-          let i = 0;
-          i < buildingToDraw.mesh.transparentObjects.length;
-          ++i
-        ) {
+        for (let i = 0; i < buildingToDraw.mesh.transparentObjects.length; ++i) {
           Castle.prepareAndDrawObject(
             buildingToDraw.mesh.transparentObjects[i],
             false,
@@ -1777,14 +1517,7 @@ export class Castle {
     requestAnimationFrame(Castle.loop);
   }
 
-  static prepareAndDrawObject(
-    obj,
-    isSMPass,
-    rotation,
-    translation,
-    tintOverride,
-    scaleOverride,
-  ) {
+  static prepareAndDrawObject(obj, isSMPass, rotation, translation, tintOverride, scaleOverride) {
     if (!Castle.filter.test(obj.meshName)) {
       return;
     }
@@ -1827,7 +1560,7 @@ export class Castle {
       translation,
       tintOverride,
       scaleOverride,
-      obj.meshName == "grid_9_01.bin",
+      obj.meshName == 'grid_9_01.bin',
       obj.startFreq,
       obj.endAmp,
       obj.animDir,
@@ -1835,13 +1568,7 @@ export class Castle {
   }
 
   static updateMainCam() {
-    mat4.perspective(
-      Castle.projMatrix,
-      glMatrix.toRadian(Castle.fov),
-      Castle.canvasWidth / Castle.canvasHeight,
-      Castle.zNear,
-      Castle.zFar,
-    );
+    mat4.perspective(Castle.projMatrix, glMatrix.toRadian(Castle.fov), Castle.canvasWidth / Castle.canvasHeight, Castle.zNear, Castle.zFar);
 
     var camPosElements = [-1432, -440, -1582];
 
@@ -1879,70 +1606,36 @@ export class Castle {
 
     mat4.multiply(Castle.viewProjMatr, Castle.projMatrix, Castle.viewMatrix2);
 
-    var camForw = [
-      Castle.viewMatrix2[2],
-      Castle.viewMatrix2[6],
-      Castle.viewMatrix2[10],
-      0,
-    ];
+    var camForw = [Castle.viewMatrix2[2], Castle.viewMatrix2[6], Castle.viewMatrix2[10], 0];
 
     var camForwXY = [camForw[0], camForw[2]];
 
     vec2.normalize(camForwXY, camForwXY);
 
-    var camRight = [
-      Castle.viewMatrix2[0],
-      Castle.viewMatrix2[4],
-      Castle.viewMatrix2[8],
-      0,
-    ];
+    var camRight = [Castle.viewMatrix2[0], Castle.viewMatrix2[4], Castle.viewMatrix2[8], 0];
 
     var camRightXY = [camRight[0], camRight[2]];
 
     vec2.normalize(camRightXY, camRightXY);
 
-    Castle.camDeltaPos[0] -=
-      (camForwXY[1] * Castle.cursorDeltaPos[0] -
-        camRightXY[1] * Castle.cursorDeltaPos[1]) *
-      0.1;
+    Castle.camDeltaPos[0] -= (camForwXY[1] * Castle.cursorDeltaPos[0] - camRightXY[1] * Castle.cursorDeltaPos[1]) * 0.1;
 
-    Castle.camDeltaPos[1] -=
-      (camForwXY[0] * Castle.cursorDeltaPos[0] -
-        camRightXY[0] * Castle.cursorDeltaPos[1]) *
-      0.1;
+    Castle.camDeltaPos[1] -= (camForwXY[0] * Castle.cursorDeltaPos[0] - camRightXY[0] * Castle.cursorDeltaPos[1]) * 0.1;
 
-    Castle.camDeltaPos[0] = Castle.clamp(
-      Castle.camDeltaPos[0],
-      Castle.camDeltaPosMinMax[0][0],
-      Castle.camDeltaPosMinMax[0][1],
-    );
+    Castle.camDeltaPos[0] = Castle.clamp(Castle.camDeltaPos[0], Castle.camDeltaPosMinMax[0][0], Castle.camDeltaPosMinMax[0][1]);
 
-    Castle.camDeltaPos[1] = Castle.clamp(
-      Castle.camDeltaPos[1],
-      Castle.camDeltaPosMinMax[1][0],
-      Castle.camDeltaPosMinMax[1][1],
-    );
+    Castle.camDeltaPos[1] = Castle.clamp(Castle.camDeltaPos[1], Castle.camDeltaPosMinMax[1][0], Castle.camDeltaPosMinMax[1][1]);
 
     mat4.invert(Castle.viewProjInv, Castle.viewProjMatr); // viewProj -> world
 
     Castle.cursorBasis = [
-      ((Castle.cursorPosition[0] - Castle.canvasWidth / 2) /
-        Castle.canvasWidth) *
-        2,
-      -(
-        ((Castle.cursorPosition[1] - Castle.canvasHeight / 2) /
-          Castle.canvasHeight) *
-        2
-      ),
+      ((Castle.cursorPosition[0] - Castle.canvasWidth / 2) / Castle.canvasWidth) * 2,
+      -(((Castle.cursorPosition[1] - Castle.canvasHeight / 2) / Castle.canvasHeight) * 2),
       1,
       1,
     ];
 
-    vec4.transformMat4(
-      Castle.cursorBasis2,
-      Castle.cursorBasis,
-      Castle.viewProjInv,
-    );
+    vec4.transformMat4(Castle.cursorBasis2, Castle.cursorBasis, Castle.viewProjInv);
 
     Castle.cursorBasis2[0] /= -Castle.cursorBasis2[3];
 
@@ -1950,145 +1643,101 @@ export class Castle {
 
     Castle.cursorBasis2[2] /= -Castle.cursorBasis2[3];
 
-    var camForwNew = [
-      Castle.cursorBasis2[0] - camPos[0],
-      Castle.cursorBasis2[1] - camPos[1],
-      Castle.cursorBasis2[2] - camPos[2],
-    ];
+    var camForwNew = [Castle.cursorBasis2[0] - camPos[0], Castle.cursorBasis2[1] - camPos[1], Castle.cursorBasis2[2] - camPos[2]];
 
     vec3.normalize(camForwNew, camForwNew);
 
     var t = -(camPos[1] + Castle.gridTranslationY) / camForwNew[1];
 
-    Castle.gridCursorPosX =
-      camPos[0] +
-      t * camForwNew[0] +
-      (Castle.zeroTranslation[0] + Castle.gridTranslation[0]);
+    Castle.gridCursorPosX = camPos[0] + t * camForwNew[0] + (Castle.zeroTranslation[0] + Castle.gridTranslation[0]);
 
-    Castle.gridCursorPosZ =
-      camPos[2] +
-      t * camForwNew[2] +
-      (Castle.zeroTranslation[1] + Castle.gridTranslation[1]);
+    Castle.gridCursorPosZ = camPos[2] + t * camForwNew[2] + (Castle.zeroTranslation[1] + Castle.gridTranslation[1]);
 
     Castle.UpdateBuildingBubbles();
   }
   static setupMainCam(program) {
-    let matViewProjUniformLocation = Castle.getUniformLocation(
-      program,
-      "mViewProj",
-    );
+    let matViewProjUniformLocation = Castle.getUniformLocation(program, 'mViewProj');
 
-    Castle.gl.uniformMatrix4fv(
-      matViewProjUniformLocation,
-      Castle.gl.FALSE,
-      Castle.viewProjMatr,
-    );
+    Castle.gl.uniformMatrix4fv(matViewProjUniformLocation, Castle.gl.FALSE, Castle.viewProjMatr);
 
-    let matViewProjSMUniformLocation = Castle.getUniformLocation(
-      program,
-      "lightViewProj",
-    );
+    let matViewProjSMUniformLocation = Castle.getUniformLocation(program, 'lightViewProj');
 
-    Castle.gl.uniformMatrix4fv(
-      matViewProjSMUniformLocation,
-      Castle.gl.FALSE,
-      Castle.lightViewProjMatrix,
-    );
+    Castle.gl.uniformMatrix4fv(matViewProjSMUniformLocation, Castle.gl.FALSE, Castle.lightViewProjMatrix);
 
-    let zNearFar = Castle.getUniformLocation(program, "zNear_zFar");
+    let zNearFar = Castle.getUniformLocation(program, 'zNear_zFar');
 
-    Castle.gl.uniform4f(
-      zNearFar,
-      Castle.zNear,
-      Castle.zFar,
-      Castle.zNearSM,
-      Castle.zFarSM,
-    );
+    Castle.gl.uniform4f(zNearFar, Castle.zNear, Castle.zFar, Castle.zNearSM, Castle.zFarSM);
 
-    let cursorGridPosition = Castle.getUniformLocation(
-      program,
-      "cursorGridPosition",
-    );
+    let cursorGridPosition = Castle.getUniformLocation(program, 'cursorGridPosition');
 
-    Castle.gl.uniform2f(
-      cursorGridPosition,
-      -Castle.gridCursorPosX,
-      -Castle.gridCursorPosZ,
-    );
+    Castle.gl.uniform2f(cursorGridPosition, -Castle.gridCursorPosX, -Castle.gridCursorPosZ);
   }
 
   static setupSMCam(program) {
-    let matViewProjUniformLocation = Castle.getUniformLocation(
-      program,
-      "mViewProj",
-    );
+    let matViewProjUniformLocation = Castle.getUniformLocation(program, 'mViewProj');
 
-    Castle.gl.uniformMatrix4fv(
-      matViewProjUniformLocation,
-      Castle.gl.FALSE,
-      Castle.lightViewProjMatrix,
-    );
+    Castle.gl.uniformMatrix4fv(matViewProjUniformLocation, Castle.gl.FALSE, Castle.lightViewProjMatrix);
   }
 
   static getBlendFunc(blendString) {
     switch (blendString) {
-      case "ZERO":
+      case 'ZERO':
         return Castle.gl.ZERO;
         break;
 
-      case "ONE":
+      case 'ONE':
         return Castle.gl.ONE;
         break;
 
-      case "SRC_COLOR":
+      case 'SRC_COLOR':
         return Castle.gl.SRC_COLOR;
         break;
 
-      case "ONE_MINUS_SRC_COLOR":
+      case 'ONE_MINUS_SRC_COLOR':
         return Castle.gl.ONE_MINUS_SRC_COLOR;
         break;
 
-      case "DST_COLOR":
+      case 'DST_COLOR':
         return Castle.gl.DST_COLOR;
         break;
 
-      case "ONE_MINUS_DST_COLOR":
+      case 'ONE_MINUS_DST_COLOR':
         return Castle.gl.ONE_MINUS_DST_COLOR;
         break;
 
-      case "SRC_ALPHA":
+      case 'SRC_ALPHA':
         return Castle.gl.SRC_ALPHA;
         break;
 
-      case "ONE_MINUS_SRC_ALPHA":
+      case 'ONE_MINUS_SRC_ALPHA':
         return Castle.gl.ONE_MINUS_SRC_ALPHA;
         break;
 
-      case "DST_ALPHA":
+      case 'DST_ALPHA':
         return Castle.gl.DST_ALPHA;
         break;
 
-      case "ONE_MINUS_DST_ALPHA":
+      case 'ONE_MINUS_DST_ALPHA':
         return Castle.gl.ONE_MINUS_DST_ALPHA;
         break;
 
-      case "CONSTANT_COLOR":
+      case 'CONSTANT_COLOR':
         return Castle.gl.CONSTANT_COLOR;
         break;
 
-      case "ONE_MINUS_CONSTANT_COLOR":
+      case 'ONE_MINUS_CONSTANT_COLOR':
         return Castle.gl.ONE_MINUS_CONSTANT_COLOR;
         break;
 
-      case "CONSTANT_ALPHA":
+      case 'CONSTANT_ALPHA':
         return Castle.gl.CONSTANT_ALPHA;
         break;
 
-      case "ONE_MINUS_CONSTANT_ALPHA":
+      case 'ONE_MINUS_CONSTANT_ALPHA':
         return Castle.gl.ONE_MINUS_CONSTANT_ALPHA;
         break;
 
-      case "SRC_ALPHA_SATURATE":
+      case 'SRC_ALPHA_SATURATE':
         return Castle.gl.SRC_ALPHA_SATURATE;
         break;
 
@@ -2141,10 +1790,7 @@ export class Castle {
 
       Castle.gl.depthMask(false);
 
-      Castle.gl.blendFunc(
-        Castle.getBlendFunc(blend[0]),
-        Castle.getBlendFunc(blend[1]),
-      );
+      Castle.gl.blendFunc(Castle.getBlendFunc(blend[0]), Castle.getBlendFunc(blend[1]));
     }
 
     Castle.gl.bindBuffer(Castle.gl.ARRAY_BUFFER, vertices);
@@ -2152,17 +1798,10 @@ export class Castle {
     let attribOffset = 0;
 
     for (let attribute of attributes) {
-      let attribLocation = Castle.gl.getAttribLocation(
-        program.prog,
-        attribute.name,
-      );
+      let attribLocation = Castle.gl.getAttribLocation(program.prog, attribute.name);
 
       let attribType =
-        attribute.sizeElem == 4
-          ? Castle.gl.FLOAT
-          : attribute.sizeElem == 2
-            ? Castle.gl.UNSIGNED_SHORT
-            : Castle.gl.UNSIGNED_BYTE;
+        attribute.sizeElem == 4 ? Castle.gl.FLOAT : attribute.sizeElem == 2 ? Castle.gl.UNSIGNED_SHORT : Castle.gl.UNSIGNED_BYTE;
 
       Castle.gl.vertexAttribPointer(
         attribLocation, // Attribute location
@@ -2184,19 +1823,15 @@ export class Castle {
 
     isSMPass ? Castle.setupSMCam(program) : Castle.setupMainCam(program);
 
-    let tintColorValue = tintOverride
-      ? tintOverride
-      : tintColor
-        ? tintColor
-        : [1, 1, 1, 1];
+    let tintColorValue = tintOverride ? tintOverride : tintColor ? tintColor : [1, 1, 1, 1];
 
-    let tintColorLocation = Castle.getUniformLocation(program, "tintColor");
+    let tintColorLocation = Castle.getUniformLocation(program, 'tintColor');
 
     Castle.gl.uniform4fv(tintColorLocation, tintColorValue);
 
     let uvScaleValue = uvScale ? uvScale : [1, 1, 1, 1];
 
-    let uvScaleLocation = Castle.getUniformLocation(program, "uvScale");
+    let uvScaleLocation = Castle.getUniformLocation(program, 'uvScale');
 
     Castle.gl.uniform4fv(uvScaleLocation, uvScaleValue);
 
@@ -2204,13 +1839,13 @@ export class Castle {
     let uStartFreqValue = startFreqValue ? startFreqValue : [0, 0, 0, 0];
     let uEndAmpValue = endAmpValue ? endAmpValue : [0, 0, 0, 0];
     let animDirVertFreqValue = animDir ? animDir : [0, 0, 0, 0];
-    let startFreq = Castle.getUniformLocation(program, "startFreq");
+    let startFreq = Castle.getUniformLocation(program, 'startFreq');
     Castle.gl.uniform4fv(startFreq, uStartFreqValue);
-    let endAmp = Castle.getUniformLocation(program, "endAmp");
+    let endAmp = Castle.getUniformLocation(program, 'endAmp');
     Castle.gl.uniform4fv(endAmp, uEndAmpValue);
-    let animDirVertFreq = Castle.getUniformLocation(program, "animDirVertFreq");
+    let animDirVertFreq = Castle.getUniformLocation(program, 'animDirVertFreq');
     Castle.gl.uniform4fv(animDirVertFreq, animDirVertFreqValue);
-    let time = Castle.getUniformLocation(program, "time");
+    let time = Castle.getUniformLocation(program, 'time');
     let timeValue = [Castle.currentTime, 0, 0, 0];
     Castle.gl.uniform4fv(time, timeValue);
 
@@ -2220,7 +1855,7 @@ export class Castle {
 
     let uvScrollValue = uvScroll ? uvScroll : [0, 0];
 
-    let uvScrollLocation = Castle.getUniformLocation(program, "uvScroll");
+    let uvScrollLocation = Castle.getUniformLocation(program, 'uvScroll');
 
     Castle.gl.uniform2fv(uvScrollLocation, uvScrollValue);
 
@@ -2235,32 +1870,18 @@ export class Castle {
       mat4.identity(objRotationMatrixY);
       mat4.identity(objRotationMatrixZ);
 
-      mat4.fromRotation(
-        objRotationMatrixX,
-        Castle.fmod(objectRotation[0] * Castle.currentTime, 360.0),
-        [1, 0, 0],
-      );
+      mat4.fromRotation(objRotationMatrixX, Castle.fmod(objectRotation[0] * Castle.currentTime, 360.0), [1, 0, 0]);
 
-      mat4.fromRotation(
-        objRotationMatrixY,
-        Castle.fmod(objectRotation[1] * Castle.currentTime, 360.0),
-        [0, 1, 0],
-      );
+      mat4.fromRotation(objRotationMatrixY, Castle.fmod(objectRotation[1] * Castle.currentTime, 360.0), [0, 1, 0]);
 
-      mat4.fromRotation(
-        objRotationMatrixZ,
-        Castle.fmod(objectRotation[2] * Castle.currentTime, 360.0),
-        [0, 0, 1],
-      );
+      mat4.fromRotation(objRotationMatrixZ, Castle.fmod(objectRotation[2] * Castle.currentTime, 360.0), [0, 0, 1]);
 
       mat4.mul(worldMatrix, objRotationMatrixX, worldMatrix);
       mat4.mul(worldMatrix, objRotationMatrixY, worldMatrix);
       mat4.mul(worldMatrix, objRotationMatrixZ, worldMatrix);
     }
 
-    let transformMatrix = transform
-      ? transform
-      : new Float32Array([1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1]);
+    let transformMatrix = transform ? transform : new Float32Array([1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1]);
     mat4.mul(worldMatrix, worldMatrix, transformMatrix);
 
     var worldMatrix2 = new Float32Array(16);
@@ -2276,11 +1897,7 @@ export class Castle {
     }
 
     if (scaleOverride) {
-      mat4.fromScaling(worldMatrix3, [
-        scaleOverride,
-        scaleOverride,
-        scaleOverride,
-      ]);
+      mat4.fromScaling(worldMatrix3, [scaleOverride, scaleOverride, scaleOverride]);
 
       mat4.mul(worldMatrix2, worldMatrix3, worldMatrix2);
     }
@@ -2293,13 +1910,9 @@ export class Castle {
       worldMatrix2[14] += translation[2];
     }
 
-    let matWorldUniformLocation = Castle.getUniformLocation(program, "mWorld");
+    let matWorldUniformLocation = Castle.getUniformLocation(program, 'mWorld');
 
-    Castle.gl.uniformMatrix4fv(
-      matWorldUniformLocation,
-      Castle.gl.FALSE,
-      worldMatrix2,
-    );
+    Castle.gl.uniformMatrix4fv(matWorldUniformLocation, Castle.gl.FALSE, worldMatrix2);
 
     for (let i = 0; i < textures.length; ++i) {
       if (textures[i]) {
@@ -2307,7 +1920,7 @@ export class Castle {
 
         Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, textures[i]);
 
-        let attribName = "tex" + i;
+        let attribName = 'tex' + i;
 
         let texLocation = Castle.getUniformLocation(program, attribName);
 
@@ -2320,7 +1933,7 @@ export class Castle {
 
       Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, Castle.depthTexture);
 
-      let attribNameSM = "smTexture";
+      let attribNameSM = 'smTexture';
 
       let texLocationSM = Castle.getUniformLocation(program, attribNameSM);
 
@@ -2343,18 +1956,14 @@ export class Castle {
         Castle.allowedToBuildGridTex,
       );
 
-      let attribNameSM = "gridTex";
+      let attribNameSM = 'gridTex';
 
       let texLocationSM = Castle.getUniformLocation(program, attribNameSM);
 
       Castle.gl.uniform1i(texLocationSM, textures.length + 1);
     }
 
-    Castle.gl.drawArrays(
-      strip ? Castle.gl.TRIANGLE_STRIP : Castle.gl.TRIANGLES,
-      0,
-      indexCount,
-    );
+    Castle.gl.drawArrays(strip ? Castle.gl.TRIANGLE_STRIP : Castle.gl.TRIANGLES, 0, indexCount);
   }
 
   static convertBuildingPosToViewCoord(posX, posY) {
@@ -2368,10 +1977,7 @@ export class Castle {
     let viewProjTransp = new Float32Array(16);
     mat4.transpose(viewProjTransp, Castle.viewProjMatr);
     vec4.transformMat4(viewPos, bubblePos, Castle.viewProjMatr);
-    let output = [
-      ((viewPos[0] / viewPos[3] + 1) * Castle.canvasWidth) / 2,
-      ((1 - viewPos[1] / viewPos[3]) * Castle.canvasHeight) / 2,
-    ];
+    let output = [((viewPos[0] / viewPos[3] + 1) * Castle.canvasWidth) / 2, ((1 - viewPos[1] / viewPos[3]) * Castle.canvasHeight) / 2];
     //let output = [viewPos[0] / viewPos[3] * Castle.canvasWidth, viewPos[1] / viewPos[3] * Castle.canvasHeight, viewPos[2] / viewPos[3]];
     return output;
   }
@@ -2387,7 +1993,7 @@ export class Castle {
   static UpdateBuildingBubbles() {
     // Добавить все новые здания
     for (let b = 0; b < Castle.placedBuildings.length; ++b) {
-      if (!("uniqueId" in Castle.placedBuildings[b])) {
+      if (!('uniqueId' in Castle.placedBuildings[b])) {
         Castle.placedBuildings[b].uniqueId = Castle.buildingUniqueIdCounter;
         Castle.buildingUniqueIdCounter++;
       }
@@ -2405,33 +2011,23 @@ export class Castle {
         if (!(building.uniqueId in Castle.buildingBubblesDoms)) {
           Castle.buildingBubblesDoms[building.uniqueId] = DOM(
             {
-              style: ["castle_building_bubble"],
-              event: ["click", () => CastleBuildingsEvents[buildingName]()],
+              style: ['castle_building_bubble'],
+              event: ['click', () => CastleBuildingsEvents[buildingName]()],
             },
             DOM({
-              tag: "img",
+              tag: 'img',
               src: `content/icons/buildings/${buildingName}.png`,
             }),
           );
-          Castle.buildingBubbles.appendChild(
-            Castle.buildingBubblesDoms[building.uniqueId],
-          );
+          Castle.buildingBubbles.appendChild(Castle.buildingBubblesDoms[building.uniqueId]);
         }
-        const doShowBubble =
-          buildingName in Castle.buildingBubbleStatuses &&
-          Castle.buildingBubbleStatuses[buildingName];
-        Castle.buildingBubblesDoms[building.uniqueId].style.display =
-          doShowBubble ? "block" : "none";
+        const doShowBubble = buildingName in Castle.buildingBubbleStatuses && Castle.buildingBubbleStatuses[buildingName];
+        Castle.buildingBubblesDoms[building.uniqueId].style.display = doShowBubble ? 'block' : 'none';
         if (doShowBubble) {
           const buildingSize = Castle.sceneBuildings[buildingName].size[0];
-          const buldingViewPos = Castle.convertBuildingPosToViewCoord(
-            building.posX + buildingSize / 2,
-            building.posY + buildingSize / 2,
-          );
-          Castle.buildingBubblesDoms[building.uniqueId].style.left =
-            buldingViewPos[0] + "px";
-          Castle.buildingBubblesDoms[building.uniqueId].style.top =
-            buldingViewPos[1] + "px";
+          const buldingViewPos = Castle.convertBuildingPosToViewCoord(building.posX + buildingSize / 2, building.posY + buildingSize / 2);
+          Castle.buildingBubblesDoms[building.uniqueId].style.left = buldingViewPos[0] + 'px';
+          Castle.buildingBubblesDoms[building.uniqueId].style.top = buldingViewPos[1] + 'px';
         }
       }
     }

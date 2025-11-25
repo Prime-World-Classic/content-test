@@ -1,34 +1,30 @@
-import { DOM } from "./dom.js";
-import { Lang } from "./lang.js";
-import { CastleNAVBAR } from "./castleNavBar.js";
-import { View } from "./view.js";
-import { Winrate } from "./winrate.js";
-import { Rank } from "./rank.js";
-import { Build } from "./build.js";
-import { App } from "./app.js";
-import { Voice } from "./voice.js";
-import { PWGame } from "./pwgame.js";
-import { NativeAPI } from "./nativeApi.js";
-import { Castle } from "./castle.js";
-import { Settings } from "./settings.js";
-import { Sound } from "./sound.js";
-import { Timer } from "./timer.js";
-import { Splash } from "./splash.js";
+import { DOM } from './dom.js';
+import { Lang } from './lang.js';
+import { CastleNAVBAR } from './castleNavBar.js';
+import { View } from './view.js';
+import { Winrate } from './winrate.js';
+import { Rank } from './rank.js';
+import { Build } from './build.js';
+import { App } from './app.js';
+import { Voice } from './voice.js';
+import { PWGame } from './pwgame.js';
+import { NativeAPI } from './nativeApi.js';
+import { Castle } from './castle.js';
+import { Settings } from './settings.js';
+import { Sound } from './sound.js';
+import { Timer } from './timer.js';
+import { Splash } from './splash.js';
 
 export class MM {
-  static id = "";
+  static id = '';
 
   static hero = false;
 
   static targetBanHeroId = 0;
 
-  static view = document.createElement("div");
+  static view = document.createElement('div');
 
-  static button = DOM(
-    { tag: "div" },
-    DOM({ tag: "div" }),
-    DOM({ id: "MMQueue" }, "0"),
-  );
+  static button = DOM({ tag: 'div' }, DOM({ tag: 'div' }), DOM({ id: 'MMQueue' }, '0'));
 
   static renderBody = false;
 
@@ -41,7 +37,7 @@ export class MM {
   static gameRunEvent() {
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, false);
-    document.body.style.display = "none";
+    document.body.style.display = 'none';
     NativeAPI.window.hide();
 
     NativeAPI.app.unregisterGlobalHotKey(NativeAPI.altEnterShortcut);
@@ -50,7 +46,7 @@ export class MM {
   static gameStopEvent() {
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, true);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, true);
-    document.body.style.display = "block";
+    document.body.style.display = 'block';
 
     if (NativeAPI.status) {
       try {
@@ -63,13 +59,13 @@ export class MM {
       }
     }
 
-    View.show("castle");
+    View.show('castle');
   }
 
   static initView() {
-    MM.view.classList.add("mm");
+    MM.view.classList.add('mm');
 
-    MM.view.style.display = "none";
+    MM.view.style.display = 'none';
 
     document.body.append(MM.view);
 
@@ -89,7 +85,7 @@ export class MM {
 
     Timer.init();
 
-    window.addEventListener("beforeunload", () => {
+    window.addEventListener('beforeunload', () => {
       if (NativeAPI.status) {
         // Stop MM search
         if (MM.active) {
@@ -100,8 +96,8 @@ export class MM {
   }
 
   static soundEvent() {
-    Sound.play("content/sounds/found.ogg", {
-      id: "MM_found",
+    Sound.play('content/sounds/found.ogg', {
+      id: 'MM_found',
       volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
     });
   }
@@ -119,21 +115,21 @@ export class MM {
 
     MM.view.append(content);
 
-    MM.view.style.display = "flex";
+    MM.view.style.display = 'flex';
   }
 
   static close() {
-    Sound.stop("tambur");
+    Sound.stop('tambur');
 
     Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, true);
 
-    MM.view.style.display = "none";
+    MM.view.style.display = 'none';
 
-    Voice.infoPanel.classList.remove("left-offset-no-shift");
-    Voice.infoPanel.classList.add("left-offset-with-shift");
+    Voice.infoPanel.classList.remove('left-offset-no-shift');
+    Voice.infoPanel.classList.add('left-offset-with-shift');
 
-    View.castleQuestBody.classList.remove("left-offset-with-shift");
-    View.castleQuestBody.classList.add("left-offset-no-shift");
+    View.castleQuestBody.classList.remove('left-offset-with-shift');
+    View.castleQuestBody.classList.add('left-offset-no-shift');
   }
 
   static searchActive(status = true) {
@@ -169,12 +165,8 @@ export class MM {
       return;
     }
 
-    if (
-      !PWGame.gameServerHasConnection ||
-      !PWGame.isUpToDate ||
-      !PWGame.isValidated
-    ) {
-      MM.button.firstChild.innerText = Lang.text("mmCheck");
+    if (!PWGame.gameServerHasConnection || !PWGame.isUpToDate || !PWGame.isValidated) {
+      MM.button.firstChild.innerText = Lang.text('mmCheck');
     }
 
     try {
@@ -192,14 +184,10 @@ export class MM {
     } catch (error) {
       PWGame.gameConnectionTestIsActive = false;
 
-      if (
-        !PWGame.gameServerHasConnection ||
-        !PWGame.isUpToDate ||
-        !PWGame.isValidated
-      ) {
+      if (!PWGame.gameServerHasConnection || !PWGame.isUpToDate || !PWGame.isValidated) {
         // Неудача
 
-        MM.button.firstChild.innerText = Lang.text("fight");
+        MM.button.firstChild.innerText = Lang.text('fight');
       }
 
       return App.error(error);
@@ -211,47 +199,31 @@ export class MM {
       await MM.gameStartCheck();
     } else {
       const downloadMessage = DOM({
-        tag: "p",
-        innerHTML: Lang.text("mmLauncherDownload"),
+        tag: 'p',
+        innerHTML: Lang.text('mmLauncherDownload'),
       });
 
       const splashContent = DOM({
-        style: "splash-content-window",
+        style: 'splash-content-window',
       });
 
-      const heading = DOM(
-        { tag: "h1" },
-        Lang.text("mmWindowsLauncherRequired"),
-      );
-      const paragraph1 = DOM(
-        { tag: "p" },
-        Lang.text("mmBrowserSupportDiscontinued"),
-      );
-      const paragraph2 = DOM(
-        { tag: "p" },
-        Lang.text("mmLauncherMigratedToWindows"),
-      );
+      const heading = DOM({ tag: 'h1' }, Lang.text('mmWindowsLauncherRequired'));
+      const paragraph1 = DOM({ tag: 'p' }, Lang.text('mmBrowserSupportDiscontinued'));
+      const paragraph2 = DOM({ tag: 'p' }, Lang.text('mmLauncherMigratedToWindows'));
 
       // Создаем кнопку закрытия
       const closeButton = DOM({
-        tag: "div",
-        style: "close-button",
-        event: ["click", () => Splash.hide()],
+        tag: 'div',
+        style: 'close-button',
+        event: ['click', () => Splash.hide()],
       });
-      closeButton.style.backgroundImage =
-        "url(content/icons/close-cropped.svg)";
+      closeButton.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
-      splashContent.append(
-        closeButton,
-        heading,
-        paragraph1,
-        paragraph2,
-        downloadMessage,
-      );
+      splashContent.append(closeButton, heading, paragraph1, paragraph2, downloadMessage);
 
       // Добавляем стили для ссылки
       const style = DOM({
-        tag: "style",
+        tag: 'style',
         innerHTML: `
                     .launcher-link {
                         color: #ff0000;
@@ -271,12 +243,12 @@ export class MM {
     }
 
     if (!MM.hero) {
-      MM.hero = await App.api.request("build", "heroAll");
+      MM.hero = await App.api.request('build', 'heroAll');
     }
 
     if (MM.active) {
       try {
-        await App.api.request(App.CURRENT_MM, "cancel");
+        await App.api.request(App.CURRENT_MM, 'cancel');
       } catch (error) {
         return App.error(error);
       }
@@ -286,7 +258,7 @@ export class MM {
       MM.searchActive(true);
 
       try {
-        let request = await App.api.request(App.CURRENT_MM, "start", {
+        let request = await App.api.request(App.CURRENT_MM, 'start', {
           hero: MM.activeSelectHero,
           version: App.PW_VERSION,
           mode: CastleNAVBAR.mode,
@@ -297,7 +269,7 @@ export class MM {
 
         CastleNAVBAR.karma(request.karma);
 
-        if (request.type == "reconnect") {
+        if (request.type == 'reconnect') {
           MM.searchActive(false);
 
           MM.gameRunEvent();
@@ -317,13 +289,9 @@ export class MM {
   static async ready(data) {
     MM.id = data.id;
 
-    let body = DOM(
-      { style: "mm-ready" },
-      Timer.body,
-      DOM({ id: `MMReady`, style: "mm-ready-count" }, `0/${data.limit}`),
-    );
+    let body = DOM({ style: 'mm-ready' }, Timer.body, DOM({ id: `MMReady`, style: 'mm-ready-count' }, `0/${data.limit}`));
 
-    await Timer.start(data.id, Lang.text("mmMatchFound"), () => {
+    await Timer.start(data.id, Lang.text('mmMatchFound'), () => {
       MM.close();
 
       MM.searchActive(true);
@@ -335,9 +303,9 @@ export class MM {
 
     let button = DOM(
       {
-        style: "mm-ready-button",
+        style: 'mm-ready-button',
         event: [
-          "click",
+          'click',
           async () => {
             try {
               Voice.destroy();
@@ -346,7 +314,7 @@ export class MM {
             }
 
             try {
-              await App.api.request(App.CURRENT_MM, "ready", { id: data.id });
+              await App.api.request(App.CURRENT_MM, 'ready', { id: data.id });
             } catch (error) {
               Timer.stop();
 
@@ -361,14 +329,14 @@ export class MM {
           },
         ],
       },
-      Lang.text("ready"),
+      Lang.text('ready'),
     );
 
-    button.style.fontSize = "2cqw";
+    button.style.fontSize = '2cqw';
 
     button.animate(
-      { transform: ["scale(1)", "scale(0.98)", "scale(1.02)", "scale(1)"] },
-      { duration: 500, iterations: Infinity, easing: "ease-in-out" },
+      { transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] },
+      { duration: 500, iterations: Infinity, easing: 'ease-in-out' },
     );
 
     body.append(button);
@@ -385,7 +353,7 @@ export class MM {
       MM.lobbyBuildTab.firstChild.remove();
     }
 
-    let builds = await App.api.request("build", "my", { hero: heroId });
+    let builds = await App.api.request('build', 'my', { hero: heroId });
 
     let target = 0;
 
@@ -393,25 +361,23 @@ export class MM {
       let tab = DOM(
         {
           event: [
-            "click",
+            'click',
             async () => {
-              await App.api.request("build", "target", { id: build.id });
+              await App.api.request('build', 'target', { id: build.id });
 
               target = build.id;
 
               for (let child of MM.lobbyBuildTab.children) {
-                child.style.background = "rgba(255,255,255,0)";
+                child.style.background = 'rgba(255,255,255,0)';
               }
 
-              tab.style.background = "rgba(255,255,255,0.3)";
+              tab.style.background = 'rgba(255,255,255,0.3)';
 
               if (MM.lobbyBuildField.firstChild) {
                 MM.lobbyBuildField.firstChild.remove();
               }
 
-              MM.lobbyBuildField.append(
-                Build.viewModel(build.body, false, false),
-              );
+              MM.lobbyBuildField.append(Build.viewModel(build.body, false, false));
             },
           ],
         },
@@ -421,7 +387,7 @@ export class MM {
       if (build.target) {
         target = build.id;
 
-        tab.style.background = "rgba(255,255,255,0.3)";
+        tab.style.background = 'rgba(255,255,255,0.3)';
 
         if (MM.lobbyBuildField.firstChild) {
           MM.lobbyBuildField.firstChild.remove();
@@ -436,21 +402,21 @@ export class MM {
     let notify = true,
       random = DOM(
         {
-          style: "ready-button",
+          style: 'ready-button',
           event: [
-            "click",
+            'click',
             async () => {
               if (notify) {
-                random.innerText = Lang.text("mmOverwriteBuild");
+                random.innerText = Lang.text('mmOverwriteBuild');
 
                 notify = false;
 
                 return;
               }
 
-              random.innerText = Lang.text("mmGenerating");
+              random.innerText = Lang.text('mmGenerating');
 
-              let build = await App.api.request("build", "rebuild", {
+              let build = await App.api.request('build', 'rebuild', {
                 id: target,
               });
 
@@ -458,9 +424,7 @@ export class MM {
                 MM.lobbyBuildField.firstChild.remove();
               }
 
-              MM.lobbyBuildField.append(
-                Build.viewModel(build.body, false, false),
-              );
+              MM.lobbyBuildField.append(Build.viewModel(build.body, false, false));
 
               notify = true;
 
@@ -470,14 +434,14 @@ export class MM {
                 }
               }
 
-              random.innerText = Lang.text("mmRandomBuild");
+              random.innerText = Lang.text('mmRandomBuild');
             },
           ],
         },
-        Lang.text("mmRandomBuild"),
+        Lang.text('mmRandomBuild'),
       );
 
-    random.style.width = "auto";
+    random.style.width = 'auto';
 
     MM.lobbyBuildTab.append(random);
   }
@@ -486,7 +450,7 @@ export class MM {
     MM.targetBanHeroId = 0;
 
     if (!MM.hero) {
-      MM.hero = await App.api.request("build", "heroAll");
+      MM.hero = await App.api.request('build', 'heroAll');
     }
 
     if (!MM.id) {
@@ -495,36 +459,36 @@ export class MM {
 
     MM.searchActive(false);
 
-    Voice.infoPanel.classList.remove("left-offset-with-shift");
-    Voice.infoPanel.classList.add("left-offset-no-shift");
+    Voice.infoPanel.classList.remove('left-offset-with-shift');
+    Voice.infoPanel.classList.add('left-offset-no-shift');
 
-    View.castleQuestBody.classList.remove("left-offset-no-shift");
-    View.castleQuestBody.classList.add("left-offset-with-shift");
+    View.castleQuestBody.classList.remove('left-offset-no-shift');
+    View.castleQuestBody.classList.add('left-offset-with-shift');
 
     MM.lobbyUsers = data.users;
 
     MM.targetHeroId = data.users[App.storage.data.id].hero;
 
-    let lobbyBuild = DOM({ style: "mm-lobby-middle-build" });
+    let lobbyBuild = DOM({ style: 'mm-lobby-middle-build' });
 
     MM.lobbyBuildField = DOM();
 
-    MM.lobbyBuildField.style.margin = "0.5cqw 0";
+    MM.lobbyBuildField.style.margin = '0.5cqw 0';
 
-    MM.lobbyBuildField.style.width = "28cqw";
+    MM.lobbyBuildField.style.width = '28cqw';
 
-    MM.lobbyBuildField.style.height = "28cqw";
+    MM.lobbyBuildField.style.height = '28cqw';
 
-    MM.lobbyBuildTab = DOM({ style: "lobby-build-tab" });
+    MM.lobbyBuildTab = DOM({ style: 'lobby-build-tab' });
 
     MM.lobbyConfirm = DOM(
       {
-        style: "mm-ready-button",
+        style: 'mm-ready-button',
         event: [
-          "click",
+          'click',
           async () => {
             try {
-              await App.api.request(App.CURRENT_MM, "hero", {
+              await App.api.request(App.CURRENT_MM, 'hero', {
                 id: data.id,
                 heroId: MM.targetHeroId,
                 banHeroId: MM.targetBanHeroId,
@@ -533,22 +497,22 @@ export class MM {
               MM.lobbyConfirm.innerText = error;
 
               setTimeout(() => {
-                MM.lobbyConfirm.innerText = Lang.text("mmConfirm");
+                MM.lobbyConfirm.innerText = Lang.text('mmConfirm');
               }, 1500);
             }
           },
         ],
       },
-      Lang.text("ready2"),
+      Lang.text('ready2'),
     );
 
     MM.lobbyConfirm.style.opacity = 0;
 
-    MM.lobbyConfirm.style.width = "60%";
+    MM.lobbyConfirm.style.width = '60%';
 
     MM.lobbyConfirm.animate(
-      { transform: ["scale(1)", "scale(0.98)", "scale(1.02)", "scale(1)"] },
-      { duration: 2000, iterations: Infinity, easing: "ease-in-out" },
+      { transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] },
+      { duration: 2000, iterations: Infinity, easing: 'ease-in-out' },
     );
 
     lobbyBuild.append(MM.lobbyConfirm, MM.lobbyBuildField, MM.lobbyBuildTab);
@@ -557,51 +521,42 @@ export class MM {
       MM.lobbyBuildView(MM.targetHeroId);
     }
 
-    let leftTeam = DOM({ style: "mm-lobby-header-team" });
+    let leftTeam = DOM({ style: 'mm-lobby-header-team' });
 
-    let rightTeam = DOM({ style: "mm-lobby-header-team" });
+    let rightTeam = DOM({ style: 'mm-lobby-header-team' });
 
     for (let key of data.map) {
       let player = DOM({
         id: `PLAYER${key}`,
-        style: "mm-lobby-header-team-player",
+        style: 'mm-lobby-header-team-player',
       });
 
       player.dataset.hero = data.users[key].hero;
 
       player.dataset.skin = 1;
 
-      let hero = DOM({ style: "mm-lobby-header-team-player-hero" });
+      let hero = DOM({ style: 'mm-lobby-header-team-player-hero' });
 
-      let name = DOM(
-        { style: "mm-lobby-header-team-player-name" },
-        `${data.users[key].nickname}`,
-      );
+      let name = DOM({ style: 'mm-lobby-header-team-player-name' }, `${data.users[key].nickname}`);
 
-      let rankIcon = DOM({ style: "rank-icon" });
+      let rankIcon = DOM({ style: 'rank-icon' });
 
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        data.users[key].rating,
-      )}.webp)`;
+      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(data.users[key].rating)}.webp)`;
 
-      let rank = DOM(
-        { style: "rank" },
-        DOM({ style: "rank-lvl" }, data.users[key].rating),
-        rankIcon,
-      );
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.users[key].rating), rankIcon);
 
-      hero.append(rank, DOM({ style: "mm-frame" }));
+      hero.append(rank, DOM({ style: 'mm-frame' }));
 
-      if ("commander" in data.users[key]) {
-        name.setAttribute("style", "color:rgba(255,215,0,0.9)");
+      if ('commander' in data.users[key]) {
+        name.setAttribute('style', 'color:rgba(255,215,0,0.9)');
       }
 
-      let banhero = DOM({ style: "mm-player-ban" });
+      let banhero = DOM({ style: 'mm-player-ban' });
 
       if (data.users[key].banhero) {
         banhero.style.backgroundImage = `url(content/hero/${data.users[key].banhero}/1.webp)`;
 
-        banhero.style.display = "block";
+        banhero.style.display = 'block';
       }
 
       hero.append(banhero);
@@ -614,8 +569,8 @@ export class MM {
 
       if (key == data.target) {
         MM.lobbyPlayerAnimate = player.animate(
-          { transform: ["scale(1)", "scale(0.8)", "scale(1.1)", "scale(1)"] },
-          { duration: 2000, iterations: Infinity, easing: "ease-in-out" },
+          { transform: ['scale(1)', 'scale(0.8)', 'scale(1.1)', 'scale(1)'] },
+          { duration: 2000, iterations: Infinity, easing: 'ease-in-out' },
         );
       }
 
@@ -624,20 +579,15 @@ export class MM {
 
         player.onclick = () => {
           if (player.dataset.hero) {
-            Build.view(
-              key,
-              player.dataset.hero,
-              data.users[key].nickname,
-              false,
-            );
+            Build.view(key, player.dataset.hero, data.users[key].nickname, false);
           }
         };
       } else {
-        name.innerText = "ifst";
+        name.innerText = 'ifst';
 
         name.style.opacity = 0;
 
-        rankIcon.style.backgroundImage = "none";
+        rankIcon.style.backgroundImage = 'none';
 
         rank.firstChild.innerText = 1100;
 
@@ -647,27 +597,22 @@ export class MM {
       }
     }
 
-    MM.lobbyHeroes = DOM({ style: "mm-lobby-middle-hero" });
+    MM.lobbyHeroes = DOM({ style: 'mm-lobby-middle-hero' });
 
     if (data.banhero) {
-      MM.lobbyHeroes.append(
-        DOM(
-          { style: "mm-lobby-middle-hero-prompt" },
-          Lang.text("mmMouseControls"),
-        ),
-      );
+      MM.lobbyHeroes.append(DOM({ style: 'mm-lobby-middle-hero-prompt' }, Lang.text('mmMouseControls')));
     }
 
     //let preload = new PreloadImages(MM.lobbyHeroes);
 
-    let activeRankName = "";
+    let activeRankName = '';
 
     for (let item of MM.hero) {
       if (!item.id) {
         continue;
       }
 
-      if ("hero" in data && data.hero.length) {
+      if ('hero' in data && data.hero.length) {
         if (!data.hero.includes(`${item.id}`)) {
           continue;
         }
@@ -676,25 +621,16 @@ export class MM {
       let getRankName = Rank.getName(item.rating);
 
       if (getRankName != activeRankName) {
-        let rankIcon = DOM({ style: "mm-lobby-middle-hero-line-icon" });
+        let rankIcon = DOM({ style: 'mm-lobby-middle-hero-line-icon' });
 
-        rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(
-          item.rating,
-        )}.webp)`;
+        rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-        let rankIcon2 = DOM({ style: "mm-lobby-middle-hero-line-icon" });
+        let rankIcon2 = DOM({ style: 'mm-lobby-middle-hero-line-icon' });
 
-        rankIcon2.style.backgroundImage = `url(content/ranks/${Rank.icon(
-          item.rating,
-        )}.webp)`;
+        rankIcon2.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
         MM.lobbyHeroes.append(
-          DOM(
-            { style: "mm-lobby-middle-hero-line" },
-            rankIcon,
-            DOM({ style: "mm-lobby-middle-hero-line-name" }, getRankName),
-            rankIcon2,
-          ),
+          DOM({ style: 'mm-lobby-middle-hero-line' }, rankIcon, DOM({ style: 'mm-lobby-middle-hero-line-name' }, getRankName), rankIcon2),
         );
 
         activeRankName = getRankName;
@@ -703,7 +639,7 @@ export class MM {
       let hero = DOM({
         id: `HERO${item.id}`,
         data: { ban: 0 },
-        style: "mm-lobby-middle-hero-item",
+        style: 'mm-lobby-middle-hero-item',
       });
 
       hero.style.backgroundImage = `url("content/hero/${item.id}/1.webp")`; // ${( item.skin ? item.skin : 1)}
@@ -711,7 +647,7 @@ export class MM {
       hero.onclick = async () => {
         MM.targetHeroId = item.id;
 
-        await App.api.request(App.CURRENT_MM, "eventChangeHero", {
+        await App.api.request(App.CURRENT_MM, 'eventChangeHero', {
           id: MM.id,
           heroId: item.id,
         });
@@ -720,7 +656,7 @@ export class MM {
       };
 
       hero.oncontextmenu = async () => {
-        await App.api.request(App.CURRENT_MM, "eventBanHero", {
+        await App.api.request(App.CURRENT_MM, 'eventBanHero', {
           id: MM.id,
           heroId: item.id,
         });
@@ -728,10 +664,7 @@ export class MM {
         MM.targetBanHeroId = item.id;
       };
 
-      let rank = DOM(
-        { style: "rank" },
-        DOM({ style: "rank-lvl" }, item.rating),
-      );
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating));
 
       hero.append(rank);
 
@@ -744,9 +677,9 @@ export class MM {
       MM.lobbyConfirm.style.opacity = 1;
     }
 
-    let info = DOM({ style: "lobby-timer" });
+    let info = DOM({ style: 'lobby-timer' });
 
-    await Timer.start(data.id, "", () => {
+    await Timer.start(data.id, '', () => {
       MM.close();
 
       MM.searchActive(true);
@@ -754,46 +687,41 @@ export class MM {
 
     info.append(Timer.body);
 
-    MM.chatBody = DOM({ style: "mm-lobby-middle-chat-body" });
+    MM.chatBody = DOM({ style: 'mm-lobby-middle-chat-body' });
 
     let chatInput = DOM({
-      tag: "input",
-      style: "mm-lobby-middle-chat-button",
-      placeholder: Lang.text("enterTextAndPressEnter"),
+      tag: 'input',
+      style: 'mm-lobby-middle-chat-button',
+      placeholder: Lang.text('enterTextAndPressEnter'),
     });
 
-    chatInput.addEventListener("keyup", async (event) => {
-      if (event.code === "Enter") {
+    chatInput.addEventListener('keyup', async (event) => {
+      if (event.code === 'Enter') {
         if (chatInput.value.length < 2) {
-          throw "Количество символов < 2";
+          throw 'Количество символов < 2';
         }
 
         if (chatInput.value.length > 256) {
-          throw "Количество символов > 256";
+          throw 'Количество символов > 256';
         }
 
-        await App.api.request(App.CURRENT_MM, "chat", {
+        await App.api.request(App.CURRENT_MM, 'chat', {
           id: MM.id,
           message: chatInput.value,
         });
 
-        chatInput.value = "";
+        chatInput.value = '';
       }
     });
 
     let body = DOM(
-      { style: "mm-lobby" },
-      DOM({ style: "mm-lobby-header" }, leftTeam, info, rightTeam),
+      { style: 'mm-lobby' },
+      DOM({ style: 'mm-lobby-header' }, leftTeam, info, rightTeam),
       DOM(
-        { style: "mm-lobby-middle" },
+        { style: 'mm-lobby-middle' },
         DOM(
-          { style: "mm-lobby-middle-chat" },
-          DOM(
-            { style: "mm-lobby-middle-chat-map" },
-            data.mode == 0
-              ? MM.renderMap(data.users[App.storage.data.id].team)
-              : DOM(),
-          ),
+          { style: 'mm-lobby-middle-chat' },
+          DOM({ style: 'mm-lobby-middle-chat-map' }, data.mode == 0 ? MM.renderMap(data.users[App.storage.data.id].team) : DOM()),
           MM.chatBody,
           chatInput,
         ),
@@ -802,8 +730,8 @@ export class MM {
       ),
     );
 
-    Sound.play("content/sounds/tambur.ogg", {
-      id: "tambur",
+    Sound.play('content/sounds/tambur.ogg', {
+      id: 'tambur',
       volume: Castle.GetVolume(Castle.AUDIO_MUSIC),
       loop: true,
     });
@@ -820,22 +748,20 @@ export class MM {
       let findHero = document.getElementById(`HERO${data.users[key].hero}`);
 
       if (findHero) {
-        findHero.style.filter = "grayscale(100%)";
+        findHero.style.filter = 'grayscale(100%)';
 
-        findHero.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+        findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
 
         findHero.dataset.ban = key;
       }
 
       if (data.users[key].banhero) {
-        let findHero = document.getElementById(
-          `HERO${data.users[key].banhero}`,
-        );
+        let findHero = document.getElementById(`HERO${data.users[key].banhero}`);
 
         if (findHero) {
-          findHero.style.filter = "grayscale(100%)";
+          findHero.style.filter = 'grayscale(100%)';
 
-          findHero.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+          findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
         }
       }
     }
@@ -851,30 +777,27 @@ export class MM {
 
       Voice.association(App.storage.data.id, list, data.id);
     } catch (error) {
-      console.log("Voice.association", error);
+      console.log('Voice.association', error);
     }
   }
 
   static renderMap(team) {
-    MM.renderBody = DOM({ style: team == 1 ? "map" : "map-reverse" });
+    MM.renderBody = DOM({ style: team == 1 ? 'map' : 'map-reverse' });
 
-    let container = DOM({ tag: "div" }, MM.renderBody);
+    let container = DOM({ tag: 'div' }, MM.renderBody);
 
-    container.setAttribute("style", "width:37cqh;height:37cqh");
+    container.setAttribute('style', 'width:37cqh;height:37cqh');
 
     for (let number of [1, 2, 3, 4, 5, 6]) {
       let item = DOM({
         style: `map-item-${number}`,
         data: { player: 0, position: number },
         event: [
-          "click",
+          'click',
           async () => {
-            await App.api.request(App.CURRENT_MM, "position", {
+            await App.api.request(App.CURRENT_MM, 'position', {
               id: MM.id,
-              position:
-                item.dataset.player == App.storage.data.id
-                  ? 0
-                  : item.dataset.position,
+              position: item.dataset.player == App.storage.data.id ? 0 : item.dataset.position,
             });
           },
         ],
@@ -894,7 +817,7 @@ export class MM {
 
     MM.lobbyPlayerAnimate.cancel();
 
-    await Timer.start(data.id, "", () => {
+    await Timer.start(data.id, '', () => {
       MM.close();
 
       MM.searchActive(true);
@@ -906,13 +829,13 @@ export class MM {
     if (findOldPlayer) {
       findOldPlayer.dataset.hero = data.heroId;
 
-      if ("skin" in data && data.skin) {
+      if ('skin' in data && data.skin) {
         skinId = data.skin;
       }
 
       findOldPlayer.dataset.skin = skinId;
 
-      if ("frameId" in data) {
+      if ('frameId' in data) {
         findOldPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
       }
 
@@ -925,9 +848,9 @@ export class MM {
       if (data.banHeroId) {
         findOldPlayer.firstChild.lastChild.style.backgroundImage = `url(content/hero/${data.banHeroId}/1.webp)`;
 
-        findOldPlayer.firstChild.lastChild.style.display = "block";
+        findOldPlayer.firstChild.lastChild.style.display = 'block';
       } else {
-        findOldPlayer.firstChild.lastChild.style.display = "none";
+        findOldPlayer.firstChild.lastChild.style.display = 'none';
       }
     }
 
@@ -936,8 +859,8 @@ export class MM {
 
       if (findPlayer) {
         MM.lobbyPlayerAnimate = findPlayer.animate(
-          { transform: ["scale(1)", "scale(0.8)", "scale(1.2)", "scale(1)"] },
-          { duration: 500, iterations: Infinity, easing: "ease-in-out" },
+          { transform: ['scale(1)', 'scale(0.8)', 'scale(1.2)', 'scale(1)'] },
+          { duration: 500, iterations: Infinity, easing: 'ease-in-out' },
         );
       }
     }
@@ -946,9 +869,9 @@ export class MM {
       if (child.dataset.ban == data.userId) {
         child.dataset.ban = 0;
 
-        child.style.filter = "none";
+        child.style.filter = 'none';
 
-        child.style.backgroundColor = "rgba(255, 255, 255, 0)";
+        child.style.backgroundColor = 'rgba(255, 255, 255, 0)';
 
         break;
       }
@@ -957,9 +880,9 @@ export class MM {
     let findHero = document.getElementById(`HERO${data.heroId}`);
 
     if (findHero) {
-      findHero.style.filter = "grayscale(100%)";
+      findHero.style.filter = 'grayscale(100%)';
 
-      findHero.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+      findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
 
       findHero.onclick = false;
 
@@ -970,9 +893,9 @@ export class MM {
       let findHero = document.getElementById(`HERO${data.banHeroId}`);
 
       if (findHero) {
-        findHero.style.filter = "grayscale(100%)";
+        findHero.style.filter = 'grayscale(100%)';
 
-        findHero.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
+        findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
 
         findHero.onclick = false;
 
@@ -1017,14 +940,14 @@ export class MM {
     let findPlayer = document.getElementById(`PLAYER${data.id}`),
       skinId = 1;
 
-    if ("skin" in data && data.skin) {
+    if ('skin' in data && data.skin) {
       skinId = data.skin;
     }
 
     let url = `url(content/hero/${data.heroId}/${skinId}.webp)`;
 
     if (findPlayer) {
-      if ("frameId" in data) {
+      if ('frameId' in data) {
         findPlayer.firstChild.children[1].style.backgroundImage = `url(content/frames/${data.frameId}.png)`;
       }
 
@@ -1036,9 +959,7 @@ export class MM {
 
       findPlayer.firstChild.firstChild.firstChild.innerText = data.rating;
 
-      findPlayer.firstChild.firstChild.lastChild.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        data.rating,
-      )}.webp)`;
+      findPlayer.firstChild.firstChild.lastChild.style.backgroundImage = `url(content/ranks/${Rank.icon(data.rating)}.webp)`;
     }
 
     if (MM.renderBody) {
@@ -1058,7 +979,7 @@ export class MM {
     if (findPlayer) {
       findPlayer.firstChild.lastChild.style.backgroundImage = `url(content/hero/${data.heroId}/1.webp)`;
 
-      findPlayer.firstChild.lastChild.style.display = "block";
+      findPlayer.firstChild.lastChild.style.display = 'block';
     }
   }
 
@@ -1066,21 +987,21 @@ export class MM {
     let message = DOM(`${data.message}`);
 
     if (App.isAdmin(data.id)) {
-      message.style.color = "rgba(255, 50, 0, 0.9)";
-    } else if (data.id && "commander" in MM.lobbyUsers[data.id]) {
-      message.style.color = "rgba(255,215,0,0.9)";
+      message.style.color = 'rgba(255, 50, 0, 0.9)';
+    } else if (data.id && 'commander' in MM.lobbyUsers[data.id]) {
+      message.style.color = 'rgba(255,215,0,0.9)';
     }
 
-    let item = DOM({ style: "mm-lobby-middle-chat-body-item" });
+    let item = DOM({ style: 'mm-lobby-middle-chat-body-item' });
 
     if (data.id) {
-      item.append(DOM({ tag: "div" }, `${MM.lobbyUsers[data.id].nickname}:`));
+      item.append(DOM({ tag: 'div' }, `${MM.lobbyUsers[data.id].nickname}:`));
     }
 
     item.append(message);
 
     MM.chatBody.append(item);
 
-    item.scrollIntoView({ block: "end", behavior: "smooth" });
+    item.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }
 }

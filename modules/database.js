@@ -1,7 +1,7 @@
 export class DataBase {
   constructor(name, structure, version = 1) {
-    if (!("indexedDB" in window)) {
-      throw "Отсутствует поддержка IndexedDB!";
+    if (!('indexedDB' in window)) {
+      throw 'Отсутствует поддержка IndexedDB!';
     }
 
     this.name = name;
@@ -14,82 +14,79 @@ export class DataBase {
   async init() {
     let request = indexedDB.open(this.name, this.version);
 
-    request.addEventListener(
-      "upgradeneeded",
-      async (event) => await this.upgrade(event),
-    );
+    request.addEventListener('upgradeneeded', async (event) => await this.upgrade(event));
 
     return new Promise((resolve, reject) => {
-      request.addEventListener("success", (event) => {
+      request.addEventListener('success', (event) => {
         this.link = event.target.result;
 
         resolve();
       });
 
-      request.addEventListener("error", reject);
+      request.addEventListener('error', reject);
     });
   }
 
   async add(name, value, key) {
     let transaction, table, result;
 
-    transaction = this.link.transaction(name, "readwrite");
+    transaction = this.link.transaction(name, 'readwrite');
 
     table = transaction.objectStore(name);
 
     result = table.put(value, key);
 
     return new Promise((resolve, reject) => {
-      result.addEventListener("success", (event) => {
+      result.addEventListener('success', (event) => {
         resolve(event.target.result);
       });
 
       //transaction.addEventListener('complete',resolve);
 
-      transaction.addEventListener("error", reject);
+      transaction.addEventListener('error', reject);
     });
   }
 
   async get(name, key) {
     let transaction, table, result;
 
-    transaction = this.link.transaction(name, "readonly");
+    transaction = this.link.transaction(name, 'readonly');
 
     table = transaction.objectStore(name);
 
     result = table.get(key);
 
     return await new Promise((resolve, reject) => {
-      result.addEventListener("success", (event) => {
+      result.addEventListener('success', (event) => {
         resolve(event.target.result);
       });
 
-      result.addEventListener("error", reject);
+      result.addEventListener('error', reject);
     });
   }
 
   async getAll(name, key) {
     let transaction, table, result;
 
-    transaction = this.link.transaction(name, "readonly");
+    transaction = this.link.transaction(name, 'readonly');
 
     table = transaction.objectStore(name);
 
     result = table.getAll(key);
 
     return new Promise((resolve, reject) => {
-      result.addEventListener("success", (event) => {
+      result.addEventListener('success', (event) => {
         resolve(event.target.result);
       });
 
-      result.addEventListener("error", reject);
+      result.addEventListener('error', reject);
     });
   }
 
   async getIndexAllSync(name, nameIndex, nameKey, callback) {
     let transaction, table, index, result;
 
-    transaction = this.link.transaction(name, "readonly");
+    transaction = this.link.transaction(name, 'readonly');
 
     table = transaction.objectStore(name);
 
@@ -97,11 +94,11 @@ export class DataBase {
 
     result = index.getAll(nameKey);
 
-    result.addEventListener("success", (event) => {
+    result.addEventListener('success', (event) => {
       callback(event.target.result);
     });
 
-    result.addEventListener("error", (error) => {
+    result.addEventListener('error', (error) => {
       throw error;
     });
 
@@ -132,7 +129,7 @@ export class DataBase {
   async getIndexAll(name, nameIndex, nameKey) {
     let transaction, table, index, result;
 
-    transaction = this.link.transaction(name, "readonly");
+    transaction = this.link.transaction(name, 'readonly');
 
     table = transaction.objectStore(name);
 
@@ -141,11 +138,11 @@ export class DataBase {
     result = index.getAll(nameKey);
 
     return new Promise((resolve, reject) => {
-      result.addEventListener("success", (event) => {
+      result.addEventListener('success', (event) => {
         resolve(event.target.result);
       });
 
-      result.addEventListener("error", reject);
+      result.addEventListener('error', reject);
     });
   }
 
@@ -154,14 +151,12 @@ export class DataBase {
 
     for (let table in object) {
       switch (object[table].method) {
-        case "get":
+        case 'get':
           requests.push(this.get(table, object[table].id));
           break;
 
-        case "getIndexAll":
-          requests.push(
-            this.getIndexAll(table, object[table].key, object[table].id),
-          );
+        case 'getIndexAll':
+          requests.push(this.getIndexAll(table, object[table].key, object[table].id));
           break;
 
         default:
@@ -190,7 +185,7 @@ export class DataBase {
     }
 
     for (let item of keys) {
-      await this.delete(name, "id");
+      await this.delete(name, 'id');
     }
 
     return true;
@@ -199,23 +194,23 @@ export class DataBase {
   async delete(name, key) {
     let transaction, table, result;
 
-    transaction = this.link.transaction(name, "readwrite");
+    transaction = this.link.transaction(name, 'readwrite');
 
     table = transaction.objectStore(name);
 
     result = table.delete(key);
 
     return new Promise((resolve, reject) => {
-      result.addEventListener("success", (event) => {
+      result.addEventListener('success', (event) => {
         resolve(event);
       });
 
-      result.addEventListener("error", reject);
+      result.addEventListener('error', reject);
     });
   }
 
   async clear(name) {
-    let transaction = this.link.transaction(name, "readwrite");
+    let transaction = this.link.transaction(name, 'readwrite');
 
     return transaction.objectStore(name).clear();
   }
@@ -244,7 +239,7 @@ export class DataBase {
         }
 
         if (find) {
-          if ("clear" in objectStore) {
+          if ('clear' in objectStore) {
             db.deleteObjectStore(objectStore.name);
           } else {
             continue;
@@ -259,9 +254,7 @@ export class DataBase {
           }
         }
       } catch (e) {
-        console.log(
-          `Ошибочка, которую мы скрыли: ${e} :ибо как проверить на наличие таблицы? ;>`,
-        );
+        console.log(`Ошибочка, которую мы скрыли: ${e} :ибо как проверить на наличие таблицы? ;>`);
       }
     }
   }

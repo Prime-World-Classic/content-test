@@ -1,15 +1,15 @@
-import { DOM } from "./dom.js";
-import { App } from "./app.js";
-import { Settings } from "./settings.js";
-import { Sound } from "./sound.js";
-import { Castle } from "./castle.js";
-import { Lang } from "./lang.js";
+import { DOM } from './dom.js';
+import { App } from './app.js';
+import { Settings } from './settings.js';
+import { Sound } from './sound.js';
+import { Castle } from './castle.js';
+import { Lang } from './lang.js';
 
 export class Voice {
   static peerConnectionConfig = {
     // проверка stun https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
     iceServers: [
-      { urls: ["turn:81.88.210.30:3478"], credential: "pw", username: "pw" },
+      { urls: ['turn:81.88.210.30:3478'], credential: 'pw', username: 'pw' },
       /*
 			{url:'turn:192.158.29.39:3478?transport=udp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
 			{url:'turn:192.158.29.39:3478?transport=tcp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
@@ -73,10 +73,7 @@ export class Voice {
 
   static init() {
     if (!Voice.infoPanel) {
-      Voice.infoPanel = DOM(
-        { style: ["voice-info-panel", "left-offset-with-shift"] },
-        DOM({ style: "voice-info-panel-body" }),
-      );
+      Voice.infoPanel = DOM({ style: ['voice-info-panel', 'left-offset-with-shift'] }, DOM({ style: 'voice-info-panel-body' }));
     }
 
     document.body.append(Voice.infoPanel);
@@ -89,7 +86,7 @@ export class Voice {
       return;
     }
 
-    Voice.infoPanel.style.display = "flex";
+    Voice.infoPanel.style.display = 'flex';
 
     try {
       Voice.userMedia = await navigator.mediaDevices.getUserMedia({
@@ -101,9 +98,7 @@ export class Voice {
         video: false,
       });
     } catch (error) {
-      return App.error(
-        Lang.text("mediaDevicesError").replace("{error}", error),
-      );
+      return App.error(Lang.text('mediaDevicesError').replace('{error}', error));
     }
 
     let tracks = new Array();
@@ -111,17 +106,15 @@ export class Voice {
     try {
       tracks = Voice.userMedia.getTracks();
     } catch (error) {
-      return App.error(
-        Lang.text("streamTracksError").replace("{error}", error),
-      );
+      return App.error(Lang.text('streamTracksError').replace('{error}', error));
     }
 
     if (!tracks.length) {
-      return App.error(Lang.text("mediaTracksLack"));
+      return App.error(Lang.text('mediaTracksLack'));
     }
 
-    if (tracks[0].kind != "audio") {
-      return App.error(Lang.text("cantDefaultMic"));
+    if (tracks[0].kind != 'audio') {
+      return App.error(Lang.text('cantDefaultMic'));
     }
 
     Voice.mic = tracks[0];
@@ -137,21 +130,21 @@ export class Voice {
     }
 
     if (!Voice.mic) {
-      return App.error(Lang.text("cantDefaultMic"));
+      return App.error(Lang.text('cantDefaultMic'));
     }
 
     Voice.mic.enabled = !Voice.mic.enabled;
 
     if (Voice.mic.enabled) {
-      Sound.play("content/sounds/voice/enabled.mp3", {
-        id: "Voice_enabled",
+      Sound.play('content/sounds/voice/enabled.mp3', {
+        id: 'Voice_enabled',
         volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
 
       //Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
     } else {
-      Sound.play("content/sounds/voice/disabled.mp3", {
-        id: "Voice_disabled",
+      Sound.play('content/sounds/voice/disabled.mp3', {
+        id: 'Voice_disabled',
         volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
 
@@ -206,29 +199,29 @@ export class Voice {
       Voice.infoPanel.firstChild.firstChild.remove();
     }
 
-    let level = DOM({ style: "voice-info-panel-body-item-bar-level" });
+    let level = DOM({ style: 'voice-info-panel-body-item-bar-level' });
 
-    let bar = DOM({ style: "voice-info-panel-body-item-bar" }, level);
+    let bar = DOM({ style: 'voice-info-panel-body-item-bar' }, level);
 
     if (Voice.mic) {
       Voice.indication(Voice.userMedia, (percent) => {
         level.style.width = `${percent}%`;
       });
     } else {
-      bar.classList.add("voice-info-panel-body-item-nostream");
+      bar.classList.add('voice-info-panel-body-item-nostream');
     }
 
     Voice.infoPanel.firstChild.append(
       DOM(
-        { style: "voice-info-panel-body-item" },
+        { style: 'voice-info-panel-body-item' },
         DOM(
           {
-            style: "voice-info-panel-body-item-name",
-            event: ["click", () => Voice.toggleEnabledMic()],
+            style: 'voice-info-panel-body-item-name',
+            event: ['click', () => Voice.toggleEnabledMic()],
           },
           App.storage.data.login,
         ),
-        DOM({ style: "voice-info-panel-body-item-status" }, bar),
+        DOM({ style: 'voice-info-panel-body-item-status' }, bar),
       ),
     );
 
@@ -236,21 +229,18 @@ export class Voice {
       Voice.playerInfoPanel(id);
     }
 
-    let tutorial = DOM({ style: "voice-info-panel-body-tutorial" });
+    let tutorial = DOM({ style: 'voice-info-panel-body-tutorial' });
 
     if (Voice.mic) {
       if (Voice.mic.enabled) {
-        tutorial.innerText =
-          Lang.text("hotkeyDropCalls") +
-          "\n" +
-          Lang.text("hotkeyVolumeControl");
+        tutorial.innerText = Lang.text('hotkeyDropCalls') + '\n' + Lang.text('hotkeyVolumeControl');
       } else {
         tutorial.innerText =
-          Lang.text("hotkeyDropCalls") +
-          "\n" +
-          Lang.text("hotkeyVolumeControl") +
-          "\n────────────\n" +
-          Lang.text("enableMic").replace("{Voice.mic.label}", Voice.mic.label);
+          Lang.text('hotkeyDropCalls') +
+          '\n' +
+          Lang.text('hotkeyVolumeControl') +
+          '\n────────────\n' +
+          Lang.text('enableMic').replace('{Voice.mic.label}', Voice.mic.label);
       }
     }
 
@@ -261,15 +251,15 @@ export class Voice {
     let name = Voice.manager[id].name ? Voice.manager[id].name : `id${id}`;
 
     let state = () => {
-      let status = "";
+      let status = '';
 
       switch (Voice.manager[id].peer.connectionState) {
-        case "new":
-          status = Lang.text("waitingResponse");
+        case 'new':
+          status = Lang.text('waitingResponse');
           break;
 
-        case "connecting":
-          status = Lang.text("voiceConnecting");
+        case 'connecting':
+          status = Lang.text('voiceConnecting');
           break;
 
         default:
@@ -277,16 +267,14 @@ export class Voice {
           break;
       }
 
-      return Voice.manager[id].peer.connectionState == "connected"
-        ? `${name} [Х]`
-        : `${name} (${status})`;
+      return Voice.manager[id].peer.connectionState == 'connected' ? `${name} [Х]` : `${name} (${status})`;
     };
 
     let item = DOM(
       {
-        style: "voice-info-panel-body-item-name",
+        style: 'voice-info-panel-body-item-name',
         event: [
-          "click",
+          'click',
           () => {
             Voice.manager[id].close();
 
@@ -297,27 +285,24 @@ export class Voice {
       state(),
     );
 
-    let level = DOM({ style: "voice-info-panel-body-item-bar-level" });
+    let level = DOM({ style: 'voice-info-panel-body-item-bar-level' });
 
-    let bar = DOM({ style: "voice-info-panel-body-item-bar" }, level);
+    let bar = DOM({ style: 'voice-info-panel-body-item-bar' }, level);
 
     let indication = () => {
-      if (
-        Voice.manager[id].peer.connectionState == "connected" &&
-        Voice.manager[id].stream
-      ) {
+      if (Voice.manager[id].peer.connectionState == 'connected' && Voice.manager[id].stream) {
         Voice.indication(Voice.manager[id].stream, (percent) => {
           level.style.width = `${percent}%`;
         });
       }
 
       if (Voice.manager[id].stream) {
-        if (bar.classList.contains("voice-info-panel-body-item-nostream")) {
-          bar.classList.remove("voice-info-panel-body-item-nostream");
+        if (bar.classList.contains('voice-info-panel-body-item-nostream')) {
+          bar.classList.remove('voice-info-panel-body-item-nostream');
         }
       } else {
-        if (!bar.classList.contains("voice-info-panel-body-item-nostream")) {
-          bar.classList.add("voice-info-panel-body-item-nostream");
+        if (!bar.classList.contains('voice-info-panel-body-item-nostream')) {
+          bar.classList.add('voice-info-panel-body-item-nostream');
         }
       }
     };
@@ -331,11 +316,7 @@ export class Voice {
     };
 
     Voice.infoPanel.firstChild.append(
-      DOM(
-        { style: "voice-info-panel-body-item" },
-        item,
-        DOM({ style: "voice-info-panel-body-item-status" }, bar),
-      ),
+      DOM({ style: 'voice-info-panel-body-item' }, item, DOM({ style: 'voice-info-panel-body-item-status' }, bar)),
     );
   }
 
@@ -352,9 +333,9 @@ export class Voice {
 
     if (id in Voice.cacheCandidate) {
       for (let candidate of Voice.cacheCandidate[id]) {
-        console.log("ОТПРАВИЛИ ICE кандидат из кэша:", candidate);
+        console.log('ОТПРАВИЛИ ICE кандидат из кэша:', candidate);
 
-        await App.api.ghost("user", "callCandidate", {
+        await App.api.ghost('user', 'callCandidate', {
           id: id,
           candidate: candidate,
         });
@@ -382,7 +363,7 @@ export class Voice {
     }
 
     if (say) {
-      App.say(Lang.text("callsDropped"));
+      App.say(Lang.text('callsDropped'));
     }
 
     if (Voice.mic) {
@@ -435,18 +416,18 @@ export class Voice {
   static updatePanelPosition() {
     if (!Voice.infoPanel) return;
 
-    const isBuildWindowOpen = document.getElementById("wbuild") !== null;
+    const isBuildWindowOpen = document.getElementById('wbuild') !== null;
 
     if (isBuildWindowOpen) {
-      Voice.infoPanel.classList.remove("left-offset-with-shift");
+      Voice.infoPanel.classList.remove('left-offset-with-shift');
     } else {
-      Voice.infoPanel.classList.add("left-offset-with-shift");
+      Voice.infoPanel.classList.add('left-offset-with-shift');
     }
   }
 
   static async association(i, users, key) {
     if (Settings.settings.novoice) {
-      throw Lang.text("voiceDisabled");
+      throw Lang.text('voiceDisabled');
     }
 
     let start = false;
@@ -468,7 +449,7 @@ export class Voice {
     }
   }
 
-  constructor(id, key = "", name = "", important = false) {
+  constructor(id, key = '', name = '', important = false) {
     this.id = id;
 
     this.key = key;
@@ -483,10 +464,7 @@ export class Voice {
 
     this.controller = null;
 
-    if (
-      this.id in Voice.manager ||
-      Object.keys(Voice.manager).length + 1 > Voice.limit
-    ) {
+    if (this.id in Voice.manager || Object.keys(Voice.manager).length + 1 > Voice.limit) {
       this.peer = null;
 
       return this;
@@ -497,7 +475,7 @@ export class Voice {
     Voice.manager[this.id] = this;
 
     this.peer.ontrack = (event) => {
-      console.log("Получен удаленный медиапоток", event);
+      console.log('Получен удаленный медиапоток', event);
 
       this.stream = new MediaStream([event.track]);
 
@@ -515,17 +493,17 @@ export class Voice {
 
       document.body.prepend(this.controller);
 
-      this.controller.style.display = "none";
+      this.controller.style.display = 'none';
     };
 
     this.peer.onicecandidate = async (event) => {
       if (event.candidate) {
-        console.log("Сгенерирован ICE кандидат:", event.candidate);
+        console.log('Сгенерирован ICE кандидат:', event.candidate);
 
         if (this.peer.remoteDescription) {
-          console.log("ОТПРАВИЛИ ICE кандидат:", event.candidate);
+          console.log('ОТПРАВИЛИ ICE кандидат:', event.candidate);
 
-          await App.api.ghost("user", "callCandidate", {
+          await App.api.ghost('user', 'callCandidate', {
             id: this.id,
             candidate: event.candidate,
           });
@@ -537,25 +515,25 @@ export class Voice {
           Voice.cacheCandidate[this.id].push(event.candidate);
         }
       } else {
-        console.log("Все ICE кандидаты собраны");
+        console.log('Все ICE кандидаты собраны');
       }
     };
 
     this.peer.oniceconnectionstatechange = () => {
       switch (this.peer.iceConnectionState) {
-        case "connected":
-          console.log("Соединение успешно установлено");
+        case 'connected':
+          console.log('Соединение успешно установлено');
           break;
 
-        case "disconnected":
+        case 'disconnected':
           this.close();
           break; // reconnect
 
-        case "failed":
+        case 'failed':
           this.close();
           break; // reconnect
 
-        case "closed":
+        case 'closed':
           this.close();
           break;
       }
@@ -566,7 +544,7 @@ export class Voice {
 
   async call() {
     if (Settings.settings.novoice) {
-      throw Lang.text("voiceDisabled");
+      throw Lang.text('voiceDisabled');
     }
 
     if (!this.peer) {
@@ -596,7 +574,7 @@ export class Voice {
       this.close();
     }, 15000);
 
-    await App.api.request("user", "call", {
+    await App.api.request('user', 'call', {
       id: this.id,
       key: this.key,
       offer: offer,
@@ -609,7 +587,7 @@ export class Voice {
 
   async accept(offer) {
     if (Settings.settings.novoice) {
-      throw Lang.text("voiceDisabled");
+      throw Lang.text('voiceDisabled');
     }
 
     if (!this.peer) {
@@ -626,7 +604,7 @@ export class Voice {
 
     let answer = await this.peer.createAnswer();
 
-    await App.api.ghost("user", "callAccept", { id: this.id, answer: answer });
+    await App.api.ghost('user', 'callAccept', { id: this.id, answer: answer });
 
     await this.peer.setLocalDescription(answer);
 
@@ -634,7 +612,7 @@ export class Voice {
   }
 
   async reconnect() {
-    console.log("Реконнект...");
+    console.log('Реконнект...');
     this.close();
 
     if (!this.isCaller) {

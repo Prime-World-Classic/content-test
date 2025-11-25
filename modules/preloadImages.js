@@ -4,7 +4,7 @@ export class PreloadImages {
 
     preload.src = url;
 
-    preload.addEventListener("load", () => {
+    preload.addEventListener('load', () => {
       callback();
     });
   }
@@ -15,11 +15,11 @@ export class PreloadImages {
     image.src = url;
 
     return new Promise((resolve, reject) => {
-      image.addEventListener("load", () => {
+      image.addEventListener('load', () => {
         resolve(image);
       });
 
-      image.addEventListener("error", (error) => reject(error));
+      image.addEventListener('error', (error) => reject(error));
     });
   }
 
@@ -28,9 +28,7 @@ export class PreloadImages {
 
     this.callback = callback;
 
-    this.observer = new IntersectionObserver((entries) =>
-      this.preload(entries),
-    );
+    this.observer = new IntersectionObserver((entries) => this.preload(entries));
   }
 
   add(element, target) {
@@ -52,12 +50,12 @@ export class PreloadImages {
 
         preload.src = entry.target.dataset.url;
 
-        preload.addEventListener("load", () => {
+        preload.addEventListener('load', () => {
           entry.target.style.backgroundImage = `url("${entry.target.dataset.url}")`;
 
           let animation = entry.target.animate(
-            { opacity: [0, 1], transform: ["scale(0.9)", "scale(1)"] },
-            { duration: 500, easing: "ease-out", fill: "forwards" },
+            { opacity: [0, 1], transform: ['scale(0.9)', 'scale(1)'] },
+            { duration: 500, easing: 'ease-out', fill: 'forwards' },
           );
 
           if (this.callback) {

@@ -1,4 +1,4 @@
-import { Lang } from "./lang.js";
+import { Lang } from './lang.js';
 
 export class Rank {
   static _names = null;
@@ -6,20 +6,20 @@ export class Rank {
   static get name() {
     if (!Rank._names) {
       Rank._names = [
-        "",
-        Lang.text("rankRecruit"),
-        Lang.text("rankMercenary"),
-        Lang.text("rankPrivate"),
-        Lang.text("rankCorporal"),
-        Lang.text("rankSergeant"),
-        Lang.text("rankLieutenant"),
-        Lang.text("rankCaptain"),
-        Lang.text("rankMajor"),
-        Lang.text("rankLieutenantColonel"),
-        Lang.text("rankColonel"),
-        Lang.text("rankGeneral"),
-        Lang.text("rankMarshal"),
-        Lang.text("rankGod"),
+        '',
+        Lang.text('rankRecruit'),
+        Lang.text('rankMercenary'),
+        Lang.text('rankPrivate'),
+        Lang.text('rankCorporal'),
+        Lang.text('rankSergeant'),
+        Lang.text('rankLieutenant'),
+        Lang.text('rankCaptain'),
+        Lang.text('rankMajor'),
+        Lang.text('rankLieutenantColonel'),
+        Lang.text('rankColonel'),
+        Lang.text('rankGeneral'),
+        Lang.text('rankMarshal'),
+        Lang.text('rankGod'),
       ];
     }
 

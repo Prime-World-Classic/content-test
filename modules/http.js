@@ -1,13 +1,13 @@
 export class HTTP {
-  static async request(url, type = "") {
+  static async request(url, type = '') {
     let response = await fetch(url);
 
     switch (type) {
-      case "text":
+      case 'text':
         return await response.text();
         break;
 
-      case "arrayBuffer":
+      case 'arrayBuffer':
         return await response.arrayBuffer();
         break;
 

@@ -1,20 +1,20 @@
-import { DOM } from "./dom.js";
-import { ParentEvent } from "./parentEvent.js";
-import { Lang } from "./lang.js";
-import { View } from "./view.js";
-import { App } from "./app.js";
-import { NativeAPI } from "./nativeApi.js";
-import { Castle } from "./castle.js";
-import { Settings } from "./settings.js";
-import { Sound } from "./sound.js";
-import { Splash } from "./splash.js";
-import { Shop } from "./shop.js";
-import { Voice } from "./voice.js";
-import { MM } from "./mm.js";
-import { Build } from "./build.js";
-import { Timer } from "./timer.js";
+import { DOM } from './dom.js';
+import { ParentEvent } from './parentEvent.js';
+import { Lang } from './lang.js';
+import { View } from './view.js';
+import { App } from './app.js';
+import { NativeAPI } from './nativeApi.js';
+import { Castle } from './castle.js';
+import { Settings } from './settings.js';
+import { Sound } from './sound.js';
+import { Splash } from './splash.js';
+import { Shop } from './shop.js';
+import { Voice } from './voice.js';
+import { MM } from './mm.js';
+import { Build } from './build.js';
+import { Timer } from './timer.js';
 
-import { domAudioPresets } from "./domAudioPresets.js";
+import { domAudioPresets } from './domAudioPresets.js';
 
 export class Window {
   static windows = {};
@@ -27,10 +27,10 @@ export class Window {
     let closeButton = DOM(
       {
         domaudio: domAudioPresets.closeButton,
-        style: "close-button",
-        title: Lang.text("titleClose"),
+        style: 'close-button',
+        title: Lang.text('titleClose'),
         event: [
-          "click",
+          'click',
           () => {
             Window.close(category);
             requestAnimationFrame(() => Voice.updatePanelPosition());
@@ -38,10 +38,10 @@ export class Window {
         ],
       },
       DOM({
-        tag: "img",
-        src: "content/icons/close-cropped.svg",
-        alt: Lang.text("titleClose"),
-        style: "close-image-style",
+        tag: 'img',
+        src: 'content/icons/close-cropped.svg',
+        alt: Lang.text('titleClose'),
+        style: 'close-image-style',
       }),
     );
     template.append(closeButton);
@@ -83,31 +83,31 @@ export class Window {
   }
   static async steamauth() {
     return DOM(
-      { id: "wsteamauth" },
-      DOM({ style: "castle-menu-title" }, Lang.text("steamauthTitle")),
+      { id: 'wsteamauth' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('steamauthTitle')),
       DOM(
-        { style: "castle-menu-items" },
-        DOM({ style: "castle-menu-text" }, Lang.text("steamauth")),
+        { style: 'castle-menu-items' },
+        DOM({ style: 'castle-menu-text' }, Lang.text('steamauth')),
         DOM(
           {
             domaudio: domAudioPresets.defaultButton,
-            style: "castle-menu-item-button",
+            style: 'castle-menu-item-button',
             event: [
-              "click",
+              'click',
               () => {
                 ParentEvent.children = window.open(
-                  "https://api2.26rus-game.ru:2087",
-                  "SteamAuth",
-                  "width=1280, height=720, top=" +
+                  'https://api2.26rus-game.ru:2087',
+                  'SteamAuth',
+                  'width=1280, height=720, top=' +
                     (screen.height - 720) / 2 +
-                    ", left=" +
+                    ', left=' +
                     (screen.width - 1280) / 2 +
-                    ", toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no",
+                    ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
                 );
               },
             ],
           },
-          Lang.text("continue"),
+          Lang.text('continue'),
         ),
       ),
     );
@@ -115,74 +115,61 @@ export class Window {
   static async build(heroId, targetId = 0, isWindow = false) {
     let viewBuild = await View.build(heroId, targetId, isWindow);
     requestAnimationFrame(() => Voice.updatePanelPosition());
-    return DOM({ id: "wbuild" }, viewBuild);
+    return DOM({ id: 'wbuild' }, viewBuild);
   }
   static async top(hero = 0, mode = 0) {
     let viewTop = await View.top(hero, true, mode);
-    return DOM({ id: "wtop" }, viewTop);
+    return DOM({ id: 'wtop' }, viewTop);
   }
   static async farm() {
     let view = await View.game(true);
-    return DOM({ id: "wgame" }, view);
+    return DOM({ id: 'wgame' }, view);
   }
   static async history() {
     let view = await View.history(true);
-    return DOM({ id: "whistory" }, view);
+    return DOM({ id: 'whistory' }, view);
   }
   static async inventory() {
     let view = await View.inventory(true);
-    return DOM({ id: "winventory" }, view);
+    return DOM({ id: 'winventory' }, view);
   }
 
   static async processShopAndCollection(request, isShop) {
-    View.castleCrystalContainer.classList.remove("crystal-container-anim");
+    View.castleCrystalContainer.classList.remove('crystal-container-anim');
     let topHeroVictoryCount = { heroId: 1, skinId: 1, frameId: 0 };
     try {
-      topHeroVictoryCount = await App.api.request(
-        App.CURRENT_MM,
-        "getHeroWithFrameId",
-      );
+      topHeroVictoryCount = await App.api.request(App.CURRENT_MM, 'getHeroWithFrameId');
     } catch (e) {
       App.error(e);
     }
     let category = {
-      skin: DOM({ style: "shop_items" }),
-      flag: DOM({ style: "shop_items" }),
-      frame: DOM({ style: ["shop_items", "shop_items_frames"] }),
+      skin: DOM({ style: 'shop_items' }),
+      flag: DOM({ style: 'shop_items' }),
+      frame: DOM({ style: ['shop_items', 'shop_items_frames'] }),
     };
 
     function prepareItem(rItem) {
-      let additionalMessage = DOM({ style: "shop_category_hint" });
+      let additionalMessage = DOM({ style: 'shop_category_hint' });
       let isEnabled = rItem.enabled;
       const categoryName = Shop.categories[rItem.categoryId];
-      const isFrame = categoryName == "frame";
-      const isFlag = categoryName == "flag";
-      const isSkin = categoryName == "skin";
+      const isFrame = categoryName == 'frame';
+      const isFlag = categoryName == 'flag';
+      const isSkin = categoryName == 'skin';
       const isDefault = rItem.id == 0;
       let item = DOM({
-        style: isFrame ? "shop_item_img_frame" : "shop_item_img",
+        style: isFrame ? 'shop_item_img_frame' : 'shop_item_img',
       });
-      let itemSrc = DOM({ style: "shop_item_img" });
-      let itemIcon = Shop.getIcon(
-        rItem.categoryId,
-        isFrame
-          ? `${rItem.externalId}/${topHeroVictoryCount.frameId}`
-          : rItem.externalId,
-      );
+      let itemSrc = DOM({ style: 'shop_item_img' });
+      let itemIcon = Shop.getIcon(rItem.categoryId, isFrame ? `${rItem.externalId}/${topHeroVictoryCount.frameId}` : rItem.externalId);
       item.style.backgroundImage = itemIcon[0];
       let itemName = Shop.getName(rItem.categoryId, rItem.externalId);
       const translatedName = Lang.text(itemName[0]);
-      let srcTranslatedName = "";
-      let frameItems = [
-        item.cloneNode(),
-        item.cloneNode(),
-        item.cloneNode(),
-        item.cloneNode(),
-      ];
+      let srcTranslatedName = '';
+      let frameItems = [item.cloneNode(), item.cloneNode(), item.cloneNode(), item.cloneNode()];
       if (isSkin) {
         itemSrc.style.backgroundImage = itemIcon[1]; //`url("content/hero/${heroId}/1.webp")`;
         srcTranslatedName = Lang.text(itemName[1]);
-        let heroId_skinId = rItem.externalId.split("/");
+        let heroId_skinId = rItem.externalId.split('/');
         let heroId = heroId_skinId[0];
         let skinId = heroId_skinId[1];
         if (!isShop) {
@@ -194,182 +181,124 @@ export class Window {
       }
       let shopItemBackground = DOM();
       if (isFrame) {
-        shopItemBackground = DOM({ style: "shop_item_img" });
+        shopItemBackground = DOM({ style: 'shop_item_img' });
         shopItemBackground.style.backgroundImage = `url("content/hero/${topHeroVictoryCount.heroId}/${topHeroVictoryCount.skinId}.webp")`;
         frameItems[1].style.backgroundImage = itemIcon[1];
         frameItems[2].style.backgroundImage = itemIcon[2];
         frameItems[3].style.backgroundImage = itemIcon[3];
 
         if (topHeroVictoryCount.frameId == 0 && !isDefault) {
-          additionalMessage.appendChild(
-            DOM({ style: "splash-shop-item-hint" }, Lang.text("frame_hint")),
-          );
+          additionalMessage.appendChild(DOM({ style: 'splash-shop-item-hint' }, Lang.text('frame_hint')));
         }
         if (topHeroVictoryCount.frameId > 0 && !isDefault) {
           let targetShopItem = frameItems[topHeroVictoryCount.frameId - 1];
-          targetShopItem.classList.add("shop_item_frame_animated");
+          targetShopItem.classList.add('shop_item_frame_animated');
         }
       }
       if (isFlag) {
-        shopItemBackground = DOM({ style: "shop_item_img_flag" });
+        shopItemBackground = DOM({ style: 'shop_item_img_flag' });
         shopItemBackground.style.backgroundImage = item.style.backgroundImage;
         item.style.backgroundImage = `url("content/img/b7.png")`;
       }
       if (isSkin) {
-        shopItemBackground = DOM({ style: "shop_item_img_skin" });
+        shopItemBackground = DOM({ style: 'shop_item_img_skin' });
         shopItemBackground.style.backgroundImage = `url("content/img/b2.png")`;
       }
       let shopItemContainerStyle = [
-        isEnabled
-          ? "shop_item_container"
-          : isShop
-            ? "shop_item_container_disabled"
-            : "shop_item_container_equipped",
+        isEnabled ? 'shop_item_container' : isShop ? 'shop_item_container_disabled' : 'shop_item_container_equipped',
       ];
       const showQuadFrame = isFrame && !isDefault;
       if (isSkin) {
-        shopItemContainerStyle.push("show_item_container_double");
+        shopItemContainerStyle.push('show_item_container_double');
       }
       if (showQuadFrame) {
-        shopItemContainerStyle.push("show_item_container_quadruple");
+        shopItemContainerStyle.push('show_item_container_quadruple');
       }
       let shopItem = DOM(
         { style: shopItemContainerStyle, title: translatedName },
         isSkin
           ? DOM(
-              { style: "shop_item" },
-              DOM(
-                { style: "shop_item_img_container" },
-                shopItemBackground.cloneNode(),
-                itemSrc,
-              ),
-              DOM({ style: "shop_item_name" }, isSkin ? srcTranslatedName : ""),
+              { style: 'shop_item' },
+              DOM({ style: 'shop_item_img_container' }, shopItemBackground.cloneNode(), itemSrc),
+              DOM({ style: 'shop_item_name' }, isSkin ? srcTranslatedName : ''),
             )
           : DOM(),
         !isFrame
           ? DOM(
-              { style: "shop_item" },
-              DOM(
-                { style: "shop_item_img_container" },
-                shopItemBackground,
-                item,
-              ),
-              DOM(
-                { style: "shop_item_name" },
-                isSkin
-                  ? translatedName
-                  : isFrame
-                    ? Lang.text("frame_req_1")
-                    : "",
-              ),
+              { style: 'shop_item' },
+              DOM({ style: 'shop_item_img_container' }, shopItemBackground, item),
+              DOM({ style: 'shop_item_name' }, isSkin ? translatedName : isFrame ? Lang.text('frame_req_1') : ''),
             )
           : DOM(),
         isFrame
           ? DOM(
-              { style: "shop_item" },
-              DOM(
-                { style: "shop_item_img_container" },
-                shopItemBackground.cloneNode(),
-                frameItems[0],
-              ),
-              DOM(
-                { style: "shop_item_name" },
-                showQuadFrame
-                  ? Lang.text("frame_req_1")
-                  : Lang.text("frame_no_frame"),
-              ),
+              { style: 'shop_item' },
+              DOM({ style: 'shop_item_img_container' }, shopItemBackground.cloneNode(), frameItems[0]),
+              DOM({ style: 'shop_item_name' }, showQuadFrame ? Lang.text('frame_req_1') : Lang.text('frame_no_frame')),
             )
           : DOM(),
         showQuadFrame
           ? DOM(
-              { style: "shop_item" },
-              DOM(
-                { style: "shop_item_img_container" },
-                shopItemBackground.cloneNode(),
-                frameItems[1],
-              ),
-              DOM({ style: "shop_item_name" }, Lang.text("frame_req_2")),
+              { style: 'shop_item' },
+              DOM({ style: 'shop_item_img_container' }, shopItemBackground.cloneNode(), frameItems[1]),
+              DOM({ style: 'shop_item_name' }, Lang.text('frame_req_2')),
             )
           : DOM(),
         showQuadFrame
           ? DOM(
-              { style: "shop_item" },
-              DOM(
-                { style: "shop_item_img_container" },
-                shopItemBackground.cloneNode(),
-                frameItems[2],
-              ),
-              DOM({ style: "shop_item_name" }, Lang.text("frame_req_3")),
+              { style: 'shop_item' },
+              DOM({ style: 'shop_item_img_container' }, shopItemBackground.cloneNode(), frameItems[2]),
+              DOM({ style: 'shop_item_name' }, Lang.text('frame_req_3')),
             )
           : DOM(),
         showQuadFrame
           ? DOM(
-              { style: "shop_item" },
-              DOM(
-                { style: "shop_item_img_container" },
-                shopItemBackground.cloneNode(),
-                frameItems[3],
-              ),
-              DOM({ style: "shop_item_name" }, Lang.text("frame_req_4")),
+              { style: 'shop_item' },
+              DOM({ style: 'shop_item_img_container' }, shopItemBackground.cloneNode(), frameItems[3]),
+              DOM({ style: 'shop_item_name' }, Lang.text('frame_req_4')),
             )
           : DOM(),
-        isSkin ? DOM({ style: "shop_item_arrow" }) : DOM(),
+        isSkin ? DOM({ style: 'shop_item_arrow' }) : DOM(),
         DOM(
           {
-            style: "shop_item_price_container",
+            style: 'shop_item_price_container',
             event: [
-              "click",
+              'click',
               async () => {
-                if (!shopItem.classList.contains("shop_item_container")) {
+                if (!shopItem.classList.contains('shop_item_container')) {
                   return;
                 }
                 if (isShop) {
                   Splash.show(
                     DOM(
                       {},
+                      DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode()),
                       DOM(
-                        { style: "splash-item-container" },
-                        isFlag
-                          ? shopItemBackground.cloneNode()
-                          : item.cloneNode(),
-                      ),
-                      DOM(
-                        { style: "splash-item-text" },
-                        Lang.text("windowShopBuyItem"),
-                        DOM(
-                          { style: "splash-shop-item-name" },
-                          `${translatedName}`,
-                        ),
-                        DOM({ tag: "br" }),
-                        Lang.text("windowShopItemPrice").replace(
-                          "{rItem.price}",
-                          rItem.price,
-                        ),
+                        { style: 'splash-item-text' },
+                        Lang.text('windowShopBuyItem'),
+                        DOM({ style: 'splash-shop-item-name' }, `${translatedName}`),
+                        DOM({ tag: 'br' }),
+                        Lang.text('windowShopItemPrice').replace('{rItem.price}', rItem.price),
                         DOM({
-                          tag: "img",
-                          src: "content/img/queue/DiamondBlue.png",
-                          style: "splash_shop_item_price_icon",
+                          tag: 'img',
+                          src: 'content/img/queue/DiamondBlue.png',
+                          style: 'splash_shop_item_price_icon',
                         }),
                         `?`,
                         DOM({}, additionalMessage),
                       ),
                       DOM(
                         {
-                          style: "splash-content-button",
+                          style: 'splash-content-button',
                           event: [
-                            "click",
+                            'click',
                             async () => {
                               Splash.hide();
                               let crystalLeft = null;
                               try {
-                                crystalLeft = await App.api.request(
-                                  "shop",
-                                  "buy",
-                                  { id: rItem.id },
-                                );
+                                crystalLeft = await App.api.request('shop', 'buy', { id: rItem.id });
                                 if (isSkin) {
-                                  let heroId_skinId =
-                                    rItem.externalId.split("/");
+                                  let heroId_skinId = rItem.externalId.split('/');
                                   let heroId = heroId_skinId[0];
                                   let skinId = heroId_skinId[1];
                                   await Build.changeSkinForHero(heroId, skinId);
@@ -379,33 +308,28 @@ export class Window {
                                 return;
                               }
                               if (Number.isInteger(crystalLeft)) {
-                                View.castleTotalCrystal.firstChild.innerText =
-                                  crystalLeft;
+                                View.castleTotalCrystal.firstChild.innerText = crystalLeft;
                               } else {
-                                App.error(
-                                  `Неизвестное число кристаллов: ${crystalLeft}`,
-                                );
+                                App.error(`Неизвестное число кристаллов: ${crystalLeft}`);
                               }
-                              shopItem.classList.add(
-                                "shop_item_container_disabled",
-                              );
-                              shopItem.classList.remove("shop_item_container");
+                              shopItem.classList.add('shop_item_container_disabled');
+                              shopItem.classList.remove('shop_item_container');
                             },
                           ],
                         },
-                        Lang.text("windowShopBuy"),
+                        Lang.text('windowShopBuy'),
                       ),
                       DOM(
                         {
-                          style: "splash-content-button-red",
+                          style: 'splash-content-button-red',
                           event: [
-                            "click",
+                            'click',
                             async () => {
                               Splash.hide();
                             },
                           ],
                         },
-                        Lang.text("windowShopCancel"),
+                        Lang.text('windowShopCancel'),
                       ),
                     ),
                   );
@@ -413,46 +337,32 @@ export class Window {
                   Splash.show(
                     DOM(
                       {},
+                      DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode()),
+                      isFrame && !showQuadFrame ? Lang.text('windowShopUnequipItem') : Lang.text('windowShopEquipItem'),
                       DOM(
-                        { style: "splash-item-container" },
-                        isFlag
-                          ? shopItemBackground.cloneNode()
-                          : item.cloneNode(),
+                        { style: 'splash-shop-item-name' },
+                        isFrame && !showQuadFrame ? Lang.text('windowShopCurrentFrame') : `${translatedName}`,
                       ),
-                      isFrame && !showQuadFrame
-                        ? Lang.text("windowShopUnequipItem")
-                        : Lang.text("windowShopEquipItem"),
-                      DOM(
-                        { style: "splash-shop-item-name" },
-                        isFrame && !showQuadFrame
-                          ? Lang.text("windowShopCurrentFrame")
-                          : `${translatedName}`,
-                      ),
-                      "?",
+                      '?',
                       DOM({}, additionalMessage),
                       DOM(
                         {
-                          style: "splash-content-button",
+                          style: 'splash-content-button',
                           event: [
-                            "click",
+                            'click',
                             async () => {
                               Splash.hide();
                               try {
                                 if (isSkin) {
-                                  let heroId_skinId =
-                                    rItem.externalId.split("/");
+                                  let heroId_skinId = rItem.externalId.split('/');
                                   let heroId = heroId_skinId[0];
                                   let skinId = heroId_skinId[1];
                                   await Build.changeSkinForHero(heroId, skinId);
                                 } else {
                                   if (isDefault) {
-                                    await App.api.request(
-                                      "shop",
-                                      "applyDefault",
-                                      { categoryId: rItem.categoryId },
-                                    );
+                                    await App.api.request('shop', 'applyDefault', { categoryId: rItem.categoryId });
                                   } else {
-                                    await App.api.request("shop", "apply", {
+                                    await App.api.request('shop', 'apply', {
                                       id: rItem.id,
                                     });
                                   }
@@ -461,44 +371,32 @@ export class Window {
                                 App.error(e);
                                 return;
                               }
-                              shopItem.classList.add(
-                                "shop_item_container_equipped",
-                              );
-                              shopItem.classList.remove("shop_item_container");
-                              shopItem.lastChild.firstChild.innerText =
-                                Lang.text("shop_in_use");
-                              for (const collectionItem of category[
-                                categoryName
-                              ].childNodes) {
+                              shopItem.classList.add('shop_item_container_equipped');
+                              shopItem.classList.remove('shop_item_container');
+                              shopItem.lastChild.firstChild.innerText = Lang.text('shop_in_use');
+                              for (const collectionItem of category[categoryName].childNodes) {
                                 if (collectionItem != shopItem) {
-                                  collectionItem.classList.add(
-                                    "shop_item_container",
-                                  );
-                                  collectionItem.classList.remove(
-                                    "shop_item_container_equipped",
-                                  );
-                                  collectionItem.lastChild.firstChild.innerText =
-                                    Lang.text("shop_use");
+                                  collectionItem.classList.add('shop_item_container');
+                                  collectionItem.classList.remove('shop_item_container_equipped');
+                                  collectionItem.lastChild.firstChild.innerText = Lang.text('shop_use');
                                 }
                               }
                             },
                           ],
                         },
-                        isFrame && !showQuadFrame
-                          ? Lang.text("windowShopUnequip")
-                          : Lang.text("windowShopEquip"),
+                        isFrame && !showQuadFrame ? Lang.text('windowShopUnequip') : Lang.text('windowShopEquip'),
                       ),
                       DOM(
                         {
-                          style: "splash-content-button-red",
+                          style: 'splash-content-button-red',
                           event: [
-                            "click",
+                            'click',
                             async () => {
                               Splash.hide();
                             },
                           ],
                         },
-                        Lang.text("windowShopCancel"),
+                        Lang.text('windowShopCancel'),
                       ),
                     ),
                   );
@@ -507,15 +405,8 @@ export class Window {
             ],
           },
           isShop
-            ? DOM(
-                { style: "shop_item_price" },
-                DOM({ style: "shop_item_price_icon" }),
-                rItem.price,
-              )
-            : DOM(
-                { style: "shop_item_price" },
-                isEnabled ? Lang.text("shop_use") : Lang.text("shop_in_use"),
-              ),
+            ? DOM({ style: 'shop_item_price' }, DOM({ style: 'shop_item_price_icon' }), rItem.price)
+            : DOM({ style: 'shop_item_price' }, isEnabled ? Lang.text('shop_use') : Lang.text('shop_in_use')),
         ),
       );
       return shopItem;
@@ -525,89 +416,64 @@ export class Window {
       category[categoryName].appendChild(prepareItem(rItem));
     }
     let shopSeparator = DOM(
-      { style: "shop_separator" },
-      DOM({ style: "shop_separator_left" }),
-      DOM({ style: "shop_separator_right" }),
-      DOM({ style: "shop_separator_center" }),
+      { style: 'shop_separator' },
+      DOM({ style: 'shop_separator_left' }),
+      DOM({ style: 'shop_separator_right' }),
+      DOM({ style: 'shop_separator_center' }),
     );
 
     let shopHeader = DOM(
-      { style: "shop_header" },
+      { style: 'shop_header' },
       DOM(
         {
-          style: [
-            "shop_header_item",
-            isShop ? "shop_header_selected" : "shop_header_not_selected",
-          ],
-          event: ["click", async () => Window.show("main", "shop")],
+          style: ['shop_header_item', isShop ? 'shop_header_selected' : 'shop_header_not_selected'],
+          event: ['click', async () => Window.show('main', 'shop')],
         },
-        Lang.text("shop_shop"),
+        Lang.text('shop_shop'),
       ),
       DOM(
         {
-          style: [
-            "shop_header_item",
-            !isShop ? "shop_header_selected" : "shop_header_not_selected",
-          ],
-          event: ["click", async () => Window.show("main", "collection")],
+          style: ['shop_header_item', !isShop ? 'shop_header_selected' : 'shop_header_not_selected'],
+          event: ['click', async () => Window.show('main', 'collection')],
         },
-        Lang.text("shop_collection"),
+        Lang.text('shop_collection'),
       ),
       shopSeparator.cloneNode(true),
     );
 
-    let shopTimeLeft = DOM(
-      { style: "shop_bottom_time" },
-      Timer.getFormattedTimer(Shop.timeBeforeUpdate),
-    );
+    let shopTimeLeft = DOM({ style: 'shop_bottom_time' }, Timer.getFormattedTimer(Shop.timeBeforeUpdate));
 
-    let shopBottom = DOM(
-      { style: "shop_bottom" },
-      Lang.text("shop_bottom"),
-      shopTimeLeft,
-    );
+    let shopBottom = DOM({ style: 'shop_bottom' }, Lang.text('shop_bottom'), shopTimeLeft);
 
     let skins = DOM(
       {
-        style:
-          category.skin.childNodes.length == 0
-            ? "shop_category_hidden"
-            : "shop_category",
+        style: category.skin.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category',
       },
-      DOM({ style: "shop_category_header" }, Lang.text("shop_skins")),
+      DOM({ style: 'shop_category_header' }, Lang.text('shop_skins')),
       category.skin,
     );
     let flags = DOM(
       {
-        style:
-          category.flag.childNodes.length == 0
-            ? "shop_category_hidden"
-            : "shop_category",
+        style: category.flag.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category',
       },
-      DOM({ style: "shop_category_header" }, Lang.text("shop_flags")),
+      DOM({ style: 'shop_category_header' }, Lang.text('shop_flags')),
       category.flag,
     );
     let frames = DOM(
       {
-        style:
-          category.frame.childNodes.length == 0
-            ? "shop_category_hidden"
-            : "shop_category",
+        style: category.frame.childNodes.length == 0 ? 'shop_category_hidden' : 'shop_category',
       },
-      DOM({ style: "shop_category_header" }, Lang.text("shop_frames")),
+      DOM({ style: 'shop_category_header' }, Lang.text('shop_frames')),
       category.frame,
     );
 
     if (App.isAdmin()) {
       let wnd = DOM(
-        { id: "wshop" },
+        { id: 'wshop' },
         shopHeader,
         DOM(
           {
-            style: [
-              "shop_with_scroll",
-              isShop ? "shop_with_scroll_shop" : "_dummy_",
-            ],
+            style: ['shop_with_scroll', isShop ? 'shop_with_scroll_shop' : '_dummy_'],
           },
           skins,
           flags,
@@ -622,15 +488,12 @@ export class Window {
 
       function checkUpdate() {
         setTimeout((_) => {
-          if (
-            !("main" in Window.windows) ||
-            !(Window.windows["main"].id == "wshop")
-          ) {
+          if (!('main' in Window.windows) || !(Window.windows['main'].id == 'wshop')) {
             return;
           }
 
           if (wnd.timeLeft <= 0) {
-            Window.show("main", "shop");
+            Window.show('main', 'shop');
             return;
           }
 
@@ -647,48 +510,48 @@ export class Window {
   }
 
   static async shop() {
-    let request = await App.api.request("shop", "available");
+    let request = await App.api.request('shop', 'available');
     //request.sort((x,y) => x.id - y.id );
     return await this.processShopAndCollection(request, true);
   }
 
   static async collection() {
-    let request = await App.api.request("shop", "purchase");
+    let request = await App.api.request('shop', 'purchase');
 
     return await this.processShopAndCollection(request, false);
   }
 
   static async quest(item) {
-    let quest = await App.api.request("quest", "get", { id: item.id });
+    let quest = await App.api.request('quest', 'get', { id: item.id });
 
-    let root = DOM({ id: "wquest" });
+    let root = DOM({ id: 'wquest' });
 
-    const content = DOM({ style: "wquest__content" });
+    const content = DOM({ style: 'wquest__content' });
 
-    const titlebar = DOM({ style: "wquest__titlebar" });
-    const h3 = DOM({ tag: "h3", style: "wquest__title" }, quest.title);
+    const titlebar = DOM({ style: 'wquest__titlebar' });
+    const h3 = DOM({ tag: 'h3', style: 'wquest__title' }, quest.title);
 
     titlebar.appendChild(h3);
 
-    const body = DOM({ style: "wquest__body" }, quest.description);
+    const body = DOM({ style: 'wquest__body' }, quest.description);
 
-    const objective = DOM({ style: "wquest__objective" });
-    const objText = DOM({ style: "wquest__objective" }, quest.target);
+    const objective = DOM({ style: 'wquest__objective' });
+    const objText = DOM({ style: 'wquest__objective' }, quest.target);
     objective.appendChild(objText);
 
     if (quest.total) {
-      const counter = DOM({}, quest.score, " / ", quest.total);
+      const counter = DOM({}, quest.score, ' / ', quest.total);
       objText.append(counter);
     }
 
     const tokens = item.reward;
-    const rewards = DOM({ style: "wquest__rewards" });
+    const rewards = DOM({ style: 'wquest__rewards' });
     for (let reward in item.reward) {
-      const chip = DOM({ style: "wquest__chip" });
-      const icon = DOM({ style: "wquest__chip-icon" });
-      let iconUrl = "";
+      const chip = DOM({ style: 'wquest__chip' });
+      const icon = DOM({ style: 'wquest__chip-icon' });
+      let iconUrl = '';
       switch (reward) {
-        case "crystal":
+        case 'crystal':
           iconUrl = `url("content/img/queue/DiamondBlue.png")`;
           break;
         default:
@@ -696,23 +559,23 @@ export class Window {
       }
       icon.style.backgroundImage = iconUrl;
 
-      const val = DOM({ style: "wquest__chip-value" }, item.reward[reward]);
+      const val = DOM({ style: 'wquest__chip-value' }, item.reward[reward]);
       chip.appendChild(icon);
       chip.appendChild(val);
       rewards.appendChild(chip);
     }
 
-    const avatar = DOM({ style: "wquest__avatar" });
-    const avatarContainer = DOM({ style: "quest_container" }, avatar);
+    const avatar = DOM({ style: 'wquest__avatar' });
+    const avatarContainer = DOM({ style: 'quest_container' }, avatar);
     avatarContainer.style.backgroundImage = `url("content/img/quest/1.png")`;
-    avatarContainer.style.backgroundSize = "cover, contain";
-    avatarContainer.style.backgroundPosition = "center, center";
-    avatarContainer.style.backgroundRepeat = "no-repeat, no-repeat";
+    avatarContainer.style.backgroundSize = 'cover, contain';
+    avatarContainer.style.backgroundPosition = 'center, center';
+    avatarContainer.style.backgroundRepeat = 'no-repeat, no-repeat';
 
     avatar.style.backgroundImage = `url("content/hero/${item.heroId}/1.webp")`;
-    avatar.style.backgroundSize = "cover, contain";
-    avatar.style.backgroundPosition = "center, center";
-    avatar.style.backgroundRepeat = "no-repeat, no-repeat";
+    avatar.style.backgroundSize = 'cover, contain';
+    avatar.style.backgroundPosition = 'center, center';
+    avatar.style.backgroundRepeat = 'no-repeat, no-repeat';
 
     content.appendChild(titlebar);
     content.appendChild(body);
@@ -725,19 +588,19 @@ export class Window {
         content.appendChild(
           DOM(
             {
-              style: "quest-accept-button",
+              style: 'quest-accept-button',
               event: [
-                "click",
+                'click',
                 async () => {
-                  await App.api.request("quest", "start", { id: quest.id });
+                  await App.api.request('quest', 'start', { id: quest.id });
 
-                  Window.close("main");
+                  Window.close('main');
 
                   View.castleQuestUpdate();
                 },
               ],
             },
-            DOM({ style: "quest-button-text" }, "Начать"),
+            DOM({ style: 'quest-button-text' }, 'Начать'),
           ),
         );
 
@@ -747,19 +610,19 @@ export class Window {
         content.appendChild(
           DOM(
             {
-              style: "quest-accept-button",
+              style: 'quest-accept-button',
               event: [
-                "click",
+                'click',
                 async () => {
-                  await App.api.request("quest", "finish", { id: quest.id });
+                  await App.api.request('quest', 'finish', { id: quest.id });
 
-                  Window.close("main");
+                  Window.close('main');
 
                   View.castleQuestUpdate();
                 },
               ],
             },
-            DOM({ style: "quest-button-text" }, "Завершить"),
+            DOM({ style: 'quest-button-text' }, 'Завершить'),
           ),
         );
 
@@ -773,58 +636,40 @@ export class Window {
 
   static async menu() {
     return DOM(
-      { id: "wcastle-menu" },
-      DOM({ style: "castle-menu-title" }, Lang.text("menu")),
+      { id: 'wcastle-menu' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('menu')),
       DOM(
-        { style: "castle-menu-items" },
+        { style: 'castle-menu-items' },
         App.isAdmin()
-          ? DOM(
-              { style: "castle-menu-item-button" },
-              DOM(
-                { event: ["click", () => Window.show("main", "adminPanel")] },
-                "Админ",
-              ),
-            )
+          ? DOM({ style: 'castle-menu-item-button' }, DOM({ event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'))
           : DOM(),
         DOM(
-          { style: "castle-menu-item-button" },
-          DOM(
-            { event: ["click", () => Window.show("main", "accountPanel")] },
-            Lang.text("account"),
-          ),
+          { style: 'castle-menu-item-button' },
+          DOM({ event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account')),
         ),
         DOM(
-          { style: "castle-menu-item-button" },
-          DOM(
-            { event: ["click", () => Window.show("main", "settings")] },
-            Lang.text("preferences"),
-          ),
+          { style: 'castle-menu-item-button' },
+          DOM({ event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences')),
         ),
-        DOM(
-          { style: "castle-menu-item-button" },
-          DOM(
-            { event: ["click", () => Window.show("main", "support")] },
-            Lang.text("support"),
-          ),
-        ),
+        DOM({ style: 'castle-menu-item-button' }, DOM({ event: ['click', () => Window.show('main', 'support')] }, Lang.text('support'))),
         DOM(
           {
-            style: "castle-menu-item-button",
+            style: 'castle-menu-item-button',
             event: [
-              "click",
+              'click',
               async () => {
                 App.exit();
                 Splash.hide();
               },
             ],
           },
-          Lang.text("accountSwitch"),
+          Lang.text('accountSwitch'),
         ),
         DOM(
           {
-            style: "castle-menu-item-button",
+            style: 'castle-menu-item-button',
             event: [
-              "click",
+              'click',
               () => {
                 if (NativeAPI.status) {
                   NativeAPI.exit();
@@ -832,68 +677,65 @@ export class Window {
               },
             ],
           },
-          Lang.text("exit"),
+          Lang.text('exit'),
         ),
+        DOM({ style: 'castle-menu-label' }, `${Lang.text('version')}: v.${App.PW_VERSION}`),
         DOM(
-          { style: "castle-menu-label" },
-          `${Lang.text("version")}: v.${App.PW_VERSION}`,
-        ),
-        DOM(
-          { style: "menu-icons" },
+          { style: 'menu-icons' },
           DOM(
             {
-              tag: "a",
-              href: "https://vk.com/primeworldclassic",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://vk.com/primeworldclassic',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/vk.webp",
-              alt: "VK",
-              style: "menu-icons",
+              tag: 'img',
+              src: 'content/icons/vk.webp',
+              alt: 'VK',
+              style: 'menu-icons',
             }),
           ),
           DOM(
             {
-              tag: "a",
-              href: "https://t.me/primeworldclassic",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://t.me/primeworldclassic',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/telegram.webp",
-              alt: "Telegram",
-              style: "menu-icons",
+              tag: 'img',
+              src: 'content/icons/telegram.webp',
+              alt: 'Telegram',
+              style: 'menu-icons',
             }),
           ),
           DOM(
             {
-              tag: "a",
-              href: "https://discord.gg/MueeP3aAzh",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://discord.gg/MueeP3aAzh',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/discord.webp",
-              alt: "Discord",
-              style: "menu-icons",
+              tag: 'img',
+              src: 'content/icons/discord.webp',
+              alt: 'Discord',
+              style: 'menu-icons',
             }),
           ),
           DOM(
             {
-              tag: "a",
-              href: "https://store.steampowered.com/app/3684820/Prime_World_Classic",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://store.steampowered.com/app/3684820/Prime_World_Classic',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/steam2.webp",
-              alt: "Steam",
-              style: "menu-icons",
+              tag: 'img',
+              src: 'content/icons/steam2.webp',
+              alt: 'Steam',
+              style: 'menu-icons',
             }),
           ),
         ),
@@ -902,23 +744,23 @@ export class Window {
   }
 
   static async settings() {
-    let soundTestId = "sound_test";
+    let soundTestId = 'sound_test';
 
     return DOM(
-      { id: "wcastle-menu" },
-      DOM({ style: "castle-menu-title" }, Lang.text("preferences")),
+      { id: 'wcastle-menu' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('preferences')),
       DOM(
-        { style: "castle-menu-items" },
+        { style: 'castle-menu-items' },
         DOM(
-          { style: "castle-menu-item-checkbox" },
+          { style: 'castle-menu-item-checkbox' },
           DOM(
             {
-              tag: "input",
-              type: "checkbox",
-              id: "fullscreen-toggle",
+              tag: 'input',
+              type: 'checkbox',
+              id: 'fullscreen-toggle',
               checked: !Settings.settings.fullscreen,
               event: [
-                "change",
+                'change',
                 (e) => {
                   Settings.settings.fullscreen = !e.target.checked;
                   Settings.ApplySettings({ render: false, audio: false });
@@ -927,38 +769,35 @@ export class Window {
             },
             { checked: Settings.settings.fullscreen },
           ),
-          DOM(
-            { tag: "label", for: "fullscreen-toggle" },
-            Lang.text("windowMode") + " (F11)",
-          ),
+          DOM({ tag: 'label', for: 'fullscreen-toggle' }, Lang.text('windowMode') + ' (F11)'),
         ),
         DOM(
-          { style: "castle-menu-item-checkbox" },
+          { style: 'castle-menu-item-checkbox' },
           DOM({
-            tag: "input",
-            type: "checkbox",
-            id: "render-toggle",
+            tag: 'input',
+            type: 'checkbox',
+            id: 'render-toggle',
             checked: Settings.settings.render,
             event: [
-              "change",
+              'change',
               (e) => {
                 Settings.settings.render = e.target.checked;
                 Settings.ApplySettings({ audio: false, window: false });
               },
             ],
           }),
-          DOM({ tag: "label", for: "render-toggle" }, Lang.text("threeD")),
+          DOM({ tag: 'label', for: 'render-toggle' }, Lang.text('threeD')),
         ),
         DOM(
-          { style: "castle-menu-item-checkbox" },
+          { style: 'castle-menu-item-checkbox' },
           DOM(
             {
-              tag: "input",
-              type: "checkbox",
-              id: "radmin-priority",
+              tag: 'input',
+              type: 'checkbox',
+              id: 'radmin-priority',
               checked: Settings.settings.radminPriority,
               event: [
-                "change",
+                'change',
                 (e) => {
                   Settings.settings.radminPriority = e.target.checked;
                 },
@@ -966,21 +805,18 @@ export class Window {
             },
             { checked: Settings.settings.radminPriority },
           ),
-          DOM(
-            { tag: "label", for: "radmin-priority" },
-            Lang.text("radminPriority"),
-          ),
+          DOM({ tag: 'label', for: 'radmin-priority' }, Lang.text('radminPriority')),
         ),
         DOM(
-          { style: "castle-menu-item-checkbox" },
+          { style: 'castle-menu-item-checkbox' },
           DOM(
             {
-              tag: "input",
-              type: "checkbox",
-              id: "novoice",
+              tag: 'input',
+              type: 'checkbox',
+              id: 'novoice',
               checked: Settings.settings.novoice,
               event: [
-                "change",
+                'change',
                 (e) => {
                   Settings.settings.novoice = e.target.checked;
                 },
@@ -988,97 +824,89 @@ export class Window {
             },
             { checked: Settings.settings.novoice },
           ),
-          DOM({ tag: "label", for: "novoice" }, Lang.text("voiceEnabled")),
+          DOM({ tag: 'label', for: 'novoice' }, Lang.text('voiceEnabled')),
         ),
         DOM(
-          { style: "castle-menu-label" },
-          Lang.text("volume"),
+          { style: 'castle-menu-label' },
+          Lang.text('volume'),
           DOM({
-            tag: "input",
-            type: "range",
+            tag: 'input',
+            type: 'range',
             value: Settings.settings.globalVolume * 100,
-            min: "0",
-            max: "100",
-            step: "1",
-            style: "castle-menu-slider",
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
             event: [
-              "input",
+              'input',
               (e) => {
-                Settings.settings.globalVolume =
-                  parseFloat(e.target.value) / 100;
+                Settings.settings.globalVolume = parseFloat(e.target.value) / 100;
                 Settings.ApplySettings({ render: false, window: false });
 
-                document.getElementById(
-                  "global-volume-percentage",
-                ).textContent = `${Math.round(
-                  Settings.settings.globalVolume * 100,
-                )}%`;
+                document.getElementById('global-volume-percentage').textContent = `${Math.round(Settings.settings.globalVolume * 100)}%`;
               },
             ],
           }),
           DOM(
             {
-              tag: "span",
-              id: "global-volume-percentage",
-              style: "volume-percentage",
+              tag: 'span',
+              id: 'global-volume-percentage',
+              style: 'volume-percentage',
             },
             `${Math.round(Settings.settings.globalVolume * 100)}%`,
           ),
         ),
         DOM(
-          { style: "castle-menu-label" },
-          Lang.text("volumeMusic"),
+          { style: 'castle-menu-label' },
+          Lang.text('volumeMusic'),
           DOM({
-            tag: "input",
-            type: "range",
+            tag: 'input',
+            type: 'range',
             value: Settings.settings.musicVolume * 100,
-            min: "0",
-            max: "100",
-            step: "1",
-            style: "castle-menu-slider",
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
             event: [
-              "input",
+              'input',
               (e) => {
-                Settings.settings.musicVolume =
-                  parseFloat(e.target.value) / 100;
+                Settings.settings.musicVolume = parseFloat(e.target.value) / 100;
                 Settings.ApplySettings({ render: false, window: false });
 
-                document.getElementById("music-volume-percentage").textContent =
-                  `${Math.round(Settings.settings.musicVolume * 100)}%`;
+                document.getElementById('music-volume-percentage').textContent = `${Math.round(Settings.settings.musicVolume * 100)}%`;
               },
             ],
           }),
           DOM(
             {
-              tag: "span",
-              id: "music-volume-percentage",
-              style: "volume-percentage",
+              tag: 'span',
+              id: 'music-volume-percentage',
+              style: 'volume-percentage',
             },
             `${Math.round(Settings.settings.musicVolume * 100)}%`,
           ),
         ),
         DOM(
-          { style: "castle-menu-label" },
-          Lang.text("volumeSound"),
+          { style: 'castle-menu-label' },
+          Lang.text('volumeSound'),
           DOM({
-            tag: "input",
-            type: "range",
+            tag: 'input',
+            type: 'range',
             value: Settings.settings.soundsVolume * 100,
-            min: "0",
-            max: "100",
-            step: "1",
-            style: "castle-menu-slider",
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
             event: [
-              "input",
+              'input',
               (e) => {
-                Settings.settings.soundsVolume =
-                  parseFloat(e.target.value) / 100;
+                Settings.settings.soundsVolume = parseFloat(e.target.value) / 100;
                 Settings.ApplySettings({ render: false, window: false });
 
                 if (!Castle.testSoundIsPlaying) {
                   Castle.testSoundIsPlaying = true;
                   Sound.play(
-                    "content/sounds/found.ogg",
+                    'content/sounds/found.ogg',
                     {
                       id: soundTestId,
                       volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
@@ -1089,43 +917,35 @@ export class Window {
                   );
                 }
 
-                document.getElementById(
-                  "sounds-volume-percentage",
-                ).textContent = `${Math.round(
-                  Settings.settings.soundsVolume * 100,
-                )}%`;
+                document.getElementById('sounds-volume-percentage').textContent = `${Math.round(Settings.settings.soundsVolume * 100)}%`;
               },
             ],
           }),
           DOM(
             {
-              tag: "span",
-              id: "sounds-volume-percentage",
-              style: "volume-percentage",
+              tag: 'span',
+              id: 'sounds-volume-percentage',
+              style: 'volume-percentage',
             },
             `${Math.round(Settings.settings.soundsVolume * 100)}%`,
           ),
         ),
         DOM(
           {
-            style: "castle-menu-item-button",
+            style: 'castle-menu-item-button',
             event: [
-              "click",
+              'click',
               async (e) => {
                 const oldLanguage = Lang.target;
                 Lang.toggle();
                 Settings.settings.language = Lang.target;
-                App.error(
-                  `${Lang.text("LangTarg")}: ${Lang.list[oldLanguage].name} → ${
-                    Lang.list[Lang.target].name
-                  }`,
-                );
+                App.error(`${Lang.text('LangTarg')}: ${Lang.list[oldLanguage].name} → ${Lang.list[Lang.target].name}`);
                 await Lang.reinitViews();
-                await Window.show("main", "settings");
+                await Window.show('main', 'settings');
               },
             ],
           },
-          `${Lang.text("language")} (${Lang.target})`,
+          `${Lang.text('language')} (${Lang.target})`,
         ),
         // Добавленная кнопка "Клавиши"
         /*DOM({ 
@@ -1139,15 +959,15 @@ export class Window {
         // Кнопка "Назад"
         DOM(
           {
-            style: "castle-menu-item-button",
+            style: 'castle-menu-item-button',
             event: [
-              "click",
+              'click',
               () => {
-                Window.show("main", "menu");
+                Window.show('main', 'menu');
               },
             ],
           },
-          Lang.text("back"),
+          Lang.text('back'),
         ),
         /*,
 				
@@ -1160,9 +980,7 @@ export class Window {
   static async keybindings() {
     async function findConfigFile() {
       const possiblePaths = [
-        `${nw.App.getDataPath(
-          "documents",
-        )}/My Games/Prime World Classic/input_new.cfg`,
+        `${nw.App.getDataPath('documents')}/My Games/Prime World Classic/input_new.cfg`,
         `${process.env.USERPROFILE}/Documents/My Games/Prime World Classic/input_new.cfg`,
         `${process.env.USERPROFILE}/OneDrive/Documents/My Games/Prime World Classic/input_new.cfg`,
       ];
@@ -1181,33 +999,27 @@ export class Window {
     const configPath = await findConfigFile();
 
     if (!configPath) {
-      console.error("Не удалось найти файл конфигурации ни по одному из путей");
+      console.error('Не удалось найти файл конфигурации ни по одному из путей');
       return DOM(
-        { id: "wcastle-keybindings" },
-        DOM(
-          { style: "castle-menu-error" },
-          Lang.text(
-            "keybindings_error",
-            "Не удалось найти файл конфигурации клавиш",
-          ),
-        ),
+        { id: 'wcastle-keybindings' },
+        DOM({ style: 'castle-menu-error' }, Lang.text('keybindings_error', 'Не удалось найти файл конфигурации клавиш')),
         DOM(
           {
-            class: "castle-menu-item-button",
-            event: ["click", () => Window.show("settings", "menu")],
+            class: 'castle-menu-item-button',
+            event: ['click', () => Window.show('settings', 'menu')],
           },
-          Lang.text("back", "Назад"),
+          Lang.text('back', 'Назад'),
         ),
       );
     }
 
-    const defaultKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+    const defaultKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
     let currentBinds = {};
     let configReadError = false;
 
     try {
-      const configContent = await fs.readFile(configPath, "utf-8");
+      const configContent = await fs.readFile(configPath, 'utf-8');
       const bindRegex = /bind cmd_action_bar_slot(\d+) '(.+?)'/g;
       let match;
 
@@ -1215,26 +1027,18 @@ export class Window {
         currentBinds[`slot${match[1]}`] = match[2];
       }
     } catch (e) {
-      console.error("Ошибка чтения конфига:", e);
+      console.error('Ошибка чтения конфига:', e);
       configReadError = true;
     }
 
     return DOM(
-      { id: "wcastle-keybindings" },
-      DOM(
-        { style: "castle-menu-title" },
-        Lang.text("keybindings_title", "Настройка клавиш"),
-      ),
+      { id: 'wcastle-keybindings' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('keybindings_title', 'Настройка клавиш')),
 
       configReadError
         ? DOM(
-            { style: "castle-menu-error" },
-            Lang.text(
-              "keybindings_error",
-              "Не удалось прочитать файл конфигурации клавиш. Проверьте путь:",
-            ) +
-              " " +
-              configPath,
+            { style: 'castle-menu-error' },
+            Lang.text('keybindings_error', 'Не удалось прочитать файл конфигурации клавиш. Проверьте путь:') + ' ' + configPath,
           )
         : DOM(
             {},
@@ -1244,32 +1048,24 @@ export class Window {
               const currentKey = currentBinds[slotKey] || defaultKeys[i];
 
               return DOM(
-                { style: "castle-menu-label keybinding-row" },
-                DOM(
-                  { style: "keybinding-label" },
-                  Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`),
-                ),
+                { style: 'castle-menu-label keybinding-row' },
+                DOM({ style: 'keybinding-label' }, Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`)),
                 DOM({
-                  tag: "input",
-                  type: "text",
+                  tag: 'input',
+                  type: 'text',
                   value: currentKey,
-                  class: "castle-keybinding-input",
+                  class: 'castle-keybinding-input',
                   maxLength: 1,
                   event: [
-                    "keydown",
+                    'keydown',
                     (e) => {
-                      if (e.key === "Backspace" || e.key === "Delete") {
-                        e.target.value = "";
-                        currentBinds[slotKey] = "";
+                      if (e.key === 'Backspace' || e.key === 'Delete') {
+                        e.target.value = '';
+                        currentBinds[slotKey] = '';
                         return;
                       }
 
-                      if (
-                        e.ctrlKey ||
-                        e.altKey ||
-                        e.metaKey ||
-                        e.key.length > 1
-                      ) {
+                      if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) {
                         return;
                       }
 
@@ -1279,17 +1075,11 @@ export class Window {
                       if (/^[0-9A-Z]$/.test(key)) {
                         e.target.value = key;
                         currentBinds[slotKey] = key;
-                        e.target.classList.add("input-success");
-                        setTimeout(
-                          () => e.target.classList.remove("input-success"),
-                          200,
-                        );
+                        e.target.classList.add('input-success');
+                        setTimeout(() => e.target.classList.remove('input-success'), 200);
                       } else {
-                        e.target.classList.add("input-error");
-                        setTimeout(
-                          () => e.target.classList.remove("input-error"),
-                          200,
-                        );
+                        e.target.classList.add('input-error');
+                        setTimeout(() => e.target.classList.remove('input-error'), 200);
                       }
                     },
                   ],
@@ -1299,276 +1089,270 @@ export class Window {
 
             DOM(
               {
-                class: "castle-menu-item-button reset-btn",
+                class: 'castle-menu-item-button reset-btn',
                 event: [
-                  "click",
+                  'click',
                   () => {
-                    document
-                      .querySelectorAll(".castle-keybinding-input")
-                      .forEach((input, i) => {
-                        input.value = defaultKeys[i];
-                        currentBinds[`slot${i + 1}`] = defaultKeys[i];
-                      });
+                    document.querySelectorAll('.castle-keybinding-input').forEach((input, i) => {
+                      input.value = defaultKeys[i];
+                      currentBinds[`slot${i + 1}`] = defaultKeys[i];
+                    });
 
-                    const btn = document.querySelector(".reset-btn");
-                    btn.classList.add("action-success");
-                    btn.textContent = Lang.text("reset_complete", "Сброшено!");
+                    const btn = document.querySelector('.reset-btn');
+                    btn.classList.add('action-success');
+                    btn.textContent = Lang.text('reset_complete', 'Сброшено!');
                     setTimeout(() => {
-                      btn.classList.remove("action-success");
-                      btn.textContent = Lang.text(
-                        "reset_defaults",
-                        "Сбросить на 1-0",
-                      );
+                      btn.classList.remove('action-success');
+                      btn.textContent = Lang.text('reset_defaults', 'Сбросить на 1-0');
                     }, 1000);
                   },
                 ],
               },
-              Lang.text("reset_defaults", "Сбросить на 1-0"),
+              Lang.text('reset_defaults', 'Сбросить на 1-0'),
             ),
 
             DOM(
               {
-                class: "castle-menu-item-button save-btn",
+                class: 'castle-menu-item-button save-btn',
                 event: [
-                  "click",
+                  'click',
                   async () => {
                     try {
-                      let newConfig = "";
+                      let newConfig = '';
                       for (let i = 1; i <= 10; i++) {
-                        const key =
-                          currentBinds[`slot${i}`] || defaultKeys[i - 1];
+                        const key = currentBinds[`slot${i}`] || defaultKeys[i - 1];
                         newConfig += `bind cmd_action_bar_slot${i} '${key}'\n`;
                       }
 
                       await fs.writeFile(configPath, newConfig);
 
-                      const btn = document.querySelector(".save-btn");
-                      btn.classList.add("action-success");
-                      btn.textContent = Lang.text("saved", "Сохранено!");
+                      const btn = document.querySelector('.save-btn');
+                      btn.classList.add('action-success');
+                      btn.textContent = Lang.text('saved', 'Сохранено!');
                       setTimeout(() => {
-                        btn.classList.remove("action-success");
-                        btn.textContent = Lang.text("save", "Сохранить");
+                        btn.classList.remove('action-success');
+                        btn.textContent = Lang.text('save', 'Сохранить');
                       }, 1000);
                     } catch (e) {
-                      console.error("Ошибка сохранения:", e);
-                      const btn = document.querySelector(".save-btn");
-                      btn.classList.add("action-error");
-                      btn.textContent = Lang.text("save_error", "Ошибка!");
+                      console.error('Ошибка сохранения:', e);
+                      const btn = document.querySelector('.save-btn');
+                      btn.classList.add('action-error');
+                      btn.textContent = Lang.text('save_error', 'Ошибка!');
                       setTimeout(() => {
-                        btn.classList.remove("action-error");
-                        btn.textContent = Lang.text("save", "Сохранить");
+                        btn.classList.remove('action-error');
+                        btn.textContent = Lang.text('save', 'Сохранить');
                       }, 1000);
                     }
                   },
                 ],
               },
-              Lang.text("save", "Сохранить"),
+              Lang.text('save', 'Сохранить'),
             ),
           ),
 
       DOM(
         {
-          class: "castle-menu-item-button",
-          event: ["click", () => Window.show("settings", "menu")],
+          class: 'castle-menu-item-button',
+          event: ['click', () => Window.show('settings', 'menu')],
         },
-        Lang.text("back", "Назад"),
+        Lang.text('back', 'Назад'),
       ),
     );
   }
 
   static async support() {
     return DOM(
-      { id: "wcastle-menu" },
-      DOM({ style: "castle-menu-title" }, Lang.text("support")),
+      { id: 'wcastle-menu' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('support')),
       DOM(
-        { style: "castle-menu-items" },
-        DOM({ style: "castle-menu-text" }, Lang.text("supportDesk")),
+        { style: 'castle-menu-items' },
+        DOM({ style: 'castle-menu-text' }, Lang.text('supportDesk')),
         DOM(
-          { style: "menu-icons" },
+          { style: 'menu-icons' },
           DOM(
             {
-              tag: "a",
-              href: "https://vk.me/join/AZQ1dy/d2Qg98tKilOoQ1u34",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://vk.me/join/AZQ1dy/d2Qg98tKilOoQ1u34',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/vk.webp",
-              alt: "VK",
-              style: "support-icon",
+              tag: 'img',
+              src: 'content/icons/vk.webp',
+              alt: 'VK',
+              style: 'support-icon',
             }),
           ),
           DOM(
             {
-              tag: "a",
-              href: "https://t.me/primeworldclassic/8232",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://t.me/primeworldclassic/8232',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/telegram.webp",
-              alt: "Telegram",
-              style: "support-icon",
+              tag: 'img',
+              src: 'content/icons/telegram.webp',
+              alt: 'Telegram',
+              style: 'support-icon',
             }),
           ),
           DOM(
             {
-              tag: "a",
-              href: "https://discord.gg/S3yrbFGT86",
-              target: "_blank",
-              event: ["click", (e) => NativeAPI.linkHandler(e)],
+              tag: 'a',
+              href: 'https://discord.gg/S3yrbFGT86',
+              target: '_blank',
+              event: ['click', (e) => NativeAPI.linkHandler(e)],
             },
             DOM({
-              tag: "img",
-              src: "content/icons/discord.webp",
-              alt: "Discord",
-              style: "support-icon",
+              tag: 'img',
+              src: 'content/icons/discord.webp',
+              alt: 'Discord',
+              style: 'support-icon',
             }),
           ),
         ),
         DOM(
           {
-            style: "castle-menu-item-button",
-            event: ["click", () => Window.show("main", "menu")],
+            style: 'castle-menu-item-button',
+            event: ['click', () => Window.show('main', 'menu')],
           },
-          Lang.text("back"),
+          Lang.text('back'),
         ),
       ),
     );
   }
   static async adminPanel() {
     return DOM(
-      { id: "wcastle-menu" },
-      DOM({ style: "castle-menu-title" }, "Админ Панель"),
+      { id: 'wcastle-menu' },
+      DOM({ style: 'castle-menu-title' }, 'Админ Панель'),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
-              View.show("talents"); // Логика для отображения обычных талантов
+              View.show('talents'); // Логика для отображения обычных талантов
             },
           ],
         },
-        "Таланты (обычные)",
+        'Таланты (обычные)',
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
-              View.show("talents2"); // Логика для отображения классовых талантов
+              View.show('talents2'); // Логика для отображения классовых талантов
             },
           ],
         },
-        "Таланты (классовые)",
+        'Таланты (классовые)',
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
-              View.show("users"); // Логика для управления пользователями
+              View.show('users'); // Логика для управления пользователями
             },
           ],
         },
-        "Пользователи",
+        'Пользователи',
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
-              Window.show("main", "castleDebug"); // Логика для управления пользователями
+              Window.show('main', 'castleDebug'); // Логика для управления пользователями
             },
           ],
         },
-        "Замок дебаг",
+        'Замок дебаг',
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
-          event: ["click", () => Window.show("main", "menu")],
+          style: 'castle-menu-item-button',
+          event: ['click', () => Window.show('main', 'menu')],
         },
-        Lang.text("back"),
+        Lang.text('back'),
       ),
     );
   }
   static async castleDebug() {
-    let pattern = DOM({ tag: "input" });
-    let flags = DOM({ tag: "input" });
-    pattern.addEventListener("input", () => {
+    let pattern = DOM({ tag: 'input' });
+    let flags = DOM({ tag: 'input' });
+    pattern.addEventListener('input', () => {
       Castle.updateFilter(pattern.value, flags.value);
     });
-    flags.addEventListener("input", () => {
+    flags.addEventListener('input', () => {
       Castle.updateFilter(pattern.value, flags.value);
     });
     return DOM(
-      { id: "wcastle-render-debug" },
-      DOM({ style: "castle-menu-label" }, "Поиск построек по JS RegExp"),
-      DOM({ style: "castle-menu-label" }, "Паттерн ", pattern),
-      DOM({ style: "castle-menu-label" }, "Флаги ", flags),
+      { id: 'wcastle-render-debug' },
+      DOM({ style: 'castle-menu-label' }, 'Поиск построек по JS RegExp'),
+      DOM({ style: 'castle-menu-label' }, 'Паттерн ', pattern),
+      DOM({ style: 'castle-menu-label' }, 'Флаги ', flags),
     );
   }
   static async accountPanel() {
     return DOM(
-      { id: "wcastle-menu" },
-      DOM({ style: "castle-menu-title" }, Lang.text("account")),
+      { id: 'wcastle-menu' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('account')),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
               ParentEvent.children = window.open(
                 `https://api2.26rus-game.ru:2087/connect/${App.storage.data.token}`,
                 `SteamAuth`,
-                "width=1280, height=720, top=" +
+                'width=1280, height=720, top=' +
                   (screen.height - 720) / 2 +
-                  ", left=" +
+                  ', left=' +
                   (screen.width - 1280) / 2 +
-                  ", toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no",
+                  ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
               );
             },
           ],
         },
-        Lang.text("steamConnect"),
+        Lang.text('steamConnect'),
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
               App.setNickname();
             },
           ],
         },
-        Lang.text("nicknameChange"),
+        Lang.text('nicknameChange'),
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
+          style: 'castle-menu-item-button',
           event: [
-            "click",
+            'click',
             () => {
               App.setFraction();
             },
           ],
         },
-        Lang.text("sideChange"),
+        Lang.text('sideChange'),
       ),
       DOM(
         {
-          style: "castle-menu-item-button",
-          event: ["click", () => Window.show("main", "menu")],
+          style: 'castle-menu-item-button',
+          event: ['click', () => Window.show('main', 'menu')],
         },
-        Lang.text("back"),
+        Lang.text('back'),
       ),
     );
   }

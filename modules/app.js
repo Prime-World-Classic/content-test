@@ -1,28 +1,28 @@
-import { DOM } from "./dom.js";
-import { News } from "./news.js";
-import { Store } from "./store.js";
-import { Api } from "./api.js";
-import { View } from "./view.js";
-import { Events } from "./events.js";
-import { Voice } from "./voice.js";
-import { Chat } from "./chat.js";
-import { NativeAPI } from "./nativeApi.js";
-import { MM } from "./mm.js";
-import { Splash } from "./splash.js";
-import { Window } from "./window.js";
-import { Castle } from "./castle.js";
-import { Lang } from "./lang.js";
+import { DOM } from './dom.js';
+import { News } from './news.js';
+import { Store } from './store.js';
+import { Api } from './api.js';
+import { View } from './view.js';
+import { Events } from './events.js';
+import { Voice } from './voice.js';
+import { Chat } from './chat.js';
+import { NativeAPI } from './nativeApi.js';
+import { MM } from './mm.js';
+import { Splash } from './splash.js';
+import { Window } from './window.js';
+import { Castle } from './castle.js';
+import { Lang } from './lang.js';
 
 export class App {
-  static APP_VERSION = "0";
+  static APP_VERSION = '0';
 
-  static PW_VERSION = "2.11.1";
+  static PW_VERSION = '2.11.1';
 
-  static CURRENT_MM = "mmtest";
+  static CURRENT_MM = 'mmtest';
 
-  static RIGA = "wss://pwclassic.isgood.host:443";
-  static MOSCOW = "wss://api2.26rus-game.ru:8443";
-  static CLOUDFLARE = "wss://api.26rus-game.ru:8443";
+  static RIGA = 'wss://pwclassic.isgood.host:443';
+  static MOSCOW = 'wss://api2.26rus-game.ru:8443';
+  static CLOUDFLARE = 'wss://api.26rus-game.ru:8443';
   static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE];
   static bestHost = -1;
 
@@ -64,7 +64,7 @@ export class App {
 
     setTimeout(() => {
       if (this.bestHost == -1) {
-        App.error(Lang.text("apiConnectionError"));
+        App.error(Lang.text('apiConnectionError'));
       }
     }, 30000);
   }
@@ -79,9 +79,9 @@ export class App {
 
     await Store.init();
 
-    App.storage = new Store("u3");
+    App.storage = new Store('u3');
 
-    await App.storage.init({ id: 0, token: "", login: "" });
+    await App.storage.init({ id: 0, token: '', login: '' });
 
     await MM.init();
     /*
@@ -129,34 +129,26 @@ export class App {
         */
     Chat.init();
 
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
         requestAnimationFrame(() => Voice.updatePanelPosition());
         e.preventDefault();
         e.stopPropagation();
 
         // 1. Сначала закрываем Splash если открыт
-        if (
-          typeof Splash !== "undefined" &&
-          Splash.body &&
-          Splash.body.style.display === "flex"
-        ) {
+        if (typeof Splash !== 'undefined' && Splash.body && Splash.body.style.display === 'flex') {
           Splash.hide();
           return;
         }
 
         // 2. Затем закрываем окна по одному в обратном порядке
-        if (
-          typeof Window !== "undefined" &&
-          Window.anyOpen &&
-          Window.anyOpen()
-        ) {
+        if (typeof Window !== 'undefined' && Window.anyOpen && Window.anyOpen()) {
           Window.closeLast(); // Закрываем только последнее окно
         }
         // 3. Если окон нет - открываем настройки
         else {
-          if (typeof Window !== "undefined" && Window.show) {
-            Window.show("main", "menu");
+          if (typeof Window !== 'undefined' && Window.show) {
+            Window.show('main', 'menu');
           }
         }
       }
@@ -171,14 +163,14 @@ export class App {
     // App.backgroundAnimate = document.body.animate({backgroundSize:['150%','100%','150%']},{duration:30000,iterations:Infinity,easing:'ease-out'});
 
     if (App.isAdmin()) {
-      document.body.append(DOM({ id: "ADMStat" }));
+      document.body.append(DOM({ id: 'ADMStat' }));
     }
 
     Voice.init();
   }
 
   static say(text) {
-    if (!("speechSynthesis" in window)) {
+    if (!('speechSynthesis' in window)) {
       return;
     }
 
@@ -194,25 +186,25 @@ export class App {
 
     synthesis.volume = Castle.GetVolume(Castle.AUDIO_SOUNDS);
 
-    synthesis.lang = Lang.text("synthesisLang");
+    synthesis.lang = Lang.text('synthesisLang');
 
     window.speechSynthesis.speak(synthesis);
   }
 
   static ShowCurrentView() {
-    console.log("ShowCurrentView");
+    console.log('ShowCurrentView');
     if (App.storage.data.login) {
-      View.show("castle");
+      View.show('castle');
     } else {
-      View.show("authorization");
+      View.show('authorization');
     }
   }
 
   static async ShowCurrentViewAsync() {
     if (App.storage.data.login) {
-      await View.show("castle");
+      await View.show('castle');
     } else {
-      await View.show("authorization");
+      await View.show('authorization');
     }
   }
 
@@ -220,21 +212,21 @@ export class App {
     if (NativeAPI.status) {
       nw.Shell.openExternal(url);
     } else {
-      window.open(url, url, "popup");
+      window.open(url, url, 'popup');
     }
   }
 
   static async authorization(login, password) {
     if (!login.value) {
-      login.setAttribute("style", "background:rgba(255,0,0,0.3)");
+      login.setAttribute('style', 'background:rgba(255,0,0,0.3)');
 
-      return App.error(Lang.text("loginRequiredError"));
+      return App.error(Lang.text('loginRequiredError'));
     }
 
     if (!password.value) {
-      password.setAttribute("style", "background:rgba(255,0,0,0.3)");
+      password.setAttribute('style', 'background:rgba(255,0,0,0.3)');
 
-      return App.error(Lang.text("passwordRequiredError"));
+      return App.error(Lang.text('passwordRequiredError'));
     }
 
     let request, analysis;
@@ -244,7 +236,7 @@ export class App {
     } catch (e) {}
 
     try {
-      request = await App.api.request("user", "authorization", {
+      request = await App.api.request('user', 'authorization', {
         login: login.value.trim(),
         password: password.value.trim(),
         analysis: analysis,
@@ -260,36 +252,33 @@ export class App {
       fraction: request.fraction,
     });
 
-    View.show("castle");
+    View.show('castle');
   }
 
   static setNickname() {
     const close = DOM({
-      tag: "div",
-      style: "close-button",
-      event: ["click", () => Splash.hide()],
+      tag: 'div',
+      style: 'close-button',
+      event: ['click', () => Splash.hide()],
     });
 
-    close.style.backgroundImage = "url(content/icons/close-cropped.svg)";
+    close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
     let template = document.createDocumentFragment();
 
-    let title = DOM(
-      { tag: "div", style: "castle-menu-text" },
-      Lang.text("nicknameChangeCooldown"),
-    );
+    let title = DOM({ tag: 'div', style: 'castle-menu-text' }, Lang.text('nicknameChangeCooldown'));
 
     let name = DOM({
-      tag: "input",
-      placeholder: Lang.text("nicknamePlaceholder"),
+      tag: 'input',
+      placeholder: Lang.text('nicknamePlaceholder'),
       value: App.storage.data.login,
     });
 
     let button = DOM(
       {
-        style: "splash-content-button",
+        style: 'splash-content-button',
         event: [
-          "click",
+          'click',
           async () => {
             if (!name.value) {
               Splash.hide();
@@ -304,20 +293,20 @@ export class App {
             }
 
             try {
-              await App.api.request("user", "set", { nickname: name.value });
+              await App.api.request('user', 'set', { nickname: name.value });
             } catch (error) {
               return App.error(error);
             }
 
             await App.storage.set({ login: name.value });
 
-            View.show("castle");
+            View.show('castle');
 
             Splash.hide();
           },
         ],
       },
-      Lang.text("apply"),
+      Lang.text('apply'),
     );
 
     template.append(title, name, button, close);
@@ -327,72 +316,67 @@ export class App {
 
   static setFraction() {
     const close = DOM({
-      tag: "div",
-      style: "close-button",
-      event: ["click", () => Splash.hide()],
+      tag: 'div',
+      style: 'close-button',
+      event: ['click', () => Splash.hide()],
     });
-    close.style.backgroundImage = "url(content/icons/close-cropped.svg)";
+    close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
     let template = document.createDocumentFragment();
 
-    const title = DOM(
-      { tag: "h2", style: "faction-title" },
-      Lang.text("select_faction"),
-    );
+    const title = DOM({ tag: 'h2', style: 'faction-title' }, Lang.text('select_faction'));
     Object.assign(title.style, {
-      textAlign: "center",
-      color: "#fff",
-      textShadow: "0 0 5px rgba(0,0,0,0.5)",
-      marginBottom: "30px",
-      fontSize: "24px",
+      textAlign: 'center',
+      color: '#fff',
+      textShadow: '0 0 5px rgba(0,0,0,0.5)',
+      marginBottom: '30px',
+      fontSize: '24px',
     });
 
-    const factionsContainer = DOM({ tag: "div", style: "factions-container" });
+    const factionsContainer = DOM({ tag: 'div', style: 'factions-container' });
     Object.assign(factionsContainer.style, {
-      display: "flex",
-      gap: "5%",
-      justifyContent: "center",
-      marginBottom: "30px",
-      flexWrap: "wrap",
-      width: "90%",
-      maxWidth: "600px",
-      margin: "0 auto",
+      display: 'flex',
+      gap: '5%',
+      justifyContent: 'center',
+      marginBottom: '30px',
+      flexWrap: 'wrap',
+      width: '90%',
+      maxWidth: '600px',
+      margin: '0 auto',
     });
 
     const factions = [
-      { id: 1, name: Lang.text("adorians"), icon: "Elf_logo_over.webp" },
-      { id: 2, name: Lang.text("dokts"), icon: "Human_logo_over2.webp" },
+      { id: 1, name: Lang.text('adorians'), icon: 'Elf_logo_over.webp' },
+      { id: 2, name: Lang.text('dokts'), icon: 'Human_logo_over2.webp' },
     ];
 
     const calculateIconSize = () => {
       const windowWidth = window.innerWidth;
-      if (windowWidth < 500) return "20vw";
-      if (windowWidth < 768) return "15vw";
-      return "120px";
+      if (windowWidth < 500) return '20vw';
+      if (windowWidth < 768) return '15vw';
+      return '120px';
     };
 
     let selectedFaction = App.storage.data.fraction;
 
     factions.forEach((faction) => {
       const factionElement = DOM({
-        tag: "div",
-        style: "faction-item",
+        tag: 'div',
+        style: 'faction-item',
         event: [
-          "click",
+          'click',
           () => {
             selectedFaction = faction.id;
 
-            factionsContainer
-              .querySelectorAll(".faction-item")
-              .forEach((item) => {
-                item.style.transform = "scale(1)";
-                item.style.filter = "brightness(0.7)";
-                item.style.boxShadow = "none";
-              });
+            factionsContainer.querySelectorAll('.faction-item').forEach((item) => {
+              item.style.transform = 'scale(1)';
+              item.style.filter = 'brightness(0.7)';
+              item.style.boxShadow = 'none';
+            });
 
-            factionElement.style.transform = "scale(1.05)";
-            factionElement.style.filter = "brightness(1)";
-            factionElement.style.boxShadow = "0 0 15px rgba(255,215,0,0.7)";
+            factionElement.style.transform = 'scale(1.05)';
+            factionElement.style.filter = 'brightness(1)';
+            factionElement.style.boxShadow = '0 0 15px rgba(255,215,0,0.7)';
           },
         ],
       });
@@ -401,44 +385,37 @@ export class App {
       Object.assign(factionElement.style, {
         width: iconSize,
         height: iconSize,
-        minWidth: "80px",
-        minHeight: "80px",
-        maxWidth: "150px",
-        maxHeight: "150px",
+        minWidth: '80px',
+        minHeight: '80px',
+        maxWidth: '150px',
+        maxHeight: '150px',
         backgroundImage: `url(content/icons/${faction.icon})`,
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        cursor: "pointer",
-        transition: "all 0.3s ease",
-        transform: selectedFaction === faction.id ? "scale(1.05)" : "scale(1)",
-        filter:
-          selectedFaction === faction.id ? "brightness(1)" : "brightness(0.7)",
-        boxShadow:
-          selectedFaction === faction.id
-            ? "0 0 15px rgba(255,215,0,0.7)"
-            : "none",
-        borderRadius: "10px",
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        transform: selectedFaction === faction.id ? 'scale(1.05)' : 'scale(1)',
+        filter: selectedFaction === faction.id ? 'brightness(1)' : 'brightness(0.7)',
+        boxShadow: selectedFaction === faction.id ? '0 0 15px rgba(255,215,0,0.7)' : 'none',
+        borderRadius: '10px',
       });
 
-      const nameLabel = DOM(
-        { tag: "div", style: "faction-name" },
-        faction.name,
-      );
+      const nameLabel = DOM({ tag: 'div', style: 'faction-name' }, faction.name);
       Object.assign(nameLabel.style, {
-        textAlign: "center",
-        color: "#fff",
-        marginTop: "10px",
-        textShadow: "0 0 3px #000",
-        fontSize: "16px",
+        textAlign: 'center',
+        color: '#fff',
+        marginTop: '10px',
+        textShadow: '0 0 3px #000',
+        fontSize: '16px',
       });
 
-      const wrapper = DOM({ tag: "div", style: "faction-wrapper" });
+      const wrapper = DOM({ tag: 'div', style: 'faction-wrapper' });
       Object.assign(wrapper.style, {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        margin: "10px",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        margin: '10px',
       });
 
       wrapper.append(factionElement, nameLabel);
@@ -447,9 +424,9 @@ export class App {
 
     const button = DOM(
       {
-        style: "splash-content-button",
+        style: 'splash-content-button',
         event: [
-          "click",
+          'click',
           async () => {
             if (!selectedFaction) {
               Splash.hide();
@@ -457,7 +434,7 @@ export class App {
             }
 
             try {
-              await App.api.request("user", "set", {
+              await App.api.request('user', 'set', {
                 fraction: selectedFaction,
               });
             } catch (error) {
@@ -465,26 +442,26 @@ export class App {
             }
 
             await App.storage.set({ fraction: selectedFaction });
-            View.show("castle");
+            View.show('castle');
             Splash.hide();
           },
         ],
       },
-      Lang.text("apply"),
+      Lang.text('apply'),
     );
 
     const resizeHandler = () => {
       const iconSize = calculateIconSize();
-      factionsContainer.querySelectorAll(".faction-item").forEach((icon) => {
+      factionsContainer.querySelectorAll('.faction-item').forEach((icon) => {
         icon.style.width = iconSize;
         icon.style.height = iconSize;
       });
     };
 
-    window.addEventListener("resize", resizeHandler);
+    window.addEventListener('resize', resizeHandler);
 
-    close.addEventListener("click", () => {
-      window.removeEventListener("resize", resizeHandler);
+    close.addEventListener('click', () => {
+      window.removeEventListener('resize', resizeHandler);
     });
 
     template.append(title, factionsContainer, button, close);
@@ -492,22 +469,16 @@ export class App {
   }
 
   static async registration(fraction, invite, login, password, password2) {
-    if (
-      !fraction.value ||
-      !invite.value ||
-      !login.value ||
-      !password.value ||
-      !password2.value
-    ) {
-      return App.error(Lang.text("missingValuesError"));
+    if (!fraction.value || !invite.value || !login.value || !password.value || !password2.value) {
+      return App.error(Lang.text('missingValuesError'));
     }
 
     if (password.value != password2.value) {
-      password.setAttribute("style", "background:rgba(255,0,0,0.3)");
+      password.setAttribute('style', 'background:rgba(255,0,0,0.3)');
 
-      password2.setAttribute("style", "background:rgba(255,0,0,0.3)");
+      password2.setAttribute('style', 'background:rgba(255,0,0,0.3)');
 
-      return App.error(Lang.text("passwordsMismatchError"));
+      return App.error(Lang.text('passwordsMismatchError'));
     }
 
     let request, analysis;
@@ -517,7 +488,7 @@ export class App {
     } catch (e) {}
 
     try {
-      request = await App.api.request("user", "registration", {
+      request = await App.api.request('user', 'registration', {
         fraction: fraction.value,
         invite: invite.value.trim(),
         login: login.value.trim(),
@@ -536,27 +507,27 @@ export class App {
       fraction: fraction.value,
     });
 
-    View.show("castle");
+    View.show('castle');
   }
 
   static async exit() {
-    await App.storage.set({ id: 0, token: "", login: "" });
+    await App.storage.set({ id: 0, token: '', login: '' });
 
-    View.show("authorization");
+    View.show('authorization');
   }
 
   static input(callback, object = new Object()) {
-    if (!("tag" in object)) {
-      object.tag = "input";
+    if (!('tag' in object)) {
+      object.tag = 'input';
     }
 
-    if (!("value" in object)) {
-      object.value = "";
+    if (!('value' in object)) {
+      object.value = '';
     }
 
     let body = DOM(object);
 
-    body.addEventListener("blur", async () => {
+    body.addEventListener('blur', async () => {
       if (body.value == object.value) {
         return;
       }
@@ -584,16 +555,16 @@ export class App {
   }
 
   static error(message, timeout = 3000) {
-    let previousErrors = document.getElementsByClassName("error-message");
+    let previousErrors = document.getElementsByClassName('error-message');
     let body;
     if (previousErrors.length == 0) {
-      body = DOM({ style: "error-message" });
+      body = DOM({ style: 'error-message' });
       document.body.append(body);
     } else {
       body = previousErrors[0];
     }
 
-    let msg = DOM({ tag: "div" }, `${message}`);
+    let msg = DOM({ tag: 'div' }, `${message}`);
 
     setTimeout(() => {
       msg.remove();
@@ -601,15 +572,12 @@ export class App {
 
     body.append(msg);
     console.error(message);
-    console.trace("Current call stack:");
+    console.trace('Current call stack:');
   }
 
   static notify(message, delay = 0) {
     setTimeout(() => {
-      let body = DOM(
-        { style: "notify-message" },
-        DOM({ tag: "div" }, `${message}`),
-      );
+      let body = DOM({ style: 'notify-message' }, DOM({ tag: 'div' }, `${message}`));
 
       setTimeout(() => {
         body.remove();
@@ -620,13 +588,11 @@ export class App {
   }
 
   static isAdmin(id = 0) {
-    return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(
-      Number(id ? id : App.storage.data.id),
-    );
+    return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(Number(id ? id : App.storage.data.id));
   }
 
   static href(url) {
-    let a = DOM({ tag: "a", href: url });
+    let a = DOM({ tag: 'a', href: url });
 
     a.click();
   }

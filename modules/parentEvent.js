@@ -1,5 +1,5 @@
-import { View } from "./view.js";
-import { App } from "./app.js";
+import { View } from './view.js';
+import { App } from './app.js';
 
 export class ParentEvent {
   static children;
@@ -10,7 +10,7 @@ export class ParentEvent {
         ParentEvent.children.close();
       }
 
-      if ("error" in body) {
+      if ('error' in body) {
         App.error(body.error);
       }
 
@@ -28,7 +28,7 @@ export class ParentEvent {
       ParentEvent.children.close();
     }
 
-    View.show("castle");
+    View.show('castle');
   }
 
   static async bind(body) {

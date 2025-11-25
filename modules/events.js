@@ -1,14 +1,14 @@
-import { DOM } from "./dom.js";
-import { Lang } from "./lang.js";
-import { CastleNAVBAR } from "./castleNavBar.js";
-import { View } from "./view.js";
-import { Rank } from "./rank.js";
-import { App } from "./app.js";
-import { Voice } from "./voice.js";
-import { Chat } from "./chat.js";
-import { NativeAPI } from "./nativeApi.js";
-import { MM } from "./mm.js";
-import { Splash } from "./splash.js";
+import { DOM } from './dom.js';
+import { Lang } from './lang.js';
+import { CastleNAVBAR } from './castleNavBar.js';
+import { View } from './view.js';
+import { Rank } from './rank.js';
+import { App } from './app.js';
+import { Voice } from './voice.js';
+import { Chat } from './chat.js';
+import { NativeAPI } from './nativeApi.js';
+import { MM } from './mm.js';
+import { Splash } from './splash.js';
 
 export class Events {
   static Message(data) {
@@ -36,7 +36,7 @@ export class Events {
       return;
     }
 
-    let find = document.getElementById("MMReady");
+    let find = document.getElementById('MMReady');
 
     if (find) {
       find.innerText = `${data.count}/${data.limit}`;
@@ -87,9 +87,9 @@ export class Events {
         if (item.dataset.player == data.id) {
           item.dataset.player = 0;
 
-          item.style.backgroundImage = "none";
+          item.style.backgroundImage = 'none';
 
-          item.style.transform = "scale(1)";
+          item.style.transform = 'scale(1)';
         }
 
         if (data.position != 0) {
@@ -104,7 +104,7 @@ export class Events {
                   ? `url(content/hero/${findPlayer.dataset.hero}/${findPlayer.dataset.skin}.webp)`
                   : `url(content/hero/empty.webp)`;
 
-              item.style.transform = "scale(1.5)";
+              item.style.transform = 'scale(1.5)';
             }
           }
         }
@@ -133,11 +133,11 @@ export class Events {
 
     let b1 = DOM(
       {
-        style: "splash-content-button",
+        style: 'splash-content-button',
         event: [
-          "click",
+          'click',
           async () => {
-            await App.api.request(App.CURRENT_MM, "joinParty", {
+            await App.api.request(App.CURRENT_MM, 'joinParty', {
               code: data.code,
               version: App.PW_VERSION,
             });
@@ -146,27 +146,18 @@ export class Events {
           },
         ],
       },
-      Lang.text("friendAccept"),
+      Lang.text('friendAccept'),
     );
 
-    let b2 = DOM(
-      { style: "splash-content-button", event: ["click", () => Splash.hide()] },
-      Lang.text("friendCancle"),
-    );
+    let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, Lang.text('friendCancle'));
 
-    body.append(
-      DOM(
-        Lang.text("friendInvitesToLobby").replace("{nickname}", data.nickname),
-      ),
-      b1,
-      b2,
-    );
+    body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2);
 
     Splash.show(body);
   }
 
   static PUpdate(data) {
-    View.show("castle", data);
+    View.show('castle', data);
   }
 
   static PHero(data) {
@@ -179,31 +170,23 @@ export class Events {
 
       find.children[1].firstChild.firstChild.innerText = data.rating;
 
-      find.children[1].firstChild.firstChild.style.backgroundImage = `url(content/ranks/${Rank.icon(
-        data.rating,
-      )}.webp)`;
+      find.children[1].firstChild.firstChild.style.backgroundImage = `url(content/ranks/${Rank.icon(data.rating)}.webp)`;
     }
   }
 
   static PExit() {
-    View.show("castle");
+    View.show('castle');
   }
 
   static PReady(data) {
     let find = document.getElementById(`PP${data.id}`);
 
     if (find) {
-      find.children[2].firstChild.innerText = Lang.text("ready");
+      find.children[2].firstChild.innerText = Lang.text('ready');
 
-      find.children[2].classList.replace(
-        "party-middle-item-not-ready",
-        "party-middle-item-ready",
-      );
+      find.children[2].classList.replace('party-middle-item-not-ready', 'party-middle-item-ready');
 
-      find.children[2].classList.replace(
-        "castle-party-middle-item-not-ready",
-        "castle-party-middle-item-ready",
-      );
+      find.children[2].classList.replace('castle-party-middle-item-not-ready', 'castle-party-middle-item-ready');
     }
   }
 
@@ -214,7 +197,7 @@ export class Events {
   }
 
   static MMQueue(value) {
-    let find = document.getElementById("MMQueue");
+    let find = document.getElementById('MMQueue');
 
     if (find) {
       find.innerText = value;
@@ -223,15 +206,8 @@ export class Events {
 
   static MMQueueV2(data) {
     View.mmQueueMap = data;
-    document.querySelectorAll(".banner-count").forEach((el, idx) => {
-      const keys = [
-        "pvp",
-        "anderkrug",
-        "cte",
-        "m4",
-        "pve-ep2-red",
-        "custom-battle",
-      ];
+    document.querySelectorAll('.banner-count').forEach((el, idx) => {
+      const keys = ['pvp', 'anderkrug', 'cte', 'm4', 'pve-ep2-red', 'custom-battle'];
       const cssKey = keys[idx];
       if (cssKey) {
         const val = View.getQueue(cssKey);
@@ -241,7 +217,7 @@ export class Events {
   }
 
   static ADMStat(data) {
-    document.getElementById("ADMStat").innerText = `${data.online}`;
+    document.getElementById('ADMStat').innerText = `${data.online}`;
   }
 
   static MMKick(data) {
@@ -253,16 +229,13 @@ export class Events {
 
     let button = DOM(
       {
-        style: "splash-content-button",
-        event: ["click", async () => Splash.hide()],
+        style: 'splash-content-button',
+        event: ['click', async () => Splash.hide()],
       },
-      Lang.text("titleafk"),
+      Lang.text('titleafk'),
     );
 
-    body.append(
-      DOM(`${data.party ? Lang.text("titleafk1") : Lang.text("titleafk2")}`),
-      button,
-    );
+    body.append(DOM(`${data.party ? Lang.text('titleafk1') : Lang.text('titleafk2')}`), button);
 
     Splash.show(body);
   }
@@ -276,15 +249,15 @@ export class Events {
       let body = document.createDocumentFragment();
 
       body.append(
-        DOM(Lang.text("friendCallFrom").replace("{name}", data.name)),
+        DOM(Lang.text('friendCallFrom').replace('{name}', data.name)),
         DOM(
           {
-            style: "splash-content-button",
+            style: 'splash-content-button',
             event: [
-              "click",
+              'click',
               async () => {
                 try {
-                  let voice = new Voice(data.id, "", data.name, true);
+                  let voice = new Voice(data.id, '', data.name, true);
 
                   await voice.accept(data.offer);
 
@@ -295,20 +268,20 @@ export class Events {
               },
             ],
           },
-          Lang.text("friendAccept"),
+          Lang.text('friendAccept'),
         ),
         DOM(
           {
-            style: "splash-content-button",
-            event: ["click", async () => Splash.hide()],
+            style: 'splash-content-button',
+            event: ['click', async () => Splash.hide()],
           },
-          Lang.text("friendDropCall"),
+          Lang.text('friendDropCall'),
         ),
       );
 
       Splash.show(body);
     } else {
-      let voice = new Voice(data.id, "", data.name);
+      let voice = new Voice(data.id, '', data.name);
 
       await voice.accept(data.offer);
     }

@@ -1,10 +1,10 @@
 export class Splash {
   static init() {
-    Splash.body = document.createElement("div");
+    Splash.body = document.createElement('div');
 
-    Splash.body.style.display = "none";
+    Splash.body.style.display = 'none';
 
-    Splash.body.classList.add("splash");
+    Splash.body.classList.add('splash');
 
     document.body.append(Splash.body);
   }
@@ -17,9 +17,9 @@ export class Splash {
     }
 
     if (content) {
-      let body = document.createElement("div");
+      let body = document.createElement('div');
 
-      body.classList.add("splash-content");
+      body.classList.add('splash-content');
 
       body.append(element);
 
@@ -28,10 +28,10 @@ export class Splash {
       Splash.body.append(element);
     }
 
-    Splash.body.style.display = "flex";
+    Splash.body.style.display = 'flex';
   }
 
   static hide() {
-    Splash.body.style.display = "none";
+    Splash.body.style.display = 'none';
   }
 }
