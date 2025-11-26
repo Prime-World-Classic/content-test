@@ -1,4 +1,4 @@
-export const en = {
+﻿export const en = {
   locale: ['en_US'],
   name: 'English',
   word: {
@@ -1026,10 +1026,10 @@ export const en = {
       'Restores <num>20%</num> of maximum Health when an enemy hero dies nearby.<br>Increases maximum Health by <num>80</num> for each enemy hero death nearby and by <num>70</num> for each allied hero death anywhere on the map.',
     htalent_11_name: 'Wrath',
     htalent_11_description:
-      "After <num>2</num> successful attacks with strikes or class talents, the hero's next strike or class talent deals an additional <num>50%</num> <font color=#B00000>pure damage</font>.",
+      "After <num>2</num> successful attacks with strikes or class talents, the hero's next strike or class talent deals an additional <num>50%</num> <red-d>pure damage</red-d>.",
     htalent_12_name: 'Soul Harmony',
     htalent_12_description:
-      'Using class talents restores <num>%s</num> of the hero\'s maximum Health.<br>While the hero is moving, restores <num>%s</num> of maximum Energy per second.<br><hr align="center" width="70%" size="2" color="#A7A062" /> The hero\'s attacks and class talents ignite the target, dealing additional <font color=#B00000>pure damage</font> equal to <num>20%</num> of the initial damage over <num>4</num> sec.<br>The effect stacks up to <num>3</num> times.',
+      'Using class talents restores <num>%s</num> of the hero\'s maximum Health.<br>While the hero is moving, restores <num>%s</num> of maximum Energy per second.<br><hr> The hero\'s attacks and class talents ignite the target, dealing additional <red-d>pure damage</red-d> equal to <num>20%</num> of the initial damage over <num>4</num> sec.<br>The effect stacks up to <num>3</num> times.',
     htalent_13_name: "Healer's Reward",
     htalent_13_description:
       "When restoring allies' Health with class talents, the hero gains prime. The reward depends on the amount of Health restored.",
@@ -1059,7 +1059,7 @@ export const en = {
     htalent_22_name: 'Blood Magic',
     htalent_22_description:
       "The hero's attack deals additional damage from <mag>1%</mag> to <mag>30%</mag> if the target's Health is from <num>100%</num> to <num>50%</num> respectively.<br>This damage is additionally increased by <num>%s%</num> (based on Strength and Intellect) if Intellect is greater than Strength.",
-    htalent_23_name: 'Gluttony ⌛️30',
+    htalent_23_name: 'Gluttony <CD>30</CD>',
     htalent_23_description:
       'When finishing off an enemy with an attack or the Smash! talent, the hero increases their maximum Health by <num>%s</num>.<br>The effect stacks up to <num>30</num> times (maximum <num>%s</num> Health).',
     htalent_24_name: 'Forest Witchcraft',
@@ -1100,10 +1100,10 @@ export const en = {
     htalent_36_name: 'Explosive Mutagen',
     htalent_36_description:
       "Enemies finished off by the hero's attack or class talents explode, dealing <mag>%s</mag> damage around and restore <num>%s</num> Health to the hero (based on the higher of Strength or Intellect).<br>\n<rz>When finishing off an enemy from native terrain, the hero restores <num>2</num> times more Health.</rz>",
-    htalent_37_name: 'Dirty Fighting &#x1F4A7 80 ⌛️14',
+    htalent_37_name: 'Dirty Fighting <mana>80</mana> <CD>14</CD>',
     htalent_37_description:
       'Deals <mag>%s</mag> damage (based on the higher of Strength or Intellect) to the specified target and all enemies around.</br><rz>When used from native terrain, blinds all affected enemies for <num>3</num> sec.</rz>',
-    htalent_38_name: 'Flurry of Blows &#x1F4A7 60 ⌛️15',
+    htalent_38_name: 'Flurry of Blows <mana>60</mana> <CD>15</CD>',
     htalent_38_description:
       'Increases Agility by <num>%s</num> (based on the higher of Strength or Intellect) for <num>8</num> sec. </br>\nWhile the talent is active, the hero restores <num>%s</num> Health (based on the higher of Strength or Intellect) per sec.\n<rz>When used from native terrain, the hero restores <num>1.5</num> times more Health.</rz>',
     htalent_39_name: 'Explosive Mixture',
@@ -1113,26 +1113,26 @@ export const en = {
     htalent_41_name: 'Trick Blade',
     htalent_41_description:
       "With a <num>50%</num> chance, the hero's attack deals <mag>%s</mag>(<mag>%s</mag>) to all enemies around.<br>The ability's damage can be critical and is affected by Life Steal.",
-    htalent_42_name: 'Relentless Shot &#x1F4A7 200 ⌛️80',
+    htalent_42_name: 'Relentless Shot <mana>200</mana> <CD>80</CD>',
     htalent_42_description:
       'Deals <mag>%s</mag> damage to the enemy and stuns the target for <num>0.5</num> sec., then slows them by <num>50%</num> for <num>4</num> sec.',
-    htalent_43_name: 'Ace up the Sleeve⌛️60',
+    htalent_43_name: 'Ace up the Sleeve<CD>60</CD>',
     htalent_43_description:
       "Blocks damage if it exceeds <num>25%</num> of the hero's current Health. Each activation of the Trick Blade talent reduces the talent's cooldown by <num>3</num> sec.",
     htalent_44_name: 'Razor-Sharp Sword',
     htalent_44_description: "The hero's attacks and Trick Blade flashes deal <num>15%</num> more damage.",
-    htalent_45_name: 'Blizzard &#x1F4A7 180 ⌛️8',
+    htalent_45_name: 'Blizzard <mana>180</mana> <CD>8</CD>',
     htalent_45_description: 'Creates an area for <num>8</num> sec. where enemies take <mag>%s</mag> damage per sec.',
     htalent_46_name: 'Impenetrable Cold',
     htalent_46_description: 'Enemies attacking the hero take <mag>%s</mag> damage (based on the higher of Strength or Intellect).',
     htalent_47_name: 'Frostburn',
     htalent_47_description:
       "The Blizzard talent deals additional damage to slowed enemies.<br>\nThe lower the enemy's Speed, the more damage they take.",
-    htalent_48_name: 'Ice Shard &#x1F4A7 120 ⌛️18',
+    htalent_48_name: 'Ice Shard <mana>120</mana> <CD>18</CD>',
     htalent_48_description: 'Deals <mag>%s</mag> damage to the specified enemy over <num>5</num> sec.',
     htalent_49_name: 'Cold Calculation',
     htalent_49_description: "Every <num>5</num> sec., the hero's next attack deals an additional <fiz>%s</fiz> damage (based on Strength).",
-    htalent_50_name: 'Eternity &#x1F4A7 330 ⌛️90',
+    htalent_50_name: 'Eternity <mana>330</mana> <CD>90</CD>',
     htalent_50_description:
       "Deals <mag>%s</mag> damage and freezes the opponent for <num>2</num> sec. If a hero of their faction appears near the enemy, the effect is canceled.</br><rz>When used from native terrain, Eternity burns <num>15%</num> of the opponent's Energy.</rz>",
     htalent_51_name: 'Ice Energy',
@@ -1141,10 +1141,10 @@ export const en = {
     htalent_52_name: 'Permafrost',
     htalent_52_description:
       'The Eternity talent additionally freezes the target for <num>2.5</num> sec., during which the freeze effect cannot be canceled.',
-    htalent_53_name: 'Blade of Darkness &#x1F4A7 90 ⌛️9',
+    htalent_53_name: 'Blade of Darkness <mana>90</mana> <CD>9</CD>',
     htalent_53_description:
       'Hits the target, then flies to the enemy nearest to the hero near the target and deals <mag>%s</mag> damage to each.</br>\nIf Blade of Darkness finishes off the first target, damage to the second is increased by <num>%s</num>.',
-    htalent_54_name: 'Shimmer &#x1F4A7 100 ⌛️8',
+    htalent_54_name: 'Shimmer <mana>100</mana> <CD>8</CD>',
     htalent_54_description: 'The hero is teleported to the specified location.',
     htalent_55_name: 'Cutting Throw',
     htalent_55_description:
@@ -1155,7 +1155,7 @@ export const en = {
     htalent_57_name: 'Mystic Slayer',
     htalent_57_description:
       'After using a talent, the hero increases their critical strike chance by <num>5%</num> for <num>10</num> sec. The effect stacks up to <num>3</num> times.',
-    htalent_58_name: 'Face of Death &#x1F4A7 300 ⌛️85',
+    htalent_58_name: 'Face of Death <mana>300</mana> <CD>85</CD>',
     htalent_58_description:
       'Stuns the enemy for <num>1.5</num> sec.<br>For <num>3</num> sec., the hero always deals critical damage to this victim, which increases by the initial Crit Chance.<br> Using this talent instantly resets other class talents.',
     htalent_59_name: 'Shadow Dance',
@@ -1164,10 +1164,10 @@ export const en = {
     htalent_60_name: 'Chilling Horror',
     htalent_60_description:
       "Killing an enemy under the effect of Face of Death permanently increases the hero's Crit Chance by <num>2%</num>, maximum <num>10%</num>.",
-    htalent_61_name: "Chieftain's Strike &#x1F4A7 60 ⌛️5",
+    htalent_61_name: "Chieftain's Strike <mana>60</mana> <CD>5</CD>",
     htalent_61_description:
       'Deals <fiz>%s</fiz> damage to all enemies in front of the hero. <br><rz>On native terrain, damage is increased by <num>%s</num> <num>(%s)</num>.</rz>',
-    htalent_62_name: 'Breakthrough &#x1F4A7 100 ⌛️12',
+    htalent_62_name: 'Breakthrough <mana>100</mana> <CD>12</CD>',
     htalent_62_description:
       'The hero charges at the specified enemy and deals <fiz>%s</fiz> damage to them, stunning the opponent for <num>1.4</num> sec.',
     htalent_63_name: 'Crushing Blow',
@@ -1176,29 +1176,29 @@ export const en = {
     htalent_64_name: 'Battle Spirit',
     htalent_64_description:
       'The Breakthrough talent orders allied soldiers near the hero to attack the specified enemy for <num>5</num> sec. and for <num>5</num> sec. increases Speed by <num>30%</num> and Agility by <num>%s</num> (based on Stamina) for the hero and all allies near the hero.',
-    htalent_65_name: 'Charmed Armor &#x1F4A7 60 ⌛️13',
+    htalent_65_name: 'Charmed Armor <mana>60</mana> <CD>13</CD>',
     htalent_65_description:
       'The hero and allies near them gain protection for <num>5</num> sec. that deals <mag>%s</mag> damage (based on Stamina) to enemies attacking them.',
-    htalent_66_name: 'Sacred Banner &#x1F4A7 150 ⌛️80',
+    htalent_66_name: 'Sacred Banner <mana>150</mana> <CD>80</CD>',
     htalent_66_description:
-      "The hero activates a Sacred Banner that works around the hero, increasing maximum Health of allies near them by <num>%s</num> (based on Stamina) for <num>12</num> sec. While the Banner is active, after using <font color=#ff8c00>Breakthrough</font>, <rz>native terrain</rz> appears at the landing point for <num>5</num> sec.<br> For the duration, the hero's Agility is increased by <num>%s</num> (based on Strength).",
+      "The hero activates a Sacred Banner that works around the hero, increasing maximum Health of allies near them by <num>%s</num> (based on Stamina) for <num>12</num> sec. While the Banner is active, after using <orange-d>Breakthrough</orange-d>, <rz>native terrain</rz> appears at the landing point for <num>5</num> sec.<br> For the duration, the hero's Agility is increased by <num>%s</num> (based on Strength).",
     htalent_67_name: 'Reliable Armor',
     htalent_67_description: 'The effect of the Charmed Armor talent reduces damage dealt to the hero by <num>20%</num>.',
     htalent_68_name: 'Last Stronghold',
     htalent_68_description:
       'The Sacred Banner additionally restores <num>%s</num> Health (based on Maximum Health) to allies near the hero every <num>2</num> sec.',
-    htalent_69_name: 'Thunderclap &#x1F4A7 190 ⌛️16',
+    htalent_69_name: 'Thunderclap <mana>190</mana> <CD>16</CD>',
     htalent_69_description: 'Deals <fiz>%s</fiz> damage.',
-    htalent_70_name: 'Lightning Orb &#x1F4A7 85 ⌛️8',
+    htalent_70_name: 'Lightning Orb <mana>85</mana> <CD>8</CD>',
     htalent_70_description:
       'Deals <mag>%s</mag> damage to the target. For each Chain Lightning charge, damage increases by <num>5%</num> and flight speed by <num>10%</num>. Total damage <mag>%s</mag>.</br><rz>When used from native terrain, each enemy near the target takes <num>50%</num> of the main damage.</rz>',
     htalent_71_name: 'Shocking Blow',
     htalent_71_description:
       "The Thunderclap talent additionally reduces the target's speed by <num>80%</num> for <num>1.3</num> sec. and prevents the enemy from using talents.",
-    htalent_72_name: 'Overload &#x1F4A7 60 ⌛️16',
+    htalent_72_name: 'Overload <mana>60</mana> <CD>16</CD>',
     htalent_72_description:
       'For <num>6</num> sec., the hero deals <mag>%s</mag> damage to enemies behind them every <num>0.4</num> sec., can pass through living beings, and increases their Speed by <num>35%</num>.',
-    htalent_73_name: "Heaven's Wrath &#x1F4A7 340 ⌛️100",
+    htalent_73_name: "Heaven's Wrath <mana>340</mana> <CD>100</CD>",
     htalent_73_description:
       "Deals <mag>%s</mag> damage to all enemy heroes. Can be used by the team no more than once every <num>10</num> sec.</br>\n<rz>If the target is on the hero's native terrain, their Speed is reduced by <num>80%</num> for <num>2</num> sec., and the enemy cannot use talents.</rz>",
     htalent_74_name: 'Electric Discharge',
@@ -1209,13 +1209,13 @@ export const en = {
       "The Overload talent additionally increases the hero's Speed by <num>30%</num> and reduces the Speed of all affected enemies by <num>30%</num> for <num>3</num> sec.",
     htalent_76_name: "Storm's Fury",
     htalent_76_description: "The Heaven's Wrath talent additionally deals <fiz>%s</fiz> damage.",
-    htalent_77_name: 'Magic Fan &#x1F4A7 120 ⌛️8',
+    htalent_77_name: 'Magic Fan <mana>120</mana> <CD>8</CD>',
     htalent_77_description:
       "Deals <mag>%s</mag> damage to the specified enemy.</br>\nAdditionally reduces the target's Stamina by <num>%s</num> (based on Strength) for <num>5</num> sec.",
     htalent_78_name: 'Sweeping Fan',
     htalent_78_description:
       'The fan throw pushes the target away from the Shadow, dealing up to <fiz>%s</fiz> damage to the enemy. The closer the target is to the heroine, the farther the fan will push them.',
-    htalent_79_name: 'Shadow Protection &#x1F4A7 140 ⌛️16',
+    htalent_79_name: 'Shadow Protection <mana>140</mana> <CD>16</CD>',
     htalent_79_description:
       "Covers the target with a Veil and makes them invisible for <num>7</num> sec.<br>\n<rz>When used from native terrain, the target's Speed increases by <num>20%</num>.</rz>",
     htalent_80_name: 'Fan Darkness',
@@ -1224,7 +1224,7 @@ export const en = {
     htalent_81_name: 'Invisible Help',
     htalent_81_description:
       'Increases the highest of Strength or Intellect of nearby allied heroes by <num>%s</num> (based on Intellect).<br> The Shadow and nearby allies receive double the bonus: <num>%s</num>.',
-    htalent_82_name: 'Dance of Fans &#x1F4A7 150-300 ⌛️30',
+    htalent_82_name: 'Dance of Fans <mana>150</mana>-300 <CD>30</CD>',
     htalent_82_description:
       "The hero gains <num>1</num> Magic Fan every <num>10</num> sec., up to a maximum of <num>4</num>. When used, throws all accumulated fans at enemies around, but no more than <num>3</num> at one target. <br>Each fan deals from <mag>%s</mag> to <mag>%s</mag> damage to the enemy (based on Intellect and number of fans).<br> To use the talent, you must have at least <num>3</num> accumulated fans. Each subsequent fan increases total damage by <num>8%</num>.</br>Additionally reduces the target's Stamina by <num>%s</num> (based on Strength) for <num>5</num> sec.",
     htalent_83_name: 'Surprise Advantage',
@@ -1232,10 +1232,10 @@ export const en = {
       'While under Veil and for <num>3</num> sec. after appearing, the target gains <num>%s</num> Intellect, Strength, Will, and Stamina (based on Strength) and <num>%s</num> Health regeneration (based on Intellect).<br> The Shadow receives only half the Health regeneration.',
     htalent_84_name: 'No Boundaries',
     htalent_84_description: 'The Invisible Help talent affects all allied heroes, even if they are not near the heroine.',
-    htalent_85_name: 'Wolf Call &#x1F4A7 200 ⌛️20',
+    htalent_85_name: 'Wolf Call <mana>200</mana> <CD>20</CD>',
     htalent_85_description:
       'The hero summons a wolf, whose attacks deal <fiz>%s</fiz> damage from Strength and <fiz>%s</fiz> damage from Intellect, and has <num>%s</num> Health</br><rz>On native terrain, the hero summons an alpha wolf. The alpha wolf has <num>30%</num> higher stats.</rz>',
-    htalent_86_name: 'Piercing Spear &#x1F4A7 100 ⌛️10',
+    htalent_86_name: 'Piercing Spear <mana>100</mana> <CD>10</CD>',
     htalent_86_description:
       'Deals <mag>%s</mag> damage and interrupts talent casting, wolves pursue the target for <num>5</num> sec., accelerating by <num>2</num> times during this time.',
     htalent_87_name: 'Death Grip',
@@ -1248,16 +1248,16 @@ export const en = {
       'Friends (wolves and allied heroes) nearby gain <num>%s</num> of the highest of Strength or Intellect (based on Intellect). Each such friend increases this bonus by <num>10%</num>.',
     htalent_90_name: 'Wolf Brothers',
     htalent_90_description: 'Wolf Call summons two wolves, but requires <num>75</num> more Energy.',
-    htalent_91_name: 'Great Hunt &#x1F4A7 320 ⌛️100',
+    htalent_91_name: 'Great Hunt <mana>320</mana> <CD>100</CD>',
     htalent_91_description:
       'Great Hunt increases the Speed of the hero and all allies by <num>40%</num> for <num>10</num> sec.<br>Each hero kill refreshes the duration of Great Hunt.',
     htalent_92_name: 'Baiting',
     htalent_92_description:
       "During Great Hunt, the hero's Agility increases by <num>%s</num> (based on the higher of Strength or Intellect).<br>\nThe Agility gain increases by <num>25%</num> for each wolf.",
-    htalent_93_name: 'Turret <detail></detail> 20 ⌛️2',
+    htalent_93_name: 'Turret <detail></detail> 20 <CD>2</CD>',
     htalent_93_description:
       "The hero places a defensive turret with <num>%s</num> Health (based on the higher of Strength or Intellect), dealing <mag>%s</mag> damage. Cannot maintain more than <num>3</num> devices.</br><rz>On native terrain, turret attacks reduce the target's Speed by <num>20%</num> for <num>2</num> sec.</rz>",
-    htalent_94_name: 'Time Bomb <detail></detail> 30⌛️8',
+    htalent_94_name: 'Time Bomb <detail></detail> 30<CD>8</CD>',
     htalent_94_description:
       'The hero sends a bomb to the specified point, which upon contact with an enemy deals <fiz>%s</fiz> damage to enemies around. If there are no targets, the bomb automatically explodes <num>7</num> sec. after being placed at the specified point.',
     htalent_95_name: 'Turret Camouflage',
@@ -1266,67 +1266,67 @@ export const en = {
     htalent_96_name: 'Discounted Goods',
     htalent_96_description:
       'The price of all items in shops is reduced by <num>30%</num>. The hero can now build up to <num>3</num> devices.',
-    htalent_97_name: 'Vita-Generator <detail></detail> 10 ⌛️2',
+    htalent_97_name: 'Vita-Generator <detail></detail> 10 <CD>2</CD>',
     htalent_97_description:
       'The hero places a vita-generator that restores <num>%s</num> Health (based on Intellect) to allied heroes every <num>8</num> sec. for <num>4</num> sec.Cannot maintain more than <num>3</num> devices simultaneously.</br><rz>On native terrain, the vita-generator additionally restores <num>%s</num> Health (based on Intellect).</rz>',
-    htalent_98_name: 'Machine Gun ⌛️15',
+    htalent_98_name: 'Machine Gun <CD>15</CD>',
     htalent_98_description:
       'For <num>3</num> sec., deals <fiz>%s</fiz> and <mag>%s</mag> damage per second to enemies in front, but can only change firing direction. Shooting consumes 16<detail></detail> per second.',
     htalent_99_name: 'Enhanced Charge',
     htalent_99_description: 'Enemies taking damage from Time Bomb are launched into the air.',
     htalent_100_name: 'Stamping',
     htalent_100_description: 'While near a vita-generator, the hero gains 1<detail></detail> more per second.',
-    htalent_101_name: 'Painted Beast &#x1F4A7 84 ⌛️5',
+    htalent_101_name: 'Painted Beast <mana>84</mana> <CD>5</CD>',
     htalent_101_description:
       "Draws a beast that, after <num>1.5</num> sec., attacks the specified enemy and deals <fiz>%s</fiz> damage to them. The beast's speed and range increase by <num>10%</num> per paint if Strength is greater than Intellect.",
     htalent_102_name: "Master's Paints",
     htalent_102_description:
-      "The hero's attack additionally deals <fiz>%s</fiz> damage and an additional <num>15%</num> of base attack damage (<num>+4%</num> per <num>1</num> Paint) as <font color=#B00000>pure damage</font> over <num>4</num> sec.",
+      "The hero's attack additionally deals <fiz>%s</fiz> damage and an additional <num>15%</num> of base attack damage (<num>+4%</num> per <num>1</num> Paint) as <red-d>pure damage</red-d> over <num>4</num> sec.",
     htalent_103_name: 'Color of Destruction',
     htalent_103_description:
       "The Painted Beast talent also reduces the target's Stamina and Will by <num>%s</num> (based on Intellect) for <num>6</num> sec.",
     htalent_104_name: 'Contrast',
     htalent_104_description:
-      "Each time <num>10</num> paints are received, the hero draws a magic scroll in this sequence: <font color=#37D337>Sign of the Fortune Teller</font> -> <font color=#F41200>Sign of the Meteor Shower</font> -> <font color=#FF9124>Sign of the Birds</font> -> <font color=#CA4FFF>Sign of the Radiance</font> -> <font color=#3BA7FF>Sign of the Double</font>.<br>Moreover, using magic scrolls gives the hero additional bonuses:<br><font color=#37D337>Sign of the Fortune Teller</font>:<br>Total healing amount increases by <num>40%</num> of the hero's maximum Health, and Health restored every <num>3</num> sec. increases by <num>1%</num> of maximum Health.<br><font color=#F41200>Sign of the Meteor Shower</font>:<br>Additionally deals <num>100%</num> of initial damage to targets over <num>3</num> sec.<br><font color=#FF9124>Sign of the Birds</font>:<br>Enemies' Strength and Intellect are additionally reduced, and allies' are increased by <num>5%</num><br><font color=#CA4FFF>Sign of the Radiance</font>:<br>Miss chance is additionally increased by <num>25%</num>.<br><font color=#3BA7FF>Sign of the Double</font>:<br>The double's lifespan increases by <num>25</num> sec., and the hero's talent cooldown is additionally reduced by <num>10%</num>.",
-    htalent_105_name: 'Color of Life &#x1F4A7 110 ⌛️15',
+      "Each time <num>10</num> paints are received, the hero draws a magic scroll in this sequence: <lime>Sign of the Fortune Teller</lime> -> <cinnabar>Sign of the Meteor Shower</cinnabar> -> <carrot>Sign of the Birds</carrot> -> <magenta>Sign of the Radiance</magenta> -> <electric-blue>Sign of the Double</electric-blue>.<br>Moreover, using magic scrolls gives the hero additional bonuses:<br><lime>Sign of the Fortune Teller</lime>:<br>Total healing amount increases by <num>40%</num> of the hero's maximum Health, and Health restored every <num>3</num> sec. increases by <num>1%</num> of maximum Health.<br><cinnabar>Sign of the Meteor Shower</cinnabar>:<br>Additionally deals <num>100%</num> of initial damage to targets over <num>3</num> sec.<br><carrot>Sign of the Birds</carrot>:<br>Enemies' Strength and Intellect are additionally reduced, and allies' are increased by <num>5%</num><br><magenta>Sign of the Radiance</magenta>:<br>Miss chance is additionally increased by <num>25%</num>.<br><electric-blue>Sign of the Double</electric-blue>:<br>The double's lifespan increases by <num>25</num> sec., and the hero's talent cooldown is additionally reduced by <num>10%</num>.",
+    htalent_105_name: 'Color of Life <mana>110</mana> <CD>15</CD>',
     htalent_105_description:
       'For <num>5</num> sec., the hero deals <mag>%s</mag> damage to the specified enemy or restores <num>%s</num> Health (based on Intellect) to the selected ally.</br>\nPositive effects of the talent are always applied to the hero themselves.<br>\n<rz>When used from native terrain, blinds the enemy for <num>3</num> sec.</rz>',
     htalent_106_name: 'Speed of Color',
     htalent_106_description:
       "The Color of Life talent also reduces the enemy's Speed or increases the ally's Speed by <num>40%</num> for <num>5</num> sec.",
-    htalent_107_name: "Master's Brush &#x1F4A7 100-280 ⌛️50",
+    htalent_107_name: "Master's Brush <mana>100</mana>-280 <CD>50</CD>",
     htalent_107_description:
       'For <num>15</num> sec., all class talents additionally affect <num>4</num> targets near the original one. Damage and Health restoration on additional targets are reduced by <num>20%</num>. <br> Activation cost increases by 5 &#x1F4A7 per character level. <br> Activation cost of the Painted Beast talent is increased by <num>40%</num>.',
     htalent_108_name: 'Great Artist',
     htalent_108_description:
       "The Master's Brush talent also gives the hero <num>6</num> paints and, while the talent is active, Paints are not lost. After the talent ends, the number of Paints gradually returns to <num>3</num>.",
-    htalent_109_name: 'Hero Strike &#x1F4A7 115 ⌛️12',
+    htalent_109_name: 'Hero Strike <mana>115</mana> <CD>12</CD>',
     htalent_109_description:
       'The hero becomes invulnerable and attacks up to five enemies, dealing <fiz>%s</fiz> damage (based on Strength) and <fiz>%s</fiz> damage (based on Agility) to each.',
-    htalent_110_name: 'Bloody Feast ⌛️1',
+    htalent_110_name: 'Bloody Feast <CD>1</CD>',
     htalent_110_description:
       'When an ally or enemy dies nearby, the hero restores <num>%s</num> Health (based on maximum Health) over <num>5</num> sec.',
     htalent_111_name: 'Worthy Opponent',
     htalent_111_description: 'Hero Strike stuns the nearest enemy hero for <num>1</num> sec.',
-    htalent_112_name: 'Defiance of Pain &#x1F4A7 210 ⌛️9',
+    htalent_112_name: 'Defiance of Pain <mana>210</mana> <CD>9</CD>',
     htalent_112_description:
-      'Deals up to <mag>%s</mag> damage to enemies around (<num>4%</num> of the hero\'s Maximum Health) and accumulates <num>50%</num> of damage dealt. <br> Restores Health (spending accumulated Health) to themselves and the allied Hero with the lowest Health nearby, but no more than <num>%s</num> (<num>10%</num> of the hero\'s Maximum Health). <br> <hr align="center" width="70%" size="2" color="#A7A062" /> Bloody Feast increases the hero\'s highest of Stamina or Will by <num>%s</num> (based on maximum Health) for every <num>10%</num> missing Health. Effect stacks <num>5</num> times.',
+      'Deals up to <mag>%s</mag> damage to enemies around (<num>4%</num> of the hero\'s Maximum Health) and accumulates <num>50%</num> of damage dealt. <br> Restores Health (spending accumulated Health) to themselves and the allied Hero with the lowest Health nearby, but no more than <num>%s</num> (<num>10%</num> of the hero\'s Maximum Health). <br> <hr> Bloody Feast increases the hero\'s highest of Stamina or Will by <num>%s</num> (based on maximum Health) for every <num>10%</num> missing Health. Effect stacks <num>5</num> times.',
     htalent_113_name: 'Battle Thirst',
     htalent_113_description:
       'Each attack increases their Health steal by <num>%s</num> (based on Strength) for <num>4</num> sec. Effect stacks up to <num>5</num> times.</br><rz>On native terrain, Agility increases by <num>%s</num> (based on Strength).</rz>',
     htalent_114_name: 'Steel Whirlwind',
     htalent_114_description: 'Hero Strike slows the enemy by <num>70%</num> for <num>2.5</num> sec.',
-    htalent_115_name: 'Immortal Spirit ⌛️180',
+    htalent_115_name: 'Immortal Spirit <CD>180</CD>',
     htalent_115_description:
       'Activates automatically upon death. The hero becomes invulnerable and loses <num>100</num> Energy per second. The hero resurrects at the point where their Energy runs out, or when using the Immortal Spirit talent.<br/>Upon resurrection, restores <num>%s</num> Health, stuns enemies around for <num>1</num> sec., and deals <mag>%s</mag> damage to them (based on maximum Health).</br>\n<rz>On native terrain, resurrects with <num>%s</num> Health.</rz>',
     htalent_116_name: 'Concentrated Fury',
     htalent_116_description: "The hero's Speed increases by <num>6%</num> for each Battle Thirst effect.",
-    htalent_117_name: 'Soaring Strike &#x1F4A7 60 ⌛️11',
+    htalent_117_name: 'Soaring Strike <mana>60</mana> <CD>11</CD>',
     htalent_117_description:
       "The hero charges at the specified enemy and deals <fiz>%s</fiz> damage (based on Agility).</br><rz>When used from native terrain, the talent's cooldown is reduced by <num>4</num> sec. faster.</rz>",
     htalent_118_name: 'Unstoppable',
     htalent_118_description: 'When dealing damage with class talents, the hero restores <num>%s</num> Health (based on Strength).',
-    htalent_119_name: 'Fist of Fury &#x1F4A7 60 ⌛️9',
+    htalent_119_name: 'Fist of Fury <mana>60</mana> <CD>9</CD>',
     htalent_119_description:
       'Deals <fiz>%s</fiz> damage to the current target and launches them.</br><rz>When used from native terrain, damage is increased by <fiz>%s</fiz> damage.</rz>',
     htalent_120_name: 'Resistance is Futile',
@@ -1334,7 +1334,7 @@ export const en = {
       'The Soaring Strike talent stuns the target for <num>0.7</num> sec. or deals twice as much damage to an already stunned enemy (<fiz>%s</fiz>).',
     htalent_121_name: 'Overcoming Pain',
     htalent_121_description: "The Unstoppable talent additionally restores <num>4%</num> of the hero's missing Health.",
-    htalent_122_name: 'Black Tornado &#x1F4A7 135 ⌛️50',
+    htalent_122_name: 'Black Tornado <mana>135</mana> <CD>50</CD>',
     htalent_122_description:
       'For <num>4</num> sec., the hero deals <fiz>%s</fiz> damage (based on Agility) every <num>0.6</num> sec. to enemies around, pulls enemies around the edge of the Tornado towards themselves <num>4</num> times, and is immune to control effects. <br> The hero can pass through units and takes <num>40%</num> less damage.',
     htalent_123_name: 'Steel Fist',
@@ -1342,9 +1342,9 @@ export const en = {
     htalent_124_name: 'Furious Vortex',
     htalent_124_description:
       "When using the Black Tornado talent, the hero's maximum Health increases by <num>%s</num> (based on Agility) and Speed by <num>35%</num>.",
-    htalent_125_name: 'Wind and Sparks &#x1F4A7 130 ⌛️15',
+    htalent_125_name: 'Wind and Sparks <mana>130</mana> <CD>15</CD>',
     htalent_125_description: 'Deals <mag>%s</mag> damage to enemies in front of the hero.',
-    htalent_126_name: 'Fox Trick &#x1F4A7 45 ⌛️22',
+    htalent_126_name: 'Fox Trick <mana>45</mana> <CD>22</CD>',
     htalent_126_description:
       "The hero creates an illusion of themselves for <num>4</num> sec., while becoming invisible for <num>6</num> sec.</br>\n<rz>When used from native terrain, gains <num>30%</num> Speed for <num>6</num> sec.</rz></br>\nThe talent activates automatically if the hero's Health drops below <num>20%</num>.",
     htalent_127_name: 'Deceptive Wind',
@@ -1352,7 +1352,7 @@ export const en = {
       'Enemies taking damage from the Wind and Sparks talent have their Speed reduced by <num>30%</num> for <num>3</num> sec.',
     htalent_128_name: 'Fiery Trick',
     htalent_128_description: 'The Fox Trick illusion, <num>2</num> sec. after appearing, stuns all nearby enemies for <num>1.4</num> sec.',
-    htalent_129_name: 'Firetail &#x1F4A7 250 ⌛️90',
+    htalent_129_name: 'Firetail <mana>250</mana> <CD>90</CD>',
     htalent_129_description:
       'For <num>7</num> sec., the hero releases <num>5</num> fireballs per second, but no more than <num>12</num> at one target.<br>\nThe balls hit up to <num>5</num> targets within attack range, dealing <mag>%s</mag> damage to the target.<br>\nDuring the talent use, the hero is immune to transformation effects.',
     htalent_130_name: 'Swift Wind',
@@ -1364,7 +1364,7 @@ export const en = {
     htalent_132_description: 'The Burning effect from the Soul Harmony talent stacks <num>2</num> times more.',
     htalent_133_name: 'Healing <mana>80</mana>		<CD>4</CD>',
     htalent_133_description: 'Restores <num>%s</num> Health (based on Intellect) to the target and <num>%s</num> to the hero themselves.',
-    htalent_134_name: "Land's Blessing &#x1F4A7 170 ⌛️50",
+    htalent_134_name: "Land's Blessing <mana>170</mana> <CD>50</CD>",
     htalent_134_description:
       "<rz>For <num>40</num> sec., increases the specified ally's maximum Health by <num>%s</num> (based on maximum Energy) and during this time restores <num>%s</num> Health (based on Intellect) to the target every <num>5</num> sec.<br>\nThe talent can only be used from native terrain.</rz>",
     htalent_135_name: 'Healing Mastery',
@@ -1373,7 +1373,7 @@ export const en = {
     htalent_136_name: 'Armor of Mercy',
     htalent_136_description:
       "The hero's Will and Stamina increase by <num>%s</num> (based on maximum Energy).<br>\nFor <num>8</num> sec., this effect is applied to the target of the Healing talent and to allies healed by Triumph of Life.",
-    htalent_137_name: 'Triumph of Life &#x1F4A7 200 ⌛️130',
+    htalent_137_name: 'Triumph of Life <mana>200</mana> <CD>130</CD>',
     htalent_137_description:
       "The hero becomes invulnerable for <num>4</num> sec., healing themselves and <num>2</num> allied heroes around every <num>1</num> sec.<br>\nThe talent will activate automatically, without spending Energy, if the hero's Health drops below <num>5%</num>.",
     htalent_138_name: 'Healing Sparks',
@@ -1383,10 +1383,10 @@ export const en = {
       "The hero's Intellect increases by <num>%s</num> (based on maximum Energy).<br>\nThe target of the Healing talent gains <num>%s</num> of the highest of Intellect or Strength (based on max. Energy) for <num>8</num> sec.<br>\nThe same effect is applied to allies healed by Total Triumph.",
     htalent_140_name: 'Total Triumph',
     htalent_140_description: 'Triumph of Life additionally heals <num>2</num> allied heroes around.',
-    htalent_141_name: 'Slashing Throw &#x1F4A7 120 ⌛️13',
+    htalent_141_name: 'Slashing Throw <mana>120</mana> <CD>13</CD>',
     htalent_141_description:
       'Deals <mag>%s</mag> damage to the enemy, stunning for <num>1.5</num> sec., and makes the panther attack them.<br><br>\n<col3>Of One Flesh: Moves to the specified enemy, stunning them for <num>1.5</num> sec.</col3>',
-    htalent_142_name: 'Feed the Panther &#x1F4A7 80 ⌛️8',
+    htalent_142_name: 'Feed the Panther <mana>80</mana> <CD>8</CD>',
     htalent_142_description:
       'The panther moves to the hero and restores <num>%s</num> Health (based on the higher of Strength or Intellect).<br><br><col3>Of One Flesh: Deals <fiz>%s</fiz> damage to enemies in front.</col3>',
     htalent_143_name: 'Ricochet',
@@ -1398,7 +1398,7 @@ export const en = {
     htalent_145_name: 'Night Beast',
     htalent_145_description:
       "The panther's Strength increases by <num>%s</num> (based on Intellect). The panther's first attack on a target affected by Slashing Throw deals additional <fiz>%s</fiz> damage (based on the higher of Strength or Intellect).</br>\r\n<rz>On native terrain, both the panther's and hero's Agility increase by <num>%s</num> (based on the higher of Strength or Intellect).</rz>",
-    htalent_146_name: 'Unity &#x1F4A7 200 ⌛️150',
+    htalent_146_name: 'Unity <mana>200</mana> <CD>150</CD>',
     htalent_146_description:
       "Upon activation, the panther revives if dead, restores <num>25%</num> Health, and merges with the hero for <num>3</num> sec.<br>\nWhile the talent is active, the hero and panther are invulnerable, can pass through other units, increase their Speed to <num>80</num>, and deal <fiz>%s</fiz> damage (based on the higher of Strength or Intellect) in addition to the panther's normal attack.",
     htalent_147_name: 'Tireless Huntress',
@@ -1406,16 +1406,16 @@ export const en = {
       "The Night Beast talent reduces the cooldown of the hero's talents and panther's abilities by <num>10%</num>.<br>If the hero and panther haven't taken or dealt damage for <num>5</num> sec., the panther becomes invisible.",
     htalent_148_name: 'Blood Bonds',
     htalent_148_description: 'The Unity talent lasts <num>3</num> sec. longer.',
-    htalent_149_name: 'Boulder &#x1F4A7 55 ⌛️55',
+    htalent_149_name: 'Boulder <mana>55</mana> <CD>55</CD>',
     htalent_149_description:
       'The hero becomes immune to damage and control effects but cannot act. Native terrain is created around the hero.<br/>\n<rz>While in boulder form on native terrain, the hero increases Health regeneration by <num>%s</num>.</br>\nWhen using the talent from native terrain, the hero instantly restores <num>%s</num> Health.</rz>',
-    htalent_150_name: 'Shockwave &#x1F4A7 80 ⌛️8',
+    htalent_150_name: 'Shockwave <mana>80</mana> <CD>8</CD>',
     htalent_150_description: 'A strike that launches enemies around and deals <mag>%s</mag> damage to them (based on maximum Health).',
     htalent_151_name: 'Living Stone',
     htalent_151_description: 'While sheltered in boulder form, the hero can use the Shockwave talent. Increases the hero\'s Health regeneration by <num>%s</num> (from Strength)',
     htalent_152_name: "Giant's Stride",
     htalent_152_description: 'Reduces the Speed of all nearby enemies by <num>18%</num>.',
-    htalent_153_name: 'Avalanche &#x1F4A7 250 ⌛️100',
+    htalent_153_name: 'Avalanche <mana>250</mana> <CD>100</CD>',
     htalent_153_description:
       'Throws weights that deal <fiz>%s</fiz> damage to enemies (based on Max Health). The hero follows the weights, scattering everyone in their path and stunning opponents for <num>2</num> sec.',
     htalent_154_name: 'Resonance',
@@ -1425,9 +1425,9 @@ export const en = {
     htalent_155_description: 'Enemies hit by Avalanche lose <num>50%</num> Speed for <num>8</num> sec.',
     htalent_156_name: 'Trembling Step',
     htalent_156_description: "Giant's Stride additionally reduces enemies' Speed by <num>8%</num>.",
-    htalent_157_name: 'Devious Throw &#x1F4A7 90 ⌛️7',
+    htalent_157_name: 'Devious Throw <mana>90</mana> <CD>7</CD>',
     htalent_157_description: 'Deals <fiz>%s</fiz> damage to the first enemy in its path.',
-    htalent_158_name: 'Shadow Warrior &#x1F4A7 60 ⌛️25',
+    htalent_158_name: 'Shadow Warrior <mana>60</mana> <CD>25</CD>',
     htalent_158_description:
       'The hero becomes invisible after <num>2</num> sec. and gains <num>20%</num> Speed for <num>15</num> sec.</br><rz>When activated on native terrain, the talent lasts <num>10</num> sec. longer and grants <num>10%</num> more Speed.</rz>',
     htalent_159_name: 'Merciless Steel',
@@ -1435,22 +1435,22 @@ export const en = {
       'The Devious Throw talent slows the target by <num>50%</num> for <num>3</num> sec. and deals additional <fiz>%s</fiz> damage.<br>\nTotal damage <fiz>%s</fiz>',
     htalent_160_name: 'Strike from the Shadows',
     htalent_160_description: 'The first attack during Shadow Warrior stuns the enemy for <num>1</num> sec.',
-    htalent_161_name: "Victim's Mark &#x1F4A7 80 ⌛️15",
+    htalent_161_name: "Victim's Mark <mana>80</mana> <CD>15</CD>",
     htalent_161_description:
       "The hero marks an enemy for <num>8</num> sec. Each second the Mark is on the target, the hero's damage to them from attacks or Devious Throw increases by <num>10%</num> up to <num>50%</num>. <br>During the Mark's duration, the hero's attack speed gradually increases by <num>50%</num>, and each attack restores <num>%s</num> Health (based on Strength), gradually decreasing to <num>%s</num>. </br><rz>When used from native terrain, no Energy is consumed for activation.</rz>",
     htalent_162_name: 'Vital Shadow',
     htalent_162_description:
       'When using the Shadow Warrior talent, Health regeneration is increased by <num>%s</num> (based on Intellect).',
-    htalent_163_name: 'Decisive Strike &#x1F4A7 150 ⌛️20',
+    htalent_163_name: 'Decisive Strike <mana>150</mana> <CD>20</CD>',
     htalent_163_description:
       "Moves to the target and deals <mag>%s</mag> damage.<br/>If the target is not a hero, restores <num>67%</num> of Energy spent.</br><rz>From native terrain, moves further.</rz> Reduces the target's Stamina by <num>%s</num> (based on Strength) for <num>5</num> sec.",
     htalent_164_name: 'Preparation',
     htalent_164_description:
       "While Victim's Mark is on the target, the hero's Energy regeneration increases by <num>%s</num> (based on Strength). The Mark no longer disappears in the fog of war.",
-    htalent_165_name: 'Balance of Power &#x1F4A7 155 ⌛️9',
+    htalent_165_name: 'Balance of Power <mana>155</mana> <CD>9</CD>',
     htalent_165_description:
       'Heals the hero and nearby allied heroes for <num>%s</num> Health (based on Intellect). Deals <mag>%s</mag> damage to enemies around, enhancing the healing effect: the hero and nearby allied heroes equally restore Health equal to <num>50%</num> of damage dealt, but no more than <num>%s</num> (based on Intellect) each.',
-    htalent_166_name: 'Bewitchment &#x1F4A7 140 ⌛️35',
+    htalent_166_name: 'Bewitchment <mana>140</mana> <CD>35</CD>',
     htalent_166_description:
       'Creates native terrain around the hero for <num>15</num> sec., and all enemies near the hero cannot move for <num>2.5</num> sec.',
     htalent_167_name: 'Shift in Balance',
@@ -1462,24 +1462,24 @@ export const en = {
     htalent_169_description: 'An aura that increases the Will of allied heroes by <num>%s</num> (based on Will).',
     htalent_170_name: 'Disturbance of Peace',
     htalent_170_description: "Enemies within the Tranquility aura's area take <mag>%s</mag> damage each time the talent is used.",
-    htalent_171_name: 'Rainbow Flight &#x1F4A7 240 ⌛️120',
+    htalent_171_name: 'Rainbow Flight <mana>240</mana> <CD>120</CD>',
     htalent_171_description:
       'The hero takes flight on a Unicorn for <num>4</num> sec., becoming invulnerable and immune to control effects. While flying over enemies, deals <mag>%s</mag> damage per second.',
     htalent_172_name: 'Euphoria of Flight',
     htalent_172_description: 'The Rainbow Flight talent lasts <num>5</num> sec. longer.',
-    htalent_173_name: 'Enchanted Arrow &#x1F4A7 80 ⌛️8',
+    htalent_173_name: 'Enchanted Arrow <mana>80</mana> <CD>8</CD>',
     htalent_173_description:
       "Deals <mag>%s</mag> damage to the first enemy in its path and reduces the target's Health regeneration by <num>50%</num> for <num>5</num> sec.",
-    htalent_174_name: 'Wild Call &#x1F4A7 120 ⌛️60',
+    htalent_174_name: 'Wild Call <mana>120</mana> <CD>60</CD>',
     htalent_174_description:
       "For <num>60</num> sec., increases the hero's highest of Stamina or Will by <num>%s</num> (based on Intellect), the hero's Cunning by <num>%s</num> (based on Intellect), and nearby allied heroes' highest of Stamina or Will by <num>%s</num> (based on Intellect).</br><rz>On native terrain, heroes' Cunning is additionally increased by <num>1.5</num> times.</rz>",
     htalent_175_name: 'Precise Shot',
     htalent_175_description:
       'The bleeding effect stacks up to <num>3</num> times on targets with reduced Health regeneration. <br>The Enchanted Arrow talent, upon reaching maximum distance or hitting an enemy, explodes and deals <mag>%s</mag> damage to enemies around.',
-    htalent_176_name: "Hunt's fervor &#x1F4A7 90 ⌛️18",
+    htalent_176_name: "Hunt's fervor <mana>90</mana> <CD>18</CD>",
     htalent_176_description:
       'Increases the Speed of the specified allied target by <num>50%</num> for <num>6</num> sec. </br>\n<rz>On native terrain, Speed is additionally increased by <num>20%</num>.</rz>',
-    htalent_177_name: 'Devastating Shot &#x1F4A7 215 ⌛️70',
+    htalent_177_name: 'Devastating Shot <mana>215</mana> <CD>70</CD>',
     htalent_177_description:
       'The hero draws the bow for <num>1.6</num> sec. and releases an arrow in the specified direction, dealing up to <mag>%s</mag> damage to all enemies in its path. The longer the shot is charged, the more damage it deals.',
     htalent_178_name: "Hunter's Briskness",
@@ -1490,21 +1490,21 @@ export const en = {
       'The Devastating Shot talent deals <mag>%s</mag> more damage and has an increased area of effect.\n<br>Total damage: <mag>%s</mag>',
     htalent_180_name: 'Hunting Ardour',
     htalent_180_description: "The Hunt's fervor talent benefits both the hero and the specified ally.",
-    htalent_181_name: 'Ghost Shield &#x1F4A7 140 ⌛️9',
+    htalent_181_name: 'Ghost Shield <mana>140</mana> <CD>9</CD>',
     htalent_181_description:
       "Protects an ally for <num>6</num> sec., absorbing <num>%s</num> damage (based on the higher of Strength or Intellect).<br/>\nShields created while in ghost state absorb <num>%s</num> more damage.</br>\n<rz>When used from native terrain, increases the target's Speed by <num>30%</num>.</rz>",
-    htalent_182_name: 'Ghost Lash &#x1F4A7 60 ⌛️5',
+    htalent_182_name: 'Ghost Lash <mana>60</mana> <CD>5</CD>',
     htalent_182_description:
       "The Ghost Lash affects the specified target for up to <num>8</num> sec. while within the talent's radius, and doesn't stop while the hero is in ghost state.<br>If the target is an enemy, they take <mag>%s</mag> damage per sec., and the hero restores <num>%s</num> Health per sec. (based on Intellect). If the target is an ally, they restore Health, and the hero gains <prime>1</prime> per sec. and loses Energy, but <num>3</num> times less.</br><rz>When used from native terrain, the activation radius is increased.</rz>",
     htalent_183_name: 'Energy of Suffering',
     htalent_183_description: 'Each hit on the Ghost Shield restores <num>%s</num> Energy to the hero (based on Intellect).',
-    htalent_184_name: 'Reaping &#x1F4A7 65 ⌛️6',
+    htalent_184_name: 'Reaping <mana>65</mana> <CD>6</CD>',
     htalent_184_description:
       "Deals <fiz>%s</fiz> damage to all nearby enemies.<br>\nWhile in ghost state, the talent's cooldown is reduced to <num>1</num> sec.<br>\nDamage from Reaping can steal Health and Energy, but from no more than <num>5</num> targets.",
     htalent_185_name: 'Thirst for Life',
     htalent_185_description:
       "Killing an enemy extends any ghost's existence, including the hero's in ghost form, by <num>5</num> sec. (but no more than <num>30</num> sec. total).<br>\nWhen a ghost dies nearby, the hero restores <num>%s</num> Energy (based on Strength).",
-    htalent_186_name: 'Ghost of Death &#x1F4A7 355 ⌛️65',
+    htalent_186_name: 'Ghost of Death <mana>355</mana> <CD>65</CD>',
     htalent_186_description:
       'The hero turns into a ghost for <num>9</num> sec., increasing their Speed by <num>50%</num> and becoming immune to transformation effects. The Reaping talent additionally deals <fiz>%s</fiz> damage (based on the higher of Strength or Intellect).',
     htalent_187_name: 'Life Transfusion',
@@ -1513,10 +1513,10 @@ export const en = {
     htalent_188_name: 'Wrath of the Dead',
     htalent_188_description:
       'Upon using Ghost of Death, explosions occur at the locations of fallen souls and spell targets, each dealing <mag>%s</mag> damage to nearby enemies, but no more than <mag>%s</mag> damage to a single target.<br>\nDamage from the hero and allies is additionally increased by <fiz>%s</fiz>.',
-    htalent_189_name: 'Rat Swarm &#x1F4A7 120 ⌛️11',
+    htalent_189_name: 'Rat Swarm <mana>120</mana> <CD>11</CD>',
     htalent_189_description:
       'Creates an area for <num>8</num> sec. where enemies take <mag>%s</mag> damage per sec.<br>\nRat Swarm turns enemy terrain neutral.',
-    htalent_190_name: "Flute's Call &#x1F4A7 180 ⌛️15",
+    htalent_190_name: "Flute's Call <mana>180</mana> <CD>15</CD>",
     htalent_190_description:
       'Forces an enemy hero to follow for <num>2.5</num> sec., or until <num>%s</num> damage is taken (based on Intellect), and enslaves enemy creatures.<br>\nCan control up to <num>4</num> creatures simultaneously.',
     htalent_191_name: 'Rat Disease',
@@ -1524,10 +1524,10 @@ export const en = {
       'The Rat Swarm talent additionally deals <mag>%s</mag> damage to enemies and reduces their highest of Strength or Intellect by <num>%s</num> (based on Strength) for <num>3</num> sec. Reduces enemy healing by <num>%s%</num> (based on Strength), up to <num>75%</num>.<br>Total damage <mag>%s</mag>',
     htalent_192_name: 'Maddening Song',
     htalent_192_description: "When the Flute's Call talent ends, it deals <mag>%s</mag> damage to the charmed hero (based on Intellect).",
-    htalent_193_name: 'Rat Rogues &#x1F4A7 220 ⌛️120',
+    htalent_193_name: 'Rat Rogues <mana>220</mana> <CD>120</CD>',
     htalent_193_description:
       "Rats run towards enemy heroes, dealing <mag>%s</mag> damage to them, stealing <prime>11-81</prime> (based on your Hero's level), and reducing their Speed by <num>30%</num> for <num>3</num> sec. Can only be killed by auto-attacks.",
-    htalent_194_name: 'Charming Melody &#x1F4A7 260 ⌛️150',
+    htalent_194_name: 'Charming Melody <mana>260</mana> <CD>150</CD>',
     htalent_194_description:
       'The hero becomes immune to control for <num>1.5</num> sec. and forces nearby enemy heroes and their summoned creatures to freeze, while others obey for <num>15</num> sec.',
     htalent_195_name: "Flute's Power",
@@ -1536,10 +1536,10 @@ export const en = {
     htalent_196_name: 'Enchanting Music',
     htalent_196_description:
       'After Charming Melody ends, nearby enemy heroes are slowed by <num>80%</num> and cannot use talents for <num>1.5</num> sec.',
-    htalent_197_name: 'Shredding Volley&#x1F4A7 100 ⌛️10',
+    htalent_197_name: 'Shredding Volley<mana>100</mana> <CD>10</CD>',
     htalent_197_description:
-      "The hero draws the bow for <num>0.5</num> sec. and releases arrows in the specified direction, dealing <fiz>%s</fiz> (based on Intellect) and <mag>%s</mag> (based on Intellect) damage that can be <font color=#ff8c00>Critical</font> to all enemies in the path.<br><rz>When used from native terrain, the talent deals <num>1.3</num> times more damage.</rz><br> The talent's range is increased by <num>%s</num> (based on Intellect).",
-    htalent_198_name: 'Redeployment &#x1F4A7 150 ⌛️15',
+      "The hero draws the bow for <num>0.5</num> sec. and releases arrows in the specified direction, dealing <fiz>%s</fiz> (based on Intellect) and <mag>%s</mag> (based on Intellect) damage that can be <orange-d>Critical</orange-d> to all enemies in the path.<br><rz>When used from native terrain, the talent deals <num>1.3</num> times more damage.</rz><br> The talent's range is increased by <num>%s</num> (based on Intellect).",
+    htalent_198_name: 'Redeployment <mana>150</mana> <CD>15</CD>',
     htalent_198_description:
       "The hero is teleported to the specified location. <br>\n<rz>When used from native terrain, the talent's cooldown is reduced by <num>5</num> sec.</rz>",
     htalent_199_name: 'Suppressive Fire',
@@ -1554,13 +1554,13 @@ export const en = {
     htalent_202_name: 'Advantageous position',
     htalent_202_description:
       "When the New Position talent is ready for use, the hero's Agility is increased by <num>%s</num> (from Strength and Intellect). ",
-    htalent_203_name: 'Decisive Shot &#x1F4A7 300 ⌛️60',
+    htalent_203_name: 'Decisive Shot <mana>300</mana> <CD>60</CD>',
     htalent_203_description:
       'The hero hits the target with the least Health, dealing it <fiz>%s</fiz> and <mag>%s</mag> damage. A hit enemy cannot hide from the hero for the next <num>3</num> seconds.',
     htalent_204_name: 'Double shot',
     htalent_204_description:
       'The target of the decisive shot will be stunned for <num>0.5</num> sec.<br>\r\Warning shot can be applied <num>2</num> times within <num>10</num> seconds.',
-    htalent_205_name: 'Wild Beast &#x1F4A7 100 ⌛️18',
+    htalent_205_name: 'Wild Beast <mana>100</mana> <CD>18</CD>',
     htalent_205_description:
       'Rushes at the specified enemy, deals <mag>%s</mag> damage to it, forces the hero to attack for <num>1</num> sec. and slows it down by <num>40%</num> for <num>5</num> sec.',
     htalent_206_name: 'Lycanthropy',
@@ -1572,10 +1572,10 @@ export const en = {
     htalent_208_name: 'Wound Healing',
     htalent_208_description:
       'Every time a hero takes damage from enemy heroes, he increases his Health regeneration by <num>1.6</num> times for <num>2</num> seconds.',
-    htalent_209_name: 'Animal Sense &#x1F4A7 80 ⌛️15',
+    htalent_209_name: 'Animal Sense <mana>80</mana> <CD>15</CD>',
     htalent_209_description:
       "Enemy heroes with Health less than <num>50%</num> in a large radius around are displayed on the map. If you apply your talent at this time or when your Health is less than <num>50%</num>, the hero's speed will increase by <num>70%</num> for <num>9</num> seconds.<br>\n<rz>The targets in the hero's native land are visible regardless of their Health.</rz>",
-    htalent_210_name: 'The Curse of the Beast &#x1F4A7 320 ⌛️100',
+    htalent_210_name: 'The Curse of the Beast <mana>320</mana> <CD>100</CD>',
     htalent_210_description:
       'For <num>3</num> seconds, turns the enemy hero into a beast that is forced to attack the hero and reduces the damage from his attacks by <num>%s</num> (from the Intellect).The beast cannot be slowed down or accelerated.',
     htalent_211_name: 'Ruthlessness',
@@ -1583,7 +1583,7 @@ export const en = {
     htalent_212_name: 'Animal Skin',
     htalent_212_description:
       'The Lycanthropy Talent additionally increases the greatest of Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).',
-    htalent_213_name: 'Get it! &#x1F4A7 105 ⌛️10',
+    htalent_213_name: 'Get it! <mana>105</mana> <CD>10</CD>',
     htalent_213_description:
       'Deals <fiz>%s</fiz> damage to targets and knocks down talent creation.<br><rz>When used from his native land, talent recovers <num>3</num> seconds faster.</rz>',
     htalent_214_name: 'Swallow!',
@@ -1593,32 +1593,32 @@ export const en = {
       "Get talent! additionally reduces the target's Durability by <num>%s</num> (from Strength) for <num>5</num> seconds.",
     htalent_216_name: 'Chew better!',
     htalent_216_description: 'Swallow your Talent! additionally replenishes <num>%s</num> of energy.',
-    htalent_217_name: 'Grab it! &#x1F4A7 100 ⌛️18',
+    htalent_217_name: 'Grab it! <mana>100</mana> <CD>18</CD>',
     htalent_217_description: 'Attracts the first enemy on the attack path to the hero.',
-    htalent_218_name: 'Push! &#x1F4A7 100 ⌛️0.5',
+    htalent_218_name: 'Push! <mana>100</mana> <CD>0</CD>.5',
     htalent_218_description:
-      'The hero jumps to the specified point, dealing from <mag>%s</mag> to <mag>%s</mag> damage (from maximum Health and number of jumps) to all enemies around, spending one <font color=#ff8c00>Jump</font>. </br><rz>When used from the native land, the affected area increases.</rz><br> <hr align="center" width="70%" size="2" color="#A7A062" /> Total jumps: <num>2</num><br> Jump recovery time: <num>40</num> seconds',
+      'The hero jumps to the specified point, dealing from <mag>%s</mag> to <mag>%s</mag> damage (from maximum Health and number of jumps) to all enemies around, spending one <orange-d>Jump</orange-d>. </br><rz>When used from the native land, the affected area increases.</rz><br> <hr> Total jumps: <num>2</num><br> Jump recovery time: <num>40</num> seconds',
     htalent_219_name: 'Hold on tight!',
     htalent_219_description: 'Grab your Talent! additionally stuns a captured enemy for <num>1.5</num> seconds.',
     htalent_220_name: 'Jump!',
     htalent_220_description:
-      'Increases the amount of <font color=#ff8c00>Jumps</font> to <num>1</num>.<br> Slows down touched enemies by <num>40%</num> for <num>2</num> seconds.',
-    htalent_221_name: 'The Roots of Evil &#x1F4A7 50 ⌛️3 /|font color=#8CD5FF> ⌛️8</font>',
+      'Increases the amount of <orange-d>Jumps</orange-d> to <num>1</num>.<br> Slows down touched enemies by <num>40%</num> for <num>2</num> seconds.',
+    htalent_221_name: 'The Roots of Evil <mana>50</mana> <CD>3</CD> /<blue-l> <CD>8</CD></blue-l>',
     htalent_221_description:
-      'After <num>0.3</num> seconds, it deals <mag>%s</mag> damage to enemies in the area under the cursor and can steal Health, but not more than <num>3</num> targets.<br><rz>When used from native land, it reduces the target\'s Health recovery by <num>75%</num> for <num>2</num> seconds.</rz><br> <hr align="center" width="70%" size="2" color="#A7A062" /> <font color=#8CD5FF>In the form of <font color=#ff8c00>Bear</font> the hero is transported to the specified location and deals enemies around <mag>%s</mag> damage (from the greatest of Strength and Intellect).</font>',
-    htalent_222_name: 'Living skin &#x1F4A7 60 ⌛️30 /|font color=#8CD5FF> ⌛️5</font>',
+      'After <num>0.3</num> seconds, it deals <mag>%s</mag> damage to enemies in the area under the cursor and can steal Health, but not more than <num>3</num> targets.<br><rz>When used from native land, it reduces the target\'s Health recovery by <num>75%</num> for <num>2</num> seconds.</rz><br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero is transported to the specified location and deals enemies around <mag>%s</mag> damage (from the greatest of Strength and Intellect).</blue-l>',
+    htalent_222_name: 'Living skin <mana>60</mana> <CD>30</CD> /<blue-l> <CD>5</CD></blue-l>',
     htalent_222_description:
-      'Attracts the selected enemy hero, dealing him <mag>%s</mag> damage and stunning him for <num>1.5</num> sec.<br> The range of talent increases by <num>0.2</num> for every <num>10</num> of the greatest of Strength and Intellect.<br> <hr align="center" width="70%" size="2" color="#A7A062" /> <font color=#8CD5FF>Applying talent to yourself turns the hero into <font color=#ff8c00>Bear</font> until the Energy drops below <num>5%</num>, which gets <num>%s</num> Health (from the highest of Strength and Intellect) and deals <num>15%</num> more attack damage, but loses <num>0.4%</num> max. Energy per second.</font>',
+      'Attracts the selected enemy hero, dealing him <mag>%s</mag> damage and stunning him for <num>1.5</num> sec.<br> The range of talent increases by <num>0.2</num> for every <num>10</num> of the greatest of Strength and Intellect.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>Bear</orange-d> until the Energy drops below <num>5%</num>, which gets <num>%s</num> Health (from the highest of Strength and Intellect) and deals <num>15%</num> more attack damage, but loses <num>0.4%</num> max. Energy per second.</blue-l>',
     htalent_223_name: 'Woe to the weak',
     htalent_223_description:
-      'The Roots of evil deal double damage to enemies under the Crow\'s Evil Eye or trapped Villains.<br> <hr align="center" width="70%" size="2" color="#A7A062" /> <font color=#8CD5FF>In the form of <font color=#ff8c00>Bear</font> the hero stuns the wounded enemies for <num>1</num> sec.</font>',
+      'The Roots of evil deal double damage to enemies under the Crow\'s Evil Eye or trapped Villains.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero stuns the wounded enemies for <num>1</num> sec.</blue-l>',
     htalent_224_name: 'Hunger of the dead beast',
     htalent_224_description:
-      'When the talent is restored, the hero\'s speed increases by <num>20%</num>, and near trees and mushrooms by <num>30%</num>.<br>When the Live Skin is triggered, the talents of the Villain and Fly Agaric are restored.<br> <hr align="center" width="70%" size="2" color="#A7A062" /> <font color=#8CD5FF>In the form of <font color=#ff8c00>Bear</font> the hero\'s attacks slow down the enemy by <num>25%</num> for <num>2</num> seconds, and the hero receives an additional <num>%s</num> of health theft (from the greatest of Strength and Intellect).</font>',
-    htalent_225_name: "Crow's Evil Eye &#x1F4A7 120 ⌛️25 /|font color=#8CD5FF> ⌛️5</font>",
+      'When the talent is restored, the hero\'s speed increases by <num>20%</num>, and near trees and mushrooms by <num>30%</num>.<br>When the Live Skin is triggered, the talents of the Villain and Fly Agaric are restored.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero\'s attacks slow down the enemy by <num>25%</num> for <num>2</num> seconds, and the hero receives an additional <num>%s</num> of health theft (from the greatest of Strength and Intellect).</blue-l>',
+    htalent_225_name: "Crow's Evil Eye <mana>120</mana> <CD>25</CD> /<blue-l> <CD>5</CD></blue-l>",
     htalent_225_description:
-      'The crow attacks the enemy, dealing him <fiz>%s</fiz> damage for <num>10</num> seconds and showing where he is.<br>If the effect ends prematurely, the talent\'s recovery time decreases proportionally.<br> <hr align="center" width="70%" size="2" color="#A7A062" /> <font color=#8CD5FF>Applying talent to yourself turns the hero into <font color=#ff8c00>The crow</font>, until the Energy drops below <num>5%</num>, which accelerates by <num>30%</num>, receives the effect of flight and an unobstructed view within a radius of <num>%s</num> (from the Intellect), but loses <num>1.5%</num> max. Energy per second, and cannot use talents or attack.</font>',
-    htalent_226_name: 'The villain &#x1F4A7 380 ⌛️25',
+      'The crow attacks the enemy, dealing him <fiz>%s</fiz> damage for <num>10</num> seconds and showing where he is.<br>If the effect ends prematurely, the talent\'s recovery time decreases proportionally.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>The crow</orange-d>, until the Energy drops below <num>5%</num>, which accelerates by <num>30%</num>, receives the effect of flight and an unobstructed view within a radius of <num>%s</num> (from the Intellect), but loses <num>1.5%</num> max. Energy per second, and cannot use talents or attack.</blue-l>',
+    htalent_226_name: 'The villain <mana>380</mana> <CD>25</CD>',
     htalent_226_description:
       'Summons a Villain whose attacks deal <mag>%s</mag> damage, and who has <num>%s</num> Health (from the greatest of Strength and Intellect).<br>\r\nThe tree disguises itself as an ordinary tree, grabs and immobilizes an enemy hero who happens to be nearby.<br>\r\The death of a Villain causes friendly Villains around the deceased to remain inactive for <num>4</num> seconds.<br>\r\n Supports no more than <num>10</num> trees at a time.<br>\r\n<rz>In his native land, the Firewood burns <num>%s</num> Energy (from the Intellect).</rz>',
     htalent_227_name: 'The Dark Evil Eye',
@@ -1626,10 +1626,10 @@ export const en = {
     htalent_228_name: 'Feeding the tree',
     htalent_228_description:
       'The Stamina and Will of the Villain increases by <num>%s</num> (from the greatest of Strength and Intellect).',
-    htalent_229_name: 'Network of Enchantment &#x1F4A7 200 ⌛️10',
+    htalent_229_name: 'Network of Enchantment <mana>200</mana> <CD>10</CD>',
     htalent_229_description:
       'Deals <mag>%s</mag> damage. If a talent kills an enemy, it consumes <num>3</num> times less Energy and immediately recovers.',
-    htalent_230_name: 'Ethereal form ⌛️20',
+    htalent_230_name: 'Ethereal form <CD>20</CD>',
     htalent_230_description:
       "For <num>5</num> seconds, the hero can pass through trees and living creatures. Touching a creature for the first time burns <num>5%</num> The creature's energy and restores itself to <num>%s</num> Energy.<br>\n<rz>After coming out of his Ethereal form on his native land, the hero restores <num>%s</num> Energy.</rz>",
     htalent_231_name: 'A magic trap',
@@ -1637,10 +1637,10 @@ export const en = {
       'For <num>5</num> seconds after being hit by the Enchantment Network, the enemy takes <mag>%s</mag> damage for each talent activation, while losing <num>50%</num> Speed and <num>%s</num> Agility (from Intellect) for <num>4</num> seconds.',
     htalent_232_name: 'Spasm',
     htalent_232_description: 'In Ethereal form, the hero, passing by enemies, deals them <mag>%s</mag> damage.',
-    htalent_233_name: 'Ethereal Shield &#x1F4A7 50 ⌛️17',
+    htalent_233_name: 'Ethereal Shield <mana>50</mana> <CD>17</CD>',
     htalent_233_description:
       "For <num>5</num> seconds <num>60%</num> of damage is absorbed by Energy.<br>\n<rz>Having disappeared on his native land, the shield restores the hero's Health equal to <num>%s</num> maximum Energy.</rz>",
-    htalent_234_name: 'The Triumph of the Spirit &#x1F4A7 320 ⌛️90',
+    htalent_234_name: 'The Triumph of the Spirit <mana>320</mana> <CD>90</CD>',
     htalent_234_description:
       'Prohibits the specified enemy hero from using talents for <num>0.6</num> seconds and deals <mag>%s</mag> damage after <num>1.2</num> seconds.',
     htalent_235_name: 'Liberation',
@@ -1648,13 +1648,13 @@ export const en = {
     htalent_236_name: 'Energy resonance',
     htalent_236_description:
       'The Triumph of the Spirit talent spends <num>50%</num> of the remaining Energy, deals additional <mag>%s</mag> damage (<num>35%</num> of the Energy used), burns the enemy hero <num>30%</num> of the remaining Energy and additionally <num>2%</num> of the remaining Energy for each accumulated effect of the Lord of Ether.',
-    htalent_237_name: 'Combat motive &#x1F4A7 120 ⌛️8',
+    htalent_237_name: 'Combat motive <mana>120</mana> <CD>8</CD>',
     htalent_237_description:
       'Deals <mag>%s</mag> damage for <num>4</num> seconds to <num>5</num> nearby enemies.</br>\n<rz>When used from its native land, it hits <num>10</num> targets.</rz>',
-    htalent_238_name: 'The triumphant motif of &#x1F4A7 80 ⌛️8',
+    htalent_238_name: 'The triumphant motif of <mana>80</mana> <CD>8</CD>',
     htalent_238_description:
       "When the attacks of allied heroes are activated, the enemies' speed is reduced by <num>30%</num> for <num>3</num> seconds.",
-    htalent_239_name: 'Defensive motive &#x1F4A7 80 ⌛️8',
+    htalent_239_name: 'Defensive motive <mana>80</mana> <CD>8</CD>',
     htalent_239_description:
       'For <num>3</num> seconds, creates shields on allied heroes around, absorbing <num>%s</num> damage (from Stealth).<br>\n<rz>When used from its native land, it restores to itself <num>%s</num> Health (from Intellect).</rz>',
     htalent_240_name: 'Overwhelming sounds',
@@ -1665,19 +1665,19 @@ export const en = {
     htalent_242_name: 'The energy of sound',
     htalent_242_description:
       'After the expiration of the talent, the hero restores the Protective motive <num>%s</num> Energy (from the greatest of Cunning and Intellect) for each surviving shield, but no more than two.',
-    htalent_243_name: 'Magic Melody &#x1F4A7 380 ⌛️120',
+    htalent_243_name: 'Magic Melody <mana>380</mana> <CD>120</CD>',
     htalent_243_description:
       'For <num>7</num> seconds, summons a violin to the specified location, creating a zone of visibility around itself and each second inflicting <fiz>%s</fiz> damage (from Cunning and Inspiration) and <mag>%s</mag> damage to nearby enemies.',
     htalent_244_name: 'The Magic Violin',
     htalent_244_description:
       'The magic melody can be used at an extended distance, and the summoned violin repeats the motifs performed by the Hero.',
-    htalent_245_name: 'Deadly Throw &#x1F4A7 130 ⌛️14',
+    htalent_245_name: 'Deadly Throw <mana>130</mana> <CD>14</CD>',
     htalent_245_description:
       'The hero moves to the specified point, attacking every enemy on the way. During movement, the hero is not affected by control effects, and the theft of Health occurs from no more than <num>6</num> targets.',
     htalent_246_name: 'Enchanted Blades',
     htalent_246_description:
       "Each hero's attack additionally deals <mag>%s</mag> damage (from Will) and steals <num>%s</num> Enemy's health (from Strength).<br>\n<rz>In the native land, the theft of Health is additionally increased by <num>%s</num> (at Most).</rz>",
-    htalent_247_name: 'Hypnotic challenge &#x1F4A7 200 ⌛️30',
+    htalent_247_name: 'Hypnotic challenge <mana>200</mana> <CD>30</CD>',
     htalent_247_description:
       'Forces all enemies next to the hero to attack him for <num>2</num> seconds.<br>\n<rz>When used from the native land, the range of hypnosis increases.</rz>',
     htalent_248_name: 'Snake Venom',
@@ -1693,10 +1693,10 @@ export const en = {
     htalent_252_name: 'Combat Trance',
     htalent_252_description:
       'After dodging an attack, the duration of control effects is reduced by <num>35%</num> for <num>5</num> seconds.',
-    htalent_253_name: 'Fire Strike &#x1F4A7 90 ⌛️2',
+    htalent_253_name: 'Fire Strike <mana>90</mana> <CD>2</CD>',
     htalent_253_description:
       'Creates <num>0.5</num> seconds and deals <mag>%s</mag> damage to enemies in the specified area and additionally <mag>%s</mag> damage to enemies in the epicenter of the explosion.',
-    htalent_254_name: 'Transformation &#x1F4A7 110 ⌛️15',
+    htalent_254_name: 'Transformation <mana>110</mana> <CD>15</CD>',
     htalent_254_description:
       '<num>0.9</num> sec. is created, the specified enemy cannot do anything and moves at <num>40%</num> speed, receiving <fiz>%s</fiz> damage for <num>2</num> sec.',
     htalent_255_name: 'Fire',
@@ -1704,20 +1704,20 @@ export const en = {
       'Enemies in the epicenter of the Fire Strike receive additional <fiz>%s</fiz> damage for <num>3</num> seconds.',
     htalent_256_name: 'Magic pressure',
     htalent_256_description: 'The Transformation talent deals <fiz>%s</fiz> more damage.\n<br>Total damage: <fiz>%s</fiz>',
-    htalent_257_name: 'Energy barrier &#x1F4A7 80 ⌛️16',
+    htalent_257_name: 'Energy barrier <mana>80</mana> <CD>16</CD>',
     htalent_257_description:
       "<num>0.6</num> sec. is created and creates a barrier in the specified area for <num>3</num> sec., crossing the border for the first time, the enemy is stunned for <num>1.5</num> sec.<br>\n<rz>Being inside the barrier in the hero's native land, enemies restore Health by <num>50%</num> worse.</rz>",
-    htalent_258_name: 'Summoning the Demon &#x1F4A7 320 ⌛️90',
+    htalent_258_name: 'Summoning the Demon <mana>320</mana> <CD>90</CD>',
     htalent_258_description:
       "Creates <num>0.6</num> seconds and summons a Demon for <num>12</num> seconds, whose attacks deal <fiz>%s</fiz> damage. The appearance of a Demon deals <mag>%s</mag> damage to all enemies around it. The Demon's health is <num>%s</num> (from the highest of Strength and Intellect).<br>\n<rz>When used from native land, the appearance of a Demon stuns enemies around by <num>0.5</num>.</rz>",
     htalent_259_name: 'Earth Tremor',
     htalent_259_description: 'Enemies inside the Energy Barrier take <fiz>%s</fiz> damage per second.',
     htalent_260_name: 'Demonic Fire',
     htalent_260_description: 'Enemies located near the Summoned Demon receive <mag>%s</mag> damage per second.',
-    htalent_261_name: 'Warrior Fairies &#x1F4A7 120 ⌛️12',
+    htalent_261_name: 'Warrior Fairies <mana>120</mana> <CD>12</CD>',
     htalent_261_description:
       'Releases the warrior fairies to the specified location, which follow the cursor for <num>2.5</num> seconds. Enemies next to Fairies take <mag>%s</mag> damage per second, for <num>6</num> seconds.<br>\n<rz>When used from native land, it extends the damage time by <num>3</num> seconds.</rz>',
-    htalent_262_name: 'Guardian Fairies &#x1F4A7 95 ⌛️12',
+    htalent_262_name: 'Guardian Fairies <mana>95</mana> <CD>12</CD>',
     htalent_262_description:
       'Releases guardian fairies to the specified location, who follow the cursor for <num>2.5</num> seconds. Allies next to Fairies take 20% less damage for <num>6</num> seconds.<br>\n<rz>When used from the native land, the protection period increases by <num>3</num> seconds.</rz>',
     htalent_263_name: 'Pollen of the warriors',
@@ -1726,42 +1726,42 @@ export const en = {
     htalent_264_name: 'Guardian Pollen',
     htalent_264_description:
       'Using the Guardian Fairy\'s talent increases Health regeneration by <num>%s</num> (from the greatest of Strength and Intellect) for <num>10</num> seconds.',
-    htalent_265_name: 'Unity &#x1F4A7 230 ⌛️80',
+    htalent_265_name: 'Unity <mana>230</mana> <CD>80</CD>',
     htalent_265_description:
       'Combines with the specified hero for <num>7</num> seconds, removing all negative effects.The arrow will not leave the hero has invulnerability, but cannot attack.Class talents strengthen an ally and negatively affect an enemy.',
-    htalent_266_name: 'Fury of the Fairies &#x1F4A7 140 ⌛️25',
+    htalent_266_name: 'Fury of the Fairies <mana>140</mana> <CD>25</CD>',
     htalent_266_description: 'Released Warrior Fairies deal <fiz>%s</fiz> damage, and Guardian Fairies deal <mag>%s</mag> damage.',
     htalent_267_name: 'Epiphany',
     htalent_267_description: 'Increases the effectiveness of class talents by <num>25%</num> for the duration of the Unity talent.',
     htalent_268_name: 'Merge',
     htalent_268_description:
       "The Unity target's attack increases if he is an ally, or decreases if he is an enemy, by <num>100%</num> of the hero's effective attack, taking into account the difference in Penetration, Attack Speed, and Chance of the hero's Crit and the Unity target.",
-    htalent_269_name: 'Decisive Attack &#x1F4A7 50 ⌛️16',
+    htalent_269_name: 'Decisive Attack <mana>50</mana> <CD>16</CD>',
     htalent_269_description:
       'Moves in the specified direction, dealing <fiz>%s</fiz> damage (from the highest of Strength and Intellect) to all enemies around, receiving <num>1</num> Heroism for each (no more than <num>6</num> in total).<br>Within <num>4</num> seconds, the talent can be applied <num>1 </num> more times.<br>During movement, the hero is not affected by control effects.',
-    htalent_270_name: 'second wind &#x1F4A7 50 ⌛️20',
+    htalent_270_name: 'second wind <mana>50</mana> <CD>20</CD>',
     htalent_270_description:
       "Restores the hero's <num>%s</num> Health (from Intellect) and additionally using Heroism restores <num>%s</num> Health (from the Intellect) for each accumulated effect.<br>\n<rz>When used from the native land, it removes all negative effects.</rz>",
     htalent_271_name: 'Challenge',
     htalent_271_description:
       'Enemy heroes and creatures summoned by them who have received damage from the Resolute Attack talent are forced to attack the hero for <num>0.8</num> seconds.',
-    htalent_272_name: 'Bodyguard &#x1F4A7 60 ⌛️45',
+    htalent_272_name: 'Bodyguard <mana>60</mana> <CD>45</CD>',
     htalent_272_description:
       'For <num>6</num> seconds, redirects <num>50%</num> damage to itself from the specified allied hero, but no more than <num>%s</num> (from the Intellect) and sends a hawk, which accelerates the target by <num>50%</num> for <num>5</num> seconds.The hero is displayed on the map of opponents who see the goal of the talent.<br>\A pUron obtained through the Bodyguard talent from another hero gives <num>3</num> times more Heroism.<br>\n<rz>When used from his native land, he gets <num>5</num> Heroism.</rz>',
     htalent_273_name: 'Fighting fervor',
     htalent_273_description: 'The hero can use the Decisive Attack talent <num>1</num> times more.',
-    htalent_274_name: 'Punishing blow &#x1F4A7 300 ⌛️90',
+    htalent_274_name: 'Punishing blow <mana>300</mana> <CD>90</CD>',
     htalent_274_description:
       'The hero is transported to the specified target, deals <fiz>%s</fiz> damage and additionally <fiz>%s</fiz> for each Heroism effect, and stuns her for <num>1</num> sec.',
     htalent_275_name: 'Winged',
     htalent_275_description: "The Bodyguard talent additionally increases the hero's own Speed by <num>50%</num> for <num>5</num> seconds.",
     htalent_276_name: 'Revenge',
     htalent_276_description:
-      'If the target deals damage within <num>6</num> seconds after being hit with a Punishing Blow, it will receive <num>70%</num> <font color=#B00000>net damage</font> back. The total damage cannot exceed <num>%s</num> (of Strength).',
-    htalent_277_name: 'Caustic substance &#x1F4A7 120 ⌛️12',
+      'If the target deals damage within <num>6</num> seconds after being hit with a Punishing Blow, it will receive <num>70%</num> <red-d>net damage</red-d> back. The total damage cannot exceed <num>%s</num> (of Strength).',
+    htalent_277_name: 'Caustic substance <mana>120</mana> <CD>12</CD>',
     htalent_277_description:
       'For <num>5</num> seconds, creates an area where enemies receive <fiz>%s</fiz> damage every <num>0.9</num> seconds, for <num>4</num> seconds. A moving target takes <num>3</num> times more damage.',
-    htalent_278_name: 'Alchemy Circle &#x1F4A7 70 ⌛️10',
+    htalent_278_name: 'Alchemy Circle <mana>70</mana> <CD>10</CD>',
     htalent_278_description:
       'Creates an Alchemical Circle at the specified location or transfers the hero to an already created one. When moving, the talent preparation time depends on the distance of the circle and varies from <num>0</num> to <num>5</num> seconds, and the recovery time from <num>20</num> to <num>80</num> seconds. Creating a <num>4</num> circle destroys the nearest existing one.<br>\n<rz>Having used his talent to return to his native land, the hero is healed by <num>%s</num> Health (from Intellect).</rz>',
     htalent_279_name: 'Special enzymes',
@@ -1769,20 +1769,20 @@ export const en = {
     htalent_280_name: 'Side effect',
     htalent_280_description:
       "While in the Alchemy Circle, the hero restores <num>1%</num> Energy per second and increases Agility (from Intellect) or Cunning (from Strength) by <num>%s</num>, depending on the hero's highest parameter.<br>\Hero can now contain up to <num>4</num> Alchemy Circles.",
-    htalent_281_name: 'Glue portion &#x1F4A7 100 ⌛️16',
+    htalent_281_name: 'Glue portion <mana>100</mana> <CD>16</CD>',
     htalent_281_description:
       'In the specified cone, all enemies receive <mag>%s</mag> damage and slow down for <num>6</num> seconds by <num>10%</num>. The deceleration is additionally increased by <num>10%</num> per second to <num>70%</num>.<br>\n<rz>When used from home, the target slows down by <num>35%</num> and the deceleration additionally increases to <num>95%</num>.</rz>',
     htalent_282_name: 'Active connections',
     htalent_282_description: "Enemies trapped at the beginning of Portia Glue's talent cone cannot use talents for <num>2.5</num> seconds.",
-    htalent_283_name: 'The Power of Mercury 270 ⌛️120',
+    htalent_283_name: 'The Power of Mercury 270 <CD>120</CD>',
     htalent_283_description:
       "The summoned clone attacks the enemy hero, preventing him from doing anything from <num>2</num> (at <num>20%</num> Target's health or less) up to <num>4</num> seconds (at <num>80%</num> Goal health and more). The hero's attacks additionally inflict <num>%s</num>(from Intellect) for <num>6</num> seconds.",
     htalent_284_name: 'Mercury catalyst',
     htalent_284_description: "Talent Recovery Time Mercury's Power is reduced by <num>40%</num>.",
-    htalent_285_name: 'Mental Whip &#x1F4A7 60 ⌛️7',
+    htalent_285_name: 'Mental Whip <mana>60</mana> <CD>7</CD>',
     htalent_285_description:
       'Strikes with a whip in the indicated direction, dealing <mag>%s</mag> damage (from the greatest of Strength and Intellect) to all affected enemies.',
-    htalent_286_name: 'Demon Trap &#x1F4A7 100 ⌛️15',
+    htalent_286_name: 'Demon Trap <mana>100</mana> <CD>15</CD>',
     htalent_286_description:
       'Throws a trap at the specified point, for <num>2</num> seconds, immobilizing the first enemy hero in the path or stepping on it for <num>12</num> seconds.<br>\n<rz>When used from the native land, the trap creates a net invisible to enemies.</rz>',
     htalent_287_name: 'Inner Flame',
@@ -1796,37 +1796,37 @@ export const en = {
       'For <num>4</num> seconds, the hero redirects <num>60%</num> of incoming damage to the archons, and while at least one of them is present, increases his Speed by <num>50%</num>.',
     htalent_290_name: 'Elevation',
     htalent_290_description: "The Inner Flame also increases the Archon's attack range and Power by <num>%s</num> (from Intellect).",
-    htalent_291_name: 'The Blow of the Archons &#x1F4A7 200 ⌛️100',
+    htalent_291_name: 'The Blow of the Archons <mana>200</mana> <CD>100</CD>',
     htalent_291_description:
       'Archons disappear by turning into projectiles that deal <fiz>%s</fiz> damage to the enemy hero and additionally <fiz>%s</fiz> damage if they were reinforced with Internal Flames before the transformation.<br>\pS 3 (4) reinforced archons <fiz>%s</fiz> (<fiz>%s</fiz>) damage.',
     htalent_292_name: 'Eternal Servant',
     htalent_292_description:
       'The cooldown of the Archon Strike talent is reduced by <num>80%</num>.<br>The Talented Archon Lord instantly summons a new servant and does not interrupt the already active talent Demonic Shield.',
-    htalent_293_name: 'Bloody stroke ❤️45 ⌛️3',
+    htalent_293_name: 'Bloody stroke ❤️45 <CD>3</CD>',
     htalent_293_description:
       'Creates <num>0.2</num> seconds, deals <mag>%s</mag> damage to targets, restoring itself <num>%s</num> Health (from Intellect) if a Bloody stroke kills her.<br><rz>When used from native land, it pre-lowers by <num>%s</num> Durability (from Strength) or Will (from Intellect) of the target for <num>3</num> seconds, depending on the highest parameter of the hero.</rz>',
-    htalent_294_name: 'Scarlet Rose ❤️100 ⌛️12',
+    htalent_294_name: 'Scarlet Rose ❤️100 <CD>12</CD>',
     htalent_294_description: 'The hero throws a scarlet rose, dealing <mag>%s</mag> damage to all enemies in his path.',
     htalent_295_name: 'Deep Cut',
     htalent_295_description: 'The Blood Stroke talent deals additional <fiz>%s</fiz> damage and restores <num>%s</num> more Health.',
-    htalent_296_name: 'Concealing Mist ❤️70 ⌛️25',
+    htalent_296_name: 'Concealing Mist ❤️70 <CD>25</CD>',
     htalent_296_description:
       'For <num>10</num> seconds, it creates an area in which the hero is invisible, and enemies in it receive <mag>%s</mag> damage every second. Attacks and the use of talents reveal the hero for a short time.',
     htalent_297_name: 'Entangling flicker',
     htalent_297_description:
       'The last enemy hero touched by the Scarlet Rose is marked for <num>4</num> seconds, which allows you to re-apply the talent, immobilize him for <num>2</num> seconds and move behind him.   <br>The hero for <num>5</num> seconds gets <num>%s</num> to the greatest of Stamina and Will (from the greatest of Strength and Intellect).',
-    htalent_298_name: 'Blood Ritual ❤️100 ⌛️90',
+    htalent_298_name: 'Blood Ritual ❤️100 <CD>90</CD>',
     htalent_298_description:
       'Stuns an enemy hero and takes <num>3</num> seconds, dealing him <mag>%s</mag> damage per second, while restoring himself an equal amount of Health.',
     htalent_299_name: 'Armor of Darkness',
     htalent_299_description: 'Being in the area created by the Concealing Mist talent, the hero takes <num>30% less damage</num>.',
     htalent_300_name: 'The last straw',
     htalent_300_description:
-      'By applying the Blood Ritual talent, the hero removes all negative effects from himself, becomes immune to control effects for <num>6</num> seconds and takes <num>25%</num> less damage.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#9966CC>At night, the damage reduction increases to <num>35%</num>.</font>',
-    htalent_301_name: 'Familiar &#x1F4A7 50 ⌛️1',
+      'By applying the Blood Ritual talent, the hero removes all negative effects from himself, becomes immune to control effects for <num>6</num> seconds and takes <num>25%</num> less damage.<br><hr><amethyst>At night, the damage reduction increases to <num>35%</num>.</amethyst>',
+    htalent_301_name: 'Familiar <mana>50</mana> <CD>1</CD>',
     htalent_301_description:
       'The familiar is sent to attack enemies, starting from the specified target and moving on to the next target next to it each time. Targets attacked by the familiar take <fiz>%s</fiz> damage for <num>6</num> seconds. If there are no enemies near the current target or when using the talent on himself, the familiar returns to the hero.',
-    htalent_302_name: 'Magic fast and Furious &#x1F4A7 150 ⌛️1',
+    htalent_302_name: 'Magic fast and Furious <mana>150</mana> <CD>1</CD>',
     htalent_302_description:
       'The Hero increases his Speed by <num>50% for <num>2.5</num> seconds</num>. Repeated application of talent for <num>15</num> seconds consumes <num>3</num> times more Energy than the previous one.<br> When using talent for the initial cost, the hero is not affected by control effects.',
     htalent_303_name: 'Excessive curiosity',
@@ -1838,7 +1838,7 @@ export const en = {
     htalent_305_name: 'Energy release',
     htalent_305_description:
       "While the talent is active, the hero's attacks additionally cause <fiz>%s</fiz> damage, spending <num>25</num> Energy.",
-    htalent_306_name: 'The Curse of fragility &#x1F4A7 300 ⌛️70',
+    htalent_306_name: 'The Curse of fragility <mana>300</mana> <CD>70</CD>',
     htalent_306_description:
       'The damage to the specified enemy hero increases by <num>50%</num> of the ratio of his current and maximum Health for <num>4</num> seconds or until the total additional damage reaches <num>%s</num> (from the greatest of Strength and Intellect).',
     htalent_307_name: 'The limits of what is allowed',
@@ -1846,20 +1846,20 @@ export const en = {
       "Each attack increases the hero's Agility by <num>%s</num> (from Intellect) for <num>10</num> seconds. The effect adds up to <num>7</num> times.<br>\n<rz>In the native land, the talent of releasing energy increases the attack range.</rz>",
     htalent_308_name: 'The horror of the curse',
     htalent_308_description: 'Talent target The Curse of Fragility panics for <num>3</num> sec.',
-    htalent_309_name: 'Fragmentation grenade &#x1F4A7 60 ⌛️8',
+    htalent_309_name: 'Fragmentation grenade <mana>60</mana> <CD>8</CD>',
     htalent_309_description:
       'Throws a grenade into the specified area, which explodes <num>0.6</num> seconds after the throw and causes <fiz>%s</fiz> damage and additionally <fiz>%s</fiz> damage for <num>4</num> seconds.A hero gets a boost of faith if the explosion hits at least one enemy.<br>\n<col3>Creed: All enemies hit by an explosion slow down by <num>40%</num> for <num>5</num> seconds.</col3>',
-    htalent_310_name: 'Desperate Dash &#x1F4A7 75 ⌛️15',
+    htalent_310_name: 'Desperate Dash <mana>75</mana> <CD>15</CD>',
     htalent_310_description:
       'Moves in the specified direction, deals <mag>%s</mag> damage to all enemies on the way and receives protection for <num>5</num> seconds, absorbing up to <num>%s</num> damage (from the Intellect).<br>The hero gets a boost of faith if he hits at least one enemy while moving.<br><col3>Creed: All hit enemies slow down by <num>30%</num> for <num>5</num> seconds.</col3>',
     htalent_311_name: 'Determination',
     htalent_311_description: 'Using the Fragmentation Grenade talent, the hero accelerates by <num>40%</num> for <num>3</num> seconds.',
     htalent_312_name: 'Violent pressure',
     htalent_312_description: 'The Desperate Dash talent also throws up enemies.',
-    htalent_313_name: 'Healing Light &#x1F4A7 80 ⌛️30',
+    htalent_313_name: 'Healing Light <mana>80</mana> <CD>30</CD>',
     htalent_313_description:
       'Within <num>8</num> seconds, it restores to itself <num>%s</num> Health (from Strength) per second, and allied heroes around from <num>20%</num> to <num>60%</num> of this value, decreasing as they move away from the hero.<br>\n<col3>Symbol of faith: At the moment of applying the talent, blinds all enemies around for <num>4</num> seconds.</col3>',
-    htalent_314_name: 'Sweeping Gust &#x1F4A7 250 ⌛️100',
+    htalent_314_name: 'Sweeping Gust <mana>250</mana> <CD>100</CD>',
     htalent_314_description:
       'Stuns all enemies in the specified direction for <num>1</num> sec. and launches a shield that deals damage to all enemies in the path <mag>%s</mag> and knocks the nearest one away.A hero gets a boost of faith if the shield hits at least one enemy.<br>\n<col3>Symbol of Faith: Blinds enemies hit by a shield for <num>6</num> seconds.</col3>',
     htalent_315_name: 'Inflexibility',
@@ -1868,15 +1868,15 @@ export const en = {
     htalent_316_name: 'The furious onslaught',
     htalent_316_description:
       "The Sweeping Gust talent has an increased kill zone, reduces the greatest of enemies' Stamina and Will by <num>%s</num> (of Strength) for <num>6</num> seconds and drops two targets.",
-    htalent_317_name: 'Ignition &#x1F4A7 60 ⌛️8',
+    htalent_317_name: 'Ignition <mana>60</mana> <CD>8</CD>',
     htalent_317_description:
       'All enemies around light up and take <fiz>%s</fiz> damage for <num>4</num> seconds.A hero gets a boost of faith if he sets fire to at least one enemy.<br>\n<col3>Creed: All burnt enemies slow down by <num>30%</num> for <num>5</num> seconds.</col3>\n',
     htalent_318_name: 'Determination',
     htalent_318_description: 'By applying the Ignition talent, the hero accelerates by <num>40%</num> for <num>3</num> seconds.',
-    htalent_319_name: 'Swift Attacks &#x1F4A7 100 ⌛️10',
+    htalent_319_name: 'Swift Attacks <mana>100</mana> <CD>10</CD>',
     htalent_319_description:
       'The next <num>2</num> times, the hero attacks twice with <num>90%</num> damage and additionally steals <num>%s</num> Health (from Strength) for each attack.<br><rz>When you are in your native land, the theft of Health additionally increases by <num>2</num> times.</rz>',
-    htalent_320_name: 'Undermining &#x1F4A7 140 ⌛️15',
+    htalent_320_name: 'Undermining <mana>140</mana> <CD>15</CD>',
     htalent_320_description:
       'The hero moves underground to a specified location, tossing enemies in that area and dealing <mag>%s</mag> damage to the heroes, and 50%more damage to everyone else.',
     htalent_321_name: 'Overwhelming onslaught',
@@ -1888,7 +1888,7 @@ export const en = {
     htalent_323_name: 'Protective plates',
     htalent_323_description:
       "If the hero has not taken damage for <num>15</num> seconds, a defense appears on him that absorbs <num>50%</num> damage, but no more than <num>%s</num> (of Strength).<br>\The hero's speed increases by <num>30%</num> until protection is in effect.",
-    htalent_324_name: 'Toxicity release &#x1F4A7 110 ⌛️0.3',
+    htalent_324_name: 'Toxicity release <mana>110</mana> <CD>0</CD>.3',
     htalent_324_description:
       'The hero moves to the target and deals it <mag>%s</mag> damage, while spending <num>1</num> charge of toxicity. The hero receives <num>1</num> charge of toxicity every <num>25</num> seconds, but no more than <num>4</num> in total.',
     htalent_325_name: 'A chilling presence',
@@ -1899,24 +1899,24 @@ export const en = {
       'The toxicity release stuns the target for <num>0.3</num> seconds. A hero receives <num>1</num> charge of toxicity for killing an enemy hero or supporting him no more than once every <num>30</num> seconds.',
     htalent_327_name: 'Patronage',
     htalent_327_description: 'All allied heroes receive <num>%s</num> Energy regeneration (from the greatest of Strength and Intellect).',
-    htalent_328_name: 'Angelic Light &#x1F4A7 50 ⌛️3',
+    htalent_328_name: 'Angelic Light <mana>50</mana> <CD>3</CD>',
     htalent_328_description:
       'Creates a ray of light that restores <num>%s</num> Health (from Intellect) to all allies in its path, and inflicts <fiz>%s</fiz> damage to enemies for <num>3</num> seconds.',
-    htalent_329_name: 'Light of the Spirit &#x1F4A7 100 <mag>⌛️10</mag><fiz>⌛️15</fiz>',
+    htalent_329_name: 'Light of the Spirit <mana>100</mana> <mag><CD>10</CD></mag><fiz><CD>15</CD></fiz>',
     htalent_329_description:
       "For <num>10</num> seconds, creates a spirit light at the specified location, which increases the greatest of the Agility and Cunning of nearby allies by <num>%s</num> (from Intellect) and within <num>5</num> seconds restores allied heroes <num>%s</num> Health (from Intellect) per second.If the hero's Strength is greater than his Intellect, then the recovery time is longer.<br><rz>When used from his native land, the light also reduces damage from attacks on nearby allies by <num>%s</num> (from the greatest of Strength and Intellect).</rz>",
-    htalent_330_name: 'Guardian of Life &#x1F4A7 250 ⌛️100',
+    htalent_330_name: 'Guardian of Life <mana>250</mana> <CD>100</CD>',
     htalent_330_description: 'The hero gains control immunity and damage reduction by <num>50%</num> for <num>7</num> seconds.',
     htalent_331_name: 'Fullness',
     htalent_331_description:
       'By reapplying the Lightsaber talent, you can detonate the lightsaber, spreading the effect enhanced by <num>2</num> times lasting <num>5</num> seconds, as well as increasing the regeneration of Health to allies by <num>%s</num> (from the Intellect).<br> The explosion causes all enemies <fiz>%s</fiz> damage (from Strength).',
-    htalent_332_name: 'Spear of Retribution &#x1F4A7 150 ⌛️60',
+    htalent_332_name: 'Spear of Retribution <mana>150</mana> <CD>60</CD>',
     htalent_332_description:
       'Hits the specified area with a spear, dealing enemies <fiz>%s</fiz> damage and stunning them for <num>1</num> sec.<br>A line of sight opens in the spear area<br>If you pick up a spear within the next <num>10</num> seconds, talent is restored by <num>50%</num> faster.',
     htalent_333_name: 'Test of Faith',
     htalent_333_description:
       'The Angel Light talent also speeds up allies and slows down enemies in its path by <num>30%</num> for <num>3</num> seconds.',
-    htalent_334_name: 'Flight of the Angel &#x1F4A7 100 ⌛️100',
+    htalent_334_name: 'Flight of the Angel <mana>100</mana> <CD>100</CD>',
     htalent_334_description:
       "Created <num>2</num> seconds. The hero is transported to the specified allied hero, hero's soul, building, or spear.<br><rz> If the target is in their native land, the talent is restored <num>30%</num> faster.</rz>",
     htalent_335_name: 'Infinity',
@@ -1924,10 +1924,10 @@ export const en = {
     htalent_336_name: 'Spawn of Ice',
     htalent_336_description:
       'Using class talents gives the hero protection for <num>6</num> seconds, absorbing <num>12%</num> damage.<br>\The effect adds up to <num>3</num> times.<br>\n<rz>In his native land, the hero additionally restores <num>%s</num> Health (from the greatest of Strength and Intellect).</rz>',
-    htalent_337_name: 'Frosty Onslaught &#x1F4A7 40 ⌛️15',
+    htalent_337_name: 'Frosty Onslaught <mana>40</mana> <CD>15</CD>',
     htalent_337_description:
       'The hero moves in the specified direction and deals <mag>%s</mag> damage (from the greatest of Strength and Intellect) to all affected enemies.<br>\n Within <num>4</num> seconds, the talent can be applied again.',
-    htalent_338_name: 'Needle ring &#x1F4A7 90 ⌛️18',
+    htalent_338_name: 'Needle ring <mana>90</mana> <CD>18</CD>',
     htalent_338_description:
       'The specified enemy cannot move for <num>3</num> seconds or until it receives <num>%s</num> damage (from Strength).<br>\n<rz>When used from his native land, talent recovers <num>6</num> seconds faster.</rz>',
     htalent_339_name: 'Stupor',
@@ -1938,7 +1938,7 @@ export const en = {
     htalent_341_name: 'Icy Strikes',
     htalent_341_description:
       "For <num>8</num> seconds after applying class talents, the hero's attacks additionally deal <fiz>%s</fiz> damage.",
-    htalent_342_name: 'Ice Fist &#x1F4A7 300 ⌛️90',
+    htalent_342_name: 'Ice Fist <mana>300</mana> <CD>90</CD>',
     htalent_342_description:
       'Creates an ice fist for <num>7</num> seconds in the specified area, which throws the enemy hero closest to the center to the point from which the talent was applied, and stuns for <num>0.5</num> seconds. The speed of all enemies around the fist is reduced by <num>50%</num>.',
     htalent_343_name: 'Conquering the Ice',
@@ -1949,23 +1949,23 @@ export const en = {
     htalent_345_name: 'Courage',
     htalent_345_description:
       "Accumulates 1⚡ for each successful attack or when taking damage up to 20⚡.<br>Consumes 2⚡ for every <num>1</num> sec. if the hero does not deal or receive damage for <num>5</num> sec.<br>Restores <num>%s</num> Health (from Intellect) for every spent ⚡.<br>The hero becomes emboldened if he has more than 10..<br><rz>In his native land, the hero's attacks additionally inflict <mag>%s</mag> damage for each ⚡.</rz>",
-    htalent_346_name: 'Survival Instinct ⌛️15',
+    htalent_346_name: 'Survival Instinct <CD>15</CD>',
     htalent_346_description:
-      'Deals <mag>%s</mag> damage to the first enemy hero in the path and to all affected creatures. The hero jumps away in the opposite direction, and his Speed increases by <num>50%</num> for <num>2</num> seconds.<br><hr align="center" width="70%" size="2" color="#A7A062"/><font color=#B87333>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</font>',
-    htalent_347_name: 'Red-hot barrel ⌛️5',
+      'Deals <mag>%s</mag> damage to the first enemy hero in the path and to all affected creatures. The hero jumps away in the opposite direction, and his Speed increases by <num>50%</num> for <num>2</num> seconds.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
+    htalent_347_name: 'Red-hot barrel <CD>5</CD>',
     htalent_347_description:
-      'Each hero\'s attack additionally deals <mag>%s</mag> damage and consumes 3⚡.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Courage: Additional talent damage increased by <num>%s</num>.</font>',
+      'Each hero\'s attack additionally deals <mag>%s</mag> damage and consumes 3⚡.<br><hr><bronze>Courage: Additional talent damage increased by <num>%s</num>.</bronze>',
     htalent_348_name: 'Stunning Shot',
     htalent_348_description:
       'Blinds a wounded enemy hero for <num>2</num> seconds, and if he was nearby, stuns him for <num>1</num> seconds.',
     htalent_349_name: 'Squall',
     htalent_349_description: 'The number of attacks per second increases by <num>50%</num>.',
-    htalent_350_name: "Hunter's Mark ⌛️18",
+    htalent_350_name: "Hunter's Mark <CD>18</CD>",
     htalent_350_description:
-      'Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</font>',
-    htalent_351_name: 'Hunting excitement ⌛️90',
+      'Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
+    htalent_351_name: 'Hunting excitement <CD>90</CD>',
     htalent_351_description:
-      'When using talent, it consumes all ⚡. For <num>5</num> seconds, the hero loses 4⚡ per second, and his attacks additionally cause <mag>%s</mag> damage.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Courage: When used, it increases the duration of the talent by <num>1</num> second for every 4⚡.</font>',
+      'When using talent, it consumes all ⚡. For <num>5</num> seconds, the hero loses 4⚡ per second, and his attacks additionally cause <mag>%s</mag> damage.<br><hr><bronze>Courage: When used, it increases the duration of the talent by <num>1</num> second for every 4⚡.</bronze>',
     htalent_352_name: 'The Ultimatum',
     htalent_352_description: 'Target damage is reduced by <num>35%</num>.',
     htalent_353_name: 'Rage Management',
@@ -1974,10 +1974,10 @@ export const en = {
     htalent_354_name: 'The damned one',
     htalent_354_description:
       "All abilities require Health to be used.<br>Increases Health regeneration by <num>%s</num> (from the highest of Strength and Intellect) for every <num>5%</num> of missing Health.<br>\n<rz>In the native land additionally increases the regeneration of the hero's Health by <num>%s</num> (from the Intellect).</rz>",
-    htalent_355_name: 'Rapid capture ⌛️11',
+    htalent_355_name: 'Rapid capture <CD>11</CD>',
     htalent_355_description:
       'Spends <num>10%</num> of current Health and makes a dash in the specified direction, inflicts <mag>%s</mag> damage to all enemies on the way, up to the first enemy hero. <br>When colliding with an enemy hero, he throws him into the air and throws him to the ground, dealing him <mag>%s</mag> damage.',
-    htalent_356_name: 'Devastating blows ⌛️2',
+    htalent_356_name: 'Devastating blows <CD>2</CD>',
     htalent_356_description:
       'Spends <num>5%</num> of current Health, and for <num>10</num> seconds, each hero attack additionally deals <fiz>%s</fiz> damage.<br>The effect adds up to <num>3</num> times.',
     htalent_357_name: 'Unstoppable Onslaught',
@@ -1988,7 +1988,7 @@ export const en = {
     htalent_359_name: 'The Fury of Battle',
     htalent_359_description:
       'For every <num>5%</num> of missing Health, the hero receives <num>%s</num> Agility (from the greatest of Strength and Intellect).',
-    htalent_360_name: 'Rampage ⌛️90',
+    htalent_360_name: 'Rampage <CD>90</CD>',
     htalent_360_description:
       'Spends <num>15%</num> of his current Health and cannot drop below <num>1</num> for <num>5</num> seconds. It can be used under the stun effect.',
     htalent_361_name: 'Audacity',
@@ -1999,38 +1999,38 @@ export const en = {
       'After the expiration of the Rampage talent, the hero restores <num>%s</num> Health and additional <num>%s</num> Health (from Intellect).',
     htalent_363_name: "Don't make me angry!",
     htalent_363_description:
-      'Accumulates 1⚡ for each successful attack or damage.<br>Spends 6⚡ for every <num>2</num> seconds if the hero does not deal or receive damage for <num>10</num> seconds, or in the form of <font color=#B87333>Grrr</font>.<br>Restores <num>%s</num> Health (from Strength) for every spent ⚡.<br>At 50⚡, the hero takes the form of <font color=#B87333> for <num>2</num> secondsGrrr</font> and increases maximum Health by <num>%s</num> (from the greatest of Strength and Intellect). It stays in this form until ⚡ ends. After that, it stops accumulating ⚡ for <num>15</num> seconds.',
-    htalent_364_name: 'Jump!  ⌛️18 / <font color=#B87333>Grrr</font> ⌛️12',
+      'Accumulates 1⚡ for each successful attack or damage.<br>Spends 6⚡ for every <num>2</num> seconds if the hero does not deal or receive damage for <num>10</num> seconds, or in the form of <bronze>Grrr</bronze>.<br>Restores <num>%s</num> Health (from Strength) for every spent ⚡.<br>At 50⚡, the hero takes the form of <bronze> for <num>2</num> secondsGrrr</bronze> and increases maximum Health by <num>%s</num> (from the greatest of Strength and Intellect). It stays in this form until ⚡ ends. After that, it stops accumulating ⚡ for <num>15</num> seconds.',
+    htalent_364_name: 'Jump!  <CD>18</CD> / <bronze>Grrr</bronze> <CD>12</CD>',
     htalent_364_description:
-      'Jumps to the specified location.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Jumps to the specified location and strikes <mag>%s</mag> damage to all enemies around.</font>',
-    htalent_365_name: 'Easy prey! ⌛️20 / <font color=#B87333>Grrr</font> ⌛️7',
+      'Jumps to the specified location.<br><hr><bronze>Grrr: Jumps to the specified location and strikes <mag>%s</mag> damage to all enemies around.</bronze>',
+    htalent_365_name: 'Easy prey! <CD>20</CD> / <bronze>Grrr</bronze> <CD>7</CD>',
     htalent_365_description:
-      'For <num>4</num> seconds, deals <mag>%s</mag> damage every <fnum>1</num> second and reduces by <num>%s</num> Resistance (by Strength) to all enemies around.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Deals <mag>%s</mag> damage to all enemies around.</font>',
+      'For <num>4</num> seconds, deals <mag>%s</mag> damage every <fnum>1</num> second and reduces by <num>%s</num> Resistance (by Strength) to all enemies around.<br><hr><bronze>Grrr: Deals <mag>%s</mag> damage to all enemies around.</bronze>',
     htalent_366_name: "You won't catch it!",
     htalent_366_description:
-      'Talent Jump! It also makes the hero invisible for <num>3</num> seconds.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Reduces by <num>30%</num> by <num>4</num> The speed of all hit enemies.</font>',
+      'Talent Jump! It also makes the hero invisible for <num>3</num> seconds.<br><hr><bronze>Grrr: Reduces by <num>30%</num> by <num>4</num> The speed of all hit enemies.</bronze>',
     htalent_367_name: 'Stand still!',
     htalent_367_description:
-      'Talent is easy prey! Stuns an enemy for <num>0.5</num> seconds when he first crosses the border of the talent\'s area of effect.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Throws all touched enemies into the air.</font>',
-    htalent_368_name: 'Be afraid!⌛️30 / <font color=#B87333>Grrr</font> ⌛️10',
+      'Talent is easy prey! Stuns an enemy for <num>0.5</num> seconds when he first crosses the border of the talent\'s area of effect.<br><hr><bronze>Grrr: Throws all touched enemies into the air.</bronze>',
+    htalent_368_name: 'Be afraid!<CD>30</CD> / <bronze>Grrr</bronze> <CD>10</CD>',
     htalent_368_description:
-      'For <num>2.5</num> seconds, he cannot be the target of enemy attacks and talents and gets the opportunity to pass through creatures. The hero cannot attack, but when he comes into contact with the enemy for the first time, he causes <mag>%s</mag> damage.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Reduces damage from enemy attacks around by <num>%s</num> (at most) for <num>10</num> seconds.</font>',
-    htalent_369_name: 'Defending myself!⌛️60',
+      'For <num>2.5</num> seconds, he cannot be the target of enemy attacks and talents and gets the opportunity to pass through creatures. The hero cannot attack, but when he comes into contact with the enemy for the first time, he causes <mag>%s</mag> damage.<br><hr><bronze>Grrr: Reduces damage from enemy attacks around by <num>%s</num> (at most) for <num>10</num> seconds.</bronze>',
+    htalent_369_name: 'Defending myself!<CD>60</CD>',
     htalent_369_description:
-      'Takes the form <font color=#B87333>Grrr</font> if the hero has more than 15⚡.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Increases the greatest of the hero\'s Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</font>',
+      'Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the greatest of the hero\'s Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>',
     htalent_370_name: 'Overtaken!',
     htalent_370_description:
-      'Fear Talent increases Speed by <num>60%</num>.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Prohibits all wounded enemies from using talents for <num>2</num> seconds.</font>',
+      'Fear Talent increases Speed by <num>60%</num>.<br><hr><bronze>Grrr: Prohibits all wounded enemies from using talents for <num>2</num> seconds.</bronze>',
     htalent_371_name: 'Panic!',
     htalent_371_description:
-      "<font color=#B87333>Grrrr: Thanks to my talent, I'm defending myself! all enemies around for <num>2</num> seconds panic after the moment of transformation.</font>",
+      "<bronze>Grrrr: Thanks to my talent, I'm defending myself! all enemies around for <num>2</num> seconds panic after the moment of transformation.</bronze>",
     htalent_372_name: 'The Model Sniper',
     htalent_372_description:
       'Class talents mark enemy heroes for <num>3</num> seconds, allowing the hero to attack them and apply a well-aimed shot regardless of the distance. Marked enemies cannot hide out of sight.',
-    htalent_373_name: 'Frontline comrade ⌛️0.4',
+    htalent_373_name: 'Frontline comrade <CD>0</CD>.4',
     htalent_373_description:
       'The hero is accompanied by a Bear, whose attacks cause <fiz>%s</fiz> damage. The bear has <num>%s</num> Health (from the greatest of Strength and Intellect) is reborn next to the hero <num>30</num> seconds after his death.The use of talent sets the behavior of the Bear depending on the goal: to attack the specified enemy, go and guard the specified point, or follow the hero. As long as the Bear is alive, the hero regenerates <num>0.7%</num> of maximum Health per second.',
-    htalent_374_name: 'Combat hello! &#x1F4A7 85 ⌛️12',
+    htalent_374_name: 'Combat hello! <mana>85</mana> <CD>12</CD>',
     htalent_374_description:
       'Deals <mag>%s</mag> to all enemies on the way.<br>\n<rz>When used from his native land, talent recovers <num>4</num> seconds faster.</rz> ',
     htalent_375_name: 'Weighty argument',
@@ -2039,10 +2039,10 @@ export const en = {
     htalent_376_name: 'Everything for the front!',
     htalent_376_description:
       'Hello Fighting Talent! reduces by <num>%s</num> Durability (by Strength) or by <num>%s</num> The will (from the Intellect) of all affected enemy heroes for <num>5</num> seconds, depending on the highest parameter of the hero.',
-    htalent_377_name: 'On guard of Borders &#x1F4A7 135 ⌛️25',
+    htalent_377_name: 'On guard of Borders <mana>135</mana> <CD>25</CD>',
     htalent_377_description:
       'For <num>300</num> seconds, sets an invisible trap in the specified location, which deals <mag>%s</mag> damage to the first enemy hero to step on it and reduces its Speed by <num>95%</num> by <num>4</num> seconds. Deceleration decreases by <num>15%</num> per second to <num>35%</num>.',
-    htalent_378_name: 'Aimed shot &#x1F4A7 240 ⌛️40',
+    htalent_378_name: 'Aimed shot <mana>240</mana> <CD>40</CD>',
     htalent_378_description:
       'Creates <num>1.5</num> seconds and deals <mag>%s</mag> damage to the specified enemy hero. Cannot be avoided.',
     htalent_379_name: 'Steel Power',
@@ -2053,23 +2053,23 @@ export const en = {
       "When a trap created by a border guard talent is triggered, the talent's Aiming shot is instantly restored or, if it was ready for use, it is created <num>0.3</num> seconds.",
     htalent_381_name: 'Star Providence',
     htalent_381_description:
-      '<font color=#9966CC>At night, the hero can walk through creatures and see through obstacles, and class talents gain additional effects.</font>',
-    htalent_382_name: 'A bundle of energy &#x1F4A7 70 ⌛️8',
+      '<amethyst>At night, the hero can walk through creatures and see through obstacles, and class talents gain additional effects.</amethyst>',
+    htalent_382_name: 'A bundle of energy <mana>70</mana> <CD>8</CD>',
     htalent_382_description:
-      'Releases a burst of energy in the specified direction, which explodes upon contact with the enemy or reaching the maximum distance, deals damage to all enemies around <mag>%s</mag> and slows them down by <num>40%</num> for <num>3</num> seconds.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Starry Providence: After <num>2</num> For a second, enemies located in the explosion area are attracted to its epicenter.</font>',
-    htalent_383_name: 'Stargate &#x1F4A7 85 ⌛️1',
+      'Releases a burst of energy in the specified direction, which explodes upon contact with the enemy or reaching the maximum distance, deals damage to all enemies around <mag>%s</mag> and slows them down by <num>40%</num> for <num>3</num> seconds.<br><hr><amethyst>Starry Providence: After <num>2</num> For a second, enemies located in the explosion area are attracted to its epicenter.</amethyst>',
+    htalent_383_name: 'Stargate <mana>85</mana> <CD>1</CD>',
     htalent_383_description:
-      'Creates a Stargate at the specified location or explodes existing ones, causing <fiz>%s</fiz> damage to all enemies around, <rz> restoring <num>%s</num> (max. <num>%s</num>) Energy (from Maximum energy) for each hit enemy </rz>and increasing the current talent recovery time to <num>8</num> seconds.<br>When interacting with the gate, the allies move behind it and cannot interact with the gate again for <num>6</num> seconds.<br>Supports no more than <num>2</num> gates simultaneously.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Star Providence: Exploding gates does not increase talent time.</font>',
+      'Creates a Stargate at the specified location or explodes existing ones, causing <fiz>%s</fiz> damage to all enemies around, <rz> restoring <num>%s</num> (max. <num>%s</num>) Energy (from Maximum energy) for each hit enemy </rz>and increasing the current talent recovery time to <num>8</num> seconds.<br>When interacting with the gate, the allies move behind it and cannot interact with the gate again for <num>6</num> seconds.<br>Supports no more than <num>2</num> gates simultaneously.<br><hr><amethyst>Star Providence: Exploding gates does not increase talent time.</amethyst>',
     htalent_384_name: 'Particle acceleration',
     htalent_384_description:
-      'The Energy Cluster Talent reduces the cooldown of the ultimate talent by <num>3</num> seconds for each enemy hero hit by an explosion.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Starry Providence: deals additional damage <mag>%s</mag> (from Intellect).</font></font>',
+      'The Energy Cluster Talent reduces the cooldown of the ultimate talent by <num>3</num> seconds for each enemy hero hit by an explosion.<br><hr><amethyst>Starry Providence: deals additional damage <mag>%s</mag> (from Intellect).</amethyst>',
     htalent_385_name: 'Hyperspace',
     htalent_385_description:
       'Interacting with the gate increases the Speed of allies by <num>20%</num> for <num>6</num> seconds, and the explosion stuns enemies for <num>1</num> seconds.',
-    htalent_386_name: 'Serenity &#x1F4A7 80 ⌛️24',
+    htalent_386_name: 'Serenity <mana>80</mana> <CD>24</CD>',
     htalent_386_description:
-      'The hero becomes invulnerable for <num>2.5</num> seconds, but cannot attack or use talents.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#9966CC>Star holding: During the action of the talent, the hero can Interact with the Stargate an unlimited number of times.</font>',
-    htalent_387_name: 'Stasis &#x1F4A7 230 ⌛️85',
+      'The hero becomes invulnerable for <num>2.5</num> seconds, but cannot attack or use talents.<br><hr><amethyst>Star holding: During the action of the talent, the hero can Interact with the Stargate an unlimited number of times.</amethyst>',
+    htalent_387_name: 'Stasis <mana>230</mana> <CD>85</CD>',
     htalent_387_description:
       'For <num>4</num> seconds, creates an area that disables all enemies trapped in it.<br>\n After the effect expires, all enemy creatures and heroes will receive <mag>%s</mag> damage.',
     htalent_388_name: 'Twilight Wanderer',
@@ -2079,10 +2079,10 @@ export const en = {
     htalent_390_name: 'Groovy',
     htalent_390_description:
       "Applying class talent enhances the next hit by <mag>%s</mag> damage. While an enhanced attack is prepared, the hero has a <num>20%</num> chance to evade the enemy's attack.<br>\The hero's next blow also stuns the target for 0.2</num> seconds.",
-    htalent_391_name: 'Somersault &#x1F4A7 50 ⌛️14',
+    htalent_391_name: 'Somersault <mana>50</mana> <CD>14</CD>',
     htalent_391_description:
       'Moves in the specified direction and deals <mag>%s</mag> damage to all enemies on the way.<br>\n Within <num>6</num> seconds, the talent can be applied <num>1</num> more times.',
-    htalent_392_name: 'Dizzying Throw &#x1F4A7 80 ⌛️15',
+    htalent_392_name: 'Dizzying Throw <mana>80</mana> <CD>15</CD>',
     htalent_392_description:
       'Throws a ball that flies to the first enemy hero, stuns him by <num>0.5</num> and deals <mag>%s</mag> damage to all enemies in its path.<br>\n<rz>When used from home, the ball causes <num>30% more damage</num>.</rz>',
     htalent_393_name: 'Quick somersault',
@@ -2090,10 +2090,10 @@ export const en = {
     htalent_394_name: 'Cats and Mice',
     htalent_394_description:
       'A ball thrown with the Dizzying Throw talent marks the enemy hero for <num>3</num> seconds. While the target is marked, you can reactivate the talent to move behind her, deal <mag>%s</mag> damage and slow her down by <num>40%</num> for <num>3</num> seconds.',
-    htalent_395_name: 'Milkshake &#x1F4A7 80 ⌛️30',
+    htalent_395_name: 'Milkshake <mana>80</mana> <CD>30</CD>',
     htalent_395_description:
       'Removes all negative effects and restores <num>%s</num> Health (from the greatest of Strength and Intellect) for <num>6</num> seconds.<br>\n<rz>When used from the native land, it restores <num>30%</num> more Health.</rz>',
-    htalent_396_name: 'A straight kiss &#x1F4A7 300 ⌛️120',
+    htalent_396_name: 'A straight kiss <mana>300</mana> <CD>120</CD>',
     htalent_396_description:
       'Deals enemy hero <fiz>%s</fiz> damage (from the highest of Strength and Intellect), knocks him away, and then stuns him for <num>0.5</num> sec.<br>A dropped enemy hero deals <fiz>%s</fiz> damage to all enemies in its path before landing.',
     htalent_397_name: 'Whipped cream',
@@ -2104,10 +2104,10 @@ export const en = {
     htalent_399_name: 'The shackles of fear',
     htalent_399_description:
       'Stealing Health affects all axe damage.<br> Reduces the damage from used talents around by <num>10%</num>.<br>\n<rz>In the native land additionally reduces the damage from used talents around by <num>5%</num>.</rz>\n',
-    htalent_400_name: 'Iron Accuracy &#x1F4A7 100 ⌛️10',
+    htalent_400_name: 'Iron Accuracy <mana>100</mana> <CD>10</CD>',
     htalent_400_description:
       "The hero's next attack deals additional <fiz>%s</fiz> damage.<br>\The attack range increases by <num>2.8</num> times.",
-    htalent_401_name: 'Concussive lunge &#x1F4A7 150 ⌛️20',
+    htalent_401_name: 'Concussive lunge <mana>150</mana> <CD>20</CD>',
     htalent_401_description:
       'The hero throws axes at the specified location, which slows down all enemies on the way by <num>35%</num> for <num>4</num> seconds and causes <fiz>%s</fiz> damage.',
     htalent_402_name: 'Crushing blow',
@@ -2115,10 +2115,10 @@ export const en = {
     htalent_403_name: 'Tenacity',
     htalent_403_description:
       'When using the Concussive Thrust talent for <num>5</num> seconds, the hero is attracted to the place where the axes fall and deals <fiz>%s</fiz> damage (from max. Health) to all wounded enemies on the way.',
-    htalent_404_name: 'Ferocious Hurricane &#x1F4A7 100 ⌛️19',
+    htalent_404_name: 'Ferocious Hurricane <mana>100</mana> <CD>19</CD>',
     htalent_404_description:
       'The hero spins axes and deals them <fiz>%s</fiz> damage per second to enemies around.<br>\n<rz>Damage increased by <num>30%</num> in his native land.</rz>',
-    htalent_405_name: 'Shackles&#x1F4A7 250 ⌛️100',
+    htalent_405_name: 'Shackles<mana>250</mana> <CD>100</CD>',
     htalent_405_description:
       'The hero throws chains in front of him, which fly to the first enemy hero, causing him and all opponents on the way <fiz>%s</fiz> damage (from max. Health).<br>\Heroes caught in chains follow the hero for <num>3.5</num> seconds.',
     htalent_406_name: 'Off the chain',
@@ -2128,12 +2128,12 @@ export const en = {
     htalent_408_name: 'A warm welcome',
     htalent_408_description:
       'The first attack on creatures deals <mag>%s</mag> damage or <mag>%s</mag> damage on heroes.<br>\Replacing a goal with another removes the restriction from the first one.<br>\n<rz>When used from native land, it deals <num>30% more</num> damage.</rz>',
-    htalent_409_name: 'On burnt wings &#x1F4A7 85 ⌛️14',
+    htalent_409_name: 'On burnt wings <mana>85</mana> <CD>14</CD>',
     htalent_409_description:
       'The hero is transferred to the specified location.<br>\n<rz>When used from the native land, the ability is restored <num>3</num> seconds faster.</rz>',
-    htalent_410_name: 'Fire &#x1F4A7 180 ⌛️15',
+    htalent_410_name: 'Fire <mana>180</mana> <CD>15</CD>',
     htalent_410_description: 'Deals <mag>%s</mag> damage to enemies in front of the hero.',
-    htalent_411_name: 'Firestorm &#x1F4A7 180 ⌛️45',
+    htalent_411_name: 'Firestorm <mana>180</mana> <CD>45</CD>',
     htalent_411_description:
       'For <num>4</num> seconds, deals <mag>%s</mag> damage once every <num>0.5</num> seconds to an opponent marked with the Hot Shot talent or the nearest one.',
     htalent_412_name: 'Searing flame',
@@ -2152,10 +2152,10 @@ export const en = {
     htalent_417_name: 'Blades of Chaos',
     htalent_417_description:
       'For each rack change, the hero restores <num>%s</num> Health (from the highest of Strength and Intellect), and its Speed increases by <num>3</num> for <num>7</num> seconds.<br>The effect adds up to <num>3</num> times.',
-    htalent_418_name: 'Swift Attack &#x1F4A7 50 ⌛️6',
+    htalent_418_name: 'Swift Attack <mana>50</mana> <CD>6</CD>',
     htalent_418_description:
       'The hero in this stance automatically moves behind the target of his attack if the target is a short distance away from him and causes additional <mag>%s</mag> damage.<br>The target can only be moved to <num>1</num> once within <num>10</num> seconds.',
-    htalent_419_name: 'Combat Blades &#x1F4A7 50 ⌛️6',
+    htalent_419_name: 'Combat Blades <mana>50</mana> <CD>6</CD>',
     htalent_419_description:
       "In this stance, the hero's attacks deal additional <num>%s</num> damage.<br>\n<rz>In the native land, the Theft of Health increases by <num>%s</num> (at Most).</rz>",
     htalent_420_name: 'Crushing Blows',
@@ -2164,9 +2164,9 @@ export const en = {
     htalent_421_name: 'Deadly Blades',
     htalent_421_description:
       'Combat blades deal additional <mag>%s</mag> damage.<br>\n<num>+%s</num> to the greatest of Strength and Intellect (from the greatest of Strength and Intellect).',
-    htalent_422_name: 'Enhanced Defense &#x1F4A7 50 ⌛️6',
+    htalent_422_name: 'Enhanced Defense <mana>50</mana> <CD>6</CD>',
     htalent_422_description: 'In this stance, the hero takes <num>15%</num> less damage.',
-    htalent_423_name: 'Demonic power &#x1F4A7 250 ⌛️90',
+    htalent_423_name: 'Demonic power <mana>250</mana> <CD>90</CD>',
     htalent_423_description:
       'For <num>8</num> seconds, the hero uses all the racks at the same time. <br> The time limit for re-moving using the Swift Attack talent has been reduced to <num>3</num> seconds.',
     htalent_424_name: 'Protective Mist',
@@ -2181,10 +2181,10 @@ export const en = {
     htalent_427_name: 'Gigantic blow',
     htalent_427_description:
       'Every second attack of the hero causes additional <fiz>%s</fiz> damage.<br><rz>On home soil, every second attack causes <num>%s</num> more damage.</rz>',
-    htalent_428_name: 'Wind whistling &#x1F4A7 60 ⌛️14',
+    htalent_428_name: 'Wind whistling <mana>60</mana> <CD>14</CD>',
     htalent_428_description:
       'The hero accelerates by <num>50%</num> and becomes immune to control for <num>5</num> seconds.<br>\r\After completing the first attack during the action of the talent, the hero will throw the target.',
-    htalent_429_name: 'Oak Grove Help ⌛️18',
+    htalent_429_name: 'Oak Grove Help <CD>18</CD>',
     htalent_429_description:
       'Approaching the tree, the hero destroys it and restores to himself <num>%s</num> Health (from the greatest of Strength and Intellect) for <num>10</num> seconds.<br><num>+%s</num> Health (from Intellect)',
     htalent_430_name: 'A Slap in the Face',
@@ -2193,25 +2193,25 @@ export const en = {
     htalent_431_name: 'Spreading Branches',
     htalent_431_description:
       'After making the first attack during the effect of the Wind Whistling talent, the hero will deal <mag>%s</mag> damage and stun her for <num>0.7</num> sec.',
-    htalent_432_name: 'Dense Thorns &#x1F4A7 120 ⌛️12',
+    htalent_432_name: 'Dense Thorns <mana>120</mana> <CD>12</CD>',
     htalent_432_description:
       'Creates a wall of bushes in the specified area for <num>4</num> seconds. Enemies in bushes take <mag>%s</mag> damage per second, slow down by <num>55%</num>, and their acceleration effects are suppressed.',
-    htalent_433_name: 'Mighty Shake-up &#x1F4A7 250 ⌛️90',
+    htalent_433_name: 'Mighty Shake-up <mana>250</mana> <CD>90</CD>',
     htalent_433_description:
       'A strike that throws enemy heroes around and causes <mag>%s</mag> damage to enemy heroes around. Total damage is additionally increased by <num>35%</num> for each target (For five targets: <num>%s</num>, for each <num>%s</num>). The damage is distributed evenly among the targets. A native land appears around the hero.',
     htalent_434_name: 'Speed of the oak',
     htalent_434_description:
       "The Mighty Shake Talent increases the hero's Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect) for <num>6</num> seconds.",
-    htalent_435_name: 'Primordial Fire &#x1F4A7 250 ⌛️80',
+    htalent_435_name: 'Primordial Fire <mana>250</mana> <CD>80</CD>',
     htalent_435_description:
       'The following <num>3</num> attacks will additionally cause enemies <mag>%s</mag> damage (from the highest of Strength and Intellect).<br>\n<rz>When used from his native land, the hero performs a <num>2</num> enhanced attack more.</rz>',
     htalent_436_name: 'Healing Flame',
     htalent_436_description:
       "Each attack enhanced with the Primordial Fire talent restores the hero's <num>%s</num> Health (from the greatest of Strength and Intellect).<br>\The effect of the talent Playing with fire adds up to <num>2</num> times more.",
-    htalent_437_name: 'Terrifying Howl &#x1F4A7 330 ⌛️80',
+    htalent_437_name: 'Terrifying Howl <mana>330</mana> <CD>80</CD>',
     htalent_437_description:
       "For <num>5</num> seconds, reduces the greatest of the enemies' Strength and Intellect by <num>%s</num> (from the greatest of Strength and Intellect) and stuns enemy heroes. The greater the number of enemy heroes, the shorter the stun time (from <num>2</num> to <num>0.5</num> seconds.<br><num>1</num> stun target <num>2</num> seconds<br><num>2</num>stun targets <num>1.5</num> seconds<br><num>3</num>stun targets <num>1</num> sec.<br><num>4</num> or <num>5</num> targets - stun <num>0.5</num> sec.)",
-    htalent_438_name: 'Bombardment of &#x1F4A7 300 ⌛️75',
+    htalent_438_name: 'Bombardment of <mana>300</mana> <CD>75</CD>',
     htalent_438_description:
       'The hero takes aim for <num>0.4</num> seconds and shoots many arrows at the enemies in front of him, dealing each <fiz>%s</fiz> and <mag>%s</mag> damage.',
     htalent_439_name: 'Through wounds',
@@ -2223,10 +2223,10 @@ export const en = {
     htalent_441_name: 'Weakening of the spirit',
     htalent_441_description:
       "The Ghost Defense talent also reduces the damage of enemies' attacks around by <num>%s</num> (from the greatest of Strength and Intellect).",
-    htalent_442_name: 'Self-propelled gun <detail></detail> 75 ⌛️90',
+    htalent_442_name: 'Self-propelled gun <detail></detail> 75 <CD>90</CD>',
     htalent_442_description:
       'In his native land, the hero creates a self-propelled gun with <num>%s</num> Health (from the greatest of Strength and Intellect), <num>%s</num> Trickery (from Trickery) and <num>%s</num> Stealth (from Agility), which enters the line and attacks enemy buildings, dealing <fiz>%s</fiz> damage (from the greatest of Strength and Intellect). <br>A cannon attack on soldiers causes <num>%s</num> more damage and hits not only the target, but also the enemies around.<br>Weapon lifetime: 120</num> sec.',
-    htalent_443_name: 'Sword from Heaven &#x1F4A7 250 ⌛️90',
+    htalent_443_name: 'Sword from Heaven <mana>250</mana> <CD>90</CD>',
     htalent_443_description:
       'The hero summons a sword that stuns the enemy for <num>2.5</num> seconds and deals him <fiz>%s</fiz> damage (from Strength).<br>The damage inflicted on the hero is reduced by <num>10%</num>.',
     htalent_444_name: 'Touch of Death',
@@ -2236,64 +2236,64 @@ export const en = {
       'Using class abilities gives the hero protection that absorbs damage <num>%s</num> (from Strength) for <num>10</num> seconds. Maximum amount of absorbed damage <num>%s</num> (of Strength).',
     htalent_446_name: 'Sulfur catalyst',
     htalent_446_description: 'Talent recovery time of Sulfur Power is reduced by <num>40%</num>.',
-    htalent_447_name: 'Sulfur Power &#x1F4A7 270 ⌛️120',
+    htalent_447_name: 'Sulfur Power <mana>270</mana> <CD>120</CD>',
     htalent_447_description:
       "The summoned clone attacks the enemy's hero, after which it disappears. Deals <fiz>%s</fiz> damage to targets.",
-    htalent_448_name: 'Buried alive ❤️100 ⌛️90',
+    htalent_448_name: 'Buried alive ❤️100 <CD>90</CD>',
     htalent_448_description:
       'Creates <num>0.6</num> seconds, removes the specified enemy hero from battle for <num>4</num> seconds, stopping the restoration of his Health, Energy and <time></time> talents.',
     htalent_449_name: 'Suffocation',
     htalent_449_description: 'After the expiration of the effect, the enemy hero Buried alive will receive <fiz>%s</fiz> damage.',
-    htalent_450_name: 'Acid Release &#x1F4A7 250 ⌛️90',
+    htalent_450_name: 'Acid Release <mana>250</mana> <CD>90</CD>',
     htalent_450_description:
       'Deals <mag>%s</mag> damage, blinds for <num>3</num> seconds and immobilizes for <num>2.5</num> seconds to <num>2</num> enemies in front of the hero.',
     htalent_451_name: 'Violent Surge',
     htalent_451_description: 'Acid Burst talent hits additional <num>3</num> enemies.',
-    htalent_452_name: 'Resurrection ⌛️120',
+    htalent_452_name: 'Resurrection <CD>120</CD>',
     htalent_452_description:
       'At the place of death of the allied heroes for <num>10</num> seconds. That leaves the souls. After <num>1</num> sec. interaction with the soul The angel resurrects the hero at the place of death with <num>25%</num> Health and Energy.',
     htalent_453_name: 'Grace',
     htalent_453_description:
       'During the use of the Resurrection talent, the hero becomes immune to control. The allied hero gets an additional <num>25%</num> Health and Energy during resurrection.',
-    htalent_454_name: 'Freezing &#x1F4A7 200 ⌛️50',
+    htalent_454_name: 'Freezing <mana>200</mana> <CD>50</CD>',
     htalent_454_description:
       'The hero is transported to the specified location, where he deals <fiz>%s</fiz> damage to all enemies around, applying the maximum effect of the Shackle of Ice talent to them.',
     htalent_455_name: 'Severe frost',
     htalent_455_description:
       "For <num>7</num> seconds. After using the Freeze talent, all the hero's attacks are enhanced with the Cold Calculation talent, and the hero himself receives protection that absorbs up to <num>%s</num> damage (from Strength).",
-    htalent_456_name: 'Brothers in Arms &#x1F4A7 320 ⌛️80',
+    htalent_456_name: 'Brothers in Arms <mana>320</mana> <CD>80</CD>',
     htalent_456_description:
       'Summons for <num>12</num> seconds <num>2</num> assistants whose attacks cause <fiz>%s</fiz> damage and have <num>%s</num> Health (from Stamina).',
     htalent_457_name: 'Teamwork',
     htalent_457_description: 'With the help of the Brothers-in-Arms talent, the hero summons 2 more helpers.',
-    htalent_458_name: 'The Stomper Beast &#x1F4A7 330 ⌛️80',
+    htalent_458_name: 'The Stomper Beast <mana>330</mana> <CD>80</CD>',
     htalent_458_description:
       'Draws a beast that after <num>0.8</num> sec. runs in the indicated direction, dealing <mag>%s</mag> damage to all enemies on the way (from the greatest of Strength and Intellect) and throwing them up.',
     htalent_459_name: 'The power of color',
     htalent_459_description: 'The Stomper Beast deals <num>%s</num> more damage and stuns opponents for <num>0.5</num> sec.',
-    htalent_460_name: 'Puncher &#x1F4A7 200 ⌛️90',
+    htalent_460_name: 'Puncher <mana>200</mana> <CD>90</CD>',
     htalent_460_description:
       'Stuns an enemy hero for <num>2.5</num> seconds and deals him <fiz>%s</fiz> damage (from Strength) per second.\n<br>\The effect is interrupted if the target takes <fiz>%s</fiz> damage (from Strength).',
     htalent_461_name: 'Impunity',
     htalent_461_description:
       'By applying the Puncher talent, the hero removes all negative effects from himself and becomes immune to control while beating the enemy. During Puncher\'s effect, increases own maximum Health by <num>%s</num> (from Strength)',
-    htalent_462_name: 'Rainbow Jump &#x1F4A7 200 ⌛️90',
+    htalent_462_name: 'Rainbow Jump <mana>200</mana> <CD>90</CD>',
     htalent_462_description: 'The hero moves to the specified point, dealing <mag>%s</mag> damage to all enemies around.',
     htalent_463_name: 'Rainbow Protection',
     htalent_463_description:
       "The Rainbow Jump talent increases the hero's Stamina and Will by <num>%s</num> (from Intellect) for <num>5</num> seconds.",
     htalent_464_name: 'Master of Training',
     htalent_464_description:
-      'Flute-enchanted creatures deal additional <num>%s</num> <font color=#B00000>physical damage</font> (from the greatest Strength and Intellect).',
-    htalent_465_name: 'Master of the Forest &#x1F4A7 50 ⌛️15',
+      'Flute-enchanted creatures deal additional <num>%s</num> <red-d>physical damage</red-d> (from the greatest Strength and Intellect).',
+    htalent_465_name: 'Master of the Forest <mana>50</mana> <CD>15</CD>',
     htalent_465_description:
       'With the help of talent, the Call of the flute forces an additional Goblin to serve itself. Once every <num>15</num> seconds, you can order a Goblin to use an ability that stuns enemies around for <num>1</num> second.',
-    htalent_466_name: 'Swallow it! &#x1F4A7 100 ⌛️100',
+    htalent_466_name: 'Swallow it! <mana>100</mana> <CD>100</CD>',
     htalent_466_description: 'The hero swallows the specified enemy hero for <num>3</num> seconds.',
     htalent_467_name: 'Spit out the byaka!',
     htalent_467_description:
       'After the expiration time of the effect, Swallow! The enemy hero takes <mag>%s</mag> damage (from max. Health) and is stunned for <num>1.5</num> sec.',
-    htalent_468_name: "Defender's Oath &#x1F4A7 300 ⌛️100",
+    htalent_468_name: "Defender's Oath <mana>300</mana> <CD>100</CD>",
     htalent_468_description: 'The hero creates an area around himself that immobilizes enemies in it for <num>4</num> seconds.',
     htalent_469_name: 'Circle of Life',
     htalent_469_description:
@@ -2304,69 +2304,69 @@ export const en = {
     htalent_471_name: 'Corpse poison',
     htalent_471_description:
       "The hero's class talents poison enemies and cause them <mag>%s</mag> damage (from the greatest of Strength and Intellect) per second for <num>4</num> seconds.",
-    htalent_472_name: 'Plague Bubo &#x1F4A7 65',
+    htalent_472_name: 'Plague Bubo <mana>65</mana>',
     htalent_472_description:
-      'Summons a bubo to the specified location, which explodes after <num>0.9</num> seconds and causes <mag>%s</mag> damage to all enemies around and spends one <font color=#ff8c00>Bubo</font>.<br> <br> <hr align="center" width="70%" size="2" color="#A7A062" /> Recovery time <font color=#ff8c00>Bubona</font> <num>11</num> sec.',
-    htalent_473_name: 'Heart Attack &#x1F4A7 75 ⌛️10',
+      'Summons a bubo to the specified location, which explodes after <num>0.9</num> seconds and causes <mag>%s</mag> damage to all enemies around and spends one <orange-d>Bubo</orange-d>.<br> <br> <hr> Recovery time <orange-d>Bubona</orange-d> <num>11</num> sec.',
+    htalent_473_name: 'Heart Attack <mana>75</mana> <CD>10</CD>',
     htalent_473_description: 'Deals enemies affected by Corpse Poison <mag>%s</mag> (of the highest Strength and Intellect) damage.',
     htalent_474_name: 'Bloodletting',
     htalent_474_description:
       'The hero heals the ally with the least Health next to him by <num>15%</num> of the damage caused by attacks and class abilities.<br>\n<rz>In his native land, the hero heals by <num>5%</num> more.</rz>',
     htalent_475_name: 'Complication',
-    htalent_475_description: 'Reduces the recovery time of <font color=#ff8c00>Bubo</font> to <num>7</num> seconds.\t',
+    htalent_475_description: 'Reduces the recovery time of <orange-d>Bubo</orange-d> to <num>7</num> seconds.\t',
     htalent_476_name: 'Fainting',
     htalent_476_description: 'Talent Heart Attack additionally stuns targets for <num>1.5</num> sec.',
-    htalent_477_name: 'Panic Attack &#x1F4A7 90 ⌛️12',
+    htalent_477_name: 'Panic Attack <mana>90</mana> <CD>12</CD>',
     htalent_477_description: 'Sows panic among the enemies in front of the hero for <num>1.5</num> sec.',
-    htalent_478_name: 'Miasma 180 ⌛️110',
+    htalent_478_name: 'Miasma 180 <CD>110</CD>',
     htalent_478_description:
       'For <num>8</num> seconds, it creates an area in which enemies are exposed to Corpse Poison, and their range of vision decreases, the chance of a miss increases by <num>25%</num>.',
     htalent_479_name: 'Weakened immunity',
     htalent_479_description:
       'Miasma additionally lowers the greatest of the Stamina and Will of enemies by <num>%s</num> (from the greatest of Strength and Intellect).',
-    htalent_480_name: 'Fly Agaric &#x1F4A7 250 ⌛️17',
+    htalent_480_name: 'Fly Agaric <mana>250</mana> <CD>17</CD>',
     htalent_480_description:
       'For <num>360</num> seconds, installs an invisible mushroom in the specified location, which deals <mag>%s</mag> damage to the first enemy to step on it and stuns it for <num>2</num> seconds.<br>\n Supports no more than <num>15</num> mushrooms at a time.',
     htalent_481_name: 'Poisonous spores',
     htalent_481_description:
       'Fly agaric deals additional <mag>%s</mag> damage (from the greatest of Strength and Intellect) to the advancing enemy and blinds him for <num>4</num> seconds.',
-    htalent_482_name: 'Walpurgisnacht &#x1F4A7 300 ⌛️90',
+    htalent_482_name: 'Walpurgisnacht <mana>300</mana> <CD>90</CD>',
     htalent_482_description:
       'For <num>5</num> seconds, creates an area where enemies slow down by <num>50%</num> and take <mag>%s</mag> damage (from the highest of Strength and Intellect) per second. Enemies trapped in the area at the time of its creation are drawn to its center.',
     htalent_483_name: 'Corruption',
     htalent_483_description:
       'Enemies attracted by the Walpurgisnacht talent receive additional <mag>%s</mag> damage (from the greatest of Strength and Intellect) and stun for <num>0.5</num> sec.',
-    htalent_484_name: 'Melody of the Soul &#x1F4A7 300 ⌛️80',
+    htalent_484_name: 'Melody of the Soul <mana>300</mana> <CD>80</CD>',
     htalent_484_description:
       'Enhances all class talents of the hero by <num>50%</num> for <num>7</num> seconds, as well as by <num>0.3</num> seconds for each Inspiration effect.',
     htalent_485_name: 'Allegro',
     htalent_485_description: 'During the Soul Melody, the cooldown of class talents is reduced by <num>25%</num>',
-    htalent_486_name: "Daemon's mark &#x1F4A7 250 ⌛️90",
+    htalent_486_name: "Daemon's mark <mana>250</mana> <CD>90</CD>",
     htalent_486_description:
       "Puts a tag on an enemy hero for <num>8</num> seconds, and becomes immune to control while the tag is active. <br> The time limit for re-moving using the Swift Attack talent has been reduced to <num>3</num> seconds. <br> The hero's attacks on any target deal damage to an enemy with a Demon Mark <mag>%s</mag>.<br>A marked hero cannot hide from enemies.",
     htalent_487_name: 'Demonic Healing',
     htalent_487_description:
       'After learning this passive ability, Asura restores her <num>%s</num> (of Intellect) Health by attacking any target if there is an enemy Hero with the Demon Mark effect in the field of view.',
-    htalent_488_name: 'Deafening Shot &#x1F4A7 215 ⌛️90',
+    htalent_488_name: 'Deafening Shot <mana>215</mana> <CD>90</CD>',
     htalent_488_description:
       'Deals <fiz>%s</fiz> damage to the first hero on the flight path.<br>damage increases by <num>50%</num> for each bleeding effect on the target.',
     htalent_489_name: 'Steel tip',
     htalent_489_description:
       'A stun shot causes additional <fiz>%s</fiz> damage and stuns the enemy for <num>1.5</num> seconds.<br>\Terrible damage: <fiz>%s</fiz>.',
-    htalent_490_name: 'Mercy Shield &#x1F4A7 200 ⌛️180',
+    htalent_490_name: 'Mercy Shield <mana>200</mana> <CD>180</CD>',
     htalent_490_description:
       "The specified ally for <num>3</num> seconds. becomes invulnerable to damage.<br>The talent is triggered automatically, without wasting Energy, if the hero's Health drops below <num>5%</num>.\n",
     htalent_491_name: 'Double protection',
     htalent_491_description: 'The effect of the Mercy Shield talent extends to the hero himself.',
-    htalent_492_name: 'Destructive Jump &#x1F4A7 250 ⌛️100',
+    htalent_492_name: 'Destructive Jump <mana>250</mana> <CD>100</CD>',
     htalent_492_description:
       'Jumps to the specified point.<br>\If there are enemy heroes near the landing point, they take <fiz>%s</fiz> damage and are stunned for <num>1</num> sec., and an impassable area forms around them for <num>3</num> sec.',
     htalent_493_name: 'Frenzy',
     htalent_493_description:
       "The Destructive Jump talent increases the hero's Stamina and Strength by <num>%s</num> (from max. Health) for <num>3</num> seconds.",
-    htalent_494_name: 'Skirmish ⌛️90',
+    htalent_494_name: 'Skirmish <CD>90</CD>',
     htalent_494_description:
-      'When using a talent, it consumes all ⚡. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter\'s Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Courage: When used, the number of shots increases by <num>2</num> for every 10⚡.</font>',
+      'When using a talent, it consumes all ⚡. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter\'s Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr><bronze>Courage: When used, the number of shots increases by <num>2</num> for every 10⚡.</bronze>',
     htalent_495_name: 'Especially dangerous',
     htalent_495_description: 'If a firefight kills an enemy hero, its recovery time is <num>10</num> seconds.',
     htalent_496_name: 'Partisan',
@@ -2385,13 +2385,13 @@ export const en = {
       'The hero throws a spear, which plunges into the ground and chains the nearest enemy hero. The chain holds the enemy close to the spear and reduces outgoing damage by <num>50%</num> for <num>4</num> seconds and prohibits the use of talents.',
     htalent_501_name: 'Alpha',
     htalent_501_description: 'The talent of the Hunter acts on <num>2</num> targets.',
-    htalent_502_name: 'Supernova &#x1F4A7 230 ⌛️100',
+    htalent_502_name: 'Supernova <mana>230</mana> <CD>100</CD>',
     htalent_502_description:
       'After <num>1</num> sec., it releases a Supernova in the specified direction, which flies to the first enemy hero, causing <fiz>%s</fiz> damage to all enemies on the way.<br>When colliding with an enemy hero, it causes <fiz>%s</fiz> damage to him.',
     htalent_503_name: 'Excess energy',
     htalent_503_description:
       'When colliding with an enemy hero, a Supernova also causes damage to all enemies around - <num>2</num> times less.',
-    htalent_504_name: 'An eye for an eye ⌛️60',
+    htalent_504_name: 'An eye for an eye <CD>60</CD>',
     htalent_504_description:
       'When a hero dies, he deals <mag>%s</mag> damage (from the highest of Strength and Intellect) to the nearest enemy hero (within a radius of 100) with the lowest Health.<br>The damage inflicted on the hero is reduced by <num>5%</num>.',
     htalent_505_name: 'Revenge',
@@ -2399,10 +2399,10 @@ export const en = {
     htalent_506_name: 'Destructive Fire',
     htalent_506_description:
       "The hero's attacks deal <num>10%</num> more damage. The hero's attacks and Dissec.ting Strike Talent set the enemy on fire, dealing <mag>%s</mag> damage (from the highest of Strength and Intellect) for <num>3</num> seconds.",
-    htalent_507_name: 'Dissec.ting Strike &#x1F4A7 60 ⌛️10',
+    htalent_507_name: 'Dissec.ting Strike <mana>60</mana> <CD>10</CD>',
     htalent_507_description:
       'The hero deals <mag>%s</mag> damage to all nearby enemies and slows them down by <num>20%</num> for <num>4</num> seconds.',
-    htalent_508_name: 'Tiger Leap &#x1F4A7 75 ⌛️12',
+    htalent_508_name: 'Tiger Leap <mana>75</mana> <CD>12</CD>',
     htalent_508_description:
       'The hero moves to the specified location, deals <mag>%s</mag> damage to all enemies nearby and stuns them for <num>1</num> sec.',
     htalent_509_name: 'Double strike',
@@ -2411,9 +2411,9 @@ export const en = {
     htalent_510_name: 'Tactical move',
     htalent_510_description:
       'If the Tiger Jump talent is not ready for use, using a Dissec.ting Strike instantly restores it, but for the next <num>6</num> seconds, the Jump does not cause damage or stun opponents.',
-    htalent_511_name: 'Fire Ghost &#x1F4A7 80 ⌛️19',
+    htalent_511_name: 'Fire Ghost <mana>80</mana> <CD>19</CD>',
     htalent_511_description: 'The hero becomes invulnerable for <num>2.5</num> seconds, but cannot attack or use any talents.',
-    htalent_512_name: 'The Path of the Lone Blade &#x1F4A7 250 ⌛️90',
+    htalent_512_name: 'The Path of the Lone Blade <mana>250</mana> <CD>90</CD>',
     htalent_512_description:
       'The hero disappears for <num>2</num> seconds and deals the specified enemy hero <fiz>%s</fiz> damage in <num>0.4</num> seconds.',
     htalent_513_name: 'Surge of strength',
@@ -2421,45 +2421,45 @@ export const en = {
       "Using the Fire Ghost talent restores the hero's <num>%s</num> Health (from the greatest of Strength and Intellect) and accelerates it by <num>35%</num>.",
     htalent_514_name: 'Massacre',
     htalent_514_description: 'The Lone Blade Path talent deals <num>20%</num> more damage and slows down the target by <num>75%</num>.',
-    htalent_515_name: 'The Path of a Thousand Blades &#x1F4A7 250 ⌛️90',
+    htalent_515_name: 'The Path of a Thousand Blades <mana>250</mana> <CD>90</CD>',
     htalent_515_description:
       'The hero disappears for <num>5</num> seconds, leaving behind an area where enemies take <mag>%s</mag> damage per second and slow down by <num>80%</num>. The slowdown is getting weaker every second by <num>10%</num>.',
     htalent_516_name: 'Intimidation',
     htalent_516_description:
       'The Path of a Thousand Blades talent also reduces outgoing enemy damage by <num>20%</num>. Every second of the action, the damage of the ability increases by <num>10%</num>.',
-    htalent_517_name: 'Jet Kettlebell &#x1F4A7 200 ⌛️100',
+    htalent_517_name: 'Jet Kettlebell <mana>200</mana> <CD>100</CD>',
     htalent_517_description:
       'The hero launches a kettlebell at the specified enemy hero, which deals <fiz>%s</fiz> damage and stuns him for <num>2</num> seconds.',
     htalent_518_name: 'With two hands',
     htalent_518_description: 'The Jet Kettlebell talent allows you to fly behind the kettlebell causing <fiz>%s</fiz> damage. ',
-    htalent_519_name: 'Deafening crash &#x1F4A7 250 ⌛️90',
+    htalent_519_name: 'Deafening crash <mana>250</mana> <CD>90</CD>',
     htalent_519_description: 'Rushes at the specified enemy, deals <fiz>%s</fiz> damage and stuns for <num>3</num> seconds.',
     htalent_520_name: 'Oakens',
     htalent_520_description:
       'Using the Deafening Crack talent gives the hero protection that absorbs up to <num>%s</num> damage (from Strength) for <num>6</num> seconds.',
-    htalent_521_name: 'Shield of Justice &#x1F4A7 250 ⌛️100',
+    htalent_521_name: 'Shield of Justice <mana>250</mana> <CD>100</CD>',
     htalent_521_description:
       'Throws a shield that deals <mag>%s</mag> damage to the specified enemy hero and stuns him for <num>1.5</num> seconds.<br><col3>Symbol of Faith: Blinds enemies hit by a shield for <num>6</num> seconds.</col3>',
     htalent_522_name: 'Ricochet',
     htalent_522_description:
       'The Shield of Justice talent additionally affects <num>2</num> targets and reduces the greatest of the Stamina and Will of offended enemies by <num>%s</num> (of Strength) for <num>6</num> seconds.',
-    htalent_523_name: 'Death Mark &#x1F4A7 80 ⌛️10',
+    htalent_523_name: 'Death Mark <mana>80</mana> <CD>10</CD>',
     htalent_523_description:
       'The hero puts a Mark on the enemy for <num>15</num> seconds. Every second while the Mark is hanging on the target and the hero sees it, his first damage to the target inflicted by the Decisive Blow increases by <num>30%</num> up to <num>120%</num>.<br><rz>When used from the native land, Energy is not consumed for activation.</rz>',
     htalent_524_name: 'Preparation',
     htalent_524_description:
       "While the Death Mark is hanging on the target, the hero's Energy Regeneration increases by <num>%s</num> (from the Intellect). When hitting a target under the Damage Mark with a Decisive Blow, the hero accelerates by <num>60%</num> for <num>3</num> seconds.<br>The mark no longer disappears in the fog of war.",
-    htalent_525_name: 'Ice Wall &#x1F4A7 300 ⌛️50',
+    htalent_525_name: 'Ice Wall <mana>300</mana> <CD>50</CD>',
     htalent_525_description:
       'Creates an ice wall in the specified area for <num>3</num> seconds, which deals <fiz>%s</fiz> damage to enemies.',
     htalent_526_name: 'Ice fortification',
     htalent_526_description: 'The Ice Wall talent lasts for <num>3</num> seconds longer and stuns enemies for <num>0.5</num> seconds.',
     htalent_527_name: 'Super Maneuverability',
     htalent_527_description: 'When using class talents, the speed increases by <num>50%</num> for <num>3.5</num> seconds.',
-    htalent_528_name: 'Missile Strike &#x1F4A7 70 ⌛️10',
+    htalent_528_name: 'Missile Strike <mana>70</mana> <CD>10</CD>',
     htalent_528_description:
       'Deals <mag>%s</mag> damage in the specified area.<br>The explosion leaves a fiery trail on the ground for <num>3</num> seconds, dealing <mag>%s</mag> damage per second (based on the higher of Strength or Intellect).<br>The cast radius is equal to the Auto Attack radius.<br>Stuns enemies for <num>0.5</num> seconds if Strength is greater than Intellect.<br>If the hero\'s Intellect is greater than Strength, the rocket\'s cast radius is increased by <num>5</num> and additionally by <num>%s</num> (from Intellect).',
-    htalent_529_name: 'Heavy fire &#x1F4A7 80 ⌛️14',
+    htalent_529_name: 'Heavy fire <mana>80</mana> <CD>14</CD>',
     htalent_529_description:
       "For <num>6</num> seconds, the hero's attacks deal <fiz>%s</fiz> more damage.<br>\n<rz>When used from its native land, it restores <num>%s</num> Health per second (from the greatest of Strength and Intellect).</rz>\n",
     htalent_530_name: 'Restart',
@@ -2467,10 +2467,10 @@ export const en = {
     htalent_531_name: 'Intense shooting',
     htalent_531_description:
       "During the action of the Heavy Fire talent, the hero's Agility (from Strength) or Cunning (from Intellect) increases by <num>%s</num>, depending on the hero's highest parameter.",
-    htalent_532_name: 'Tactical Maneuver &#x1F4A7 100 ⌛️15',
+    htalent_532_name: 'Tactical Maneuver <mana>100</mana> <CD>15</CD>',
     htalent_532_description:
       'The hero flies to the specified location. The preparation time of a talent depends on the distance of the landing site and varies from <num>0.1</num> to <num>4</num> seconds, and the recovery time is from <num>15</num> to <num>41</num> seconds.\n',
-    htalent_533_name: 'Bombing &#x1F4A7 200 ⌛️90',
+    htalent_533_name: 'Bombing <mana>200</mana> <CD>90</CD>',
     htalent_533_description:
       'The hero takes off, becomes invulnerable and immune to control effects, and ignores obstacles, but cannot attack or use talents. After <num>1.8</num> seconds, it deals enemies <mag>%s</mag> damage in the area below it.<br>\r\nThe ability can be applied repeatedly to drop the bomb ahead of schedule and complete the flight.\r\n',
     htalent_534_name: 'Safe landing',
@@ -2485,19 +2485,19 @@ export const en = {
     htalent_537_name: 'Cumulative projectiles',
     htalent_537_description:
       "Increases the flight speed of attack shots by <num>100%</num>.<br>\Hero's attacks deal <num>60%</num> base damage to targets on the attack line. This damage cannot be critical and cannot be modified with talents.",
-    htalent_538_name: 'Demon Form &#x1F4A7 320 ⌛️120',
+    htalent_538_name: 'Demon Form <mana>320</mana> <CD>120</CD>',
     htalent_538_description:
       'The hero restores to himself <num>%s</num> Health (from the greatest of Strength and Intellect) and transforms into a demon for <num>7</num> seconds.In the form of a demon, the hero cannot use abilities, the range of his attacks decreases (but damage is calculated from the greatest of Strength and Intellect), and the Will increases by <num>%s</num> (from the greatest of Strength and Intellect).\n',
     htalent_539_name: 'Demonic power',
     htalent_539_description:
       "During the action of the talent, the Appearance of the Demon, the hero's Agility increases by <num>%s</num> (from the greatest of Strength and Intellect), Speed by <num>40%</num>, and enemies next to the hero receive <mag>%s</mag> damage in sec.",
-    htalent_540_name: 'Deadly poison &#x1F4A7 180 ⌛️60',
+    htalent_540_name: 'Deadly poison <mana>180</mana> <CD>60</CD>',
     htalent_540_description:
       "For <num>10</num> seconds, the hero's attacks poison enemies with Corpse Poison, cause additional <fiz>%s</fiz> damage and reduce the recovery time of the Heart Attack talent by <num>3</num> seconds.",
     htalent_541_name: 'Protective hoodie',
     htalent_541_description:
       "The Deadly Poison talent increases the hero's Agility by <num>%s</num> (from Strength) and additionally passively increases Health by <num>%s</num> (from Strength).",
-    htalent_542_name: 'Sweet Dream &#x1F4A7 230 ⌛️80',
+    htalent_542_name: 'Sweet Dream <mana>230</mana> <CD>80</CD>',
     htalent_542_description:
       'Puts the specified enemy hero to sleep for <num>4</num> seconds. During sleep, the hero cannot attack, use abilities, or move around.<br>\A hero wakes up if he has been dealt damage exceeding <num>%s</num> (from the greatest of Strength and Intellect).',
     htalent_543_name: 'Quiet Hour',
@@ -2505,27 +2505,27 @@ export const en = {
     htalent_544_name: 'Awakening',
     htalent_544_description:
       'After waking up from a Sweet Dream, enemies slow down by <num>25%</num>, and the greatest of their Stamina and Will decreases by <num>%s</num> (from the greatest of Strength and Intellect) for <num>5</num> seconds.',
-    htalent_545_name: "Heaven's Punishment &#x1F4A7 300 ⌛️90",
+    htalent_545_name: "Heaven's Punishment <mana>300</mana> <CD>90</CD>",
     htalent_545_description:
       "Deals <mag>%s</mag> damage to the Enemy hero with the lowest current Health.<br>\n<rz>If the target is in the hero's native land, it is stunned for <num>2</num> seconds.</rz>",
     htalent_546_name: 'Electric shock',
     htalent_546_description: "The Heaven's Punishment Talent additionally deals <fiz>%s</fiz> damage.",
-    htalent_547_name: 'Fire Vortex &#x1F4A7 180 ⌛️30',
+    htalent_547_name: 'Fire Vortex <mana>180</mana> <CD>30</CD>',
     htalent_547_description:
       "For <num>5</num> seconds, the hero becomes immune to control effects, taking <num>30%</num> less damage and inflicts <mag>%s</mag> damage to all opponents around every <num>0.5</num> seconds, But he can't attack.",
     htalent_548_name: 'Bonds of Fire',
     htalent_548_description: 'The Fire Vortex talent speeds up the hero and slows down enemies by <num>25%</num>.',
-    htalent_549_name: 'On a chain &#x1F4A7 150 ⌛️45',
+    htalent_549_name: 'On a chain <mana>150</mana> <CD>45</CD>',
     htalent_549_description:
       'The hero throws a chain in front of him, which attracts the first enemy in the way and forces him to follow the hero for <num>3</num> seconds.',
     htalent_550_name: 'The Pointed Kunai',
     htalent_550_description: 'Talent On a chain deals <fiz>%s</fiz> damage when hit.',
     htalent_551_name: 'Dogma',
     htalent_551_description: 'Hero attacks reduce the current cooldown of all class talents by <num>0.5</num> sec.',
-    htalent_552_name: 'Ritual Strike &#x1F4A7 75 ⌛️8',
+    htalent_552_name: 'Ritual Strike <mana>75</mana> <CD>8</CD>',
     htalent_552_description:
       'Deals <fiz>%s</fiz> damage (from the greatest of Strength and Intellect) to enemies in front of the hero, evenly distributing it between targets.',
-    htalent_553_name: 'Oath &#x1F4A7 80 ⌛️15',
+    htalent_553_name: 'Oath <mana>80</mana> <CD>15</CD>',
     htalent_553_description:
       'After <num>3</num> seconds, the specified allied hero restores Health equal to <num>200%</num> of the damage received during the duration of the effect, but not more than <num>%s</num> (from the Intellect).<br>\n<rz>When used from the native land, the target removes all negative effects.</rz>',
     htalent_554_name: 'Vow of silence',
@@ -2533,10 +2533,10 @@ export const en = {
     htalent_555_name: 'Blinding Word',
     htalent_555_description:
       'The Oath Talent, upon completion of the effect, blinds all enemies around the target for <num>3</num> seconds.',
-    htalent_556_name: 'The Step of Faith &#x1F4A7 100 ⌛️24',
+    htalent_556_name: 'The Step of Faith <mana>100</mana> <CD>24</CD>',
     htalent_556_description:
       'The hero is transported to the specified location and within <num>4</num> seconds can reuse his talent to be transported back.',
-    htalent_557_name: 'Holy Retribution &#x1F4A7 120 ⌛️90',
+    htalent_557_name: 'Holy Retribution <mana>120</mana> <CD>90</CD>',
     htalent_557_description:
       'For <num>7</num> seconds <num>75%</num> of the damage received by the specified allied hero is also inflicted on the damage source, but not more than <num>%s</num> (from the Intellect) in total.',
     htalent_558_name: 'An act of mercy',
@@ -2544,18 +2544,18 @@ export const en = {
     htalent_559_name: "Martyr's Reward",
     htalent_559_description:
       'The percentage and total damage reflected by the Holy Retribution talents increases by <num>2</num> times (total <num>%s</num>).',
-    htalent_560_name: 'The Pain test &#x1F4A7 180 ⌛️75',
+    htalent_560_name: 'The Pain test <mana>180</mana> <CD>75</CD>',
     htalent_560_description:
       'For <num>7</num> seconds, removes from the specified enemy hero <num>50%</num> of the current Health, but not more than <num>%s</num> (from the Strength).',
     htalent_561_name: 'Reward of the Righteous',
     htalent_561_description: "The Pain Test talent additionally increases the hero's maximum Health by the value taken from the target.",
-    htalent_562_name: 'Attack! ⌛️60',
+    htalent_562_name: 'Attack! <CD>60</CD>',
     htalent_562_description:
-      'Takes the form <font color=#B87333>Grrr</font> if the hero has more than 15⚡.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#B87333><font color=#B87333>Grrr: Increases the hero\'s Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</font>',
+      'Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the hero\'s Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>',
     htalent_563_name: 'Watch out!',
     htalent_563_description:
-      '<font color=#B87333>Grrr: Thanks to my talent, I attack! all enemies around have <num>5</num> seconds of decreased Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect) after the moment of reincarnation.</font>',
-    htalent_564_name: 'The cat from the snuffbox &#x1F4A7 200 ⌛️70',
+      '<bronze>Grrr: Thanks to my talent, I attack! all enemies around have <num>5</num> seconds of decreased Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect) after the moment of reincarnation.</bronze>',
+    htalent_564_name: 'The cat from the snuffbox <mana>200</mana> <CD>70</CD>',
     htalent_564_description:
       'At the specified point on <num>3.5</num>, sec. summons a Snuffbox Cat, which teases the enemy heroes around, forcing them to attack him. The cat can withstand <num>8</num> blows.',
     htalent_565_name: 'New spring',
@@ -2564,20 +2564,20 @@ export const en = {
     htalent_566_name: 'Arsenal',
     htalent_566_description:
       'Every <num>9</num> seconds, the hero receives protection that absorbs <num>%s</num> damage (from Strength and Intellect).<br>The effect adds up to <num>6</num> times.',
-    htalent_567_name: 'Wave of Blades &#x1F4A7 90 ⌛️12',
+    htalent_567_name: 'Wave of Blades <mana>90</mana> <CD>12</CD>',
     htalent_567_description:
       'Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> seconds</num>.<br>\n<rz>On native land The hero additionally suppresses the acceleration effects of touched enemies.</rz>',
-    htalent_568_name: 'Eternal service ⌛️6',
+    htalent_568_name: 'Eternal service <CD>6</CD>',
     htalent_568_description: 'The hero gets <num>1</num> An arsenal for finishing off enemy creatures and <num>4</num> for the hero.',
     htalent_569_name: 'At the forefront of the attack',
     htalent_569_description: 'Repeated use of talent moves the hero to the edge of a Wave of Blades.',
     htalent_570_name: 'Fragments of War',
     htalent_570_description:
       'Upon receiving an Arsenal, the next attack additionally deals <mag>%s</mag> and <mag>%s</mag> damage to targets and all enemies around for each Arsenal effect.',
-    htalent_571_name: 'Order of Battle &#x1F4A7 110 ⌛️18',
+    htalent_571_name: 'Order of Battle <mana>110</mana> <CD>18</CD>',
     htalent_571_description:
       'The specified allied hero deals <num>5</num> seconds of damage to all enemies around <fiz>%s</fiz> and <fiz>%s</fiz> damage for each accumulated Arsenal effect.<br>\n<rz>When used from the native land, an allied creature can be selected as the target of the talent.</rz>',
-    htalent_572_name: 'Frenzy &#x1F4A7 210 ⌛️80',
+    htalent_572_name: 'Frenzy <mana>210</mana> <CD>80</CD>',
     htalent_572_description:
       'Within <num>2</num> seconds, the hero receives <num>1</num> Arsenal every <num>0.4</num> seconds and does not allow the enemies around to use talents.',
     htalent_573_name: 'Circular defense',
@@ -2586,23 +2586,23 @@ export const en = {
     htalent_574_name: 'The secret of perseverance',
     htalent_574_description:
       'Each Arsenal effect reduces the cooldown time of class talents by <num>5%</num>.<br>\r\The Frenzy Talent is effective for <num>2</num> seconds longer.',
-    htalent_575_name: 'Battle Formation &#x1F4A7 250 ⌛️100',
+    htalent_575_name: 'Battle Formation <mana>250</mana> <CD>100</CD>',
     htalent_575_description:
       'The hero receives <num>1</num> Arsenal effect for each missing allied hero and applies the Order of Battle to himself and all allied heroes around.',
     htalent_576_name: 'Endless supplies',
     htalent_576_description: 'The Arsenal effect adds up to <num>8</num> times.',
-    htalent_577_name: 'The Snares of the Archons &#x1F4A7 300 ⌛️100',
+    htalent_577_name: 'The Snares of the Archons <mana>300</mana> <CD>100</CD>',
     htalent_577_description:
       'Archons disappear by turning into projectiles that deal <mag>%s</mag> damage to enemy heroes around and additionally <mag>%s</mag> damage if they were enhanced with Internal Flames before transformation.<br>Additionally immobilizes and prohibits the use of talents by offended enemies for <num>2</num> seconds.<br>\nfrom 3 (4) reinforced archons <mag>%s</mag> (<mag>%s</mag>) damage.',
     htalent_578_name: 'Eternal Servants',
     htalent_578_description:
       "The recovery time of the Archon's Snare talent is reduced by <num>80%</num>.<br>The Archon Lord's Talent instantly summons a new servant and does not interrupt the already active talent Demonic Shield.",
-    htalent_579_name: 'Eye Contact &#x1F4A7 140 ⌛️50',
+    htalent_579_name: 'Eye Contact <mana>140</mana> <CD>50</CD>',
     htalent_579_description: 'Forces the specified target to attack the nearest allied hero or to panic for <num>3</num> seconds.',
     htalent_580_name: 'A look through',
     htalent_580_description:
       "When using talent, the hero increases his chance of evasion by <num>30%</num> for <num>3</num> seconds, and the target's damage by <num>50%</num>.",
-    htalent_581_name: 'One Flesh &#x1F4A7 80 ⌛️120',
+    htalent_581_name: 'One Flesh <mana>80</mana> <CD>120</CD>',
     htalent_581_description:
       'For <num>9</num> seconds, the hero merges with the panther, adding its maximum Health to his own. Fully restores Health when used.',
     htalent_582_name: 'Steel wool',
@@ -2611,10 +2611,10 @@ export const en = {
     htalent_583_name: 'Disputes',
     htalent_583_description:
       "Class talents infect enemies with spores for <num>10</num> seconds, increasing the damage from the hero's attacks on them by <mag>%s</mag>.<br>\n<rz>In the hero's native land, spores additionally reduce Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</rz><br>\The effect adds up to <num>5</num> times.<br>\n When an enemy dies nearby, struck by spores, the hero restores <num>%s</num> Health (from the greatest of Strength and Intellect).",
-    htalent_584_name: 'Dangerous fruit &#x1F4A7 80 ⌛️4',
+    htalent_584_name: 'Dangerous fruit <mana>80</mana> <CD>4</CD>',
     htalent_584_description:
       'Throws a fruit in the specified direction, which, upon contact with the enemy, breaks and causes damage to him and all enemies behind <fiz>%s</fiz> and infects with spores.',
-    htalent_585_name: 'Forest Spirit &#x1F4A7 120 ⌛️30',
+    htalent_585_name: 'Forest Spirit <mana>120</mana> <CD>30</CD>',
     htalent_585_description:
       'The spirit chooses the target of the hero in the specified area. For <num>10</num> seconds, enemies around cannot hide out of sight and receive <mag>%s</mag> damage (from Intellect).',
     htalent_586_name: 'Caustic Juice',
@@ -2622,10 +2622,10 @@ export const en = {
     htalent_587_name: 'Insidious Whisper',
     htalent_587_description:
       "Enemy heroes around the spirit target become infected with spores every <num>1</num> sec. If there are no heroes in the specified area, the spirit chooses a tree as a target.<br>\n<rz>By choosing a tree in the hero's native land, the spirit lives <num>12</num> times longer.</rz>",
-    htalent_588_name: "The Guardian's Dream &#x1F4A7 120 ⌛️30",
+    htalent_588_name: "The Guardian's Dream <mana>120</mana> <CD>30</CD>",
     htalent_588_description:
       'The hero grows into the ground, loses the ability to move, and becomes immune to damage for <num>6</num> seconds.',
-    htalent_589_name: 'Germination &#x1F4A7 220 ⌛️75',
+    htalent_589_name: 'Germination <mana>220</mana> <CD>75</CD>',
     htalent_589_description:
       'Spores sprout from the specified enemy hero, dealing the target <fiz>%s</fiz> damage for each effect.<br>\Recovery time and energy costs depend on the number of spores per target.',
     htalent_590_name: "The Guardian's Wrath",
@@ -2633,7 +2633,7 @@ export const en = {
     htalent_591_name: 'Fierce Shoots',
     htalent_591_description:
       'The Germination talent additionally restores to the hero <num>%s</num> Health (from the greatest of Strength and Intellect) for each spore effect on the target.',
-    htalent_592_name: 'The Dying Vine &#x1F4A7 200 ⌛️90',
+    htalent_592_name: 'The Dying Vine <mana>200</mana> <CD>90</CD>',
     htalent_592_description:
       "For <num>3</num> seconds, it immobilizes all enemies around the hero and sprays spores every second. After the end of the effect, it deals them <mag>%s</mag> damage for each spore effect.<br>\The hero's prowess increases by <num>%s</num> (from Intellect) for <num>6</num> seconds.",
     htalent_593_name: 'Blackthorn',
@@ -2674,7 +2674,7 @@ export const en = {
       'The Transformation talent additionally affects enemies near the target. The duration of the additional effect has been reduced by <num>25%</num>.',
     htalent_606_name: 'Plague epidemic',
     htalent_606_description:
-      'The area of infection with Cadaveric poison has been increased by <num>50%</num>. Increases the maximum number of <font color=#ff8c00>Buboes</font> by <num>1</num>. <br> Increases the recovery time of <font color=#ff8c00>Bubo</font> to <num>1</num> seconds if the Complication talent is learned.',
+      'The area of infection with Cadaveric poison has been increased by <num>50%</num>. Increases the maximum number of <orange-d>Buboes</orange-d> by <num>1</num>. <br> Increases the recovery time of <orange-d>Bubo</orange-d> to <num>1</num> seconds if the Complication talent is learned.',
     htalent_607_name: 'Blood transfusion',
     htalent_607_description: 'Bloodletting heals two allies and is <num>5% stronger</num>.',
     htalent_608_name: 'Special composition',
@@ -2695,9 +2695,9 @@ export const en = {
     htalent_614_name: 'Weapon Master',
     htalent_614_description:
       'Class talents decrease the greatest of Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect) for <num>5</num> seconds.<br>\n<num>+%s</num> Stealing Health (from the greatest of Strength and Intellect) ',
-    htalent_615_name: 'Decisive Attack &#x1F4A7 60 ⌛️10',
+    htalent_615_name: 'Decisive Attack <mana>60</mana> <CD>10</CD>',
     htalent_615_description: 'The hero moves in the specified direction, dealing <fiz>%s</fiz> damage to all enemies on the way.',
-    htalent_616_name: 'Crossbow shot &#x1F4A7 60 ⌛️10',
+    htalent_616_name: 'Crossbow shot <mana>60</mana> <CD>10</CD>',
     htalent_616_description:
       'Launches a bolt that flies to the first enemy hero and causes <mag>%s</mag> damage to all affected enemies. Damage increases by <num>2</num> times if the arrow hits the target after covering <num>50%</num> of the distance.',
     htalent_617_name: "Hunter's vigilance",
@@ -2705,22 +2705,22 @@ export const en = {
       "The Decisive Thrust talent additionally increases the hero's Stamina by <num>%s</num> (of Strength) for <num>5</num> seconds after moving.",
     htalent_618_name: 'Jagged bolts',
     htalent_618_description: 'Talent Crossbow shot additionally stuns the target for <num>1</num> sec.',
-    htalent_619_name: 'Lightning Reflexes &#x1F4A7 100 ⌛️15',
+    htalent_619_name: 'Lightning Reflexes <mana>100</mana> <CD>15</CD>',
     htalent_619_description:
       'The hero accelerates by <num>60%</num> for <num>4</num> seconds. The recovery time of the Crossbow Shot talent is reduced by <num>50%</num> if the Heavy Crossbow talent is learned (on line 5) - the recovery time of the Crossbow Shot talent is reduced by <num>90%</num>.',
-    htalent_620_name: 'Disarming technique &#x1F4A7 200 ⌛️60',
+    htalent_620_name: 'Disarming technique <mana>200</mana> <CD>60</CD>',
     htalent_620_description: 'For <num>3</num> seconds, disarms all enemies around and slows them down by <num>50%</num>.',
     htalent_621_name: 'Insubordination',
     htalent_621_description: 'The Lightning Reflexes talent additionally removes all negative effects.',
     htalent_622_name: 'Adrenaline rush',
     htalent_622_description:
       "Talent Disarming technique additionally increases the hero's Agility by <num>%s</num> (of Strength) for <num>10</num> seconds.",
-    htalent_623_name: 'Invisible Pursuer &#x1F4A7 200 ⌛️60',
+    htalent_623_name: 'Invisible Pursuer <mana>200</mana> <CD>60</CD>',
     htalent_623_description:
       'After <num>1</num> second after use, the hero gains invisibility for <num>15</num> seconds. For <num>10</num> seconds after the end of the disguise, class talents additionally deal <mag>%s</mag> damage.',
     htalent_624_name: 'A surprise attack',
     htalent_624_description:
-      'The Invisible Pursuer talent additionally accelerates the hero by <num>15</num> seconds by <num>20%</num>.<br> <hr align="center" width="70%" size="2" color="#A7A062" /> The range of the Decisive Thrust talent is increased by <num>50%</num>.',
+      'The Invisible Pursuer talent additionally accelerates the hero by <num>15</num> seconds by <num>20%</num>.<br> <hr> The range of the Decisive Thrust talent is increased by <num>50%</num>.',
     htalent_625_name: 'Seismic impact',
     htalent_625_description: 'The Undermining talent deals <num>50%</num> more damage and stuns enemies for <num>1</num> sec.',
     htalent_626_name: 'Protective disguise',
@@ -2801,9 +2801,9 @@ export const en = {
     htalent_653_name: 'Rare, but accurate!',
     htalent_653_description:
       'A medium-range weapon with the following characteristics:<br>\n- There are 2 cartridges in the magazine.<br>\n- Attack speed <num>5</num> per second and does not depend on agility.<br>\n-After emptying the store, the hero reloads his weapon. The cooldown time depends on agility.<br>\n- Attacks cannot be critical.',
-    htalent_654_name: 'Explosive approach! ⌛️8',
+    htalent_654_name: 'Explosive approach! <CD>8</CD>',
     htalent_654_description: 'Deals <mag>%s</mag> damage to enemies in front of the hero.',
-    htalent_655_name: 'Emergency launch! ⌛️18',
+    htalent_655_name: 'Emergency launch! <CD>18</CD>',
     htalent_655_description:
       'The hero explodes the ground beneath him, causing <mag>%s</mag> damage to all enemies around and flies to the specified point.',
     htalent_656_name: 'Destructive argument!',
@@ -2811,10 +2811,10 @@ export const en = {
     htalent_657_name: 'Bandaging in flight!',
     htalent_657_description:
       'When using the Emergency Launch talent, the hero restores <num>%s</num> Health (from the greatest of Strength and Intellect).',
-    htalent_658_name: 'Intellect to stop! ⌛️10',
+    htalent_658_name: 'Intellect to stop! <CD>10</CD>',
     htalent_658_description:
       'Shoots a net in the specified direction, aiming at the first enemy hero, which immobilizes for <num>2.5</num> sec.',
-    htalent_659_name: 'Threat from the air! ⌛️100',
+    htalent_659_name: 'Threat from the air! <CD>100</CD>',
     htalent_659_description:
       'Launches <num>5</num> projectiles at random enemy heroes around him, each of which deals <mag>%s</mag> damage.',
     htalent_660_name: 'Punchy tone!',
@@ -2831,7 +2831,7 @@ export const en = {
     htalent_664_description: "The hero's attack additionally hits the enemy closest to the target.",
     htalent_665_name: 'Explosive launch!',
     htalent_665_description:
-      'Talent Explosive approach! deals <num>10% more</num> damage and additionally, hitting an enemy hero, restores <num>50%</num> ⌛️ the Emergency Launch talent.',
+      'Talent Explosive approach! deals <num>10% more</num> damage and additionally, hitting an enemy hero, restores <num>50%</num> CDTAL the Emergency Launch talent.',
     htalent_666_name: 'Barbaric Attack',
     htalent_666_description:
       'The Concussive Lunge talent additionally slows down enemies by <num>15%</num>.<br>Reaching for the place where the axes fall, the hero deals <fiz>%s</fiz> damage (from Strength) to all enemies around.',
@@ -2864,19 +2864,19 @@ export const en = {
     htalent_676_name: 'The Scourge of Time',
     htalent_676_description:
       "The hero receives additional Health Regeneration (from the character's Level, 1 to 0.7). <br><br>If the enemy next to the hero is stunned, he takes <mag>%s</mag> damage (from the highest of Strength and Intellect), and the hero's speed increases by <num>30%</num> for <num>3</num> seconds.",
-    htalent_677_name: 'Merciless Time &#x1F4A7 125 ⌛️9',
+    htalent_677_name: 'Merciless Time <mana>125</mana> <CD>9</CD>',
     htalent_677_description:
       'For <num>1.6</num> seconds, creates an area where enemies receive <mag>%s</mag> damage every <num>0.4</num> seconds. The area then explodes, stunning all enemies inside for 1.2 seconds.',
-    htalent_678_name: 'Fleeting Pulse &#x1F4A7 85 ⌛️20',
+    htalent_678_name: 'Fleeting Pulse <mana>85</mana> <CD>20</CD>',
     htalent_678_description: 'Every third attack of the hero stuns the enemy for <num>0.2</num> sec.',
     htalent_679_name: 'The decisive moment',
     htalent_679_description: 'The Merciless Time talent additionally causes <mag>%s</mag> when exploding.',
-    htalent_680_name: 'Aegis of Time ⌛️10',
+    htalent_680_name: 'Aegis of Time <CD>10</CD>',
     htalent_680_description: 'When a hero is stunned, he absorbs <num>15%</num> incoming damage for <num>3</num> seconds.',
-    htalent_681_name: 'Time has gone &#x1F4A7 80 ⌛️20',
+    htalent_681_name: 'Time has gone <mana>80</mana> <CD>20</CD>',
     htalent_681_description:
       "After <num>2</num> seconds, the talent owner or the specified enemy hero is transferred to his position at the time of talent application.<br><rz>When used from his native land, the hero's Agility increases by <num>%s</num> (from the greatest of Strength and Intellect) for <num>5</num> seconds.</rz>",
-    htalent_682_name: 'Temporary anomaly &#x1F4A7 230 ⌛️90',
+    htalent_682_name: 'Temporary anomaly <mana>230</mana> <CD>90</CD>',
     htalent_682_description:
       'For <num>4</num> seconds, creates an area that stuns enemies trapped in it for <num>0.2</num> seconds every second.',
     htalent_683_name: 'Time is up',
@@ -2895,7 +2895,7 @@ export const en = {
     htalent_688_name: 'Flock of Ravens',
     htalent_688_description:
       "The Crow's Evil Eye talent hits an additional target next to the main one and slows down both targets by <num>20%</num>.",
-    htalent_689_name: 'Prime Time &#x1F4A7 230 ⌛️70',
+    htalent_689_name: 'Prime Time <mana>230</mana> <CD>70</CD>',
     htalent_689_description:
       'The hero accelerates the time acting on him by <num>40%</num> by <num>8</num> seconds. The time of control effects and cooldown of class abilities is decreasing. Movement and attack speed increases.',
     htalent_690_name: 'For all time',
@@ -2954,14 +2954,14 @@ export const en = {
     htalent_711_name: 'Spicy honey',
     htalent_711_description:
       'Pours Honey, putting its effect on yourself and everyone around you.<br>Talent recovery time is reduced by <num>0.5</num> seconds when taking damage from heroes and by <num>0.2</num> seconds from other sources.<br>Honey increases the maximum Health of injured allies by <num>%s</num> (from Intellect), and the hero himself by <num>%s</num> (from the greatest of Strength and Intellect), and lowers the greatest of Strength and Intellect to opponents by <num>%s</num> (from Intellect).<br>The effect lasts <num>5</num> seconds and adds up to <num>3</num> times.',
-    htalent_712_name: 'Taking honeydew &#x1F4A7 50 ⌛️16',
+    htalent_712_name: 'Taking honeydew <mana>50</mana> <CD>16</CD>',
     htalent_712_description:
       'The hero moves in the specified direction, dealing <fiz>%s</fiz> damage to all enemies in the way and pouring Honey on enemy heroes when they collide with them.<br>\nFor <num>4</num> seconds, talent can be reused.',
     htalent_713_name: 'Thick honey',
     htalent_713_description: 'If the hero\'s Strength is greater than Intellect, the honey additionally slows enemies by <num>7%</num> and deals <fiz>%s</fiz> damage per second.<br>If the hero\'s Intellect is greater than Strength, the honey additionally slows enemies by <num>10%</num> and deals <fiz>%s</fiz> damage per second.',
-    htalent_714_name: 'Oak Barrel &#x1F4A7 250 ⌛️60',
+    htalent_714_name: 'Oak Barrel <mana>250</mana> <CD>60</CD>',
     htalent_714_description: 'The hero pours Honey on all the heroes around and causes <fiz>%s</fiz> damage to all enemies.',
-    htalent_715_name: 'Hot Honey &#x1F4A7 80 ⌛️12',
+    htalent_715_name: 'Hot Honey <mana>80</mana> <CD>12</CD>',
     htalent_715_description: 'The hero pours Honey in the specified area.',
     htalent_716_name: 'Over the edge',
     htalent_716_description: 'Attacks with a <num>21% chance</num> spill Honey on the target.',
@@ -3029,7 +3029,7 @@ export const en = {
       'Reduces the recovery time of active class talents by <num>20%</num>. <br> Increases the damage of active class talents by <num>12%</num>.',
     htalent_741_name: 'Rrrrrr!',
     htalent_741_description:
-      'Being in the form of <font color=#B87333>Grrr</font>, the hero spends <num>20%</num>less ⚡ and restores <num>25%</num> more Health (total <num>%s</num>) for each expended ⚡, and after exiting it begins to accumulate ⚡ <num>5</num> seconds earlier.',
+      'Being in the form of <bronze>Grrr</bronze>, the hero spends <num>20%</num>less ⚡ and restores <num>25%</num> more Health (total <num>%s</num>) for each expended ⚡, and after exiting it begins to accumulate ⚡ <num>5</num> seconds earlier.',
     htalent_742_name: 'Disembodied',
     htalent_742_description:
       'The value of the Swift Capture talent increases to <num>15%</num> of the current Health.<br>The hero ignores creatures and buildings until the talent is ready for use. <br>The damage of the Swift Capture talent has been increased by <num>20%</num>.<br> The cost of the Destructive Strikes talent increases to <num>10%</num> of current Health.',
@@ -3044,7 +3044,7 @@ export const en = {
     htalent_746_name: 'Unity of the Spirit',
     htalent_746_description:
       "The talent of One Blood increases the hero's Speed in proportion to the panther's missing health, to a maximum of <num>50%</num>.",
-    htalent_747_name: 'Guttural Roar &#x1F4A7 150 ⌛️40',
+    htalent_747_name: 'Guttural Roar <mana>150</mana> <CD>40</CD>',
     htalent_747_description:
       'The panther roars and causes all enemies around to run away for <num>1.5</num> seconds, after which it slows them down by <num>40%</num> for <num>2</num> seconds.<br>\n<col3>of One Flesh: Stuns all enemies around for <num>1.5</num> sec.</col3>',
     htalent_748_name: 'Saving Healing',
@@ -3055,7 +3055,7 @@ export const en = {
     htalent_750_name: 'Malice',
     htalent_750_description:
       'By dealing a total of <num>%s</num> damage (from the highest of Strength and Intellect) with attacks or class talents, the hero accumulates 1F47F to a maximum of 3F47F.<br>After receiving damage exceeding <num>5%</num> of maximum Health, the hero absorbs <num>30%</num> of the damage received, but consumes 1F47F.',
-    htalent_751_name: 'Furious Throw ⌛️9',
+    htalent_751_name: 'Furious Throw <CD>9</CD>',
     htalent_751_description:
       'Prepares for <num>1</num> second, choosing a direction, and then throws a spear that flies to the first enemy hero and deals <mag>%s</mag> damage to all opponents on the way. Attacks on affected heroes accumulate <num>300%</num> more <x1F47F for <num>5</num> seconds.',
     htalent_752_name: 'Fighting Zeal',
@@ -3066,10 +3066,10 @@ export const en = {
     htalent_754_name: 'Combat Frenzy',
     htalent_754_description:
       "The hero's agility increases by <num>%s</num> (of Strength) for every 1F47F.<br>Attacks and class talents restore Health in the amount of <num>6%</num> of damage dealt and additionally <num>4%</num> for every 1F47F.",
-    htalent_755_name: 'Thirst for Revenge ⌛️25',
+    htalent_755_name: 'Thirst for Revenge <CD>25</CD>',
     htalent_755_description:
       'The hero passively remembers incoming damage, but no more than <num>%s</num> (from the greatest of Strength and Intellect).<br>When using the talent, the hero inflicts <mag></mag> (equal to the memorized one) on all opponents around.<br>Resets the stored damage when using a talent.<br>For each enemy hero hit, the damage absorbed by the Malice talent increases by <num>1%</num> to a maximum of <num>50%</num>.',
-    htalent_756_name: 'Not a step back ⌛️60',
+    htalent_756_name: 'Not a step back <CD>60</CD>',
     htalent_756_description:
       'For <num>8</num> seconds, the hero creates an area around himself in which his native land is born, and enemies slow down by <num>45%</num> and their acceleration effects are suppressed.',
     htalent_757_name: 'Unshakable Will',
@@ -3078,7 +3078,7 @@ export const en = {
     htalent_758_name: 'Dominant presence',
     htalent_758_description:
       'For opponents who are in the field of talent, Not one step back, the greatest of Strength and Intellect decreases by <num>%s</num> (from the greatest of Strength and Intellect).',
-    htalent_759_name: 'The Hour of Reckoning ⌛️90',
+    htalent_759_name: 'The Hour of Reckoning <CD>90</CD>',
     htalent_759_description:
       'The hero goes into a rage for <num>8</num> seconds, during which the Speed bonus from the Fighting Zeal talent increases by <num>100%</num>, and the time of the Furious Roll talent decreases by <num>70%</num>.',
     htalent_760_name: 'Frenzy',
@@ -3100,11 +3100,11 @@ export const en = {
     htalent_766_description: 'During the application of ultimate talents, the hero receives <num>35%</num> talent protection.',
     htalent_767_name: 'A trail of blood',
     htalent_767_description:
-      'Class talents inflict bleeding wounds on the enemy, and the target cannot hide from the hero out of sight for <num>6</num> seconds, receiving <mag>%s</mag> damage per second.<br>The effect adds up <num>4</num> times.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#64CDF0>At night, the hero\'s speed drops to <num>0</num>, and he is invisible while motionless or using Wild Baiting. In addition, attacking an enemy with bleeding moves towards him if the target is nearby.</font>',
-    htalent_768_name: 'Wild Bullying &#x1F4A7 60 ⌛️5',
+      'Class talents inflict bleeding wounds on the enemy, and the target cannot hide from the hero out of sight for <num>6</num> seconds, receiving <mag>%s</mag> damage per second.<br>The effect adds up <num>4</num> times.<br><hr><frost>At night, the hero\'s speed drops to <num>0</num>, and he is invisible while motionless or using Wild Baiting. In addition, attacking an enemy with bleeding moves towards him if the target is nearby.</frost>',
+    htalent_768_name: 'Wild Bullying <mana>60</mana> <CD>5</CD>',
     htalent_768_description:
-      'The hero moves to the specified point, hitting all enemies on the way.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#64CDF0>At night, talent recovers by <num>95%</num> faster and does not consume energy.</font>',
-    htalent_769_name: 'The Bone Trap &#x1F4A7 120 ⌛️20',
+      'The hero moves to the specified point, hitting all enemies on the way.<br><hr><frost>At night, talent recovers by <num>95%</num> faster and does not consume energy.</frost>',
+    htalent_769_name: 'The Bone Trap <mana>120</mana> <CD>20</CD>',
     htalent_769_description:
       'Sets a trap in the specified location that immobilizes the enemy hero trapped in it for <num>2</num> seconds.',
     htalent_770_name: 'Devouring',
@@ -3112,18 +3112,18 @@ export const en = {
       'Attacking a target with bleeding additionally causes it <fiz>%s</fiz> damage and restores <num>%s</num> Health (from Strength) for each bleeding effect.',
     htalent_771_name: 'Sharpened bones',
     htalent_771_description: 'The bone trap becomes invisible and deals <fiz>%s</fiz> damage to the enemy hero trapped in it.',
-    htalent_772_name: 'Monstrous Hunger &#x1F4A7 300 ⌛️90',
+    htalent_772_name: 'Monstrous Hunger <mana>300</mana> <CD>90</CD>',
     htalent_772_description:
       'Deals the specified enemy hero <mag>%s</mag> damage and additionally the remaining damage of the Blood Trail talent effect, removing them from the target.',
-    htalent_773_name: 'Harassment &#x1F4A7 100 ⌛️15',
+    htalent_773_name: 'Harassment <mana>100</mana> <CD>15</CD>',
     htalent_773_description:
-      'Within <num>5</num> seconds after the Bone Trap is triggered, the hero can be transported to the enemy.<br>Created <num>1</num> sec.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#64CDF0>At night, it is created instantly.</font>',
+      'Within <num>5</num> seconds after the Bone Trap is triggered, the hero can be transported to the enemy.<br>Created <num>1</num> sec.<br><hr><frost>At night, it is created instantly.</frost>',
     htalent_774_name: 'The Curse of hunger',
     htalent_774_description:
-      'By committing unique murders, the hero steals <num>5%</num> of the victim\'s greatest Strength and Intellect. The effect subsides when the hero dies.<br><hr align="center" width="70%" size="2" color="#A7A062" /><font color=#64CDF0>Steals by <num>4% more at night</num>.</font>',
+      'By committing unique murders, the hero steals <num>5%</num> of the victim\'s greatest Strength and Intellect. The effect subsides when the hero dies.<br><hr><frost>Steals by <num>4% more at night</num>.</frost>',
     htalent_775_name: 'Monstrous death',
     htalent_775_description: 'If the target of the Monstrous Hunger talent dies, all opponents around will panic for <num>2</num> seconds.',
-    htalent_776_name: "It's time for nightmares &#x1F4A7 230 ⌛️100",
+    htalent_776_name: "It's time for nightmares <mana>230</mana> <CD>100</CD>",
     htalent_776_description:
       'When used for <num>15</num> seconds, night falls. Darkness gathers around the hero, blinding all enemies nearby for <num>3</num> seconds.',
     htalent_777_name: 'Endless Nightmare',
@@ -3136,30 +3136,30 @@ export const en = {
     htalent_779_description: 'Heroes without the Curse of Hunger effect additionally receive <fiz>%s</fiz> damage from hero attacks.',
     htalent_780_name: 'Prestige',
     htalent_780_description: 'When applying a class talent, the hero becomes invulnerable to damage for <num>0.5</num> sec.',
-    htalent_781_name: 'Wildfire &#x1F4A7 90 ⌛️8',
+    htalent_781_name: 'Wildfire <mana>90</mana> <CD>8</CD>',
     htalent_781_description: 'After <num>0.6</num> seconds, it deals <fiz>%s</fiz> damage to enemies in the specified area.',
-    htalent_782_name: 'Intellect Games &#x1F4A7 150 ⌛️19',
+    htalent_782_name: 'Intellect Games <mana>150</mana> <CD>19</CD>',
     htalent_782_description:
       'The hero creates a clone, after which he moves to the selected point.At the same time, the tilt is moving in the opposite direction.<br>\The clone exists for <num>4</num> seconds and cannot attack or use talents.<br>\When creating a clone, Prestige talent is applied to it.',
     htalent_783_name: 'Focused Flame',
     htalent_783_description:
       'If there is only one enemy in the Wildfire area, they receive <num>60%</num> more talent damage and are immobilized for <num>1.5</num> seconds.',
-    htalent_784_name: 'Castling &#x1F4A7 85 ⌛️8',
+    htalent_784_name: 'Castling <mana>85</mana> <CD>8</CD>',
     htalent_784_description:
       "Applying the Intellect Game talent restores the hero's <num>%s</num> Health (from the greatest of Strength and Intellect).<br>\r\n Also allows you to reactivate the Intellect Game talent to swap places with a clone (possible only if there is a living clone).",
     htalent_785_name: 'Burn',
     htalent_785_description:
-      "Hero's attack causes the target to have <font color=#00A0A0>Burn</font>.<br>Critical attacks cause 2 <font color=#00A0A0>Burn</font>.<br>The main target of the hero's attack receives an additional <fiz>%s</fiz> damage for each <font color=#00A0A0>Burn</font>.<br><font color=#00A0A0>The burn</font> lasts <num>5</num> seconds and adds up indefinitely.",
-    htalent_786_name: 'Mania &#x1F4A7 200 ⌛️72',
+      "Hero's attack causes the target to have <cyan-d>Burn</cyan-d>.<br>Critical attacks cause 2 <cyan-d>Burn</cyan-d>.<br>The main target of the hero's attack receives an additional <fiz>%s</fiz> damage for each <cyan-d>Burn</cyan-d>.<br><cyan-d>The burn</cyan-d> lasts <num>5</num> seconds and adds up indefinitely.",
+    htalent_786_name: 'Mania <mana>200</mana> <CD>72</CD>',
     htalent_786_description:
       "For <num>9</num> seconds, the hero's attack speed increases by <num>70%</num>, but all damage inflicted by him decreases by <num>25%</num>.",
     htalent_787_name: 'Tongues of flame',
     htalent_787_description:
-      "The flame jumps from the main target of the hero's attack to neighboring ones, hitting up to <num>4</num> additional enemies.<br>With each bounce, the damage is reduced by <num>30%</num>. Bounces are applied <font color=#00A0A0>Burn</font>, but do not cause additional damage for an existing one.",
+      "The flame jumps from the main target of the hero's attack to neighboring ones, hitting up to <num>4</num> additional enemies.<br>With each bounce, the damage is reduced by <num>30%</num>. Bounces are applied <cyan-d>Burn</cyan-d>, but do not cause additional damage for an existing one.",
     htalent_788_name: 'Spark of Madness',
     htalent_788_description:
       'During the effect of the Mania talent, each attack of the hero increases the chance of a critical hit by <num>10%</num> until the next critical attack.<br>\r\nThe first attack is guaranteed to be critical.',
-    htalent_789_name: 'Wave of Fire &#x1F4A7 215 ⌛️100',
+    htalent_789_name: 'Wave of Fire <mana>215</mana> <CD>100</CD>',
     htalent_789_description:
       'Causes a wave of fire moving in the specified direction and causing damage to all enemies in the path <fiz>%s</fiz>.',
     htalent_790_name: 'Inferno',
@@ -3170,7 +3170,7 @@ export const en = {
       'As long as the clone created by the Intellect Game talent is alive, all damage received by the hero is reduced by <num>50%</num>.',
     htalent_792_name: 'Unbearable heat',
     htalent_792_description:
-      "<font color=#00A0A0>Burn</font> reduces Stamina (from Strength) or Will (from Intellect) by <num>%s</num> for each effect, depending on the hero's highest parameter (but no more than <num>4</num> times).",
+      "<cyan-d>Burn</cyan-d> reduces Stamina (from Strength) or Will (from Intellect) by <num>%s</num> for each effect, depending on the hero's highest parameter (but no more than <num>4</num> times).",
     htalent_793_name: 'Desiccation',
     htalent_793_description:
       "The hero's attacks drain enemies for <num>5</num> seconds, reducing their Health regeneration by <num>%s</num> (from Cunning).<br>The effect adds up to <num>5</num> times.<br>For each dried-up enemy, the hero receives a regeneration of Health <num>%s</num> (from Intellect) or <num>%s</num> (from Cunning), (the largest is selected).<br><rz>In his native land, the hero is immune to the effects of Non-healing wounds.</rz>",
@@ -3296,7 +3296,7 @@ export const en = {
     talent_7_description: ' ',
     talent_8_name: 'Reliability',
     talent_8_description: ' ',
-    talent_9_name: 'Wellness<font color=#FFFFFF> ⌛️70</font>',
+    talent_9_name: 'Wellness<white> <CD>70</CD></white>',
     talent_9_description:
       "<num>Protective</num><br><br><rz>When used from the native land, it restores the hero's Health by <num>%s</num> in <num>15</num> seconds.</rz><br>The effect stops working if any damage is inflicted on the hero.",
     talent_10_name: 'Durability',
@@ -3316,17 +3316,17 @@ export const en = {
     talent_16_description: 'Increases the Health regeneration of the hero and nearby allies by <num>%s</num>',
     talent_17_name: 'Self-confidence',
     talent_17_description:
-      'The stamina and Will of all allies around increase by <num>%s</num>.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The stamina and Will of all allies around increase by <num>%s</num>.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
     talent_18_name: 'Education',
     talent_18_description: ' ',
     talent_19_name: 'Stealing a life',
     talent_19_description: ' ',
     talent_20_name: 'Speed',
     talent_20_description: ' ',
-    talent_21_name: 'Energy Extraction<font color=#FFFFFF> ⌛️60</font>',
+    talent_21_name: 'Energy Extraction<white> <CD>60</CD></white>',
     talent_21_description:
       '<num>Tactical</num><br><br><rz>When activated, it turns the native land around the hero into neutral, restoring <num>%s</num> Energy.</rz>',
-    talent_22_name: 'The kinship of the earth<font color=#FFFFFF> ⌛️60</font>',
+    talent_22_name: 'The kinship of the earth<white> <CD>60</CD></white>',
     talent_22_description:
       '<num>Tactical</num><br><br>When activated for <num>10</num> seconds, it creates a small area of native land around the hero.',
     talent_23_name: 'Defensive reaction',
@@ -3351,7 +3351,7 @@ export const en = {
     talent_30_description: ' ',
     talent_31_name: 'Berserk',
     talent_31_description: ' ',
-    talent_32_name: 'Cobra throw<font color=#FFFFFF> ⌛️120</font>',
+    talent_32_name: 'Cobra throw<white> <CD>120</CD></white>',
     talent_32_description:
       '<num>The attacker</num><br><br>Damages the target <fiz>%s</fiz> and does not allow her to use her talents <num>2.5</num> sec.',
     talent_33_name: 'Lightness of the wind',
@@ -3361,10 +3361,10 @@ export const en = {
     talent_34_description: ' ',
     talent_35_name: 'Thirst for Destruction',
     talent_35_description: ' ',
-    talent_36_name: 'Ecstasy of battle<font color=#FFFFFF> ⌛️60</font>',
+    talent_36_name: 'Ecstasy of battle<white> <CD>60</CD></white>',
     talent_36_description:
       '<num>The attacker</num><br><br>Upon activation, the hero receives <num>%s</num> Strength for <num>8</num> seconds.',
-    talent_37_name: 'Mental Blade<font color=#FFFFFF> ⌛️120</font>',
+    talent_37_name: 'Mental Blade<white> <CD>120</CD></white>',
     talent_37_description: '<num>The attacker</num><br><br>When activated, it inflicts <mag>%s</mag> on the specified enemy.',
     talent_38_name: 'Skill Mastery',
     talent_38_description: 'All talents require <num>%s%</num> less energy.',
@@ -3388,13 +3388,13 @@ export const en = {
     talent_47_description: ' ',
     talent_48_name: "Dragon's Heart",
     talent_48_description: ' ',
-    talent_49_name: 'Clairvoyance<font color=#FFFFFF> ⌛️60</font>',
+    talent_49_name: 'Clairvoyance<white> <CD>60</CD></white>',
     talent_49_description:
       '<num>Tactical</num><br><br>For <num>10</num> seconds, it creates a zone of visibility anywhere on the map that detects invisible enemies.',
-    talent_50_name: 'Seasoned Wanderer<font color=#FFFFFF> ⌛️120</font>',
+    talent_50_name: 'Seasoned Wanderer<white> <CD>120</CD></white>',
     talent_50_description:
       '<num>Tactical</num><br><br>For <num>120</num> seconds, he sets a torch in the specified place, which opens the area around him.',
-    talent_50_name: 'Seasoned Wanderer<font color=#FFFFFF> ⌛️120</font>',
+    talent_50_name: 'Seasoned Wanderer<white> <CD>120</CD></white>',
     talent_50_description:
       '<num>Tactical</num><br><br>For <num>120</num> seconds, he sets a torch in the specified place, which opens the area around him.',
     talent_51_name: 'Firmness of character',
@@ -3426,7 +3426,7 @@ export const en = {
     talent_62_description: ' ',
     talent_63_name: 'Regeneration',
     talent_63_description:
-      'The Health regeneration of all allies around increases by <num>%s</num>. <br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The Health regeneration of all allies around increases by <num>%s</num>. <br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
     talent_64_name: 'Sprout of Life',
     talent_64_description:
       "The hero's maximum health increases by <num>14</num> every minute. The maximum total increase is <num>%s</num>.",
@@ -3439,7 +3439,7 @@ export const en = {
     talent_67_name: 'Strengthening faith',
     talent_67_description:
       "The hero's maximum Will increases by <num>0.2</num> upon receiving <num>200</num> damage units. The maximum total increase is <num>%s</num>.",
-    talent_68_name: 'Mental barrier<font color=#FFFFFF> ⌛️90</font>',
+    talent_68_name: 'Mental barrier<white> <CD>90</CD></white>',
     talent_68_description: '<num>Protective</num><br><br>When activated, the hero becomes immune to magic damage for 2 seconds.',
     talent_69_name: 'Good health',
     talent_69_description: ' ',
@@ -3449,7 +3449,7 @@ export const en = {
     talent_71_description: ' ',
     talent_72_name: 'The Undying Intellect',
     talent_72_description:
-      'The energy regeneration of all allies around increases by <num>%s</num>.<br><br><font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The energy regeneration of all allies around increases by <num>%s</num>.<br><br><gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
     talent_73_name: 'The Power of Life',
     talent_73_description:
       'The attack deals an additional <fiz>10</fiz> damage to the enemy hero for each killed forest monster and an additional <fiz>+2</fiz> damage for each hero level. Superimposed a maximum of <num>8</num> times.',
@@ -3509,12 +3509,12 @@ export const en = {
     talent_99_description: ' ',
     talent_100_name: 'Indomitable healing',
     talent_100_description: ' ',
-    talent_101_name: 'Mystical hunger<font color=#FFFFFF> ⌛️1</font>',
+    talent_101_name: 'Mystical hunger<white> <CD>1</CD></white>',
     talent_101_description: 'Restores <num>%s</num> Health points for killing a soldier or a chud.',
-    talent_102_name: 'Spiritual protection<font color=#FFFFFF> ⌛️120</font>',
+    talent_102_name: 'Spiritual protection<white> <CD>120</CD></white>',
     talent_102_description:
       "If the hero's Health drops below <num>20%</num>, he receives a shield for <num>4</num> seconds that absorbs <num>%s</num> damage.",
-    talent_103_name: 'Contempt of the weak<font color=#FFFFFF> ⌛️1</font>',
+    talent_103_name: 'Contempt of the weak<white> <CD>1</CD></white>',
     talent_103_description:
       'Hero restores <num>%s</num> Energy, killing soldiers or chud, and <num>%s</num> Energy by killing the enemy hero.',
     talent_104_name: 'Steady Intellect',
@@ -3541,10 +3541,10 @@ export const en = {
     talent_114_description: ' ',
     talent_115_name: 'Intellectable defense',
     talent_115_description: 'The Intellect of all allies around increases by <num>%s</num>, and Stamina increases by <num>%s</num>.',
-    talent_116_name: 'Magic spasm<font color=#FFFFFF> ⌛️120</font>',
+    talent_116_name: 'Magic spasm<white> <CD>120</CD></white>',
     talent_116_description:
       '<num>The attacker</num><br><br>When activated, it inflicts <mag>%s</mag> on the specified enemy and slows it down by <num>50%</num> for <num>3</num> seconds.',
-    talent_117_name: 'Acid discharge<font color=#FFFFFF> ⌛️120</font>',
+    talent_117_name: 'Acid discharge<white> <CD>120</CD></white>',
     talent_117_description:
       "<num>The attacker</num><br><br>When activated, it deals <mag>%s</mag> to the specified enemy and reduces the target's Health recovery by <num>50%</num> for <num>5</num> seconds.",
     talent_118_name: 'Agility training',
@@ -3567,7 +3567,7 @@ export const en = {
     talent_125_description: ' ',
     talent_126_name: 'Perseverance War',
     talent_126_description: ' ',
-    talent_127_name: 'Concentration of forces<font color=#FFFFFF> ⌛️120</font>',
+    talent_127_name: 'Concentration of forces<white> <CD>120</CD></white>',
     talent_127_description:
       '<num>The attacker</num><br><br>When activated, it increases Intellect by <num>%s</num> and Will by <num>%s</num> for <num>10</num> seconds.',
     talent_128_name: 'Armor piercing',
@@ -3583,7 +3583,7 @@ export const en = {
     talent_132_description: ' ',
     talent_133_name: 'Exhausting Intellect',
     talent_133_description: ' ',
-    talent_134_name: 'Overcoming pain<font color=#FFFFFF> ⌛️150</font>',
+    talent_134_name: 'Overcoming pain<white> <CD>150</CD></white>',
     talent_134_description:
       "If the hero's Health drops below <num>15%</num>, he receives a shield for 5 seconds that absorbs up to <num>%s</num> damage",
     talent_135_name: 'Anthem of Victory',
@@ -3598,7 +3598,7 @@ export const en = {
     talent_139_description: ' ',
     talent_140_name: 'Vampirism',
     talent_140_description: ' ',
-    talent_141_name: 'Snake Cunning<font color=#FFFFFF> ⌛️60</font>',
+    talent_141_name: 'Snake Cunning<white> <CD>60</CD></white>',
     talent_141_description:
       "<num>The attacker</num><br><br>When activated, increases the hero's Intellect by <num>%s</num> for <num>8</num> sec.",
     talent_142_name: 'Hidden Strength',
@@ -3620,7 +3620,7 @@ export const en = {
     talent_148_description: ' ',
     talent_149_name: 'Brave Heart',
     talent_149_description: ' ',
-    talent_150_name: 'Mysterious light<font color=#FFFFFF> ⌛️100</font>',
+    talent_150_name: 'Mysterious light<white> <CD>100</CD></white>',
     talent_150_description:
       '<num>Tactical</num><br><br>After <num>0.5</num> seconds after activation creates a firefly for <num>100</num> seconds, which flies in the specified direction and opens the area.',
     talent_151_name: 'Insatiable character',
@@ -3633,7 +3633,7 @@ export const en = {
     talent_154_description: ' ',
     talent_155_name: 'Relentless Onslaught',
     talent_155_description:
-      '<num>+%s</num> Cunnings for all the allies around.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Cunnings for all the allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
     talent_156_name: 'Temple of the Soul',
     talent_156_description: ' ',
     talent_157_name: 'Aspiring Strength',
@@ -3644,7 +3644,7 @@ export const en = {
     talent_159_description: ' ',
     talent_160_name: 'A swift onslaught',
     talent_160_description:
-      '<num>+%s</num> Agility to all the allies around.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Agility to all the allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
     talent_161_name: 'Universal regeneration',
     talent_161_description: ' ',
     talent_162_name: 'Taste of blood',
@@ -3653,10 +3653,10 @@ export const en = {
     talent_163_description: ' ',
     talent_164_name: 'Wit',
     talent_164_description: ' ',
-    talent_165_name: 'Health reserves<font color=#FFFFFF> ⌛️75</font>',
+    talent_165_name: 'Health reserves<white> <CD>75</CD></white>',
     talent_165_description:
       '<num>Protective</num><br><br>When an opponent uses an active talent next to the hero, <num>1</num> charge accumulates. The effect adds up to <num>5</num> times. When activated, it spends all charges, restoring <num>%s</num> Health for each spent charge',
-    talent_166_name: 'Energy reserves<font color=#FFFFFF> ⌛️75</font>',
+    talent_166_name: 'Energy reserves<white> <CD>75</CD></white>',
     talent_166_description:
       '<num>Protective</num><br><br>When an opponent uses an active talent next to the hero, <num>1</num> charge accumulates. The effect adds up to <num>5</num> times. When activated, it spends all charges, restoring <num>%s</num> Energy for each spent charge',
     talent_167_name: 'Desperate strength',
@@ -3666,54 +3666,54 @@ export const en = {
     talent_169_name: 'Passability',
     talent_169_description:
       "The hero's Base Speed increases by <num>%s</num>. Of the passive effects of increasing speed, the maximum is effective.",
-    talent_170_name: 'Light tread<font color=#FFFFFF> ⌛️60</font>',
+    talent_170_name: 'Light tread<white> <CD>60</CD></white>',
     talent_170_description:
       "<num>Protective</num><br><br>When activated, it allows for <num>5</num> seconds to pass through living creatures and demolish trees, restoring <num>%s</num> Health for every creature.<br/>The hero's base Speed increases by <num>%s</num>. Of the passive effects of increasing speed, the maximum one acts.",
     talent_171_name: 'Stability',
     talent_171_description: ' ',
-    talent_172_name: 'Absolute barrier<font color=#FFFFFF> ⌛️150</font>',
+    talent_172_name: 'Absolute barrier<white> <CD>150</CD></white>',
     talent_172_description:
       '<num>Protective</num><br><br>When activated, all damage received by the hero is reduced by <num>90%</num> for <num>2</num> seconds.',
     talent_173_name: 'Influx of Prime',
     talent_173_description:
-      '<prime>+4</prime> every <num>6</num> seconds<br>After receiving an additional <prime>1000</prime>, this talent reduces the influx to <prime>1</prime>. Cannot be equipped together with talents from the <br><br><font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font>',
-    talent_174_name: 'Breath of Life<font color=#FFFFFF> ⌛️70</font>',
+      '<prime>+4</prime> every <num>6</num> seconds<br><br>After receiving an additional <prime>1000</prime>, this talent reduces the influx to <prime>1</prime>.<br><hr><gray>Compatibility</gray><br>Cannot be installed together with talents from the <orange-d>"Spinners of Heroes"</orange-d> set.',
+    talent_174_name: 'Breath of Life<white> <CD>70</CD></white>',
     talent_174_description:
       '<num>Protective</num><br><br>When activated, it restores <num>%s</num> Health and additional <num>%s</num> Health for each level of the Hero.',
     talent_175_name: "Predator's Rage",
     talent_175_description: ' ',
-    talent_176_name: 'The Fury of Strength<font color=#FFFFFF> ⌛️120</font>',
+    talent_176_name: 'The Fury of Strength<white> <CD>120</CD></white>',
     talent_176_description:
       '<num>The attacker</num><br><br>Inflicts <fiz>%s</fiz> on all enemy heroes around , and on all other creatures in <num>1.5</num> times more and demolishes trees.',
-    talent_177_name: 'Internal reserves<font color=#FFFFFF> ⌛️2</font>',
+    talent_177_name: 'Internal reserves<white> <CD>2</CD></white>',
     talent_177_description:
       'Using talent restores the hero <num>%s</num> Health and additionally in the amount of <num>25%</num> of the base Energy cost of the applied talent.',
     talent_178_name: 'Harmony',
     talent_178_description: ' ',
-    talent_179_name: 'Grip of the earth<font color=#FFFFFF> ⌛️150</font>',
+    talent_179_name: 'Grip of the earth<white> <CD>150</CD></white>',
     talent_179_description:
       '<num>The attacker</num><br><br><num>0.4</num> seconds are created, the specified enemy receives <fiz>%s</fiz> and cannot move for <num>2.5</num> seconds',
-    talent_180_name: 'The Fountain of Rage<font color=#FFFFFF> ⌛️2</font>',
+    talent_180_name: 'The Fountain of Rage<white> <CD>2</CD></white>',
     talent_180_description:
       'All enemies around are dealt <mag>%s</mag> once every <num>2</num> seconds.<br/>There is only one Rage Release effect on the target at a time.\r\n',
-    talent_181_name: 'Steadfastness<font color=#FFFFFF> ⌛️120</font>',
+    talent_181_name: 'Steadfastness<white> <CD>120</CD></white>',
     talent_181_description: '<num>Protective</num><br><br>When activated, enemy-imposed effects are removed from all around.',
     talent_182_name: 'Unjustified cruelty',
     talent_182_description:
-      'Hero attack with <num>25%</num> chance additionally causes <num>%s</num> <font color=#B00000>net damage</font>.',
-    talent_183_name: 'Spirit upgrade<font color=#FFFFFF>360</font>',
+      'Hero attack with <num>25%</num> chance additionally causes <num>%s</num> <red-d>net damage</red-d>.',
+    talent_183_name: 'Spirit upgrade<white>360</white>',
     talent_183_description:
       '<num>Tactical</num><br><br>When activated, it instantly reduces the recovery time of talents and items by <num>70%</num>.',
     talent_184_name: 'Ice Strength',
     talent_184_description:
       "The hero's attack additionally deals <mag>%s</mag> damage to the enemy and reduces its Speed by <num>20%</num> by <num>1.5</num> sec. ",
-    talent_185_name: 'Hidden intent<font color=#FFFFFF> ⌛️130</font>',
+    talent_185_name: 'Hidden intent<white> <CD>130</CD></white>',
     talent_185_description:
       '<num>The attacker</num><br><br>Inflicts <mag>%s</mag> on all enemy heroes around, and on all other creatures in <num>1.5</num> times more and makes all enemies visible for <num>5</num> seconds.',
-    talent_186_name: 'Shadow cover<font color=#FFFFFF> ⌛️120</font>',
+    talent_186_name: 'Shadow cover<white> <CD>120</CD></white>',
     talent_186_description:
       '<num>Tactical</num><br><br>After <num>3</num> seconds after activation, the hero becomes invisible for <num>8</num> seconds.',
-    talent_187_name: 'Scarlet flower<font color=#FFFFFF> ⌛️90</font>',
+    talent_187_name: 'Scarlet flower<white> <CD>90</CD></white>',
     talent_187_description:
       '<num>Protective</num><br><br>At the specified location, for <num>21</num> seconds, a flower appears, creating a native land around itself and restoring allies every <num>3</num> seconds <num>%s</num> Health and Energy',
     talent_188_name: 'Natural Strength',
@@ -3731,11 +3731,11 @@ export const en = {
       'The hero gets <num>1.1</num> Health for every soldier he kills and <num>11</num> for every hero he kills. The maximum total increase is <num>%s</num>.',
     talent_194_name: 'Opposition to magic',
     talent_194_description:
-      'The will of all allies around increases by <num>%s</num>.<br><br><font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The will of all allies around increases by <num>%s</num>.<br><br><gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
     talent_195_name: 'Resisting the force',
     talent_195_description:
-      'The durability of all allies around increases by <num>%s</num>.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> to the damage received by all allies around</font> ',
-    talent_196_name: 'Tainted blood<font color=#FFFFFF> ⌛️120</font>',
+      'The durability of all allies around increases by <num>%s</num>.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+    talent_196_name: 'Tainted blood<white> <CD>120</CD></white>',
     talent_196_description:
       '<num>The attacker</num><br><br>When activated, it inflicts <mag>%s</mag> on the specified enemy, and the treatment affects it by <num>50%</num> worse for <num>7</num> seconds.',
     talent_197_name: 'Heroic Stamina',
@@ -3747,14 +3747,14 @@ export const en = {
       "During an auto attack with a <num>45%</num> chance, it reduces the target's Stamina and Will by <num>%s</num> by <num>4</num> seconds.",
     talent_200_name: 'Unlocked potential',
     talent_200_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Divine potential"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <font color=#FF9966>3 talents</font> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
+      '<gray>Set</gray> <orange-d>"Divine potential"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <orange-l>3 talents</orange-l> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
     talent_201_name: 'Combat Onslaught',
     talent_201_description:
-      '<num>+%s</num> Strength to all allies around.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Strength to all allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
     talent_202_name: 'The Magical Onslaught',
     talent_202_description:
-      '<num>+%s</num> Intellect to all the allies around.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Command Banner"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <font color=#FF9966>6 talents</font> <br> <num>-7%</num> damage to all allies around</font> ',
-    talent_203_name: 'Survival Instinct<font color=#FFFFFF> ⌛️150</font>',
+      '<num>+%s</num> Intellect to all the allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
+    talent_203_name: 'Survival Instinct<white> <CD>150</CD></white>',
     talent_203_description:
       'Restores <num>%s</num> health. The talent is triggered automatically if the health drops below <num>15%</num>.\r\n',
     talent_204_name: 'Natural agility',
@@ -3783,7 +3783,7 @@ export const en = {
     talent_214_description: ' ',
     talent_215_name: 'Limitless potential',
     talent_215_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Divine potential"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <font color=#FF9966>3 talents</font> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
+      '<gray>Set</gray> <orange-d>"Divine potential"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <orange-l>3 talents</orange-l> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
     talent_216_name: 'Unity of Protection',
     talent_216_description: ' ',
     talent_217_name: 'The Strength of Perseverance',
@@ -3807,12 +3807,12 @@ export const en = {
     talent_226_name: 'Tactical calculation',
     talent_226_description:
       'The hero gets <num>%s</num> Stamina and Will for every <num>10%</num> of the territory under enemy control, and for <num>%s</num> Cunnings and Agility for every <num>10%</num> of the territory under the control of allies.',
-    talent_227_name: 'Insidious defense<font color=#FFFFFF> ⌛️1</font>',
+    talent_227_name: 'Insidious defense<white> <CD>1</CD></white>',
     talent_227_description: 'With a <num>35%</num> chance, the hero ignores <num>%s</num> of enemy attack damage.',
     talent_228_name: 'Icy Rebuff',
     talent_228_description:
       'The enemy attacking the hero takes <mag>%s</mag> damage and loses <num>20%</num> of his Speed for <num>2</num> seconds.',
-    talent_229_name: 'Deadly Phantom<font color=#FFFFFF> ⌛️120</font>',
+    talent_229_name: 'Deadly Phantom<white> <CD>120</CD></white>',
     talent_229_description:
       '<num>The attacker</num><br><br>When activated, it creates the illusion of a hero, which, accelerating, chases the nearest enemy hero and after <num>3</num> seconds of chasing, or catching up with him, explodes, causing <mag>%s</mag> damage to all enemies around',
     talent_230_name: 'Legendary Health',
@@ -3861,7 +3861,7 @@ export const en = {
     talent_250_description: ' ',
     talent_251_name: 'Extract',
     talent_251_description: ' ',
-    talent_252_name: 'The abduction of earth<font color=#FFFFFF> ⌛️60</font>',
+    talent_252_name: 'The abduction of earth<white> <CD>60</CD></white>',
     talent_252_description:
       '<num>Tactical</num><br><br>When activated, it turns the native and foreign land around the hero into neutral. When used from native land, it gives <num>%s</num> Energy.',
     talent_253_name: 'Great excellence',
@@ -3895,17 +3895,17 @@ export const en = {
     talent_266_description: ' ',
     talent_267_name: 'The Path of the Magician',
     talent_267_description: ' ',
-    talent_268_name: "Winner's medal<font color=#FFFFFF> ⌛️30</font>",
+    talent_268_name: "Winner's medal<white> <CD>30</CD></white>",
     talent_268_description: 'Restores <num>%s</num> Health when killing an enemy hero or supporting.',
-    talent_269_name: "Hunter's Instinct<font color=#FFFFFF> ⌛️2</font>",
+    talent_269_name: "Hunter's Instinct<white> <CD>2</CD></white>",
     talent_269_description:
       "The hero's attack additionally causes monsters <fiz>%s</fiz> damage. For each monster killed, additional damage increases by <num>%s</num>, but not more than up to <num>%s</num> in total.",
-    talent_270_name: 'Quirkiness<font color=#FFFFFF> ⌛️100</font>',
+    talent_270_name: 'Quirkiness<white> <CD>100</CD></white>',
     talent_270_description:
       '<num>Protective</num><br><br>When used, all damage received by the hero from monsters is reduced by <num>75%</num>, and from the rest by <num>10%</num> for <num>7</num> seconds.',
-    talent_271_name: 'Hardened by cruelty<font color=#FFFFFF> ⌛️30</font>',
+    talent_271_name: 'Hardened by cruelty<white> <CD>30</CD></white>',
     talent_271_description: 'Killing an enemy hero reduces the cooldown of all abilities by <num>12%</num>',
-    talent_272_name: 'Touch of Death<font color=#FFFFFF> ⌛️90</font>',
+    talent_272_name: 'Touch of Death<white> <CD>90</CD></white>',
     talent_272_description:
       '<num>The attacker</num><br><br>For <num>3</num> seconds, it takes <num>%s</num> The specified enemy has health.<br>Talent cannot kill an opponent.',
     talent_273_name: 'A paragon of strength',
@@ -3919,14 +3919,14 @@ export const en = {
     talent_276_description: ' ',
     talent_277_name: 'An example of mastery',
     talent_277_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Divine potential"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <font color=#FF9966>3 talents</font> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
+      '<gray>Set</gray> <orange-d>"Divine potential"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <orange-l>3 talents</orange-l> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
     talent_278_name: 'The Rise of the Warrior',
     talent_278_description: ' ',
     talent_279_name: 'The Rise of the Magician',
     talent_279_description: ' ',
     talent_280_name: 'The Embodiment of faith',
     talent_280_description: 'The Ancient Sign of the Khramins',
-    talent_281_name: 'Petrification<font color=#FFFFFF> ⌛️90</font>',
+    talent_281_name: 'Petrification<white> <CD>90</CD></white>',
     talent_281_description:
       '<num>The attacker</num><br><br><num>3</num> seconds are created, during which the specified enemy hero cannot do anything and takes <num>50%</num> less damage.',
     talent_282_name: 'Tireless Defender',
@@ -3935,247 +3935,247 @@ export const en = {
     talent_283_name: 'Undying Spark',
     talent_283_description:
       '<num>Tactical</num><br><br>Raised glyphs are not applied to the hero. Instead, the last one is stored in an Undying spark for <num>60</num> seconds.<br>When using a talent or after this time, the hero receives a saved effect.',
-    talent_284_name: 'Dimensional Door<font color=#FFFFFF> ⌛️120</font>',
+    talent_284_name: 'Dimensional Door<white> <CD>120</CD></white>',
     talent_284_description:
       '<num>Tactical</num><br><br>No more than <num>15</num> seconds are created. At this time, portals appear next to the allied heroes, which can, after <num>4</num> seconds of interaction with them, move the ally to the owner of the talent.',
-    talent_285_name: 'Pillar of Cunning<font color=#FFFFFF> ⌛️100</font>',
+    talent_285_name: 'Pillar of Cunning<white> <CD>100</CD></white>',
     talent_285_description:
       '<num>Tactical</num><br><br>For <num>10</num> seconds, creates an area that increases the Cunning of all allied heroes by <num>%s</num>.',
-    talent_286_name: 'Liberation<font color=#FFFFFF> ⌛️60</font>',
+    talent_286_name: 'Liberation<white> <CD>60</CD></white>',
     talent_286_description:
       '<num>Protective</num><br><br>Removes all negative effects from himself or from the specified allied hero and reduces the duration of control effects by <num>40%</num> for <num>3</num> seconds.',
-    talent_287_name: 'Space distortion<font color=#FFFFFF> ⌛️150</font>',
+    talent_287_name: 'Space distortion<white> <CD>150</CD></white>',
     talent_287_description:
       '<num>Protective</num><br><br>The talent owner or the specified enemy hero cannot do anything and is invulnerable for <num>2.5</num> sec.',
     talent_288_name: 'Bloodlust',
     talent_288_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Draining touch"</font><font color=#FFFFFF> ⌛️1</font> <br> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero\'s attack with <num>13%</num> stuns the enemy for <num>0.4</num> sec.</font>',
+      '<gray>Set</gray> <orange-d>"Draining touch"</orange-d><white> <CD>1</CD></white> <br> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero\'s attack with <num>13%</num> stuns the enemy for <num>0.4</num> sec.</gray>',
     talent_289_name: 'Regeneration of the Ancients',
     talent_289_description:
-      'Increases the number of talent charges <br><font color=#ff8c00>Dark message</font> on <num>5</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dark message"</font>',
+      'Increases the number of talent charges <br><orange-d>Dark message</orange-d> on <num>5</num>.<br> <br> <gray>Set</gray> <orange-d>"Dark message"</orange-d>',
     talent_290_name: 'Timely choice',
     talent_290_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The secret of immortality"</font><font color=#FFFFFF> ⌛️180</font> <br> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</font>',
+      '<gray>Set</gray> <orange-d>"The secret of immortality"</orange-d><white> <CD>180</CD></white> <br> <br> <orange-l>4 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</gray>',
     talent_291_name: 'The vigor of the Ancients',
-    talent_291_description: '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Reflection of the entity"</font>',
+    talent_291_description: '<gray>Set</gray> <orange-d>"Reflection of the entity"</orange-d>',
     talent_292_name: 'Sustainable regeneration',
-    talent_292_description: '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Reflection of the entity"</font>',
+    talent_292_description: '<gray>Set</gray> <orange-d>"Reflection of the entity"</orange-d>',
     talent_293_name: 'Sustained regeneration',
     talent_293_description:
-      'Talent Application <tn>An inner rod</tn> on an enemy stuns him for <num>1</num> sec. When applied to oneself or an ally, it increases Speed by <num>40%</num> for <num>3</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The will of the Patriarch"</font>',
+      'Talent Application <tn>An inner rod</tn> on an enemy stuns him for <num>1</num> sec. When applied to oneself or an ally, it increases Speed by <num>40%</num> for <num>3</num> sec.<br> <br> <gray>Set</gray> <orange-d>"The will of the Patriarch"</orange-d>',
     talent_294_name: 'Tenacious agility',
     talent_294_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The secret of immortality"</font><font color=#FFFFFF> ⌛️180</font> <br> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</font>',
+      '<gray>Set</gray> <orange-d>"The secret of immortality"</orange-d><white> <CD>180</CD></white> <br> <br> <orange-l>4 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</gray>',
     talent_295_name: 'Tenacious Cunning',
     talent_295_description:
-      'Talent <font color=#ff8c00>A dark message</font> does twice as much damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dark message"</font>',
+      'Talent <orange-d>A dark message</orange-d> does twice as much damage.<br> <br> <gray>Set</gray> <orange-d>"Dark message"</orange-d>',
     talent_296_name: 'A mighty aspiration',
-    talent_296_description: '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Night Hunter"</font>',
+    talent_296_description: '<gray>Set</gray> <orange-d>"Night Hunter"</orange-d>',
     talent_297_name: 'Calculating aspiration',
     talent_297_description:
-      ' Increases the radius of talent application <tn>Inner rod</tn><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The will of the Patriarch"</font>',
-    talent_298_name: 'Insidious aspiration<font color=#FFFFFF> ⌛️120</font>',
+      ' Increases the radius of talent application <tn>Inner rod</tn><br> <br> <gray>Set</gray> <orange-d>"The will of the Patriarch"</orange-d>',
+    talent_298_name: 'Insidious aspiration<white> <CD>120</CD></white>',
     talent_298_description:
-      '<num>The attacker</num><br><br>Creates a barrier for <num>6</num> seconds, crossing which for the first time, enemies are stunned for <num>0.4</num> seconds, and heroes with set talents <font color=#ff8c00>The dark legacy</font> generates its doppelgangers for <num>15</num> seconds. The parameters depend on the spawned hero, but his Strength and Intellect are reduced by <num>3</num> times and he also receives <num>3</num> times more damage. <br><br>Talent acquires an activated property if the entire set is assembled <tn>Reflection of an entity</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Reflection of the entity"</font>',
+      '<num>The attacker</num><br><br>Creates a barrier for <num>6</num> seconds, crossing which for the first time, enemies are stunned for <num>0.4</num> seconds, and heroes with set talents <orange-d>The dark legacy</orange-d> generates its doppelgangers for <num>15</num> seconds. The parameters depend on the spawned hero, but his Strength and Intellect are reduced by <num>3</num> times and he also receives <num>3</num> times more damage. <br><br>Talent acquires an activated property if the entire set is assembled <tn>Reflection of an entity</tn>.<br> <br> <gray>Set</gray> <orange-d>"Reflection of the entity"</orange-d>',
     talent_299_name: 'Bloodletter',
     talent_299_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Draining touch"</font><font color=#FFFFFF> ⌛️1</font> <br> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero\'s attack with <num>13%</num> stuns the enemy for <num>0.4</num> sec.</font>',
+      '<gray>Set</gray> <orange-d>"Draining touch"</orange-d><white> <CD>1</CD></white> <br> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero\'s attack with <num>13%</num> stuns the enemy for <num>0.4</num> sec.</gray>',
     talent_300_name: 'Feeling secure',
     talent_300_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The secret of immortality"</font><font color=#FFFFFF> ⌛️180</font> <br> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</font>',
-    talent_301_name: 'The dark secret<font color=#FFFFFF> ⌛️10</font>',
+      '<gray>Set</gray> <orange-d>"The secret of immortality"</orange-d><white> <CD>180</CD></white> <br> <br> <orange-l>4 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</gray>',
+    talent_301_name: 'The dark secret<white> <CD>10</CD></white>',
     talent_301_description:
-      '<num>The attacker</num><br><br>The use of a class talent accumulates a charge for every <num>100</num> units. its base cost is Energy or Health. The effect adds up to <num>5</num> times. When used, it spends all charges, inflicting <num>%s</num> <font color=#B00000>net damage</font> from the highest of Strength and Intellect per charge <br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dark Message"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>The attacker</num><br><br>The use of a class talent accumulates a charge for every <num>100</num> units. its base cost is Energy or Health. The effect adds up to <num>5</num> times. When used, it spends all charges, inflicting <num>%s</num> <red-d>net damage</red-d> from the highest of Strength and Intellect per charge <br><br> <gray>Set</gray> <orange-d>"Dark Message"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_302_name: 'The agility of the living',
-    talent_302_description: '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Night Hunter"</font>',
+    talent_302_description: '<gray>Set</gray> <orange-d>"Night Hunter"</orange-d>',
     talent_303_name: 'The Treachery of the Living',
     talent_303_description:
-      'Reduces talent recharge time <tn>Inner rod</tn> for <num>30</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The will of the Patriarch"</font>',
-    talent_304_name: 'Flexibility of solutions<font color=#FFFFFF> ⌛️80</font>',
+      'Reduces talent recharge time <tn>Inner rod</tn> for <num>30</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"The will of the Patriarch"</orange-d>',
+    talent_304_name: 'Flexibility of solutions<white> <CD>80</CD></white>',
     talent_304_description:
-      '<num>Tactical</num><br><br>The hero is transported to the specified point (radius <num>18</num>), for <num>5%</num> maximum Health<br><br>Talent acquires an activated property if the entire set is assembled <tn>Night Hunter</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Night Hunter"</font>',
+      '<num>Tactical</num><br><br>The hero is transported to the specified point (radius <num>18</num>), for <num>5%</num> maximum Health<br><br>Talent acquires an activated property if the entire set is assembled <tn>Night Hunter</tn>.<br> <br> <gray>Set</gray> <orange-d>"Night Hunter"</orange-d>',
     talent_305_name: 'Greed',
     talent_305_description:
-      'Talent Recovery Time <tn>Unbridled rage</tn> is reduced by <num>40</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Unbridled rage"</font>',
-    talent_306_name: 'Inner core<font color=#FFFFFF> ⌛️80</font>',
+      'Talent Recovery Time <tn>Unbridled rage</tn> is reduced by <num>40</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Unbridled rage"</orange-d>',
+    talent_306_name: 'Inner core<white> <CD>80</CD></white>',
     talent_306_description:
-      '<num>Tactical</num><br><br>The specified allied or enemy hero moves towards the view. Can be improved by other talents of the set.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Patriarch\'s will"</font><br><br><font color=#A5A5A5>- can be improved by <num>4</num> talents</font>',
+      '<num>Tactical</num><br><br>The specified allied or enemy hero moves towards the view. Can be improved by other talents of the set.<br> <br> <gray>Set</gray> <orange-d>"The Patriarch\'s will"</orange-d><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_307_name: 'The Bloody Assault',
     talent_307_description:
-      'Increases the Health theft of all allies around by <num>%s</num>. <br><br><font color=#A5A5A5>Set</font> <font color=#ff8c00>"Draining touch"</font><font color=#FFFFFF> ⌛️1</font> <br> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero\'s attack with <num>13%</num> stuns the enemy for <num>0.4</num> sec.</font>',
+      'Increases the Health theft of all allies around by <num>%s</num>. <br><br><gray>Set</gray> <orange-d>"Draining touch"</orange-d><white> <CD>1</CD></white> <br> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero\'s attack with <num>13%</num> stuns the enemy for <num>0.4</num> sec.</gray>',
     talent_308_name: 'Persistent choice',
     talent_308_description:
-      ' Increases flight range from talent <tn>Inner rod</tn><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The will of the Patriarch"</font>',
+      ' Increases flight range from talent <tn>Inner rod</tn><br> <br> <gray>Set</gray> <orange-d>"The will of the Patriarch"</orange-d>',
     talent_309_name: 'Strong-willed choice',
-    talent_309_description: '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Night Hunter"</font>',
+    talent_309_description: '<gray>Set</gray> <orange-d>"Night Hunter"</orange-d>',
     talent_310_name: 'The Edge of Life',
     talent_310_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The secret of immortality"</font><font color=#FFFFFF> ⌛️180</font> <br> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</font>',
+      '<gray>Set</gray> <orange-d>"The secret of immortality"</orange-d><white> <CD>180</CD></white> <br> <br> <orange-l>4 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero is reborn after <num>2</num> seconds at the place of death with <num>%s</num> Health</gray>',
     talent_311_name: 'Natural Energy',
     talent_311_description:
-      'Increases talent stun time <tn>The insidious pursuit of </tn> on <num>0.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Reflection of the entity"</font>',
+      'Increases talent stun time <tn>The insidious pursuit of </tn> on <num>0.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Reflection of the entity"</orange-d>',
     talent_312_name: 'Vigorous running',
     talent_312_description:
-      'The hero\'s Base Speed increases by <num>%s</num>. Of the passive effects of increasing speed, the maximum one is effective.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Night Hunter"</font>',
+      'The hero\'s Base Speed increases by <num>%s</num>. Of the passive effects of increasing speed, the maximum one is effective.<br> <br> <gray>Set</gray> <orange-d>"Night Hunter"</orange-d>',
     talent_313_name: 'Force Distortion',
     talent_313_description:
-      'Talent <tn>Predatory nature</tn> always immobilizes the target for <num>3</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predatory nature"</font>',
-    talent_314_name: 'Distortion of thought<font color=#FFFFFF> ⌛️120</font>',
+      'Talent <tn>Predatory nature</tn> always immobilizes the target for <num>3</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Predatory nature"</orange-d>',
+    talent_314_name: 'Distortion of thought<white> <CD>120</CD></white>',
     talent_314_description:
-      '<num>Protective</num><br><br>Creates an area in the specified location for <num>5</num> seconds that reduces damage from creatures outside to targets inside the area by <num>30%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Distortion of thought"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>Protective</num><br><br>Creates an area in the specified location for <num>5</num> seconds that reduces damage from creatures outside to targets inside the area by <num>30%</num>.<br> <br> <gray>Set</gray> <orange-d>"Distortion of thought"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_315_name: 'The Power of Temptation',
     talent_315_description:
-      'Increases the duration of talent <tn>Unbridled rage</tn> for <num>5</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Unbridled rage"</font>',
+      'Increases the duration of talent <tn>Unbridled rage</tn> for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Unbridled rage"</orange-d>',
     talent_316_name: 'Tenacious grip',
     talent_316_description:
-      'Talent <tn>The relentless presence of </tn> additionally reduces the resurrection time by <num>10%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The inexorable presence"</font><font color=#FFFFFF> ⌛️180</font>',
+      'Talent <tn>The relentless presence of </tn> additionally reduces the resurrection time by <num>10%</num>.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
     talent_317_name: 'Bitterness',
     talent_317_description:
-      'Increases Stamina and Will by a total of <num>%s</num>, redistributing the bonus amount of each of the characteristics depending on the damage received<br><br>Talent Recovery Time <tn>The aggressive position</tn> is reduced by <num>40</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Aggressive position"</font>',
+      'Increases Stamina and Will by a total of <num>%s</num>, redistributing the bonus amount of each of the characteristics depending on the damage received<br><br>Talent Recovery Time <tn>The aggressive position</tn> is reduced by <num>40</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Aggressive position"</orange-d>',
     talent_318_name: 'Temptation',
     talent_318_description:
-      'Increases the duration of talent <tn>Distortion of thought</tn> by <num>3</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Distortion of thought"</font>',
-    talent_319_name: 'The omen<font color=#FFFFFF> ⌛️30</font>',
+      'Increases the duration of talent <tn>Distortion of thought</tn> by <num>3</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Distortion of thought"</orange-d>',
+    talent_319_name: 'The omen<white> <CD>30</CD></white>',
     talent_319_description:
-      '<num>The attacker</num><br><br>The use of a class talent accumulates a charge for every <num>130</num> units of the base cost of Health or Energy. The effect adds up to <num>4</num> times. When activated, it burns the enemy <num>%s</num> Energy for each charge, transferring it to the hero.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Omen"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>The use of a class talent accumulates a charge for every <num>130</num> units of the base cost of Health or Energy. The effect adds up to <num>4</num> times. When activated, it burns the enemy <num>%s</num> Energy for each charge, transferring it to the hero.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_320_name: 'secret Crush',
     talent_320_description:
-      'Increases Stamina and Will by a total of <num>%s</num>, redistributing the bonus amount of each of the characteristics depending on the damage received.<br><br>Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Omen"</font>',
-    talent_321_name: 'Aggressive position<font color=#FFFFFF> ⌛️120</font>',
+      'Increases Stamina and Will by a total of <num>%s</num>, redistributing the bonus amount of each of the characteristics depending on the damage received.<br><br>Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
+    talent_321_name: 'Aggressive position<white> <CD>120</CD></white>',
     talent_321_description:
-      '<num>Protective</num><br><br>Reduces the duration of control effects by <num>65%</num> by <num>10</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Aggressive position"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>Protective</num><br><br>Reduces the duration of control effects by <num>65%</num> by <num>10</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Aggressive position"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_322_name: 'Relentless Presence',
     talent_322_description:
-      'Reduces the hero\'s resurrection time by <num>20%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Relentless presence"</font><font color=#FFFFFF> ⌛️180</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      'Reduces the hero\'s resurrection time by <num>20%</num>.<br> <br> <gray>Set</gray> <orange-d>"Relentless presence"</orange-d><white> <CD>180</CD></white><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_323_name: 'The Sixth Sense',
     talent_323_description:
-      'Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Omen"</font>',
+      'Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
     talent_324_name: 'Unstoppable Will',
     talent_324_description:
-      'Ghost Watcher, summoned by talent <tn>Ghostly embrace </tn> now sees and invisible.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ghostly embrace"</font>',
-    talent_325_name: 'Predatory nature<font color=#FFFFFF> ⌛️120</font>',
+      'Ghost Watcher, summoned by talent <tn>Ghostly embrace </tn> now sees and invisible.<br> <br> <gray>Set</gray> <orange-d>"Ghostly embrace"</orange-d>',
+    talent_325_name: 'Predatory nature<white> <CD>120</CD></white>',
     talent_325_description:
-      '<num>The attacker</num><br><br>Hits targets with <fiz>%s</fiz> and binds the target together with the enemy hero or tree behind it, immobilizing it for <num>3</num> seconds. If there is no enemy hero or tree behind the target, the immobilization effect will only last <num>1.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predatory nature"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>Hits targets with <fiz>%s</fiz> and binds the target together with the enemy hero or tree behind it, immobilizing it for <num>3</num> seconds. If there is no enemy hero or tree behind the target, the immobilization effect will only last <num>1.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Predatory nature"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_326_name: 'Insidious intent',
     talent_326_description:
-      'Talent Recovery Time <tn>Distortion of thought</tn> is reduced by <num>40</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Distortion of thought"</font>',
-    talent_327_name: 'Unbridled rage<font color=#FFFFFF> ⌛️200</font>',
+      'Talent Recovery Time <tn>Distortion of thought</tn> is reduced by <num>40</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Distortion of thought"</orange-d>',
+    talent_327_name: 'Unbridled rage<white> <CD>200</CD></white>',
     talent_327_description:
-      '<num>Tactical</num><br><br>Prohibits enemy heroes from moving through the portal or scrolls for <num>5</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Unbridled Rage"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>Tactical</num><br><br>Prohibits enemy heroes from moving through the portal or scrolls for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Unbridled Rage"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_328_name: 'Charm',
     talent_328_description:
-      'Talent <tn>The relentless presence of </tn> additionally reduces the resurrection time by <num>10%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The inexorable presence"</font><font color=#FFFFFF> ⌛️180</font>',
+      'Talent <tn>The relentless presence of </tn> additionally reduces the resurrection time by <num>10%</num>.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
     talent_329_name: 'The feeling of Destruction',
     talent_329_description:
-      'Talent <tn>Predatory nature</tn> additionally deals <fiz>%s</fiz> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predatory nature"</font>',
-    talent_330_name: 'Sophisticated Intellect<font color=#FFFFFF> ⌛️80</font>',
+      'Talent <tn>Predatory nature</tn> additionally deals <fiz>%s</fiz> damage.<br> <br> <gray>Set</gray> <orange-d>"Predatory nature"</orange-d>',
+    talent_330_name: 'Sophisticated Intellect<white> <CD>80</CD></white>',
     talent_330_description:
-      '<num>The attacker</num><br><br>Deals <mag>%s</mag> to the first enemy on the way and reduces its Speed by <num>60%</num> for <num>4</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Sophisticated Intellect"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>The attacker</num><br><br>Deals <mag>%s</mag> to the first enemy on the way and reduces its Speed by <num>60%</num> for <num>4</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Sophisticated Intellect"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_331_name: 'Memory of the Ancients',
     talent_331_description:
-      'Talent Recovery Time <tn>Ghostly Embrace</tn> shortened by <num>80</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ghostly embrace"</font>',
-    talent_332_name: 'Ghostly embrace<font color=#FFFFFF> ⌛️140</font>',
+      'Talent Recovery Time <tn>Ghostly Embrace</tn> shortened by <num>80</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Ghostly embrace"</orange-d>',
+    talent_332_name: 'Ghostly embrace<white> <CD>140</CD></white>',
     talent_332_description:
-      '<num>Tactical</num><br><br>For <num>180</num> seconds, he summons an invisible ghostly observer to the specified location, who dispels the fog of war in the area around him.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ghostly Embrace"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Tactical</num><br><br>For <num>180</num> seconds, he summons an invisible ghostly observer to the specified location, who dispels the fog of war in the area around him.<br> <br> <gray>Set</gray> <orange-d>"Ghostly Embrace"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_333_name: 'Reflection of treachery',
     talent_333_description:
-      'Talent <tn>A sophisticated Intellect</tn> additionally deals <mag>%s</mag> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Sophisticated Intellect"</font>',
+      'Talent <tn>A sophisticated Intellect</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Sophisticated Intellect"</orange-d>',
     talent_334_name: 'Mental Hunger',
     talent_334_description:
-      'Talent <tn>Omen</tn> deals <mag>%s</mag> damage per charge, but it no longer burns Energy.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Omen"</font>',
+      'Talent <tn>Omen</tn> deals <mag>%s</mag> damage per charge, but it no longer burns Energy.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
     talent_335_name: 'The secret of longevity',
     talent_335_description:
-      'Increases the duration of talent <tn>Aggressive position</tn> for <num>10</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Aggressive position"</font>',
+      'Increases the duration of talent <tn>Aggressive position</tn> for <num>10</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Aggressive position"</orange-d>',
     talent_336_name: 'Inner Energy',
     talent_336_description:
-      'The goal of talent <tn>A sophisticated Intellect</tn> slows down by <num>15%</num> more.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Sophisticated Intellect"</font>',
+      'The goal of talent <tn>A sophisticated Intellect</tn> slows down by <num>15%</num> more.<br> <br> <gray>Set</gray> <orange-d>"Sophisticated Intellect"</orange-d>',
     talent_337_name: 'Inner Thirst',
     talent_337_description:
-      'Increases the field of view of the Ghostly observer summoned by talent <font color=#ff8c00>Ghostly embrace</font>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ghostly embrace"</font>',
-    talent_338_name: 'The Edge of chance<font color=#FFFFFF> ⌛️120</font>',
+      'Increases the field of view of the Ghostly observer summoned by talent <orange-d>Ghostly embrace</orange-d>.<br> <br> <gray>Set</gray> <orange-d>"Ghostly embrace"</orange-d>',
+    talent_338_name: 'The Edge of chance<white> <CD>120</CD></white>',
     talent_338_description:
-      'Restores <num>%s</num> Health, if the damage inflicted on the hero exceeds <num>15%</num> of the current Health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Edge of chance"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
-    talent_339_name: 'A cluster of misfortunes<font color=#FFFFFF> ⌛️115</font>',
+      'Restores <num>%s</num> Health, if the damage inflicted on the hero exceeds <num>15%</num> of the current Health.<br> <br> <gray>Set</gray> <orange-d>"The Edge of chance"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+    talent_339_name: 'A cluster of misfortunes<white> <CD>115</CD></white>',
     talent_339_description:
-      '<num>The attacker</num><br><br>When activated, it deals <fiz>%s</fiz> damage to all enemies around.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A collection of misfortunes"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
-    talent_340_name: 'The feeling of moments<font color=#FFFFFF> ⌛️110</font>',
+      '<num>The attacker</num><br><br>When activated, it deals <fiz>%s</fiz> damage to all enemies around.<br> <br> <gray>Set</gray> <orange-d>"A collection of misfortunes"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+    talent_340_name: 'The feeling of moments<white> <CD>110</CD></white>',
     talent_340_description:
-      '<num>Protective</num><br><br>The hero\'s base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>Receives a shield for <num>5</num> seconds that absorbs up to <num>%s</num> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The feeling of moments"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
-    talent_341_name: 'The Path of the Punisher<font color=#FFFFFF> ⌛️120</font>',
+      '<num>Protective</num><br><br>The hero\'s base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>Receives a shield for <num>5</num> seconds that absorbs up to <num>%s</num> damage.<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+    talent_341_name: 'The Path of the Punisher<white> <CD>120</CD></white>',
     talent_341_description:
-      '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> or <mag>%s</mag> damage to the specified enemy, depending on which of the hero\'s characteristics is higher: Strength or Intellect.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Path of the Punisher"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
-    talent_342_name: 'The source of the bond<font color=#FFFFFF> ⌛️120</font>',
+      '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> or <mag>%s</mag> damage to the specified enemy, depending on which of the hero\'s characteristics is higher: Strength or Intellect.<br> <br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
+    talent_342_name: 'The source of the bond<white> <CD>120</CD></white>',
     talent_342_description:
-      '<num>Protective</num><br><br>Being created <num>0.5</num> sec. and creates an area for <num>5</num> sec. where the greater of the enemies\' Strength and Intellect is reduced by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The source of bonds"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Protective</num><br><br>Being created <num>0.5</num> sec. and creates an area for <num>5</num> sec. where the greater of the enemies\' Strength and Intellect is reduced by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"The source of bonds"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_343_name: 'A Ghostly Chance',
     talent_343_description:
-      'When talent is triggered <tn>The edge of the odds</tn> the hero becomes invisible for <num>3</num> seconds<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The edge of chance"</font>',
+      'When talent is triggered <tn>The edge of the odds</tn> the hero becomes invisible for <num>3</num> seconds<br><br> <gray>Set</gray> <orange-d>"The edge of chance"</orange-d>',
     talent_344_name: 'second Chance',
     talent_344_description:
-      'Talent <tn>The edge of chance</tn> additionally restores <num>%s</num> Health<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The edge of chance"</font>',
+      'Talent <tn>The edge of chance</tn> additionally restores <num>%s</num> Health<br> <br> <gray>Set</gray> <orange-d>"The edge of chance"</orange-d>',
     talent_345_name: 'Steady Chance',
     talent_345_description:
-      'When triggered, talent <tn>The edge of chance</tn> removes the most dangerous negative effect from the hero<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The edge of chance"</font>',
+      'When triggered, talent <tn>The edge of chance</tn> removes the most dangerous negative effect from the hero<br> <br> <gray>Set</gray> <orange-d>"The edge of chance"</orange-d>',
     talent_346_name: 'Strong-willed chance',
     talent_346_description:
-      'When triggered, talent <tn>The edge of chance</tn> removes the most dangerous negative effect from the hero<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The edge of chance"</font>',
+      'When triggered, talent <tn>The edge of chance</tn> removes the most dangerous negative effect from the hero<br> <br> <gray>Set</gray> <orange-d>"The edge of chance"</orange-d>',
     talent_347_name: 'Attack wounds',
     talent_347_description:
-      'Talent <tn>The accumulation of misfortunes</tn> additionally reduces the Health recovery of all enemies around by <num>50%</num> for <num>4</num> seconds<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A cluster of troubles"</font>',
+      'Talent <tn>The accumulation of misfortunes</tn> additionally reduces the Health recovery of all enemies around by <num>50%</num> for <num>4</num> seconds<br> <br> <gray>Set</gray> <orange-d>"A cluster of troubles"</orange-d>',
     talent_348_name: 'Attack of slowness',
     talent_348_description:
-      'Talent <tn>A cluster of misfortunes</tn> additionally slows down all enemies around by <num>70%</num> for <num>1</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A cluster of troubles"</font>',
+      'Talent <tn>A cluster of misfortunes</tn> additionally slows down all enemies around by <num>70%</num> for <num>1</num> sec.<br> <br> <gray>Set</gray> <orange-d>"A cluster of troubles"</orange-d>',
     talent_349_name: 'Attack Harm',
     talent_349_description:
-      'Talent <tn>A cluster of misfortunes</tn> additionally causes <fiz>%s</fiz> damage to all enemies around.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A cluster of troubles"</font>',
+      'Talent <tn>A cluster of misfortunes</tn> additionally causes <fiz>%s</fiz> damage to all enemies around.<br> <br> <gray>Set</gray> <orange-d>"A cluster of troubles"</orange-d>',
     talent_350_name: 'Attack of provocations',
     talent_350_description:
-      'Talent <tn>The accumulation of misfortunes</tn> additionally forces all enemies around to attack the hero during <num>0.7</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A cluster of troubles"</font>',
+      'Talent <tn>The accumulation of misfortunes</tn> additionally forces all enemies around to attack the hero during <num>0.7</num> sec.<br> <br> <gray>Set</gray> <orange-d>"A cluster of troubles"</orange-d>',
     talent_351_name: 'A Moment of Strength',
     talent_351_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> Strengths<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The feeling of moments"</font>',
+      'During the action of the talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> Strengths<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_352_name: 'A Moment of Intellect',
     talent_352_description:
-      'During the action of talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> of Intellect<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The feeling of moments"</font>',
+      'During the action of talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> of Intellect<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_353_name: 'A moment of speed',
     talent_353_description:
-      'When using talent <tn>The Feeling of moments</tn>, the hero accelerates by <num>35%</num> for <num>3</num> seconds<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The feeling of moments"</font>',
+      'When using talent <tn>The Feeling of moments</tn>, the hero accelerates by <num>35%</num> for <num>3</num> seconds<br><br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_354_name: 'Body Moment',
     talent_354_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <fiz></fiz> is reduced by <num>60%</num><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The feeling of moments"</font>',
+      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <fiz></fiz> is reduced by <num>60%</num><br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_355_name: 'A moment of the Spirit',
     talent_355_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <mag></mag> is reduced by <num>60%</num><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The feeling of moments"</font>',
+      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <mag></mag> is reduced by <num>60%</num><br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_356_name: 'Punishment of fragility',
     talent_356_description:
-      'Talent <tn>The path of the punisher</tn> additionally reduces the Resistance of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Path of the Punisher"</font>',
+      'Talent <tn>The path of the punisher</tn> additionally reduces the Resistance of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
     talent_357_name: 'Punishment of suppression',
     talent_357_description:
-      'Talent <tn>The path of the Punisher</tn> additionally lowers the Will of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Path of the Punisher"</font>',
+      'Talent <tn>The path of the Punisher</tn> additionally lowers the Will of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
     talent_358_name: 'The Punishment of Cunning',
     talent_358_description:
-      'Talent <tn>The Punisher\'s path</tn> additionally stuns the specified enemy for <num>0.6</num> sec.<br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Path of the Punisher"</font>',
+      'Talent <tn>The Punisher\'s path</tn> additionally stuns the specified enemy for <num>0.6</num> sec.<br><br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
     talent_359_name: 'Punishment of cruelty',
     talent_359_description:
-      'Talent <tn>The Punisher\'s path</tn> additionally deals <fiz>%s</fiz> damage to the specified enemy.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Path of the Punisher"</font>',
+      'Talent <tn>The Punisher\'s path</tn> additionally deals <fiz>%s</fiz> damage to the specified enemy.<br> <br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
     talent_360_name: 'The Punishment of Fragments',
     talent_360_description:
-      'Talent <tn>The punisher\'s path additionally hits the enemy closest to the target, which is located behind. All talent effects affect the second target by <num>50%</num> less.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Path of the Punisher"</font>',
+      'Talent <tn>The punisher\'s path additionally hits the enemy closest to the target, which is located behind. All talent effects affect the second target by <num>50%</num> less.<br> <br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
     talent_361_name: 'Bonds of Purification',
     talent_361_description:
-      'With enemies falling within the range of talent <tn>The source of the bond</tn>, additionally removes all positive effects, but the time of its creation increases by <num>0.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The source of the bonds"</font>',
+      'With enemies falling within the range of talent <tn>The source of the bond</tn>, additionally removes all positive effects, but the time of its creation increases by <num>0.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"The source of the bonds"</orange-d>',
     talent_362_name: 'The Bonds of Blindness',
     talent_362_description:
-      'Talent <tn>The source of the bond additionally blinds all enemies in the specified area, but the time of its creation increases by <num>1.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The source of the bonds"</font>',
+      'Talent <tn>The source of the bond additionally blinds all enemies in the specified area, but the time of its creation increases by <num>1.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"The source of the bonds"</orange-d>',
     talent_363_name: 'Bonds of Silence',
     talent_363_description:
-      'Talent <tn>The source of the bond</tn> additionally does not allow all enemies located in the specified area to use talents, but the time of its creation increases by <num>1.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The source of the bonds"</font>',
+      'Talent <tn>The source of the bond</tn> additionally does not allow all enemies located in the specified area to use talents, but the time of its creation increases by <num>1.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"The source of the bonds"</orange-d>',
     talent_364_name: 'Bonds of fragility',
     talent_364_description:
-      'Talent <tn>The source of the bonds</tn> additionally reduces the Resistance of all enemies in the specified area by <num>%s</num><br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The source of the bonds"</font>',
+      'Talent <tn>The source of the bonds</tn> additionally reduces the Resistance of all enemies in the specified area by <num>%s</num><br><br> <gray>Set</gray> <orange-d>"The source of the bonds"</orange-d>',
     talent_365_name: 'The Bonds of Suppression',
     talent_365_description:
-      'Talent <tn>The source of the bonds</tn> additionally lowers the Will of all enemies in the specified area by <num>%s</num><br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The source of the bonds"</font>',
+      'Talent <tn>The source of the bonds</tn> additionally lowers the Will of all enemies in the specified area by <num>%s</num><br><br> <gray>Set</gray> <orange-d>"The source of the bonds"</orange-d>',
     talent_366_name: 'The Steadfast Face',
     talent_366_description: '<num>+%s</num> <rz>Stamina in the native land</rz>',
     talent_367_name: 'Strong-willed face',
@@ -4196,8 +4196,8 @@ export const en = {
     talent_374_description: '<num>+%s</num> <rz>The Intellect of the native land</rz>',
     talent_375_name: 'Spirit of the Wanderer',
     talent_375_description:
-      "The hero's base speed increases by <num>%s</num>.<br><font color=#F08080>On enemy or neutral ground, the hero's speed is additionally increased by <num>%s</num></font><br>Of the passive effects of increasing speed, the maximum is effective.",
-    talent_376_name: 'Awakening of life<font color=#FFFFFF> ⌛️60</font>',
+      "The hero's base speed increases by <num>%s</num>.<br><coral-l>On enemy or neutral ground, the hero's speed is additionally increased by <num>%s</num></coral-l><br>Of the passive effects of increasing speed, the maximum is effective.",
+    talent_376_name: 'Awakening of life<white> <CD>60</CD></white>',
     talent_376_description:
       '<num>Tactical</num><br><br>When used for <num>15</num> seconds, it creates a small area of native land around the hero.',
     talent_377_name: "Hunter's skill",
@@ -4216,47 +4216,47 @@ export const en = {
     talent_383_description: ' <num>+%s</num> <rz>Stealing health in their native land</rz>',
     talent_384_name: 'Ruthless Intellect',
     talent_384_description: '  <num>+%s</num> <rz>Theft of health in the native land</rz>',
-    talent_385_name: 'Alienation<font color=#FFFFFF> ⌛️40</font>',
+    talent_385_name: 'Alienation<white> <CD>40</CD></white>',
     talent_385_description:
       '<num>Tactical</num><br><br>When used on <num>15</num> seconds, it creates a small area of neutral ground at the specified point on enemy land.',
-    talent_386_name: 'Forest vigor<font color=#FFFFFF> ⌛️70</font>',
+    talent_386_name: 'Forest vigor<white> <CD>70</CD></white>',
     talent_386_description:
       '<num>Tactical</num><br><br><rz>When used from its native land, it restores <num>%s</num> Health in <num>15</num> seconds.</rz><br>The effect stops working if any damage is inflicted on the hero.',
-    talent_387_name: 'Forest gathering<font color=#FFFFFF> ⌛️70</font>',
+    talent_387_name: 'Forest gathering<white> <CD>70</CD></white>',
     talent_387_description:
       '<num>Tactical</num><br><br><rz>When used from its native land, it restores <num>%s</num> Energy in <num>15</num> seconds.</rz><br>The effect stops working if any damage is inflicted on the hero.',
     talent_388_name: "The Hunter's Superiority",
     talent_388_description:
       "The hero's attacks additionally inflict <fiz>%s</fiz> damage on soldiers and chudis.<br>Finishing them off, the hero gets <prime>5</prime>. After receiving <prime>675</prime> the influx stops from this talent.<br>Only one of the talents of excellence is active.<br><br><rz><fiz>+%s</fiz> damage on native land.</rz>",
     talent_389_name: 'Initial regeneration',
-    talent_389_description: ' <num>+%s</num> <font color=#F08080>Regenerating health on enemy or neutral ground</font>',
+    talent_389_description: ' <num>+%s</num> <coral-l>Regenerating health on enemy or neutral ground</coral-l>',
     talent_390_name: 'The superiority of the scout',
     talent_390_description:
-      "The hero's attacks additionally inflict <fiz>%s</fiz> damage on soldiers and chudis.<br>Finishing them off, the hero gets <prime>5</prime>. After receiving <prime>675</prime> the influx stops from this talent.<br>Only one of the talents of excellence is active.<br><br><vz><fiz>+%s</fiz> <font color=#F08080>damage on enemy or neutral ground</font>",
+      "The hero's attacks additionally inflict <fiz>%s</fiz> damage on soldiers and chudis.<br>Finishing them off, the hero gets <prime>5</prime>. After receiving <prime>675</prime> the influx stops from this talent.<br>Only one of the talents of excellence is active.<br><br><vz><fiz>+%s</fiz> <coral-l>damage on enemy or neutral ground</coral-l>",
     talent_391_name: 'The Cunning of the Beetle',
-    talent_391_description: ' <num>+%s</num> <font color=#F08080>Cunnings on enemy or neutral ground</font>',
+    talent_391_description: ' <num>+%s</num> <coral-l>Cunnings on enemy or neutral ground</coral-l>',
     talent_392_name: 'The lightness of a butterfly',
-    talent_392_description: ' <num>+%s</num> <font color=#F08080>Agility on enemy or neutral ground</font>',
+    talent_392_description: ' <num>+%s</num> <coral-l>Agility on enemy or neutral ground</coral-l>',
     talent_393_name: 'Rationality',
-    talent_393_description: ' <num>+%s</num> <font color=#F08080>Energy regeneration on enemy or neutral ground</font>',
+    talent_393_description: ' <num>+%s</num> <coral-l>Energy regeneration on enemy or neutral ground</coral-l>',
     talent_394_name: 'Practicality',
-    talent_394_description: ' <num>+%s</num> <font color=#F08080>Energy regeneration on enemy or neutral ground</font>',
+    talent_394_description: ' <num>+%s</num> <coral-l>Energy regeneration on enemy or neutral ground</coral-l>',
     talent_395_name: 'Destructive Strength',
-    talent_395_description: ' <num>+%s</num> <font color=#F08080>Forces on enemy or neutral ground</font>',
+    talent_395_description: ' <num>+%s</num> <coral-l>Forces on enemy or neutral ground</coral-l>',
     talent_396_name: 'Stubbornness',
-    talent_396_description: ' <num>+%s</num> <font color=#F08080>Regenerating health on enemy or neutral ground</font>',
+    talent_396_description: ' <num>+%s</num> <coral-l>Regenerating health on enemy or neutral ground</coral-l>',
     talent_397_name: 'The Creative Intellect',
-    talent_397_description: ' <num>+%s</num> <font color=#F08080>Intellect on enemy or neutral ground</font>',
+    talent_397_description: ' <num>+%s</num> <coral-l>Intellect on enemy or neutral ground</coral-l>',
     talent_398_name: 'The Insolence of a spy',
-    talent_398_description: ' <num>+%s</num> <font color=#F08080>Cunnings on enemy or neutral ground</font>',
+    talent_398_description: ' <num>+%s</num> <coral-l>Cunnings on enemy or neutral ground</coral-l>',
     talent_399_name: 'The Resourcefulness of a scout',
-    talent_399_description: '<num>+%s</num> <font color=#F08080>Cunnings on enemy or neutral ground</font>',
+    talent_399_description: '<num>+%s</num> <coral-l>Cunnings on enemy or neutral ground</coral-l>',
     talent_400_name: 'Formidable defense',
-    talent_400_description: '<num>+%s</num> <font color=#F08080>to the greatest of Stamina and will on enemy or neutral ground</font>',
+    talent_400_description: '<num>+%s</num> <coral-l>to the greatest of Stamina and will on enemy or neutral ground</coral-l>',
     talent_401_name: 'Intellectable precaution',
-    talent_401_description: '<num>+%s</num> <font color=#F08080>to the greatest of Stamina and will on enemy or neutral ground</font>',
+    talent_401_description: '<num>+%s</num> <coral-l>to the greatest of Stamina and will on enemy or neutral ground</coral-l>',
     talent_402_name: 'Obsession with blood',
-    talent_402_description: '<num>+%s</num> <font color=#F08080>Health steals on enemy or neutral ground</font>',
+    talent_402_description: '<num>+%s</num> <coral-l>Health steals on enemy or neutral ground</coral-l>',
     talent_403_name: 'Spiritual zeal',
     talent_403_description:
       'For each talent activation that requires energy, additionally gives <num>0.05</num> energy regeneration. The total bonus cannot be more than <num>%s</num>.<br><col1>(40 activations)</col1>',
@@ -4332,1018 +4332,1018 @@ export const en = {
     talent_427_name: 'Intimidating quickness',
     talent_427_description:
       'For each creature killed, agility increases by <num>0.12</num>, and for killing a hero — by <num>1.2</num>.<br>\nthe sum bonus cannot be greater than <num>%s</num>.<br>\n<col1>(105 Kripa/11 heroes)</col1>',
-    talent_428_name: 'Taste of Life<font color=#FFFFFF> ⌛️70</font>',
+    talent_428_name: 'Taste of Life<white> <CD>70</CD></white>',
     talent_428_description:
       '<num>Protective</num><br><br>When activated, it restores <num>%s</num> Health and additional <num>%s</num> Health for each level of the Hero.',
-    talent_429_name: 'Strength Spinner',
+    talent_429_name: 'Spinner of Strenght',
     talent_429_description:
-      'The Hero\'s strength increases by <font color=#dcca64>0.75</font> every minute. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#a5a5a5>set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#a5a5a5>each <num>4</num> sec. gives <prime>+1</prime></font>. Cannot be equipped together with Prime Influx.',
-    talent_430_name: 'Intellect Spinner',
+      'The Hero\'s strength increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+    talent_430_name: 'Spinner of Intellect',
     talent_430_description:
-      'The Hero\'s Intellect increases by <font color=#dcca64>0.75</font> every minute. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>4</num> seconds. gives <prime>+1</prime></font> Cannot be equipped together with Prime Influx.',
+      'The Hero\'s Intellect increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_431_name: 'Spinner Agility',
     talent_431_description:
-      'The Hero\'s agility increases by <font color=#dcca64>0.55</font> every minute. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>4</num> seconds. gives <prime>+1</prime></font> Cannot be equipped together with Prime Influx.',
+      'The Hero\'s strength increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br><br><gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d><br><br><orange-l>2 talents</orange-l><br><gray>Each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_432_name: 'Spinner Cunnings',
     talent_432_description:
-      'The Hero\'s cunning increases by <font color=#dcca64>0.55</font> every minute. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>4</num> seconds. gives <prime>+1</prime></font> Cannot be equipped together with Prime Influx.',
+      'The Hero\'s cunning increases by <yellow>0.55</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_433_name: 'Spinner of Stamina',
     talent_433_description:
-      'The Hero\'s stamina increases by <font color=#dcca64>0.37</font> every minute. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>4</num> seconds. gives <prime>+1</prime></font> Cannot be equipped together with Prime Influx.',
+      'The Hero\'s stamina increases by <yellow>0.37</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_434_name: 'Spinner of Will',
     talent_434_description:
-      'The Hero\'s will increases by <font color=#dcca64>0.37</font> every minute. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>4</num> seconds. gives <prime>+1</prime></font> Cannot be equipped together with Prime Influx.',
+      'The Hero\'s will increases by <yellow>0.37</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_435_name: 'Terrible Strength',
     talent_435_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Creepy time"</font> <br><br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Agility and Cunning</font>',
+      '<gray>Set</gray> <orange-d>"Creepy time"</orange-d> <br><br> <orange-l>2 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Agility and Cunning</gray>',
     talent_436_name: 'Terrible stubbornness',
     talent_436_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Creepy time"</font> <br><br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Agility and Cunning</font>',
+      '<gray>Set</gray> <orange-d>"Creepy time"</orange-d> <br><br> <orange-l>2 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Agility and Cunning</gray>',
     talent_437_name: 'Creepy Intellect',
     talent_437_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Creepy time"</font> <br><br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Agility and Cunning</font>',
+      '<gray>Set</gray> <orange-d>"Creepy time"</orange-d> <br><br> <orange-l>2 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Agility and Cunning</gray>',
     talent_438_name: 'Terrible agility',
     talent_438_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Creepy time"</font> <br><br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Agility and Cunning</font>',
+      '<gray>Set</gray> <orange-d>"Creepy time"</orange-d> <br><br> <orange-l>2 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Agility and Cunning</gray>',
     talent_439_name: 'Terrible agility',
     talent_439_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Creepy time"</font> <br><br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>+6</num> to the greatest of Agility and Cunning</font>',
+      '<gray>Set</gray> <orange-d>"Creepy time"</orange-d> <br><br> <orange-l>2 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Agility and Cunning</gray>',
     talent_440_name: 'Movie ticket',
     talent_440_description: 'Talent Events',
     talent_441_name: 'The Old Tablet',
     talent_441_description: 'Talent Events',
     talent_442_name: 'Rune of Knowledge',
     talent_442_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient runes"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Glyphs are valid for <num>10</num> seconds longer</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>When the enemy siege soldiers die next to the hero, they leave a random small glyph</font> <br> <font color=#FF9966>3 talents</font><br> <num>+7</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient runes"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Glyphs are valid for <num>10</num> seconds longer</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>When the enemy siege soldiers die next to the hero, they leave a random small glyph</gray> <br> <orange-l>3 talents</orange-l><br> <num>+7</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_443_name: 'Rune of Greatness',
     talent_443_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient runes"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Glyphs are valid for <num>10</num> seconds longer</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>When the enemy siege soldiers die next to the hero, they leave a random small glyph</font> <br> <font color=#FF9966>3 talents</font><br> <num>+7</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient runes"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Glyphs are valid for <num>10</num> seconds longer</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>When the enemy siege soldiers die next to the hero, they leave a random small glyph</gray> <br> <orange-l>3 talents</orange-l><br> <num>+7</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_444_name: 'Rune of Time',
     talent_444_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient runes"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Glyphs are valid for <num>10</num> seconds longer</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>When the enemy siege soldiers die next to the hero, they leave a random small glyph</font> <br> <font color=#FF9966>3 talents</font><br> <num>+7</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient runes"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Glyphs are valid for <num>10</num> seconds longer</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>When the enemy siege soldiers die next to the hero, they leave a random small glyph</gray> <br> <orange-l>3 talents</orange-l><br> <num>+7</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_445_name: 'Rune of Determination',
     talent_445_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient runes"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Glyphs are valid for <num>10</num> seconds longer</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>When the enemy siege soldiers die next to the hero, they leave a random small glyph</font> <br> <font color=#FF9966>3 talents</font><br> <num>+7</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient runes"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Glyphs are valid for <num>10</num> seconds longer</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>When the enemy siege soldiers die next to the hero, they leave a random small glyph</gray> <br> <orange-l>3 talents</orange-l><br> <num>+7</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_446_name: 'Rune of Wit',
     talent_446_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient runes"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Glyphs are valid for <num>10</num> seconds longer</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>When the enemy siege soldiers die next to the hero, they leave a random small glyph</font> <br> <font color=#FF9966>3 talents</font><br> <num>+7</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient runes"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Glyphs are valid for <num>10</num> seconds longer</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>When the enemy siege soldiers die next to the hero, they leave a random small glyph</gray> <br> <orange-l>3 talents</orange-l><br> <num>+7</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_447_name: 'Devilish Treachery',
     talent_447_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The cursed seal"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font><num>+9%</num> protection from talents.<br>- <font color=#960018>Overwhelming fear:</font> <num>+9%</num> to protect against attacks</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <font color=#960018>Overwhelming fear:</font> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
-    talent_448_name: 'The Damn print<font color=#FFFFFF> ⌛️3</font>',
+      '<gray>Set</gray> <orange-d>"The cursed seal"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b><num>+9%</num> protection from talents.<br>- <blood-d>Overwhelming fear:</blood-d> <num>+9%</num> to protect against attacks</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <blood-d>Overwhelming fear:</blood-d> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect</gray>',
+    talent_448_name: 'The Damn print<white> <CD>3</CD></white>',
     talent_448_description:
-      '<num>Active</num><br><br>Allows you to switch the kit between two states. — <font color=#4169E1>Silent horror</font> and <font color=#960018> Overwhelming fear</font>.<br>In the <font color=#4169E1> Silent Horror</font> the current recovery time for the negative effect of the Cursed Seal is reduced by <num>0.5</num> seconds each time an active talent is applied nearby.<br>In the <font color=#960018> Overwhelming fear</font>  The current recovery time for the negative effect of the Cursed Seal is reduced by <num>0.3</num> seconds each time, when an enemy hero attacks an allied <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The cursed seal"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font><num>+9%</num> protection from talents.<br>- <font color=#960018>Overwhelming fear:</font> <num>+9%</num> to protect against attacks</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <font color=#960018>Overwhelming fear:</font> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<num>Active</num><br><br>Allows you to switch the kit between two states. — <blue-b>Silent horror</blue-b> and <blood-d> Overwhelming fear</blood-d>.<br>In the <blue-b> Silent Horror</blue-b> the current recovery time for the negative effect of the Cursed Seal is reduced by <num>0.5</num> seconds each time an active talent is applied nearby.<br>In the <blood-d> Overwhelming fear</blood-d>  The current recovery time for the negative effect of the Cursed Seal is reduced by <num>0.3</num> seconds each time, when an enemy hero attacks an allied <br> <br> <gray>Set</gray> <orange-d>"The cursed seal"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b><num>+9%</num> protection from talents.<br>- <blood-d>Overwhelming fear:</blood-d> <num>+9%</num> to protect against attacks</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <blood-d>Overwhelming fear:</blood-d> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_449_name: 'Monstrous Strength',
     talent_449_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The cursed seal"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font><num>+9%</num> protection from talents.<br>- <font color=#960018>Overwhelming fear:</font> <num>+9%</num> to protect against attacks</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <font color=#960018>Overwhelming fear:</font> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"The cursed seal"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b><num>+9%</num> protection from talents.<br>- <blood-d>Overwhelming fear:</blood-d> <num>+9%</num> to protect against attacks</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <blood-d>Overwhelming fear:</blood-d> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_450_name: 'Forbidden Knowledge',
     talent_450_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The cursed seal"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font><num>+9%</num> protection from talents.<br>- <font color=#960018>Overwhelming fear:</font> <num>+9%</num> to protect against attacks</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <font color=#960018>Overwhelming fear:</font> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"The cursed seal"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b><num>+9%</num> protection from talents.<br>- <blood-d>Overwhelming fear:</blood-d> <num>+9%</num> to protect against attacks</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <blood-d>Overwhelming fear:</blood-d> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_451_name: 'Nightmarish Stamina',
     talent_451_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The cursed seal"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font><num>+9%</num> protection from talents.<br>- <font color=#960018>Overwhelming fear:</font> <num>+9%</num> to protect against attacks</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <font color=#960018>Overwhelming fear:</font> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"The cursed seal"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b><num>+9%</num> protection from talents.<br>- <blood-d>Overwhelming fear:</blood-d> <num>+9%</num> to protect against attacks</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <blood-d>Overwhelming fear:</blood-d> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_452_name: 'Restless Spirit',
     talent_452_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The cursed seal"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font><num>+9%</num> protection from talents.<br>- <font color=#960018>Overwhelming fear:</font> <num>+9%</num> to protect against attacks</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- <font color=#4169E1>Silent horror:</font> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <font color=#960018>Overwhelming fear:</font> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"The cursed seal"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b><num>+9%</num> protection from talents.<br>- <blood-d>Overwhelming fear:</blood-d> <num>+9%</num> to protect against attacks</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- <blue-b>Silent horror:</blue-b> Hero attack prohibits enemy hero from using talents on <num>1.5</num> sec. <br>- <blood-d>Overwhelming fear:</blood-d> Hero\'s attack disarms the enemy hero by <num>1.5</num> sec. <br>- The effect has a recovery time of <num>40</num> seconds</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_453_name: 'Guild Artist',
     talent_453_description: 'By creating a scroll in the workshop, the hero receives <prime>85</prime>.',
     talent_454_name: 'The Power of the Dragon',
     talent_454_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Way of the Dragon"</font> <font color=#FFFFFF> ⌛️180</font><br> <br> <font color=#FF9966>5 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"The Way of the Dragon"</orange-d> <white> <CD>180</CD></white><br> <br> <orange-l>5 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</gray>',
     talent_455_name: 'The Agility of the Dragon',
     talent_455_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Way of the Dragon"</font> <font color=#FFFFFF> ⌛️180</font><br> <br> <font color=#FF9966>5 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"The Way of the Dragon"</orange-d> <white> <CD>180</CD></white><br> <br> <orange-l>5 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</gray>',
     talent_456_name: "The Dragon's Cunning",
     talent_456_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Way of the Dragon"</font> <font color=#FFFFFF> ⌛️180</font><br> <br> <font color=#FF9966>5 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"The Way of the Dragon"</orange-d> <white> <CD>180</CD></white><br> <br> <orange-l>5 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</gray>',
     talent_457_name: 'Dragon Onslaught',
     talent_457_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Way of the Dragon"</font> <font color=#FFFFFF> ⌛️180</font><br> <br> <font color=#FF9966>5 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"The Way of the Dragon"</orange-d> <white> <CD>180</CD></white><br> <br> <orange-l>5 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</gray>',
     talent_458_name: 'Dragon Incarnation',
     talent_458_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Way of the Dragon"</font> <font color=#FFFFFF> ⌛️180</font><br> <br> <font color=#FF9966>5 talents</font> <br> <font color=#A5A5A5>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"The Way of the Dragon"</orange-d> <white> <CD>180</CD></white><br> <br> <orange-l>5 talents</orange-l> <br> <gray>It is triggered automatically upon death. The hero turns into a baby dragon for <num>5</num> seconds. If he is not killed, he will be reborn with <num>%s</num> Health (<num>30%</num> of maximum Health), and all enemy heroes around will be blinded for <num>2</num> seconds</gray>',
     talent_459_name: 'Terrifying audacity',
     talent_459_description:
-      'Reduces talent recovery time <tn>The Curse of terror</tn> for <num>30</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The curse of horror"</font>',
+      'Reduces talent recovery time <tn>The Curse of terror</tn> for <num>30</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"The curse of horror"</orange-d>',
     talent_460_name: 'Terrifying tenacity',
     talent_460_description:
-      'Talent <tn>The Curse of Terror</tn> additionally reduces the target\'s Health recovery by <num>50%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The curse of horror"</font>',
-    talent_461_name: 'The curse of horror<font color=#FFFFFF> ⌛️90</font>',
+      'Talent <tn>The Curse of Terror</tn> additionally reduces the target\'s Health recovery by <num>50%</num>.<br> <br> <gray>Set</gray> <orange-d>"The curse of horror"</orange-d>',
+    talent_461_name: 'The curse of horror<white> <CD>90</CD></white>',
     talent_461_description:
-      '<num>The attacker</num><br><br>Reduces the speed of the first enemy on the way by <num>50%</num> and increases their damage by <num>15%</num> for <num>4</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Curse of horror"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>The attacker</num><br><br>Reduces the speed of the first enemy on the way by <num>50%</num> and increases their damage by <num>15%</num> for <num>4</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"The Curse of horror"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_462_name: 'Terrifying frolic',
     talent_462_description:
-      'The hero\'s Base Speed increases by <num>%s</num>.<br>Of the passive effects of increasing speed, the maximum one acts.<br><br>The goal of talent <tn>The Curse of Terror</tn> slows down by <num>30%</num> more.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The curse of horror"</font>',
+      'The hero\'s Base Speed increases by <num>%s</num>.<br>Of the passive effects of increasing speed, the maximum one acts.<br><br>The goal of talent <tn>The Curse of Terror</tn> slows down by <num>30%</num> more.<br> <br> <gray>Set</gray> <orange-d>"The curse of horror"</orange-d>',
     talent_463_name: 'Terrifying Rage',
     talent_463_description:
-      'During the talent action <tn>The Curse of Terror</tn> takes <num>15%</num> more damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The curse of horror"</font>',
+      'During the talent action <tn>The Curse of Terror</tn> takes <num>15%</num> more damage.<br> <br> <gray>Set</gray> <orange-d>"The curse of horror"</orange-d>',
     talent_464_name: 'Stable Strength',
     talent_464_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Stable protection"</font><font color=#FFFFFF> ⌛️0.7</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>The hero ignores <num>15</num> enemy attack damage</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>30</num> enemy attack damage</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_465_name: 'Stable health',
     talent_465_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Stable protection"</font><font color=#FFFFFF> ⌛️0.7</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>The hero ignores <num>15</num> enemy attack damage</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>30</num> enemy attack damage</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_466_name: 'Stable advantage',
     talent_466_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Stable protection"</font><font color=#FFFFFF> ⌛️0.7</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>The hero ignores <num>15</num> enemy attack damage</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>30</num> enemy attack damage</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_467_name: 'Stable stronghold',
     talent_467_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Stable protection"</font><font color=#FFFFFF> ⌛️0.7</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>The hero ignores <num>15</num> enemy attack damage</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>30</num> enemy attack damage</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_468_name: 'The Triumph of the Living',
     talent_468_description:
-      'Additionally increases talent radius <tn>An unwavering celebration</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"An unshakable celebration"</font>',
+      'Additionally increases talent radius <tn>An unwavering celebration</tn>.<br> <br> <gray>Set</gray> <orange-d>"An unshakable celebration"</orange-d>',
     talent_469_name: 'The Triumph of the Aspiring',
     talent_469_description:
-      'Reduces talent recovery time <tn>Unwavering celebration</tn> for <num>30</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"An unshakable celebration"</font>',
-    talent_470_name: 'Unwavering celebration<font color=#FFFFFF> ⌛️150</font>',
+      'Reduces talent recovery time <tn>Unwavering celebration</tn> for <num>30</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"An unshakable celebration"</orange-d>',
+    talent_470_name: 'Unwavering celebration<white> <CD>150</CD></white>',
     talent_470_description:
-      '<num>Protective</num><br><br>It affects all the Characters around. It removes all negative effects from allies, and all positive effects from opponents.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Unwavering triumph"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Protective</num><br><br>It affects all the Characters around. It removes all negative effects from allies, and all positive effects from opponents.<br> <br> <gray>Set</gray> <orange-d>"Unwavering triumph"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_471_name: 'The Triumph of the Unbroken',
     talent_471_description:
-      'Talent <tn>Unwavering triumph</tn> additionally restores to the allies <num>%s</num> It deals <mag>%s</mag> damage to enemies.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"An unshakable celebration"</font>',
+      'Talent <tn>Unwavering triumph</tn> additionally restores to the allies <num>%s</num> It deals <mag>%s</mag> damage to enemies.<br> <br> <gray>Set</gray> <orange-d>"An unshakable celebration"</orange-d>',
     talent_472_name: 'Harmful energy',
     talent_472_description:
-      'Talent Recovery Time <tn>The destructive power of </tn> is reduced by <num>60</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pernicious passion"</font>',
-    talent_473_name: 'The malign power of<font color=#FFFFFF> ⌛️150</font>',
+      'Talent Recovery Time <tn>The destructive power of </tn> is reduced by <num>60</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
+    talent_473_name: 'The malign power of<white> <CD>150</CD></white>',
     talent_473_description:
-      '<num>The attacker</num><br><br>Deals the specified enemy hero <fiz>100</fiz> damage in total.<br>Each kill made by this talent increases its damage by <fiz>20</fiz>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Destructive passion"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>The attacker</num><br><br>Deals the specified enemy hero <fiz>100</fiz> damage in total.<br>Each kill made by this talent increases its damage by <fiz>20</fiz>.<br> <br> <gray>Set</gray> <orange-d>"Destructive passion"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_474_name: 'A Pernicious Ploy',
     talent_474_description:
-      'Talent <tn>Destructive power</tn> causes <fiz>100</fiz> more damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pernicious passion"</font>',
+      'Talent <tn>Destructive power</tn> causes <fiz>100</fiz> more damage.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
     talent_475_name: 'Pernicious insidiousness',
     talent_475_description:
-      'Talent <tn>The destructive power</tn> deals 20</fiz> more damage for each kill it commits.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pernicious passion"</font>',
+      'Talent <tn>The destructive power</tn> deals 20</fiz> more damage for each kill it commits.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
     talent_476_name: 'Harmful influence',
     talent_476_description:
-      'Talent <tn>Destructive power</tn> is restored by <num>90%</num> faster if it kills an enemy hero.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pernicious passion"</font>',
+      'Talent <tn>Destructive power</tn> is restored by <num>90%</num> faster if it kills an enemy hero.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
     talent_477_name: "The Seer's Cunning",
     talent_477_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Blind Seer"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Power of the Seer</font></font><br><font color=#A5A5A5><num>+4</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the seer</font> on the allied hero, revealing the hidden enemy hero closest to him</font>',
+      '<gray>Set</gray> <orange-d>"The Blind Seer"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Power of the Seer</orange-d></gray><br><gray><num>+4</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the seer</orange-d> on the allied hero, revealing the hidden enemy hero closest to him</gray>',
     talent_478_name: 'The energy of the Seer',
     talent_478_description:
-      'The hero\'s Base Speed increases by <num>%s</num>.<br>Of the passive effects of increasing speed, the maximum one acts.  <br><br><font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Blind Seer"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Power of the Seer</font></font><br><font color=#A5A5A5><num>+4</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the seer</font> on the allied hero, revealing the hidden enemy hero closest to him</font>',
-    talent_479_name: 'The Power of the seer<font color=#FFFFFF> ⌛️80</font>',
+      'The hero\'s Base Speed increases by <num>%s</num>.<br>Of the passive effects of increasing speed, the maximum one acts.  <br><br><gray>Set</gray> <orange-d>"The Blind Seer"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Power of the Seer</orange-d></gray><br><gray><num>+4</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the seer</orange-d> on the allied hero, revealing the hidden enemy hero closest to him</gray>',
+    talent_479_name: 'The Power of the seer<white> <CD>80</CD></white>',
     talent_479_description:
-      '<num>Tactical</num><br><br><font color=#ff8c00>Reveals</font> the specified enemy hero for <num>8</num> seconds.<br><font color=#ff8c00>Revealed</font> the hero cannot hide in invisibility or the fog of war.<br>You can use a portrait to select a target. <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Blind Seer"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Power of the Seer</font></font><br><font color=#A5A5A5><num>+4</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the seer</font> on the allied hero, revealing the hidden enemy hero closest to him</font>',
-    talent_480_name: 'Martial ecstasy<font color=#FFFFFF> ⌛️1</font>',
+      '<num>Tactical</num><br><br><orange-d>Reveals</orange-d> the specified enemy hero for <num>8</num> seconds.<br><orange-d>Revealed</orange-d> the hero cannot hide in invisibility or the fog of war.<br>You can use a portrait to select a target. <br> <br> <gray>Set</gray> <orange-d>"The Blind Seer"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Power of the Seer</orange-d></gray><br><gray><num>+4</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the seer</orange-d> on the allied hero, revealing the hidden enemy hero closest to him</gray>',
+    talent_480_name: 'Martial ecstasy<white> <CD>1</CD></white>',
     talent_480_description:
-      'Deals enemies around <fiz>%s</fiz> damage from your hero\'s maximum health once every <num>1</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial ecstasy"</font><br><br><font color=#A5A5A5>- can be improved by <num>4</num> talents</font>',
+      'Deals enemies around <fiz>%s</fiz> damage from your hero\'s maximum health once every <num>1</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_481_name: 'The rapture of rage',
     talent_481_description:
-      'The range of the Martial Rapture talent has been increased.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial ecstasy"</font>',
+      'The range of the Martial Rapture talent has been increased.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d>',
     talent_482_name: 'The rapture of cruelty',
     talent_482_description:
-      'Deals <fiz>%s</fiz> maximum health damage to soldiers and chudies located in the area of the Combat Rapture talent.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial ecstasy"</font>',
-    talent_483_name: 'Ecstasy of blood<font color=#FFFFFF> ⌛️60</font>',
+      'Deals <fiz>%s</fiz> maximum health damage to soldiers and chudies located in the area of the Combat Rapture talent.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d>',
+    talent_483_name: 'Ecstasy of blood<white> <CD>60</CD></white>',
     talent_483_description:
-      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Combat Rapture talent deals damage in <num>1.5</num> times more often.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial ecstasy"</font>',
+      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Combat Rapture talent deals damage in <num>1.5</num> times more often.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d>',
     talent_484_name: 'The intoxication of power',
     talent_484_description:
-      'The Martial Rapture talent does twice as much damage. Total <fiz>%s</fiz>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial ecstasy"</font>',
-    talent_485_name: 'Life-giving radiance<font color=#FFFFFF> ⌛️70</font>',
+      'The Martial Rapture talent does twice as much damage. Total <fiz>%s</fiz>.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d>',
+    talent_485_name: 'Life-giving radiance<white> <CD>70</CD></white>',
     talent_485_description:
-      '<num>Protective</num><br><br>Restores itself to <num>%s</num> Health for <num>15</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life-giving radiance"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Protective</num><br><br>Restores itself to <num>%s</num> Health for <num>15</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_486_name: 'The Radiance of Nature',
     talent_486_description:
-      '<rz>When used from his native land, talent <tn>Life-giving radiance</tn> additionally restores <num>%s</num> Healths.</rz><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life-giving radiance"</font>',
+      '<rz>When used from his native land, talent <tn>Life-giving radiance</tn> additionally restores <num>%s</num> Healths.</rz><br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d>',
     talent_487_name: 'Radiance of Energy',
     talent_487_description:
-      'Talent <tn>Life-giving radiance</tn> restores <num>60%</num> Health instantly.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life-giving radiance"</font>',
+      'Talent <tn>Life-giving radiance</tn> restores <num>60%</num> Health instantly.<br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d>',
     talent_488_name: 'The Radiance of Power',
     talent_488_description:
-      'Talent <tn>Life-giving radiance</tn> additionally restores <num>%s</num> Healths.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life-giving radiance"</font>',
+      'Talent <tn>Life-giving radiance</tn> additionally restores <num>%s</num> Healths.<br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d>',
     talent_489_name: 'The Radiance of Inflexibility',
     talent_489_description:
-      'Talent <tn>Life-giving radiance</tn> removes all negative effects.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life-giving radiance"</font>',
-    talent_490_name: 'The excitement of a bomber<font color=#FFFFFF> ⌛️80</font>',
+      'Talent <tn>Life-giving radiance</tn> removes all negative effects.<br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d>',
+    talent_490_name: 'The excitement of a bomber<white> <CD>80</CD></white>',
     talent_490_description:
-      '<num>The attacker</num><br><br>The specified target becomes Explosive for <num>3</num> seconds, and its Speed decreases by <num>20%</num>. When dying or after completing the effect, all enemies around receive <fiz>%s</fiz> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Demolition Man\'s Excitement"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>The specified target becomes Explosive for <num>3</num> seconds, and its Speed decreases by <num>20%</num>. When dying or after completing the effect, all enemies around receive <fiz>%s</fiz> damage.<br> <br> <gray>Set</gray> <orange-d>"Demolition Man\'s Excitement"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_491_name: 'Explosive persistence',
     talent_491_description:
-      'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber</tn> is also explosive.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Excitement of the bomber"</font>',
+      'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber</tn> is also explosive.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
     talent_492_name: 'Explosive violence',
     talent_492_description:
-      'Talent <tn>The  The excitement of a bomber</tn> causes <fiz>%s</fiz> more damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Excitement of the bomber"</font>',
+      'Talent <tn>The  The excitement of a bomber</tn> causes <fiz>%s</fiz> more damage.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
     talent_493_name: 'Explosive indefatigability',
     talent_493_description:
-      'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber is also explosive.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Excitement of the bomber"</font>',
+      'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber is also explosive.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
     talent_494_name: 'Explosive Domination',
     talent_494_description:
-      'Talent <tn>The  The excitement of a bomber</tn> additionally deals damage equal to <num>10%</num> of the target\'s maximum Health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Excitement of the bomber"</font>',
-    talent_495_name: 'Ritual extermination<font color=#FFFFFF> ⌛️100</font>',
+      'Talent <tn>The  The excitement of a bomber</tn> additionally deals damage equal to <num>10%</num> of the target\'s maximum Health.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
+    talent_495_name: 'Ritual extermination<white> <CD>100</CD></white>',
     talent_495_description:
-      '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> damage to the specified enemy.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ritual extermination"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> damage to the specified enemy.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_496_name: 'The Ritual of Ruthlessness',
     talent_496_description:
-      'The goal of talent <tn>Ritual extermination</tn> can be allied soldiers, without receiving a hero prime for killing. Talent recovery is reduced by <num>70</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ritual extermination"</font>',
+      'The goal of talent <tn>Ritual extermination</tn> can be allied soldiers, without receiving a hero prime for killing. Talent recovery is reduced by <num>70</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d>',
     talent_497_name: 'Blood Ritual',
     talent_497_description:
-      'Soldiers and chud receive <fiz>%s</fiz> more damage from talent <tn>Ritual extermination</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ritual extermination"</font>',
+      'Soldiers and chud receive <fiz>%s</fiz> more damage from talent <tn>Ritual extermination</tn>.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d>',
     talent_498_name: 'Ritual of suppression',
     talent_498_description:
-      'Talent <tn>Ritual extermination</tn> immobilizes the enemy for <num>1.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ritual extermination"</font>',
+      'Talent <tn>Ritual extermination</tn> immobilizes the enemy for <num>1.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d>',
     talent_499_name: 'The Ritual of Domination',
     talent_499_description:
-      'Talent <tn>Ritual extermination</tn> causes <fiz>%s</fiz> more damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ritual extermination"</font>',
+      'Talent <tn>Ritual extermination</tn> causes <fiz>%s</fiz> more damage.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d>',
     talent_500_name: 'The Ritual of Deceit',
     talent_500_description:
-      'Talent <tn>Ritual extermination</tn> causes <fiz>%s</fiz> more damage, the range of application is increased.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ritual extermination"</font>',
-    talent_501_name: 'A burst of determination<font color=#FFFFFF> ⌛️90</font>',
+      'Talent <tn>Ritual extermination</tn> causes <fiz>%s</fiz> more damage, the range of application is increased.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d>',
+    talent_501_name: 'A burst of determination<white> <CD>90</CD></white>',
     talent_501_description:
-      '<num>Tactical</num><br><br>The hero is transported to the specified location.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A burst of determination"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Tactical</num><br><br>The hero is transported to the specified location.<br> <br> <gray>Set</gray> <orange-d>"A burst of determination"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_502_name: 'Fatal Impulse',
     talent_502_description:
-      'Increases the range of talent <tn>A burst of determination</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A burst of determination"</font>',
+      'Increases the range of talent <tn>A burst of determination</tn>.<br> <br> <gray>Set</gray> <orange-d>"A burst of determination"</orange-d>',
     talent_503_name: 'A furious rush',
     talent_503_description:
-      'Increases the range of talent <tn>A burst of determination</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A burst of determination"</font>',
+      'Increases the range of talent <tn>A burst of determination</tn>.<br> <br> <gray>Set</gray> <orange-d>"A burst of determination"</orange-d>',
     talent_504_name: 'Audacious impulse',
     talent_504_description:
-      'Talent Recovery Time <tn>The rush of determination</tn> is shortened by <num>30</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A burst of determination"</font>',
+      'Talent Recovery Time <tn>The rush of determination</tn> is shortened by <num>30</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"A burst of determination"</orange-d>',
     talent_505_name: 'Unrestrained rush',
     talent_505_description:
-      'After applying talent <tn>A burst of determination</tn> causes <mag>%s</mag> damage to all enemies around.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A burst of determination"</font>',
+      'After applying talent <tn>A burst of determination</tn> causes <mag>%s</mag> damage to all enemies around.<br> <br> <gray>Set</gray> <orange-d>"A burst of determination"</orange-d>',
     talent_506_name: 'Death Touch',
     talent_506_description:
-      'The hero\'s attack additionally deals <fiz>%s</fiz> damage (from Agility).<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Death Touch"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      'The hero\'s attack additionally deals <fiz>%s</fiz> damage (from Agility).<br> <br> <gray>Set</gray> <orange-d>"Death Touch"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_507_name: 'Touch of Mastery',
     talent_507_description:
-      'Enhances all effects of the <tn> kitDeath touch</tn> by <num>33%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Death Touch"</font>',
+      'Enhances all effects of the <tn> kitDeath touch</tn> by <num>33%</num>.<br> <br> <gray>Set</gray> <orange-d>"Death Touch"</orange-d>',
     talent_508_name: 'Touching Indomitability',
     talent_508_description:
-      'Hero\'s Attack enhanced by talent <tn>Death touch</tn> additionally deals <fiz>%s</fiz> damage (from Agility).<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Death Touch"</font>',
+      'Hero\'s Attack enhanced by talent <tn>Death touch</tn> additionally deals <fiz>%s</fiz> damage (from Agility).<br> <br> <gray>Set</gray> <orange-d>"Death Touch"</orange-d>',
     talent_509_name: 'Touch of Sophistication',
     talent_509_description:
-      'Hero\'s Attack enhanced by talent <tn>Death Touch</tn> additionally deals <mag>%s</mag> damage (from Agility).<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Death Touch"</font>',
+      'Hero\'s Attack enhanced by talent <tn>Death Touch</tn> additionally deals <mag>%s</mag> damage (from Agility).<br> <br> <gray>Set</gray> <orange-d>"Death Touch"</orange-d>',
     talent_510_name: 'Touch Suppression',
     talent_510_description:
-      'Hero\'s Attack enhanced by talent <tn>Death Touch</tn> additionally reduces the greatest of the target\'s Stamina and Will by <num>%s</num> (from Agility) for <num>4</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Death Touch"</font>',
+      'Hero\'s Attack enhanced by talent <tn>Death Touch</tn> additionally reduces the greatest of the target\'s Stamina and Will by <num>%s</num> (from Agility) for <num>4</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Death Touch"</orange-d>',
     talent_511_name: 'Touching Advantage',
     talent_511_description:
-      'Hero\'s Attack enhanced by talent <tn>Death Touch</tn> additionally reduces the target\'s speed by <num>%s%</num> (from Agility) by <num>1.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Death Touch"</font>',
-    talent_512_name: 'Flaming Guardian<font color=#FFFFFF> ⌛️120</font>',
+      'Hero\'s Attack enhanced by talent <tn>Death Touch</tn> additionally reduces the target\'s speed by <num>%s%</num> (from Agility) by <num>1.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Death Touch"</orange-d>',
+    talent_512_name: 'Flaming Guardian<white> <CD>120</CD></white>',
     talent_512_description:
-      '<num>Tactical</num><br><br>Summons a firefly to the specified location, which opens the area around itself. The firefly disappears after <num>120</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Flaming Guardian"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Tactical</num><br><br>Summons a firefly to the specified location, which opens the area around itself. The firefly disappears after <num>120</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Flaming Guardian"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_513_name: 'Bright flame',
     talent_513_description:
-      'A firefly summoned by the Flaming Guardian talent lives <num>%s</num> seconds longer.<br>If the enemy hero gets close to the firefly, he will receive <mag>%s</mag> damage. The effect is applied every time an enemy Hero appears in the area, but no more than once every <num>20</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Flaming Guardian"</font>',
+      'A firefly summoned by the Flaming Guardian talent lives <num>%s</num> seconds longer.<br>If the enemy hero gets close to the firefly, he will receive <mag>%s</mag> damage. The effect is applied every time an enemy Hero appears in the area, but no more than once every <num>20</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Flaming Guardian"</orange-d>',
     talent_514_name: 'Zealous Flame',
     talent_514_description:
-      'Reduces the recovery time of the Flaming Guardian talent by <num>60</num> seconds.<br>Increases the flight distance of a firefly summoned by the Flaming Guardian talent by <num>2</num> times.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Flaming Guardian"</font>',
+      'Reduces the recovery time of the Flaming Guardian talent by <num>60</num> seconds.<br>Increases the flight distance of a firefly summoned by the Flaming Guardian talent by <num>2</num> times.<br> <br> <gray>Set</gray> <orange-d>"Flaming Guardian"</orange-d>',
     talent_515_name: 'Smoldering flame',
     talent_515_description:
-      'If the enemy hero gets close to the firefly, he will go blind for <num>2.5</num> seconds The effect is applied every time an enemy hero appears in the area, but no more than once every <num>20</num> seconds.<br>When leaving the firefly\'s field of view, summoned by the Flaming Guardian talent, the enemy remains visible for <num>4</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Flaming Guardian"</font>',
+      'If the enemy hero gets close to the firefly, he will go blind for <num>2.5</num> seconds The effect is applied every time an enemy hero appears in the area, but no more than once every <num>20</num> seconds.<br>When leaving the firefly\'s field of view, summoned by the Flaming Guardian talent, the enemy remains visible for <num>4</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Flaming Guardian"</orange-d>',
     talent_516_name: 'Prophetic Flame',
     talent_516_description:
-      'A firefly, summoned by the Flaming Guardian talent, sees invisibles.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Flaming Guardian"</font>',
-    talent_517_name: 'The Brave Wanderer<font color=#FFFFFF> ⌛️120</font>',
+      'A firefly, summoned by the Flaming Guardian talent, sees invisibles.<br> <br> <gray>Set</gray> <orange-d>"Flaming Guardian"</orange-d>',
+    talent_517_name: 'The Brave Wanderer<white> <CD>120</CD></white>',
     talent_517_description:
-      '<num>Tactical</num><br><br><num>+%s</num> Speeds are always<br><br>The Hero\'s speed increases by <num>40%</num> for <num>5</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Brave Wanderer"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Tactical</num><br><br><num>+%s</num> Speeds are always<br><br>The Hero\'s speed increases by <num>40%</num> for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Brave Wanderer"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_518_name: "The Wanderer's Skill",
     talent_518_description:
-      'When using talent <tn>The brave wanderer</tn> allows the Hero to pass through living creatures and demolish trees.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Brave Wanderer"</font>',
+      'When using talent <tn>The brave wanderer</tn> allows the Hero to pass through living creatures and demolish trees.<br> <br> <gray>Set</gray> <orange-d>"The Brave Wanderer"</orange-d>',
     talent_519_name: "The Wanderer's Aspiration",
     talent_519_description:
-      'Additionally increases the Hero\'s Speed by <num>15%</num> when using talent <tn>The brave wanderer</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Brave Wanderer"</font>',
+      'Additionally increases the Hero\'s Speed by <num>15%</num> when using talent <tn>The brave wanderer</tn>.<br> <br> <gray>Set</gray> <orange-d>"The Brave Wanderer"</orange-d>',
     talent_520_name: "Wanderer's Obsession",
     talent_520_description:
-      'When using talent <tn>Brave wanderer</tn> all negative effects are removed from the Hero.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Brave Wanderer"</font>',
+      'When using talent <tn>Brave wanderer</tn> all negative effects are removed from the Hero.<br> <br> <gray>Set</gray> <orange-d>"The Brave Wanderer"</orange-d>',
     talent_521_name: 'The Wit of a Wanderer',
     talent_521_description:
-      'Talent Recovery Time <tn>The Brave Wanderer</tn> is shortened by <num>60</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Brave Wanderer"</font>',
+      'Talent Recovery Time <tn>The Brave Wanderer</tn> is shortened by <num>60</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"The Brave Wanderer"</orange-d>',
     talent_522_name: 'Enchanting Abundance',
     talent_522_description:
-      'Purchase in the store, allows you to get a random pie: <br>- Restores <num>240</num> Health in <num>20</num> seconds. (Recovery time: <num>60</num> seconds)  <br>- Restores <num>240</num> Energy in <num>20</num> seconds. (Recovery time: <num>60</num> seconds)  <br>- Increases Speed by <num>30%</num> for <num>5</num> seconds. (Recovery time: <num>90</num> seconds)  <br>- Removes the most dangerous of the negative effects. (Recovery time: <num>20</num> seconds)<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      'Purchase in the store, allows you to get a random pie: <br>- Restores <num>240</num> Health in <num>20</num> seconds. (Recovery time: <num>60</num> seconds)  <br>- Restores <num>240</num> Energy in <num>20</num> seconds. (Recovery time: <num>60</num> seconds)  <br>- Increases Speed by <num>30%</num> for <num>5</num> seconds. (Recovery time: <num>90</num> seconds)  <br>- Removes the most dangerous of the negative effects. (Recovery time: <num>20</num> seconds)<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_523_name: 'The Enchantment of Wisdom',
     talent_523_description:
-      'The energy pie obtained by the talent <tn>Charming Abundance</tn> restores by <num>200</num> There is more energy.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font>',
+      'The energy pie obtained by the talent <tn>Charming Abundance</tn> restores by <num>200</num> There is more energy.<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d>',
     talent_524_name: 'Charms of Harmony',
     talent_524_description:
-      'Restores <num>150</num> Health from talent <tn>is a charming abundance</tn> every time the hero uses a pie.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font>',
+      'Restores <num>150</num> Health from talent <tn>is a charming abundance</tn> every time the hero uses a pie.<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d>',
     talent_525_name: 'The Enchantment of Impetuosity',
     talent_525_description:
-      'The Hero\'s Base Speed increases by <num>7</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>The healing pie obtained by the talent <tn>Charming Abundance</tn> restores 260</num> More health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font>',
+      'The Hero\'s Base Speed increases by <num>7</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>The healing pie obtained by the talent <tn>Charming Abundance</tn> restores 260</num> More health.<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d>',
     talent_526_name: 'The Spell of Hardness',
     talent_526_description:
-      'When the Hero uses a pie, talent <tn>Charming Abundance</tn> reduces the duration of control effects by <num>50%</num> by <num>10</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font>',
+      'When the Hero uses a pie, talent <tn>Charming Abundance</tn> reduces the duration of control effects by <num>50%</num> by <num>10</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d>',
     talent_527_name: 'The Enchantment of Balance',
     talent_527_description:
-      'When a Hero uses a pie, talent <tn>Charming Abundance</tn> increases the Hero\'s maximum Health by <num>250</num> for <num>10</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font>',
-    talent_528_name: 'Inherited charm<font color=#FFFFFF> ⌛️120</font>',
+      'When a Hero uses a pie, talent <tn>Charming Abundance</tn> increases the Hero\'s maximum Health by <num>250</num> for <num>10</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d>',
+    talent_528_name: 'Inherited charm<white> <CD>120</CD></white>',
     talent_528_description:
-      'A hero receives a shield for <num>5</num> seconds, absorbing up to <num>%s</num> damage if the damage inflicted by an enemy Hero or a summoned creature exceeds <num>15%</num> of the current Health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inherited charm"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      'A hero receives a shield for <num>5</num> seconds, absorbing up to <num>%s</num> damage if the damage inflicted by an enemy Hero or a summoned creature exceeds <num>15%</num> of the current Health.<br> <br> <gray>Set</gray> <orange-d>"Inherited charm"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_529_name: 'The Amulet of Life',
     talent_529_description:
-      '<rz>When triggered from the native land, talent <tn>The inherited charm</tn> additionally absorbs 260</num> damage.</rz><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inherited amulet"</font>',
+      '<rz>When triggered from the native land, talent <tn>The inherited charm</tn> additionally absorbs 260</num> damage.</rz><br> <br> <gray>Set</gray> <orange-d>"Inherited amulet"</orange-d>',
     talent_530_name: 'Amulet of Cunning',
     talent_530_description:
-      'Talent <tn>The inherited amulet</tn> additionally absorbs <num>14%</num> damage for each enemy Hero nearby.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inherited amulet"</font>',
+      'Talent <tn>The inherited amulet</tn> additionally absorbs <num>14%</num> damage for each enemy Hero nearby.<br> <br> <gray>Set</gray> <orange-d>"Inherited amulet"</orange-d>',
     talent_531_name: 'Health Charm',
     talent_531_description:
-      'Talent Recovery Time <tn>The inherited amulet</tn> is reduced by <num>2</num> seconds each time an allied Hero takes damage nearby.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inherited amulet"</font>',
+      'Talent Recovery Time <tn>The inherited amulet</tn> is reduced by <num>2</num> seconds each time an allied Hero takes damage nearby.<br> <br> <gray>Set</gray> <orange-d>"Inherited amulet"</orange-d>',
     talent_532_name: 'The Amulet of advantage',
     talent_532_description:
-      'Talent <tn>The inherited charm</tn> additionally absorbs <num>%s</num> more damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inherited amulet"</font>',
-    talent_533_name: 'Poison Grip<font color=#FFFFFF> ⌛️120</font>',
+      'Talent <tn>The inherited charm</tn> additionally absorbs <num>%s</num> more damage.<br> <br> <gray>Set</gray> <orange-d>"Inherited amulet"</orange-d>',
+    talent_533_name: 'Poison Grip<white> <CD>120</CD></white>',
     talent_533_description:
-      '<num>The attacker</num><br><br>Created <num>0.4</num> seconds. The specified enemy cannot move for <num>2</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Poison Grip"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>Created <num>0.4</num> seconds. The specified enemy cannot move for <num>2</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Poison Grip"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_534_name: 'Unrelenting Poison',
     talent_534_description:
-      'Increases the duration of talent <tn>Poison grip</tn> for <num>1</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Poison Grip"</font>',
+      'Increases the duration of talent <tn>Poison grip</tn> for <num>1</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Poison Grip"</orange-d>',
     talent_535_name: 'Spider Venom',
     talent_535_description:
-      'Talent <tn>Poison Grip</tn> additionally deals <mag>%s</mag> damage once per <num>0.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Poison Grip"</font>',
+      'Talent <tn>Poison Grip</tn> additionally deals <mag>%s</mag> damage once per <num>0.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Poison Grip"</orange-d>',
     talent_536_name: 'Destructive poison',
     talent_536_description:
-      'Talent <tn>Poison Grip</tn> additionally deals <mag>%s</mag> damage once per <num>0.5</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Poison Grip"</font>',
+      'Talent <tn>Poison Grip</tn> additionally deals <mag>%s</mag> damage once per <num>0.5</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Poison Grip"</orange-d>',
     talent_537_name: 'Deadly Poison',
     talent_537_description:
-      'Talent <tn>Poison Grip</tn> is instantly restored if a target with the effect of this talent dies.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Poison Grip"</font>',
-    talent_538_name: 'Inspiring anthem<font color=#FFFFFF> ⌛️150</font>',
+      'Talent <tn>Poison Grip</tn> is instantly restored if a target with the effect of this talent dies.<br> <br> <gray>Set</gray> <orange-d>"Poison Grip"</orange-d>',
+    talent_538_name: 'Inspiring anthem<white> <CD>150</CD></white>',
     talent_538_description:
-      '<num>Protective</num><br><br>For <num>15</num> seconds, increases maximum Health by <num>%s</num> to all allies around.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>Protective</num><br><br>For <num>15</num> seconds, increases maximum Health by <num>%s</num> to all allies around.<br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_539_name: 'Hymn of Might',
     talent_539_description:
-      'Talent <tn>The inspiring anthem</tn> additionally increases the maximum Health and damage of allied soldiers by <num>1.8</num> times and lasts <num>1.8</num> times longer. <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font>',
+      'Talent <tn>The inspiring anthem</tn> additionally increases the maximum Health and damage of allied soldiers by <num>1.8</num> times and lasts <num>1.8</num> times longer. <br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d>',
     talent_540_name: 'Anthem of Celebration',
     talent_540_description:
-      '<num>+%s</num> Steadfastness to all the allies around<br><br>Talent <tn>The inspiring hymn</tn> additionally increases Stamina by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font>',
+      '<num>+%s</num> Steadfastness to all the allies around<br><br>Talent <tn>The inspiring hymn</tn> additionally increases Stamina by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d>',
     talent_541_name: 'The Anthem of Determination',
     talent_541_description:
-      '<num>+%s</num> Good luck to all the allies around<br><br>Talent <tn>An inspiring hymn</tn> additionally increases the Will by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font>',
+      '<num>+%s</num> Good luck to all the allies around<br><br>Talent <tn>An inspiring hymn</tn> additionally increases the Will by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d>',
     talent_542_name: 'Anthem of Liberation',
     talent_542_description:
-      '<num>+%s</num> Strength to all allies around<br><br>Talent <tn>The inspiring hymn</tn> additionally increases the Power by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font>',
+      '<num>+%s</num> Strength to all allies around<br><br>Talent <tn>The inspiring hymn</tn> additionally increases the Power by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d>',
     talent_543_name: 'Hymn of Enlightenment',
     talent_543_description:
-      '<num>+%s</num> Intellect to all the allies around<br><br>Talent <tn>The inspiring hymn</tn> additionally increases the Intellect by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font>',
+      '<num>+%s</num> Intellect to all the allies around<br><br>Talent <tn>The inspiring hymn</tn> additionally increases the Intellect by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d>',
     talent_544_name: 'Disguise of the Wanderer',
     talent_544_description:
-      'After <num>1</num> sec., the hero becomes invisible for <num>3</num> sec., when using talent <tn>The brave wanderer</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Brave Wanderer"</font>',
+      'After <num>1</num> sec., the hero becomes invisible for <num>3</num> sec., when using talent <tn>The brave wanderer</tn>.<br> <br> <gray>Set</gray> <orange-d>"The Brave Wanderer"</orange-d>',
     talent_545_name: 'The Enchantment of Equality',
     talent_545_description:
-      'When visiting the resurrection site, the hero receives one pie of each kind, with the help of talent <tn>Charming abundance</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Charming abundance"</font>',
+      'When visiting the resurrection site, the hero receives one pie of each kind, with the help of talent <tn>Charming abundance</tn>.<br> <br> <gray>Set</gray> <orange-d>"Charming abundance"</orange-d>',
     talent_546_name: 'Talisman of sec.recy',
     talent_546_description:
-      'When talent is triggered <tn>Inherited amulet</tn> the hero goes into invisibility for <num>3</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inherited amulet"</font>',
+      'When talent is triggered <tn>Inherited amulet</tn> the hero goes into invisibility for <num>3</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Inherited amulet"</orange-d>',
     talent_547_name: 'Fast-acting poison',
     talent_547_description:
-      'The hero\'s attack deals an additional <mag>%s</mag> on the talent victim <tn>Poison Grip</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Poison Grip"</font>',
+      'The hero\'s attack deals an additional <mag>%s</mag> on the talent victim <tn>Poison Grip</tn>.<br> <br> <gray>Set</gray> <orange-d>"Poison Grip"</orange-d>',
     talent_548_name: 'The Anthem of Impetuosity',
     talent_548_description:
-      'Talent <tn>The inspiring anthem</tn> additionally increases the Speed by <num>25%</num> for <num>8</num> seconds to all the allies around.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Inspiring anthem"</font>',
-    talent_549_name: 'Cry of doom<font color=#FFFFFF> ⌛️120</font>',
+      'Talent <tn>The inspiring anthem</tn> additionally increases the Speed by <num>25%</num> for <num>8</num> seconds to all the allies around.<br> <br> <gray>Set</gray> <orange-d>"Inspiring anthem"</orange-d>',
+    talent_549_name: 'Cry of doom<white> <CD>120</CD></white>',
     talent_549_description:
-      '<num>The attacker</num><br><br>The specified enemy cannot use talents for <num>2</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Cry of Doom"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>The specified enemy cannot use talents for <num>2</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_550_name: 'Blinding Scream',
     talent_550_description:
-      'Talent <tn>The cry of doom</tn> additionally blinds the enemy.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Cry of Doom"</font>',
+      'Talent <tn>The cry of doom</tn> additionally blinds the enemy.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
     talent_551_name: 'The Chilling Scream',
     talent_551_description:
-      'Talent <tn>Cry of doom</tn> additionally slows down the target by <num>40%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Cry of Doom"</font>',
+      'Talent <tn>Cry of doom</tn> additionally slows down the target by <num>40%</num>.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
     talent_552_name: 'Unbearable scream',
     talent_552_description:
-      'Talent <tn>Cry of Doom</tn> additionally deals <mag>%s</mag> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Cry of Doom"</font>',
+      'Talent <tn>Cry of Doom</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
     talent_553_name: 'The Oppressive Scream',
     talent_553_description:
-      'Reduces talent recovery time <tn>Cry of doom</tn> for <num>45</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Cry of Doom"</font>',
-    talent_554_name: 'Explosive Illusion<font color=#FFFFFF> ⌛️120</font>',
+      'Reduces talent recovery time <tn>Cry of doom</tn> for <num>45</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
+    talent_554_name: 'Explosive Illusion<white> <CD>120</CD></white>',
     talent_554_description:
-      '<num>The attacker</num><br><br>When used, it creates the illusion of a hero who chases the nearest enemy hero and after <num>3</num> seconds of chasing or catching up with him, explodes, causing <mag>%s</mag> damage to all enemies around.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Explosive illusion"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>When used, it creates the illusion of a hero who chases the nearest enemy hero and after <num>3</num> seconds of chasing or catching up with him, explodes, causing <mag>%s</mag> damage to all enemies around.<br> <br> <gray>Set</gray> <orange-d>"Explosive illusion"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_555_name: 'The Illusion of Insight',
     talent_555_description:
-      'Talent <tn>Explosive illusion</tn> additionally burns the victim\'s <prime>100</prime>.<br>It can burn a maximum of <prime>600</prime> for the entire duration of the action.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Explosive illusion"</font>',
+      'Talent <tn>Explosive illusion</tn> additionally burns the victim\'s <prime>100</prime>.<br>It can burn a maximum of <prime>600</prime> for the entire duration of the action.<br> <br> <gray>Set</gray> <orange-d>"Explosive illusion"</orange-d>',
     talent_556_name: 'The Illusion of Power',
     talent_556_description:
-      'Talent <tn>Explosive illusion</tn> additionally burns the victim\'s <prime>100</prime>.<br>It can burn a maximum of <prime>600</prime> for the entire duration of the action.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Explosive illusion"</font>',
+      'Talent <tn>Explosive illusion</tn> additionally burns the victim\'s <prime>100</prime>.<br>It can burn a maximum of <prime>600</prime> for the entire duration of the action.<br> <br> <gray>Set</gray> <orange-d>"Explosive illusion"</orange-d>',
     talent_557_name: 'The Illusion of Victory',
     talent_557_description:
-      'Talent <tn>Explosive illusion</tn> additionally deals <mag>%s</mag> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Explosive illusion"</font>',
+      'Talent <tn>Explosive illusion</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Explosive illusion"</orange-d>',
     talent_558_name: 'The Illusion of Greatness',
     talent_558_description:
-      'Talent <tn>Explosive illusion</tn> additionally deals <mag>%s</mag> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Explosive illusion"</font>',
-    talent_559_name: 'Insidious flame<font color=#FFFFFF> ⌛️120</font>',
+      'Talent <tn>Explosive illusion</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Explosive illusion"</orange-d>',
+    talent_559_name: 'Insidious flame<white> <CD>120</CD></white>',
     talent_559_description:
-      '<num>The attacker</num><br><br>For <num>7</num> seconds, the specified enemy deals <mag>%s</mag> damage to all enemies around him every second.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Insidious flame"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      '<num>The attacker</num><br><br>For <num>7</num> seconds, the specified enemy deals <mag>%s</mag> damage to all enemies around him every second.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_560_name: 'The Flame of Discord',
     talent_560_description:
-      'The scope of talent <tn>The insidious flame</tn> increases. Talent <tn>Insidious flame</tn> additionally deals <mag>%s</mag> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Insidious flame"</font>',
+      'The scope of talent <tn>The insidious flame</tn> increases. Talent <tn>Insidious flame</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d>',
     talent_561_name: 'Flame of Turmoil',
     talent_561_description:
-      'Talent <tn>Insidious Flame</tn> additionally deals <num>100%</num> damage to everyone around with each target attack.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Insidious flame"</font>',
+      'Talent <tn>Insidious Flame</tn> additionally deals <num>100%</num> damage to everyone around with each target attack.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d>',
     talent_562_name: 'Flame of Reconciliation',
     talent_562_description:
-      'Talent <tn>Insidious Flame</tn> additionally reduces damage from target attacks by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Insidious flame"</font>',
+      'Talent <tn>Insidious Flame</tn> additionally reduces damage from target attacks by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d>',
     talent_563_name: 'The Flame of Decay',
     talent_563_description:
-      'Talent <tn>Insidious flame</tn> additionally deals <mag>%s</mag> damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Insidious flame"</font>',
+      'Talent <tn>Insidious flame</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d>',
     talent_564_name: 'The superiority of the warrior',
     talent_564_description:
-      'Soldiers and monsters receive additional <fiz>%s</fiz> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Power for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Absolute superiority"</font>',
+      'Soldiers and monsters receive additional <fiz>%s</fiz> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Power for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
     talent_565_name: "The Wizard's Superiority",
     talent_565_description:
-      'Soldiers and monsters receive additional <mag>%s</mag> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Intellect for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Absolute superiority"</font>',
-    talent_566_name: 'The superiority of health<font color=#FFFFFF> ⌛️60</font>',
+      'Soldiers and monsters receive additional <mag>%s</mag> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Intellect for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
+    talent_566_name: 'The superiority of health<white> <CD>60</CD></white>',
     talent_566_description:
-      '<num>Influx of prime</num><br><br>Deals <num>%s</num> <font color=#B00000>net damage</font> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+30</num> Health points. <br>The number of stats is unlimited<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Absolute superiority"</font>',
-    talent_567_name: 'The superiority of Cunning<font color=#FFFFFF> ⌛️60</font>',
+      '<num>Influx of prime</num><br><br>Deals <num>%s</num> <red-d>net damage</red-d> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+30</num> Health points. <br>The number of stats is unlimited<br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
+    talent_567_name: 'The superiority of Cunning<white> <CD>60</CD></white>',
     talent_567_description:
-      '<num>Influx of prime</num><br><br>Deals <num>%s</num> <font color=#B00000>net damage</font> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+1</num> to the greatest of Cunning and Agility. <br>The number of stats is unlimited<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Absolute superiority"</font>',
-    talent_568_name: 'The supremacy of rage<font color=#FFFFFF> ⌛️60</font>',
+      '<num>Influx of prime</num><br><br>Deals <num>%s</num> <red-d>net damage</red-d> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+1</num> to the greatest of Cunning and Agility. <br>The number of stats is unlimited<br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
+    talent_568_name: 'The supremacy of rage<white> <CD>60</CD></white>',
     talent_568_description:
-      '<num>Influx of prime</num><br><br>Deals <num>%s</num> <font color=#B00000>net damage</font> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+1</num> to the greatest of Strength and Intellect. <br>The number of stats is unlimited<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Absolute superiority"</font>',
+      '<num>Influx of prime</num><br><br>Deals <num>%s</num> <red-d>net damage</red-d> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+1</num> to the greatest of Strength and Intellect. <br>The number of stats is unlimited<br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
     talent_569_name: 'Symbol of the forest',
     talent_569_description:
-      'A victim who receives damage from a class ability will receive <mag>%s</mag> damage from the highest of your hero\'s or target\'s Strength and Intellect (the lowest value is selected) per second for <num>3</num> seconds. <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Forest symbol"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      'A victim who receives damage from a class ability will receive <mag>%s</mag> damage from the highest of your hero\'s or target\'s Strength and Intellect (the lowest value is selected) per second for <num>3</num> seconds. <br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_570_name: 'Forest Greatness',
     talent_570_description:
-      'Increases the duration of all effects in the <font color=#ff8c00>Forest symbol</font> by <num>2</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Forest symbol"</font>',
+      'Increases the duration of all effects in the <orange-d>Forest symbol</orange-d> by <num>2</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_571_name: 'Forest Superiority',
     talent_571_description:
-      'Talent <font color=#ff8c00>Forest Symbol</font> additionally reduces the greatest of the target\'s Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect)<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Forest symbol"</font>',
+      'Talent <orange-d>Forest Symbol</orange-d> additionally reduces the greatest of the target\'s Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect)<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_572_name: 'Forest Harmony',
     talent_572_description:
-      'During the talent action <font color=#ff8c00>The Forest Symbol</font> the hero receives <num>%s</num> Health Regeneration from maximum Health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Forest symbol"</font>',
+      'During the talent action <orange-d>The Forest Symbol</orange-d> the hero receives <num>%s</num> Health Regeneration from maximum Health.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_573_name: 'Forest Power',
     talent_573_description:
-      'Talent <font color=#ff8c00>Forest Symbol</font> additionally deals 0.9%</num> <font color=#B00000>net damage</font> of the target\'s maximum health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Forest symbol"</font>',
-    talent_574_name: 'Icy Revenge<font color=#FFFFFF> ⌛️1</font>',
+      'Talent <orange-d>Forest Symbol</orange-d> additionally deals 0.9%</num> <red-d>net damage</red-d> of the target\'s maximum health.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
+    talent_574_name: 'Icy Revenge<white> <CD>1</CD></white>',
     talent_574_description:
-      'The enemy attacking the hero takes <mag>%s</mag> damage.<br><br><font color=#A5A5A5>Set</font> <font color=#ff8c00>"Collector\'s habits"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font>',
-    talent_575_name: 'Hardened by cruelty<font color=#FFFFFF> ⌛️30</font>',
+      'The enemy attacking the hero takes <mag>%s</mag> damage.<br><br><gray>Set</gray> <orange-d>"Collector\'s habits"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
+    talent_575_name: 'Hardened by cruelty<white> <CD>30</CD></white>',
     talent_575_description:
-      'Killing an enemy hero reduces the cooldown of all abilities by <num>12%</num><br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Collector\'s habits\</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font>',
+      'Killing an enemy hero reduces the cooldown of all abilities by <num>12%</num><br><br> <gray>Set</gray> <orange-d>"Collector\'s habits\</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
     talent_576_name: 'Colossal potential',
     talent_576_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Collector\'s habits\</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font>',
+      '<gray>Set</gray> <orange-d>"Collector\'s habits\</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
     talent_577_name: 'The Spirit of Frolic',
     talent_577_description:
-      "The hero's base speed increases by <num>%s</num>.<br><font color=#F08080>On enemy or neutral ground, the hero's speed is additionally increased by <num>%s</num></font><br>Of the passive effects of increasing speed, the maximum one is effective. <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>\"Collector's habits\"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font>",
-    talent_578_name: 'The habit of winning<font color=#FFFFFF> ⌛️30</font>',
+      "The hero's base speed increases by <num>%s</num>.<br><coral-l>On enemy or neutral ground, the hero's speed is additionally increased by <num>%s</num></coral-l><br>Of the passive effects of increasing speed, the maximum one is effective. <br> <br> <gray>Set</gray> <orange-d>\"Collector's habits\"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>",
+    talent_578_name: 'The habit of winning<white> <CD>30</CD></white>',
     talent_578_description:
-      'Restores <num>%s</num> Health for killing an enemy Hero or supporting<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Collector\'s habits\</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font> <br> <font color=#FF9966>4 talents</font> <br> <num>+2</num> <font color=#A5A5A5>for all characteristics</font>',
+      'Restores <num>%s</num> Health for killing an enemy Hero or supporting<br> <br> <gray>Set</gray> <orange-d>"Collector\'s habits\</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
     talent_579_name: 'Deafening Scream',
     talent_579_description:
-      'Increases the duration of talent <tn>Cry of doom</tn> for <num>1</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Cry of Doom"</font>',
+      'Increases the duration of talent <tn>Cry of doom</tn> for <num>1</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
     talent_580_name: 'The Illusion of Freedom',
     talent_580_description:
-      'Talent <tn>An explosive illusion</tn> additionally deals <num>50%</num> damage, depending on the lifetime of the illusion.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Explosive illusion"</font>',
+      'Talent <tn>An explosive illusion</tn> additionally deals <num>50%</num> damage, depending on the lifetime of the illusion.<br> <br> <gray>Set</gray> <orange-d>"Explosive illusion"</orange-d>',
     talent_581_name: 'Flame of Distortion',
     talent_581_description:
-      'All the enemies around the talent target <tn>Insidious Flame</tn> deals <num>10%</num> less damage to targets outside the area of effect.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Insidious flame"</font>',
+      'All the enemies around the talent target <tn>Insidious Flame</tn> deals <num>10%</num> less damage to targets outside the area of effect.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d>',
     talent_582_name: "Predator's Superiority",
     talent_582_description:
-      'Monsters receive additional <num>%s</num> <font color=#B00000>net damage</font> from the hero\'s attacks. Attacking them, the hero replenishes <num>12</num> Health and <num>3</num> Energy in <num>3</num> seconds.<br>Finishing them off, the hero gets <prime>7</prime>. <br><br><pritok>This talent is a prime influx talent. The total received prime from such talents cannot exceed <prime>1000</prime>.</pritok><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Absolute superiority"</font>',
+      'Monsters receive additional <num>%s</num> <red-d>net damage</red-d> from the hero\'s attacks. Attacking them, the hero replenishes <num>12</num> Health and <num>3</num> Energy in <num>3</num> seconds.<br>Finishing them off, the hero gets <prime>7</prime>. <br><br><pritok>This talent is a prime influx talent. The total received prime from such talents cannot exceed <prime>1000</prime>.</pritok><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
     talent_583_name: 'Forest Rage',
     talent_583_description:
-      'Talent <font color=#ff8c00>Forest symbol</font> additionally deals <mag>%s</mag> damage. The damage is distributed evenly across the set targets affected by the class ability.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Forest symbol"</font>',
+      'Talent <orange-d>Forest symbol</orange-d> additionally deals <mag>%s</mag> damage. The damage is distributed evenly across the set targets affected by the class ability.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_584_name: 'The Order of Victory',
     talent_584_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"An experienced warrior"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5> to the highest out of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
     talent_585_name: 'Order of Courage',
     talent_585_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"An experienced warrior"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5> to the highest out of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
     talent_586_name: 'Order of Courage',
     talent_586_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"An experienced warrior"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5> to the highest out of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
     talent_587_name: 'The Order of Nobility',
     talent_587_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"An experienced warrior"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5> to the highest out of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
     talent_588_name: 'Stronghold of Life',
     talent_588_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Impenetrable bulwark"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero\'s damage is reduced by <num>10%</num></font>',
+      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
     talent_589_name: 'Bulwark of Protection',
     talent_589_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Impenetrable bulwark"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero\'s damage is reduced by <num>10%</num></font>',
+      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
     talent_590_name: 'Rampart of Rage',
     talent_590_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Impenetrable bulwark"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero\'s damage is reduced by <num>10%</num></font>',
+      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
     talent_591_name: 'Stronghold of Strength',
     talent_591_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Impenetrable bulwark"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero\'s damage is reduced by <num>10%</num></font>',
+      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
     talent_592_name: 'Volume of Wisdom',
     talent_592_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Wizard\'s Knowledge"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Wizard\'s Knowledge"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</gray>',
     talent_593_name: 'Tom of Agility',
     talent_593_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Wizard\'s Knowledge"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Wizard\'s Knowledge"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</gray>',
     talent_594_name: 'Tom of Cunning',
     talent_594_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Wizard\'s Knowledge"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Wizard\'s Knowledge"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</gray>',
     talent_595_name: 'Tom the Champion',
     talent_595_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Wizard\'s Knowledge"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Wizard\'s Knowledge"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</gray>',
     talent_596_name: 'Talisman of Power',
     talent_596_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Animal Power"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Powers</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Animal Power"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Powers</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</gray>',
     talent_597_name: 'Talisman of agility',
     talent_597_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Animal Power"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Powers</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Animal Power"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Powers</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</gray>',
     talent_598_name: 'Talisman of cunning',
     talent_598_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Animal Power"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Powers</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Animal Power"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Powers</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</gray>',
     talent_599_name: 'Talisman of Might',
     talent_599_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Animal Power"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7</num> <font color=#A5A5A5>Powers</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Animal Power"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Powers</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Intellect by <num>%s</num> (of Strength) for <num>4</num> seconds</gray>',
     talent_600_name: 'The secret of Energy',
     talent_600_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient secrets"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Using talent restores the Hero\'s <num>50</num> Health (⌛️3)</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient secrets"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Using talent restores the Hero\'s <num>50</num> Health (<CD>3</CD>)</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_601_name: 'The secret of Wit',
     talent_601_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient secrets"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Using talent restores the Hero\'s <num>50</num> Health (⌛️3)</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient secrets"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Using talent restores the Hero\'s <num>50</num> Health (<CD>3</CD>)</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_602_name: 'The Mystery of Cruelty',
     talent_602_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient secrets"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Using talent restores the Hero\'s <num>50</num> Health (⌛️3)</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient secrets"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Using talent restores the Hero\'s <num>50</num> Health (<CD>3</CD>)</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_603_name: 'The secret of Mastery',
     talent_603_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient secrets"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Using talent restores the Hero\'s <num>50</num> Health (⌛️3)</font> <br> <font color=#FF9966>3 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient secrets"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Using talent restores the Hero\'s <num>50</num> Health (<CD>3</CD>)</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_604_name: 'The principle of combat',
     talent_604_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial art"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+5</num> <font color=#A5A5A5>stealing Health</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</font>',
+      '<gray>Set</gray> <orange-d>"Martial art"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+5</num> <gray>stealing Health</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</gray>',
     talent_605_name: 'The Principle of Strength',
     talent_605_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial art"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+5</num> <font color=#A5A5A5>stealing Health</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>A hero\'s attack with a <num>13% chance</num> will stun the enemy for <num>0.4</num> seconds</font>',
+      '<gray>Set</gray> <orange-d>"Martial art"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+5</num> <gray>stealing Health</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>A hero\'s attack with a <num>13% chance</num> will stun the enemy for <num>0.4</num> seconds</gray>',
     talent_606_name: 'The Principle of Power',
     talent_606_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial art"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+5</num> <font color=#A5A5A5>stealing Health</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</font>',
+      '<gray>Set</gray> <orange-d>"Martial art"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+5</num> <gray>stealing Health</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</gray>',
     talent_607_name: 'The Principle of agility',
     talent_607_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Martial art"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+5</num> <font color=#A5A5A5>stealing Health</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</font>',
+      '<gray>Set</gray> <orange-d>"Martial art"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+5</num> <gray>stealing Health</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</gray>',
     talent_608_name: 'Speed Spinner',
     talent_608_description:
-      'The Hero\'s speed increases by <font color=#dcca64>%s</font> and additionally by <font color=#dcca64>0.3</font> every minute. The maximum total increase is <font color=#dcca64>6</font><br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Every <num>4</num> seconds. gives <prime>+1</prime></font>',
+      'The Hero\'s speed increases by <yellow>%s</yellow> and additionally by <yellow>0.3</yellow> every minute. The maximum total increase is <yellow>6</yellow><br><br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_609_name: 'The Time of the first',
     talent_609_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Hot time"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Ultimate ability recovery time is <num>30%</num> less</font>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
     talent_610_name: 'The Time of the Wise ',
     talent_610_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Hot time"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Ultimate ability recovery time is <num>30%</num> less</font>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
     talent_611_name: 'The Time of the Strong ',
     talent_611_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Hot time"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Ultimate ability recovery time is <num>30%</num> less</font>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
     talent_612_name: 'The Time of the Brave',
     talent_612_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Hot time"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Ultimate ability recovery time is <num>30%</num> less</font>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
     talent_613_name: 'Time for change ',
     talent_613_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Hot time"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Ultimate ability recovery time is <num>30%</num> less</font>',
-    talent_614_name: 'Life path<font color=#FFFFFF> ⌛️70</font>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
+    talent_614_name: 'Life path<white> <CD>70</CD></white>',
     talent_614_description:
-      '<num>Protective</num><br><br>Restores <num>%s</num> when used. Healths.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life path"</font><br><br><font color=#A5A5A5>- can be improved by <num>2</num> talents</font>',
+      '<num>Protective</num><br><br>Restores <num>%s</num> when used. Healths.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_615_name: 'The Path of Rage',
     talent_615_description:
-      'Talent recovery time <tn>Life path</tn> is reduced by <num>%s</num> sec.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life path"</font>',
+      'Talent recovery time <tn>Life path</tn> is reduced by <num>%s</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d>',
     talent_616_name: 'The Path of Strength',
     talent_616_description:
-      'Talent <tn>Life Path</tn> passively increases the Hero\'s Strength by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life path"</font>',
+      'Talent <tn>Life Path</tn> passively increases the Hero\'s Strength by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d>',
     talent_617_name: 'The Path of Intellect',
     talent_617_description:
-      'Talent <tn>Life Path</tn> passively increases the Hero\'s Intellect by <num>%s</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life path"</font>',
+      'Talent <tn>Life Path</tn> passively increases the Hero\'s Intellect by <num>%s</num>.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d>',
     talent_618_name: 'The Path of Harmony',
     talent_618_description:
-      'Talent <tn>Life path</tn> restores by <num>%s</num> More health.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Life path"</font>',
-    talent_619_name: 'The Healing Pillar<font color=#FFFFFF> ⌛️90</font>',
+      'Talent <tn>Life path</tn> restores by <num>%s</num> More health.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d>',
+    talent_619_name: 'The Healing Pillar<white> <CD>90</CD></white>',
     talent_619_description:
-      '<num>Protective</num><br><br>For <num>4</num> seconds, it creates an area in which allies restore <num>5%</num> of maximum Health per second <br><br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Healing Pillar"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Healing Pillar</font></font>',
+      '<num>Protective</num><br><br>For <num>4</num> seconds, it creates an area in which allies restore <num>5%</num> of maximum Health per second <br><br> <gray>Set</gray> <orange-d>"The Healing Pillar"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Healing Pillar</orange-d></gray>',
     talent_620_name: 'Pillar of Might',
     talent_620_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Healing Pillar"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Healing Pillar</font></font>',
+      '<gray>Set</gray> <orange-d>"The Healing Pillar"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Healing Pillar</orange-d></gray>',
     talent_621_name: 'Pillar of Power',
     talent_621_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Healing Pillar"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Healing Pillar</font></font>',
+      '<gray>Set</gray> <orange-d>"The Healing Pillar"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Healing Pillar</orange-d></gray>',
     talent_622_name: 'Pillar of Intellect',
     talent_622_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Healing Pillar"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Healing Pillar</font></font>',
+      '<gray>Set</gray> <orange-d>"The Healing Pillar"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Healing Pillar</orange-d></gray>',
     talent_623_name: 'A Moment of Cunning',
     talent_623_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Desperate moment"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A desperate moment</font></font>',
-    talent_624_name: 'Desperate moment<font color=#FFFFFF> ⌛️240</font>',
+      '<gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
+    talent_624_name: 'Desperate moment<white> <CD>240</CD></white>',
     talent_624_description:
-      '<num>Tactical</num><br><br>Instantly restores all class talents except the ultimate ability <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Desperate moment"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A desperate moment</font></font>',
+      '<num>Tactical</num><br><br>Instantly restores all class talents except the ultimate ability <br> <br> <gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
     talent_625_name: 'A Moment of audacity',
     talent_625_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Desperate moment"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A desperate moment</font></font>',
+      '<gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
     talent_626_name: 'A Moment of wit',
     talent_626_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Desperate moment"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A desperate moment</font></font>',
+      '<gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
     talent_627_name: 'Champion of Stamina',
     talent_627_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Reward of the Champion"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The reward of the champion</font></font>',
-    talent_628_name: 'The Reward of the champion<font color=#FFFFFF> ⌛️90</font>',
+      '<gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
+    talent_628_name: 'The Reward of the champion<white> <CD>90</CD></white>',
     talent_628_description:
-      '<num>Protective</num><br><br>For <num>4</num> seconds, redirects <num>%s%</num> (from the greatest of Stamina and Will) of the damage received back to the source <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Reward of the Champion"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The reward of the champion</font></font>',
+      '<num>Protective</num><br><br>For <num>4</num> seconds, redirects <num>%s%</num> (from the greatest of Stamina and Will) of the damage received back to the source <br> <br> <gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
     talent_629_name: 'Champion of Stamina',
     talent_629_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Reward of the Champion"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The reward of the champion</font></font>',
+      '<gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
     talent_630_name: 'Champion of Freedom',
     talent_630_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Reward of the Champion"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Stamina and Will</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The reward of the champion</font></font>',
+      '<gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
     talent_631_name: 'Destructive Agility',
     talent_631_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Power of the destroyer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Agility and Cunning</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the destroyer</font></font>',
-    talent_632_name: 'The Power of the destroyer<font color=#FFFFFF> ⌛️180</font>',
+      '<gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
+    talent_632_name: 'The Power of the destroyer<white> <CD>180</CD></white>',
     talent_632_description:
-      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Hero\'s attacks deal additional damage equal to <num>5%</num> of the target\'s max Health (bosses <num>2%</num>) <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Power of the destroyer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Agility and Cunning</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the destroyer</font></font>',
+      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Hero\'s attacks deal additional damage equal to <num>5%</num> of the target\'s max Health (bosses <num>2%</num>) <br> <br> <gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
     talent_633_name: 'Destructive Knowledge',
     talent_633_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Power of the destroyer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Agility and Cunning</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the destroyer</font></font>',
+      '<gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
     talent_634_name: 'Destructive Rage',
     talent_634_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Power of the destroyer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Agility and Cunning</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the destroyer</font></font>',
+      '<gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
     talent_635_name: 'Infantry assault',
     talent_635_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Storming the Fortress"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></font><br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>Storming the fortress</font></font>',
+      '<gray>Set</gray> <orange-d>"Storming the Fortress"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></gray><br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>Storming the fortress</orange-d></gray>',
     talent_636_name: 'Cavalry assault',
     talent_636_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Storming the Fortress"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></font><br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>Storming the fortress</font></font>',
+      '<gray>Set</gray> <orange-d>"Storming the Fortress"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></gray><br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>Storming the fortress</orange-d></gray>',
     talent_637_name: 'Officer assault',
     talent_637_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Storming the Fortress"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></font><br> <font color=#FF9966>2 talents</font> <br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>Storming the fortress</font></font>',
-    talent_638_name: 'Storming the fortress<font color=#FFFFFF> ⌛️240</font>',
+      '<gray>Set</gray> <orange-d>"Storming the Fortress"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></gray><br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>Storming the fortress</orange-d></gray>',
+    talent_638_name: 'Storming the fortress<white> <CD>240</CD></white>',
     talent_638_description:
-      '<num>Tactical</num><br><br>For <num>5</num> seconds, it affects the Tower: either making the allied tower invulnerable, or making the enemy tower unable to attack <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Storming the Fortress"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>The allied towers next to the hero increase the damage to the heroes, and enemy ones reduce by <num>10%</num></font> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>Storming the fortress</font></font>',
-    talent_639_name: 'Dazzling glory<font color=#FFFFFF> ⌛️180</font>',
+      '<num>Tactical</num><br><br>For <num>5</num> seconds, it affects the Tower: either making the allied tower invulnerable, or making the enemy tower unable to attack <br> <br> <gray>Set</gray> <orange-d>"Storming the Fortress"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The allied towers next to the hero increase the damage to the heroes, and enemy ones reduce by <num>10%</num></gray> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>Storming the fortress</orange-d></gray>',
+    talent_639_name: 'Dazzling glory<white> <CD>180</CD></white>',
     talent_639_description:
-      '<num>Protective</num><br><br>The hero blinds all opponents around him for <num>6</num> seconds, increasing the chance of their miss by <num>50%</num><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dazzling glory"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dazzling glory</font></font>',
+      '<num>Protective</num><br><br>The hero blinds all opponents around him for <num>6</num> seconds, increasing the chance of their miss by <num>50%</num><br> <br> <gray>Set</gray> <orange-d>"Dazzling glory"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dazzling glory</orange-d></gray>',
     talent_640_name: 'Nice actress',
     talent_640_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dazzling glory"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dazzling glory</font></font>',
+      '<gray>Set</gray> <orange-d>"Dazzling glory"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dazzling glory</orange-d></gray>',
     talent_641_name: 'The Glorious Actor',
     talent_641_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dazzling glory"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dazzling glory</font></font>',
+      '<gray>Set</gray> <orange-d>"Dazzling glory"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dazzling glory</orange-d></gray>',
     talent_642_name: 'Nice Operator',
     talent_642_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dazzling glory"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dazzling glory</font></font>',
+      '<gray>Set</gray> <orange-d>"Dazzling glory"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dazzling glory</orange-d></gray>',
     talent_643_name: 'The Glorious screenwriter',
     talent_643_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dazzling glory"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dazzling glory</font></font>',
+      '<gray>Set</gray> <orange-d>"Dazzling glory"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dazzling glory</orange-d></gray>',
     talent_644_name: 'The Glorious director',
     talent_644_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dazzling glory"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dazzling glory</font></font>',
-    talent_645_name: 'Command Barrier<font color=#FFFFFF> ⌛️120</font>',
+      '<gray>Set</gray> <orange-d>"Dazzling glory"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dazzling glory</orange-d></gray>',
+    talent_645_name: 'Command Barrier<white> <CD>120</CD></white>',
     talent_645_description:
       "<num>Protective</num><br><br>Protects himself and his allies around for <num>7</num> seconds, absorbing damage equal to <num>15%</num> of the target's maximum Health.",
     talent_646_name: 'Accelerated the Portal',
     talent_646_description: 'Reduces the Portal recovery time for the entire team by <num>8</num> seconds.',
-    talent_647_name: 'Legendary Cover<font color=#FFFFFF> ⌛️120</font>',
+    talent_647_name: 'Legendary Cover<white> <CD>120</CD></white>',
     talent_647_description:
       '<num>Tactical</num><br><br>Via <num>1.5</num> seconds after use, the hero becomes invisible for <num>10</num> seconds.',
-    talent_648_name: 'Legendary Petrification<font color=#FFFFFF> ⌛️90</font>',
+    talent_648_name: 'Legendary Petrification<white> <CD>90</CD></white>',
     talent_648_description:
       '<num>The attacker</num><br><br><num>3</num> seconds are created, during which the specified enemy hero cannot do anything and takes <num>40%</num> less damage.',
-    talent_649_name: 'Legendary Liberation<font color=#FFFFFF> ⌛️130</font>',
+    talent_649_name: 'Legendary Liberation<white> <CD>130</CD></white>',
     talent_649_description:
       '<num>Protective</num><br><br>Removes all negative effects from himself or from the specified allied hero and makes him immune to the effects of control for <num>1.5</num> sec.',
-    talent_650_name: 'Legendary Distortion<font color=#FFFFFF> ⌛️150</font>',
+    talent_650_name: 'Legendary Distortion<white> <CD>150</CD></white>',
     talent_650_description:
       '<num>Protective</num><br><br>The talent owner or the specified enemy hero cannot do anything and is invulnerable for <num>2.5</num> seconds At the end of the effect, increases the speed of the ally or reduces the speed of the enemy by <num>15%</num> for <num>2</num> seconds.',
     talent_651_name: 'The Skill of a Stargazer',
     talent_651_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The disfavor of the Stargazer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The disgrace of the Stargazer</font></font>',
+      '<gray>Set</gray> <orange-d>"The disfavor of the Stargazer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The disgrace of the Stargazer</orange-d></gray>',
     talent_652_name: 'The Audacity of a Stargazer',
     talent_652_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The disfavor of the Stargazer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The disgrace of the Stargazer</font></font>',
+      '<gray>Set</gray> <orange-d>"The disfavor of the Stargazer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The disgrace of the Stargazer</orange-d></gray>',
     talent_653_name: "The Astrologer's Treachery",
     talent_653_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The disfavor of the Stargazer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The disgrace of the Stargazer</font></font>',
-    talent_654_name: "Stargazer's disgrace<font color=#FFFFFF> ⌛️120</font>",
+      '<gray>Set</gray> <orange-d>"The disfavor of the Stargazer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The disgrace of the Stargazer</orange-d></gray>',
+    talent_654_name: "Stargazer's disgrace<white> <CD>120</CD></white>",
     talent_654_description:
-      '<num>The attacker</num><br><br>After <num>2</num> seconds. in the specified area, it deals damage to enemies equal to <num>15%</num> of maximum Health, and turns enemy land into neutral. For <num>15</num> seconds. prevents allies from using talents from the set <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The disfavor of the Stargazer"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The disgrace of the Stargazer</font></font>',
+      '<num>The attacker</num><br><br>After <num>2</num> seconds. in the specified area, it deals damage to enemies equal to <num>15%</num> of maximum Health, and turns enemy land into neutral. For <num>15</num> seconds. prevents allies from using talents from the set <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"The disfavor of the Stargazer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The disgrace of the Stargazer</orange-d></gray>',
     talent_655_name: 'Captive Strength',
     talent_655_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dense Captivity"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dense Captivity</font></font>',
+      '<gray>Set</gray> <orange-d>"Dense Captivity"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dense Captivity</orange-d></gray>',
     talent_656_name: 'Captive Stamina',
     talent_656_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dense Captivity"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dense Captivity</font></font>',
+      '<gray>Set</gray> <orange-d>"Dense Captivity"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dense Captivity</orange-d></gray>',
     talent_657_name: 'The Captive will',
     talent_657_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dense Captivity"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dense Captivity</font></font>',
-    talent_658_name: 'Dense captivity<font color=#FFFFFF> ⌛️150</font>',
+      '<gray>Set</gray> <orange-d>"Dense Captivity"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dense Captivity</orange-d></gray>',
+    talent_658_name: 'Dense captivity<white> <CD>150</CD></white>',
     talent_658_description:
-      '<num>Tactical</num><br><br>Creates around the Hero for <num>7</num> seconds. <rz>the native land</rz> and the area from which it is impossible to leave. Allied heroes in this area take <num>15%</num> less damage. For <num>15</num> seconds. prevents allies from using talents from the set <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Dense Captivity"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Dense Captivity</font></font>',
+      '<num>Tactical</num><br><br>Creates around the Hero for <num>7</num> seconds. <rz>the native land</rz> and the area from which it is impossible to leave. Allied heroes in this area take <num>15%</num> less damage. For <num>15</num> seconds. prevents allies from using talents from the set <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"Dense Captivity"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Stamina and Will in the <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Dense Captivity</orange-d></gray>',
     talent_659_name: 'The Power of Nature',
     talent_659_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The gift of nature"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A gift of nature</font></font>',
+      '<gray>Set</gray> <orange-d>"The gift of nature"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A gift of nature</orange-d></gray>',
     talent_660_name: 'Force of Nature',
     talent_660_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The gift of nature"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A gift of nature</font></font>',
+      '<gray>Set</gray> <orange-d>"The gift of nature"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A gift of nature</orange-d></gray>',
     talent_661_name: 'The Wisdom of Nature',
     talent_661_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The gift of nature"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A gift of nature</font></font>',
-    talent_662_name: 'Gift of Nature<font color=#FFFFFF> ⌛️90</font>',
+      '<gray>Set</gray> <orange-d>"The gift of nature"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A gift of nature</orange-d></gray>',
+    talent_662_name: 'Gift of Nature<white> <CD>90</CD></white>',
     talent_662_description:
-      '<num>Protective</num><br><br>Creates in the specified area for <num>10</num> seconds. His native Land, and after <num>2</num> seconds. Restores allied heroes <num>15%</num> of their maximum Health. For <num>15</num> seconds. prevents allies from using talents from the set <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The gift of nature"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>A gift of nature</font></font>',
+      '<num>Protective</num><br><br>Creates in the specified area for <num>10</num> seconds. His native Land, and after <num>2</num> seconds. Restores allied heroes <num>15%</num> of their maximum Health. For <num>15</num> seconds. prevents allies from using talents from the set <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"The gift of nature"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect on <rz>native earth</rz> or neutral earth</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A gift of nature</orange-d></gray>',
     talent_663_name: 'Amulet of Stars',
     talent_663_description:
-      'Triggered when using a talent from the set <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Protective amulets"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Protects the hero for <num>10</num> seconds, absorbing damage of <num>15%</num> of maximum Health</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Additionally triggered when using the set by enemy heroes around</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Additionally triggered when using the set by allied heroes around </font>',
+      'Triggered when using a talent from the set <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"Protective amulets"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Protects the hero for <num>10</num> seconds, absorbing damage of <num>15%</num> of maximum Health</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Additionally triggered when using the set by enemy heroes around</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Additionally triggered when using the set by allied heroes around </gray>',
     talent_664_name: 'Amulet of Nature',
     talent_664_description:
-      'Triggered when using a talent from the set <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Protective amulets"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Protects the hero for <num>10</num> seconds, absorbing damage of <num>15%</num> of maximum Health</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Additionally triggered when using the set by enemy heroes around</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Additionally triggered when using the set by allied heroes around </font>',
+      'Triggered when using a talent from the set <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"Protective amulets"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Protects the hero for <num>10</num> seconds, absorbing damage of <num>15%</num> of maximum Health</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Additionally triggered when using the set by enemy heroes around</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Additionally triggered when using the set by allied heroes around </gray>',
     talent_665_name: 'Amulet of the Thicket',
     talent_665_description:
-      'Triggered when using a talent from the set <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Protective amulets"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Protects the hero for <num>10</num> seconds, absorbing damage of <num>15%</num> of maximum Health</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Additionally triggered when using the set by enemy heroes around</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Additionally triggered when using the set by allied heroes around </font>',
+      'Triggered when using a talent from the set <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"Protective amulets"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Protects the hero for <num>10</num> seconds, absorbing damage of <num>15%</num> of maximum Health</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Additionally triggered when using the set by enemy heroes around</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Additionally triggered when using the set by allied heroes around </gray>',
     talent_666_name: 'The superiority of the Falcon',
     talent_666_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Falconry"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect during the day</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Falconry</font></font>',
+      '<gray>Set</gray> <orange-d>"Falconry"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect during the day</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Falconry</orange-d></gray>',
     talent_667_name: "The Falcon's Grip",
     talent_667_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Falconry"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect during the day</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Falconry</font></font>',
+      '<gray>Set</gray> <orange-d>"Falconry"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect during the day</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Falconry</orange-d></gray>',
     talent_668_name: 'The Wisdom of the Falcon',
     talent_668_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Falconry"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect during the day</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Falconry</font></font>',
-    talent_669_name: 'Falcon vision<font color=#FFFFFF> ⌛️120</font>',
+      '<gray>Set</gray> <orange-d>"Falconry"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect during the day</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Falconry</orange-d></gray>',
+    talent_669_name: 'Falcon vision<white> <CD>120</CD></white>',
     talent_669_description:
-      '<num>Tactical</num><br><br>Opens the position of all visible enemy heroes on the map for <num>5</num> seconds. At night, it additionally blinds them, increasing the chance of a miss by <num>50%</num>.<br>For <num>15</num> seconds, it does not allow allies to use set\'s talents <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Falconry"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>to the greatest of Strength and Intellect during the day</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Falconry</font></font>',
+      '<num>Tactical</num><br><br>Opens the position of all visible enemy heroes on the map for <num>5</num> seconds. At night, it additionally blinds them, increasing the chance of a miss by <num>50%</num>.<br>For <num>15</num> seconds, it does not allow allies to use set\'s talents <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"Falconry"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>to the greatest of Strength and Intellect during the day</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Falconry</orange-d></gray>',
     talent_670_name: "The Raven's Tread",
     talent_670_description:
-      "The hero's Base Speed increases by <num>%s</num>.<br>At night, the hero's base Speed is additionally increased by <num>5</num>.<br>Of the passive speed increase effects, the maximum one is effective <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>\"Crow's Cover\"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+8</num> <font color=#A5A5A5>for the greatest of Agility and Cunning at night</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Raven pokrov</font></font>",
+      "The hero's Base Speed increases by <num>%s</num>.<br>At night, the hero's base Speed is additionally increased by <num>5</num>.<br>Of the passive speed increase effects, the maximum one is effective <br> <br> <gray>Set</gray> <orange-d>\"Crow's Cover\"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> <gray>for the greatest of Agility and Cunning at night</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Raven pokrov</orange-d></gray>",
     talent_671_name: "The Raven's Cunning",
     talent_671_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Crow\'s Cover"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>for the greatest of Agility and Cunning at night</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Crow\'s Cover</font></font>',
+      '<gray>Set</gray> <orange-d>"Crow\'s Cover"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>for the greatest of Agility and Cunning at night</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Crow\'s Cover</orange-d></gray>',
     talent_672_name: 'The resourcefulness of the raven',
     talent_672_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Crow\'s Cover"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>for the greatest of Agility and Cunning at night</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Crow\'s Cover</font></font>',
-    talent_673_name: "Crow's Cover<font color=#FFFFFF> ⌛️120</font>",
+      '<gray>Set</gray> <orange-d>"Crow\'s Cover"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>for the greatest of Agility and Cunning at night</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Crow\'s Cover</orange-d></gray>',
+    talent_673_name: "Crow's Cover<white> <CD>120</CD></white>",
     talent_673_description:
-      '<num>Tactical</num><br><br>After <num>1</num> second after use, the hero and the allies around him become invisible and accelerate by <num>20%</num> for <num>8</num> seconds. At night, the talent\'s effects last for <num>5</num> seconds longer.<br>For <num>15</num> seconds, it does not allow allies to use set\'s talents <font color=#ff8c00>"Legendary omens"</font> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Crow\'s Cover"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>for the greatest of Agility and Cunning at night</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Crow\'s Cover</font></font>',
+      '<num>Tactical</num><br><br>After <num>1</num> second after use, the hero and the allies around him become invisible and accelerate by <num>20%</num> for <num>8</num> seconds. At night, the talent\'s effects last for <num>5</num> seconds longer.<br>For <num>15</num> seconds, it does not allow allies to use set\'s talents <orange-d>"Legendary omens"</orange-d> <br> <br> <gray>Set</gray> <orange-d>"Crow\'s Cover"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>for the greatest of Agility and Cunning at night</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Crow\'s Cover</orange-d></gray>',
     talent_674_name: "The Captain's Foresight",
     talent_674_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pirate Adventures"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></font>',
+      '<gray>Set</gray> <orange-d>"Pirate Adventures"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></gray>',
     talent_675_name: 'The Strength of the Sea Devil',
     talent_675_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pirate Adventures"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></font>',
+      '<gray>Set</gray> <orange-d>"Pirate Adventures"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></gray>',
     talent_676_name: 'Boarding enthusiasm',
     talent_676_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pirate Adventures"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></font>',
+      '<gray>Set</gray> <orange-d>"Pirate Adventures"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></gray>',
     talent_677_name: 'The old rascal',
     talent_677_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pirate Adventures"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></font>',
+      '<gray>Set</gray> <orange-d>"Pirate Adventures"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></gray>',
     talent_678_name: 'Thick-skinned bosun',
     talent_678_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pirate Adventures"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></font>',
+      '<gray>Set</gray> <orange-d>"Pirate Adventures"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></gray>',
     talent_679_name: 'Pirate Fortune',
     talent_679_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Pirate Adventures"</font> <br> <br> <font color=#FF9966>2 talents</font><br> <num>+6</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></font>',
+      '<gray>Set</gray> <orange-d>"Pirate Adventures"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>- Melee Heroes: a <num>15%</num> chance to dodge enemy attacks. <br>- Ranged Heroes: increase attack radius by <num>20%</num></gray>',
     talent_680_name: 'The Desired wisdom',
     talent_680_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Сherished desire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>To the greatest of strength and Intellect</font> <BR> <font color=#Ff9966>3 talents</font> <BR> <font color=#a5a5a5>Allows you to use talent <font color=#Ff8c00>Сherished desire</font></font> <BR> <font color=#ff9966>4 talents</font> <br> <font color=#a5a5a5>Effects talent <font color=#ff8c00>Сherished desire</font> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</font>',
+      '<gray>Set</gray> <orange-d>"Сherished desire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>To the greatest of strength and Intellect</gray> <BR> <orange-l>3 talents</orange-l> <BR> <gray>Allows you to use talent <orange-d>Сherished desire</orange-d></gray> <BR> <orange-l>4 talents</orange-l> <br> <gray>Effects talent <orange-d>Сherished desire</orange-d> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</gray>',
     talent_681_name: 'Desirable Strength',
     talent_681_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Сherished desire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>To the greatest of strength and Intellect</font> <BR> <font color=#Ff9966>3 talents</font> <BR> <font color=#a5a5a5>Allows you to use talent <font color=#Ff8c00>Сherished desire</font></font> <BR> <font color=#ff9966>4 talents</font> <br> <font color=#a5a5a5>Effects talent <font color=#ff8c00>Сherished desire</font> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</font>',
+      '<gray>Set</gray> <orange-d>"Сherished desire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>To the greatest of strength and Intellect</gray> <BR> <orange-l>3 talents</orange-l> <BR> <gray>Allows you to use talent <orange-d>Сherished desire</orange-d></gray> <BR> <orange-l>4 talents</orange-l> <br> <gray>Effects talent <orange-d>Сherished desire</orange-d> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</gray>',
     talent_682_name: 'Good luck',
     talent_682_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Сherished desire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>To the greatest of strength and Intellect</font> <BR> <font color=#Ff9966>3 talents</font> <BR> <font color=#a5a5a5>Allows you to use talent <font color=#Ff8c00>Сherished desire</font></font> <BR> <font color=#ff9966>4 talents</font> <br> <font color=#a5a5a5>Effects talent <font color=#ff8c00>Сherished desire</font> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</font>',
+      '<gray>Set</gray> <orange-d>"Сherished desire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>To the greatest of strength and Intellect</gray> <BR> <orange-l>3 talents</orange-l> <BR> <gray>Allows you to use talent <orange-d>Сherished desire</orange-d></gray> <BR> <orange-l>4 talents</orange-l> <br> <gray>Effects talent <orange-d>Сherished desire</orange-d> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</gray>',
     talent_683_name: 'Desirable resourcefulness',
     talent_683_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Сherished desire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>To the greatest of strength and Intellect</font> <BR> <font color=#Ff9966>3 talents</font> <BR> <font color=#a5a5a5>Allows you to use talent <font color=#Ff8c00>Сherished desire</font></font> <BR> <font color=#ff9966>4 talents</font> <br> <font color=#a5a5a5>Effects talent <font color=#ff8c00>Сherished desire</font> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</font>',
-    talent_684_name: 'Сherished desire<font color=#FFFFFF> ⌛️180</font>',
+      '<gray>Set</gray> <orange-d>"Сherished desire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>To the greatest of strength and Intellect</gray> <BR> <orange-l>3 talents</orange-l> <BR> <gray>Allows you to use talent <orange-d>Сherished desire</orange-d></gray> <BR> <orange-l>4 talents</orange-l> <br> <gray>Effects talent <orange-d>Сherished desire</orange-d> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</gray>',
+    talent_684_name: 'Сherished desire<white> <CD>180</CD></white>',
     talent_684_description:
-      ' <num>The attacker</num><br><br>is created <num>1</num> sec. The specified hero cannot attack, apply abilities, or move for <num>4</num> seconds. The effect ends prematurely, if the target is more than <num>10%</num> of its maximum health <br> <br> <font color=#A5A5A5>set</font> <font color=#ff8c00>"Сherished desire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>To the greatest of strength and Intellect</font> <BR> <font color=#Ff9966>3 talents</font> <BR> <font color=#a5a5a5>Allows you to use talent <font color=#Ff8c00>Сherished desire</font></font> <BR> <font color=#ff9966>4 talents</font> <br> <font color=#a5a5a5>Effects talent <font color=#ff8c00>Сherished desire</font> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</font>',
+      ' <num>The attacker</num><br><br>is created <num>1</num> sec. The specified hero cannot attack, apply abilities, or move for <num>4</num> seconds. The effect ends prematurely, if the target is more than <num>10%</num> of its maximum health <br> <br> <gray>set</gray> <orange-d>"Сherished desire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>To the greatest of strength and Intellect</gray> <BR> <orange-l>3 talents</orange-l> <BR> <gray>Allows you to use talent <orange-d>Сherished desire</orange-d></gray> <BR> <orange-l>4 talents</orange-l> <br> <gray>Effects talent <orange-d>Сherished desire</orange-d> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</gray>',
     talent_685_name: 'Desired Valor',
     talent_685_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Сherished desire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+8</num> <font color=#A5A5A5>To the greatest of strength and Intellect</font> <BR> <font color=#Ff9966>3 talents</font> <BR> <font color=#a5a5a5>Allows you to use talent <font color=#Ff8c00>Сherished desire</font></font> <BR> <font color=#ff9966>4 talents</font> <br> <font color=#a5a5a5>Effects talent <font color=#ff8c00>Сherished desire</font> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</font>',
+      '<gray>Set</gray> <orange-d>"Сherished desire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> <gray>To the greatest of strength and Intellect</gray> <BR> <orange-l>3 talents</orange-l> <BR> <gray>Allows you to use talent <orange-d>Сherished desire</orange-d></gray> <BR> <orange-l>4 talents</orange-l> <br> <gray>Effects talent <orange-d>Сherished desire</orange-d> act on <num>1</num> sec. more. To interrupt the effect, you need to deal <num>5%</num> more damage</gray>',
     talent_686_name: 'Cold-blooded destroyer',
     talent_686_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Ruiner of life"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+3%</num> <font color=#a5a5a5>to Crit chance</font> <br> <font color=#ff9966>3 talents</font> <BR> <num>+30%</num> <font color=#a5a5a5>to the Crit multiplier</font></font>',
+      '<gray>Set</gray> <orange-d>"Ruiner of life"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+3%</num> <gray>to Crit chance</gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+30%</num> <gray>to the Crit multiplier</gray></font>',
     talent_687_name: 'Swift destroyer',
     talent_687_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Ruiner of life"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+3%</num> <font color=#a5a5a5>to the Crit\'s chance</font> <br> <font color=#ff9966>3 talents</font> <BR> <num>+30%</num> <font color=#a5a5a5>to the Crit multiplier</font></font>',
+      '<gray>Set</gray> <orange-d>"Ruiner of life"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+3%</num> <gray>to the Crit\'s chance</gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+30%</num> <gray>to the Crit multiplier</gray></font>',
     talent_688_name: 'Stealthy destroyer',
     talent_688_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Ruiner of life"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+3%</num> <font color=#a5a5a5>to Crit\'s chance</font> <br> <font color=#ff9966>3 talents</font> <BR> <num>+30%</num> <font color=#a5a5a5>to the Crit multiplier</font></font>',
+      '<gray>Set</gray> <orange-d>"Ruiner of life"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+3%</num> <gray>to Crit\'s chance</gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+30%</num> <gray>to the Crit multiplier</gray></font>',
     talent_689_name: 'Master destroyer',
     talent_689_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Ruiner of life"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+3%</num> <font color=#a5a5a5>to Crit\'s chance</font> <br> <font color=#ff9966>3 talents</font> <BR> <num>+30%</num> <font color=#a5a5a5>to the Crit multiplier</font></font>',
+      '<gray>Set</gray> <orange-d>"Ruiner of life"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+3%</num> <gray>to Crit\'s chance</gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+30%</num> <gray>to the Crit multiplier</gray></font>',
     talent_690_name: 'Tamer of light',
     talent_690_description:
-      '<font color=#a5a5a5>Set</font> <font color=#ff8c00>"Tamer of the Elements"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#a5a5a5></font> <br> <font color=#ff9966>3 talents</font> <BR> <num>+10%</num> <font color=#a5a5a5>to Talents penetration </font></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+10%</num> <gray>to Talents penetration </gray></font>',
     talent_691_name: 'Flame Tamer',
     talent_691_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Tamer of the Elements"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <num>+10%</num> <font color=#A5A5A5>for Talent Testing</font></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
     talent_692_name: 'The Lightning Tamer',
     talent_692_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Tamer of the Elements"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <num>+10%</num> <font color=#A5A5A5>for Talent Testing</font></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
     talent_693_name: 'Tamer of Darkness',
     talent_693_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Tamer of the Elements"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>-6%</num>⌛ <font color=#A5A5A5></font> <br> <font color=#FF9966>3 talents</font> <br> <num>+10%</num> <font color=#A5A5A5>for Talent Testing</font></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
     talent_694_name: 'The Solar Guardian',
     talent_694_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Keeper of Dreams"</font><font color=#FFFFFF> ⌛️60</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7%</num> <font color=#A5A5A5>to protect against talents</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</font></font>',
+      '<gray>Set</gray> <orange-d>"Keeper of Dreams"</orange-d><white> <CD>60</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7%</num> <gray>to protect against talents</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</gray></font>',
     talent_695_name: 'Moon Guardian',
     talent_695_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Keeper of Dreams"</font><font color=#FFFFFF> ⌛️60</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7%</num> <font color=#A5A5A5>to protect against talents</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</font></font>',
+      '<gray>Set</gray> <orange-d>"Keeper of Dreams"</orange-d><white> <CD>60</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7%</num> <gray>to protect against talents</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</gray></font>',
     talent_696_name: 'The Star Guardian',
     talent_696_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Keeper of Dreams"</font><font color=#FFFFFF> ⌛️60</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7%</num> <font color=#A5A5A5>to protect against talents</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</font></font>',
+      '<gray>Set</gray> <orange-d>"Keeper of Dreams"</orange-d><white> <CD>60</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7%</num> <gray>to protect against talents</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</gray></font>',
     talent_697_name: 'Heavenly Guardian',
     talent_697_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Keeper of Dreams"</font><font color=#FFFFFF> ⌛️60</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+7%</num> <font color=#A5A5A5>to protect against talents</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</font></font>',
-    talent_698_name: 'The Summoner of Beasts<font color=#FFFFFF> ⌛️90</font>',
+      '<gray>Set</gray> <orange-d>"Keeper of Dreams"</orange-d><white> <CD>60</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7%</num> <gray>to protect against talents</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</gray></font>',
+    talent_698_name: 'The Summoner of Beasts<white> <CD>90</CD></white>',
     talent_698_description:
-      '<num>Tactical</num><br><br>For <num>10</num> seconds, the hero\'s summoned creatures deal <num>30%</num> more damage, they take <num>30%</num> less damage and accelerate by <num>30%</num> <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Summoner\'s Grimoire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+10</num> <font color=#A5A5A5>for all characteristics of summoned creatures</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>"Summoner of Beasts"</font></font>',
+      '<num>Tactical</num><br><br>For <num>10</num> seconds, the hero\'s summoned creatures deal <num>30%</num> more damage, they take <num>30%</num> less damage and accelerate by <num>30%</num> <br> <br> <gray>Set</gray> <orange-d>"Summoner\'s Grimoire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+10</num> <gray>for all characteristics of summoned creatures</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>"Summoner of Beasts"</orange-d></gray>',
     talent_699_name: 'Summoner of Doppelgangers',
     talent_699_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Summoner\'s Grimoire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+10</num> <font color=#A5A5A5>for all characteristics of summoned creatures</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>"Summoner of Beasts"</font></font>',
+      '<gray>Set</gray> <orange-d>"Summoner\'s Grimoire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+10</num> <gray>for all characteristics of summoned creatures</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>"Summoner of Beasts"</orange-d></gray>',
     talent_700_name: 'The Summoner of Monsters',
     talent_700_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Summoner\'s Grimoire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+10</num> <font color=#A5A5A5>for all characteristics of summoned creatures</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>"Summoner of Beasts"</font></font>',
+      '<gray>Set</gray> <orange-d>"Summoner\'s Grimoire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+10</num> <gray>for all characteristics of summoned creatures</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>"Summoner of Beasts"</orange-d></gray>',
     talent_701_name: 'Summoner of Spirits',
     talent_701_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Summoner\'s Grimoire"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <num>+10</num> <font color=#A5A5A5>for all characteristics of summoned creatures</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use the talent <font color=#ff8c00>"Summoner of Beasts"</font></font>',
+      '<gray>Set</gray> <orange-d>"Summoner\'s Grimoire"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+10</num> <gray>for all characteristics of summoned creatures</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>"Summoner of Beasts"</orange-d></gray>',
     talent_702_name: 'The Imperious Liberator',
     talent_702_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Liberator of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></font>',
+      '<gray>Set</gray> <orange-d>"Liberator of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></gray>',
     talent_703_name: 'The Nimble Liberator',
     talent_703_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Liberator of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></font>',
+      '<gray>Set</gray> <orange-d>"Liberator of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></gray>',
     talent_704_name: 'The Cunning Liberator',
     talent_704_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Liberator of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></font>',
+      '<gray>Set</gray> <orange-d>"Liberator of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></gray>',
     talent_705_name: 'The Seasoned Liberator',
     talent_705_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Liberator of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></font>',
+      '<gray>Set</gray> <orange-d>"Liberator of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the effectiveness of slowdowns and the duration of other control effects by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>In total, it reduces the effectiveness of slowdowns and the duration of other control effects by <num>40%</num></gray>',
     talent_706_name: 'The Risk Predictor',
     talent_706_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predictor of the inevitable"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>The hero receives a Movement Scroll upon death from the enemy hero</font> <br> <font color=#FF9966>2 talents</font><br> <num>+2</num> <font color=#A5A5A5>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>-15%</num> by the time the hero is resurrected</font>',
+      '<gray>Set</gray> <orange-d>"Predictor of the inevitable"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The hero receives a Movement Scroll upon death from the enemy hero</gray> <br> <orange-l>2 talents</orange-l><br> <num>+2</num> <gray>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>-15%</num> by the time the hero is resurrected</gray>',
     talent_707_name: 'The Predictor of trials',
     talent_707_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predictor of the inevitable"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>The hero receives a Movement Scroll upon death from the enemy hero</font> <br> <font color=#FF9966>2 talents</font><br> <num>+2</num> <font color=#A5A5A5>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>-15%</num> by the time the hero is resurrected</font>',
+      '<gray>Set</gray> <orange-d>"Predictor of the inevitable"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The hero receives a Movement Scroll upon death from the enemy hero</gray> <br> <orange-l>2 talents</orange-l><br> <num>+2</num> <gray>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>-15%</num> by the time the hero is resurrected</gray>',
     talent_708_name: 'The Predictor of the road',
     talent_708_description:
-      'The Hero\'s Base Speed increases by <num>+%s</num>. Of the passive effects of increasing the Speed, the maximum <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predictor of the inevitable"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>The hero receives a Movement Scroll upon death from the enemy hero</font> <br> <font color=#FF9966>2 talents</font><br> <num>+2</num> <font color=#A5A5A5>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>-15%</num> by the time hero\'s resurrection</font>',
+      'The Hero\'s Base Speed increases by <num>+%s</num>. Of the passive effects of increasing the Speed, the maximum <br> <br> <gray>Set</gray> <orange-d>"Predictor of the inevitable"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The hero receives a Movement Scroll upon death from the enemy hero</gray> <br> <orange-l>2 talents</orange-l><br> <num>+2</num> <gray>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>-15%</num> by the time hero\'s resurrection</gray>',
     talent_709_name: 'The Death Predictor',
     talent_709_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Predictor of the inevitable"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>The hero receives a Movement Scroll upon death from the enemy hero</font> <br> <font color=#FF9966>2 talents</font><br> <num>+2</num> <font color=#A5A5A5>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5><num>-15%</num> by the time the hero is resurrected</font>',
+      '<gray>Set</gray> <orange-d>"Predictor of the inevitable"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The hero receives a Movement Scroll upon death from the enemy hero</gray> <br> <orange-l>2 talents</orange-l><br> <num>+2</num> <gray>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>-15%</num> by the time the hero is resurrected</gray>',
     talent_710_name: 'The Inspiration of the Alchemist',
     talent_710_description:
-      'The Energy Potion additionally restores <num>10%</num> of the hero\'s maximum Energy. When studying and every <num>4</num> minutes gives a Potion of energy.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'The Energy Potion additionally restores <num>10%</num> of the hero\'s maximum Energy. When studying and every <num>4</num> minutes gives a Potion of energy.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_711_name: "The Alchemist's Perseverance",
     talent_711_description:
-      'The Healing Potion additionally restores <num>10%</num> of the hero\'s maximum Health. When studying and every <num>4</num> minutes gives a Healing Potion.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'The Healing Potion additionally restores <num>10%</num> of the hero\'s maximum Health. When studying and every <num>4</num> minutes gives a Healing Potion.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_712_name: "The Alchemist's Powers of Observation",
     talent_712_description:
-      'Lanterns create a zone of visibility, ignoring obstacles. When studying and every <num>4</num> minutes gives a Magic lantern.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'Lanterns create a zone of visibility, ignoring obstacles. When studying and every <num>4</num> minutes gives a Magic lantern.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_713_name: "The Alchemist's Audacity",
     talent_713_description:
-      'The Ceremonial Dagger deals <num>25%</num> more damage. When studying and every <num>4</num> minutes gives a Ceremonial Dagger.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'The Ceremonial Dagger deals <num>25%</num> more damage. When studying and every <num>4</num> minutes gives a Ceremonial Dagger.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_714_name: 'The Resistance of the Alchemist',
     talent_714_description:
-      'Purification potion removes all negative effects. When studying and every <num>4</num> minutes gives a Purification Potion.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'Purification potion removes all negative effects. When studying and every <num>4</num> minutes gives a Purification Potion.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_715_name: "The Alchemist's Zeal",
     talent_715_description:
-      'The Impetuosity Potion additionally increases the hero\'s Speed by <num>20%</num>. When studying and every <num>4</num> minutes gives a Potion of Impetuosity.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'The Impetuosity Potion additionally increases the hero\'s Speed by <num>20%</num>. When studying and every <num>4</num> minutes gives a Potion of Impetuosity.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_716_name: "Alchemist's Assistance",
     talent_716_description:
-      'The transfer scroll takes the hero to the nearest friendly building or ally. When studying and every <num>4</num> minutes gives a Movement Scroll.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Master of Alchemy"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by <num>10%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Prices for all items in stores are reduced by a total of <num>20%</num></font>',
+      'The transfer scroll takes the hero to the nearest friendly building or ally. When studying and every <num>4</num> minutes gives a Movement Scroll.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_717_name: 'The Serenity of Power',
     talent_717_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The serenity of the hero"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces critical damage received by <num>20%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Reduces total critical damage received by <num>30%</num></font>',
+      '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
     talent_718_name: 'Serenity of the Intellect',
     talent_718_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The serenity of the hero"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces critical damage received by <num>20%</num></font><br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Reduces total critical damage received by <num>30%</num></font>',
+      '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray><br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
     talent_719_name: 'The Serenity of Logic',
     talent_719_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The serenity of the hero"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces critical damage received by <num>20%</num></font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Reduces total critical damage received by <num>30%</num></font>',
+      '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
     talent_720_name: 'The Serenity of Life',
     talent_720_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The serenity of the hero"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces critical damage received by <num>20%</num></font><br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Reduces total critical damage received by <num>30%</num></font>',
+      '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray><br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
     talent_721_name: 'Body Serenity',
     talent_721_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The serenity of the hero"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces critical damage received by <num>20%</num></font><br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Reduces total critical damage received by <num>30%</num></font>',
+      '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray><br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
     talent_722_name: 'Serenity of the Spirit',
     talent_722_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The serenity of the hero"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Reduces critical damage received by <num>20%</num></font><br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Reduces total critical damage received by <num>30%</num></font>',
+      '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray><br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
     talent_723_name: 'Victory Star',
     talent_723_description:
       "The hero's cunning increases by <num>0.06</num> every time an active talent is applied nearby.<br> The maximum total increase is <num>%s</num>.<br><col1>(100 activations)</col1><br><br>\r\n cannot be installed in conjunction with talent <tn>Cunning</tn>",
     talent_724_name: 'The image of frolic',
     talent_724_description:
-      'The Hero\'s Base Speed increases by <num>%s</num>. Of the passive effects of increasing the Speed, the maximum <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      'The Hero\'s Base Speed increases by <num>%s</num>. Of the passive effects of increasing the Speed, the maximum <br> <br> <gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_725_name: 'The image of energy',
     talent_725_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      '<gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_726_name: 'The image of mastery',
     talent_726_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      '<gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_727_name: 'The image of agility',
     talent_727_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
-    talent_728_name: 'Déjà vu<font color=#FFFFFF> ⌛️120</font>',
+      '<gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
+    talent_728_name: 'Déjà vu<white> <CD>120</CD></white>',
     talent_728_description:
-      '<num>Protective</num><br><br>For <num>5</num> seconds, creates a shield that absorbs <num>70%</num> of the damage received in the last <num>2</num> seconds before using the talent.<br>When the talent ends its action, the hero regains Health in the amount of <num>50%</num> of the remaining shield volume <br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      '<num>Protective</num><br><br>For <num>5</num> seconds, creates a shield that absorbs <num>70%</num> of the damage received in the last <num>2</num> seconds before using the talent.<br>When the talent ends its action, the hero regains Health in the amount of <num>50%</num> of the remaining shield volume <br> <br> <gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_729_name: 'The Image of Spirituality',
     talent_729_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      '<gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_730_name: 'The Image of Power',
     talent_730_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      '<gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_731_name: 'The Image of Sanity',
     talent_731_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Déjà vu"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5><num>+2</num> Speeds</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>Déjà vu</font></font> <br> <font color=#FF9966>4 talents</font> <br> <font color=#A5A5A5>Increases the damage storage interval and shield volume by <num>50%</num></font>',
+      '<gray>Set</gray> <orange-d>"Déjà vu"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray><num>+2</num> Speeds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>Déjà vu</orange-d></gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Increases the damage storage interval and shield volume by <num>50%</num></gray>',
     talent_732_name: 'The Agility of a Seer',
     talent_732_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"The Blind Seer"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The Power of the Seer</font></font><br><font color=#A5A5A5><num>+4</num> to the greatest of Strength and Intellect</font> <br> <font color=#FF9966>3 talents</font> <br> <font color=#A5A5A5>Allows you to use talent <font color=#ff8c00>The power of the seer</font> on the allied hero, revealing the hidden enemy hero closest to him</font>',
+      '<gray>Set</gray> <orange-d>"The Blind Seer"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Power of the Seer</orange-d></gray><br><gray><num>+4</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the seer</orange-d> on the allied hero, revealing the hidden enemy hero closest to him</gray>',
     talent_733_name: "The Executioner's Verdict",
     talent_733_description:
-      'An attack leaves a target with <num>2</num> injuries for <num>7</num> seconds.<br>When summing up <num>15</num> effects,  is performed on the enemy <tn>Execute</tn> him - enemy receives <num>%s</num> <font color=#B00000>net damage</font> (from the greatest of Strength and Intellect) or <num>%s</num> (from the greatest of Stamina and Will) (Stamina and Will damage is reduced by <num>30%</num>) and loses damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The executioner\'s verdict"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      'An attack leaves a target with <num>2</num> injuries for <num>7</num> seconds.<br>When summing up <num>15</num> effects,  is performed on the enemy <tn>Execute</tn> him - enemy receives <num>%s</num> <red-d>net damage</red-d> (from the greatest of Strength and Intellect) or <num>%s</num> (from the greatest of Stamina and Will) (Stamina and Will damage is reduced by <num>30%</num>) and loses damage.<br> <br> <gray>Set</gray> <orange-d>"The executioner\'s verdict"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_734_name: 'The cruelty of the Executioner',
     talent_734_description:
-      '<tn>Execute</tn> additionally reduces the enemy\'s Stamina by <num>20</num> for <num>5</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The executioner\'s verdict"</font>',
+      '<tn>Execute</tn> additionally reduces the enemy\'s Stamina by <num>20</num> for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"The executioner\'s verdict"</orange-d>',
     talent_735_name: 'The humanity of the Executioner',
     talent_735_description:
-      '<tn>Execute</tn> additionally reduces the enemy\'s Will by <num>20</num> for <num>5</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The executioner\'s verdict"</font>',
+      '<tn>Execute</tn> additionally reduces the enemy\'s Will by <num>20</num> for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"The executioner\'s verdict"</orange-d>',
     talent_736_name: 'The Mercilessness of the Executioner',
     talent_736_description:
-      "The hero's attack additionally causes <fiz>%s</fiz> damage<br><br><tn>Execution</tn> increases the Agility of allied heroes nearby with talents <tn>The Executioner's Verdict</tn> for <num>25</num> for <num>6</num> seconds.<br>Cannot be combined with the effect of talent <tn>The executioner's inflexibility</tn><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>\"The executioner's verdict\"</font>",
+      "The hero's attack additionally causes <fiz>%s</fiz> damage<br><br><tn>Execution</tn> increases the Agility of allied heroes nearby with talents <tn>The Executioner's Verdict</tn> for <num>25</num> for <num>6</num> seconds.<br>Cannot be combined with the effect of talent <tn>The executioner's inflexibility</tn><br> <br> <gray>Set</gray> <orange-d>\"The executioner's verdict\"</orange-d>",
     talent_737_name: "The Executioner's Inflexibility",
     talent_737_description:
-      "The hero's attack additionally deals <mag>%s</mag> damage<br><br><tn>Execution</tn> increases the Agility of allied heroes nearby with talents <tn>The Executioner's Verdict</tn> for <num>25</num> for <num>6</num> seconds.<br>It cannot be combined with the effect of talent <tn>The mercilessness of the executioner</tn><br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>\"The executioner's verdict\"</font>",
+      "The hero's attack additionally deals <mag>%s</mag> damage<br><br><tn>Execution</tn> increases the Agility of allied heroes nearby with talents <tn>The Executioner's Verdict</tn> for <num>25</num> for <num>6</num> seconds.<br>It cannot be combined with the effect of talent <tn>The mercilessness of the executioner</tn><br> <br> <gray>Set</gray> <orange-d>\"The executioner's verdict\"</orange-d>",
     talent_738_name: "The Hangman's Obsession",
     talent_738_description:
-      'Talent <tn>The Executioner\'s Verdict</tn> leaves <num>1</num> more injury on the target.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The executioner\'s verdict"</font>',
+      'Talent <tn>The Executioner\'s Verdict</tn> leaves <num>1</num> more injury on the target.<br> <br> <gray>Set</gray> <orange-d>"The executioner\'s verdict"</orange-d>',
     talent_739_name: 'The impartiality of the Executioner',
     talent_739_description:
-      '<tn>Execute</tn> deals <num>%s</num> <font color=#B00000>more net damage</font> (from the greatest of Strength and Intellect) or <num>%s</num> (from the greatest of Stamina and Will) (damage from Stamina and Will is <num>30%</num> less).<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"The executioner\'s verdict"</font>',
-    talent_740_name: 'Legendary barrier<font color=#FFFFFF> ⌛️150</font>',
+      '<tn>Execute</tn> deals <num>%s</num> <red-d>more net damage</red-d> (from the greatest of Strength and Intellect) or <num>%s</num> (from the greatest of Stamina and Will) (damage from Stamina and Will is <num>30%</num> less).<br> <br> <gray>Set</gray> <orange-d>"The executioner\'s verdict"</orange-d>',
+    talent_740_name: 'Legendary barrier<white> <CD>150</CD></white>',
     talent_740_description:
       '<num>Protective</num><br><br>When used for <num>4</num> seconds, it reduces all damage received by the hero by <num>50%</num>, and opponents attacking the hero receive <fiz>250</fiz> damage.',
-    talent_741_name: 'A good moment<font color=#FFFFFF> ⌛️120</font>',
+    talent_741_name: 'A good moment<white> <CD>120</CD></white>',
     talent_741_description:
-      'When using a class non-exclusive talent, it instantly restores it by <num>80%</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font><br><br><font color=#A5A5A5>- can be improved by <num>3</num> talents</font>',
+      'When using a class non-exclusive talent, it instantly restores it by <num>80%</num>.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_742_name: 'A moment of energy',
     talent_742_description:
-      'Talent <tn>A good moment</tn> restores <num>50%</num> of the Energy expended by the class talent.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
+      'Talent <tn>A good moment</tn> restores <num>50%</num> of the Energy expended by the class talent.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
     talent_743_name: 'The Moment of Life',
     talent_743_description:
-      'Talent <tn>A good moment</tn> restores <num>%s</num> Healths.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
+      'Talent <tn>A good moment</tn> restores <num>%s</num> Healths.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
     talent_744_name: 'The moment of speed',
     talent_744_description:
-      'The hero\'s base speed increases by <num>%s</num>. Of the passive effects of increasing the Speed, the maximum one acts.<br>Base speed is additionally increased by <num>%s</num> while talent <tn>A good moment</tn> is being restored.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
+      'The hero\'s base speed increases by <num>%s</num>. Of the passive effects of increasing the Speed, the maximum one acts.<br>Base speed is additionally increased by <num>%s</num> while talent <tn>A good moment</tn> is being restored.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
     talent_745_name: 'A moment of freedom',
     talent_745_description:
-      'Talent <tn>A good moment</tn> removes all negative effects.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
+      'Talent <tn>A good moment</tn> removes all negative effects.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
     talent_746_name: 'A moment of rage',
     talent_746_description:
-      'Talent Recovery Time <tn>A good moment</tn> is shortened by <num>20</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
+      'Talent Recovery Time <tn>A good moment</tn> is shortened by <num>20</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
     talent_747_name: 'A Moment of Wisdom',
     talent_747_description:
-      'Talent Recovery Time <tn>A good moment</tn> is shortened by <num>20</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
+      'Talent Recovery Time <tn>A good moment</tn> is shortened by <num>20</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
     talent_748_name: 'A moment of Strength',
     talent_748_description:
-      'Talent penetration increases by <num>7%</num> talent retention <tn>A good moment</tn> is being restored.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"A good moment"</font>',
-    talent_749_name: 'Eye of the Oracle<font color=#FFFFFF> ⌛️60</font>',
+      'Talent penetration increases by <num>7%</num> talent retention <tn>A good moment</tn> is being restored.<br> <br> <gray>Set</gray> <orange-d>"A good moment"</orange-d>',
+    talent_749_name: 'Eye of the Oracle<white> <CD>60</CD></white>',
     talent_749_description:
       '<num>Tactical</num><br><br>For <num>10</num> seconds, it opens an area in the specified location where enemies cannot become invisible and lose <num>1%</num> Maximum Health per second.<br>Cannot be installed in conjunction with talent <tn>Occultation</tn>.',
-    talent_750_name: 'Frisky maneuver<font color=#FFFFFF> ⌛️90</font>',
+    talent_750_name: 'Frisky maneuver<white> <CD>90</CD></white>',
     talent_750_description:
-      '<num>Protective</num><br><br>When using talent <tn>The horseshoe of speed</tn> increases the hero\'s Evasion by <num>90%</num> by <num>5</num> seconds, but only by <num>1</num> autoattack. <br>In order to gain <num>90%</num> evasion chance again, the hero must take damage from an Auto Attack. <br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font>',
+      '<num>Protective</num><br><br>When using talent <tn>The horseshoe of speed</tn> increases the hero\'s Evasion by <num>90%</num> by <num>5</num> seconds, but only by <num>1</num> autoattack. <br>In order to gain <num>90%</num> evasion chance again, the hero must take damage from an Auto Attack. <br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
     talent_751_name: 'Frisky step',
     talent_751_description:
-      'Talent <tn>The horseshoe of speed</tn> reduces Energy expenditure on talent application by <num>20%</num>.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font>',
+      'Talent <tn>The horseshoe of speed</tn> reduces Energy expenditure on talent application by <num>20%</num>.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
     talent_752_name: 'Horseshoe of speed',
     talent_752_description:
-      'The hero\'s base speed increases by <num>%s</num> and additionally by <num>1</num> for each active improvement. Of the passive effects of increasing speed, the maximum one is effective.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font><br><br><font color=#A5A5A5>- can be improved by <font color=#A5A5A5>3</font> talents</font>',
-    talent_753_name: 'Frisky amble<font color=#FFFFFF> ⌛️90</font>',
+      'The hero\'s base speed increases by <num>%s</num> and additionally by <num>1</num> for each active improvement. Of the passive effects of increasing speed, the maximum one is effective.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d><br><br><gray>- can be improved by <gray>3</gray> talents</gray>',
+    talent_753_name: 'Frisky amble<white> <CD>90</CD></white>',
     talent_753_description:
-      '<num>Tactical</num><br><br>When using talent <tn>The horseshoe of speed</tn> allows passing through living creatures and trees for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font>',
-    talent_754_name: 'Frisky passage<font color=#FFFFFF> ⌛️120</font>',
+      '<num>Tactical</num><br><br>When using talent <tn>The horseshoe of speed</tn> allows passing through living creatures and trees for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
+    talent_754_name: 'Frisky passage<white> <CD>120</CD></white>',
     talent_754_description:
-      '<num>The attacker</num><br><br>When using talent <tn>Horseshoe of Speed</tn> stuns the specified enemy hero by <num>1.2</num> sec.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font>',
+      '<num>The attacker</num><br><br>When using talent <tn>Horseshoe of Speed</tn> stuns the specified enemy hero by <num>1.2</num> sec.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
     talent_755_name: 'Frisky gallop',
     talent_755_description:
-      'When using an active talent from the <tn> Horseshoe of Speed</tn> The hero\'s greatest Strength and Intellect increases by <num>25</num> for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font>',
+      'When using an active talent from the <tn> Horseshoe of Speed</tn> The hero\'s greatest Strength and Intellect increases by <num>25</num> for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
     talent_756_name: 'Friisky lynx',
     talent_756_description:
-      'When using an active talent from the <tn> Horseshoe of Speed</tn> the hero\'s greatest Agility and Cunning increases by <num>25</num> for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Horseshoe of speed"</font>',
-    talent_757_name: 'Riddles of the Pyramids<font color=#FFFFFF> ⌛️150</font>',
+      'When using an active talent from the <tn> Horseshoe of Speed</tn> the hero\'s greatest Agility and Cunning increases by <num>25</num> for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
+    talent_757_name: 'Riddles of the Pyramids<white> <CD>150</CD></white>',
     talent_757_description:
-      'Reduces the time of the hero\'s next resurrection by <num>15%</num> until the hero dies.<br>Cannot be installed in conjunction with talent <tn>An inexorable presence</tn>.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Riddles of the Pyramids"</font><br><br><font color=#A5A5A5>- can be improved by <num>4</num> talents</font>',
+      'Reduces the time of the hero\'s next resurrection by <num>15%</num> until the hero dies.<br>Cannot be installed in conjunction with talent <tn>An inexorable presence</tn>.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the Pyramids"</orange-d><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_758_name: 'The Riddle of the Sage',
     talent_758_description:
-      'Reduces talent recovery time <tn>Riddles of the pyramids</tn> by <num>20</num> seconds.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Riddles of the pyramids"</font>',
+      'Reduces talent recovery time <tn>Riddles of the pyramids</tn> by <num>20</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the pyramids"</orange-d>',
     talent_759_name: 'The Riddles of the Fugitive',
     talent_759_description:
-      'The hero\'s base speed increases by <num>%s</num>. Of the passive effects of increasing the Speed, the maximum one acts.<br>Riddles of the Pyramids Talent</tn> increases the hero\'s Speed after resurrection by <num>70%</num> until he receives or deals damage.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Riddles of the pyramids"</font>',
+      'The hero\'s base speed increases by <num>%s</num>. Of the passive effects of increasing the Speed, the maximum one acts.<br>Riddles of the Pyramids Talent</tn> increases the hero\'s Speed after resurrection by <num>70%</num> until he receives or deals damage.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the pyramids"</orange-d>',
     talent_760_name: 'The Riddle of the Cunning Man',
     talent_760_description:
-      'Riddles of the pyramids Talent additionally reduces resurrection time by 10%.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Riddles of the pyramids"</font>',
+      'Riddles of the pyramids Talent additionally reduces resurrection time by 10%.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the pyramids"</orange-d>',
     talent_761_name: "The Dodger's Riddle",
     talent_761_description:
-      'Riddles of the pyramids Talent additionally reduces resurrection time by 10%.<br> <br> <font color=#A5A5A5>Set</font> <font color=#ff8c00>"Riddles of the pyramids"</font>',
+      'Riddles of the pyramids Talent additionally reduces resurrection time by 10%.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the pyramids"</orange-d>',
     talent_762_name: '',
     talent_762_description: '',
     talent_763_name: '',
     talent_763_description: '',
     talent_764_name: 'Battle Rune',
     talent_764_description:
-      '<font color=#A5A5A5>Set</font> <font color=#ff8c00>"Ancient runes"</font> <br> <br> <font color=#FF9966>1 talent</font> <br> <font color=#A5A5A5>Glyphs are valid for <num>10</num> seconds longer</font> <br> <font color=#FF9966>2 talents</font> <br> <font color=#A5A5A5>When the enemy siege soldiers die next to the hero, they leave a random small glyph</font> <br> <font color=#FF9966>3 talents</font><br> <num>+7</num> <font color=#A5A5A5>to the greatest of Strength and Intellect</font>',
+      '<gray>Set</gray> <orange-d>"Ancient runes"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Glyphs are valid for <num>10</num> seconds longer</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>When the enemy siege soldiers die next to the hero, they leave a random small glyph</gray> <br> <orange-l>3 talents</orange-l><br> <num>+7</num> <gray>to the greatest of Strength and Intellect</gray>',
     talent_765_name: 'Protective barrier',
     talent_765_description: '<num>defensive</num><br><br>When activated, the hero becomes invulnerable to physical damage for 2 seconds.',
-    talent_766_name: 'Health spinner',
+    talent_766_name: 'Health Spinner',
     talent_766_description:
-      'the Hero\'s health increases every minute by <font color=#dcca64>11.1</font>. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#a5a5a5>set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#a5a5a5>each <num>4</num> sec. gives <prime>+1</prime></font>',
-    talent_767_name: 'Energy spinner',
+      'the Hero\'s health increases every minute by <yellow>11.1</yellow>. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+    talent_767_name: 'Energy Spinner',
     talent_767_description:
-      'the Hero\'s energy increases every minute by <font color=#dcca64>11.1</font>. The maximum total increase is <font color=#dcca64>%s</font><br> <br> <font color=#a5a5a5>set</font> <font color=#ff8c00>"Spinners of Heroes"</font> <br> <br> <font color=#FF9966>2 talents</font> <br> <font color=#a5a5a5>each <num>4</num> sec. gives <prime>+1</prime></font>',
+      'the Hero\'s energy increases every minute by <yellow>11.1</yellow>. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
   },
 };

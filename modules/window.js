@@ -261,6 +261,7 @@ export class Window {
         isSkin ? DOM({ style: 'shop_item_arrow' }) : DOM(),
         DOM(
           {
+            domaudio: domAudioPresets.bigButton,
             style: 'shop_item_price_container',
             event: [
               'click',
@@ -289,6 +290,7 @@ export class Window {
                       ),
                       DOM(
                         {
+                          domaudio: domAudioPresets.bigButton,
                           style: 'splash-content-button',
                           event: [
                             'click',
@@ -321,6 +323,7 @@ export class Window {
                       ),
                       DOM(
                         {
+                          domaudio: domAudioPresets.closeButton,
                           style: 'splash-content-button-red',
                           event: [
                             'click',
@@ -347,6 +350,7 @@ export class Window {
                       DOM({}, additionalMessage),
                       DOM(
                         {
+                          domaudio: domAudioPresets.bigButton,
                           style: 'splash-content-button',
                           event: [
                             'click',
@@ -388,6 +392,7 @@ export class Window {
                       ),
                       DOM(
                         {
+                          domaudio: domAudioPresets.closeButton,
                           style: 'splash-content-button-red',
                           event: [
                             'click',
@@ -426,6 +431,7 @@ export class Window {
       { style: 'shop_header' },
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: ['shop_header_item', isShop ? 'shop_header_selected' : 'shop_header_not_selected'],
           event: ['click', async () => Window.show('main', 'shop')],
         },
@@ -433,6 +439,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: ['shop_header_item', !isShop ? 'shop_header_selected' : 'shop_header_not_selected'],
           event: ['click', async () => Window.show('main', 'collection')],
         },
@@ -588,6 +595,7 @@ export class Window {
         content.appendChild(
           DOM(
             {
+              domaudio: domAudioPresets.bigButton,
               style: 'quest-accept-button',
               event: [
                 'click',
@@ -610,6 +618,7 @@ export class Window {
         content.appendChild(
           DOM(
             {
+              domaudio: domAudioPresets.bigButton,
               style: 'quest-accept-button',
               event: [
                 'click',
@@ -641,19 +650,20 @@ export class Window {
       DOM(
         { style: 'castle-menu-items' },
         App.isAdmin()
-          ? DOM({ style: 'castle-menu-item-button' }, DOM({ event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'))
+          ? DOM({ style: 'castle-menu-item-button' }, DOM({domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'))
           : DOM(),
         DOM(
           { style: 'castle-menu-item-button' },
-          DOM({ event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account')),
+          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account')),
         ),
         DOM(
           { style: 'castle-menu-item-button' },
-          DOM({ event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences')),
+          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences')),
         ),
-        DOM({ style: 'castle-menu-item-button' }, DOM({ event: ['click', () => Window.show('main', 'support')] }, Lang.text('support'))),
+        DOM({ style: 'castle-menu-item-button' }, DOM({domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'support')] }, Lang.text('support'))),
         DOM(
           {
+            domaudio: domAudioPresets.closeButton,
             style: 'castle-menu-item-button',
             event: [
               'click',
@@ -667,6 +677,7 @@ export class Window {
         ),
         DOM(
           {
+            domaudio: domAudioPresets.closeButton,
             style: 'castle-menu-item-button',
             event: [
               'click',
@@ -685,6 +696,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://vk.com/primeworldclassic',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -699,6 +711,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://t.me/primeworldclassic',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -713,6 +726,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://discord.gg/MueeP3aAzh',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -727,6 +741,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://store.steampowered.com/app/3684820/Prime_World_Classic',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -756,6 +771,7 @@ export class Window {
           DOM(
             {
               tag: 'input',
+              domaudio: domAudioPresets.defaultSelect,
               type: 'checkbox',
               id: 'fullscreen-toggle',
               checked: !Settings.settings.fullscreen,
@@ -775,6 +791,7 @@ export class Window {
           { style: 'castle-menu-item-checkbox' },
           DOM({
             tag: 'input',
+            domaudio: domAudioPresets.defaultSelect,
             type: 'checkbox',
             id: 'render-toggle',
             checked: Settings.settings.render,
@@ -793,6 +810,7 @@ export class Window {
           DOM(
             {
               tag: 'input',
+              domaudio: domAudioPresets.defaultSelect,
               type: 'checkbox',
               id: 'radmin-priority',
               checked: Settings.settings.radminPriority,
@@ -812,6 +830,7 @@ export class Window {
           DOM(
             {
               tag: 'input',
+              domaudio: domAudioPresets.defaultSelect,
               type: 'checkbox',
               id: 'novoice',
               checked: Settings.settings.novoice,
@@ -831,6 +850,7 @@ export class Window {
           Lang.text('volume'),
           DOM({
             tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
             type: 'range',
             value: Settings.settings.globalVolume * 100,
             min: '0',
@@ -861,6 +881,7 @@ export class Window {
           Lang.text('volumeMusic'),
           DOM({
             tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
             type: 'range',
             value: Settings.settings.musicVolume * 100,
             min: '0',
@@ -891,6 +912,7 @@ export class Window {
           Lang.text('volumeSound'),
           DOM({
             tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
             type: 'range',
             value: Settings.settings.soundsVolume * 100,
             min: '0',
@@ -933,6 +955,7 @@ export class Window {
         DOM(
           {
             style: 'castle-menu-item-button',
+            domaudio: domAudioPresets.defaultButton,
             event: [
               'click',
               async (e) => {
@@ -959,6 +982,7 @@ export class Window {
         // Кнопка "Назад"
         DOM(
           {
+            domaudio: domAudioPresets.bigButton,
             style: 'castle-menu-item-button',
             event: [
               'click',
@@ -1005,6 +1029,7 @@ export class Window {
         DOM({ style: 'castle-menu-error' }, Lang.text('keybindings_error', 'Не удалось найти файл конфигурации клавиш')),
         DOM(
           {
+            domaudio: domAudioPresets.bigButton,
             class: 'castle-menu-item-button',
             event: ['click', () => Window.show('settings', 'menu')],
           },
@@ -1052,6 +1077,7 @@ export class Window {
                 DOM({ style: 'keybinding-label' }, Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`)),
                 DOM({
                   tag: 'input',
+                  domaudio: domAudioPresets.defaultInput,
                   type: 'text',
                   value: currentKey,
                   class: 'castle-keybinding-input',
@@ -1089,6 +1115,7 @@ export class Window {
 
             DOM(
               {
+                domaudio: domAudioPresets.bigButton,
                 class: 'castle-menu-item-button reset-btn',
                 event: [
                   'click',
@@ -1113,6 +1140,7 @@ export class Window {
 
             DOM(
               {
+                domaudio: domAudioPresets.bigButton,
                 class: 'castle-menu-item-button save-btn',
                 event: [
                   'click',
@@ -1152,6 +1180,7 @@ export class Window {
 
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           class: 'castle-menu-item-button',
           event: ['click', () => Window.show('settings', 'menu')],
         },
@@ -1172,6 +1201,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://vk.me/join/AZQ1dy/d2Qg98tKilOoQ1u34',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -1186,6 +1216,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://t.me/primeworldclassic/8232',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -1200,6 +1231,7 @@ export class Window {
           DOM(
             {
               tag: 'a',
+              domaudio: domAudioPresets.defaultButton,
               href: 'https://discord.gg/S3yrbFGT86',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
@@ -1214,6 +1246,7 @@ export class Window {
         ),
         DOM(
           {
+            domaudio: domAudioPresets.bigButton,
             style: 'castle-menu-item-button',
             event: ['click', () => Window.show('main', 'menu')],
           },
@@ -1228,6 +1261,7 @@ export class Window {
       DOM({ style: 'castle-menu-title' }, 'Админ Панель'),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1240,6 +1274,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1252,6 +1287,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1264,6 +1300,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1276,6 +1313,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: ['click', () => Window.show('main', 'menu')],
         },
@@ -1305,6 +1343,7 @@ export class Window {
       DOM({ style: 'castle-menu-title' }, Lang.text('account')),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1325,6 +1364,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1337,6 +1377,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: [
             'click',
@@ -1349,6 +1390,7 @@ export class Window {
       ),
       DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
           event: ['click', () => Window.show('main', 'menu')],
         },

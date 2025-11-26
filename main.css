@@ -159,6 +159,91 @@ prime {
   color: cyan;
 }
 
+gray {
+  color: #A5A5A5;
+}
+
+orange-l {
+  color: #FF9966;
+}
+
+yellow {
+  color: #dcca64;
+}
+
+orange-d {
+  color: #ff8c00;
+}
+
+amethyst {
+  color: #9966CC;
+}
+
+white {
+  color: #FFFFFF;
+}
+
+red-d {
+  color: #B00000;
+}
+
+coral-l {
+  color: #F08080;
+}
+
+blue-b {
+  color: #4169E1;
+}
+
+blood-d {
+  color: #960018;
+}
+
+cyan-d {
+  color: #00A0A0;
+}
+
+frost {
+  color: #64CDF0;
+}
+
+bronze {
+  color: #B87333;
+}
+
+blue-l{
+  color: #8CD5FF;
+}
+
+electric-blue {
+  color: #3BA7FF;
+}
+
+magenta {
+  color: #CA4FFF;
+}
+
+lime {
+  color: #37D337;
+}
+
+cinnabar {
+  color: #F41200;
+}
+
+carrot {
+  color: #FF9124;
+}
+
+hr {
+  display: block;
+  width: 70%;
+  height: 2px;
+  background-color: #A7A062;
+  margin: 15px auto 10px;
+  border: none;
+}
+
 prime:after {
   content: '';
   background-image: url('icons/2497.webp');

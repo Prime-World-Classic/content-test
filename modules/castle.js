@@ -16,6 +16,8 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { PreloadImages } from './preloadImages.js';
 import { DOM } from './dom.js';
+import { domAudioPresets } from './domAudioPresets.js';
+import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class Castle {
   static canvas;
@@ -609,6 +611,10 @@ export class Castle {
       Castle.placedBuildings.push(Object.assign({}, Castle.phantomBuilding));
       Castle.isStaticSMCached = false;
       Castle.WriteBuildings();
+      Sound.play(SOUNDS_LIBRARY.BUY, {volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
+    }
+    else{
+      Sound.play(SOUNDS_LIBRARY.ERROR, {volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
     }
   }
 
@@ -619,6 +625,7 @@ export class Castle {
         building.rot = (building.rot + 1) % 4;
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
+        Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
         return;
       }
     }
@@ -631,6 +638,7 @@ export class Castle {
         Castle.placedBuildings.splice(b, 1);
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
+        Sound.play(SOUNDS_LIBRARY.BUY, {volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
         return;
       }
     }
@@ -736,9 +744,12 @@ export class Castle {
             Castle.findAndRotateBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
           } else {
             if (Castle.outlinedBuilding.name in CastleBuildingsEvents) {
+              Sound.play(SOUNDS_LIBRARY.CLICK_OPEN_BIG, {
+                volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+              })
               CastleBuildingsEvents[Castle.outlinedBuilding.name]();
             }
-          }
+          }А
         }
       }
     });
@@ -2011,6 +2022,7 @@ export class Castle {
         if (!(building.uniqueId in Castle.buildingBubblesDoms)) {
           Castle.buildingBubblesDoms[building.uniqueId] = DOM(
             {
+              domaudio: domAudioPresets.bigButton,
               style: ['castle_building_bubble'],
               event: ['click', () => CastleBuildingsEvents[buildingName]()],
             },
