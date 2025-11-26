@@ -2027,7 +2027,7 @@
     htalent_372_name: 'The Model Sniper',
     htalent_372_description:
       'Class talents mark enemy heroes for <num>3</num> seconds, allowing the hero to attack them and apply a well-aimed shot regardless of the distance. Marked enemies cannot hide out of sight.',
-    htalent_373_name: 'Frontline comrade <CD>0</CD>.4',
+    htalent_373_name: 'Frontline comrade <CD>0.4</CD>',
     htalent_373_description:
       'The hero is accompanied by a Bear, whose attacks cause <fiz>%s</fiz> damage. The bear has <num>%s</num> Health (from the greatest of Strength and Intellect) is reborn next to the hero <num>30</num> seconds after his death.The use of talent sets the behavior of the Bear depending on the goal: to attack the specified enemy, go and guard the specified point, or follow the hero. As long as the Bear is alive, the hero regenerates <num>0.7%</num> of maximum Health per second.',
     htalent_374_name: 'Combat hello! <mana>85</mana> <CD>12</CD>',
