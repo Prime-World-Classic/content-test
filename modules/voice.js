@@ -4,7 +4,6 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { Castle } from './castle.js';
 import { Lang } from './lang.js';
-import { domAudioPresets } from './domAudioPresets.js';
 
 export class Voice {
   static peerConnectionConfig = {
@@ -217,7 +216,6 @@ export class Voice {
         { style: 'voice-info-panel-body-item' },
         DOM(
           {
-            domaudio: domAudioPresets.defaultButton,
             style: 'voice-info-panel-body-item-name',
             event: ['click', () => Voice.toggleEnabledMic()],
           },
@@ -274,7 +272,6 @@ export class Voice {
 
     let item = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         style: 'voice-info-panel-body-item-name',
         event: [
           'click',

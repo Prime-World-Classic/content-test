@@ -12,9 +12,6 @@ import { Splash } from './splash.js';
 import { Window } from './window.js';
 import { Castle } from './castle.js';
 import { Lang } from './lang.js';
-import { domAudioPresets } from './domAudioPresets.js';
-import { Sound } from './sound.js';
-import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class App {
   static APP_VERSION = '0';
@@ -72,20 +69,6 @@ export class App {
     }, 30000);
   }
 
-  /**
-   * Preloads all sounds in SOUNDS_LIBRARY
-   * @returns {Promise<void>} A promise that resolves when all sounds are preloaded
-   */
-  static async initSounds() {
-    const tasks = [];
-    for (const name in SOUNDS_LIBRARY) {
-      const src = SOUNDS_LIBRARY[name];
-      tasks.push(Sound.preload(name, src));
-    }
-
-    await Promise.all(tasks);
-  }
-
   static async init() {
     // wss://api2.26rus-game.ru:8443 - Москва (основа)
     // wss://relay.26rus-game.ru:8443 - Рига (Прокси)
@@ -95,8 +78,6 @@ export class App {
     await News.init();
 
     await Store.init();
-
-    await App.initSounds();
 
     App.storage = new Store('u3');
 
@@ -277,7 +258,6 @@ export class App {
   static setNickname() {
     const close = DOM({
       tag: 'div',
-      domaudio: domAudioPresets.closeButton,
       style: 'close-button',
       event: ['click', () => Splash.hide()],
     });
@@ -289,7 +269,6 @@ export class App {
     let title = DOM({ tag: 'div', style: 'castle-menu-text' }, Lang.text('nicknameChangeCooldown'));
 
     let name = DOM({
-      domaudio: domAudioPresets.defaultInput,
       tag: 'input',
       placeholder: Lang.text('nicknamePlaceholder'),
       value: App.storage.data.login,
@@ -297,7 +276,6 @@ export class App {
 
     let button = DOM(
       {
-        domaudio: domAudioPresets.bigButton,
         style: 'splash-content-button',
         event: [
           'click',
@@ -339,7 +317,6 @@ export class App {
   static setFraction() {
     const close = DOM({
       tag: 'div',
-      domaudio: domAudioPresets.closeButton,
       style: 'close-button',
       event: ['click', () => Splash.hide()],
     });
@@ -385,7 +362,6 @@ export class App {
     factions.forEach((faction) => {
       const factionElement = DOM({
         tag: 'div',
-        domaudio: domAudioPresets.defaultButton,
         style: 'faction-item',
         event: [
           'click',
@@ -449,7 +425,6 @@ export class App {
     const button = DOM(
       {
         style: 'splash-content-button',
-        domaudio: domAudioPresets.bigButton,
         event: [
           'click',
           async () => {
@@ -590,10 +565,7 @@ export class App {
     }
 
     let msg = DOM({ tag: 'div' }, `${message}`);
-    Sound.play(SOUNDS_LIBRARY.ERROR, {
-      id: 'error-sound',
-      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-    });
+
     setTimeout(() => {
       msg.remove();
     }, timeout);
