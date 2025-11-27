@@ -467,7 +467,6 @@ export class Window {
       category.frame,
     );
 
-    if (App.isAdmin()) {
       let wnd = DOM(
         { id: 'wshop' },
         shopHeader,
@@ -506,7 +505,6 @@ export class Window {
       checkUpdate();
 
       return wnd;
-    }
   }
 
   static async shop() {

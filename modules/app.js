@@ -16,7 +16,7 @@ import { Lang } from './lang.js';
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.11.1';
+  static PW_VERSION = '2.12.0';
 
   static CURRENT_MM = 'mmtest';
 
