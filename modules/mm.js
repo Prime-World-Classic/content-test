@@ -14,6 +14,7 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { Timer } from './timer.js';
 import { Splash } from './splash.js';
+import { domAudioPresets } from './domAudioPresets.js';
 
 export class MM {
   static id = '';
@@ -214,6 +215,7 @@ export class MM {
       // Создаем кнопку закрытия
       const closeButton = DOM({
         tag: 'div',
+        domaudio: domAudioPresets.closeButton,
         style: 'close-button',
         event: ['click', () => Splash.hide()],
       });
@@ -304,6 +306,7 @@ export class MM {
     let button = DOM(
       {
         style: 'mm-ready-button',
+        domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           async () => {
@@ -360,6 +363,7 @@ export class MM {
     for (let build of builds) {
       let tab = DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           event: [
             'click',
             async () => {
@@ -403,6 +407,7 @@ export class MM {
       random = DOM(
         {
           style: 'ready-button',
+          domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
             async () => {
@@ -484,6 +489,7 @@ export class MM {
     MM.lobbyConfirm = DOM(
       {
         style: 'mm-ready-button',
+        domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           async () => {
@@ -790,6 +796,7 @@ export class MM {
 
     for (let number of [1, 2, 3, 4, 5, 6]) {
       let item = DOM({
+        domaudio: domAudioPresets.smallButton,
         style: `map-item-${number}`,
         data: { player: 0, position: number },
         event: [

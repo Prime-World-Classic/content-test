@@ -1224,7 +1224,7 @@
     htalent_81_name: 'Invisible Help',
     htalent_81_description:
       'Increases the highest of Strength or Intellect of nearby allied heroes by <num>%s</num> (based on Intellect).<br> The Shadow and nearby allies receive double the bonus: <num>%s</num>.',
-    htalent_82_name: 'Dance of Fans <mana>150</mana>-300 <CD>30</CD>',
+    htalent_82_name: 'Dance of Fans <mana>150-300</mana> <CD>30</CD>',
     htalent_82_description:
       "The hero gains <num>1</num> Magic Fan every <num>10</num> sec., up to a maximum of <num>4</num>. When used, throws all accumulated fans at enemies around, but no more than <num>3</num> at one target. <br>Each fan deals from <mag>%s</mag> to <mag>%s</mag> damage to the enemy (based on Intellect and number of fans).<br> To use the talent, you must have at least <num>3</num> accumulated fans. Each subsequent fan increases total damage by <num>8%</num>.</br>Additionally reduces the target's Stamina by <num>%s</num> (based on Strength) for <num>5</num> sec.",
     htalent_83_name: 'Surprise Advantage',
@@ -1254,10 +1254,10 @@
     htalent_92_name: 'Baiting',
     htalent_92_description:
       "During Great Hunt, the hero's Agility increases by <num>%s</num> (based on the higher of Strength or Intellect).<br>\nThe Agility gain increases by <num>25%</num> for each wolf.",
-    htalent_93_name: 'Turret <detail></detail> 20 <CD>2</CD>',
+    htalent_93_name: 'Turret 20<detail></detail> <CD>2</CD>',
     htalent_93_description:
       "The hero places a defensive turret with <num>%s</num> Health (based on the higher of Strength or Intellect), dealing <mag>%s</mag> damage. Cannot maintain more than <num>3</num> devices.</br><rz>On native terrain, turret attacks reduce the target's Speed by <num>20%</num> for <num>2</num> sec.</rz>",
-    htalent_94_name: 'Time Bomb <detail></detail> 30<CD>8</CD>',
+    htalent_94_name: 'Time Bomb 30<detail></detail> <CD>8</CD>',
     htalent_94_description:
       'The hero sends a bomb to the specified point, which upon contact with an enemy deals <fiz>%s</fiz> damage to enemies around. If there are no targets, the bomb automatically explodes <num>7</num> sec. after being placed at the specified point.',
     htalent_95_name: 'Turret Camouflage',
@@ -1266,12 +1266,12 @@
     htalent_96_name: 'Discounted Goods',
     htalent_96_description:
       'The price of all items in shops is reduced by <num>30%</num>. The hero can now build up to <num>3</num> devices.',
-    htalent_97_name: 'Vita-Generator <detail></detail> 10 <CD>2</CD>',
+    htalent_97_name: 'Vita-Generator 10<detail></detail> <CD>2</CD>',
     htalent_97_description:
       'The hero places a vita-generator that restores <num>%s</num> Health (based on Intellect) to allied heroes every <num>8</num> sec. for <num>4</num> sec.Cannot maintain more than <num>3</num> devices simultaneously.</br><rz>On native terrain, the vita-generator additionally restores <num>%s</num> Health (based on Intellect).</rz>',
     htalent_98_name: 'Machine Gun <CD>15</CD>',
     htalent_98_description:
-      'For <num>3</num> sec., deals <fiz>%s</fiz> and <mag>%s</mag> damage per second to enemies in front, but can only change firing direction. Shooting consumes 16<detail></detail> per second.',
+      'For <num>3</num> sec., deals <fiz>%s</fiz> and <mag>%s</mag> damage per second to enemies in front, but can only change firing direction. Shooting consumes 16<detail>16</detail> per second.',
     htalent_99_name: 'Enhanced Charge',
     htalent_99_description: 'Enemies taking damage from Time Bomb are launched into the air.',
     htalent_100_name: 'Stamping',
@@ -1294,7 +1294,7 @@
     htalent_106_name: 'Speed of Color',
     htalent_106_description:
       "The Color of Life talent also reduces the enemy's Speed or increases the ally's Speed by <num>40%</num> for <num>5</num> sec.",
-    htalent_107_name: "Master's Brush <mana>100</mana>-280 <CD>50</CD>",
+    htalent_107_name: "Master's Brush <mana>100-280</mana> <CD>50</CD>",
     htalent_107_description:
       'For <num>15</num> sec., all class talents additionally affect <num>4</num> targets near the original one. Damage and Health restoration on additional targets are reduced by <num>20%</num>. <br> Activation cost increases by 5 &#x1F4A7 per character level. <br> Activation cost of the Painted Beast talent is increased by <num>40%</num>.',
     htalent_108_name: 'Great Artist',
@@ -1536,7 +1536,7 @@
     htalent_196_name: 'Enchanting Music',
     htalent_196_description:
       'After Charming Melody ends, nearby enemy heroes are slowed by <num>80%</num> and cannot use talents for <num>1.5</num> sec.',
-    htalent_197_name: 'Shredding Volley<mana>100</mana> <CD>10</CD>',
+    htalent_197_name: 'Shredding Volley <mana>100</mana> <CD>10</CD>',
     htalent_197_description:
       "The hero draws the bow for <num>0.5</num> sec. and releases arrows in the specified direction, dealing <fiz>%s</fiz> (based on Intellect) and <mag>%s</mag> (based on Intellect) damage that can be <orange-d>Critical</orange-d> to all enemies in the path.<br><rz>When used from native terrain, the talent deals <num>1.3</num> times more damage.</rz><br> The talent's range is increased by <num>%s</num> (based on Intellect).",
     htalent_198_name: 'Redeployment <mana>150</mana> <CD>15</CD>',
@@ -1595,7 +1595,7 @@
     htalent_216_description: 'Swallow your Talent! additionally replenishes <num>%s</num> of energy.',
     htalent_217_name: 'Grab it! <mana>100</mana> <CD>18</CD>',
     htalent_217_description: 'Attracts the first enemy on the attack path to the hero.',
-    htalent_218_name: 'Push! <mana>100</mana> <CD>0</CD>.5',
+    htalent_218_name: 'Push! <mana>100</mana> <CD>0.5</CD>',
     htalent_218_description:
       'The hero jumps to the specified point, dealing from <mag>%s</mag> to <mag>%s</mag> damage (from maximum Health and number of jumps) to all enemies around, spending one <orange-d>Jump</orange-d>. </br><rz>When used from the native land, the affected area increases.</rz><br> <hr> Total jumps: <num>2</num><br> Jump recovery time: <num>40</num> seconds',
     htalent_219_name: 'Hold on tight!',
@@ -1603,10 +1603,10 @@
     htalent_220_name: 'Jump!',
     htalent_220_description:
       'Increases the amount of <orange-d>Jumps</orange-d> to <num>1</num>.<br> Slows down touched enemies by <num>40%</num> for <num>2</num> seconds.',
-    htalent_221_name: 'The Roots of Evil <mana>50</mana> <CD>3</CD> /<blue-l> <CD>8</CD></blue-l>',
+    htalent_221_name: 'The Roots of Evil <mana>50</mana> <CD>3</CD> /<blue-l> 8<CD></CD></blue-l>',
     htalent_221_description:
       'After <num>0.3</num> seconds, it deals <mag>%s</mag> damage to enemies in the area under the cursor and can steal Health, but not more than <num>3</num> targets.<br><rz>When used from native land, it reduces the target\'s Health recovery by <num>75%</num> for <num>2</num> seconds.</rz><br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero is transported to the specified location and deals enemies around <mag>%s</mag> damage (from the greatest of Strength and Intellect).</blue-l>',
-    htalent_222_name: 'Living skin <mana>60</mana> <CD>30</CD> /<blue-l> <CD>5</CD></blue-l>',
+    htalent_222_name: 'Living skin <mana>60</mana> <CD>30</CD> /<blue-l> 5<CD></CD></blue-l>',
     htalent_222_description:
       'Attracts the selected enemy hero, dealing him <mag>%s</mag> damage and stunning him for <num>1.5</num> sec.<br> The range of talent increases by <num>0.2</num> for every <num>10</num> of the greatest of Strength and Intellect.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>Bear</orange-d> until the Energy drops below <num>5%</num>, which gets <num>%s</num> Health (from the highest of Strength and Intellect) and deals <num>15%</num> more attack damage, but loses <num>0.4%</num> max. Energy per second.</blue-l>',
     htalent_223_name: 'Woe to the weak',
@@ -1615,7 +1615,7 @@
     htalent_224_name: 'Hunger of the dead beast',
     htalent_224_description:
       'When the talent is restored, the hero\'s speed increases by <num>20%</num>, and near trees and mushrooms by <num>30%</num>.<br>When the Live Skin is triggered, the talents of the Villain and Fly Agaric are restored.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero\'s attacks slow down the enemy by <num>25%</num> for <num>2</num> seconds, and the hero receives an additional <num>%s</num> of health theft (from the greatest of Strength and Intellect).</blue-l>',
-    htalent_225_name: "Crow's Evil Eye <mana>120</mana> <CD>25</CD> /<blue-l> <CD>5</CD></blue-l>",
+    htalent_225_name: "Crow's Evil Eye <mana>120</mana> <CD>25</CD> /<blue-l> 5<CD></CD></blue-l>",
     htalent_225_description:
       'The crow attacks the enemy, dealing him <fiz>%s</fiz> damage for <num>10</num> seconds and showing where he is.<br>If the effect ends prematurely, the talent\'s recovery time decreases proportionally.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>The crow</orange-d>, until the Energy drops below <num>5%</num>, which accelerates by <num>30%</num>, receives the effect of flight and an unobstructed view within a radius of <num>%s</num> (from the Intellect), but loses <num>1.5%</num> max. Energy per second, and cannot use talents or attack.</blue-l>',
     htalent_226_name: 'The villain <mana>380</mana> <CD>25</CD>',
@@ -1698,7 +1698,7 @@
       'Creates <num>0.5</num> seconds and deals <mag>%s</mag> damage to enemies in the specified area and additionally <mag>%s</mag> damage to enemies in the epicenter of the explosion.',
     htalent_254_name: 'Transformation <mana>110</mana> <CD>15</CD>',
     htalent_254_description:
-      '<num>0.9</num> sec. is created, the specified enemy cannot do anything and moves at <num>40%</num> speed, receiving <fiz>%s</fiz> damage for <num>2</num> sec.',
+      'Creates <num>0.9</num> seconds, the specified enemy cannot do anything and moves at <num>40%</num> speed, receiving <fiz>%s</fiz> damage for <num>2</num> sec.',
     htalent_255_name: 'Fire',
     htalent_255_description:
       'Enemies in the epicenter of the Fire Strike receive additional <fiz>%s</fiz> damage for <num>3</num> seconds.',
@@ -1739,7 +1739,7 @@
     htalent_269_name: 'Decisive Attack <mana>50</mana> <CD>16</CD>',
     htalent_269_description:
       'Moves in the specified direction, dealing <fiz>%s</fiz> damage (from the highest of Strength and Intellect) to all enemies around, receiving <num>1</num> Heroism for each (no more than <num>6</num> in total).<br>Within <num>4</num> seconds, the talent can be applied <num>1 </num> more times.<br>During movement, the hero is not affected by control effects.',
-    htalent_270_name: 'second wind <mana>50</mana> <CD>20</CD>',
+    htalent_270_name: 'Second wind <mana>50</mana> <CD>20</CD>',
     htalent_270_description:
       "Restores the hero's <num>%s</num> Health (from Intellect) and additionally using Heroism restores <num>%s</num> Health (from the Intellect) for each accumulated effect.<br>\n<rz>When used from the native land, it removes all negative effects.</rz>",
     htalent_271_name: 'Challenge',
@@ -1774,7 +1774,7 @@
       'In the specified cone, all enemies receive <mag>%s</mag> damage and slow down for <num>6</num> seconds by <num>10%</num>. The deceleration is additionally increased by <num>10%</num> per second to <num>70%</num>.<br>\n<rz>When used from home, the target slows down by <num>35%</num> and the deceleration additionally increases to <num>95%</num>.</rz>',
     htalent_282_name: 'Active connections',
     htalent_282_description: "Enemies trapped at the beginning of Portia Glue's talent cone cannot use talents for <num>2.5</num> seconds.",
-    htalent_283_name: 'The Power of Mercury 270 <CD>120</CD>',
+    htalent_283_name: 'The Power of Mercury <mana>270</mana> <CD>120</CD>',
     htalent_283_description:
       "The summoned clone attacks the enemy hero, preventing him from doing anything from <num>2</num> (at <num>20%</num> Target's health or less) up to <num>4</num> seconds (at <num>80%</num> Goal health and more). The hero's attacks additionally inflict <num>%s</num>(from Intellect) for <num>6</num> seconds.",
     htalent_284_name: 'Mercury catalyst',
@@ -1802,20 +1802,20 @@
     htalent_292_name: 'Eternal Servant',
     htalent_292_description:
       'The cooldown of the Archon Strike talent is reduced by <num>80%</num>.<br>The Talented Archon Lord instantly summons a new servant and does not interrupt the already active talent Demonic Shield.',
-    htalent_293_name: 'Bloody stroke ❤️45 <CD>3</CD>',
+    htalent_293_name: 'Bloody stroke 45❤️ <CD>3</CD>',
     htalent_293_description:
       'Creates <num>0.2</num> seconds, deals <mag>%s</mag> damage to targets, restoring itself <num>%s</num> Health (from Intellect) if a Bloody stroke kills her.<br><rz>When used from native land, it pre-lowers by <num>%s</num> Durability (from Strength) or Will (from Intellect) of the target for <num>3</num> seconds, depending on the highest parameter of the hero.</rz>',
-    htalent_294_name: 'Scarlet Rose ❤️100 <CD>12</CD>',
+    htalent_294_name: 'Scarlet Rose 100❤️ <CD>12</CD>',
     htalent_294_description: 'The hero throws a scarlet rose, dealing <mag>%s</mag> damage to all enemies in his path.',
     htalent_295_name: 'Deep Cut',
     htalent_295_description: 'The Blood Stroke talent deals additional <fiz>%s</fiz> damage and restores <num>%s</num> more Health.',
-    htalent_296_name: 'Concealing Mist ❤️70 <CD>25</CD>',
+    htalent_296_name: 'Concealing Mist 70❤️ <CD>25</CD>',
     htalent_296_description:
       'For <num>10</num> seconds, it creates an area in which the hero is invisible, and enemies in it receive <mag>%s</mag> damage every second. Attacks and the use of talents reveal the hero for a short time.',
     htalent_297_name: 'Entangling flicker',
     htalent_297_description:
       'The last enemy hero touched by the Scarlet Rose is marked for <num>4</num> seconds, which allows you to re-apply the talent, immobilize him for <num>2</num> seconds and move behind him.   <br>The hero for <num>5</num> seconds gets <num>%s</num> to the greatest of Stamina and Will (from the greatest of Strength and Intellect).',
-    htalent_298_name: 'Blood Ritual ❤️100 <CD>90</CD>',
+    htalent_298_name: 'Blood Ritual 100❤️ <CD>90</CD>',
     htalent_298_description:
       'Stuns an enemy hero and takes <num>3</num> seconds, dealing him <mag>%s</mag> damage per second, while restoring himself an equal amount of Health.',
     htalent_299_name: 'Armor of Darkness',
@@ -1888,7 +1888,7 @@
     htalent_323_name: 'Protective plates',
     htalent_323_description:
       "If the hero has not taken damage for <num>15</num> seconds, a defense appears on him that absorbs <num>50%</num> damage, but no more than <num>%s</num> (of Strength).<br>\The hero's speed increases by <num>30%</num> until protection is in effect.",
-    htalent_324_name: 'Toxicity release <mana>110</mana> <CD>0</CD>.3',
+    htalent_324_name: 'Toxicity release <mana>110</mana> <CD>0,3</CD>',
     htalent_324_description:
       'The hero moves to the target and deals it <mag>%s</mag> damage, while spending <num>1</num> charge of toxicity. The hero receives <num>1</num> charge of toxicity every <num>25</num> seconds, but no more than <num>4</num> in total.',
     htalent_325_name: 'A chilling presence',
@@ -1902,7 +1902,7 @@
     htalent_328_name: 'Angelic Light <mana>50</mana> <CD>3</CD>',
     htalent_328_description:
       'Creates a ray of light that restores <num>%s</num> Health (from Intellect) to all allies in its path, and inflicts <fiz>%s</fiz> damage to enemies for <num>3</num> seconds.',
-    htalent_329_name: 'Light of the Spirit <mana>100</mana> <mag><CD>10</CD></mag><fiz><CD>15</CD></fiz>',
+    htalent_329_name: 'Light of the Spirit <mana>100</mana> <mag>10<CD></CD></mag>/<fiz>15<CD></CD></fiz>',
     htalent_329_description:
       "For <num>10</num> seconds, creates a spirit light at the specified location, which increases the greatest of the Agility and Cunning of nearby allies by <num>%s</num> (from Intellect) and within <num>5</num> seconds restores allied heroes <num>%s</num> Health (from Intellect) per second.If the hero's Strength is greater than his Intellect, then the recovery time is longer.<br><rz>When used from his native land, the light also reduces damage from attacks on nearby allies by <num>%s</num> (from the greatest of Strength and Intellect).</rz>",
     htalent_330_name: 'Guardian of Life <mana>250</mana> <CD>100</CD>',
@@ -2012,10 +2012,10 @@
     htalent_367_name: 'Stand still!',
     htalent_367_description:
       'Talent is easy prey! Stuns an enemy for <num>0.5</num> seconds when he first crosses the border of the talent\'s area of effect.<br><hr><bronze>Grrr: Throws all touched enemies into the air.</bronze>',
-    htalent_368_name: 'Be afraid!<CD>30</CD> / <bronze>Grrr</bronze> <CD>10</CD>',
+    htalent_368_name: 'Be afraid! <CD>30</CD> / <bronze>Grrr</bronze> <CD>10</CD>',
     htalent_368_description:
       'For <num>2.5</num> seconds, he cannot be the target of enemy attacks and talents and gets the opportunity to pass through creatures. The hero cannot attack, but when he comes into contact with the enemy for the first time, he causes <mag>%s</mag> damage.<br><hr><bronze>Grrr: Reduces damage from enemy attacks around by <num>%s</num> (at most) for <num>10</num> seconds.</bronze>',
-    htalent_369_name: 'Defending myself!<CD>60</CD>',
+    htalent_369_name: 'Defending myself! <CD>60</CD>',
     htalent_369_description:
       'Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the greatest of the hero\'s Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>',
     htalent_370_name: 'Overtaken!',
@@ -2217,15 +2217,15 @@
     htalent_439_name: 'Through wounds',
     htalent_439_description:
       'Shelling reduces the Stamina and Will of targets by <num>%s</num> (from Strength) and <num>%s</num> (from Intellect) for <num>5</num> seconds.',
-    htalent_440_name: 'The Ghost of Protection',
+    htalent_440_name: 'The Ghost of Protection <mana>355</mana> <CD>65</CD>',
     htalent_440_description:
       'The hero transforms into a ghost for <num>9</num> seconds, becoming immune to the effects of transformation, and imposes shields on all allied heroes around, which absorb <num>%s</num> damage for <num>6</num> seconds (from the largest of the Strength and Intellect).',
     htalent_441_name: 'Weakening of the spirit',
     htalent_441_description:
       "The Ghost Defense talent also reduces the damage of enemies' attacks around by <num>%s</num> (from the greatest of Strength and Intellect).",
-    htalent_442_name: 'Self-propelled gun <detail></detail> 75 <CD>90</CD>',
+    htalent_442_name: 'Self-propelled gun 75<detail></detail>  <CD>90</CD>',
     htalent_442_description:
-      'In his native land, the hero creates a self-propelled gun with <num>%s</num> Health (from the greatest of Strength and Intellect), <num>%s</num> Trickery (from Trickery) and <num>%s</num> Stealth (from Agility), which enters the line and attacks enemy buildings, dealing <fiz>%s</fiz> damage (from the greatest of Strength and Intellect). <br>A cannon attack on soldiers causes <num>%s</num> more damage and hits not only the target, but also the enemies around.<br>Weapon lifetime: 120</num> sec.',
+      'In his native land, the hero creates a self-propelled gun with <num>%s</num> Health (from the greatest of Strength and Intellect), <num>%s</num> Cunning (from Cunning) and <num>%s</num> Stealth (from Agility), which enters the line and attacks enemy buildings, dealing <fiz>%s</fiz> damage (from the greatest of Strength and Intellect). <br>A cannon attack on soldiers causes <num>%s</num> more damage and hits not only the target, but also the enemies around.<br>Weapon lifetime: 120</num> sec.',
     htalent_443_name: 'Sword from Heaven <mana>250</mana> <CD>90</CD>',
     htalent_443_description:
       'The hero summons a sword that stuns the enemy for <num>2.5</num> seconds and deals him <fiz>%s</fiz> damage (from Strength).<br>The damage inflicted on the hero is reduced by <num>10%</num>.',
@@ -2239,7 +2239,7 @@
     htalent_447_name: 'Sulfur Power <mana>270</mana> <CD>120</CD>',
     htalent_447_description:
       "The summoned clone attacks the enemy's hero, after which it disappears. Deals <fiz>%s</fiz> damage to targets.",
-    htalent_448_name: 'Buried alive ❤️100 <CD>90</CD>',
+    htalent_448_name: 'Buried alive 100❤️ <CD>90</CD>',
     htalent_448_description:
       'Creates <num>0.6</num> seconds, removes the specified enemy hero from battle for <num>4</num> seconds, stopping the restoration of his Health, Energy and <time></time> talents.',
     htalent_449_name: 'Suffocation',
@@ -2318,7 +2318,7 @@
     htalent_476_description: 'Talent Heart Attack additionally stuns targets for <num>1.5</num> sec.',
     htalent_477_name: 'Panic Attack <mana>90</mana> <CD>12</CD>',
     htalent_477_description: 'Sows panic among the enemies in front of the hero for <num>1.5</num> sec.',
-    htalent_478_name: 'Miasma 180 <CD>110</CD>',
+    htalent_478_name: 'Miasma <mana>180</mana> <CD>110</CD>',
     htalent_478_description:
       'For <num>8</num> seconds, it creates an area in which enemies are exposed to Corpse Poison, and their range of vision decreases, the chance of a miss increases by <num>25%</num>.',
     htalent_479_name: 'Weakened immunity',
@@ -2398,7 +2398,7 @@
     htalent_505_description: 'If the enemy was not killed by the Tit-for-Tat talent, the hero is reborn after <num>10</num> seconds.',
     htalent_506_name: 'Destructive Fire',
     htalent_506_description:
-      "The hero's attacks deal <num>10%</num> more damage. The hero's attacks and Dissec.ting Strike Talent set the enemy on fire, dealing <mag>%s</mag> damage (from the highest of Strength and Intellect) for <num>3</num> seconds.",
+      "The hero's attacks deal <num>10%</num> more damage. The hero's attacks and Dissecting Strike Talent set the enemy on fire, dealing <mag>%s</mag> damage (from the highest of Strength and Intellect) for <num>3</num> seconds.",
     htalent_507_name: 'Dissec.ting Strike <mana>60</mana> <CD>10</CD>',
     htalent_507_description:
       'The hero deals <mag>%s</mag> damage to all nearby enemies and slows them down by <num>20%</num> for <num>4</num> seconds.',
@@ -3040,7 +3040,7 @@
     htalent_744_description: 'The Energy Cluster talent deals more damage by <num>%s</num> and recovers by <num>2</num> seconds faster.',
     htalent_745_name: 'Stellar Expansion',
     htalent_745_description:
-      'Near the Stargate, allies receive <num>15%</num> less talent damage.<br>Next to the Stargate, the hero gets <num>%s</num> Tricks (by Strength).<br>It is possible to maintain <num>3</num> more gates.',
+      'Near the Stargate, allies receive <num>15%</num> less talent damage.<br>Next to the Stargate, the hero gets <num>%s</num> Cunning (by Strength).<br>It is possible to maintain <num>3</num> more gates.',
     htalent_746_name: 'Unity of the Spirit',
     htalent_746_description:
       "The talent of One Blood increases the hero's Speed in proportion to the panther's missing health, to a maximum of <num>50%</num>.",
@@ -3054,18 +3054,18 @@
     htalent_749_description: 'The Earth Blessing talent additionally creates a defense that blocks <num>1</num> control effect.',
     htalent_750_name: 'Malice',
     htalent_750_description:
-      'By dealing a total of <num>%s</num> damage (from the highest of Strength and Intellect) with attacks or class talents, the hero accumulates 1F47F to a maximum of 3F47F.<br>After receiving damage exceeding <num>5%</num> of maximum Health, the hero absorbs <num>30%</num> of the damage received, but consumes 1F47F.',
+      'By dealing a total of <num>%s</num> damage (from the highest of Strength and Intellect) with attacks or class talents, the hero accumulates 1&#x1F47F to a maximum of 3&#xF47F.<br>After receiving damage exceeding <num>5%</num> of maximum Health, the hero absorbs <num>30%</num> of the damage received, but consumes 1&#x1F47F.',
     htalent_751_name: 'Furious Throw <CD>9</CD>',
     htalent_751_description:
-      'Prepares for <num>1</num> second, choosing a direction, and then throws a spear that flies to the first enemy hero and deals <mag>%s</mag> damage to all opponents on the way. Attacks on affected heroes accumulate <num>300%</num> more <x1F47F for <num>5</num> seconds.',
+      'Prepares for <num>1</num> second, choosing a direction, and then throws a spear that flies to the first enemy hero and deals <mag>%s</mag> damage to all opponents on the way. Attacks on affected heroes accumulate <num>300%</num> more &#x1F47F for <num>5</num> seconds.',
     htalent_752_name: 'Fighting Zeal',
-    htalent_752_description: "Hero's speed increases by <num>7%</num> for every 1F47F.",
+    htalent_752_description: "Hero's speed increases by <num>7%</num> for every &#x1F47F.",
     htalent_753_name: 'Sharp Tip',
     htalent_753_description:
       'Opponents hit by a Furious Throw are slowed down by <num>15%</num> and their acceleration effects are suppressed for <num>5</num> seconds.',
     htalent_754_name: 'Combat Frenzy',
     htalent_754_description:
-      "The hero's agility increases by <num>%s</num> (of Strength) for every 1F47F.<br>Attacks and class talents restore Health in the amount of <num>6%</num> of damage dealt and additionally <num>4%</num> for every 1F47F.",
+      "The hero's agility increases by <num>%s</num> (of Strength) for every &#x1F47F.<br>Attacks and class talents restore Health in the amount of <num>6%</num> of damage dealt and additionally <num>4%</num> for every &#x1F47F.",
     htalent_755_name: 'Thirst for Revenge <CD>25</CD>',
     htalent_755_description:
       'The hero passively remembers incoming damage, but no more than <num>%s</num> (from the greatest of Strength and Intellect).<br>When using the talent, the hero inflicts <mag></mag> (equal to the memorized one) on all opponents around.<br>Resets the stored damage when using a talent.<br>For each enemy hero hit, the damage absorbed by the Malice talent increases by <num>1%</num> to a maximum of <num>50%</num>.',
@@ -3086,7 +3086,7 @@
       'When using the Hour of Reckoning talent, the hero gets 3F47F.<br>When killing or supporting, the rage effect is updated.',
     htalent_761_name: 'Boiling blood',
     htalent_761_description:
-      'The maximum number of &#x1F47F is increased by <num>1</num>. The amount of damage required to accumulate 1F47F is reduced by <num>30%</num>.',
+      'The maximum number of &#x1F47F is increased by <num>1</num>. The amount of damage required to accumulate &#x1F47F is reduced by <num>30%</num>.',
     htalent_762_name: 'The Piercing Spear',
     htalent_762_description: 'A spear flies through enemy heroes. And additionally increases spear damage by <num>20%</num>.',
     htalent_763_name: 'Premonition of death',
@@ -3196,7 +3196,7 @@
     htalent_800_description: 'All class talents except the ultimate are instantly restored upon the death of a desiccated enemy hero.',
     htalent_801_name: 'Empty shell',
     htalent_801_description:
-      "If the victim of the Fatal Wither talent dies, a doppelganger appears in her place, whose Strength and Intellect do not exceed Intellect, and Agility and Cunning are the hero's Tricks. The doppelganger exists until the victim is resurrected.",
+      "If the victim of the Fatal Wither talent dies, a doppelganger appears in her place, whose Strength and Intellect do not exceed Intellect, and Agility and Cunning are the hero's Cunning. The doppelganger exists until the victim is resurrected.",
     htalent_802_name: 'Twilight Surge <mana>240</mana> <CD>90</CD>',
     htalent_802_description: 'Causes <mag>%s</mag> damage to all enemies around.',
     htalent_803_name: 'Saturation with life',
@@ -3246,7 +3246,7 @@
     htalent_820_name: 'Explosive Bandolier <CD>9</CD>',
     htalent_820_description:
       'The hero accumulates bombs every <num>9</num> seconds to a maximum of <num>3</num>, each of which increases attack damage by <num>6%</num>.',
-    htalent_821_name: 'Sniffer Rocket <mana>150</mana> <CD></CD><mag>30</mag>/<CD></CD><fiz>15</fiz>',
+    htalent_821_name: 'Sniffer Rocket <mana>150</mana> <mag>30<CD></CD></mag>/<fiz>15<CD></CD></fiz>',
     htalent_821_description:
       "Launches a missile at the specified hero, which deals <mag>%s</mag> Intellect damage or <mag>%s</mag> Strength damage.  <br>  If the hero's Intellect is greater than his strength, then the deceleration time is <num>2</num> seconds, the deceleration force is <num>20%</num>, the range of application is <num>100</num>, the recovery time is <num>30</num> seconds and increases from the range of application.  <br> If the hero's strength is greater than his Intellect, then the deceleration time <num>is 4</num> seconds, the deceleration force <num>is 40%</num>, the recovery time <num>is 15</num> seconds.",
     htalent_822_name: 'Mounted bomb <mana>50</mana> <CD>3</CD>',

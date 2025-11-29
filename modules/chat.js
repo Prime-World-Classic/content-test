@@ -3,6 +3,7 @@ import { Lang } from './lang.js';
 import { App } from './app.js';
 import { NativeAPI } from './nativeApi.js';
 import { Splash } from './splash.js';
+import { domAudioPresets } from './domAudioPresets.js';
 
 export class Chat {
   static body;
@@ -15,6 +16,7 @@ export class Chat {
     let scrollBtn = DOM(
       {
         style: 'scroll-btn',
+        domaudio: domAudioPresets.smallButton,
         event: [
           'click',
           () => {
@@ -28,6 +30,7 @@ export class Chat {
 
     let input = DOM({
       tag: 'input',
+      domaudio: domAudioPresets.chatButton,
       style: 'chat-input',
       placeholder: Lang.text('enterTextAndPressEnter'),
     });
@@ -138,6 +141,7 @@ export class Chat {
     let item = DOM(
       {
         style: 'chat-body-item',
+        domaudio: domAudioPresets.bigButton,
         event: [
           'click',
           () => {
@@ -162,6 +166,7 @@ export class Chat {
           DOM(
             {
               style: 'splash-content-button',
+              domaudio: domAudioPresets.bigButton,
               event: [
                 'click',
                 async () => {
@@ -176,6 +181,7 @@ export class Chat {
           DOM(
             {
               style: 'splash-content-button',
+              domaudio: domAudioPresets.bigButton,
               event: ['click', async () => Splash.hide()],
             },
             'Нет',
