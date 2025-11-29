@@ -61,6 +61,9 @@ export class Window {
   }
 
   static close(category) {
+	if (category === 'main' && typeof Build !== 'undefined' && Build.cleanup) {
+      Build.cleanup();
+    }
     if (category in Window.windows) {
       Window.windows[category].remove();
       delete Window.windows[category];
