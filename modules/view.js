@@ -20,7 +20,6 @@ import { Timer } from './timer.js';
 import { Shop } from './shop.js';
 import { DomAudio } from './domAudio.js';
 import { domAudioPresets } from './domAudioPresets.js';
-import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class View {
   static mmQueueMap = {};
@@ -131,13 +130,13 @@ export class View {
 
     let login = DOM({
         tag: 'input',
-        domaudio: domAudioPresets.defaultInput,
+        domaudio: domAudioPresets.deafultInput,
         placeholder: Lang.text('nickname'),
         event: numEnterEvent,
       }),
       password = DOM({
         tag: 'input',
-        domaudio: domAudioPresets.defaultInput,
+        domaudio: domAudioPresets.deafultInput,
         placeholder: Lang.text('password'),
         type: 'password',
         event: numEnterEvent,
@@ -249,7 +248,6 @@ export class View {
     let tgBotUrl = 'https://t.me/primeworldclassic_bot';
 
     let telegramBotLink = DOM({
-      domaudio: domAudioPresets.defaultButton,
       style: 'telegram-bot',
       tag: 'a',
       target: '_blank',
@@ -259,7 +257,7 @@ export class View {
 
     let invite = DOM({
       tag: 'input',
-      domaudio: domAudioPresets.defaultInput,
+      domaudio: domAudioPresets.deafultInput,
       placeholder: Lang.text('code'),
       event: numEnterEvent,
     });
@@ -268,14 +266,14 @@ export class View {
 
     let login = DOM({
       tag: 'input',
-      domaudio: domAudioPresets.defaultInput,
+      domaudio: domAudioPresets.deafultInput,
       placeholder: Lang.text('nickname'),
       event: numEnterEvent,
     });
 
     let password = DOM({
       tag: 'input',
-      domaudio: domAudioPresets.defaultInput,
+      domaudio: domAudioPresets.deafultInput,
       placeholder: Lang.text('password'),
       type: 'password',
       event: numEnterEvent,
@@ -283,7 +281,7 @@ export class View {
 
     let password2 = DOM({
       tag: 'input',
-      domaudio: domAudioPresets.defaultInput,
+      domaudio: domAudioPresets.deafultInput,
       placeholder: Lang.text('passwordAgain'),
       type: 'password',
       event: numEnterEvent,
@@ -469,7 +467,6 @@ export class View {
       let player = players[p];
 
       let item = DOM({
-        domaudio: domAudioPresets.bigButton,
         style: 'castle-play-lobby-player',
         data: { id: player.id },
       });
@@ -629,7 +626,7 @@ export class View {
           let preload = new PreloadImages(bodyHero);
 
           for (let item2 of request) {
-            let hero = DOM({ domaudio: domAudioPresets.smallButton });
+            let hero = DOM();
 
             hero.addEventListener('click', async () => {
               try {
@@ -822,7 +819,6 @@ export class View {
       const disabled = type === 'silver';
 
       const medal = DOM({
-        domaudio: domAudioPresets.bigButton,
         tag: 'span',
         style: ['banner-medal', `banner-medal--${type}`, disabled ? 'is-disabled' : null].filter(Boolean),
       });
@@ -859,7 +855,6 @@ export class View {
     const statCircle = DOM({ style: ['banner-stat-circle'] });
 
     const statsBtn = DOM({
-      domaudio: domAudioPresets.bigButton,
       style: ['banner-icon', 'banner-icon--stat', 'button-outline'],
       title: Lang.text('titlestatistic'),
       event: [
@@ -867,7 +862,6 @@ export class View {
         () => {
           const onEsc = (e) => {
             if (e.key === 'Escape') {
-              Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, {id: 'ui-close', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
               Splash.hide();
               document.removeEventListener('keydown', onEsc);
             }
@@ -891,7 +885,6 @@ export class View {
           Splash.show(
             DOM(
               {
-                domaudio: domAudioPresets.closeButton,
                 style: 'iframe-stats',
                 event: [
                   'click',
@@ -901,7 +894,6 @@ export class View {
                 ],
               },
               DOM({
-                domaudio: domAudioPresets.closeButton,
                 style: 'iframe-stats-navbar',
                 event: ['click', () => Splash.hide()],
               }),
@@ -936,7 +928,6 @@ export class View {
 
     View.castleCrystalContainer = DOM(
       {
-        domaudio: domAudioPresets.bigButton,
         style: ['crystal-container', Shop.requireAnimation ? 'crystal-container-anim' : '_dummy_'],
         event: [
           'click',
@@ -955,14 +946,12 @@ export class View {
 
   static castleSettings() {
     let builds = DOM({
-      domaudio: domAudioPresets.bigButton,
       style: ['castle-builds', 'button-outline'],
       title: 'Рейтинг',
       event: ['click', () => View.show('top')],
     });
 
     let settings = DOM({
-      domaudio: domAudioPresets.bigButton,
       style: ['castle-settings-btn', 'button-outline'],
       title: 'Вкл/Выкл графики замка',
       event: [
@@ -975,14 +964,12 @@ export class View {
     });
 
     let clan = DOM({
-      domaudio: domAudioPresets.bigButton,
       style: ['castle-clans', 'button-outline'],
       title: 'Кланы',
       event: ['click', () => Frame.open('clan')],
     });
 
     let farm = DOM({
-      domaudio: domAudioPresets.bigButton,
       style: ['castle-farm', 'button-outline'],
       title: 'Фарм',
       event: ['click', () => Window.show('main', 'farm')],
@@ -1041,7 +1028,6 @@ export class View {
     let nicknameValue = String(App?.storage?.data?.login || '').trim();
     let nicknameMenuItem = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         style: 'nickname-menu-item',
         event: [
           'click',
@@ -1058,7 +1044,9 @@ export class View {
     }
 
     let flagMenuItem = DOM({
-      domaudio: domAudioPresets.defaultButton,
+      domaudio: new DomAudio(() => {
+        //App.error("Кастомный звук при наведении курсора");
+      }), // своя реализация функции при наведении курсора
       style: 'flag-menu-item',
       event: [
         'click',
@@ -1069,7 +1057,7 @@ export class View {
       title: Lang.text('titleflag'),
     });
     let settingsMenuItem = DOM({
-      domaudio: domAudioPresets.defaultButton,
+      domaudio: new DomAudio(null, undefined, undefined), // нет звука при наведении курсора
       style: 'settings-menu-item',
       event: [
         'click',
@@ -1080,7 +1068,7 @@ export class View {
       title: Lang.text('titlesettings'),
     });
     let chatMenuItem = DOM({
-      domaudio: domAudioPresets.defaultButton,
+      domaudio: new DomAudio(), // все звуки по умолчанию
       style: 'chat-menu-item',
       event: [
         'click',
@@ -1091,7 +1079,6 @@ export class View {
       title: Lang.text('titlechat'),
     });
     let heroesMenuItem = DOM({
-      domaudio: domAudioPresets.bigButton,
       style: 'heroes-menu-item',
       event: [
         'click',
@@ -1105,7 +1092,6 @@ export class View {
       title: Lang.text('titleheroes'),
     });
     let friendsMenuItem = DOM({
-      domaudio: domAudioPresets.defaultButton,
       style: 'friends-menu-item',
       event: [
         'click',
@@ -1119,7 +1105,6 @@ export class View {
       title: Lang.text('titlefriends'),
     });
     let buildingsMenuItem = DOM({
-      domaudio: domAudioPresets.defaultButton,
       style: 'buildings-menu-item',
       event: [
         'click',
@@ -1138,22 +1123,18 @@ export class View {
 
     View.arrows = new Object();
     View.arrows.ls = DOM({
-      domaudio: domAudioPresets.smallButton,
       style: 'castle-bottom-left-scroll-single',
       event: ['click', () => View.scrollHero(-1)],
     });
     View.arrows.ld = DOM({
-      domaudio: domAudioPresets.smallButton,
       style: 'castle-bottom-left-scroll-double',
       event: ['click', () => View.scrollHeroLine(-1)],
     });
     View.arrows.rs = DOM({
-      domaudio: domAudioPresets.smallButton,
       style: 'castle-bottom-right-scroll-single',
       event: ['click', () => View.scrollHero(1)],
     });
     View.arrows.rd = DOM({
-      domaudio: domAudioPresets.smallButton,
       style: 'castle-bottom-right-scroll-double',
       event: ['click', () => View.scrollHeroLine(1)],
     });
@@ -1264,7 +1245,6 @@ export class View {
     const items = [];
 
     const btnUp = DOM({
-      domaudio: domAudioPresets.smallButton,
       style: ['quest-arrow', 'quest-arrow-up'],
       event: [
         'click',
@@ -1278,7 +1258,6 @@ export class View {
     });
 
     const btnDown = DOM({
-      domaudio: domAudioPresets.smallButton,
       style: ['quest-arrow', 'quest-arrow-down'],
       event: [
         'click',
@@ -1311,7 +1290,6 @@ export class View {
 
       let quest = DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'quest-item',
           event: [
             'click',
@@ -1426,7 +1404,6 @@ export class View {
 
           let hero = DOM(
             {
-              domaudio: domAudioPresets.defaultButton,
               id: `id${item.id}`,
               style: ['castle-hero-item', 'hover-brightness'],
             },
@@ -1467,7 +1444,6 @@ export class View {
             onclick: () => {
               let input = DOM({
                 tag: 'input',
-                domaudio: domAudioPresets.defaultInput,
                 style: 'search-input',
                 placeholder: Lang.text('friendNicknamePlaceholder'),
               });
@@ -1476,7 +1452,6 @@ export class View {
               // Создаём крестик для закрытия (как в buildSelectName)
               let closeButton = DOM({
                 tag: 'div',
-                domaudio: domAudioPresets.closeButton,
                 style: 'close-button',
                 event: ['click', () => Splash.hide()],
               });
@@ -1498,7 +1473,6 @@ export class View {
                 for (let item of request) {
                   let template = DOM(
                     {
-                      domaudio: domAudioPresets.defaultButton,
                       event: [
                         'click',
                         async () => {
@@ -1524,7 +1498,6 @@ export class View {
                       // Создаём крестик для закрытия
                       const closeButton = DOM({
                         tag: 'div',
-                        domaudio: domAudioPresets.closeButton,
                         style: 'close-button',
                         event: ['click', () => Splash.hide()],
                       });
@@ -1534,7 +1507,6 @@ export class View {
                         DOM({}, item.nickname),
                         DOM(
                           {
-                            domaudio: domAudioPresets.bigButton,
                             style: 'splash-content-button',
                             event: [
                               'click',
@@ -1550,7 +1522,6 @@ export class View {
                         ),
                         DOM(
                           {
-                            domaudio: domAudioPresets.bigButton,
                             style: 'splash-content-button',
                             event: [
                               'click',
@@ -1566,7 +1537,6 @@ export class View {
                         ),
                         DOM(
                           {
-                            domaudio: domAudioPresets.bigButton,
                             style: 'splash-content-button',
                             event: [
                               'click',
@@ -1662,7 +1632,6 @@ export class View {
 
               let b1 = DOM(
                 {
-                  domaudio: domAudioPresets.smallButton,
                   style: 'splash-content-button',
                   event: [
                     'click',
@@ -1682,7 +1651,6 @@ export class View {
 
               let b2 = DOM(
                 {
-                  domaudio: domAudioPresets.closeButton,
                   style: 'splash-content-button',
                   event: ['click', () => Splash.hide()],
                 },
@@ -1701,7 +1669,6 @@ export class View {
             bottom.append(
               DOM(
                 {
-                  domaudio: domAudioPresets.smallButton,
                   style: 'castle-friend-confirm',
                   event: [
                     'click',
@@ -1717,7 +1684,6 @@ export class View {
                       bottom.append(
                         DOM(
                           {
-                            domaudio: domAudioPresets.bigButton,
                             style: 'castle-friend-add-group',
                             event: [
                               'click',
@@ -1738,7 +1704,6 @@ export class View {
               ),
               DOM(
                 {
-                  domaudio: domAudioPresets.smallButton,
                   style: 'castle-friend-cancel',
                   event: [
                     'click',
@@ -1764,7 +1729,6 @@ export class View {
             bottom.append(
               DOM(
                 {
-                  domaudio: domAudioPresets.smallButton,
                   style: 'castle-friend-cancel',
                   event: [
                     'click',
@@ -1795,7 +1759,6 @@ export class View {
   static exitOrLogout() {
     let logout = DOM(
       {
-        domaudio: domAudioPresets.smallButton,
         event: [
           'click',
           async () => {
@@ -1808,12 +1771,12 @@ export class View {
       'Выйти из аккаунта',
     );
 
-    let close = DOM({ domaudio: domAudioPresets.closeButton, event: ['click', () => Splash.hide()] }, 'Отмена');
+    let close = DOM({ event: ['click', () => Splash.hide()] }, 'Отмена');
 
     let wrap = DOM({ style: 'wrap' }, logout, close);
 
     if (NativeAPI.status) {
-      let exit = DOM({ domaudio: domAudioPresets.closeButton, event: ['click', () => NativeAPI.exit()] }, Lang.text('exit'));
+      let exit = DOM({ event: ['click', () => NativeAPI.exit()] }, Lang.text('exit'));
 
       wrap = DOM({ style: 'wrap' }, logout, exit, close);
     }
@@ -1837,7 +1800,6 @@ export class View {
     let menu = DOM(
       { style: 'main-header' },
       DOM({
-        domaudio: domAudioPresets.defaultButton,
         tag: 'img',
         src: 'content/img/logo.webp',
         event: ['click', () => View.show('castle')],
@@ -1848,7 +1810,6 @@ export class View {
     if (App.isAdmin()) {
       let adm = DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'main-header-item',
           event: [
             'click',
@@ -1858,7 +1819,6 @@ export class View {
               body.append(
                 DOM(
                   {
-                    domaudio: domAudioPresets.bigButton,
                     style: 'splash-content-button',
                     event: [
                       'click',
@@ -1873,7 +1833,6 @@ export class View {
                 ),
                 DOM(
                   {
-                    domaudio: domAudioPresets.bigButton,
                     style: 'splash-content-button',
                     event: [
                       'click',
@@ -1888,7 +1847,6 @@ export class View {
                 ),
                 DOM(
                   {
-                    domaudio: domAudioPresets.bigButton,
                     style: 'splash-content-button',
                     event: [
                       'click',
@@ -1903,7 +1861,6 @@ export class View {
                 ),
                 DOM(
                   {
-                    domaudio: domAudioPresets.closeButton,
                     style: 'splash-content-button',
                     event: ['click', () => Splash.hide()],
                   },
@@ -1928,7 +1885,6 @@ export class View {
     menu.append(
       DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'main-header-item',
           event: ['click', () => View.show('castle')],
         },
@@ -1936,17 +1892,15 @@ export class View {
       ),
       DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'main-header-item',
           event: ['click', () => View.show('builds')],
         },
         'Билды',
       ),
       /*DOM({ style: 'main-header-item', event: ['click', () => View.show('history')] }, 'История'),*/
-      DOM({ domaudio: domAudioPresets.defaultButton, style: 'main-header-item', event: ['click', () => View.show('top')] }, 'Рейтинг'),
+      DOM({ style: 'main-header-item', event: ['click', () => View.show('top')] }, 'Рейтинг'),
       DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'main-header-item',
           event: ['click', () => View.show('game')],
         },
@@ -1954,7 +1908,6 @@ export class View {
       ),
       DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'main-header-item',
           event: ['click', () => View.exitOrLogout()],
         },
@@ -1993,7 +1946,6 @@ export class View {
 
           let item = DOM(
             {
-              domaudio: domAudioPresets.defaultButton,
               style: 'top-item',
               event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
             },
@@ -2142,7 +2094,6 @@ export class View {
         nickname.append(
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               tag: 'span',
               event: [
                 'click',
@@ -2162,7 +2113,6 @@ export class View {
         nickname.append(
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               tag: 'span',
               event: [
                 'click',
@@ -2197,7 +2147,7 @@ export class View {
           let preload = new PreloadImages(bodyHero);
 
           for (let item of request) {
-            let hero = DOM({ domaudio: domAudioPresets.smallButton });
+            let hero = DOM();
 
             hero.addEventListener('click', async () => {
               try {
@@ -2237,7 +2187,6 @@ export class View {
             body,
             DOM(
               {
-                domaudio: domAudioPresets.closeButton,
                 style: 'search-bottom',
                 event: [
                   'click',
@@ -2265,7 +2214,6 @@ export class View {
               body.append(
                 DOM(
                   {
-                    domaudio: domAudioPresets.defaultButton,
                     event: [
                       'click',
                       async () => {
@@ -2349,7 +2297,6 @@ export class View {
       { style: isSplah ? 'wtop-scroll' : 'top-scroll' },
       DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'top-filter',
           title: Lang.text('titleClickToViewHeroRating'),
           event: [
@@ -2364,7 +2311,7 @@ export class View {
               let preload = new PreloadImages(bodyHero);
 
               for (let item of request) {
-                let hero = DOM({ domaudio: domAudioPresets.smallButton });
+                let hero = DOM();
 
                 if (item.id) {
                   hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
@@ -2417,7 +2364,6 @@ export class View {
 
       let item = DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'top-item',
           event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
         },
@@ -2565,7 +2511,6 @@ export class View {
           DOM({ tag: 'img', src: 'content/img/logo.webp' }),
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: 'main-header-item',
               event: ['click', () => View.show('castle')],
             },
@@ -2573,7 +2518,6 @@ export class View {
           ),
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: 'main-header-item',
               event: ['click', () => View.show('inventory')],
             },
@@ -2581,7 +2525,6 @@ export class View {
           ),
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: 'main-header-item',
               event: ['click', () => View.show('game')],
             },
@@ -2589,7 +2532,6 @@ export class View {
           ),
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: 'main-header-item',
               event: ['click', () => View.exitOrLogout()],
             },
@@ -2610,7 +2552,6 @@ export class View {
 
     let button = DOM(
       {
-        domaudio: domAudioPresets.bigButton,
         style: 'game-button',
         event: [
           'click',
@@ -2664,7 +2605,6 @@ export class View {
         ? DOM()
         : DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: 'game-button',
               event: ['click', () => View.show('castle')],
             },
@@ -2703,7 +2643,6 @@ export class View {
       body.append(
         DOM(
           {
-            domaudio: domAudioPresets.closeButton,
             style: ['build-list-close', 'close-button'],
             title: Lang.text('titleClose'),
             event: [
@@ -2740,7 +2679,6 @@ export class View {
     // Кнопка закрытия
     let closeBtn = DOM(
       {
-        domaudio: domAudioPresets.closeButton,
         style: 'close-btn',
         event: ['click', () => View.show('castle')],
       },
@@ -2828,7 +2766,6 @@ export class View {
     // Кнопка закрытия
     let closeBtn = DOM(
       {
-        domaudio: domAudioPresets.closeButton,
         style: 'close-btn',
         event: ['click', () => View.show('castle')],
       },
@@ -2910,7 +2847,6 @@ export class View {
   static async users() {
     let filter = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           () => {
@@ -2931,7 +2867,6 @@ export class View {
 
     let userMute = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         tag: 'input',
         placeholder: 'mute',
         event: [
@@ -2957,7 +2892,6 @@ export class View {
                 DOM(`Выдать мут чата ${userNickname}?`),
                 DOM(
                   {
-                    domaudio: domAudioPresets.bigButton,
                     style: 'splash-content-button',
                     event: [
                       'click',
@@ -2974,7 +2908,6 @@ export class View {
                 ),
                 DOM(
                   {
-                    domaudio: domAudioPresets.closeButton,
                     style: 'splash-content-button',
                     event: ['click', async () => Splash.hide()],
                   },
@@ -3032,7 +2965,6 @@ export class View {
       div.append(
         DOM(
           {
-            domaudio: domAudioPresets.bigButton,
             event: [
               'click',
               async () => {
