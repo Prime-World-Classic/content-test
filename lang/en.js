@@ -479,6 +479,11 @@
     flag_snow: 'Snowflake',
     flag_snowman: 'Snowman',
     flag_tester_yellow: 'Tester PWC',
+	flag_golden_dragon: 'The Golden Dragon',
+	flag_clown: 'Clown',
+	flag_Mimimi: 'Mimimi',
+	flag_New_Years_skull: 'New Year\'s Skull',
+	flag_oak: 'Tree',
 
     // Переводы
     select_faction: 'Select faction',
