@@ -14,6 +14,8 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { Timer } from './timer.js';
 import { Splash } from './splash.js';
+import { domAudioPresets } from './domAudioPresets.js';
+import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class MM {
   static id = '';
@@ -96,7 +98,7 @@ export class MM {
   }
 
   static soundEvent() {
-    Sound.play('content/sounds/found.ogg', {
+    Sound.play(SOUNDS_LIBRARY.MM_FOUND, {
       id: 'MM_found',
       volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
     });
@@ -214,6 +216,7 @@ export class MM {
       // Создаем кнопку закрытия
       const closeButton = DOM({
         tag: 'div',
+        domaudio: domAudioPresets.closeButton,
         style: 'close-button',
         event: ['click', () => Splash.hide()],
       });
@@ -304,6 +307,7 @@ export class MM {
     let button = DOM(
       {
         style: 'mm-ready-button',
+        domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           async () => {
@@ -360,6 +364,7 @@ export class MM {
     for (let build of builds) {
       let tab = DOM(
         {
+          domaudio: domAudioPresets.bigButton,
           event: [
             'click',
             async () => {
@@ -403,6 +408,7 @@ export class MM {
       random = DOM(
         {
           style: 'ready-button',
+          domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
             async () => {
@@ -484,6 +490,7 @@ export class MM {
     MM.lobbyConfirm = DOM(
       {
         style: 'mm-ready-button',
+        domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           async () => {
@@ -730,7 +737,7 @@ export class MM {
       ),
     );
 
-    Sound.play('content/sounds/tambur.ogg', {
+    Sound.play(SOUNDS_LIBRARY.TAMBUR, {
       id: 'tambur',
       volume: Castle.GetVolume(Castle.AUDIO_MUSIC),
       loop: true,
@@ -790,6 +797,7 @@ export class MM {
 
     for (let number of [1, 2, 3, 4, 5, 6]) {
       let item = DOM({
+        domaudio: domAudioPresets.smallButton,
         style: `map-item-${number}`,
         data: { player: 0, position: number },
         event: [
@@ -810,6 +818,8 @@ export class MM {
   }
 
   static async select(data) {
+    // to refactor sound
+    await Sound.preload(`content/hero/${data.heroId}/revive/${data.sound}.ogg`);
     Sound.play(`content/hero/${data.heroId}/revive/${data.sound}.ogg`, {
       id: `heroSound_${data.heroId}_${data.sound}`,
       volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),

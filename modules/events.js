@@ -9,6 +9,7 @@ import { Chat } from './chat.js';
 import { NativeAPI } from './nativeApi.js';
 import { MM } from './mm.js';
 import { Splash } from './splash.js';
+import { domAudioPresets } from './domAudioPresets.js';
 
 export class Events {
   static Message(data) {
@@ -134,6 +135,7 @@ export class Events {
     let b1 = DOM(
       {
         style: 'splash-content-button',
+        domaudio: domAudioPresets.bigButton,
         event: [
           'click',
           async () => {
@@ -149,11 +151,18 @@ export class Events {
       Lang.text('friendAccept'),
     );
 
-    let b2 = DOM({ style: 'splash-content-button', event: ['click', () => Splash.hide()] }, Lang.text('friendCancle'));
+    let b2 = DOM(
+      { domaudio: domAudioPresets.bigButton, style: 'splash-content-button', event: ['click', () => Splash.hide()] },
+      Lang.text('friendCancle'),
+    );
 
     body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2);
 
     Splash.show(body);
+    Sound.play(SOUNDS_LIBRARY.GROUP_INVITE, {
+      id: 'ui-groupInvite',
+      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)
+    });
   }
 
   static PUpdate(data) {
@@ -229,6 +238,7 @@ export class Events {
 
     let button = DOM(
       {
+        domaudio: domAudioPresets.bigButton,
         style: 'splash-content-button',
         event: ['click', async () => Splash.hide()],
       },
@@ -252,6 +262,7 @@ export class Events {
         DOM(Lang.text('friendCallFrom').replace('{name}', data.name)),
         DOM(
           {
+            domaudio: domAudioPresets.bigButton,
             style: 'splash-content-button',
             event: [
               'click',
@@ -272,6 +283,7 @@ export class Events {
         ),
         DOM(
           {
+            domaudio: domAudioPresets.bigButton,
             style: 'splash-content-button',
             event: ['click', async () => Splash.hide()],
           },
