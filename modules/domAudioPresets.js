@@ -112,8 +112,7 @@ export const domAudioPresets = {
     function input() {
       Sound.play(SOUNDS_LIBRARY.CHAT, {
         id: 'ui-chat',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-        loop: false,
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 0.05
       });
     },
     function change() {},

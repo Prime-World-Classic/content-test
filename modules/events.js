@@ -159,10 +159,7 @@ export class Events {
     body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2);
 
     Splash.show(body);
-    Sound.play(SOUNDS_LIBRARY.GROUP_INVITE, {
-      id: 'ui-groupInvite',
-      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)
-    });
+    
   }
 
   static PUpdate(data) {

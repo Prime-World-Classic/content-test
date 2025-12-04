@@ -21,6 +21,7 @@ import { Shop } from './shop.js';
 import { DomAudio } from './domAudio.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
+import { Sound } from './sound.js';
 
 export class View {
   static mmQueueMap = {};
@@ -867,7 +868,7 @@ export class View {
         () => {
           const onEsc = (e) => {
             if (e.key === 'Escape') {
-              Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, {id: 'ui-close', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+              Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, { id: 'ui-close', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
               Splash.hide();
               document.removeEventListener('keydown', onEsc);
             }
@@ -1233,27 +1234,21 @@ export class View {
   }
 
   static async castleQuestUpdate() {
-	  
-	let request;
-	
-	try{
-		
-		request = await App.api.request('quest', 'list');
-		
-		if( !('crystal' in request) ){
-			alert(request);
-			return App.error(`Неизвестное число кристаллов: ${JSON.stringify(request)}`);
-		}
-		
-		View.castleTotalCrystal.firstChild.innerText = request.crystal;
-		
-	}
-	catch(error){
-		
-		return App.error(error);
-		
-	}
-	
+    let request;
+
+    try {
+      request = await App.api.request('quest', 'list');
+
+      if (!('crystal' in request)) {
+        alert(request);
+        return App.error(`Неизвестное число кристаллов: ${JSON.stringify(request)}`);
+      }
+
+      View.castleTotalCrystal.firstChild.innerText = request.crystal;
+    } catch (error) {
+      return App.error(error);
+    }
+
     while (View.castleQuestBody.firstChild) {
       View.castleQuestBody.firstChild.remove();
     }
@@ -1381,9 +1376,7 @@ export class View {
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
 
-      let building = DOM({ style: 'castle-building-item' },
-            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
-        buildingNameBase);
+      let building = DOM({ style: 'castle-building-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), buildingNameBase);
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
@@ -1604,9 +1597,11 @@ export class View {
               input.focus();
             },
           },
-          DOM({ style: 'castle-friend-item-middle' },
+          DOM(
+            { style: 'castle-friend-item-middle' },
             DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
-            DOM({ style: 'castle-friend-add' }, '+')),
+            DOM({ style: 'castle-friend-add' }, '+'),
+          ),
         );
 
         preload.add(buttonAdd);
@@ -1624,9 +1619,12 @@ export class View {
 
           let bottom = DOM({ style: 'castle-friend-item-bottom' });
 
-          let friend = DOM({ style: 'castle-friend-item' },
+          let friend = DOM(
+            { style: 'castle-friend-item' },
             DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
-             heroNameBase, bottom);
+            heroNameBase,
+            bottom,
+          );
 
           if (item.status == 1) {
             let group = DOM({ style: 'castle-friend-add-group' }, item.online ? Lang.text('inviteToAGroup') : Lang.text('friendIsOffline'));
@@ -1698,6 +1696,10 @@ export class View {
 
             bottom.append(call, group);
           } else if (item.status == 2) {
+            Sound.play(SOUNDS_LIBRARY.GROUP_INVITE, {
+              id: 'ui-groupInvite',
+              volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 1.2,
+            });
             bottom.append(
               DOM(
                 {
@@ -1755,6 +1757,7 @@ export class View {
               ),
             );
           } else if (item.status == 3) {
+            
             friend.append(
               DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('friendAcceptWaiting'))),
             );
