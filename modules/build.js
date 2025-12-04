@@ -2397,28 +2397,53 @@ export class Build {
           elementSetDisplay(element, 'block');
 
           if (elemBelow && elemBelow.className == 'build-hero-grid-item') {
+			  
             if (data.level && elemBelow.parentNode.dataset.level == data.level) {
-              let conflictState = false;
+				
+				let conflictState = false;
 
-              if ('conflict' in data) {
-                for (let item of data.conflict) {
-                  if (item in Build.fieldConflict) {
-                    conflictState = true;
-                  }
-                }
-              }
+				if ('conflict' in data) {
+					
+					for (let conflictId of data.conflict) {
+						
+						for (let installedTalent of Build.installedTalents) {
+							
+							if (installedTalent) {
+								
+								if (Math.abs(installedTalent.id) == conflictId) {
+									
+									let isCurrentOrdinary = data.id > 0;
+									
+									let isInstalledOrdinary = installedTalent.id > 0;
+									
+									if (isCurrentOrdinary === isInstalledOrdinary) {
+										
+										conflictState = true;
+										
+										break;
+									}
+								}
+							}
+						}
+						
+						if (conflictState) break;
+					}
+				}
 
-              if (conflictState) {
-                if (typeof App !== 'undefined' && App.notify) {
-                  const message = Lang.text('talentConflict');
-                  App.notify(message);
-                }
-              }
+				if (conflictState) {
+					
+					if (typeof App !== 'undefined' && App.notify) {
+						
+						const message = Lang.text('talentConflict');
+						
+						App.notify(message);
+					}
+				}
 
-              if (!conflictState) {
-                if ('conflict' in data) {
-                  Build.fieldConflict[Math.abs(data.id)] = true;
-                }
+				if (!conflictState) {
+					if ('conflict' in data) {
+						Build.fieldConflict[Math.abs(data.id)] = true;
+					}
 
                 let prevState = element.dataset.state;
                 element.dataset.state = 2;
@@ -2566,7 +2591,7 @@ export class Build {
               if (data.active && oldParentNode.dataset.position) {
                 await removeFromActive(oldParentNode.dataset.position);
               }
-
+			  
               await App.api.request('build', 'setZero', {
                 buildId: Build.id,
                 index: oldParentNode.dataset.position,
@@ -2576,7 +2601,7 @@ export class Build {
 
               Build.setStat(data, true);
 
-              if (data.id < 0) {
+              if ('conflict' in data) {
                 delete Build.fieldConflict[Math.abs(data.id)];
               }
             } catch (e) {
