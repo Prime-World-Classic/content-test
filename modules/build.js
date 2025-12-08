@@ -1841,10 +1841,10 @@ export class Build {
 
   static rarity() {
     const element = [
-      { id: '4', name: 'Красное', color: '170,20,44' },
-      { id: '3', name: 'Оранжевое', color: '237,129,5' },
-      { id: '2', name: 'Фиолетовое', color: '205,0,205' },
-      { id: '1', name: 'Синее', color: '17,105,237' },
+      { id: '4', name: Lang.text('titleTheRed'), color: '170,20,44' },
+      { id: '3', name: Lang.text('titleTheOrange'), color: '237,129,5' },
+      { id: '2', name: Lang.text('titleThePurple'), color: '205,0,205' },
+      { id: '1', name: Lang.text('titleTheBlue'), color: '17,105,237' },
     ];
 
     let a = document.createElement('div');

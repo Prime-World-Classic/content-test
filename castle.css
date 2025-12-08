@@ -721,27 +721,27 @@ body {
   text-shadow: 0.1vh 0 0.1vh rgb(74, 75, 46); /* Изменено с vw на vh */
 }
 .castle-button-play-m1:after {
-  content: 'Пограничье';
+  content: var(--filter-text, 'Пограничье');
 }
 
 .castle-button-play-m2:after {
-  content: 'Форпост';
+  content: var(--filter-text, 'Форпост');
 }
 
 .castle-button-play-m3:after {
-  content: 'Драгонвальд';
+  content: var(--filter-text, 'Драгонвальд');
 }
 
 .castle-button-play-m4:after {
-  content: 'ARAM';
+  content: var(--filter-text, 'ARAM');
 }
 
 .castle-button-play-m5:after {
-  content: 'Испытание';
+  content: var(--filter-text, 'Испытание');
 }
 
 .castle-button-play-m6:after {
-  content: 'Дуэль';
+  content: var(--filter-text, 'Дуэль');
 }
 
 .castle-button-play-1 {

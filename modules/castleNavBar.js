@@ -72,44 +72,43 @@ export class CastleNAVBAR {
       }),
     );
 
-    CastleNAVBAR.body.children[11].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[11].style.setProperty('--filter-text', `'${Lang.text('gm1')}'`);
+	  CastleNAVBAR.body.children[11].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[11].onclick = () => {
+		CastleNAVBAR.setMode(1);
+	  };
 
-    CastleNAVBAR.body.children[11].onclick = () => {
-      CastleNAVBAR.setMode(1);
-    };
+	  CastleNAVBAR.body.children[12].style.setProperty('--filter-text', `'${Lang.text('gm2')}'`);
+	  CastleNAVBAR.body.children[12].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[12].onclick = () => {
+		CastleNAVBAR.setMode(2);
+	  };
 
-    CastleNAVBAR.body.children[12].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[13].style.setProperty('--filter-text', `'${Lang.text('gm3')}'`);
+	  CastleNAVBAR.body.children[13].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[13].onclick = () => {
+		CastleNAVBAR.setMode(3);
+	  };
 
-    CastleNAVBAR.body.children[12].onclick = () => {
-      CastleNAVBAR.setMode(2);
-    };
+	  CastleNAVBAR.body.children[14].style.setProperty('--filter-text', `'${Lang.text('gm4')}'`);
+	  CastleNAVBAR.body.children[14].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[14].onclick = () => {
+		CastleNAVBAR.setMode(4);
+	  };
 
-    CastleNAVBAR.body.children[13].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[15].style.setProperty('--filter-text', `'${Lang.text('gm5')}'`);
+	  CastleNAVBAR.body.children[15].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[15].onclick = () => {
+		CastleNAVBAR.setMode(5);
+	  };
 
-    CastleNAVBAR.body.children[13].onclick = () => {
-      CastleNAVBAR.setMode(3);
-    };
+	  CastleNAVBAR.body.children[16].style.setProperty('--filter-text', `'${Lang.text('gm6')}'`);
+	  CastleNAVBAR.body.children[16].append(DOM({ style: 'castle-button-play-queue-mode' }));
+	  CastleNAVBAR.body.children[16].onclick = () => {
+		CastleNAVBAR.setMode(6);
+	  };
 
-    CastleNAVBAR.body.children[14].append(DOM({ style: 'castle-button-play-queue-mode' }));
-
-    CastleNAVBAR.body.children[14].onclick = () => {
-      CastleNAVBAR.setMode(4);
-    };
-
-    CastleNAVBAR.body.children[15].append(DOM({ style: 'castle-button-play-queue-mode' }));
-
-    CastleNAVBAR.body.children[15].onclick = () => {
-      CastleNAVBAR.setMode(5);
-    };
-
-    CastleNAVBAR.body.children[16].append(DOM({ style: 'castle-button-play-queue-mode' }));
-
-    CastleNAVBAR.body.children[16].onclick = () => {
-      CastleNAVBAR.setMode(6);
-    };
-
-    CastleNAVBAR.body.children[18].title =
-      'Карма — поведение игрока и его "полезность" в бою.\n' + 'Она может повышаться и понижаться, в зависимости от боёв.';
+    CastleNAVBAR.body.children[18].title = Lang.text('titleСhildren18_1') + '\n'+ Lang.text('titleСhildren18_2');
     CastleNAVBAR.body.children[18].style.pointerEvents = 'auto';
     CastleNAVBAR.body.children[18].style.zIndex = '4';
     CastleNAVBAR.body.children[18].append(DOM({ tag: 'div' }));
@@ -175,10 +174,7 @@ export class CastleNAVBAR {
       el.style.display = 'flex';
       el.firstChild.innerText = `>${karma}`;
 
-      el.title =
-        'Карма — поведение игрока и его "полезность" в бою.\n' +
-        'Она может повышаться и понижаться, в зависимости от боёв.\n' +
-        `Текущий порог: >${karma}`;
+      el.title = Lang.text('titleСhildren18_1') + '\n'+ Lang.text('titleСhildren18_2') + '\n' + Lang.text('titleСhildren18_3').replace('{karma}', `> ${karma}`);
     }
   }
 
@@ -187,8 +183,7 @@ export class CastleNAVBAR {
 
     CastleNAVBAR.body.children[17].style.backgroundImage = `url(content/ranks/${division.icon}.webp)`;
 
-    CastleNAVBAR.body.children[17].title =
-      'Дивизия — группа игроков под одним званием,\nкоторая играет примерно на равном винрейте матчмейкинга.';
+    CastleNAVBAR.body.children[17].title = Lang.text('titleСhildren17_1');
 
     CastleNAVBAR.body.children[17].style.display = 'block';
   }
