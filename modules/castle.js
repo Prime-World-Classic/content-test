@@ -16,8 +16,6 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { PreloadImages } from './preloadImages.js';
 import { DOM } from './dom.js';
-import { domAudioPresets } from './domAudioPresets.js';
-import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class Castle {
   static canvas;
@@ -611,14 +609,6 @@ export class Castle {
       Castle.placedBuildings.push(Object.assign({}, Castle.phantomBuilding));
       Castle.isStaticSMCached = false;
       Castle.WriteBuildings();
-      Sound.play(SOUNDS_LIBRARY.BUY, {
-        id: 'ui-buy',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
-    }
-    else{
-      Sound.play(SOUNDS_LIBRARY.ERROR, {
-        id: 'ui-error',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
     }
   }
 
@@ -629,7 +619,6 @@ export class Castle {
         building.rot = (building.rot + 1) % 4;
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
-        Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
         return;
       }
     }
@@ -642,9 +631,6 @@ export class Castle {
         Castle.placedBuildings.splice(b, 1);
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
-        Sound.play(SOUNDS_LIBRARY.BUY, {
-          id: 'ui-buy',
-          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
         return;
       }
     }
@@ -750,10 +736,6 @@ export class Castle {
             Castle.findAndRotateBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
           } else {
             if (Castle.outlinedBuilding.name in CastleBuildingsEvents) {
-              Sound.play(SOUNDS_LIBRARY.CLICK_OPEN_BIG, {
-                id: 'ui-big-click',
-                volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-              })
               CastleBuildingsEvents[Castle.outlinedBuilding.name]();
             }
           }
@@ -1045,22 +1027,11 @@ export class Castle {
 
     Castle.globalCanvas.classList.add('castle-fade-in');
 
-    if (!('castle' in Sound.all)) {
-      switch (sceneName) {
-        case 'ad':
-          var soundFiles = Object.values(SOUNDS_LIBRARY.AD);
-          break;
-        case 'doct':
-          var soundFiles = Object.values(SOUNDS_LIBRARY.DOCT);
-          break;
-        default:
-          App.error('Unknown scene name for castle music: ' + sceneName);
-          break;
-      }
+    if (NativeAPI.fileSystem && !('castle' in Sound.all)) {
+      var soundFiles = NativeAPI.fileSystem.readdirSync('content/sounds/' + sceneName);
 
       let playCastleMusic = function () {
-        let musicName = soundFiles[Math.floor(Math.random() * soundFiles.length)];
-        console.log('Playing castle music: ' + musicName);
+        let musicName = 'content/sounds/' + sceneName + '/' + soundFiles[Math.floor(Math.random() * soundFiles.length)];
         Sound.stop('castle');
         Sound.play(musicName, { id: 'castle', volume: Castle.GetVolume(Castle.AUDIO_MUSIC) }, playCastleMusic);
       };
@@ -2040,7 +2011,6 @@ export class Castle {
         if (!(building.uniqueId in Castle.buildingBubblesDoms)) {
           Castle.buildingBubblesDoms[building.uniqueId] = DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: ['castle_building_bubble'],
               event: ['click', () => CastleBuildingsEvents[buildingName]()],
             },

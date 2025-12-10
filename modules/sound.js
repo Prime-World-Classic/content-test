@@ -1,66 +1,42 @@
 export class Sound {
   static all = new Object();
-  static cache = new Object();
 
-  /**
-   * Preload a sound with the given name and src.
-   * @param {string} name - The name of the sound to preload.
-   * @param {string} src - The src of the sound to preload.
-   * @returns {Promise} A promise that resolves when the sound is preloaded.
-   */
-  static preload(name, src) {
-    return new Promise((resolve) => {
-      const audio = new Audio();
-      audio.src = src;
-      audio.preload = "auto";
-
-      audio.addEventListener("canplaythrough", () => {
-        Sound.cache[name] = audio;
-        resolve();
-      });
-
-      audio.load();
-    });
-  }
-
-  static play(source, object = {}, callback) {
-    let baseAudio = null;
-
-    for (const name in Sound.cache) {
-      if (Sound.cache[name].src.includes(source)) {
-        baseAudio = Sound.cache[name];
-        break;
-      }
-    }
-
-    if (!baseAudio) {
-      console.error("Sound not preloaded:", source);
-      return;
-    }
-
-    const audio = baseAudio.cloneNode(true);
-
-    if ("loop" in object) {
-      audio.loop = object.loop ? true : false;
-    }
-
-    if ("id" in object && object.id) {
+  static play(source, object = new Object(), callback) {
+    if ('id' in object && object.id) {
       if (object.id in Sound.all) {
         Sound.stop(object.id);
       }
-
-      Sound.all[object.id] = audio;
-
-      if ("volume" in object) {
-        Sound.all[object.id].volume = object.volume;
-      }
     }
+
+    let audio = new Audio();
+
+    if ('loop' in object) {
+      audio.loop = object.loop ? true : false;
+    }
+
+    audio.preload = 'auto';
+    audio.load();
+    audio.src = source;
+
+    audio.addEventListener('canplaythrough', () => {
+      audio.play();
+    });
 
     if (callback) {
-      audio.addEventListener("ended", callback);
+      audio.addEventListener('ended', (event) => {
+        callback();
+      });
     }
 
-    audio.play();
+    if ('id' in object && object.id) {
+      if (!(object.id in Sound.all)) {
+        Sound.all[object.id] = audio;
+      }
+
+      if ('volume' in object) {
+        Sound.setVolume(object.id, object.volume);
+      }
+    }
   }
 
   static stop(id) {

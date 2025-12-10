@@ -12,15 +12,15 @@ export function DOM(properties) {
       switch (property) {
         case 'domaudio':
           if (properties.domaudio.constructor.name == 'DomAudio') {
-            parent.addEventListener('mouseover', (e) => properties.domaudio?.eventMouseOverCallback(e));
+            parent.addEventListener('mouseover', () => properties.domaudio?.eventMouseOverCallback());
 
-            parent.addEventListener('mousedown', (e) => properties.domaudio?.eventMouseDownCallback());
+            parent.addEventListener('mousedown', () => properties.domaudio?.eventMouseDownCallback());
 
-            parent.addEventListener('mouseup', (e) => properties.domaudio?.eventMouseUpCallback(e));
+            parent.addEventListener('mouseup', () => properties.domaudio?.eventMouseUpCallback());
 
-            parent.addEventListener('input', (e) => properties.domaudio?.eventInputCallback(e));
+            parent.addEventListener('input', () => properties.domaudio?.eventInputCallback());
 
-            parent.addEventListener('change', (e) => properties.domaudio?.eventChangeCallback(e));
+            parent.addEventListener('change', () => properties.domaudio?.eventChangeCallback());
           } else {
             App.error('Передан некорректный объект. Ожидается DomAudio');
           }

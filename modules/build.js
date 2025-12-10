@@ -9,10 +9,6 @@ import { MM } from './mm.js';
 import { PreloadImages } from './preloadImages.js';
 import { Game } from './game.js';
 import { Splash } from './splash.js';
-import { domAudioPresets } from './domAudioPresets.js';
-import { Sound } from './sound.js';
-import { SOUNDS_LIBRARY } from './soundsLibrary.js';
-import { Castle } from './castle.js';
 
 export class Build {
   static loading = false;
@@ -91,7 +87,6 @@ export class Build {
     });
 
     let container = DOM({
-      domaudio: domAudioPresets.defaultButton,
       event: [
         'click',
         async () => {
@@ -109,7 +104,6 @@ export class Build {
     let state = false;
     let get = DOM(
       {
-        domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           async () => {
@@ -137,7 +131,6 @@ export class Build {
       get,
       DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
             () => {
@@ -328,7 +321,6 @@ export class Build {
     Build.skinView = DOM(
       {
         tag: 'button',
-        domaudio: domAudioPresets.defaultButton,
         style: ['btn-skins', 'btn-hover', 'color-3'],
         title: Lang.text('titleSkinsForTheHero'),
         event: ['click', async () => Build.skinChange()],
@@ -339,7 +331,6 @@ export class Build {
     Build.training = DOM(
       {
         tag: 'button',
-        domaudio: domAudioPresets.defaultButton,
         style: ['btn-skins', 'btn-hover', 'color-3'],
         title: Lang.text('titletraining'),
         event: [
@@ -487,7 +478,7 @@ export class Build {
     let preload = new PreloadImages(bodyHero);
 
     for (const i of Build.dataRequest.hero.skin.list) {
-      let hero = DOM({ domaudio: domAudioPresets.smallButton });
+      let hero = DOM();
 
       hero.dataset.url = `content/hero/${Build.heroId}/${i}.webp`;
 
@@ -510,7 +501,6 @@ export class Build {
   static buildSelectName(method, btnName, data, isWindow) {
     const close = DOM({
       tag: 'div',
-      domaudio: domAudioPresets.closeButton,
       style: 'close-button',
       event: ['click', () => Splash.hide()],
     });
@@ -520,7 +510,6 @@ export class Build {
     let template = document.createDocumentFragment();
 
     let name = DOM({
-      domaudio: domAudioPresets.defaultInput,
       tag: 'input',
       placeholder: Lang.text('buildNamePlaceholder'),
     });
@@ -528,7 +517,6 @@ export class Build {
     let button = DOM(
       {
         style: 'splash-content-button',
-        domaudio: domAudioPresets.bigButton,
         event: [
           'click',
           async () => {
@@ -558,7 +546,6 @@ export class Build {
     if (builds.length < 6) {
       const create = DOM({
         tag: 'button',
-        domaudio: domAudioPresets.defaultButton,
         style: ['build-action-item', 'btn-hover', 'color-1'],
         title: Lang.text('titleCreateANewBuildTab'),
         event: ['click', () => Build.buildSelectName('create', Lang.text('createBuild'), { heroId: Build.heroId }, isWindow)],
@@ -576,7 +563,6 @@ export class Build {
 
     const duplicate = DOM({
       tag: 'button',
-      domaudio: domAudioPresets.defaultButton,
       style: ['build-action-item', 'btn-hover', 'color-1'],
       title: Lang.text('titleDuplicateTheCurrentBuild'),
       event: [
@@ -599,7 +585,6 @@ export class Build {
               const btn = DOM(
                 {
                   tag: 'button',
-                  domaudio: domAudioPresets.defaultButton,
                   style: ['build-replace-btn', 'btn-hover'],
                   event: [
                     'click',
@@ -624,7 +609,6 @@ export class Build {
             const createNewBtn = DOM(
               {
                 tag: 'button',
-                domaudio: domAudioPresets.defaultButton,
                 style: ['build-replace-btn', 'btn-hover', 'color-1'],
                 event: [
                   'click',
@@ -634,7 +618,6 @@ export class Build {
                     // Создаем форму для имени нового билда
                     const close = DOM({
                       tag: 'div',
-                      domaudio: domAudioPresets.closeButton,
                       style: 'close-button',
                       event: ['click', () => Splash.hide()],
                     });
@@ -642,7 +625,6 @@ export class Build {
 
                     let template = document.createDocumentFragment();
                     let name = DOM({
-                      domaudio: domAudioPresets.defaultInput,
                       tag: 'input',
                       placeholder: Lang.text('buildNamePlaceholder'),
                     });
@@ -650,7 +632,6 @@ export class Build {
                     let button = DOM(
                       {
                         style: 'splash-content-button',
-                        domaudio: domAudioPresets.bigButton,
                         event: [
                           'click',
                           async () => {
@@ -695,7 +676,6 @@ export class Build {
           // Добавляем крестик для закрытия вместо кнопки "Отмена"
           const closeButton = DOM({
             tag: 'div',
-            domaudio: domAudioPresets.closeButton,
             style: 'close-button',
             event: ['click', () => Splash.hide()],
           });
@@ -716,7 +696,6 @@ export class Build {
     {
       const random = DOM({
         tag: 'button',
-        domaudio: domAudioPresets.defaultButton,
         style: ['build-action-item', 'btn-hover', 'color-1'],
         title: Lang.text('titleGenerateARandomBuild'),
         event: [
@@ -740,7 +719,6 @@ export class Build {
     {
       const resetBuild = DOM({
         tag: 'button',
-        domaudio: domAudioPresets.defaultButton,
         style: ['build-action-item', 'btn-hover', 'color-1'],
         title: Lang.text('titleResetTalentsInThisBuild'),
         event: [
@@ -754,7 +732,6 @@ export class Build {
             const reset = DOM(
               {
                 tag: 'button',
-                domaudio: domAudioPresets.bigButton,
                 style: ['build-replace-btn', 'btn-hover'],
                 event: [
                   'click',
@@ -783,7 +760,6 @@ export class Build {
 
             let closeButton = DOM({
               tag: 'div',
-              domaudio: domAudioPresets.closeButton,
               style: 'close-button',
               event: ['click', () => Splash.hide()],
             });
@@ -810,7 +786,6 @@ export class Build {
       const item = DOM(
         {
           tag: 'button',
-          domaudio: domAudioPresets.defaultButton,
           style: ['build-tab-item', 'btn-hover'],
           event: [
             'click',
@@ -927,7 +902,6 @@ export class Build {
     for (const key in template) {
       const item = DOM(
         {
-          domaudio: domAudioPresets.defaultButton,
           style: 'build-hero-stats-item',
           event: [
             'click',
@@ -1232,7 +1206,6 @@ export class Build {
       ) {
         const daw = DOM({
           tag: 'img',
-          domaudio: domAudioPresets.smallButton,
           style: 'build-hero-stats-daw',
           title: Lang.text('makeStatPriorityTitle'),
           event: [
@@ -1289,7 +1262,6 @@ export class Build {
     }
 
     let landTypeSetting = DOM({
-      domaudio: domAudioPresets.defaultButton,
       style: ['build-hero-stats-setting-land-type', 'button-outline', 'build-hero-stats-setting-land-type-rz'],
       title: Lang.text('titleLandTipeRZ'),
       event: [
@@ -1346,7 +1318,6 @@ export class Build {
         body.append(
           DOM(
             {
-              domaudio: domAudioPresets.bigButton,
               style: 'splash-content-button',
               event: ['click', () => Splash.hide()],
             },
@@ -1637,10 +1608,6 @@ export class Build {
       item.id = `bl${i}`;
 
       item.addEventListener('click', (e) => {
-        Sound.play(SOUNDS_LIBRARY.CLICK, {
-          id: 'ui-click',
-          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-        });
         if (item.dataset.active == 1) {
           Build.removeSortInventory('level', item.dataset.id);
 
@@ -1662,11 +1629,6 @@ export class Build {
 
       item.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-
-        Sound.play(SOUNDS_LIBRARY.CLICK, {
-          id: 'ui-click',
-          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-        });
 
         for (const level of ['1', '2', '3', '4', '5', '6']) {
           Build.removeSortInventory('level', level);
@@ -1763,7 +1725,7 @@ export class Build {
   }
 
   static templateViewTalent(data) {
-    const talent = DOM({ domaudio: domAudioPresets.talent, style: 'build-talent-item' });
+    const talent = DOM({ style: 'build-talent-item' });
 
     if (data.txtNum) {
       let params = data.txtNum.split(';');
@@ -1857,10 +1819,6 @@ export class Build {
     a.dataset.active = 0;
 
     a.addEventListener('click', (e) => {
-      Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
-        id: 'ui-small-click',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-      });
       if (a.dataset.active == 1) {
         a.style.background = 'rgba(255,255,255,0.1)';
 
@@ -1882,10 +1840,6 @@ export class Build {
 
     a.addEventListener('contextmenu', (e) => {
       e.preventDefault();
-      Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
-        id: 'ui-small-click',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-      });
 
       for (let itemEl of element) {
         Build.removeSortInventory('rarity', itemEl.id);
@@ -1916,10 +1870,6 @@ export class Build {
       button.style.boxSizing = 'border-box';
 
       button.addEventListener('click', (e) => {
-        Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
-          id: 'ui-small-click',
-          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-        });
         if (button.dataset.active == 1) {
           button.style.border = 'none';
 
@@ -2024,7 +1974,6 @@ export class Build {
 
     for (let item of data) {
       const element = DOM({
-        domaudio: domAudioPresets.defaultButton,
         data: { index: index },
         style: 'build-active-bar-item',
         event: [
@@ -2286,7 +2235,6 @@ export class Build {
             for (let t = (data.level - 1) * 6; t < data.level * 6; t++) {
               if (!Build.installedTalents[35 - t]) {
                 hasEmptySpace = true;
-
                 break;
               }
             }
