@@ -12,6 +12,7 @@ import { Splash } from './splash.js';
 import { Sound } from './sound.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { domAudioPresets } from './domAudioPresets.js';
+import { Castle } from './castle.js';
 
 export class Events {
   static Message(data) {
