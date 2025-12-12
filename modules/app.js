@@ -19,7 +19,7 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.12.2';
+  static PW_VERSION = '2.12.3';
 
   static CURRENT_MM = 'mmtest';
 
