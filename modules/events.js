@@ -162,7 +162,6 @@ export class Events {
     body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2);
 
     Splash.show(body);
-    
   }
 
   static PUpdate(data) {
@@ -256,10 +255,18 @@ export class Events {
 
   static async VCall(data) {
     if (data.isCaller) {
-      Sound.play(SOUNDS_LIBRARY.CALL, {
-        id: 'ui-call',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-      });
+      let playCallSoundLoop = () => {
+        Sound.stop('ui-call');
+        Sound.play(
+          SOUNDS_LIBRARY.CALL,
+          {
+            id: 'ui-call',
+            volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+          },
+          playCallSoundLoop,
+        );
+      };
+      playCallSoundLoop();
       let body = document.createDocumentFragment();
 
       body.append(
@@ -271,9 +278,9 @@ export class Events {
             event: [
               'click',
               async () => {
+                Sound.stop('ui-call');
                 try {
                   let voice = new Voice(data.id, '', data.name, true);
-
                   await voice.accept(data.offer);
 
                   Splash.hide();
@@ -289,7 +296,13 @@ export class Events {
           {
             domaudio: domAudioPresets.bigButton,
             style: 'splash-content-button',
-            event: ['click', async () => Splash.hide()],
+            event: [
+              'click',
+              async () => {
+                Sound.stop('ui-call');
+                Splash.hide();
+              },
+            ],
           },
           Lang.text('friendDropCall'),
         ),
