@@ -9,7 +9,7 @@ export class DomAudio {
     //App.error("MouseDown");
     // TODO: Audio
   }
-  static eventMouseUp() {
+  static eventMouseUp(e) {
     //App.error("MouseUp");
     // TODO: Audio
   }

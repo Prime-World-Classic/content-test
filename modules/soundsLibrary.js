@@ -4,13 +4,16 @@ export const SOUNDS_LIBRARY = {
   CLICK: 'content/sounds/ui/Click.wav',
   CLICK_CLOSE: 'content/sounds/ui/ClickClose.wav',
   CLICK_OPEN_BIG: 'content/sounds/ui/ClickOpenBig.wav',
+  CLICK_BUTTON_PRESS_SMALL: 'content/sounds/ui/ClickButtonPressSmall.wav',
 
   CHAT: 'content/sounds/ui/chat.wav',
-  CLICK_BUTTON_PRESS_SMALL: 'content/sounds/ui/ClickButtonPressSmall.wav',
   BUY: 'content/sounds/ui/buy.wav',
   GOLD_COINS: 'content/sounds/ui/GoldCoins.wav',
+
   ERROR: 'content/sounds/ui/error.wav',
   MM_FOUND: 'content/sounds/found.ogg',
+  GROUP_INVITE: 'content/sounds/ui/GroupInvite.wav',
+  CALL: 'content/sounds/ui/Call.wav',
 
   // Music
   AD: {
@@ -34,5 +37,5 @@ export const SOUNDS_LIBRARY = {
   VC_DISABLED: 'content/sounds/voice/disabled.mp3',
 
   TAMBUR: 'content/sounds/tambur.ogg',
-  GROUP_INVITE: 'content/sounds/ui/GroupInvite.wav',
+  
 };

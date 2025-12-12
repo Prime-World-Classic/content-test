@@ -4,6 +4,8 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { Castle } from './castle.js';
 import { Lang } from './lang.js';
+import { domAudioPresets } from './domAudioPresets.js';
+import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class Voice {
   static peerConnectionConfig = {
@@ -136,14 +138,14 @@ export class Voice {
     Voice.mic.enabled = !Voice.mic.enabled;
 
     if (Voice.mic.enabled) {
-      Sound.play('content/sounds/voice/enabled.mp3', {
+      Sound.play(SOUNDS_LIBRARY.VC_ENABALED, {
         id: 'Voice_enabled',
         volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
 
       //Voice.infoPanel.firstChild.lastChild.style.opacity = 0;
     } else {
-      Sound.play('content/sounds/voice/disabled.mp3', {
+      Sound.play(SOUNDS_LIBRARY.VC_DISABLED, {
         id: 'Voice_disabled',
         volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
@@ -216,6 +218,7 @@ export class Voice {
         { style: 'voice-info-panel-body-item' },
         DOM(
           {
+            domaudio: domAudioPresets.defaultButton,
             style: 'voice-info-panel-body-item-name',
             event: ['click', () => Voice.toggleEnabledMic()],
           },
@@ -272,6 +275,7 @@ export class Voice {
 
     let item = DOM(
       {
+        domaudio: domAudioPresets.defaultButton,
         style: 'voice-info-panel-body-item-name',
         event: [
           'click',
