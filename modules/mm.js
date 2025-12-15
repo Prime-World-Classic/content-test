@@ -818,12 +818,10 @@ export class MM {
   }
 
   static async select(data) {
-    // to refactor sound
-    // await Sound.preload(`content/hero/${data.heroId}/revive/${data.sound}.ogg`);
-    // Sound.play(`content/hero/${data.heroId}/revive/${data.sound}.ogg`, {
-    //   id: `heroSound_${data.heroId}_${data.sound}`,
-    //   volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-    // });
+    Sound.play(SOUNDS_LIBRARY[`HERO_${data.heroId}_revive_${data.sound}`], {
+      id: `heroSound_${data.heroId}_${data.sound}`,
+      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+    });
 
     MM.lobbyPlayerAnimate.cancel();
 

@@ -12,9 +12,9 @@ import { Splash } from './splash.js';
 import { Window } from './window.js';
 import { Castle } from './castle.js';
 import { Lang } from './lang.js';
-import { domAudioPresets } from './domAudioPresets.js';
 import { Sound } from './sound.js';
-import { SOUNDS_LIBRARY } from './soundsLibrary.js';
+import { domAudioPresets } from './domAudioPresets.js';
+import { SOUNDS_LIBRARY, generateHeroSoundsNative, generateHeroSoundsFallback } from './soundsLibrary.js';
 
 export class App {
   static APP_VERSION = '0';
@@ -77,6 +77,12 @@ export class App {
    * @returns {Promise<void>} A promise that resolves when all sounds are preloaded
    */
   static async initSounds() {
+    if (NativeAPI.status) {
+      generateHeroSoundsNative();
+    } else {
+      generateHeroSoundsFallback();
+    }
+    console.log('SOUNDS_LIBRARY', SOUNDS_LIBRARY);
     const tasks = [];
 
     const walk = (obj) => {
@@ -95,7 +101,6 @@ export class App {
 
     await Promise.all(tasks);
   }
-  А;
 
   static async init() {
     // wss://api2.26rus-game.ru:8443 - Москва (основа)

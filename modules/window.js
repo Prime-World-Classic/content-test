@@ -13,7 +13,7 @@ import { Voice } from './voice.js';
 import { MM } from './mm.js';
 import { Build } from './build.js';
 import { Timer } from './timer.js';
-
+import { HelpSplash } from './helpSpalsh.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
@@ -61,7 +61,7 @@ export class Window {
   }
 
   static close(category) {
-	if (category === 'main' && typeof Build !== 'undefined' && Build.cleanup) {
+    if (category === 'main' && typeof Build !== 'undefined' && Build.cleanup) {
       Build.cleanup();
     }
     if (category in Window.windows) {
@@ -483,44 +483,58 @@ export class Window {
       category.frame,
     );
 
-      let wnd = DOM(
-        { id: 'wshop' },
-        shopHeader,
-        DOM(
-          {
-            style: ['shop_with_scroll', isShop ? 'shop_with_scroll_shop' : '_dummy_'],
-          },
-          skins,
-          flags,
-          frames,
-        ),
-        isShop ? shopBottom : DOM(),
-      );
+    let helpBtn = DOM({
+      id: 'wshop_help',
+      domaudio: domAudioPresets.defaultButton,
+      style: 'help-button',
+      event: [
+        'click',
+        () => {
+          HelpSplash(
+            Lang.text('shop_help_content')
+          );
+        },
+      ],
+    });
+    let wnd = DOM(
+      { id: 'wshop' },
+      helpBtn,
+      shopHeader,
+      DOM(
+        {
+          style: ['shop_with_scroll', isShop ? 'shop_with_scroll_shop' : '_dummy_'],
+        },
+        skins,
+        flags,
+        frames,
+      ),
+      isShop ? shopBottom : DOM(),
+    );
 
-      await Shop.retrieveLastUpdate();
+    await Shop.retrieveLastUpdate();
 
-      wnd.timeLeft = Shop.timeBeforeUpdate;
+    wnd.timeLeft = Shop.timeBeforeUpdate;
 
-      function checkUpdate() {
-        setTimeout((_) => {
-          if (!('main' in Window.windows) || !(Window.windows['main'].id == 'wshop')) {
-            return;
-          }
+    function checkUpdate() {
+      setTimeout((_) => {
+        if (!('main' in Window.windows) || !(Window.windows['main'].id == 'wshop')) {
+          return;
+        }
 
-          if (wnd.timeLeft <= 0) {
-            Window.show('main', 'shop');
-            return;
-          }
+        if (wnd.timeLeft <= 0) {
+          Window.show('main', 'shop');
+          return;
+        }
 
-          shopTimeLeft.innerText = Timer.getFormattedTimer(wnd.timeLeft);
-          wnd.timeLeft -= 1000;
-          checkUpdate();
-        }, 1000);
-      }
+        shopTimeLeft.innerText = Timer.getFormattedTimer(wnd.timeLeft);
+        wnd.timeLeft -= 1000;
+        checkUpdate();
+      }, 1000);
+    }
 
-      checkUpdate();
+    checkUpdate();
 
-      return wnd;
+    return wnd;
   }
 
   static async shop() {
@@ -537,9 +551,21 @@ export class Window {
 
   static async quest(item) {
     let quest = await App.api.request('quest', 'get', { id: item.id });
-
-    let root = DOM({ id: 'wquest' });
-
+    let helpBtn = DOM({
+      id: 'wshop_help',
+      domaudio: domAudioPresets.defaultButton,
+      style: 'help-button',
+      event: [
+        'click',
+        () => {
+          HelpSplash(
+            Lang.text('quest_help_content')
+          );
+        },
+      ],
+    }); 
+    let root = DOM({ id: 'wquest' }, helpBtn);
+    
     const content = DOM({ style: 'wquest__content' });
 
     const titlebar = DOM({ style: 'wquest__titlebar' });
@@ -604,6 +630,7 @@ export class Window {
             {
               domaudio: domAudioPresets.bigButton,
               style: 'quest-accept-button',
+              domaudio: domAudioPresets.defaultButton,
               event: [
                 'click',
                 async () => {
@@ -627,6 +654,7 @@ export class Window {
             {
               domaudio: domAudioPresets.finishQuestButton,
               style: 'quest-accept-button',
+              domaudio: domAudioPresets.defaultButton,
               event: [
                 'click',
                 async () => {

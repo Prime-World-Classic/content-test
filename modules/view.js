@@ -1308,6 +1308,7 @@ export class View {
         {
           domaudio: domAudioPresets.defaultButton,
           style: 'quest-item',
+          domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
             () => {

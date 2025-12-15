@@ -162,6 +162,7 @@ export class Events {
     body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2);
 
     Splash.show(body);
+    
   }
 
   static PUpdate(data) {

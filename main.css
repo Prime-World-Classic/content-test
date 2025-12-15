@@ -159,12 +159,26 @@ prime {
   color: cyan;
 }
 
+crystal {
+  color: inherit;
+}
+
+crystal:after {
+  content: '';
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+  background-image: url('img/queue/DiamondBlue.png');
+  background-size: cover;
+  vertical-align: sub;
+}
+
 gray {
-  color: #A5A5A5;
+  color: #a5a5a5;
 }
 
 orange-l {
-  color: #FF9966;
+  color: #ff9966;
 }
 
 yellow {
@@ -176,23 +190,23 @@ orange-d {
 }
 
 amethyst {
-  color: #9966CC;
+  color: #9966cc;
 }
 
 white {
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 red-d {
-  color: #B00000;
+  color: #b00000;
 }
 
 coral-l {
-  color: #F08080;
+  color: #f08080;
 }
 
 blue-b {
-  color: #4169E1;
+  color: #4169e1;
 }
 
 blood-d {
@@ -200,46 +214,46 @@ blood-d {
 }
 
 cyan-d {
-  color: #00A0A0;
+  color: #00a0a0;
 }
 
 frost {
-  color: #64CDF0;
+  color: #64cdf0;
 }
 
 bronze {
-  color: #B87333;
+  color: #b87333;
 }
 
-blue-l{
-  color: #8CD5FF;
+blue-l {
+  color: #8cd5ff;
 }
 
 electric-blue {
-  color: #3BA7FF;
+  color: #3ba7ff;
 }
 
 magenta {
-  color: #CA4FFF;
+  color: #ca4fff;
 }
 
 lime {
-  color: #37D337;
+  color: #37d337;
 }
 
 cinnabar {
-  color: #F41200;
+  color: #f41200;
 }
 
 carrot {
-  color: #FF9124;
+  color: #ff9124;
 }
 
 hr {
   display: block;
   width: 70%;
   height: 2px;
-  background-color: #A7A062;
+  background-color: #a7a062;
   margin: 15px auto 10px;
   border: none;
 }
@@ -808,10 +822,109 @@ input::placeholder {
   transform: translate(50%, -40%) scale(1.1);
 }
 
+/* help button */
+.help-button {
+  position: absolute;
+  container: help / size;
+  top: 0;
+  right: 4.4vh;
+  width: 3vh;
+  height: 3vh;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: #ffdb32; /* fallback */
+  background: linear-gradient(180deg, rgba(255, 219, 50, 1) 0%, rgba(212, 139, 0, 1) 100%);
+  border: 0.3vh solid rgb(208, 180, 96);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.25cqh rgba(0, 0, 0, 0.2) inset,
+    0 0 0 0.25cqh rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: center;
+  transform: translate(50%, -40%);
+  transition: all 0.2s ease;
+  z-index: 9999;
+}
+
+.help-button:hover {
+  transform: translate(50%, -40%) scale(1.1);
+}
+
+.help-button::before {
+  position: absolute;
+  inset: 10cqh;
+  content: '';
+  background-image: url('icons/help.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  user-select: none;
+  pointer-events: none;
+}
+
+.splash-content:has(.splash-help) {
+  aspect-ratio: 16 / 9;
+  width: calc(min(50cqw, 1000px));
+}
+
+.splash-help{
+  display: flex;
+  flex-direction: column;
+  font-size: 2.25cqmax;
+  height: 100%;
+  padding: 5cqmin 5cqmin 0cqmin 5cqmin;
+}
+
+.splash-help-container {
+  flex: 1;
+  text-align: left;
+  scrollbar-width: auto;
+  padding-right: 1cqh;
+  overflow-y: auto;
+  max-height: 45cqh;
+}
+
+.splash-help-container::-webkit-scrollbar {
+  width: 1cqh;
+}
+
+.splash-help-container::-webkit-scrollbar-track {
+  background: rgba(20, 35, 42, 0.6);
+  border-radius: 1cqh;
+}
+
+.splash-help-container::-webkit-scrollbar-thumb {
+  background: rgba(90, 160, 200, 0.9);
+  border-radius: 1cqh;
+  border: 0.25cqh solid rgba(20, 35, 42, 0.6); 
+}
+
+.splash-help-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(110, 185, 230, 1);
+}
+
+.splash-help-paragraph {
+  margin: 2cqh 0;
+}
+
+
+.splash-help-img{
+  display: block;
+  width: 100%;
+  height: auto;
+  
+}
+
 /* Модификаторы ДОЛЖНЫ содержать только отличия от базового стиля */
 .build-list-close {
   /* Если нужны специфичные стили, иначе можно удалить этот класс */
 }
+
+
 
 .close-image-style {
   width: 5vh !important;
@@ -3453,7 +3566,7 @@ button.build-action-item:hover {
   left: 50%;
   top: 15cqh;
   transform: translateX(-50%);
-  z-index: 9999;
+  z-index: 9998;
   width: 80cqh;
   max-width: 92vw;
   height: auto;
@@ -3838,6 +3951,16 @@ button.build-action-item:hover {
   width: 90cqw;
   position: absolute;
   top: 45cqw;
+}
+/* success icon */
+i-success {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: 0cqw 0.5cqw;
+  background-image: url('ranks/99.png');
+  background-size: cover;
+  vertical-align: sub;
 }
 
 .support-icons img {

@@ -15,7 +15,7 @@
     enterTextAndPressEnter: 'Enter the text and press Enter',
     ready: 'Ready!',
     ready2: "Confirm the hero's choice",
-	library: 'Library',
+    library: 'Library',
     menu: 'Menu',
     account: 'Account',
     steamConnect: 'Connect Steam',
@@ -49,23 +49,22 @@
     continue: 'Continue',
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
-	
-	//castleNavBar
-	clickToViewHeroRating: 'Click to view rating by individual heroes',
-	gm1: 'Borderlands',
-	gm2: 'Outpost',
-	gm3: 'Dragonwald',
-	gm4: 'ARAM',
-	gm5: 'Challenges',
-	gm6: 'Duel',
-	fight: 'Fight!',	
+
+    //castleNavBar
+    clickToViewHeroRating: 'Click to view rating by individual heroes',
+    gm1: 'Borderlands',
+    gm2: 'Outpost',
+    gm3: 'Dragonwald',
+    gm4: 'ARAM',
+    gm5: 'Challenges',
+    gm6: 'Duel',
+    fight: 'Fight!',
     cancel: 'Cancel',
-	titleСhildren17_1: 'Division - players grouped under the same rank,\ncompeting with similar matchmaking winrates.',
-	titleСhildren18_1: 'Karma - reflects player behavior and their "value" in combat.',
-	titleСhildren18_2: 'It increases or decreases based on your performance in battles.',
-	titleСhildren18_3: 'Current threshold: {karma}',
-    
-    
+    titleСhildren17_1: 'Division - players grouped under the same rank,\ncompeting with similar matchmaking winrates.',
+    titleСhildren18_1: 'Karma - reflects player behavior and their "value" in combat.',
+    titleСhildren18_2: 'It increases or decreases based on your performance in battles.',
+    titleСhildren18_3: 'Current threshold: {karma}',
+
     // Window
     windowShopBuyItem: 'Buy ',
     windowShopItemPrice: 'for {rItem.price}',
@@ -254,6 +253,108 @@
     shop_frames: 'Frames',
 
     shop_bottom: 'The shop will be updated in',
+
+    // so, the sturcture here is different bc of how help is render content in helpSplash.js
+    shop_help_content: [
+      {
+        type: 'p',
+        content:
+          'The <magenta>“Shop”</magenta> offers a selection of items divided into categories: <yellow>skins, flags, frames</yellow>.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/shop/help-1.png',
+      },
+      {
+        type: 'p',
+        content:
+          'Items refresh every <num>24</num> hours (<num>00:00</num> MSK). Prices are set automatically. An item you previously purchased may appear again after the assortment refresh.',
+      },
+      {
+        type: 'p',
+        content:
+          'To purchase an item, <carrot>LMB-click</carrot> the icon and confirm the purchase. Purchased items cannot be refunded. An item cannot be purchased again.',
+      },
+      {
+        type: 'p',
+        content: 'All purchased items will be added to the <magenta>“Collections”</magenta> tab.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/shop/help-2.png',
+      },
+      {
+        type: 'p',
+        content:
+          'Future updates to the shop are planned, both in terms of item variety and the operation of the <magenta>“Shop”</magenta>.',
+      },
+      {
+        type: 'ul',
+        content: [
+          '<b>Skins</b> — always available for purchase.',
+          '<b>Flags</b> — the assortment refreshes according to the timer.',
+          '<b>Frames</b> — regular and seasonal. A season lasts 3 months.',
+        ],
+      },
+      {
+        type: 'p',
+        content:
+          'A season lasts 3 months. This item will only be available for purchase during this period, after which it will be replaced by another item in the next season.',
+      },
+      { type: 'hr' },
+      {
+        type: 'p',
+        content:
+          'The <magenta>“Collections”</magenta> tab displays all in-game items purchased from the <magenta>“Shop”</magenta>, as well as items obtained through personal achievements.',
+      },
+      {
+        type: 'p',
+        content:
+          'To change the displayed flag or frame on your account, click the desired item and select “Choose”. The item will be applied to your account and displayed.',
+      },
+      {
+        type: 'p',
+        content: 'A purchased skin is automatically added to the hero appearance selection via the “Skins” button in the hero build.',
+      },
+    ],
+
+    quest_help_content: [
+      {
+        type: 'p',
+        content:
+          'Quests are tasks that a player can complete. To accept a quest, click <carrot>“Accept”</carrot> in the quest window. If you do not accept a quest, it will remain indefinitely, which means it will not refresh.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/quest/help-1.png',
+      },
+      {
+        type: 'p',
+        content:
+          'Quests are divided into types: long-term (<num>30</num> days) and daily (<num>24</num> hours), starting from the moment the quest is accepted.',
+      },
+      {
+        type: 'p',
+        content:
+          'When a quest is completed, an <i-success></i-success> icon will appear on the quest. By clicking the “Complete” button, you will receive a certain amount of <crystal>Prime Crystals</crystal>.',
+      },
+      {
+        type: 'p',
+        content:
+          'Quests such as <magenta>“Heir to the Throne”</magenta>, <magenta>“Right of the Strongest”</magenta>, and <magenta>“Sacrifice”</magenta> are completed in the <tn>“Borderlands”</tn> and <tn>“ARAM”</tn> modes. Long-term quests <yst>“Power of Unity”</yst> and <yst>“Path of Supremacy”</yst> can be completed in all modes (except <tn>“Duel”</tn>).',
+      },
+      {
+        type: 'p',
+        content:
+          'When completing the <magenta>“Sacrifice”</magenta> quest, pay attention to the lobby chat window. Details about which hero must be “eliminated” will be written in the lobby chat. If the quest fails, the player who accepted it will not receive a reward, while the “victim” will receive <crystal>1</crystal>.',
+      },
+      {
+        type: 'p',
+        content: 'New quests are planned to be created and added.',
+      },
+    ],
+
+    help_btn_close: 'Mark as read',
 
     frame_hint: 'The frame will be active when the hero has 25+ wins',
 
@@ -492,11 +593,11 @@
     flag_snow: 'Snowflake',
     flag_snowman: 'Snowman',
     flag_tester_yellow: 'Tester PWC',
-	flag_golden_dragon: 'The Golden Dragon',
-	flag_clown: 'Clown',
-	flag_Mimimi: 'Mimimi',
-	flag_New_Years_skull: 'New Year\'s Skull',
-	flag_oak: 'Tree',
+    flag_golden_dragon: 'The Golden Dragon',
+    flag_clown: 'Clown',
+    flag_Mimimi: 'Mimimi',
+    flag_New_Years_skull: "New Year's Skull",
+    flag_oak: 'Tree',
 
     // Переводы
     select_faction: 'Select faction',
@@ -965,7 +1066,7 @@
 
     //Стата талантов
     sr: 'Strength/Intellect',
-	srMin: 'Strength/Intellect (to the lowest)',
+    srMin: 'Strength/Intellect (to the lowest)',
     hp: 'Health',
     provorstvo: 'Agility',
     hitrost: 'Cunning',
@@ -974,16 +1075,16 @@
     stoikost: 'Stamina',
     volia: 'Will',
     ph: 'Agility/Cunning',
-	phMin: 'Agility/Cunning (to the lowest)',
+    phMin: 'Agility/Cunning (to the lowest)',
     sv: 'Stamina/Will',
     svMin: 'Stamina/Will (to the lowest)',
     razum: 'Intellect',
     sila: 'Strength',
     speedtal: '%<speedtal></speedtal>',
     srsv: 'Strength/Intellect/Stamina/Will',
-	srsvMin: 'Strength/Intellect/Stamina/Will (to the lowest)',
+    srsvMin: 'Strength/Intellect/Stamina/Will (to the lowest)',
     hpmp: 'Health/Energy',
-	hpmpMin: 'Health/Energy (to the lowest)',
+    hpmpMin: 'Health/Energy (to the lowest)',
     krajahp: 'Health Steal',
     regenhp: 'Health Regeneration',
     mp: 'Energy',
@@ -1038,7 +1139,7 @@
       "The hero accumulates 3<detail></detail> per second up to 100<detail></detail>.<br>Using class talents spends <detail></detail>, then for <num>4</num> sec. increases attack damage by <num>2%</num> and the hero's Speed by <num>3%</num> for every missing 5<detail></detail>.",
     htalent_9_name: 'Palette',
     htalent_9_description:
-      'Every <num>4</num> sec., gains <num>1</num> paint, which increases the hero\'s Agility by <num>%s</num> (based on the higher of Strength or Intellect) and reduces class talent cooldowns by <num>6%</num>.<br>The effect stacks up to <num>3</num> times. Loses <num>1</num> paint when using class talents.',
+      "Every <num>4</num> sec., gains <num>1</num> paint, which increases the hero's Agility by <num>%s</num> (based on the higher of Strength or Intellect) and reduces class talent cooldowns by <num>6%</num>.<br>The effect stacks up to <num>3</num> times. Loses <num>1</num> paint when using class talents.",
     htalent_10_name: 'Power Saturation <CD>60</CD>',
     htalent_10_description:
       'Restores <num>20%</num> of maximum Health when an enemy hero dies nearby.<br>Increases maximum Health by <num>80</num> for each enemy hero death nearby and by <num>70</num> for each allied hero death anywhere on the map.',
@@ -1047,7 +1148,7 @@
       "After <num>2</num> successful attacks with strikes or class talents, the hero's next strike or class talent deals an additional <num>50%</num> <red-d>pure damage</red-d>.",
     htalent_12_name: 'Soul Harmony',
     htalent_12_description:
-      'Using class talents restores <num>%s</num> of the hero\'s maximum Health.<br>While the hero is moving, restores <num>%s</num> of maximum Energy per second.<br><hr> The hero\'s attacks and class talents ignite the target, dealing additional <red-d>pure damage</red-d> equal to <num>20%</num> of the initial damage over <num>4</num> sec.<br>The effect stacks up to <num>3</num> times.',
+      "Using class talents restores <num>%s</num> of the hero's maximum Health.<br>While the hero is moving, restores <num>%s</num> of maximum Energy per second.<br><hr> The hero's attacks and class talents ignite the target, dealing additional <red-d>pure damage</red-d> equal to <num>20%</num> of the initial damage over <num>4</num> sec.<br>The effect stacks up to <num>3</num> times.",
     htalent_13_name: "Healer's Reward",
     htalent_13_description:
       "When restoring allies' Health with class talents, the hero gains prime. The reward depends on the amount of Health restored.",
@@ -1328,7 +1429,7 @@
     htalent_111_description: 'Hero Strike stuns the nearest enemy hero for <num>1</num> sec.',
     htalent_112_name: 'Defiance of Pain <mana>210</mana> <CD>9</CD>',
     htalent_112_description:
-      'Deals up to <mag>%s</mag> damage to enemies around (<num>4%</num> of the hero\'s Maximum Health) and accumulates <num>50%</num> of damage dealt. <br> Restores Health (spending accumulated Health) to themselves and the allied Hero with the lowest Health nearby, but no more than <num>%s</num> (<num>10%</num> of the hero\'s Maximum Health). <br> <hr> Bloody Feast increases the hero\'s highest of Stamina or Will by <num>%s</num> (based on maximum Health) for every <num>10%</num> missing Health. Effect stacks <num>5</num> times.',
+      "Deals up to <mag>%s</mag> damage to enemies around (<num>4%</num> of the hero's Maximum Health) and accumulates <num>50%</num> of damage dealt. <br> Restores Health (spending accumulated Health) to themselves and the allied Hero with the lowest Health nearby, but no more than <num>%s</num> (<num>10%</num> of the hero's Maximum Health). <br> <hr> Bloody Feast increases the hero's highest of Stamina or Will by <num>%s</num> (based on maximum Health) for every <num>10%</num> missing Health. Effect stacks <num>5</num> times.",
     htalent_113_name: 'Battle Thirst',
     htalent_113_description:
       'Each attack increases their Health steal by <num>%s</num> (based on Strength) for <num>4</num> sec. Effect stacks up to <num>5</num> times.</br><rz>On native terrain, Agility increases by <num>%s</num> (based on Strength).</rz>',
@@ -1430,7 +1531,8 @@
     htalent_150_name: 'Shockwave <mana>80</mana> <CD>8</CD>',
     htalent_150_description: 'A strike that launches enemies around and deals <mag>%s</mag> damage to them (based on maximum Health).',
     htalent_151_name: 'Living Stone',
-    htalent_151_description: 'While sheltered in boulder form, the hero can use the Shockwave talent. Increases the hero\'s Health regeneration by <num>%s</num> (from Strength)',
+    htalent_151_description:
+      "While sheltered in boulder form, the hero can use the Shockwave talent. Increases the hero's Health regeneration by <num>%s</num> (from Strength)",
     htalent_152_name: "Giant's Stride",
     htalent_152_description: 'Reduces the Speed of all nearby enemies by <num>18%</num>.',
     htalent_153_name: 'Avalanche <mana>250</mana> <CD>100</CD>',
@@ -1623,19 +1725,19 @@
       'Increases the amount of <orange-d>Jumps</orange-d> to <num>1</num>.<br> Slows down touched enemies by <num>40%</num> for <num>2</num> seconds.',
     htalent_221_name: 'The Roots of Evil <mana>50</mana> <CD>3</CD> /<blue-l> 8<CD></CD></blue-l>',
     htalent_221_description:
-      'After <num>0.3</num> seconds, it deals <mag>%s</mag> damage to enemies in the area under the cursor and can steal Health, but not more than <num>3</num> targets.<br><rz>When used from native land, it reduces the target\'s Health recovery by <num>75%</num> for <num>2</num> seconds.</rz><br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero is transported to the specified location and deals enemies around <mag>%s</mag> damage (from the greatest of Strength and Intellect).</blue-l>',
+      "After <num>0.3</num> seconds, it deals <mag>%s</mag> damage to enemies in the area under the cursor and can steal Health, but not more than <num>3</num> targets.<br><rz>When used from native land, it reduces the target's Health recovery by <num>75%</num> for <num>2</num> seconds.</rz><br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero is transported to the specified location and deals enemies around <mag>%s</mag> damage (from the greatest of Strength and Intellect).</blue-l>",
     htalent_222_name: 'Living skin <mana>60</mana> <CD>30</CD> /<blue-l> 5<CD></CD></blue-l>',
     htalent_222_description:
       'Attracts the selected enemy hero, dealing him <mag>%s</mag> damage and stunning him for <num>1.5</num> sec.<br> The range of talent increases by <num>0.2</num> for every <num>10</num> of the greatest of Strength and Intellect.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>Bear</orange-d> until the Energy drops below <num>5%</num>, which gets <num>%s</num> Health (from the highest of Strength and Intellect) and deals <num>15%</num> more attack damage, but loses <num>0.4%</num> max. Energy per second.</blue-l>',
     htalent_223_name: 'Woe to the weak',
     htalent_223_description:
-      'The Roots of evil deal double damage to enemies under the Crow\'s Evil Eye or trapped Villains.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero stuns the wounded enemies for <num>1</num> sec.</blue-l>',
+      "The Roots of evil deal double damage to enemies under the Crow's Evil Eye or trapped Villains.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero stuns the wounded enemies for <num>1</num> sec.</blue-l>",
     htalent_224_name: 'Hunger of the dead beast',
     htalent_224_description:
-      'When the talent is restored, the hero\'s speed increases by <num>20%</num>, and near trees and mushrooms by <num>30%</num>.<br>When the Live Skin is triggered, the talents of the Villain and Fly Agaric are restored.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero\'s attacks slow down the enemy by <num>25%</num> for <num>2</num> seconds, and the hero receives an additional <num>%s</num> of health theft (from the greatest of Strength and Intellect).</blue-l>',
+      "When the talent is restored, the hero's speed increases by <num>20%</num>, and near trees and mushrooms by <num>30%</num>.<br>When the Live Skin is triggered, the talents of the Villain and Fly Agaric are restored.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero's attacks slow down the enemy by <num>25%</num> for <num>2</num> seconds, and the hero receives an additional <num>%s</num> of health theft (from the greatest of Strength and Intellect).</blue-l>",
     htalent_225_name: "Crow's Evil Eye <mana>120</mana> <CD>25</CD> /<blue-l> 5<CD></CD></blue-l>",
     htalent_225_description:
-      'The crow attacks the enemy, dealing him <fiz>%s</fiz> damage for <num>10</num> seconds and showing where he is.<br>If the effect ends prematurely, the talent\'s recovery time decreases proportionally.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>The crow</orange-d>, until the Energy drops below <num>5%</num>, which accelerates by <num>30%</num>, receives the effect of flight and an unobstructed view within a radius of <num>%s</num> (from the Intellect), but loses <num>1.5%</num> max. Energy per second, and cannot use talents or attack.</blue-l>',
+      "The crow attacks the enemy, dealing him <fiz>%s</fiz> damage for <num>10</num> seconds and showing where he is.<br>If the effect ends prematurely, the talent's recovery time decreases proportionally.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>The crow</orange-d>, until the Energy drops below <num>5%</num>, which accelerates by <num>30%</num>, receives the effect of flight and an unobstructed view within a radius of <num>%s</num> (from the Intellect), but loses <num>1.5%</num> max. Energy per second, and cannot use talents or attack.</blue-l>",
     htalent_226_name: 'The villain <mana>380</mana> <CD>25</CD>',
     htalent_226_description:
       'Summons a Villain whose attacks deal <mag>%s</mag> damage, and who has <num>%s</num> Health (from the greatest of Strength and Intellect).<br>\r\nThe tree disguises itself as an ordinary tree, grabs and immobilizes an enemy hero who happens to be nearby.<br>\r\The death of a Villain causes friendly Villains around the deceased to remain inactive for <num>4</num> seconds.<br>\r\n Supports no more than <num>10</num> trees at a time.<br>\r\n<rz>In his native land, the Firewood burns <num>%s</num> Energy (from the Intellect).</rz>',
@@ -1700,7 +1802,7 @@
       'Forces all enemies next to the hero to attack him for <num>2</num> seconds.<br>\n<rz>When used from the native land, the range of hypnosis increases.</rz>',
     htalent_248_name: 'Snake Venom',
     htalent_248_description:
-      'The hero\'s attack poisons the enemy for <num>5</num> seconds, dealing <fiz>%s</fiz> damage (from the highest of Will and Stamina) every <num>1.5</num> seconds.<br>The effect stacks up to <num>3</num> times.<br>The speed of an enemy poisoned <num>3</num> times is reduced by <num>30%</num>.',
+      "The hero's attack poisons the enemy for <num>5</num> seconds, dealing <fiz>%s</fiz> damage (from the highest of Will and Stamina) every <num>1.5</num> seconds.<br>The effect stacks up to <num>3</num> times.<br>The speed of an enemy poisoned <num>3</num> times is reduced by <num>30%</num>.",
     htalent_249_name: 'Snake Flexibility',
     htalent_249_description: "With a <num>20% chance</num>, the hero dodges the enemy's attack.",
     htalent_250_name: 'Mass hypnosis',
@@ -1743,7 +1845,7 @@
       "Using the Warrior Fairy's talent increases the greatest of Cunning and Agility by <num>%s</num> (from the greatest of Strength and Intellect) for <num>10</num> seconds.",
     htalent_264_name: 'Guardian Pollen',
     htalent_264_description:
-      'Using the Guardian Fairy\'s talent increases Health regeneration by <num>%s</num> (from the greatest of Strength and Intellect) for <num>10</num> seconds.',
+      "Using the Guardian Fairy's talent increases Health regeneration by <num>%s</num> (from the greatest of Strength and Intellect) for <num>10</num> seconds.",
     htalent_265_name: 'Unity <mana>230</mana> <CD>80</CD>',
     htalent_265_description:
       'Combines with the specified hero for <num>7</num> seconds, removing all negative effects.The arrow will not leave the hero has invulnerability, but cannot attack.Class talents strengthen an ally and negatively affect an enemy.',
@@ -1972,7 +2074,7 @@
       'Deals <mag>%s</mag> damage to the first enemy hero in the path and to all affected creatures. The hero jumps away in the opposite direction, and his Speed increases by <num>50%</num> for <num>2</num> seconds.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
     htalent_347_name: 'Red-hot barrel <CD>5</CD>',
     htalent_347_description:
-      'Each hero\'s attack additionally deals <mag>%s</mag> damage and consumes 3⚡.<br><hr><bronze>Courage: Additional talent damage increased by <num>%s</num>.</bronze>',
+      "Each hero's attack additionally deals <mag>%s</mag> damage and consumes 3⚡.<br><hr><bronze>Courage: Additional talent damage increased by <num>%s</num>.</bronze>",
     htalent_348_name: 'Stunning Shot',
     htalent_348_description:
       'Blinds a wounded enemy hero for <num>2</num> seconds, and if he was nearby, stuns him for <num>1</num> seconds.',
@@ -2029,13 +2131,13 @@
       'Talent Jump! It also makes the hero invisible for <num>3</num> seconds.<br><hr><bronze>Grrr: Reduces by <num>30%</num> by <num>4</num> The speed of all hit enemies.</bronze>',
     htalent_367_name: 'Stand still!',
     htalent_367_description:
-      'Talent is easy prey! Stuns an enemy for <num>0.5</num> seconds when he first crosses the border of the talent\'s area of effect.<br><hr><bronze>Grrr: Throws all touched enemies into the air.</bronze>',
+      "Talent is easy prey! Stuns an enemy for <num>0.5</num> seconds when he first crosses the border of the talent's area of effect.<br><hr><bronze>Grrr: Throws all touched enemies into the air.</bronze>",
     htalent_368_name: 'Be afraid! <CD>30</CD> / <bronze>Grrr</bronze> <CD>10</CD>',
     htalent_368_description:
       'For <num>2.5</num> seconds, he cannot be the target of enemy attacks and talents and gets the opportunity to pass through creatures. The hero cannot attack, but when he comes into contact with the enemy for the first time, he causes <mag>%s</mag> damage.<br><hr><bronze>Grrr: Reduces damage from enemy attacks around by <num>%s</num> (at most) for <num>10</num> seconds.</bronze>',
     htalent_369_name: 'Defending myself! <CD>60</CD>',
     htalent_369_description:
-      'Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the greatest of the hero\'s Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>',
+      "Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the greatest of the hero's Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>",
     htalent_370_name: 'Overtaken!',
     htalent_370_description:
       'Fear Talent increases Speed by <num>60%</num>.<br><hr><bronze>Grrr: Prohibits all wounded enemies from using talents for <num>2</num> seconds.</bronze>',
@@ -2294,7 +2396,7 @@
       'Stuns an enemy hero for <num>2.5</num> seconds and deals him <fiz>%s</fiz> damage (from Strength) per second.\n<br>\The effect is interrupted if the target takes <fiz>%s</fiz> damage (from Strength).',
     htalent_461_name: 'Impunity',
     htalent_461_description:
-      'By applying the Puncher talent, the hero removes all negative effects from himself and becomes immune to control while beating the enemy. During Puncher\'s effect, increases own maximum Health by <num>%s</num> (from Strength)',
+      "By applying the Puncher talent, the hero removes all negative effects from himself and becomes immune to control while beating the enemy. During Puncher's effect, increases own maximum Health by <num>%s</num> (from Strength)",
     htalent_462_name: 'Rainbow Jump <mana>200</mana> <CD>90</CD>',
     htalent_462_description: 'The hero moves to the specified point, dealing <mag>%s</mag> damage to all enemies around.',
     htalent_463_name: 'Rainbow Protection',
@@ -2384,7 +2486,7 @@
       "The Destructive Jump talent increases the hero's Stamina and Strength by <num>%s</num> (from max. Health) for <num>3</num> seconds.",
     htalent_494_name: 'Skirmish <CD>90</CD>',
     htalent_494_description:
-      'When using a talent, it consumes all ⚡. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter\'s Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr><bronze>Courage: When used, the number of shots increases by <num>2</num> for every 10⚡.</bronze>',
+      "When using a talent, it consumes all ⚡. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter's Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr><bronze>Courage: When used, the number of shots increases by <num>2</num> for every 10⚡.</bronze>",
     htalent_495_name: 'Especially dangerous',
     htalent_495_description: 'If a firefight kills an enemy hero, its recovery time is <num>10</num> seconds.',
     htalent_496_name: 'Partisan',
@@ -2476,7 +2578,7 @@
     htalent_527_description: 'When using class talents, the speed increases by <num>50%</num> for <num>3.5</num> seconds.',
     htalent_528_name: 'Missile Strike <mana>70</mana> <CD>10</CD>',
     htalent_528_description:
-      'Deals <mag>%s</mag> damage in the specified area.<br>The explosion leaves a fiery trail on the ground for <num>3</num> seconds, dealing <mag>%s</mag> damage per second (based on the higher of Strength or Intellect).<br>The cast radius is equal to the Auto Attack radius.<br>Stuns enemies for <num>0.5</num> seconds if Strength is greater than Intellect.<br>If the hero\'s Intellect is greater than Strength, the rocket\'s cast radius is increased by <num>5</num> and additionally by <num>%s</num> (from Intellect).',
+      "Deals <mag>%s</mag> damage in the specified area.<br>The explosion leaves a fiery trail on the ground for <num>3</num> seconds, dealing <mag>%s</mag> damage per second (based on the higher of Strength or Intellect).<br>The cast radius is equal to the Auto Attack radius.<br>Stuns enemies for <num>0.5</num> seconds if Strength is greater than Intellect.<br>If the hero's Intellect is greater than Strength, the rocket's cast radius is increased by <num>5</num> and additionally by <num>%s</num> (from Intellect).",
     htalent_529_name: 'Heavy fire <mana>80</mana> <CD>14</CD>',
     htalent_529_description:
       "For <num>6</num> seconds, the hero's attacks deal <fiz>%s</fiz> more damage.<br>\n<rz>When used from its native land, it restores <num>%s</num> Health per second (from the greatest of Strength and Intellect).</rz>\n",
@@ -2569,7 +2671,7 @@
     htalent_561_description: "The Pain Test talent additionally increases the hero's maximum Health by the value taken from the target.",
     htalent_562_name: 'Attack! <CD>60</CD>',
     htalent_562_description:
-      'Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the hero\'s Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>',
+      "Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the hero's Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>",
     htalent_563_name: 'Watch out!',
     htalent_563_description:
       '<bronze>Grrr: Thanks to my talent, I attack! all enemies around have <num>5</num> seconds of decreased Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect) after the moment of reincarnation.</bronze>',
@@ -2798,7 +2900,8 @@
     htalent_645_description:
       'The time to create a talent for a painted beast is reduced by <num>0.5</num> seconds, and damage is increased by <num>20%</num> (<fiz>%s</fiz>).',
     htalent_646_name: 'Endless Color',
-    htalent_646_description: 'The recovery time of the Color of Life talent is reduced by <num>5</num> seconds. Additionally heals the hero for <num>%s</num> (from Intellect).',
+    htalent_646_description:
+      'The recovery time of the Color of Life talent is reduced by <num>5</num> seconds. Additionally heals the hero for <num>%s</num> (from Intellect).',
     htalent_647_name: 'Deafening blows',
     htalent_647_description:
       'The talent of a worthy opponent stuns all offended heroes. <br> Repeatedly stuns wounded enemies after completing jumps.',
@@ -2976,7 +3079,8 @@
     htalent_712_description:
       'The hero moves in the specified direction, dealing <fiz>%s</fiz> damage to all enemies in the way and pouring Honey on enemy heroes when they collide with them.<br>\nFor <num>4</num> seconds, talent can be reused.',
     htalent_713_name: 'Thick honey',
-    htalent_713_description: 'If the hero\'s Strength is greater than Intellect, the honey additionally slows enemies by <num>7%</num> and deals <fiz>%s</fiz> damage per second.<br>If the hero\'s Intellect is greater than Strength, the honey additionally slows enemies by <num>10%</num> and deals <fiz>%s</fiz> damage per second.',
+    htalent_713_description:
+      "If the hero's Strength is greater than Intellect, the honey additionally slows enemies by <num>7%</num> and deals <fiz>%s</fiz> damage per second.<br>If the hero's Intellect is greater than Strength, the honey additionally slows enemies by <num>10%</num> and deals <fiz>%s</fiz> damage per second.",
     htalent_714_name: 'Oak Barrel <mana>250</mana> <CD>60</CD>',
     htalent_714_description: 'The hero pours Honey on all the heroes around and causes <fiz>%s</fiz> damage to all enemies.',
     htalent_715_name: 'Hot Honey <mana>80</mana> <CD>12</CD>',
@@ -3118,7 +3222,7 @@
     htalent_766_description: 'During the application of ultimate talents, the hero receives <num>35%</num> talent protection.',
     htalent_767_name: 'A trail of blood',
     htalent_767_description:
-      'Class talents inflict bleeding wounds on the enemy, and the target cannot hide from the hero out of sight for <num>6</num> seconds, receiving <mag>%s</mag> damage per second.<br>The effect adds up <num>4</num> times.<br><hr><frost>At night, the hero\'s speed drops to <num>0</num>, and he is invisible while motionless or using Wild Baiting. In addition, attacking an enemy with bleeding moves towards him if the target is nearby.</frost>',
+      "Class talents inflict bleeding wounds on the enemy, and the target cannot hide from the hero out of sight for <num>6</num> seconds, receiving <mag>%s</mag> damage per second.<br>The effect adds up <num>4</num> times.<br><hr><frost>At night, the hero's speed drops to <num>0</num>, and he is invisible while motionless or using Wild Baiting. In addition, attacking an enemy with bleeding moves towards him if the target is nearby.</frost>",
     htalent_768_name: 'Wild Bullying <mana>60</mana> <CD>5</CD>',
     htalent_768_description:
       'The hero moves to the specified point, hitting all enemies on the way.<br><hr><frost>At night, talent recovers by <num>95%</num> faster and does not consume energy.</frost>',
@@ -3138,7 +3242,7 @@
       'Within <num>5</num> seconds after the Bone Trap is triggered, the hero can be transported to the enemy.<br>Created <num>1</num> sec.<br><hr><frost>At night, it is created instantly.</frost>',
     htalent_774_name: 'The Curse of hunger',
     htalent_774_description:
-      'By committing unique murders, the hero steals <num>5%</num> of the victim\'s greatest Strength and Intellect. The effect subsides when the hero dies.<br><hr><frost>Steals by <num>4% more at night</num>.</frost>',
+      "By committing unique murders, the hero steals <num>5%</num> of the victim's greatest Strength and Intellect. The effect subsides when the hero dies.<br><hr><frost>Steals by <num>4% more at night</num>.</frost>",
     htalent_775_name: 'Monstrous death',
     htalent_775_description: 'If the target of the Monstrous Hunger talent dies, all opponents around will panic for <num>2</num> seconds.',
     htalent_776_name: "It's time for nightmares <mana>230</mana> <CD>100</CD>",
@@ -3717,8 +3821,7 @@
     talent_181_name: 'Steadfastness<white> <CD>120</CD></white>',
     talent_181_description: '<num>Protective</num><br><br>When activated, enemy-imposed effects are removed from all around.',
     talent_182_name: 'Unjustified cruelty',
-    talent_182_description:
-      'Hero attack with <num>25%</num> chance additionally causes <num>%s</num> <red-d>net damage</red-d>.',
+    talent_182_description: 'Hero attack with <num>25%</num> chance additionally causes <num>%s</num> <red-d>net damage</red-d>.',
     talent_183_name: 'Spirit upgrade<white>360</white>',
     talent_183_description:
       '<num>Tactical</num><br><br>When activated, it instantly reduces the recovery time of talents and items by <num>70%</num>.',
@@ -4066,8 +4169,7 @@
     talent_322_description:
       'Reduces the hero\'s resurrection time by <num>20%</num>.<br> <br> <gray>Set</gray> <orange-d>"Relentless presence"</orange-d><white> <CD>180</CD></white><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_323_name: 'The Sixth Sense',
-    talent_323_description:
-      'Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
+    talent_323_description: 'Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
     talent_324_name: 'Unstoppable Will',
     talent_324_description:
       'Ghost Watcher, summoned by talent <tn>Ghostly embrace </tn> now sees and invisible.<br> <br> <gray>Set</gray> <orange-d>"Ghostly embrace"</orange-d>',
