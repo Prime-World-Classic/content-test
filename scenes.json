@@ -4013,14 +4013,14 @@
           "mesh": "doct/rocks_12_01.bin",
           "indexCount": 20118,
           "shader": "shader_pos_tangent16_norm_uv16",
-          "texture": "doct4238",
+          "texture": "doct4238_winter",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "doct/rocks_14_01.bin",
           "indexCount": 32973,
           "shader": "shader_pos_tangent16_norm_uv16_uv",
-          "texture": "doct4238",
+          "texture": "doct4238_winter",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
@@ -4302,7 +4302,7 @@
           "mesh": "doct/terrain_14_01.bin",
           "indexCount": 7134,
           "shader": "shader_pos_tangent_norm_uv2",
-          "texture": "doct4238",
+          "texture": "doct4238_winter",
           "transform": [1.0, 0.0, 0.0, 1831.3385, 0.0, -1.19209e-7, 1.0, 189.78743, 0.0, -1.0, -1.19209e-7, 735.96417, 0, 0, 0, 1]
         },
         {
