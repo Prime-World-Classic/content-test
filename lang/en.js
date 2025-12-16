@@ -322,11 +322,7 @@
       {
         type: 'p',
         content:
-          'Quests are tasks that a player can complete. To accept a quest, click <carrot>“Accept”</carrot> in the quest window. If you do not accept a quest, it will remain indefinitely, which means it will not refresh.',
-      },
-      {
-        type: 'img',
-        content: 'content/img/quest/help-1.png',
+          'Quests are tasks that a player can complete. To accept a quest, click “Accept” in the quest window. If you do not accept a quest, it will remain indefinitely, which means it will not refresh.',
       },
       {
         type: 'p',
