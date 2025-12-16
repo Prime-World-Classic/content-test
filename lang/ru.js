@@ -212,7 +212,7 @@
     callAFriend: 'Звонок',
     inviteToAGroup: 'Группа',
     friendIsOffline: 'Не в сети',
-    friendAccept: '',
+    friendAccept: 'Принять',
     friendDecline: 'Отклонить',
     friendRemove: 'Удалить',
     friendCancle: 'Отмена',
