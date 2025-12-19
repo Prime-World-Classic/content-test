@@ -594,6 +594,11 @@
     flag_Mimimi: 'Mimimi',
     flag_New_Years_skull: "New Year's Skull",
     flag_oak: 'Tree',
+	flag_Agaric: 'Baba Yaga\'s Gift',
+	flag_Moon: 'Crescent Night',
+	flag_Rose: 'ARAM Rose',
+	flag_Space: 'Your Universe',
+	flag_The_brown_cutie: 'Brown Cutie',
 
     // Переводы
     select_faction: 'Select faction',
