@@ -49,6 +49,37 @@
     continue: 'Continue',
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
+	
+	//BackEnd
+	structureError: 'Structure error',
+	accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
+	accountBanned: 'Account is permanently banned. For details, please contact support.',
+	//accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
+	invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
+	invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
+	//inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
+	nicknameLengthError: 'Login length must be between 2 and 32 characters',
+	nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
+	nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
+	nicknameTaken: 'Nickname is taken',
+	userNotFound: 'User not found',
+	nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
+	accountNotFound: 'Account not found',
+	cannotIdentify1: 'Cannot identify you (1)',
+	cannotIdentify2: 'Cannot identify you (2)',
+	cannotIdentify3: 'Cannot identify you (3)',
+	notYourFriend: 'This is not your friend',
+	invalidAccessKey: 'Invalid access key',
+	notInThisGame: 'You are not in this game',
+	playerNotInGame: 'This player is not in this game',
+	notYourAlly: 'This is not your ally',
+	
+	cannotPurchaseItem: 'Cannot purchase this item',
+	alreadyPurchasedItem: 'You have already purchased this item before',
+	insufficientFunds: 'Insufficient funds',
+	itemNotPurchased: 'You have not purchased this item',
+	
+	updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',

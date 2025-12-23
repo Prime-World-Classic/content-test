@@ -147,7 +147,20 @@ export class Api {
       }
 
       if (error) {
-        this.awaiting[request].reject(error);
+		if (error.includes('|')) {
+          const parts = error.split('|');
+          const key = parts[0];
+          let translated = Lang.text(key);
+        
+          for (let i = 1; i < parts.length; i++) {
+            const [paramName, paramValue] = parts[i].split('=');
+            translated = translated.replace(`\${${paramName}}`, paramValue || '');
+          }
+        
+          this.awaiting[request].reject(translated);
+		} else {
+        this.awaiting[request].reject(Lang.text(error));
+		}
       } else {
         this.awaiting[request].resolve(data);
       }

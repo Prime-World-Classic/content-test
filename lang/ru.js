@@ -51,6 +51,37 @@
     fullscreenEnabled: 'Включен полноэкранный режим',
     fullscreenDisabled: 'Включен оконный режим',
 
+	//BackEnd
+	structureError: 'Ошибка структуры',
+	accountNotFoundOrRecover: 'Аккаунт не найден, пройдите регистрацию или восстановите через Telegram бота @primeworldclassic_bot',
+	accountBanned: 'Аккаунт заблокирован навсегда. Для подробностей обратитесь в службу поддержки.',
+	//accountBlocked: 'Аккаунт заблокирован за нарушение правил сообщества на ${blocked} мин.',
+	invalidCredentials: 'Неверный пара логин или пароль. Восстановить аккаунт можно через Telegram бота @primeworldclassic_bot',
+	invalidInvite: 'Инвайт-код недействителен. Получить инвайт-код можно через Telegram бота @primeworldclassic_bot',
+	//inviteAlreadyUsed: 'Ранее инвайт-код был активирован ${invite.login}, пройдите авторизацию или восстановите пароль через Telegram бота @primeworldclassic_bot',
+	nicknameLengthError: 'Длина логина должна быть не меньше 2 символов и не больше 32',
+	nicknameInvalidCharacters: 'В логине разрешены только русские или английские буквы, цифры и обычные пробелы, попробуйте указать другой',
+	nicknameMixedLanguages: 'Никнейм может состоять только из русских или английских букв, попробуйте придумать другой',
+	nicknameTaken: 'Никнейм занят',
+	userNotFound: 'Пользователь не найден',
+	nicknameAlreadyUsed: 'Вы уже используете данный никнейм или ранее он у вас был',
+	accountNotFound: 'Аккаунт не найден',
+	cannotIdentify1: 'Не можем вас идентифицировать (1)',
+	cannotIdentify2: 'Не можем вас идентифицировать (2)',
+	cannotIdentify3: 'Не можем вас идентифицировать (3)',
+	notYourFriend: 'Это не ваш друг',
+	invalidAccessKey: 'Неверный ключ доступа',
+	notInThisGame: 'Вас нет в этой игре',
+	playerNotInGame: 'Данного игрока нет в этой игре',
+	notYourAlly: 'Это не ваш союзник',
+	
+	cannotPurchaseItem: 'Нельзя приобрести этот товар',
+	alreadyPurchasedItem: 'Ранее, вы уже приобретали данный товар',
+	insufficientFunds: 'Недостаточно средств',
+	itemNotPurchased: 'Вы не купили данный товар',
+	
+	updateReleased: 'Вышло обновление ${version}, необходимо перезапустить Замок и/или клиент Steam!',
+
     //castleNavBar
     clickToViewHeroRating: 'Нажмите сюда, чтобы посмотреть рейтинг по отдельным героям',
     gm1: 'Пограничье',
