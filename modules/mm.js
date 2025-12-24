@@ -35,6 +35,8 @@ export class MM {
   static targetPlayerAnimate = false;
 
   static activeSelectHero = 0;
+  
+  static isInTambur = false;
 
   static gameRunEvent() {
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
@@ -124,6 +126,8 @@ export class MM {
     Sound.stop('tambur');
 
     Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, true);
+	
+	MM.isInTambur = false;
 
     MM.view.style.display = 'none';
 
@@ -453,6 +457,9 @@ export class MM {
   }
 
   static async lobby(data) {
+	  
+	MM.isInTambur = true;
+	
     MM.targetBanHeroId = 0;
 
     if (!MM.hero) {
@@ -921,7 +928,9 @@ export class MM {
   static finish(data) {
     Timer.stop();
     MM.close();
-
+	
+	MM.isInTambur = false;
+	
     try {
       Settings.ApplySettings();
     } catch (e) {

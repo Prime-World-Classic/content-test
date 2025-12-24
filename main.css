@@ -4061,6 +4061,33 @@ i-success {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: volumeShine 2s infinite;
 }
+#wcastle-call,
+#wcastle-invite {
+  container-type: inline-size;
+  position: absolute;
+  margin-top: 18cqh;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  text-align: center;
+  width: calc(min(35cqh, 25cqw));
+  padding: 5.5cqmin 0.5cqmin;
+  border-radius: 2cqh;
+  border: 0.1cqh solid rgb(158, 155, 104);
+  
+  /* Фоновый рисунок как в splash без градиента */
+  background-image: url(img/main.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Tahoma, sans-serif;
+  color: rgba(255, 255, 255, 0.9);
+}
 
 #wcastle-menu,
 #wcastle-render-debug {

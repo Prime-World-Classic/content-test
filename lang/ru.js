@@ -251,8 +251,8 @@
     friendAcceptText: 'Приглашение отправлено игроку {nickname}',
     friendNicknamePlaceholder: 'Ник игрока',
     friendAcceptWaiting: 'Ожидание',
-    friendInvitesToLobby: '{nickname} приглашает вас в лобби',
-    friendCallFrom: 'Звонок от {name}?',
+    friendInvitesToLobby: '{nickname} приглашает вас в группу',
+    friendCallFrom: 'Принять звонок от {name}?',
     friendDropCall: 'Сбросить',
 
     //Войс

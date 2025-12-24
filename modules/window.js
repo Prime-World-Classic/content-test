@@ -64,6 +64,28 @@ export class Window {
     if (category === 'main' && typeof Build !== 'undefined' && Build.cleanup) {
       Build.cleanup();
     }
+	
+	if (category === 'main') {
+      const windowElement = Window.windows[category];
+      
+      if (windowElement) {
+        // Окно звонка
+        if (windowElement.id === 'wcastle-call') {
+          Sound.stop('ui-call');
+          Window.callData = null;
+        }
+        
+        // Окно приглашения
+        if (windowElement.id === 'wcastle-invite') {
+          if (Window.inviteTimeout) {
+            clearTimeout(Window.inviteTimeout);
+            Window.inviteTimeout = null;
+          }
+          Window.inviteData = null;
+        }
+      }
+    }
+	
     if (category in Window.windows) {
       Window.windows[category].remove();
       delete Window.windows[category];
@@ -78,6 +100,20 @@ export class Window {
   static closeLast() {
     if (Window.windowOrder.length > 0) {
       const lastCategory = Window.windowOrder[0]; // Берем первый элемент (последний открытый)
+	  if (lastCategory === 'main') {
+		const currentWindow = Window.windows['main'];
+		if (currentWindow && currentWindow.id === 'wcastle-call') {
+		  Sound.stop('ui-call');
+		  Window.callData = null; 
+		}
+		if (currentWindow.id === 'wcastle-invite') {
+          if (Window.inviteTimeout) {
+            clearTimeout(Window.inviteTimeout);
+            Window.inviteTimeout = null;
+          }
+          Window.inviteData = null;
+        }
+	  }
       return this.close(lastCategory);
     }
     return false;
@@ -1433,4 +1469,163 @@ export class Window {
       ),
     );
   }
+  
+  static async callWindow() {
+    console.log('callWindow вызван, данные:', Window.callData);
+    
+    const data = Window.callData;
+    
+    if (!data) {
+      console.warn('Нет данных для окна звонка');
+      return DOM({ id: 'wcastle-call' });
+    }
+    
+	let displayName = data.name;
+	  if (displayName.length > 13) {
+		displayName = displayName.substring(0, 11) + '...';
+	}
+	
+    const callTimeout = setTimeout(() => {
+      console.log('Таймаут 15 секунд, звонок автоматически отменяется');
+      Sound.stop('ui-call');
+      
+      if (Window.windows['main'] && Window.windows['main'].id === 'wcastle-call') {
+        App.api.request('user', 'callTimeout', { id: data.id }).catch(console.error);
+        Window.close('main');
+      }
+      
+      Window.callData = null;
+      Window.callTimeout = null;
+    }, 15000);
+	
+    Window.callTimeout = callTimeout;
+	
+    return DOM(
+      { id: 'wcastle-call' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('friendCallFrom').replace('{name}', displayName)),
+      DOM(
+        { style: 'castle-menu-items' },
+        DOM(
+          {
+            domaudio: domAudioPresets.bigButton,
+            style: 'splash-content-button',
+            event: [
+              'click',
+              async () => {
+                Sound.stop('ui-call');
+                try {
+                  let voice = new Voice(data.id, '', data.name, true);
+                  await voice.accept(data.offer);
+                  Window.callData = null;
+                  Window.close('main');
+                } catch (error) {
+                  App.error(error);
+                  Window.callData = null;
+                }
+              },
+            ],
+          },
+          Lang.text('friendAccept')
+        ),
+        
+        DOM(
+          {
+            domaudio: domAudioPresets.bigButton,
+            style: 'splash-content-button',
+            event: [
+              'click',
+              async () => {
+                Sound.stop('ui-call');
+                Window.callData = null;
+                Window.close('main');
+              },
+            ],
+          },
+          Lang.text('friendDropCall')
+        )
+      )
+    );
+  }
+  
+  static async inviteWindow() {
+    const data = Window.inviteData;
+    
+    if (!data) {
+      console.warn('Нет данных для окна приглашения');
+      return DOM({ id: 'wcastle-invite' });
+    }
+    
+    let displayNickname = data.nickname;
+    if (displayNickname.length > 13) {
+      displayNickname = displayNickname.substring(0, 11) + '...';
+    }
+    
+    const inviteTimeout = setTimeout(() => {
+      console.log('Таймаут 15 секунд, приглашение автоматически отменяется');
+      
+      if (Window.windows['main'] && Window.windows['main'].id === 'wcastle-invite') {
+        Window.close('main');
+      }
+      
+      Window.inviteData = null;
+      Window.inviteTimeout = null;
+    }, 15000);
+    
+    Window.inviteTimeout = inviteTimeout;
+    
+    return DOM(
+      { id: 'wcastle-invite' },
+      DOM({ style: 'castle-menu-title' }, Lang.text('friendInvitesToLobby').replace('{nickname}', displayNickname)),
+      DOM(
+        { style: 'castle-menu-items' },
+        DOM(
+          {
+            style: 'splash-content-button',
+            domaudio: domAudioPresets.bigButton,
+            event: [
+              'click',
+              async () => {
+                if (Window.inviteTimeout) {
+                  clearTimeout(Window.inviteTimeout);
+                  Window.inviteTimeout = null;
+                }
+                
+                try {
+                  await App.api.request(App.CURRENT_MM, 'joinParty', {
+                    code: data.code,
+                    version: App.PW_VERSION,
+                  });
+                  Window.inviteData = null;
+                  Window.close('main');
+                } catch (error) {
+                  App.error(error);
+                  Window.inviteData = null;
+                }
+              },
+            ],
+          },
+          Lang.text('friendAccept')
+        ),
+        
+        DOM(
+          { 
+            domaudio: domAudioPresets.bigButton, 
+            style: 'splash-content-button', 
+            event: [
+              'click', 
+              () => {
+                if (Window.inviteTimeout) {
+                  clearTimeout(Window.inviteTimeout);
+                  Window.inviteTimeout = null;
+                }
+                Window.inviteData = null;
+                Window.close('main');
+              }
+            ] 
+          },
+          Lang.text('friendCancle')
+        )
+      )
+    );
+  } 
 }

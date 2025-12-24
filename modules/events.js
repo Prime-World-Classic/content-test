@@ -13,6 +13,7 @@ import { Sound } from './sound.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { Castle } from './castle.js';
+import { Window } from './window.js';
 
 export class Events {
   static Message(data) {
@@ -133,36 +134,9 @@ export class Events {
   }
 
   static PInvite(data) {
-    let body = document.createDocumentFragment();
-
-    let b1 = DOM(
-      {
-        style: 'splash-content-button',
-        domaudio: domAudioPresets.bigButton,
-        event: [
-          'click',
-          async () => {
-            await App.api.request(App.CURRENT_MM, 'joinParty', {
-              code: data.code,
-              version: App.PW_VERSION,
-            });
-
-            Splash.hide();
-          },
-        ],
-      },
-      Lang.text('friendAccept'),
-    );
-
-    let b2 = DOM(
-      { domaudio: domAudioPresets.bigButton, style: 'splash-content-button', event: ['click', () => Splash.hide()] },
-      Lang.text('friendCancle'),
-    );
-
-    body.append(DOM(Lang.text('friendInvitesToLobby').replace('{nickname}', data.nickname)), b1, b2);
-
-    Splash.show(body);
+    Window.inviteData = data;
     
+    Window.show('main', 'inviteWindow');
   }
 
   static PUpdate(data) {
@@ -266,57 +240,23 @@ export class Events {
           },
           playCallSoundLoop,
         );
-      };
-      playCallSoundLoop();
-      let body = document.createDocumentFragment();
-
-      body.append(
-        DOM(Lang.text('friendCallFrom').replace('{name}', data.name)),
-        DOM(
-          {
-            domaudio: domAudioPresets.bigButton,
-            style: 'splash-content-button',
-            event: [
-              'click',
-              async () => {
-                Sound.stop('ui-call');
-                try {
-                  let voice = new Voice(data.id, '', data.name, true);
-                  await voice.accept(data.offer);
-
-                  Splash.hide();
-                } catch (error) {
-                  App.error(error);
-                }
-              },
-            ],
-          },
-          Lang.text('friendAccept'),
-        ),
-        DOM(
-          {
-            domaudio: domAudioPresets.bigButton,
-            style: 'splash-content-button',
-            event: [
-              'click',
-              async () => {
-                Sound.stop('ui-call');
-                Splash.hide();
-              },
-            ],
-          },
-          Lang.text('friendDropCall'),
-        ),
-      );
-
-      Splash.show(body);
+      };  
+	  
+      if (!MM.isInTambur) {
+		playCallSoundLoop();
+	  }
+	  
+      Window.callData = data;
+        
+      Window.show('main', 'callWindow');
+		
     } else {
       let voice = new Voice(data.id, '', data.name);
 
       await voice.accept(data.offer);
     }
   }
-
+	
   static async VReady(data) {
     await Voice.ready(data.id, data.answer);
   }

@@ -250,8 +250,8 @@
     friendAcceptText: 'Invitation sent to {nickname}',
     friendNicknamePlaceholder: 'Nickname',
     friendAcceptWaiting: 'Waiting',
-    friendInvitesToLobby: '{nickname} invites you to lobby',
-    friendCallFrom: 'Call from {name}?',
+    friendInvitesToLobby: '{nickname} invites you to party',
+    friendCallFrom: 'Accept call from {name}?',
     friendDropCall: 'Drop call',
 
     //Войс
