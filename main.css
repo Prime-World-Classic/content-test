@@ -1485,12 +1485,12 @@ button.build-action-item:hover {
 
 .rank-icon,
 .castle-hero-rank-icon {
-  width: 16cqw;
-  height: 16cqw;
+  width: 20cqw;
+  height: 20cqw;
   background: rgba(34, 68, 68, 0.9);
   border: 0.1cqh solid orange;
   border-radius: 50%;
-  background-size: contain;
+  background-size: 70% 70%;
   background-position: center;
   background-repeat: no-repeat;
 }

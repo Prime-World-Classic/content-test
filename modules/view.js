@@ -417,7 +417,7 @@ export class View {
     return body;
   }
 
-  static async castlePlay() {
+static async castlePlay() {
     let body = DOM({ style: 'castle-play' });
 
     let play = MM.play();
@@ -445,15 +445,47 @@ export class View {
 
     MM.searchActive(data.users[MM.partyId].ready);
 
+    try {
+        MM.hero = await App.api.request('build', 'heroAll');
+        console.log('DEBUG: Preloaded MM.hero for ratings:', MM.hero);
+    } catch (e) {
+        console.warn('Could not preload heroes:', e);
+        MM.hero = [];
+    }
+
+    let userData;
+    try {
+        userData = await App.api.request('user', 'info', { id: App.storage.data.id });
+    } catch (error) {
+        console.warn('Не удалось получить актуальные данные пользователя:', error);
+        userData = { rating: App.storage.data.rating || 1100 };
+    }
+
+    if (userData.rating) {
+        App.storage.data.rating = userData.rating;
+    }
+
     for (let key in data.users) {
-      players.push({
-        id: key,
-        hero: data.users[key].hero,
-        nickname: data.users[key].nickname,
-        ready: data.users[key].ready,
-        rating: data.users[key].rating,
-        skin: data.users[key].skin,
-      });
+        // ИСПОЛЬЗУЕМ heroRating ВМЕСТО rating
+        let userRating = data.users[key].heroRating || 1100;
+        
+        // Для текущего пользователя дополнительно проверяем MM.hero
+        if (key == App.storage.data.id && data.users[key].hero && MM.hero.length > 0) {
+            const userHero = MM.hero.find(h => h.id === data.users[key].hero);
+            if (userHero && userHero.rating) {
+                userRating = userHero.rating;
+                console.log('DEBUG: Found hero rating in MM.hero:', userRating);
+            }
+        }
+        
+        players.push({
+            id: key,
+            hero: data.users[key].hero,
+            nickname: data.users[key].nickname,
+            ready: data.users[key].ready,
+            rating: userRating, // Используем heroRating
+            skin: data.users[key].skin,
+        });
     }
     /*
         if(players.length < 5){
@@ -476,17 +508,24 @@ export class View {
       });
 
       const rankIcon = DOM({ style: 'rank-icon' });
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
+rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
 
-      item.style.backgroundImage = player.hero ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)` : '';
+// ЯВНО создаем rank-lvl без background-image
+let rankLvlElement = DOM({ style: 'rank-lvl' }, player.rating);
+// УБИРАЕМ background-image если он есть
+rankLvlElement.style.removeProperty('background-image');
 
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, player.rating), rankIcon);
+let rank = DOM({ style: 'rank' }, rankLvlElement, rankIcon);
 
-      if (player.rating) {
-        item.append(rank);
-      }
+item.append(rank);
 
-      let status = DOM(
+if (!player.rating || player.rating === 0 || player.rating === 1100) {
+    rank.style.display = 'none';
+} else {
+    rank.style.display = 'flex';
+}
+
+      let status = DOM(	
         {
           style: ['castle-party-middle-item-ready-notready', 'castle-party-middle-item-not-ready'],
         },
@@ -633,23 +672,42 @@ export class View {
             let hero = DOM({ domaudio: domAudioPresets.smallButton });
 
             hero.addEventListener('click', async () => {
-              try {
-                await App.api.request(App.CURRENT_MM, 'heroParty', {
-                  id: MM.partyId,
-                  hero: item2.id,
-                });
-              } catch (error) {
-                return App.error(error);
-              }
+				try {
+					await App.api.request(App.CURRENT_MM, 'heroParty', {
+						id: MM.partyId,
+						hero: item2.id,
+					});
+				} catch (error) {
+					return App.error(error);
+				}
 
-              item.style.backgroundImage = item2.id
-                ? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
-                : `url(content/hero/empty.webp)`;
+				item.style.backgroundImage = item2.id
+					? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
+					: `url(content/hero/empty.webp)`;
 
-              MM.activeSelectHero = item2.id;
+				const rankContainer = item.querySelector('.rank');
+				if (rankContainer) {
+					const rankLvl = rankContainer.querySelector('.rank-lvl');
+					const rankIcon = rankContainer.querySelector('.rank-icon');
+					
+					if (rankLvl) {
+						// ИСПОЛЬЗУЕМ РЕЙТИНГ ИЗ item2 (объект героя)
+						const heroRating = item2.rating || player.rating || 1100;
+						
+						rankLvl.style.backgroundImage = '';
 
-              Splash.hide();
-            });
+						rankLvl.textContent = heroRating;
+					}
+					
+					if (rankIcon) {
+						const heroRating = item2.rating || player.rating || 1100;
+						rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(parseInt(heroRating))}.webp)`;
+					}
+				}
+
+				MM.activeSelectHero = item2.id;
+				Splash.hide();
+			});
 
             if (item2.id) {
               hero.dataset.url = `content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp`;
@@ -2069,12 +2127,21 @@ export class View {
       let img = DOM({ style: 'party-middle-item-middle' });
 
       let rankIcon = DOM({ style: 'rank-icon' });
+rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;  // item.rating, а не player.rating
 
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
+// ЯВНО создаем rank-lvl без background-image
+let rankLvlElement = DOM({ style: 'rank-lvl' }, item.rating);  // item.rating здесь
+rankLvlElement.style.removeProperty('background-image');
 
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
+let rank = DOM({ style: 'rank' }, rankLvlElement, rankIcon);
 
-      img.append(rank);
+item.append(rank);
+
+if (!item.rating || item.rating === 0 || item.rating === 1100) {  // item.rating здесь
+    rank.style.display = 'none';
+} else {
+    rank.style.display = 'flex';
+}
 
       let status = DOM({ style: 'party-middle-item-not-ready' }, DOM({}, 'Не готов'));
 
