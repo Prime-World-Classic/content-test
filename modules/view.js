@@ -466,10 +466,8 @@ static async castlePlay() {
     }
 
     for (let key in data.users) {
-        // ИСПОЛЬЗУЕМ heroRating ВМЕСТО rating
         let userRating = data.users[key].heroRating || 1100;
         
-        // Для текущего пользователя дополнительно проверяем MM.hero
         if (key == App.storage.data.id && data.users[key].hero && MM.hero.length > 0) {
             const userHero = MM.hero.find(h => h.id === data.users[key].hero);
             if (userHero && userHero.rating) {
@@ -483,7 +481,7 @@ static async castlePlay() {
             hero: data.users[key].hero,
             nickname: data.users[key].nickname,
             ready: data.users[key].ready,
-            rating: userRating, // Используем heroRating
+            rating: userRating,
             skin: data.users[key].skin,
         });
     }
@@ -508,22 +506,20 @@ static async castlePlay() {
       });
 
       const rankIcon = DOM({ style: 'rank-icon' });
-rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
+      
+      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
 
-// ЯВНО создаем rank-lvl без background-image
-let rankLvlElement = DOM({ style: 'rank-lvl' }, player.rating);
-// УБИРАЕМ background-image если он есть
-rankLvlElement.style.removeProperty('background-image');
+      item.style.backgroundImage = player.hero ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)` : '';
 
-let rank = DOM({ style: 'rank' }, rankLvlElement, rankIcon);
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, player.rating), rankIcon);
 
-item.append(rank);
+      item.append(rank);
 
-if (!player.rating || player.rating === 0 || player.rating === 1100) {
-    rank.style.display = 'none';
-} else {
-    rank.style.display = 'flex';
-}
+      if (!player.rating || player.rating === 0) {
+        rank.style.display = 'none';
+      } else {
+        rank.style.display = 'flex';
+      }
 
       let status = DOM(	
         {
@@ -691,7 +687,6 @@ if (!player.rating || player.rating === 0 || player.rating === 1100) {
 					const rankIcon = rankContainer.querySelector('.rank-icon');
 					
 					if (rankLvl) {
-						// ИСПОЛЬЗУЕМ РЕЙТИНГ ИЗ item2 (объект героя)
 						const heroRating = item2.rating || player.rating || 1100;
 						
 						rankLvl.style.backgroundImage = '';
@@ -2127,21 +2122,12 @@ if (!player.rating || player.rating === 0 || player.rating === 1100) {
       let img = DOM({ style: 'party-middle-item-middle' });
 
       let rankIcon = DOM({ style: 'rank-icon' });
-rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;  // item.rating, а не player.rating
 
-// ЯВНО создаем rank-lvl без background-image
-let rankLvlElement = DOM({ style: 'rank-lvl' }, item.rating);  // item.rating здесь
-rankLvlElement.style.removeProperty('background-image');
+      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
 
-let rank = DOM({ style: 'rank' }, rankLvlElement, rankIcon);
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
 
-item.append(rank);
-
-if (!item.rating || item.rating === 0 || item.rating === 1100) {  // item.rating здесь
-    rank.style.display = 'none';
-} else {
-    rank.style.display = 'flex';
-}
+      img.append(rank);
 
       let status = DOM({ style: 'party-middle-item-not-ready' }, DOM({}, 'Не готов'));
 
