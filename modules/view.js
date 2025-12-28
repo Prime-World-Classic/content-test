@@ -453,18 +453,6 @@ static async castlePlay() {
         MM.hero = [];
     }
 
-    let userData;
-    try {
-        userData = await App.api.request('user', 'info', { id: App.storage.data.id });
-    } catch (error) {
-        console.warn('Не удалось получить актуальные данные пользователя:', error);
-        userData = { rating: App.storage.data.rating || 1100 };
-    }
-
-    if (userData.rating) {
-        App.storage.data.rating = userData.rating;
-    }
-
     for (let key in data.users) {
         let userRating = data.users[key].heroRating || 1100;
         
