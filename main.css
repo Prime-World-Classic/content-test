@@ -2511,11 +2511,11 @@ button.build-action-item:hover {
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
-  height: 1.8cqh;
-  width: 1.8cqh;
+  height: 2.3cqh;
+  width: 2.3cqh;
   margin-right: 0.2cqh;
   margin-left: 0.2cqh;
-  margin-bottom: -0.3cqh;
+  margin-bottom: -0.4cqh;
 }
 
 .gradient-animation-render-heavy {
