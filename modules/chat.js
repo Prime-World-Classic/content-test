@@ -136,6 +136,12 @@ export class Chat {
       nickname.style.fontWeight = 600;
 
       nickname.classList.add('administration-text');
+    } else if (App.isHelper(data.id)) {
+      nickname.style.color = '#48D1CC';
+
+      nickname.style.fontWeight = 600;
+
+      nickname.classList.add('helper-text');
     }
 
     let item = DOM(
@@ -158,7 +164,7 @@ export class Chat {
     );
 
     item.addEventListener('contextmenu', () => {
-      if (App.isAdmin()) {
+      if (App.isAdmin() || App.isHelper()) {
         let body = document.createDocumentFragment();
 
         body.append(

@@ -642,6 +642,10 @@ export class App {
   static isAdmin(id = 0) {
     return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(Number(id ? id : App.storage.data.id));
   }
+  
+  static isHelper(id = 0){
+	return [935, 1033, 6179, 8686].includes(Number(id ? id : App.storage.data.id));
+  }
 
   static href(url) {
     let a = DOM({ tag: 'a', href: url });
