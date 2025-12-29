@@ -974,8 +974,8 @@ body {
   background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
-
   container-type: size;
+
 }
 
 .castle-play-lobby-empty {
@@ -1008,22 +1008,20 @@ body {
   margin-top: 0.2cqh;
   text-align: center;
   font: 1.4cqh / 1 Tahoma;
-  text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqh;
-  font-weight: 600;
-  font-style: italic;
+  text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
+  
+  font-weight: 500;
   container-type: size;
 }
 
 .castle-party-middle-item-ready-notready div {
-  width: 90%;
-  background: #244;
-  border: 0.1cqh solid orange;
-  border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
-  padding: 0.3cqh 0.1cqh;
+  background: url(/content/ranks/ready.png)center center no-repeat;
+  background-size:cover;
+  padding: 2.5cqw 25cqw;
 }
 
 .castle-party-middle-item-ready {
-  color: rgba(150, 255, 150, 0.8);
+ color: rgb(255, 237, 202);
 }
 
 .castle-party-middle-item-not-ready {
@@ -1102,7 +1100,7 @@ body {
   width: 3.5cqh;
   text-align: center;
   height: 1.5cqh;
-  background: #244;
+  background: rgb(68, 34, 34);
   border: 0.1cqh solid darkorange;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
   color: #fdd;
@@ -1119,6 +1117,8 @@ body {
   text-align: center;
   font: 1.3cqh / 1 Tahoma;
   height: 1.5cqh;
+  text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
+  color: rgb(255, 238, 206);
 }
 
 .castle-name-autoscroll {
@@ -1165,6 +1165,7 @@ body {
 
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-flow: row nowrap;
 
   overflow: hidden;
@@ -1176,12 +1177,12 @@ body {
   margin: 0.5cqh 0cqh;
   text-align: center;
   font: bold 1.2cqh / 1 Tahoma;
-  padding: 0.5cqh 0.4cqh;
+  padding: .75cqh 0;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 
-  color: #ccc;
-  background: #244;
-  border: 0.1cqh solid orange;
+  color: #cc5;
+  background: url('/content/ranks/stroke.png') center center no-repeat;
+  background-size: contain;
   display: flex;
   align-items: center;
   flex-flow: row nowrap;

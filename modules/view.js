@@ -493,13 +493,11 @@ static async castlePlay() {
         data: { id: player.id },
       });
 
-      const rankIcon = DOM({ style: 'rank-icon' });
       
+      const rankIcon = DOM({ style: 'rank-icon' });
       rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
-
-      item.style.backgroundImage = player.hero ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)` : '';
-
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, player.rating), rankIcon);
+      const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, player.rating), rankIconWrapper);
 
       item.append(rank);
 
@@ -558,9 +556,14 @@ static async castlePlay() {
           status.firstChild.innerText = Lang.text('confirm');
         }
 
-        item.style.backgroundImage = player.hero
-          ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`
-          : `url(content/hero/empty.webp)`;
+        const heroImg = player.hero
+  ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`
+  : `url(content/hero/empty.webp)`;
+
+item.style.backgroundImage = `${heroImg}, url(content/hero/background.png)`;
+item.style.backgroundRepeat = 'no-repeat, no-repeat';
+item.style.backgroundPosition = 'center, center';
+item.style.backgroundSize = 'contain, contain';
       } else {
         item.innerHTML = '<div class="castle-play-lobby-empty"><div>+</div></div>';
 
@@ -665,9 +668,13 @@ static async castlePlay() {
 					return App.error(error);
 				}
 
-				item.style.backgroundImage = item2.id
-					? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
-					: `url(content/hero/empty.webp)`;
+        const newHeroImg = item2.id
+          ? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
+          : `url(content/hero/empty.webp)`;
+        item.style.backgroundImage = `${newHeroImg}, url(content/hero/background.png)`;
+        item.style.backgroundRepeat = 'no-repeat, no-repeat';
+        item.style.backgroundPosition = 'center, center';
+        item.style.backgroundSize = 'contain, contain';
 
 				const rankContainer = item.querySelector('.rank');
 				if (rankContainer) {
@@ -1454,10 +1461,10 @@ static async castlePlay() {
 
           let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
 
-          let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
-          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
-
-          let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIcon);
+         let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
+         rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
+         const rankIconWrapper = DOM({ style: 'castle-hero-rank-icon-wrapper' }, rankIcon);
+         let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIconWrapper);
 
           let hero = DOM(
             {

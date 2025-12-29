@@ -85,6 +85,10 @@
 	itemNotPurchased: 'You have not purchased this item',
 	
 	updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
+	gameModeNotAvailable: 'This game mode is not available',
+	eventFinished: 'Event ${eventName} has ended!',
+	eventStarted: 'Event ${eventName} has started!',
+	gameModeTimeLimited: 'Game mode ${modeName} has time-limited access. Don\'t miss event announcements in the official VK group.',
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',

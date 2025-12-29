@@ -1485,39 +1485,50 @@ button.build-action-item:hover {
 
 .rank-icon,
 .castle-hero-rank-icon {
-  width: 20cqw;
-  height: 20cqw;
-  background: rgba(34, 68, 68, 0.9);
-  border: 0.1cqh solid orange;
+  width: 22cqw;
+  height: 22cqw;
   border-radius: 50%;
   background-size: 70% 70%;
   background-position: center;
   background-repeat: no-repeat;
 }
-
+.rank-icon-wrapper, .castle-hero-rank-icon-wrapper{
+  background: url('/content/ranks/rateIconBack.png') center center no-repeat;
+  padding: 2cqw;
+  background-size: contain;
+}
+.castle-hero-rank-icon-wrapper{
+  padding: 0;
+}
 .rank-lvl,
 .castle-hero-rank-lvl {
   height: 12cqw;
-  background: rgba(34, 68, 68, 0.9);
-  border: 0.1cqh solid darkorange;
+  background: url("/content/ranks/ratingBack.png") center no-repeat;
+  background-size: contain;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
   color: #fdd;
   font: 12cqw / 1 Tahoma;
   font-weight: 600;
-  padding: 2cqw 5cqw;
+  padding: 4cqw 8cqw;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .castle-hero-rank-lvl {
-  height: 16cqw;
-  font: 12cqw / 1 Tahoma;
-  padding: 2cqw 10cqw 0cqw 10cqw;
+  height: 12cqw;
+  font: 14cqw / 1 Tahoma;
+  padding:  5cqw 8cqw;
 }
 
 .castle-hero-rank-icon {
-  width: 32cqw;
-  height: 32cqw;
+  width: 34cqw;
+  height: 34cqw;
   background-size: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .adm {

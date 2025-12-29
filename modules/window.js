@@ -768,7 +768,7 @@ export class Window {
             {
               tag: 'a',
               domaudio: domAudioPresets.defaultButton,
-              href: 'https://vk.com/primeworldclassic',
+              href: 'https://vk.com/primeworld',
               target: '_blank',
               event: ['click', (e) => NativeAPI.linkHandler(e)],
             },

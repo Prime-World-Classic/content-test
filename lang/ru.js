@@ -86,6 +86,10 @@
 	itemNotPurchased: 'Вы не купили данный товар',
 	
 	updateReleased: 'Вышло обновление ${version}, необходимо перезапустить Замок и/или клиент Steam!',
+	gameModeNotAvailable: 'Данный режим игры отсутствует',
+	eventFinished: 'Событие ${eventName} завершено!',
+	eventStarted: 'Событие ${eventName} началось!',
+	gameModeTimeLimited: 'Режим игры ${modeName} имеет ограниченный доступ по времени. Не пропустите анонсы событий в официальной группе ВК.',
 
     //castleNavBar
     clickToViewHeroRating: 'Нажмите сюда, чтобы посмотреть рейтинг по отдельным героям',
