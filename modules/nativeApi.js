@@ -483,4 +483,11 @@ export class NativeAPI {
       App.OpenExternalLink(url);
     }
   }
+  
+  static async bridge(data){
+	  
+	  await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE, data);
+	  
+  }
+  
 }

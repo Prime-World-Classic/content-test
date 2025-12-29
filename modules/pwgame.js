@@ -14,6 +14,8 @@ export class PWGame {
   static PATH_UPDATE_LINUX = '../update.sh';
 
   static PATH_TEST_HASHES = './content/PW_HashTest.exe';
+  
+  static PATH_LUA_BRIDGE = '../Game/Bin/bridge';
 
   static gameServerHasConnection = false;
 

@@ -268,4 +268,14 @@ export class Events {
   static VKick() {
     Voice.destroy(true);
   }
+  
+  static PWBridge(data){
+	  
+	  if (!NativeAPI.status) {
+      return;
+    }
+
+    NativeAPI.bridge(data);
+	  
+  }
 }
