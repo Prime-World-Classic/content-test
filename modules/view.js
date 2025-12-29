@@ -585,7 +585,7 @@ static async castlePlay() {
         {
           id: `PP${player.id}`,
           style: 'castle-party-middle-item',
-          title: nickname.innerText,
+          title: Lang.text('choosingHero'),
         },
         nickname,
         item,

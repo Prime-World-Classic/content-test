@@ -17,7 +17,7 @@
 	titleOwner: 'Главный Администратор',
 	titleTelegram: 'Telegram Чат',
 	titleAdministration: 'Администратор',
-	titleHelper: 'Хэлпер',
+	titleHelper: 'Поддержка',
     ready: 'Готов!',
     ready2: 'Подтвердить выбор героя',
     cancel: 'Отменить',

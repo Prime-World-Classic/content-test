@@ -53,6 +53,7 @@
     continue: 'Continue',
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
+	choosingHero: 'Choose a Hero',
 	
 	//BackEnd
 	structureError: 'Structure error',
