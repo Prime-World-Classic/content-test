@@ -54,6 +54,7 @@
     continue: 'Продолжить',
     fullscreenEnabled: 'Включен полноэкранный режим',
     fullscreenDisabled: 'Включен оконный режим',
+	choosingHero: 'Выбрать Героя',
 
 	//BackEnd
 	structureError: 'Ошибка структуры',
