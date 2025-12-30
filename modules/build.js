@@ -1366,7 +1366,8 @@ export class Build {
 
     rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(data.rating)}.webp)`;
 
-    let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.rating), rankIcon);
+    const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.rating), rankIconWrapper);
 
     Build.heroImg.append(rank);
     // Build.training
