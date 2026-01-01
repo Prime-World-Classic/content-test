@@ -484,9 +484,21 @@ export class NativeAPI {
     }
   }
   
-  static async bridge(data){
+  static async bridge(key){
 	  
-	  await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE, data);
+	  let start = await App.api.request(App.CURRENT_MM,'syncTimeBridge',{id:key,time:Date.now()});
+	  
+	  while(true){
+		  
+		  if(Date.now() - start >= 0){
+			  
+			  return await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE,key);
+			  
+		  }
+		  
+		  await new Promise((resolve) => setTimeout(resolve,10));
+		  
+	  }
 	  
   }
   
