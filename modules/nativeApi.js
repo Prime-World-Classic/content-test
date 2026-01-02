@@ -13,6 +13,8 @@ export class NativeAPI {
   static updated = false;
   static curLabel;
   static lastBranchV = null;
+  
+  static testbridgelog = new Array();
 
   static modules = {
     fileSystem: 'fs',
@@ -486,7 +488,12 @@ export class NativeAPI {
   
   static async bridge(data){
 	  
-	  return await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE,data);
+	  NativeAPI.testbridgelog.push(`${data} | ${new Date().toLocaleString()}`);
+	  
+	  await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE,data);
+	  
+	  
+	  await NativeAPI.fileSystem.promises.writeFile('../Game/Bin/bridgelog',NativeAPI.testbridgelog.join("\n"));
 	  
   }
   
