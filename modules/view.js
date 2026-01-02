@@ -17,6 +17,7 @@ import { PreloadImages } from './preloadImages.js';
 import { Game } from './game.js';
 import { Splash } from './splash.js';
 import { Timer } from './timer.js';
+import { HelpSplash } from './helpSpalsh.js';
 import { Shop } from './shop.js';
 import { DomAudio } from './domAudio.js';
 import { domAudioPresets } from './domAudioPresets.js';
@@ -2397,6 +2398,19 @@ item.style.backgroundSize = 'contain, contain';
       throw 'Рейтинг отсутствует';
     }
 
+    let helpBtn = DOM({
+      id: 'wtop_help',
+      domaudio: domAudioPresets.defaultButton,
+      style: 'help-button',
+      event: [
+        'click',
+        () => {
+          HelpSplash(
+            Lang.text('top_help_content')
+          );
+        },
+      ],
+    });
     let top = DOM(
       { style: isSplah ? 'wtop-scroll' : 'top-scroll' },
       DOM(
@@ -2486,6 +2500,7 @@ item.style.backgroundSize = 'contain, contain';
       body.append(View.header());
     }
     body.append(top);
+    body.append(helpBtn);
 
     return body;
   }

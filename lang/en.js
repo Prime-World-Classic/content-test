@@ -390,6 +390,41 @@
       },
     ],
 
+    top_help_content: [
+      {
+        type: 'p',
+        content:
+          'The Hall of Fame is a table of the best players on the server based on hero ratings. There are only top 100 server players in one Hall of Fame.',
+      },
+      {
+        type: 'p',
+        content:
+          'Each hall of fame has its own “medal” under the search queue. Clicking on one of the medals takes you to the top players in one of the modes.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/winrate/help-1.png',
+      },
+      {
+        type: 'p',
+        content:
+          'The Hall of Fame is divided into modes: Frontier, Outpost, Dragonwald, ARAM. Each mode has its own list of players and hero ratings. When playing in a certain mode, you get a rating for the hero you participated in the battle on. Often playing in a certain mode, there is an opportunity to get into the top players of the selected mode.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/winrate/help-2.png',
+      },
+      {
+        type: 'p',
+        content:
+          'To view the top of certain heroes, click on top #1 at the top of the window and select the hero you are interested in from the suggested list. The table will sort the top 100 server players on the selected hero.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/winrate/help-3.png',
+      },
+    ],
+
     help_btn_close: 'Mark as read',
 
     frame_hint: 'The frame will be active when the hero has 25+ wins',

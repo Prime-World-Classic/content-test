@@ -39,15 +39,15 @@ export class Chat {
 
     Chat.body = DOM({ style: 'chat' }, DOM({ style: 'chat-body' }), Chat.input);
 
-    const handleSend = async (event) => {
-      if (event.key === 'Enter' || event.keyCode === 13 || event.code === 'Enter' || event.code === 'NumpadEnter') {
-        event.preventDefault();
-        await Chat.sendMessage();
-      }
-    };
+		const handleSend = async (event) => {
+		  if (event.key === 'Enter' || event.keyCode === 13 || event.code === 'Enter' || event.code === 'NumpadEnter') {
+			event.preventDefault();
+			await Chat.sendMessage();
+		  }
+		};
 
-    input.addEventListener('keyup', handleSend);
-    input.addEventListener('keypress', handleSend);
+ // input.addEventListener('keyup', handleSend);
+ // input.addEventListener('keypress', handleSend);
     input.addEventListener('keydown', handleSend);
 
     input.addEventListener('input', () => {
