@@ -2118,8 +2118,10 @@ item.style.backgroundSize = 'contain, contain';
       let img = DOM({ style: 'party-middle-item-middle' });
 
       let rankIcon = DOM({ style: 'rank-icon' });
-
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
+      rankIcon.style.backgroundImage = `url("content/ranks/rateIconBack.png"), url("content/ranks/${Rank.icon(item.rating)}.webp")`;
+      rankIcon.style.backgroundSize = 'contain, contain';
+      rankIcon.style.backgroundPosition = 'center, center';
+      rankIcon.style.backgroundRepeat = 'no-repeat, no-repeat';
 
       let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
 
