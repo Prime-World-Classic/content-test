@@ -1020,12 +1020,16 @@ body {
   padding: 2.5cqw 25cqw;
 }
 
+
 .castle-party-middle-item-ready {
  color: rgb(255, 237, 202);
 }
 
 .castle-party-middle-item-not-ready {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(221, 221, 221, 0.3);
+}
+.castle-party-middle-item-not-ready div{
+   padding: 2.5cqw 17cqw;
 }
 
 .castle-party-middle-item {

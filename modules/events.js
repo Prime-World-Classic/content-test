@@ -148,9 +148,13 @@ export class Events {
 
     if (find) {
       const playerElement = find.children[1]; // castle-play-lobby-player
-      playerElement.style.backgroundImage = data.hero
+      const newHeroImg = data.hero
         ? `url(content/hero/${data.hero}/${data.skin ? data.skin : 1}.webp)`
         : `url(content/hero/empty.webp)`;
+      playerElement.style.backgroundImage = `${newHeroImg}, url(content/hero/background.png)`;
+      playerElement.style.backgroundRepeat = 'no-repeat, no-repeat';
+      playerElement.style.backgroundPosition = 'center, center';
+      playerElement.style.backgroundSize = 'contain, contain';
 
       const rankContainer = playerElement.querySelector('.rank');
       if (rankContainer) {

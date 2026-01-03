@@ -2185,9 +2185,13 @@ item.style.backgroundSize = 'contain, contain';
           status.innerText = 'Подтвердить';
         }
 
-        img.style.backgroundImage = item.hero
+        const heroImg = item.hero
           ? `url(content/hero/${item.hero}/${item.skin ? item.skin : 1}.webp)`
           : `url(content/hero/empty.webp)`;
+        img.style.backgroundImage = `${heroImg}, url(content/hero/background.png)`;
+        img.style.backgroundRepeat = 'no-repeat, no-repeat';
+        img.style.backgroundPosition = 'center, center';
+        img.style.backgroundSize = 'contain, contain';
       } else {
         img.innerText = '+';
 

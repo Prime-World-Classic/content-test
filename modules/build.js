@@ -1360,7 +1360,10 @@ export class Build {
 
     Build.heroImg.style.backgroundImage = `url(content/hero/${data.id}/${
       Build.dataRequest.hero.skin.target ? Build.dataRequest.hero.skin.target : 1
-    }.webp)`;
+    }.webp), url(content/hero/background.png)`;
+    Build.heroImg.style.backgroundSize = '100%, 100%';
+    Build.heroImg.style.backgroundPosition = 'center, center';
+    Build.heroImg.style.backgroundRepeat = 'no-repeat, no-repeat';
 
     let rankIcon = DOM({ style: 'rank-icon' });
     rankIcon.style.backgroundImage = `url("content/ranks/${Rank.icon(data.rating)}.webp"), url("content/ranks/rateIconBack.png")`;
