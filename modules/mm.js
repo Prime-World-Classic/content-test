@@ -553,11 +553,10 @@ export class MM {
 
       let name = DOM({ style: 'mm-lobby-header-team-player-name' }, `${data.users[key].nickname}`);
 
-      let rankIcon = DOM({ style: 'rank-icon' });
-
+      const rankIcon = DOM({ style: 'rank-icon' });
       rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(data.users[key].rating)}.webp)`;
-
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.users[key].rating), rankIcon);
+      const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.users[key].rating), rankIconWrapper);
 
       hero.append(rank, DOM({ style: 'mm-frame' }));
 
