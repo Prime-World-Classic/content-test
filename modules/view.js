@@ -680,14 +680,27 @@ item.style.backgroundSize = 'contain, contain';
 				const rankContainer = item.querySelector('.rank');
 				if (rankContainer) {
 					const rankLvl = rankContainer.querySelector('.rank-lvl');
-					const rankIcon = rankContainer.querySelector('.rank-icon');
+					const rankIconWrapper = rankContainer.querySelector('.rank-icon-wrapper');
+					const rankIcon = rankIconWrapper ? rankIconWrapper.querySelector('.rank-icon') : rankContainer.querySelector('.rank-icon');
 					
 					if (rankLvl) {
 						const heroRating = item2.rating || player.rating || 1100;
 						
+						// Убеждаемся, что backgroundImage удален с rank-lvl
 						rankLvl.style.backgroundImage = '';
+						rankLvl.style.removeProperty('background-image');
+						// Удаляем атрибут style, если он пустой
+						if (!rankLvl.style.cssText || rankLvl.style.cssText.trim() === '') {
+							rankLvl.removeAttribute('style');
+						}
 
 						rankLvl.textContent = heroRating;
+					}
+					
+					// Убеждаемся, что backgroundImage не установлен на rank-icon-wrapper
+					if (rankIconWrapper) {
+						rankIconWrapper.style.backgroundImage = '';
+						rankIconWrapper.style.removeProperty('background-image');
 					}
 					
 					if (rankIcon) {
