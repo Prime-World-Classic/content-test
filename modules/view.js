@@ -2117,13 +2117,10 @@ item.style.backgroundSize = 'contain, contain';
     for (let item of players) {
       let img = DOM({ style: 'party-middle-item-middle' });
 
-      let rankIcon = DOM({ style: 'rank-icon' });
-      rankIcon.style.backgroundImage = `url("content/ranks/rateIconBack.png"), url("content/ranks/${Rank.icon(item.rating)}.webp")`;
-      rankIcon.style.backgroundSize = 'contain, contain';
-      rankIcon.style.backgroundPosition = 'center, center';
-      rankIcon.style.backgroundRepeat = 'no-repeat, no-repeat';
-
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIcon);
+      const rankIcon = DOM({ style: 'rank-icon' });
+      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
+      const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
+      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIconWrapper);
 
       img.append(rank);
 

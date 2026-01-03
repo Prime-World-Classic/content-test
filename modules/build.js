@@ -1363,11 +1363,11 @@ export class Build {
     }.webp)`;
 
     let rankIcon = DOM({ style: 'rank-icon' });
-    rankIcon.style.backgroundImage = `url("content/ranks/${Rank.icon(data.rating)}.webp"), url("content/ranks/rateIconBack.png")`;
-    rankIcon.style.backgroundSize = '70%, 100%';
-    rankIcon.style.backgroundPosition = 'center, center';
-    rankIcon.style.backgroundRepeat = 'no-repeat, no-repeat';
+
+    rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(data.rating)}.webp)`;
+
     let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.rating), rankIcon);
+
     Build.heroImg.append(rank);
     // Build.training
     const wrapper = DOM({ style: 'build-hero-avatar-and-name' }, Build.heroImg, Build.skinView, Build.training);
