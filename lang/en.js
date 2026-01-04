@@ -1218,7 +1218,7 @@
       "Every <num>4</num> sec., gains <num>1</num> paint, which increases the hero's Agility by <num>%s</num> (based on the higher of Strength or Intellect) and reduces class talent cooldowns by <num>6%</num>.<br>The effect stacks up to <num>3</num> times. Loses <num>1</num> paint when using class talents.",
     htalent_10_name: 'Power Saturation <CD>60</CD>',
     htalent_10_description:
-      'Restores <num>20%</num> of maximum Health when an enemy hero dies nearby.<br>Increases maximum Health by <num>80</num> for each enemy hero death nearby and by <num>70</num> for each allied hero death anywhere on the map.',
+      'Restores <num>20%</num> of maximum Health when an enemy hero dies nearby.<br>Increases maximum Health by <num>70</num> for each enemy hero death nearby and by <num>60</num> for each allied hero death anywhere on the map.',
     htalent_11_name: 'Wrath',
     htalent_11_description:
       "After <num>2</num> successful attacks with strikes or class talents, the hero's next strike or class talent deals an additional <num>50%</num> <red-d>pure damage</red-d>.",
@@ -1340,7 +1340,7 @@
     htalent_53_description:
       'Hits the target, then flies to the enemy nearest to the hero near the target and deals <mag>%s</mag> damage to each.</br>\nIf Blade of Darkness finishes off the first target, damage to the second is increased by <num>%s</num>.',
     htalent_54_name: 'Shimmer <mana>100</mana> <CD>8</CD>',
-    htalent_54_description: 'The hero is teleported to the specified location.',
+    htalent_54_description: 'The hero is teleported to the specified location. <br><rz>When used on native land, it deals an additional <mag>%s</mag> damage.</rz>',
     htalent_55_name: 'Cutting Throw',
     htalent_55_description:
       'Enemies wounded by Blade of Darkness lose <num>40%</num> Speed for <num>3</num> sec., or for <num>6</num> sec. on critical hit. Blade of Darkness flies one more time.',
@@ -1491,7 +1491,7 @@
       "The Color of Life talent also reduces the enemy's Speed or increases the ally's Speed by <num>40%</num> for <num>5</num> sec.",
     htalent_107_name: "Master's Brush <mana>100-280</mana> <CD>50</CD>",
     htalent_107_description:
-      'For <num>15</num> sec., all class talents additionally affect <num>4</num> targets near the original one. Damage and Health restoration on additional targets are reduced by <num>20%</num>. <br> Activation cost increases by 5 &#x1F4A7 per character level. <br> Activation cost of the Painted Beast talent is increased by <num>40%</num>.',
+      'For <num>15</num> sec., all class talents additionally affect <num>4</num> targets near the original one. Damage and Health restoration on additional targets are reduced by <num>15%</num>. <br> Activation cost increases by 5 &#x1F4A7 per character level. <br> Activation cost of the Painted Beast talent is increased by <num>40%</num>.',
     htalent_108_name: 'Great Artist',
     htalent_108_description:
       "The Master's Brush talent also gives the hero <num>6</num> paints and, while the talent is active, Paints are not lost. After the talent ends, the number of Paints gradually returns to <num>3</num>.",
@@ -1505,7 +1505,7 @@
     htalent_111_description: 'Hero Strike stuns the nearest enemy hero for <num>1</num> sec.',
     htalent_112_name: 'Defiance of Pain <mana>210</mana> <CD>9</CD>',
     htalent_112_description:
-      "Deals up to <mag>%s</mag> damage to enemies around (<num>4%</num> of the hero's Maximum Health) and accumulates <num>50%</num> of damage dealt. <br> Restores Health (spending accumulated Health) to themselves and the allied Hero with the lowest Health nearby, but no more than <num>%s</num> (<num>10%</num> of the hero's Maximum Health). <br> <hr> Bloody Feast increases the hero's highest of Stamina or Will by <num>%s</num> (based on maximum Health) for every <num>10%</num> missing Health. Effect stacks <num>5</num> times.",
+      "Deals up to <mag>%s</mag> damage to enemies around (<num>4%</num> of the hero's Maximum Health) and accumulates <num>50%</num> of damage dealt. <br> Restores Health (spending accumulated Health) to the allied Hero with the lowest Health nearby, but no more than <num>%s</num> (<num>10%</num> of the hero's Maximum Health). <br> <hr> Bloody Feast increases the hero's highest of Stamina or Will by <num>%s</num> (based on maximum Health) for every <num>10%</num> missing Health. Effect stacks <num>5</num> times.",
     htalent_113_name: 'Battle Thirst',
     htalent_113_description:
       'Each attack increases their Health steal by <num>%s</num> (based on Strength) for <num>4</num> sec. Effect stacks up to <num>5</num> times.</br><rz>On native terrain, Agility increases by <num>%s</num> (based on Strength).</rz>',
@@ -1872,7 +1872,7 @@
       'The hero moves to the specified point, attacking every enemy on the way. During movement, the hero is not affected by control effects, and the theft of Health occurs from no more than <num>6</num> targets.',
     htalent_246_name: 'Enchanted Blades',
     htalent_246_description:
-      "Each hero's attack additionally deals <mag>%s</mag> damage (from Will) and steals <num>%s</num> Enemy's health (from Strength).<br>\n<rz>In the native land, the theft of Health is additionally increased by <num>%s</num> (at Most).</rz>",
+      "Each hero's attack additionally deals <mag>%s</mag> damage (from the highest of Will and Stamina) and steals <num>%s</num> Enemy's health (from Strength).<br>\n<rz>In the native land, the theft of Health is additionally increased by <num>%s</num> (at Most).</rz>",
     htalent_247_name: 'Hypnotic challenge <mana>200</mana> <CD>30</CD>',
     htalent_247_description:
       'Forces all enemies next to the hero to attack him for <num>2</num> seconds.<br>\n<rz>When used from the native land, the range of hypnosis increases.</rz>',
@@ -1885,14 +1885,14 @@
     htalent_250_description:
       'After applying the Hypnotic Challenge talent, the hero increases his chance of evasion by <num>30%</num> for <num>6</num> seconds.',
     htalent_251_name: 'Insidious Strikes',
-    htalent_251_description: "Each poisoning effect additionally reduces the enemy's Cunning by <num>%s</num> (from Will).",
+    htalent_251_description: "Each poisoning effect additionally reduces the enemy's Cunning by <num>%s</num> (from the highest of Will and Stamina).",
     htalent_252_name: 'Combat Trance',
     htalent_252_description:
       'After dodging an attack, the duration of control effects is reduced by <num>35%</num> for <num>5</num> seconds.',
     htalent_253_name: 'Fire Strike <mana>90</mana> <CD>2</CD>',
     htalent_253_description:
-      'Creates <num>0.5</num> seconds and deals <mag>%s</mag> damage to enemies in the specified area and additionally <mag>%s</mag> damage to enemies in the epicenter of the explosion.',
-    htalent_254_name: 'Transformation <mana>110</mana> <CD>15</CD>',
+      'Creates <num>0.5</num> seconds and deals <mag>%s</mag> damage to enemies in the specified area and additionally <mag>%s</mag> damage to enemies in the epicenter of the explosion. If the hero\'s strength is greater than intellect, the radius of the epicenter increases.',
+    htalent_254_name: 'Transformation <mana>110</mana> <mag>15<CD></CD></mag>/<fiz>10<CD></CD></fiz>',
     htalent_254_description:
       'Creates <num>0.9</num> seconds, the specified enemy cannot do anything and moves at <num>40%</num> speed, receiving <fiz>%s</fiz> damage for <num>2</num> sec.',
     htalent_255_name: 'Fire',
@@ -1905,7 +1905,7 @@
       "<num>0.6</num> sec. is created and creates a barrier in the specified area for <num>3</num> sec., crossing the border for the first time, the enemy is stunned for <num>1.5</num> sec.<br>\n<rz>Being inside the barrier in the hero's native land, enemies restore Health by <num>50%</num> worse.</rz>",
     htalent_258_name: 'Summoning the Demon <mana>320</mana> <CD>90</CD>',
     htalent_258_description:
-      "Creates <num>0.6</num> seconds and summons a Demon for <num>12</num> seconds, whose attacks deal <fiz>%s</fiz> damage. The appearance of a Demon deals <mag>%s</mag> damage to all enemies around it. The Demon's health is <num>%s</num> (from the highest of Strength and Intellect).<br>\n<rz>When used from native land, the appearance of a Demon stuns enemies around by <num>0.5</num>.</rz>",
+      "Creates <num>0.6</num> seconds and summons a Demon for <num>12</num> seconds, whose attacks deal <fiz>%s</fiz> damage. The appearance of a Demon deals <mag>%s</mag> damage to all enemies around it. The Demon\'s health is <num>%s</num> (from the highest of Strength and Intellect).<br><rz>When used on native land, the appearance of the Demon stuns nearby enemies for <num>0.5</num>. The Demon\’s duration is increased by 3 seconds</rz>",
     htalent_259_name: 'Earth Tremor',
     htalent_259_description: 'Enemies inside the Energy Barrier take <fiz>%s</fiz> damage per second.',
     htalent_260_name: 'Demonic Fire',
@@ -2036,7 +2036,7 @@
       "While the talent is active, the hero's attacks additionally cause <fiz>%s</fiz> damage, spending <num>25</num> Energy.",
     htalent_306_name: 'The Curse of fragility <mana>300</mana> <CD>70</CD>',
     htalent_306_description:
-      'The damage to the specified enemy hero increases by <num>50%</num> of the ratio of his current and maximum Health for <num>4</num> seconds or until the total additional damage reaches <num>%s</num> (from the greatest of Strength and Intellect).',
+      'Damage to the specified enemy hero is increased by <num>70%</num> (based on the target\'s maximum Health) for <num>4</num> seconds.',
     htalent_307_name: 'The limits of what is allowed',
     htalent_307_description:
       "Each attack increases the hero's Agility by <num>%s</num> (from Intellect) for <num>10</num> seconds. The effect adds up to <num>7</num> times.<br>\n<rz>In the native land, the talent of releasing energy increases the attack range.</rz>",
@@ -2148,7 +2148,7 @@
     htalent_346_name: 'Survival Instinct <CD>15</CD>',
     htalent_346_description:
       'Deals <mag>%s</mag> damage to the first enemy hero in the path and to all affected creatures. The hero jumps away in the opposite direction, and his Speed increases by <num>50%</num> for <num>2</num> seconds.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
-    htalent_347_name: 'Red-hot barrel <CD>5</CD>',
+    htalent_347_name: 'Red-hot barrel <CD>0.1</CD>',
     htalent_347_description:
       "Each hero's attack additionally deals <mag>%s</mag> damage and consumes 3⚡.<br><hr><bronze>Courage: Additional talent damage increased by <num>%s</num>.</bronze>",
     htalent_348_name: 'Stunning Shot',
@@ -2158,7 +2158,7 @@
     htalent_349_description: 'The number of attacks per second increases by <num>50%</num>.',
     htalent_350_name: "Hunter's Mark <CD>18</CD>",
     htalent_350_description:
-      'Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
+      'Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires. Reduces the target\'s movement speed by <num>10%</num>. <br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
     htalent_351_name: 'Hunting excitement <CD>90</CD>',
     htalent_351_description:
       'When using talent, it consumes all ⚡. For <num>5</num> seconds, the hero loses 4⚡ per second, and his attacks additionally cause <mag>%s</mag> damage.<br><hr><bronze>Courage: When used, it increases the duration of the talent by <num>1</num> second for every 4⚡.</bronze>',
@@ -2223,7 +2223,7 @@
     htalent_372_name: 'The Model Sniper',
     htalent_372_description:
       'Class talents mark enemy heroes for <num>3</num> seconds, allowing the hero to attack them and apply a well-aimed shot regardless of the distance. Marked enemies cannot hide out of sight.',
-    htalent_373_name: 'Frontline comrade <CD>0.4</CD>',
+    htalent_373_name: 'Frontline comrade <CD>0.1</CD>',
     htalent_373_description:
       'The hero is accompanied by a Bear, whose attacks cause <fiz>%s</fiz> damage. The bear has <num>%s</num> Health (from the greatest of Strength and Intellect) is reborn next to the hero <num>30</num> seconds after his death.The use of talent sets the behavior of the Bear depending on the goal: to attack the specified enemy, go and guard the specified point, or follow the hero. As long as the Bear is alive, the hero regenerates <num>0.7%</num> of maximum Health per second.',
     htalent_374_name: 'Combat hello! <mana>85</mana> <CD>12</CD>',
@@ -2258,7 +2258,7 @@
       'Creates a Stargate at the specified location or explodes existing ones, causing <fiz>%s</fiz> damage to all enemies around, <rz> restoring <num>%s</num> (max. <num>%s</num>) Energy (from Maximum energy) for each hit enemy </rz>and increasing the current talent recovery time to <num>8</num> seconds.<br>When interacting with the gate, the allies move behind it and cannot interact with the gate again for <num>6</num> seconds.<br>Supports no more than <num>2</num> gates simultaneously.<br><hr><amethyst>Star Providence: Exploding gates does not increase talent time.</amethyst>',
     htalent_384_name: 'Particle acceleration',
     htalent_384_description:
-      'The Energy Cluster Talent reduces the cooldown of the ultimate talent by <num>3</num> seconds for each enemy hero hit by an explosion.<br><hr><amethyst>Starry Providence: deals additional damage <mag>%s</mag> (from Intellect).</amethyst>',
+      'The Energy Cluster Talent reduces the cooldown of the ultimate talent by <num>3</num> seconds for each enemy hero hit by an explosion.<br><hr><amethyst>Starry Providence: deals additional damage <mag>%s</mag> (from the greatest of Strength and Intellect).</amethyst>',
     htalent_385_name: 'Hyperspace',
     htalent_385_description:
       'Interacting with the gate increases the Speed of allies by <num>20%</num> for <num>6</num> seconds, and the explosion stuns enemies for <num>1</num> seconds.',
@@ -2269,7 +2269,7 @@
     htalent_387_description:
       'For <num>4</num> seconds, creates an area that disables all enemies trapped in it.<br>\n After the effect expires, all enemy creatures and heroes will receive <mag>%s</mag> damage.',
     htalent_388_name: 'Twilight Wanderer',
-    htalent_388_description: "The Serenity talent's recovery time is reduced by <num>9</num> seconds.",
+    htalent_388_description: "The Serenity talent's recovery time is reduced by <num>9</num> seconds. Allows the hero to use talents while the Serenity talent is active.",
     htalent_389_name: 'Stasis Field',
     htalent_389_description: 'Increases the range of the Stasis talent.',
     htalent_390_name: 'Groovy',
@@ -2437,7 +2437,7 @@
       "The summoned clone attacks the enemy's hero, after which it disappears. Deals <fiz>%s</fiz> damage to targets.",
     htalent_448_name: 'Buried alive 100❤️ <CD>90</CD>',
     htalent_448_description:
-      'Creates <num>0.6</num> seconds, removes the specified enemy hero from battle for <num>4</num> seconds, stopping the restoration of his Health, Energy and <time></time> talents.',
+      'Creates <num>0.2</num> seconds, removes the specified enemy hero from battle for <num>4</num> seconds, stopping the restoration of his Health, Energy and <time></time> talents.',
     htalent_449_name: 'Suffocation',
     htalent_449_description: 'After the expiration of the effect, the enemy hero Buried alive will receive <fiz>%s</fiz> damage.',
     htalent_450_name: 'Acid Release <mana>250</mana> <CD>90</CD>',
@@ -2466,7 +2466,7 @@
     htalent_458_description:
       'Draws a beast that after <num>0.8</num> sec. runs in the indicated direction, dealing <mag>%s</mag> damage to all enemies on the way (from the greatest of Strength and Intellect) and throwing them up.',
     htalent_459_name: 'The power of color',
-    htalent_459_description: 'The Stomper Beast deals <num>%s</num> more damage and stuns opponents for <num>0.5</num> sec.',
+    htalent_459_description: 'The Stomper Beast deals <num>%s</num> more damage and stuns opponents for <num>0.5</num> sec. <br><rz>When used on native land, it deals an additional <mag>%s</mag> damage (from the highest of Strength and Intellect)</rz>',
     htalent_460_name: 'Puncher <mana>200</mana> <CD>90</CD>',
     htalent_460_description:
       'Stuns an enemy hero for <num>2.5</num> seconds and deals him <fiz>%s</fiz> damage (from Strength) per second.\n<br>\The effect is interrupted if the target takes <fiz>%s</fiz> damage (from Strength).',
@@ -2762,7 +2762,7 @@
       'Every <num>9</num> seconds, the hero receives protection that absorbs <num>%s</num> damage (from Strength and Intellect).<br>The effect adds up to <num>6</num> times.',
     htalent_567_name: 'Wave of Blades <mana>90</mana> <CD>12</CD>',
     htalent_567_description:
-      'Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> seconds</num>.<br>\n<rz>On native land The hero additionally suppresses the acceleration effects of touched enemies.</rz>',
+      'Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> seconds</num>. If the hero\'s Strength is higher than Intellect, the talent\'s damage can be critical.<br><rz>On native land The hero additionally suppresses the acceleration effects of touched enemies.</rz>',
     htalent_568_name: 'Eternal service <CD>6</CD>',
     htalent_568_description: 'The hero gets <num>1</num> An arsenal for finishing off enemy creatures and <num>4</num> for the hero.',
     htalent_569_name: 'At the forefront of the attack',
@@ -2862,7 +2862,7 @@
       "The hero's attacks during the action of the Red-hot Barrel talent accumulate charges on the enemy. When the third charge accumulates, the enemy takes <mag>%s</mag> damage (from the highest of Strength and Intellect), but the charges are reset.",
     htalent_603_name: "Defender's Mark",
     htalent_603_description:
-      "Damage received from an enemy with a Hunter's Mark is additionally reduced by <num>5%</num>, and from other sources by <num>15%</num>. <br>The target's speed is reduced by <num>35%</num>.",
+      "Extends the duration of the Hunter's Mark talent by <num>2</num> seconds. Damage received from an enemy with a Hunter's Mark is additionally reduced by <num>5%</num>, and from other sources by <num>15%</num>. <br>The target\'s speed additionally reduced by <num>20%</num>. When the mark expires, it deals an additional <mag>%s</mag> damage (from Intellect).",
     htalent_604_name: 'Fire',
     htalent_604_description: 'A fiery blow leaves behind a burning earth, dealing <mag>%s</mag> damage for <num>3</num> seconds.',
     htalent_605_name: 'Commotion',
@@ -2942,7 +2942,7 @@
       'Talent Supermaneuverability additionally increases Cunning by <num>%s</num> (from the greatest of Strength and Intellect).',
     htalent_634_name: 'Instant Rise',
     htalent_634_description:
-      'Talent Tactical maneuver becomes instantaneous at short distances, while at long distances the creation time is shortened.<br> Damage absorption is additionally increased by <num>50%</num>.<br> The hero gains immunity to control for <num>5</num> seconds.',
+      'Talent Tactical maneuver becomes instantaneous at short distances, while at long distances the creation time is shortened.<br> Damage absorption is additionally increased by <num>50%</num>.<br> The hero gains immunity to control for <num>2</num> seconds.',
     htalent_635_name: 'True Light',
     htalent_635_description:
       'The Angel Light talent has an increased area of influence. Angelic Light talent accelerates and heals allies, slows down and deals damage by <num>10%</num> more.',
@@ -2980,7 +2980,7 @@
       'The recovery time of the Color of Life talent is reduced by <num>5</num> seconds. Additionally heals the hero for <num>%s</num> (from Intellect).',
     htalent_647_name: 'Deafening blows',
     htalent_647_description:
-      'The talent of a worthy opponent stuns all offended heroes. <br> Repeatedly stuns wounded enemies after completing jumps.',
+      'Damage from strikes can now be critical, but the damage of the Hero Strike talent is reduced by <num>15%</num>. The Worthy Opponent talent stuns all affected heroes. Increases the cooldown of the "Hero Strike" talent by <num>3</num> seconds. <br> Stuns affected enemies again after the jumps are completed.',
     htalent_648_name: 'Frenzied Thirst',
     htalent_648_description:
       'The Thirst for Battle talent increases Agility to <num>%s</num> (of Strength) and no longer depends on the native land.',
@@ -3411,7 +3411,7 @@
       "The allies around the hero receive <num>10%</num> less magic damage.<br>By dying next to the hero, enemies restore the hero's %s</num> Health (from the Greatest of Strength and Intellect), and his allied hero is next to <num>%s</num> Health (from Intellect). If an enemy hero is killed, he is restored to <num>3</num> times more Health.",
     htalent_807_name: 'Totem of souls <mana>150</mana> <CD>7</CD>',
     htalent_807_description:
-      'Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second.',
+      'Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second. If the hero\'s Strength is higher than Intellect, the radius of application and the area of damage increase.',
     htalent_808_name: 'Disappearance of <mana>120</mana> <CD>12</CD>',
     htalent_808_description: 'The hero is transported to the specified location.',
     htalent_809_name: 'Afterlife cold',
@@ -3443,10 +3443,10 @@
     htalent_819_description: 'Hero attacks additionally deal <num>30%</num> damage to enemies around the target.',
     htalent_820_name: 'Explosive Bandolier <CD>9</CD>',
     htalent_820_description:
-      'The hero accumulates bombs every <num>9</num> seconds to a maximum of <num>3</num>, each of which increases attack damage by <num>6%</num>.',
+      'The hero accumulates bombs every <num>9</num> seconds to a maximum of <num>3</num>, each of which increases attack damage by <num>6%</num>. <br><rz>On native land, bombs are accumulated 1 second faster.</rz>',
     htalent_821_name: 'Sniffer Rocket <mana>150</mana> <mag>30<CD></CD></mag>/<fiz>15<CD></CD></fiz>',
     htalent_821_description:
-      "Launches a missile at the specified hero, which deals <mag>%s</mag> Intellect damage or <mag>%s</mag> Strength damage.  <br>  If the hero's Intellect is greater than his strength, then the deceleration time is <num>2</num> seconds, the deceleration force is <num>20%</num>, the range of application is <num>100</num>, the recovery time is <num>30</num> seconds and increases from the range of application.  <br> If the hero's strength is greater than his Intellect, then the deceleration time <num>is 4</num> seconds, the deceleration force <num>is 40%</num>, the recovery time <num>is 15</num> seconds.",
+      "Launches a missile at the specified hero, which deals <mag>%s</mag> Intellect damage or <mag>%s</mag> Strength damage.  <br>  If the hero's Intellect is greater than his strength, then the deceleration time is <num>2</num> seconds, the deceleration force is <num>20%</num>, the range of application is <num>100</num> and increases by <num>0.5</num> with each level, the recovery time is <num>30</num> seconds.  <br> If the hero's strength is greater than his Intellect, then the deceleration time <num>is 4</num> seconds, the deceleration force <num>is 40%</num>, the recovery time <num>is 15</num> seconds.",
     htalent_822_name: 'Mounted bomb <mana>50</mana> <CD>3</CD>',
     htalent_822_description:
       'The hero consumes a bomb and deals all enemies in the specified area <mag>%s</mag> damage and restores himself <num>%s</num> health from the greatest of Strength and Intellect.',
@@ -3458,7 +3458,7 @@
       'The hero deals damage to all enemies around <fiz>%s</fiz> and increases Speed by <num>40%</num> for <num>5</num> seconds.',
     htalent_825_name: 'Inviolable reserve <mana>120</mana> <CD>90</CD>',
     htalent_825_description:
-      'For <num>6</num> seconds, the hero always has at least one bomb, and the cooldown and energy consumption of the Mounted Bomb talent are reduced by <num>70%</num>.',
+      'For <num>6</num> seconds, the hero always has at least one bomb, and the cooldown and energy consumption of the Mounted Bomb talent are reduced by <num>70%</num>.<br><rz>On native land, the duration is increased by <num>1</num> second.</rz>',
     htalent_826_name: 'Napalm Canister',
     htalent_826_description:
       'When moving during the action of the talent, the Flammable hero additionally leaves a trail that reduces the Speed of enemies by <num>40%</num> and causes them <fiz>%s</fiz> damage per second.',
@@ -3475,7 +3475,7 @@
       "The Mounted Bomb talent deals <num>15%</num> more damage, and the Explosive Bandolier talent additionally increases the damage from the hero's attacks by <num>4%</num> for each bomb.",
     htalent_831_name: 'Fiery Rage',
     htalent_831_description:
-      'When using the talent, the Flammable hero additionally restores <num>%s</num> Health (from the greatest of Strength and Intellect).',
+      'When using the talent, the hero additionally restores <num>%s</num> Health and deals <fiz>%s</fiz> damage (from the highest of Strength and Intellect) in the area beneath them , blinding all enemies in the radius for <num>1.5</num> seconds.',
 
     //Таланты
     talent_1_name: 'Focus',
@@ -3559,9 +3559,9 @@
     talent_34_description: ' ',
     talent_35_name: 'Thirst for Destruction',
     talent_35_description: ' ',
-    talent_36_name: 'Ecstasy of battle<white> <CD>60</CD></white>',
+    talent_36_name: 'Ecstasy of battle<white> <CD>120</CD></white>',
     talent_36_description:
-      '<num>The attacker</num><br><br>Upon activation, the hero receives <num>%s</num> Strength for <num>8</num> seconds.',
+      '<num>The attacker</num><br><br>When activated, the hero gains <num>%s</num> Stamina and Will (from the highest of Stamina and Will) for <num>8</num> seconds.',
     talent_37_name: 'Mental Blade<white> <CD>120</CD></white>',
     talent_37_description: '<num>The attacker</num><br><br>When activated, it inflicts <mag>%s</mag> on the specified enemy.',
     talent_38_name: 'Skill Mastery',
@@ -3577,7 +3577,7 @@
     talent_43_name: 'The Greatness of Intellect',
     talent_43_description: ' ',
     talent_44_name: 'Abundance of Life',
-    talent_44_description: 'Every <num>6</num> seconds restores %s to all allies around <num></num> Health.',
+    talent_44_description: 'Every <num>5</num> seconds restores <num>%s</num> (From Intellect) Health to all allies around.',
     talent_45_name: 'Determination',
     talent_45_description: '  ',
     talent_46_name: 'Ferocity',
@@ -3893,7 +3893,7 @@
       '<num>The attacker</num><br><br><num>0.4</num> seconds are created, the specified enemy receives <fiz>%s</fiz> and cannot move for <num>2.5</num> seconds',
     talent_180_name: 'The Fountain of Rage<white> <CD>2</CD></white>',
     talent_180_description:
-      'All enemies around are dealt <mag>%s</mag> once every <num>2</num> seconds.<br/>There is only one Rage Release effect on the target at a time.\r\n',
+      'Deals <mag>%s</mag> (from the highest of Stamina and Will) to all nearby enemies every <num>2</num> seconds.<br/>Only one Rage Drain effect can be active on the target at a time.\r\n</gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Battle Trance"</yst> talent.',
     talent_181_name: 'Steadfastness<white> <CD>120</CD></white>',
     talent_181_description: '<num>Protective</num><br><br>When activated, enemy-imposed effects are removed from all around.',
     talent_182_name: 'Unjustified cruelty',
@@ -4225,7 +4225,7 @@
       'Increases the duration of talent <tn>Unbridled rage</tn> for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Unbridled rage"</orange-d>',
     talent_316_name: 'Tenacious grip',
     talent_316_description:
-      'Talent <tn>The relentless presence of </tn> additionally reduces the resurrection time by <num>10%</num>.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
+      'Talent <tn>The relentless presence of </tn> aAdditionally doubles the total extra damage from the highest of the hero\'s Strength or Intellect.<br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
     talent_317_name: 'Bitterness',
     talent_317_description:
       'Increases Stamina and Will by a total of <num>%s</num>, redistributing the bonus amount of each of the characteristics depending on the damage received<br><br>Talent Recovery Time <tn>The aggressive position</tn> is reduced by <num>40</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Aggressive position"</orange-d>',
@@ -4241,9 +4241,9 @@
     talent_321_name: 'Aggressive position<white> <CD>120</CD></white>',
     talent_321_description:
       '<num>Protective</num><br><br>Reduces the duration of control effects by <num>65%</num> by <num>10</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Aggressive position"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
-    talent_322_name: 'Relentless Presence',
+    talent_322_name: 'Relentless Presence<white> <CD>180</CD></white>',
     talent_322_description:
-      'Reduces the hero\'s resurrection time by <num>20%</num>.<br> <br> <gray>Set</gray> <orange-d>"Relentless presence"</orange-d><white> <CD>180</CD></white><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+      'Damage to the specified enemy hero is increased by <num>15%</num> and decreases depending on the ratio of their current and maximum Health for <num>3</num> seconds, or until the total additional damage reaches <num>%S</num> (from the highest of the hero\'s Strength and Intellect). Healing on the target is 50% less effective for <num>7</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Relentless presence"</orange-d><white> <CD>180</CD></white><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_323_name: 'The Sixth Sense',
     talent_323_description: 'Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
     talent_324_name: 'Unstoppable Will',
@@ -4260,7 +4260,7 @@
       '<num>Tactical</num><br><br>Prohibits enemy heroes from moving through the portal or scrolls for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Unbridled Rage"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_328_name: 'Charm',
     talent_328_description:
-      'Talent <tn>The relentless presence of </tn> additionally reduces the resurrection time by <num>10%</num>.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
+      'Talent <tn>The relentless presence of </tn> additionally increases damage to the target by <num>15%</num>.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
     talent_329_name: 'The feeling of Destruction',
     talent_329_description:
       'Talent <tn>Predatory nature</tn> additionally deals <fiz>%s</fiz> damage.<br> <br> <gray>Set</gray> <orange-d>"Predatory nature"</orange-d>',
@@ -4294,9 +4294,9 @@
     talent_339_name: 'A cluster of misfortunes<white> <CD>115</CD></white>',
     talent_339_description:
       '<num>The attacker</num><br><br>When activated, it deals <fiz>%s</fiz> damage to all enemies around.<br> <br> <gray>Set</gray> <orange-d>"A collection of misfortunes"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
-    talent_340_name: 'The feeling of moments<white> <CD>110</CD></white>',
+    talent_340_name: 'The feeling of moments<white> <CD>120</CD></white>',
     talent_340_description:
-      '<num>Protective</num><br><br>The hero\'s base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>Receives a shield for <num>5</num> seconds that absorbs up to <num>%s</num> damage.<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+      '<num>Protective</num><br><br>The hero\'s base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>Receives a shield for <num>5</num> seconds that absorbs up to <num>%s</num> (Based on the player\'s Level) damage.<br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_341_name: 'The Path of the Punisher<white> <CD>120</CD></white>',
     talent_341_description:
       '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> or <mag>%s</mag> damage to the specified enemy, depending on which of the hero\'s characteristics is higher: Strength or Intellect.<br> <br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
@@ -4335,13 +4335,13 @@
       'During the action of talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> of Intellect<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_353_name: 'A moment of speed',
     talent_353_description:
-      'When using talent <tn>The Feeling of moments</tn>, the hero accelerates by <num>35%</num> for <num>3</num> seconds<br><br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'When using talent <tn>The Feeling of moments</tn>, the hero accelerates by <num>35%</num> for <num>5</num> seconds<br><br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_354_name: 'Body Moment',
     talent_354_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <fiz></fiz> is reduced by <num>60%</num><br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero is reduced by <num>30%</num><br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_355_name: 'A moment of the Spirit',
     talent_355_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <mag></mag> is reduced by <num>60%</num><br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <mag></mag> is reduced by <num>60%</num> When the <tn>Sense of Moments</tn> talent is activated, all negative effects are removed from the hero. <br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_356_name: 'Punishment of fragility',
     talent_356_description:
       'Talent <tn>The path of the punisher</tn> additionally reduces the Resistance of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
@@ -4635,16 +4635,16 @@
       'During the talent action <tn>The Curse of Terror</tn> takes <num>15%</num> more damage.<br> <br> <gray>Set</gray> <orange-d>"The curse of horror"</orange-d>',
     talent_464_name: 'Stable Strength',
     talent_464_description:
-      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0.7</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>20</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+8</num> to the highest of Stamina or Will</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>45</num> enemy attack damage and reduces his Speed by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_465_name: 'Stable health',
     talent_465_description:
-      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0.7</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>20</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+8</num> to the highest of Stamina or Will</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>45</num> enemy attack damage and reduces his Speed by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_466_name: 'Stable advantage',
     talent_466_description:
-      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>20</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+8</num> to the highest of Stamina or Will</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>45</num> enemy attack damage and reduces his Speed by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_467_name: 'Stable stronghold',
     talent_467_description:
-      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>15</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The hero ignores a total of <num>30</num> enemy attack damage</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>55</num> enemy attack damage and reduces his Speed from any damage by <num>20%</num> for <num>2</num> seconds</gray>',
+      '<gray>Set</gray> <orange-d>"Stable protection"</orange-d><white> <CD>0</CD>.7</white> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>The hero ignores <num>20</num> enemy attack damage</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+8</num> to the highest of Stamina or Will</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>The hero ignores a total of <num>45</num> enemy attack damage and reduces his Speed by <num>20%</num> for <num>2</num> seconds</gray>',
     talent_468_name: 'The Triumph of the Living',
     talent_468_description:
       'Additionally increases talent radius <tn>An unwavering celebration</tn>.<br> <br> <gray>Set</gray> <orange-d>"An unshakable celebration"</orange-d>',
@@ -5370,27 +5370,27 @@
     talent_709_name: 'The Death Predictor',
     talent_709_description:
       '<gray>Set</gray> <orange-d>"Predictor of the inevitable"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The hero receives a Movement Scroll upon death from the enemy hero</gray> <br> <orange-l>2 talents</orange-l><br> <num>+2</num> <gray>to all stats upon death from the enemy hero. <br>The effect adds up to <num>2</num> times</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>-15%</num> by the time the hero is resurrected</gray>',
-    talent_710_name: 'The Inspiration of the Alchemist',
+    talent_710_name: 'The Inspiration of the Alchemist<white> <CD>240</CD></white>',
     talent_710_description:
-      'The Energy Potion additionally restores <num>10%</num> of the hero\'s maximum Energy. When studying and every <num>4</num> minutes gives a Potion of energy.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
-    talent_711_name: "The Alchemist's Perseverance",
+      'The Energy Potion additionally restores <num>10%</num> of the hero\'s maximum Energy. Passively gives a Potion of energy.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+    talent_711_name: "The Alchemist's Perseverance<white> <CD>240</CD></white>",
     talent_711_description:
-      'The Healing Potion additionally restores <num>10%</num> of the hero\'s maximum Health. When studying and every <num>4</num> minutes gives a Healing Potion.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
-    talent_712_name: "The Alchemist's Powers of Observation",
+      'The Healing Potion additionally restores <num>10%</num> of the hero\'s maximum Health. Passively gives a Healing Potion.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+    talent_712_name: "The Alchemist's Powers of Observation<white> <CD>240</CD></white>",
     talent_712_description:
-      'Lanterns create a zone of visibility, ignoring obstacles. When studying and every <num>4</num> minutes gives a Magic lantern.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
-    talent_713_name: "The Alchemist's Audacity",
+      'Lanterns create a zone of visibility, ignoring obstacles. Passively gives a Magic lantern.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+    talent_713_name: "The Alchemist's Audacity<white> <CD>240</CD></white>",
     talent_713_description:
-      'The Ceremonial Dagger deals <num>25%</num> more damage. When studying and every <num>4</num> minutes gives a Ceremonial Dagger.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
-    talent_714_name: 'The Resistance of the Alchemist',
+      'The Ceremonial Dagger deals <num>25%</num> more damage. Passively gives a Ceremonial Dagger.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+    talent_714_name: 'The Resistance of the Alchemist<white> <CD>240</CD></white>',
     talent_714_description:
-      'Purification potion removes all negative effects. When studying and every <num>4</num> minutes gives a Purification Potion.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
-    talent_715_name: "The Alchemist's Zeal",
+      'Purification potion removes all negative effects. Passively gives a Purification Potion.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+    talent_715_name: "The Alchemist's Zeal<white> <CD>240</CD></white>",
     talent_715_description:
-      'The Impetuosity Potion additionally increases the hero\'s Speed by <num>20%</num>. When studying and every <num>4</num> minutes gives a Potion of Impetuosity.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
-    talent_716_name: "Alchemist's Assistance",
+      'The Impetuosity Potion additionally increases the hero\'s Speed by <num>20%</num>. Passively gives a Potion of Impetuosity.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+    talent_716_name: "Alchemist's Assistance<white> <CD>240</CD></white>",
     talent_716_description:
-      'The transfer scroll takes the hero to the nearest friendly building or ally. When studying and every <num>4</num> minutes gives a Movement Scroll.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
+      'The transfer scroll takes the hero to the nearest friendly building or ally. Passively gives a Movement Scroll.<br> <br> <gray>Set</gray> <orange-d>"Master of Alchemy"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Prices for all items in stores are reduced by a total of <num>20%</num></gray>',
     talent_717_name: 'The Serenity of Power',
     talent_717_description:
       '<gray>Set</gray> <orange-d>"The serenity of the hero"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces critical damage received by <num>20%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces total critical damage received by <num>30%</num></gray>',
@@ -5490,7 +5490,7 @@
     talent_749_name: 'Eye of the Oracle<white> <CD>60</CD></white>',
     talent_749_description:
       '<num>Tactical</num><br><br>For <num>10</num> seconds, it opens an area in the specified location where enemies cannot become invisible and lose <num>1%</num> Maximum Health per second.<br>Cannot be installed in conjunction with talent <tn>Occultation</tn>.',
-    talent_750_name: 'Frisky maneuver<white> <CD>90</CD></white>',
+    talent_750_name: 'Frisky maneuver<white> <CD>120</CD></white>',
     talent_750_description:
       '<num>Protective</num><br><br>When using talent <tn>The horseshoe of speed</tn> increases the hero\'s Evasion by <num>90%</num> by <num>5</num> seconds, but only by <num>1</num> autoattack. <br>In order to gain <num>90%</num> evasion chance again, the hero must take damage from an Auto Attack. <br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
     talent_751_name: 'Frisky step',
