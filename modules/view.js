@@ -641,6 +641,7 @@ item.style.backgroundSize = 'contain, contain';
       item.addEventListener('click', async () => {
         if (item.dataset.id == App.storage.data.id) {
           if (MM.active) {
+			App.notify(Lang.text('youSearchFight'));
             return;
           }
 

@@ -55,6 +55,7 @@
     fullscreenEnabled: 'Включен полноэкранный режим',
     fullscreenDisabled: 'Включен оконный режим',
 	choosingHero: 'Выбрать Героя',
+	youSearchFight: 'Вы в поиске боя!',
 
 	//BackEnd
 	structureError: 'Ошибка структуры',

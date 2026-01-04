@@ -54,6 +54,7 @@
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
 	choosingHero: 'Choose a Hero',
+	youSearchFight: 'You are in search of a fight!',
 	
 	//BackEnd
 	structureError: 'Structure error',
