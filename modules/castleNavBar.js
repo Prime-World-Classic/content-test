@@ -73,36 +73,42 @@ export class CastleNAVBAR {
     );
 
 	  CastleNAVBAR.body.children[11].style.setProperty('--filter-text', `'${Lang.text('gm1')}'`);
+	  CastleNAVBAR.body.children[11].style.setProperty('--filter-text-hover', `'${Lang.text('gm1_hover')}'`);
 	  CastleNAVBAR.body.children[11].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[11].onclick = () => {
 		CastleNAVBAR.setMode(1);
 	  };
 
 	  CastleNAVBAR.body.children[12].style.setProperty('--filter-text', `'${Lang.text('gm2')}'`);
+	  CastleNAVBAR.body.children[12].style.setProperty('--filter-text-hover', `'${Lang.text('gm2_hover')}'`);
 	  CastleNAVBAR.body.children[12].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[12].onclick = () => {
 		CastleNAVBAR.setMode(2);
 	  };
 
 	  CastleNAVBAR.body.children[13].style.setProperty('--filter-text', `'${Lang.text('gm3')}'`);
+	  CastleNAVBAR.body.children[13].style.setProperty('--filter-text-hover', `'${Lang.text('gm3_hover')}'`);
 	  CastleNAVBAR.body.children[13].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[13].onclick = () => {
 		CastleNAVBAR.setMode(3);
 	  };
 
 	  CastleNAVBAR.body.children[14].style.setProperty('--filter-text', `'${Lang.text('gm4')}'`);
+	  CastleNAVBAR.body.children[14].style.setProperty('--filter-text-hover', `'${Lang.text('gm4_hover')}'`);
 	  CastleNAVBAR.body.children[14].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[14].onclick = () => {
 		CastleNAVBAR.setMode(4);
 	  };
 
 	  CastleNAVBAR.body.children[15].style.setProperty('--filter-text', `'${Lang.text('gm5')}'`);
+	  CastleNAVBAR.body.children[15].style.setProperty('--filter-text-hover', `'${Lang.text('gm5_hover')}'`);
 	  CastleNAVBAR.body.children[15].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[15].onclick = () => {
 		CastleNAVBAR.setMode(5);
 	  };
 
 	  CastleNAVBAR.body.children[16].style.setProperty('--filter-text', `'${Lang.text('gm6')}'`);
+	  CastleNAVBAR.body.children[16].style.setProperty('--filter-text-hover', `'${Lang.text('gm6_hover')}'`);
 	  CastleNAVBAR.body.children[16].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[16].onclick = () => {
 		CastleNAVBAR.setMode(6);
