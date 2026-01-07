@@ -3563,7 +3563,7 @@
     talent_33_description:
       "The hero's Base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.",
     talent_34_name: 'Bloodsucker',
-    talent_34_description: ' ',
+    talent_34_description: 'Grants Agility (15% of Life Steal).',
     talent_35_name: 'Thirst for Destruction',
     talent_35_description: ' ',
     talent_36_name: 'Ecstasy of battle<white> <CD>120</CD></white>',
@@ -3586,7 +3586,7 @@
     talent_44_name: 'Abundance of Life',
     talent_44_description: 'Every <num>5</num> seconds restores <num>%s</num> (From Intellect) Health to all allies around.',
     talent_45_name: 'Determination',
-    talent_45_description: '  ',
+    talent_45_description: 'For every <num>1%</num> reduce <CD></CD> of the talents, the hero gains <num>0.8</num> to the higher of Strength or Intellect.',
     talent_46_name: 'Ferocity',
     talent_46_description: ' ',
     talent_47_name: 'Master',

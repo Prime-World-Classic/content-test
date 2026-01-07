@@ -19,7 +19,7 @@ import { SOUNDS_LIBRARY, generateHeroSoundsNative, generateHeroSoundsFallback } 
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.13.1';
+  static PW_VERSION = '2.13.2';
 
   static CURRENT_MM = 'mmtest';
 
