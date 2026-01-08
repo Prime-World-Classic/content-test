@@ -1347,13 +1347,13 @@
     htalent_53_description:
       'Hits the target, then flies to the enemy nearest to the hero near the target and deals <mag>%s</mag> damage to each.</br>\nIf Blade of Darkness finishes off the first target, damage to the second is increased by <num>%s</num>.',
     htalent_54_name: 'Shimmer <mana>100</mana> <CD>8</CD>',
-    htalent_54_description: 'The hero is teleported to the specified location. <br><rz>When used on native land, it deals an additional <mag>%s</mag> damage.</rz>',
+    htalent_54_description: 'The hero is teleported to the specified location. ',
     htalent_55_name: 'Cutting Throw',
     htalent_55_description:
       'Enemies wounded by Blade of Darkness lose <num>40%</num> Speed for <num>3</num> sec., or for <num>6</num> sec. on critical hit. Blade of Darkness flies one more time.',
     htalent_56_name: 'Flash of Darkness',
     htalent_56_description:
-      'After using the Shimmer talent, the hero deals <mag>%s</mag> damage to enemies around and blinds them for <num>1.5</num> sec.',
+      'After using the Shimmer talent, the hero deals <mag>%s</mag> damage to enemies around and blinds them for <num>1.5</num> sec.<br><rz>When used on native land, it deals an additional <mag>%s</mag> damage.</rz>',
     htalent_57_name: 'Mystic Slayer',
     htalent_57_description:
       'After using a talent, the hero increases their critical strike chance by <num>5%</num> for <num>10</num> sec. The effect stacks up to <num>3</num> times.',
@@ -4250,7 +4250,7 @@
       '<num>Protective</num><br><br>Reduces the duration of control effects by <num>65%</num> by <num>10</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Aggressive position"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_322_name: 'Relentless Presence<white> <CD>180</CD></white>',
     talent_322_description:
-      'Damage to the specified enemy hero is increased by <num>15%</num> and decreases depending on the ratio of their current and maximum Health for <num>3</num> seconds, or until the total additional damage reaches <num>%S</num> (from the highest of the hero\'s Strength and Intellect). Healing on the target is 50% less effective for <num>7</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Relentless presence"</orange-d><white> <CD>180</CD></white><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+      'Damage to the specified enemy hero is increased by <num>15%</num> and decreases depending on the ratio of their current and maximum Health for <num>3</num> seconds, or until the total additional damage reaches <num>%s</num> (from the highest of the hero\'s Strength and Intellect). Healing on the target is 50% less effective for <num>7</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Relentless presence"</orange-d><white> <CD>180</CD></white><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_323_name: 'The Sixth Sense',
     talent_323_description: 'Talent <tn>Omen</tn> accumulates 2</num> more charges.<br> <br> <gray>Set</gray> <orange-d>"Omen"</orange-d>',
     talent_324_name: 'Unstoppable Will',
@@ -4267,7 +4267,7 @@
       '<num>Tactical</num><br><br>Prohibits enemy heroes from moving through the portal or scrolls for <num>5</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Unbridled Rage"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_328_name: 'Charm',
     talent_328_description:
-      'Talent <tn>The relentless presence of </tn> additionally increases damage to the target by <num>15%</num>.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
+      'Talent <tn>The relentless presence of </tn> additionally increases damage to the target by <num>15%</num> more.<br> <br> <gray>Set</gray> <orange-d>"The inexorable presence"</orange-d><white> <CD>180</CD></white>',
     talent_329_name: 'The feeling of Destruction',
     talent_329_description:
       'Talent <tn>Predatory nature</tn> additionally deals <fiz>%s</fiz> damage.<br> <br> <gray>Set</gray> <orange-d>"Predatory nature"</orange-d>',
@@ -4303,7 +4303,7 @@
       '<num>The attacker</num><br><br>When activated, it deals <fiz>%s</fiz> damage to all enemies around.<br> <br> <gray>Set</gray> <orange-d>"A collection of misfortunes"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_340_name: 'The feeling of moments<white> <CD>120</CD></white>',
     talent_340_description:
-      '<num>Protective</num><br><br>The hero\'s base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>Receives a shield for <num>5</num> seconds that absorbs up to <num>%s</num> (Based on the player\'s Level) damage.<br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+      '<num>Protective</num><br><br>The hero\'s base Speed increases by <num>%s</num>. Of the passive effects of increasing Speed, the maximum one is effective.<br><br>Receives a shield for <num>5</num> seconds that absorbs up to <num>%s</num> and additionally <num>%s</num> damage for each Hero level. <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_341_name: 'The Path of the Punisher<white> <CD>120</CD></white>',
     talent_341_description:
       '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> or <mag>%s</mag> damage to the specified enemy, depending on which of the hero\'s characteristics is higher: Strength or Intellect.<br> <br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
@@ -4336,19 +4336,19 @@
       'Talent <tn>The accumulation of misfortunes</tn> additionally forces all enemies around to attack the hero during <num>0.7</num> sec.<br> <br> <gray>Set</gray> <orange-d>"A cluster of troubles"</orange-d>',
     talent_351_name: 'A Moment of Strength',
     talent_351_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> Strengths<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'During the action of the talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> Strengths.<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_352_name: 'A Moment of Intellect',
     talent_352_description:
-      'During the action of talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> of Intellect<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'During the action of talent <tn>The feeling of moments</tn> the hero receives <num>%s</num> of Intellect.<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_353_name: 'A moment of speed',
     talent_353_description:
-      'When using talent <tn>The Feeling of moments</tn>, the hero accelerates by <num>35%</num> for <num>5</num> seconds<br><br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'When using talent <tn>The Feeling of moments</tn>, the hero accelerates by <num>35%</num> for <num>5</num> seconds.<br><br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_354_name: 'Body Moment',
     talent_354_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero is reduced by <num>30%</num><br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero is reduced by <num>30%</num>.<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_355_name: 'A moment of the Spirit',
     talent_355_description:
-      'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero <mag></mag> is reduced by <num>60%</num> When the <tn>Sense of Moments</tn> talent is activated, all negative effects are removed from the hero. <br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'During the action of the talent <tn>The feeling of moments</tn> When the <tn>Sense of Moments</tn> talent is activated, all negative effects are removed from the hero. <br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_356_name: 'Punishment of fragility',
     talent_356_description:
       'Talent <tn>The path of the punisher</tn> additionally reduces the Resistance of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',
@@ -5520,7 +5520,7 @@
       'When using an active talent from the <tn> Horseshoe of Speed</tn> the hero\'s greatest Agility and Cunning increases by <num>25</num> for <num>10</num> seconds.<br>Base Speed Gain from Talent <tn>The horseshoe of speed</tn> increases by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Horseshoe of speed"</orange-d>',
     talent_757_name: 'Riddles of the Pyramids<white> <CD>150</CD></white>',
     talent_757_description:
-      'Reduces the time of the hero\'s next resurrection by <num>15%</num> until the hero dies.<br>Cannot be installed in conjunction with talent <tn>An inexorable presence</tn>.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the Pyramids"</orange-d><br><br><gray>- can be improved by <num>4</num> talents</gray>',
+      'Reduces the time of the hero\'s next resurrection by <num>15%</num> until the hero dies. <br> <gray>Set</gray> <orange-d>"Riddles of the Pyramids"</orange-d><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_758_name: 'The Riddle of the Sage',
     talent_758_description:
       'Reduces talent recovery time <tn>Riddles of the pyramids</tn> by <num>20</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Riddles of the pyramids"</orange-d>',
