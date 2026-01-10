@@ -2867,7 +2867,7 @@
     htalent_602_name: 'Explosive charge',
     htalent_602_description:
       "The hero's attacks during the action of the Red-hot Barrel talent accumulate charges on the enemy. When the third charge accumulates, the enemy takes <mag>%s</mag> damage (from the highest of Strength and Intellect), but the charges are reset.",
-    htalent_603_name: "Defender's Mark",
+    htalent_603_name: "Security mark",
     htalent_603_description:
       "Extends the duration of the Hunter's Mark talent by <num>2</num> seconds. Damage received from an enemy with a Hunter's Mark is additionally reduced by <num>5%</num>, and from other sources by <num>15%</num>. <br>The target\'s speed additionally reduced by <num>20%</num>. When the mark expires, it deals an additional <mag>%s</mag> damage (from Intellect).",
     htalent_604_name: 'Fire',
@@ -3418,7 +3418,7 @@
       "The allies around the hero receive <num>10%</num> less magic damage.<br>By dying next to the hero, enemies restore the hero's %s</num> Health (from the Greatest of Strength and Intellect), and his allied hero is next to <num>%s</num> Health (from Intellect). If an enemy hero is killed, he is restored to <num>3</num> times more Health.",
     htalent_807_name: 'Totem of souls <mana>150</mana> <CD>7</CD>',
     htalent_807_description:
-      'Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second. If the hero\'s Strength is higher than Intellect, the radius of application and the area of damage increase.',
+      'Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second. If the hero\'s  Strength is higher than Intellect, the radius of application and the area of damage decreased.',
     htalent_808_name: 'Disappearance of <mana>120</mana> <CD>12</CD>',
     htalent_808_description: 'The hero is transported to the specified location.',
     htalent_809_name: 'Afterlife cold',
@@ -3482,7 +3482,7 @@
       "The Mounted Bomb talent deals <num>15%</num> more damage, and the Explosive Bandolier talent additionally increases the damage from the hero's attacks by <num>4%</num> for each bomb.",
     htalent_831_name: 'Fiery Rage',
     htalent_831_description:
-      'When using the talent, the hero additionally restores <num>%s</num> Health and deals <fiz>%s</fiz> damage (from the highest of Strength and Intellect) in the area beneath them , blinding all enemies in the radius for <num>1.5</num> seconds.',
+      'When using the talent, the hero additionally restores <num>%s</num> Health (from the highest of Strength and Intellect) and deals <fiz>%s</fiz> damage (from  Strength) in the area beneath them , blinding all enemies in the radius for <num>1.5</num> seconds.',
 
     //Таланты
     talent_1_name: 'Focus',
@@ -4348,7 +4348,7 @@
       'During the action of the talent <tn>The feeling of moments</tn> the damage received by the hero is reduced by <num>30%</num>.<br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_355_name: 'A moment of the Spirit',
     talent_355_description:
-      'During the action of the talent <tn>The feeling of moments</tn> When the <tn>Sense of Moments</tn> talent is activated, all negative effects are removed from the hero. <br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
+      'When the <tn>Sense of Moments</tn> talent is activated, all negative effects are removed from the hero. <br> <br> <gray>Set</gray> <orange-d>"The feeling of moments"</orange-d>',
     talent_356_name: 'Punishment of fragility',
     talent_356_description:
       'Talent <tn>The path of the punisher</tn> additionally reduces the Resistance of the specified enemy by <num>%s</num> for <num>4</num> seconds<br><br> <gray>Set</gray> <orange-d>"The Path of the Punisher"</orange-d>',

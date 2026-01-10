@@ -697,7 +697,9 @@ input::placeholder {
 .build-hero-stats-settings {
   margin-top: 1cqh;
   display: flex;
-  flex-direction: row nowrap;
+  position: absolute;
+  top: -15cqh;
+  left: 74cqw;
 }
 
 .build-hero-stats-setting-land-type {
@@ -941,7 +943,7 @@ input::placeholder {
   font-family: 'DejaVuSans', sans-serif;
   color: rgb(255 255 255 / 50%);
   position: absolute;
-  bottom: -4cqh;
+  bottom: -9cqh;
   left: -25cqw;
 }
 
@@ -1150,16 +1152,16 @@ button.build-action-item:hover {
   background-position: center;
   background-repeat: no-repeat;
   position: relative; /* Изменено с static на relative */
-  transform-origin: center !important; /* Масштабирование от центра */
+  transform-origin: center; /* Масштабирование от центра */
   will-change: transform; /* Оптимизация анимации */
 }
 
 .build-talent-item.dragging {
-  transform: scale(1.1) !important;
-  transform-origin: center center !important;
-  transition: transform 0.1s ease-out !important;
-  z-index: 9999 !important;
-  position: absolute !important;
+  transform: scale(1.1);
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+  z-index: 9999 ;
+  position: absolute;
 }
 
 .build-talent-item-container .build-talent-item[data-active='1']:after,
@@ -1184,8 +1186,9 @@ button.build-action-item:hover {
   container-type: size;
   width: 120cqw;
   border-radius: 2cqh;
-  height: 71cqh;
+  height: 85cqh;
   align-self: end;
+  margin-top: 16cqh;
 }
 
 .build-talents {
@@ -1193,7 +1196,7 @@ button.build-action-item:hover {
   flex-flow: row wrap;
   overflow: auto;
   width: 100cqw;
-  height: 100cqh;
+  height: 90cqh;
   background: #33333352;
   justify-content: start;
   align-content: flex-start;
@@ -1207,17 +1210,18 @@ button.build-action-item:hover {
   justify-content: center;
   flex-flow: column;
   position: absolute;
-  bottom: -10cqh;
+  bottom: 3cqh;
+  left: -28cqh;
 }
 
 .build-active-bar {
   container-type: inline-size;
   width: 100cqw;
-  height: 10cqw;
+  height: 16cqw;
   display: flex;
   justify-content: center;
   align-items: end;
-  flex-flow: row nowrap;
+  flex-flow: row wrap-reverse;
 }
 
 .build-active-bar-item {
@@ -1226,6 +1230,7 @@ button.build-action-item:hover {
   height: calc(60cqw / 10);
   margin-left: 0.5cqw;
   margin-right: 0.5cqw;
+  margin-bottom: 1cqh;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 1cqh;
   border: 0.5cqh solid transparent;
@@ -3517,8 +3522,8 @@ button.build-action-item:hover {
   left: 0;
   right: 0;
   text-align: center;
-  width: calc(min(150cqh, 95cqw));
-  height: 80cqh;
+  width: calc(min(150cqh, 95cqw)*0.9);
+  height: calc(80cqh*0.9);
   z-index: 9;
   /*background-color: #8d8b8b;*/
   border-radius: 2cqh;
@@ -3544,8 +3549,8 @@ button.build-action-item:hover {
   left: 0;
   right: 0;
   text-align: center;
-  width: calc(min(140cqh, 95cqw));
-  height: 75cqh;
+  width: calc(min(135cqh, 95cqw) * 0.9);
+  height: calc(min(85cqh, 60cqw) * 0.9);
   /*background-color: #8d8b8b;*/
   border-radius: .5cqh;
   border: 0.2cqh groove rgb(158, 155, 104);
@@ -4385,6 +4390,7 @@ i-success {
 
 .build-center {
   width: 50.4cqw;
+  height: 80cqh;
   container-type: inline-size;
   display: flex;
   flex-direction: column;
@@ -4404,7 +4410,7 @@ i-success {
 
 .build-hero {
   width: 100cqw;
-  height: 100cqh;
+  height: 80cqh;
   container-type: size;
   display: flex;
   flex-flow: column nowrap;
@@ -4450,7 +4456,7 @@ i-success {
   flex-direction: row;
   justify-content: center;
   position: absolute;
-  top: -10cqh;
+  top: -8cqh;
 }
 
 @media (max-aspect-ratio: 1/1) {
@@ -4527,7 +4533,6 @@ i-success {
 
   .build-right {
     width: 100cqw;
-    height: 15cqh;
     container-type: size;
   }
   .build-rarity {
@@ -4539,7 +4544,6 @@ i-success {
   }
   .build-talent-view {
     width: 100cqw;
-    height: 100cqh;
     align-self: center;
   }
   .build-talent-item-container {

@@ -433,6 +433,8 @@ export class Build {
 
     Build.activeBar(request.active);
 
+//	Build.activeBar([35,-35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+
     Build.ruleSortInventory = new Object();
   }
 
@@ -2024,7 +2026,6 @@ export class Build {
 
     console.log('activeBar', data);
     let index = 0;
-
     for (let item of data) {
       const element = DOM({
         domaudio: domAudioPresets.defaultButton,
@@ -2190,7 +2191,6 @@ export class Build {
       let elems = document.elementsFromPoint(x, y);
       return elems[0].className == 'build-level' ? elems[1] : elems[0];
     };
-
     let elementSetDisplay = (element, display) => {
       if (element.parentElement.classList == 'build-talent-item-container') {
         element.parentElement.style.display = display;
@@ -2217,30 +2217,38 @@ export class Build {
       element.style.willChange = 'transform';
       element.style.setProperty('transform', 'scale(1.1)', 'important');
       element.style.transition = 'transform 0.1s ease';
+	  
+	  let shiftX = 0;
+      let shiftY = 0;
 
-      let rect = element.getBoundingClientRect();
-      let shiftX = event.pageX - rect.left - 5;
-      let shiftY = event.pageY - rect.top - 5;
-
-      let offsetParent = element;
-      do {
-        shiftX += offsetParent.offsetParent.offsetLeft;
-        shiftY += offsetParent.offsetParent.offsetTop;
-        offsetParent = offsetParent.offsetParent;
-      } while (!(offsetParent.id == 'wbuild' || offsetParent.id == 'viewbuild'));
+	  if(element.dataset.state === '3'){
+		shiftX = event.clientX;
+        shiftY = event.clientY;
+	  } else {
+		let rect = element.getBoundingClientRect();
+        shiftX = event.pageX - rect.left - 5;
+        shiftY = event.pageY - rect.top - 5;
+	   
+        let offsetParent = element;
+        do {
+          shiftX += offsetParent.offsetParent.offsetLeft;
+          shiftY += offsetParent.offsetParent.offsetTop;
+          offsetParent = offsetParent.offsetParent;
+        } while (!(offsetParent.id == 'wbuild' || offsetParent.id == 'viewbuild'));
+	  }
 
       element.style.zIndex = '9999';
       element.style.position = 'absolute';
-      element.style.left = event.pageX - shiftX - 1 + 'px';
-      element.style.top = event.pageY - shiftY - 1 + 'px';
+      element.style.left = event.pageX - shiftX + 'px';
+      element.style.top = event.pageY - shiftY + 'px';
 
       elementSetDisplay(element, 'none');
       let startingElementBelow = elementFromPoint(event.clientX, event.clientY);
       elementSetDisplay(element, 'block');
 
       document.onmousemove = (e) => {
-        element.style.left = e.pageX - shiftX - 1 + 'px';
-        element.style.top = e.pageY - shiftY - 1 + 'px';
+        element.style.left = e.pageX - shiftX + 'px';
+        element.style.top = e.pageY - shiftY + 'px';
       };
 
       element.onmouseup = async (event) => {
