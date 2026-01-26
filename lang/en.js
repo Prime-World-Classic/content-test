@@ -55,6 +55,7 @@
     fullscreenDisabled: 'Window mode enabled',
 	choosingHero: 'Choose a Hero',
 	youSearchFight: 'You are in search of a fight!',
+  addFriend: 'Invite friend',
 	
 	//BackEnd
 	structureError: 'Structure error',
@@ -269,6 +270,7 @@
     friendInvitesToLobby: '{nickname} invites you to party',
     friendCallFrom: 'Accept call from {name}?',
     friendDropCall: 'Drop call',
+    inviteToAFriend: 'Пригласить',
 
     //Войс
 
