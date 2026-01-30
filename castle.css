@@ -58,7 +58,6 @@ body {
 }
 
 /* Встроенный в Splash полноэкранный слой */
-/* Встроенный в Splash полноэкранный слой */
 .iframe-stats {
   position: fixed;
   inset: 0;
@@ -311,43 +310,11 @@ body {
   display: flex;
   flex-direction: column;
 }
-.castle-button-play-5:hover::after{
-  display: flex;
-  position: absolute;
-  background: rgba(32, 32, 32, 0.784);
-  border: .2cqh groove rgba(154, 154, 154, 0.423);
-  color: rgba(255, 255, 255, 0.8);
-  padding: .5cqh 1cqh;
-  border-radius: 1cqh;
-  font: 1.15cqh / 1.3 Tahoma;
-  white-space: pre;
-  text-wrap: balance;
-  text-align: center;
-  content: 'qweqweqw';
-  font-size: 15cqh;
-  z-index: 6;
-  translate: 0 100cqh;
-}
+
 .question-icon:hover {
   filter: brightness(120%);
 }
-.question-icon:hover::before{
-  display: flex;
-  position: absolute;
-  background: rgba(32, 32, 32, 0.784);
-  border: .2cqh groove rgba(154, 154, 154, 0.423);
-  color: rgba(255, 255, 255, 0.8);
-  padding: .5cqh 1cqh;
-  border-radius: 1cqh;
-  font: 1.15cqh / 1.3 Tahoma;
-  white-space: pre;
-  text-wrap: balance;
-  text-align: center;
-  content: 'kristallik';
-  font-size: 15cqh;
-  z-index: 6;
-  translate: 0 100cqh;
-}
+
 .quest-counter {
   font-size: 1.6vh;
   line-height: 3.2vh;
@@ -1517,6 +1484,7 @@ body {
   width: 100%;
   height: 100%;
 }
+
 .castle-friend-item-bottom {
   width: 100%;
   display: flex;
@@ -1525,37 +1493,9 @@ body {
   align-items: center;
   position: absolute;
   gap: 0.2vw;
-  bottom: 2cqh;
-
+  bottom: 0;
 }
 
-
-.buildingIconBox{
-  width: 100%;
-  height: 95%;
-  display: flex;
-  justify-content: center;
-  align-items: end;
-  padding-bottom: 2cqh;
-}
-.buildingIcon{
-  z-index: 1;
-  background: url(/content/img/buildings/hammerIconBackground.png) center center no-repeat;
-  background-size: cover;
-  width: 15cqh;
-  height: 15cqh;
-  filter: drop-shadow(.2cqh .2cqh 1cqh rgba(0, 0, 0, 0.701));
-  transition: .2s;
-  padding: 2cqh;
-}
-.buildingIcon:hover{
-  filter: drop-shadow(.2cqh .2cqh 1.5cqh rgb(0, 0, 0)) brightness(1.15);
-}
-.addToFriendIcon{
-  border-radius: 2cqh;
-  border: 1.5cqh groove #ffe27ae2;
-  height: 35cqh;
-}
 .castle-friend-online {
   font-weight: 600;
   font-size: 10cqh;
@@ -1574,41 +1514,28 @@ body {
   font-weight: 800;
   text-align: center;
   color: rgba(255, 255, 255, 0.5);
-  border-radius: 50%;
-}
-.qweadd {
-    border: 2px solid rgb(255, 0, 0);
 }
 
 .castle-friend-add-group {
   overflow: scroll;
-  height: 15cqh;
+  height: 13cqh;
   width: 85%;
-  /* background: linear-gradient( #3b6d61 0%, #09211f 25%, #053B3F 75%, #2c554c 100%); */
-  /* border:1cqh groove #ecd88d; */
-  background: url('/content/hero/button.png') center center no-repeat;
-  background-size: contain;
-  border-radius: 3.5cqh;
- text-shadow: rgba(0, 0, 0, 1) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh -0.1cqh 0.1cqh;
-  color: rgb(251, 234, 203);
-  font: 10cqh / 1.452 Tahoma;
+  background: radial-gradient(ellipse at center, rgb(0, 49, 57) 0%, rgb(16, 110, 89) 100%);
+  border: 0.2cqh solid rgb(96, 80, 52);
+  border-radius: 0.3vw;
+  color: white;
+  font: 12cqh / 1 Tahoma;
+  padding: 1cqh 0;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition:
     background 0.3s,
     transform 0.2s;
   text-align: center;
-  padding: 0;
 }
 
 .castle-friend-add-group:hover {
-  filter: brightness(1.15);
-}
-.add-to-friend-button{
-  background: url('/content/hero/button.png') center center no-repeat;
-  background-size: contain;
-  margin-bottom: 5cqh;
-  padding: 1cqh 1cqh;
+  background: radial-gradient(ellipse at center, rgb(0, 49, 57) 30%, rgb(16, 110, 89) 100%);
 }
 
 .castle-friend-confirm {
@@ -1653,15 +1580,13 @@ body {
 }
 
 .castle-hero-name {
-  height: 10cqh;
-  color: #cc5;
   overflow: scroll;
+  height: 13cqh;
+  color: #cc5;
   font: 9cqh / 1 Tahoma;
   text-shadow: #000 0 0 0.5cqh;
-  display: flex;
-  align-items: center;
-  justify-content: start;
-  padding: 4cqh 2cqh;
+  padding: 5cqh 5cqh;
+  white-space: nowrap;
 }
 
 .castle-item-hero-name {
@@ -1673,16 +1598,7 @@ body {
   position: absolute;
   top: 0;
 }
-.castle-item-hero-name span{
-  font-size: 10cqh;
-  color: #fff;
-}
-.add-to-friend-text{
-  height: 15cqh;
-}
-.add-to-friend-text span{
-  text-align: center;
-}
+
 .castle-chat {
   position: absolute;
   right: 0;

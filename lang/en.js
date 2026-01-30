@@ -13,10 +13,10 @@
     adornia: 'Kingdom of Adornia',
     docts: 'Empire of the Docts',
     enterTextAndPressEnter: 'Enter the text and press Enter',
-	titleOwner: 'Chief Administrator',
-	titleTelegram: 'Telegram Chat',
-	titleAdministration: 'Administrator',
-	titleHelper: 'Helper',
+    titleOwner: 'Chief Administrator',
+    titleTelegram: 'Telegram Chat',
+    titleAdministration: 'Administrator',
+    titleHelper: 'Helper',
     ready: 'Ready!',
     ready2: "Confirm the hero's choice",
     library: 'Library',
@@ -53,44 +53,43 @@
     continue: 'Continue',
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
-	choosingHero: 'Choose a Hero',
-	youSearchFight: 'You are in search of a fight!',
-  addFriend: 'Invite friend',
-	
-	//BackEnd
-	structureError: 'Structure error',
-	accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
-	accountBanned: 'Account is permanently banned. For details, please contact support.',
-	//accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
-	invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
-	invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
-	//inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
-	nicknameLengthError: 'Login length must be between 2 and 32 characters',
-	nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
-	nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
-	nicknameTaken: 'Nickname is taken',
-	userNotFound: 'User not found',
-	nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
-	accountNotFound: 'Account not found',
-	cannotIdentify1: 'Cannot identify you (1)',
-	cannotIdentify2: 'Cannot identify you (2)',
-	cannotIdentify3: 'Cannot identify you (3)',
-	notYourFriend: 'This is not your friend',
-	invalidAccessKey: 'Invalid access key',
-	notInThisGame: 'You are not in this game',
-	playerNotInGame: 'This player is not in this game',
-	notYourAlly: 'This is not your ally',
-	
-	cannotPurchaseItem: 'Cannot purchase this item',
-	alreadyPurchasedItem: 'You have already purchased this item before',
-	insufficientFunds: 'Insufficient funds',
-	itemNotPurchased: 'You have not purchased this item',
-	
-	updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
-	gameModeNotAvailable: 'This game mode is not available',
-	eventFinished: 'Event ${eventName} has ended!',
-	eventStarted: 'Event ${eventName} has started!',
-	gameModeTimeLimited: 'Game mode ${modeName} has time-limited access. Don\'t miss event announcements in the official VK group.',
+    choosingHero: 'Choose a Hero',
+    youSearchFight: 'You are in search of a fight!',
+
+    //BackEnd
+    structureError: 'Structure error',
+    accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
+    accountBanned: 'Account is permanently banned. For details, please contact support.',
+    //accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
+    invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
+    invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
+    //inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
+    nicknameLengthError: 'Login length must be between 2 and 32 characters',
+    nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
+    nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
+    nicknameTaken: 'Nickname is taken',
+    userNotFound: 'User not found',
+    nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
+    accountNotFound: 'Account not found',
+    cannotIdentify1: 'Cannot identify you (1)',
+    cannotIdentify2: 'Cannot identify you (2)',
+    cannotIdentify3: 'Cannot identify you (3)',
+    notYourFriend: 'This is not your friend',
+    invalidAccessKey: 'Invalid access key',
+    notInThisGame: 'You are not in this game',
+    playerNotInGame: 'This player is not in this game',
+    notYourAlly: 'This is not your ally',
+
+    cannotPurchaseItem: 'Cannot purchase this item',
+    alreadyPurchasedItem: 'You have already purchased this item before',
+    insufficientFunds: 'Insufficient funds',
+    itemNotPurchased: 'You have not purchased this item',
+
+    updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
+    gameModeNotAvailable: 'This game mode is not available',
+    eventFinished: 'Event ${eventName} has ended!',
+    eventStarted: 'Event ${eventName} has started!',
+    gameModeTimeLimited: "Game mode ${modeName} has time-limited access. Don't miss event announcements in the official VK group.",
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',
@@ -100,11 +99,16 @@
     gm4: 'ARAM',
     gm5: 'Challenges',
     gm6: 'Duel',
-    gm1_hover: 'Borderlands\\AA classic MOBA mode. Battle on a dedicated 5v5 map. A mini-game is available at the base, and Crystals are scattered across specific locations on the map. Mini-bosses Kot Bayun and Zmey Gorynych also appear, and an extra Prime item—the Glyph—can be obtained in the river.',
-    gm2_hover: 'Outpost\\AA 3v3 mode featuring a compact map where siege machines assist hero teams. Starting Prime is increased. Upon killing an enemy hero, all talents recharge 35% faster.',
-    gm3_hover: 'Dragonwald\\ABattle on a dedicated 4v4 map. This mode blends PvE and PvP elements. Heroes can only level up by fighting Chud’, AI-controlled monsters evenly distributed across the map. A dragon guards the path between bases. When slain, it drops an egg. Picking up the egg spawns a special soldier to aid your team in securing victory.',
-    gm4_hover: 'ARAM\\AFast-paced 5v5 combat on a single wide lane with no jungle and accelerated hero leveling. Unique features include no health or mana regeneration at the fountain, reduced healing and mana restoration from abilities, and increased team Prime income.',
-    gm5_hover: 'Trial\\AFive players must defend their starting area from waves of Chud’—AI-controlled monsters—on a specially designed map. Monsters spawn from four designated points. After each wave, players must destroy one of these points by activating a special switch.',
+    gm1_hover:
+      'Borderlands\\AA classic MOBA mode. Battle on a dedicated 5v5 map. A mini-game is available at the base, and Crystals are scattered across specific locations on the map. Mini-bosses Kot Bayun and Zmey Gorynych also appear, and an extra Prime item—the Glyph—can be obtained in the river.',
+    gm2_hover:
+      'Outpost\\AA 3v3 mode featuring a compact map where siege machines assist hero teams. Starting Prime is increased. Upon killing an enemy hero, all talents recharge 35% faster.',
+    gm3_hover:
+      'Dragonwald\\ABattle on a dedicated 4v4 map. This mode blends PvE and PvP elements. Heroes can only level up by fighting Chud’, AI-controlled monsters evenly distributed across the map. A dragon guards the path between bases. When slain, it drops an egg. Picking up the egg spawns a special soldier to aid your team in securing victory.',
+    gm4_hover:
+      'ARAM\\AFast-paced 5v5 combat on a single wide lane with no jungle and accelerated hero leveling. Unique features include no health or mana regeneration at the fountain, reduced healing and mana restoration from abilities, and increased team Prime income.',
+    gm5_hover:
+      'Trial\\AFive players must defend their starting area from waves of Chud’—AI-controlled monsters—on a specially designed map. Monsters spawn from four designated points. After each wave, players must destroy one of these points by activating a special switch.',
     gm6_hover: 'Duel\\AA 1v1 PvP battle mode featuring objectives that allow victory to be achieved in multiple ways.',
     fight: 'Fight!',
     cancel: 'Cancel',
@@ -270,7 +274,6 @@
     friendInvitesToLobby: '{nickname} invites you to party',
     friendCallFrom: 'Accept call from {name}?',
     friendDropCall: 'Drop call',
-    inviteToAFriend: 'Пригласить',
 
     //Войс
 
@@ -435,6 +438,41 @@
     ],
 
     help_btn_close: 'Mark as read',
+
+    // keybindings
+
+    slot: 'Slot {num}',
+    selfCast: 'Self-cast',
+    portal: 'Portal',
+    actionBarLock: 'Temporarily unlock slots',
+    additionalTalents: 'Additional talents',
+    smartChat: 'Quick messages',
+    smartChatMenu: 'Open menu',
+    smartChat1: 'Enemy left the lane',
+    smartChat2: 'Enemy returned',
+    smartChat3: 'Need help',
+    smartChat4: 'Need a ward',
+    smartChat5: 'Group up',
+    smartChat6: 'Need a scroll',
+    smartChat7: 'Well played',
+    fighting: 'Combat',
+    move: 'Movement',
+    attack: 'Attack',
+    hold: 'Hold position',
+    healthBars: 'Show/Hide soldier health bars',
+    windowManagement: 'In-combat windows',
+    showStatistics: 'Show statistics',
+    character: 'Hero',
+    inventory: 'Inventory',
+    camera: 'Combat camera',
+    cameraMode: 'Center camera on hero',
+    forwardPlus: 'Move forward',
+    forwardMinus: 'Move backward',
+    strafePlus: 'Strafe right',
+    strafeMinus: 'Strafe left',
+    turnPlus: 'Turn right',
+    turnMinus: 'Turn left',
+    keys: 'Keybindings',
 
     frame_hint: 'The frame will be active when the hero has 25+ wins',
 
@@ -678,11 +716,11 @@
     flag_Mimimi: 'Mimimi',
     flag_New_Years_skull: "New Year's Skull",
     flag_oak: 'Tree',
-	flag_Agaric: 'Baba Yaga\'s Gift',
-	flag_Moon: 'Crescent Night',
-	flag_Rose: 'ARAM Rose',
-	flag_Space: 'Your Universe',
-	flag_The_brown_cutie: 'Brown Cutie',
+    flag_Agaric: "Baba Yaga's Gift",
+    flag_Moon: 'Crescent Night',
+    flag_Rose: 'ARAM Rose',
+    flag_Space: 'Your Universe',
+    flag_The_brown_cutie: 'Brown Cutie',
 
     // Переводы
     select_faction: 'Select faction',
@@ -1894,13 +1932,14 @@
     htalent_250_description:
       'After applying the Hypnotic Challenge talent, the hero increases his chance of evasion by <num>30%</num> for <num>6</num> seconds.',
     htalent_251_name: 'Insidious Strikes',
-    htalent_251_description: "Each poisoning effect additionally reduces the enemy's Cunning by <num>%s</num> (from the highest of Will and Stamina).",
+    htalent_251_description:
+      "Each poisoning effect additionally reduces the enemy's Cunning by <num>%s</num> (from the highest of Will and Stamina).",
     htalent_252_name: 'Combat Trance',
     htalent_252_description:
       'After dodging an attack, the duration of control effects is reduced by <num>35%</num> for <num>5</num> seconds.',
     htalent_253_name: 'Fire Strike <mana>90</mana> <CD>2</CD>',
     htalent_253_description:
-      'Creates <num>0.5</num> seconds and deals <mag>%s</mag> damage to enemies in the specified area and additionally <mag>%s</mag> damage to enemies in the epicenter of the explosion. If the hero\'s strength is greater than intellect, the radius of the epicenter increases.',
+      "Creates <num>0.5</num> seconds and deals <mag>%s</mag> damage to enemies in the specified area and additionally <mag>%s</mag> damage to enemies in the epicenter of the explosion. If the hero's strength is greater than intellect, the radius of the epicenter increases.",
     htalent_254_name: 'Transformation <mana>110</mana> <mag>15<CD></CD></mag>/<fiz>10<CD></CD></fiz>',
     htalent_254_description:
       'Creates <num>0.9</num> seconds, the specified enemy cannot do anything and moves at <num>40%</num> speed, receiving <fiz>%s</fiz> damage for <num>2</num> sec.',
@@ -2045,7 +2084,7 @@
       "While the talent is active, the hero's attacks additionally cause <fiz>%s</fiz> damage, spending <num>25</num> Energy.",
     htalent_306_name: 'The Curse of fragility <mana>300</mana> <CD>70</CD>',
     htalent_306_description:
-      'Damage to the specified enemy hero is increased by <num>70%</num> (based on the target\'s maximum Health) for <num>4</num> seconds.',
+      "Damage to the specified enemy hero is increased by <num>70%</num> (based on the target's maximum Health) for <num>4</num> seconds.",
     htalent_307_name: 'The limits of what is allowed',
     htalent_307_description:
       "Each attack increases the hero's Agility by <num>%s</num> (from Intellect) for <num>10</num> seconds. The effect adds up to <num>7</num> times.<br>\n<rz>In the native land, the talent of releasing energy increases the attack range.</rz>",
@@ -2167,7 +2206,7 @@
     htalent_349_description: 'The number of attacks per second increases by <num>50%</num>.',
     htalent_350_name: "Hunter's Mark <CD>18</CD>",
     htalent_350_description:
-      'Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires. Reduces the target\'s movement speed by <num>10%</num>. <br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
+      "Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires. Reduces the target's movement speed by <num>10%</num>. <br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>",
     htalent_351_name: 'Hunting excitement <CD>90</CD>',
     htalent_351_description:
       'When using talent, it consumes all ⚡. For <num>5</num> seconds, the hero loses 4⚡ per second, and his attacks additionally cause <mag>%s</mag> damage.<br><hr><bronze>Courage: When used, it increases the duration of the talent by <num>1</num> second for every 4⚡.</bronze>',
@@ -2278,7 +2317,8 @@
     htalent_387_description:
       'For <num>4</num> seconds, creates an area that disables all enemies trapped in it.<br>\n After the effect expires, all enemy creatures and heroes will receive <mag>%s</mag> damage.',
     htalent_388_name: 'Twilight Wanderer',
-    htalent_388_description: "The Serenity talent's recovery time is reduced by <num>9</num> seconds. Allows the hero to use talents while the Serenity talent is active.",
+    htalent_388_description:
+      "The Serenity talent's recovery time is reduced by <num>9</num> seconds. Allows the hero to use talents while the Serenity talent is active.",
     htalent_389_name: 'Stasis Field',
     htalent_389_description: 'Increases the range of the Stasis talent.',
     htalent_390_name: 'Groovy',
@@ -2475,7 +2515,8 @@
     htalent_458_description:
       'Draws a beast that after <num>0.8</num> sec. runs in the indicated direction, dealing <mag>%s</mag> damage to all enemies on the way (from the greatest of Strength and Intellect) and throwing them up.',
     htalent_459_name: 'The power of color',
-    htalent_459_description: 'The Stomper Beast deals <num>%s</num> more damage and stuns opponents for <num>0.5</num> sec. <br><rz>When used on native land, it deals an additional <mag>%s</mag> damage (from the highest of Strength and Intellect)</rz>',
+    htalent_459_description:
+      'The Stomper Beast deals <num>%s</num> more damage and stuns opponents for <num>0.5</num> sec. <br><rz>When used on native land, it deals an additional <mag>%s</mag> damage (from the highest of Strength and Intellect)</rz>',
     htalent_460_name: 'Puncher <mana>200</mana> <CD>90</CD>',
     htalent_460_description:
       'Stuns an enemy hero for <num>2.5</num> seconds and deals him <fiz>%s</fiz> damage (from Strength) per second.\n<br>\The effect is interrupted if the target takes <fiz>%s</fiz> damage (from Strength).',
@@ -2771,7 +2812,7 @@
       'Every <num>9</num> seconds, the hero receives protection that absorbs <num>%s</num> damage (from Strength and Intellect).<br>The effect adds up to <num>6</num> times.',
     htalent_567_name: 'Wave of Blades <mana>90</mana> <CD>12</CD>',
     htalent_567_description:
-      'Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> seconds</num>. If the hero\'s Strength is higher than Intellect, the talent\'s damage can be critical.<br><rz>On native land The hero additionally suppresses the acceleration effects of touched enemies.</rz>',
+      "Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> seconds</num>. If the hero's Strength is higher than Intellect, the talent's damage can be critical.<br><rz>On native land The hero additionally suppresses the acceleration effects of touched enemies.</rz>",
     htalent_568_name: 'Eternal service <CD>6</CD>',
     htalent_568_description: 'The hero gets <num>1</num> An arsenal for finishing off enemy creatures and <num>4</num> for the hero.',
     htalent_569_name: 'At the forefront of the attack',
@@ -2869,7 +2910,7 @@
     htalent_602_name: 'Explosive charge',
     htalent_602_description:
       "The hero's attacks during the action of the Red-hot Barrel talent accumulate charges on the enemy. When the third charge accumulates, the enemy takes <mag>%s</mag> damage (from the highest of Strength and Intellect), but the charges are reset.",
-    htalent_603_name: "Security mark",
+    htalent_603_name: 'Security mark',
     htalent_603_description:
       "Extends the duration of the Hunter's Mark talent by <num>2</num> seconds. Damage received from an enemy with a Hunter's Mark is additionally reduced by <num>5%</num>, and from other sources by <num>15%</num>. <br>The target\'s speed additionally reduced by <num>20%</num>. When the mark expires, it deals an additional <mag>%s</mag> damage (from Intellect).",
     htalent_604_name: 'Fire',
@@ -3420,7 +3461,7 @@
       "The allies around the hero receive <num>10%</num> less magic damage.<br>By dying next to the hero, enemies restore the hero's %s</num> Health (from the Greatest of Strength and Intellect), and his allied hero is next to <num>%s</num> Health (from Intellect). If an enemy hero is killed, he is restored to <num>3</num> times more Health.",
     htalent_807_name: 'Totem of souls <mana>150</mana> <CD>7</CD>',
     htalent_807_description:
-      'Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second. If the hero\'s  Strength is higher than Intellect, the radius of application and the area of damage decreased.',
+      "Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second. If the hero's  Strength is higher than Intellect, the radius of application and the area of damage decreased.",
     htalent_808_name: 'Disappearance of <mana>120</mana> <CD>12</CD>',
     htalent_808_description: 'The hero is transported to the specified location.',
     htalent_809_name: 'Afterlife cold',
@@ -3588,7 +3629,8 @@
     talent_44_name: 'Abundance of Life',
     talent_44_description: 'Every <num>5</num> seconds restores <num>%s</num> (From Intellect) Health to all allies around.',
     talent_45_name: 'Determination',
-    talent_45_description: 'For every <num>1%</num> reduce <CD></CD> of the talents, the hero gains <num>0.8</num> to the higher of Strength or Intellect.',
+    talent_45_description:
+      'For every <num>1%</num> reduce <CD></CD> of the talents, the hero gains <num>0.8</num> to the higher of Strength or Intellect.',
     talent_46_name: 'Ferocity',
     talent_46_description: ' ',
     talent_47_name: 'Master',

@@ -1441,10 +1441,8 @@ item.style.backgroundSize = 'contain, contain';
       }
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
-      let buildingIcon = DOM({style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img'},);
-      let buildingIconBox = DOM({style: 'buildingIconBox'}, buildingIcon);
 
-      let building = DOM({ style: 'castle-building-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), buildingNameBase, buildingIconBox);
+      let building = DOM({ style: 'castle-building-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), buildingNameBase);
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
@@ -1667,19 +1665,15 @@ item.style.backgroundSize = 'contain, contain';
           },
           DOM(
             { style: 'castle-friend-item-middle' },
-            DOM({ style: 'castle-item-hero-name' }, DOM({ style: ['castle-hero-name', 'add-to-friend-text'] }, DOM({ tag: 'span' }, Lang.text("addFriend"))), ),
-            DOM({src: 'content/hero/addFriend.png', style: 'addToFriendIcon', tag: 'img'},),
-
-            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }, ),
-            DOM({style: 'castle-friend-item-bottom' }, DOM({style: ['castle-friend-add-group', 'add-to-friend-button']}, Lang.text('inviteToAFriend')),),
+            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
+            DOM({ style: 'castle-friend-add' }, '+'),
           ),
         );
 
         preload.add(buttonAdd);
 
-        buttonAdd.dataset.url = `content/hero/empty.png`;
+        buttonAdd.dataset.url = `content/hero/empty.webp`;
 
-        
         for (let item of result) {
           const heroName = DOM({ style: 'castle-hero-name' }, DOM({ tag: 'span' }, item.nickname));
 
@@ -1857,7 +1851,7 @@ item.style.backgroundSize = 'contain, contain';
             );
           }
 
-          friend.dataset.url = `content/hero/friendLogo.png`;
+          friend.dataset.url = `content/hero/empty.webp`;
 
           preload.add(friend);
         }
