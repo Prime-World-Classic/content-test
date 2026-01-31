@@ -63,6 +63,7 @@ export class View {
 
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
+
   static setCss(name = 'content/style.css') {
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: name });
 
@@ -82,6 +83,7 @@ export class View {
       var template = await View[method](value, value2, value3);
     } catch (error) {
       App.error(error);
+	  
 
       return;
     }
@@ -1441,16 +1443,26 @@ item.style.backgroundSize = 'contain, contain';
       }
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
+      let buildingIcon = DOM({style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img'},);
+      let buildingIconBox = DOM({style: 'buildingIconBox'}, buildingIcon);
 
-      let building = DOM({ style: 'castle-building-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), buildingNameBase);
+      let building = DOM({ style: 'castle-building-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), buildingNameBase, buildingIconBox);
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
       building.dataset.buildingId = i;
 
       building.addEventListener('click', async () => {
-        Castle.phantomBuilding.id = building.dataset.buildingId;
-      });
+  // Сначала удаляем класс selectedBuild со всех зданий
+  document.querySelectorAll('.castle-building-item').forEach(item => {
+    item.classList.remove('selectedBuild');
+  });
+  
+  // Затем устанавливаем ID выбранного здания и добавляем класс
+  Castle.phantomBuilding.id = building.dataset.buildingId;
+  building.classList.add('selectedBuild');
+});
+
 
       preload.add(building);
     }
@@ -1665,15 +1677,19 @@ item.style.backgroundSize = 'contain, contain';
           },
           DOM(
             { style: 'castle-friend-item-middle' },
-            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
-            DOM({ style: 'castle-friend-add' }, '+'),
+            DOM({ style: 'castle-item-hero-name' }, DOM({ style: ['castle-hero-name', 'add-to-friend-text'] }, DOM({ tag: 'span' }, Lang.text("addFriend"))), ),
+            DOM({src: 'content/hero/addFriend.png', style: 'addToFriendIcon', tag: 'img'},),
+
+            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }, ),
+            DOM({style: 'castle-friend-item-bottom' }, DOM({style: ['castle-friend-add-group', 'add-to-friend-button']}, Lang.text('inviteToAFriend')),),
           ),
         );
 
         preload.add(buttonAdd);
 
-        buttonAdd.dataset.url = `content/hero/empty.webp`;
+        buttonAdd.dataset.url = `content/hero/empty.png`;
 
+        
         for (let item of result) {
           const heroName = DOM({ style: 'castle-hero-name' }, DOM({ tag: 'span' }, item.nickname));
 
@@ -1851,7 +1867,7 @@ item.style.backgroundSize = 'contain, contain';
             );
           }
 
-          friend.dataset.url = `content/hero/empty.webp`;
+          friend.dataset.url = `content/hero/friendLogo.png`;
 
           preload.add(friend);
         }
