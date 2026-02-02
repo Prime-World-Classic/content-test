@@ -17,6 +17,9 @@ import { HelpSplash } from './helpSpalsh.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
+// windows
+import { keybindings } from './keybindings/keybindings.window.js';
+
 export class Window {
   static windows = {};
   static windowOrder = [];
@@ -25,6 +28,9 @@ export class Window {
       return;
     }
     let template = await Window[method](value, value2, value3);
+    template.requestClose = () => {
+      Window.close(category);
+    };
     let closeButton = DOM(
       {
         domaudio: domAudioPresets.closeButton,
@@ -64,17 +70,17 @@ export class Window {
     if (category === 'main' && typeof Build !== 'undefined' && Build.cleanup) {
       Build.cleanup();
     }
-	
-	if (category === 'main') {
+
+    if (category === 'main') {
       const windowElement = Window.windows[category];
-      
+
       if (windowElement) {
         // Окно звонка
         if (windowElement.id === 'wcastle-call') {
           Sound.stop('ui-call');
           Window.callData = null;
         }
-        
+
         // Окно приглашения
         if (windowElement.id === 'wcastle-invite') {
           if (Window.inviteTimeout) {
@@ -85,8 +91,11 @@ export class Window {
         }
       }
     }
-	
+
     if (category in Window.windows) {
+      if (Window.windows[category].cleanup) {
+        Window.windows[category].cleanup();
+      }
       Window.windows[category].remove();
       delete Window.windows[category];
       const index = Window.windowOrder.indexOf(category);
@@ -100,20 +109,20 @@ export class Window {
   static closeLast() {
     if (Window.windowOrder.length > 0) {
       const lastCategory = Window.windowOrder[0]; // Берем первый элемент (последний открытый)
-	  if (lastCategory === 'main') {
-		const currentWindow = Window.windows['main'];
-		if (currentWindow && currentWindow.id === 'wcastle-call') {
-		  Sound.stop('ui-call');
-		  Window.callData = null; 
-		}
-		if (currentWindow.id === 'wcastle-invite') {
+      if (lastCategory === 'main') {
+        const currentWindow = Window.windows['main'];
+        if (currentWindow && currentWindow.id === 'wcastle-call') {
+          Sound.stop('ui-call');
+          Window.callData = null;
+        }
+        if (currentWindow.id === 'wcastle-invite') {
           if (Window.inviteTimeout) {
             clearTimeout(Window.inviteTimeout);
             Window.inviteTimeout = null;
           }
           Window.inviteData = null;
         }
-	  }
+      }
       return this.close(lastCategory);
     }
     return false;
@@ -526,9 +535,7 @@ export class Window {
       event: [
         'click',
         () => {
-          HelpSplash(
-            Lang.text('shop_help_content')
-          );
+          HelpSplash(Lang.text('shop_help_content'));
         },
       ],
     });
@@ -594,14 +601,12 @@ export class Window {
       event: [
         'click',
         () => {
-          HelpSplash(
-            Lang.text('quest_help_content')
-          );
+          HelpSplash(Lang.text('quest_help_content'));
         },
       ],
-    }); 
+    });
     let root = DOM({ id: 'wquest' }, helpBtn);
-    
+
     const content = DOM({ style: 'wquest__content' });
 
     const titlebar = DOM({ style: 'wquest__titlebar' });
@@ -721,7 +726,10 @@ export class Window {
       DOM(
         { style: 'castle-menu-items' },
         App.isAdmin()
-          ? DOM({ style: 'castle-menu-item-button' }, DOM({domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'))
+          ? DOM(
+              { style: 'castle-menu-item-button' },
+              DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'),
+            )
           : DOM(),
         DOM(
           { style: 'castle-menu-item-button' },
@@ -731,7 +739,10 @@ export class Window {
           { style: 'castle-menu-item-button' },
           DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences')),
         ),
-        DOM({ style: 'castle-menu-item-button' }, DOM({domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'support')] }, Lang.text('support'))),
+        DOM(
+          { style: 'castle-menu-item-button' },
+          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'support')] }, Lang.text('support')),
+        ),
         DOM(
           {
             domaudio: domAudioPresets.closeButton,
@@ -1042,14 +1053,18 @@ export class Window {
           `${Lang.text('language')} (${Lang.target})`,
         ),
         // Добавленная кнопка "Клавиши"
-        /*DOM({ 
-					style: 'castle-menu-item-button',
-					event: ['click', () => {
-						console.log("Клавиши clicked"); // Для отладки
-						Window.show('main','keybindings'); 
-					}]
-				}, Lang.text('keys') || 'Клавиши'), // Fallback на текст, если перевод отсутствует
-				*/
+        DOM(
+          {
+            style: 'castle-menu-item-button',
+            event: [
+              'click',
+              () => {
+                Window.show('main', 'keybindings');
+              },
+            ],
+          },
+          Lang.text('keys'),
+        ),
         // Кнопка "Назад"
         DOM(
           {
@@ -1072,193 +1087,193 @@ export class Window {
     );
   }
 
-  static async keybindings() {
-    async function findConfigFile() {
-      const possiblePaths = [
-        `${nw.App.getDataPath('documents')}/My Games/Prime World Classic/input_new.cfg`,
-        `${process.env.USERPROFILE}/Documents/My Games/Prime World Classic/input_new.cfg`,
-        `${process.env.USERPROFILE}/OneDrive/Documents/My Games/Prime World Classic/input_new.cfg`,
-      ];
+  // static async keybindings() {
+  //   async function findConfigFile() {
+  //     const possiblePaths = [
+  //       `${nw.App.getDataPath('documents')}/My Games/Prime World Classic/input_new.cfg`,
+  //       `${process.env.USERPROFILE}/Documents/My Games/Prime World Classic/input_new.cfg`,
+  //       `${process.env.USERPROFILE}/OneDrive/Documents/My Games/Prime World Classic/input_new.cfg`,
+  //     ];
 
-      for (const path of possiblePaths) {
-        try {
-          await fs.access(path);
-          return path;
-        } catch (e) {
-          continue;
-        }
-      }
-      return null;
-    }
+  //     for (const path of possiblePaths) {
+  //       try {
+  //         await fs.access(path);
+  //         return path;
+  //       } catch (e) {
+  //         continue;
+  //       }
+  //     }
+  //     return null;
+  //   }
 
-    const configPath = await findConfigFile();
+  //   const configPath = await findConfigFile();
 
-    if (!configPath) {
-      console.error('Не удалось найти файл конфигурации ни по одному из путей');
-      return DOM(
-        { id: 'wcastle-keybindings' },
-        DOM({ style: 'castle-menu-error' }, Lang.text('keybindings_error', 'Не удалось найти файл конфигурации клавиш')),
-        DOM(
-          {
-            domaudio: domAudioPresets.bigButton,
-            class: 'castle-menu-item-button',
-            event: ['click', () => Window.show('settings', 'menu')],
-          },
-          Lang.text('back', 'Назад'),
-        ),
-      );
-    }
+  //   if (!configPath) {
+  //     console.error('Не удалось найти файл конфигурации ни по одному из путей');
+  //     return DOM(
+  //       { id: 'wcastle-keybindings' },
+  //       DOM({ style: 'castle-menu-error' }, Lang.text('keybindings_error', 'Не удалось найти файл конфигурации клавиш')),
+  //       DOM(
+  //         {
+  //           domaudio: domAudioPresets.bigButton,
+  //           class: 'castle-menu-item-button',
+  //           event: ['click', () => Window.show('settings', 'menu')],
+  //         },
+  //         Lang.text('back', 'Назад'),
+  //       ),
+  //     );
+  //   }
 
-    const defaultKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
+  //   const defaultKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
-    let currentBinds = {};
-    let configReadError = false;
+  //   let currentBinds = {};
+  //   let configReadError = false;
 
-    try {
-      const configContent = await fs.readFile(configPath, 'utf-8');
-      const bindRegex = /bind cmd_action_bar_slot(\d+) '(.+?)'/g;
-      let match;
+  //   try {
+  //     const configContent = await fs.readFile(configPath, 'utf-8');
+  //     const bindRegex = /bind cmd_action_bar_slot(\d+) '(.+?)'/g;
+  //     let match;
 
-      while ((match = bindRegex.exec(configContent)) !== null) {
-        currentBinds[`slot${match[1]}`] = match[2];
-      }
-    } catch (e) {
-      console.error('Ошибка чтения конфига:', e);
-      configReadError = true;
-    }
+  //     while ((match = bindRegex.exec(configContent)) !== null) {
+  //       currentBinds[`slot${match[1]}`] = match[2];
+  //     }
+  //   } catch (e) {
+  //     console.error('Ошибка чтения конфига:', e);
+  //     configReadError = true;
+  //   }
 
-    return DOM(
-      { id: 'wcastle-keybindings' },
-      DOM({ style: 'castle-menu-title' }, Lang.text('keybindings_title', 'Настройка клавиш')),
+  //   return DOM(
+  //     { id: 'wcastle-keybindings' },
+  //     DOM({ style: 'castle-menu-title' }, Lang.text('keybindings_title', 'Настройка клавиш')),
 
-      configReadError
-        ? DOM(
-            { style: 'castle-menu-error' },
-            Lang.text('keybindings_error', 'Не удалось прочитать файл конфигурации клавиш. Проверьте путь:') + ' ' + configPath,
-          )
-        : DOM(
-            {},
-            ...Array.from({ length: 10 }, (_, i) => {
-              const slotNum = i + 1;
-              const slotKey = `slot${slotNum}`;
-              const currentKey = currentBinds[slotKey] || defaultKeys[i];
+  //     configReadError
+  //       ? DOM(
+  //           { style: 'castle-menu-error' },
+  //           Lang.text('keybindings_error', 'Не удалось прочитать файл конфигурации клавиш. Проверьте путь:') + ' ' + configPath,
+  //         )
+  //       : DOM(
+  //           {},
+  //           ...Array.from({ length: 10 }, (_, i) => {
+  //             const slotNum = i + 1;
+  //             const slotKey = `slot${slotNum}`;
+  //             const currentKey = currentBinds[slotKey] || defaultKeys[i];
 
-              return DOM(
-                { style: 'castle-menu-label keybinding-row' },
-                DOM({ style: 'keybinding-label' }, Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`)),
-                DOM({
-                  tag: 'input',
-                  domaudio: domAudioPresets.defaultInput,
-                  type: 'text',
-                  value: currentKey,
-                  class: 'castle-keybinding-input',
-                  maxLength: 1,
-                  event: [
-                    'keydown',
-                    (e) => {
-                      if (e.key === 'Backspace' || e.key === 'Delete') {
-                        e.target.value = '';
-                        currentBinds[slotKey] = '';
-                        return;
-                      }
+  //             return DOM(
+  //               { style: 'castle-menu-label keybinding-row' },
+  //               DOM({ style: 'keybinding-label' }, Lang.text(`talent_slot_${slotNum}`, `Талант ${slotNum}`)),
+  //               DOM({
+  //                 tag: 'input',
+  //                 domaudio: domAudioPresets.defaultInput,
+  //                 type: 'text',
+  //                 value: currentKey,
+  //                 class: 'castle-keybinding-input',
+  //                 maxLength: 1,
+  //                 event: [
+  //                   'keydown',
+  //                   (e) => {
+  //                     if (e.key === 'Backspace' || e.key === 'Delete') {
+  //                       e.target.value = '';
+  //                       currentBinds[slotKey] = '';
+  //                       return;
+  //                     }
 
-                      if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) {
-                        return;
-                      }
+  //                     if (e.ctrlKey || e.altKey || e.metaKey || e.key.length > 1) {
+  //                       return;
+  //                     }
 
-                      e.preventDefault();
-                      const key = e.key.toUpperCase();
+  //                     e.preventDefault();
+  //                     const key = e.key.toUpperCase();
 
-                      if (/^[0-9A-Z]$/.test(key)) {
-                        e.target.value = key;
-                        currentBinds[slotKey] = key;
-                        e.target.classList.add('input-success');
-                        setTimeout(() => e.target.classList.remove('input-success'), 200);
-                      } else {
-                        e.target.classList.add('input-error');
-                        setTimeout(() => e.target.classList.remove('input-error'), 200);
-                      }
-                    },
-                  ],
-                }),
-              );
-            }),
+  //                     if (/^[0-9A-Z]$/.test(key)) {
+  //                       e.target.value = key;
+  //                       currentBinds[slotKey] = key;
+  //                       e.target.classList.add('input-success');
+  //                       setTimeout(() => e.target.classList.remove('input-success'), 200);
+  //                     } else {
+  //                       e.target.classList.add('input-error');
+  //                       setTimeout(() => e.target.classList.remove('input-error'), 200);
+  //                     }
+  //                   },
+  //                 ],
+  //               }),
+  //             );
+  //           }),
 
-            DOM(
-              {
-                domaudio: domAudioPresets.bigButton,
-                class: 'castle-menu-item-button reset-btn',
-                event: [
-                  'click',
-                  () => {
-                    document.querySelectorAll('.castle-keybinding-input').forEach((input, i) => {
-                      input.value = defaultKeys[i];
-                      currentBinds[`slot${i + 1}`] = defaultKeys[i];
-                    });
+  //           DOM(
+  //             {
+  //               domaudio: domAudioPresets.bigButton,
+  //               class: 'castle-menu-item-button reset-btn',
+  //               event: [
+  //                 'click',
+  //                 () => {
+  //                   document.querySelectorAll('.castle-keybinding-input').forEach((input, i) => {
+  //                     input.value = defaultKeys[i];
+  //                     currentBinds[`slot${i + 1}`] = defaultKeys[i];
+  //                   });
 
-                    const btn = document.querySelector('.reset-btn');
-                    btn.classList.add('action-success');
-                    btn.textContent = Lang.text('reset_complete', 'Сброшено!');
-                    setTimeout(() => {
-                      btn.classList.remove('action-success');
-                      btn.textContent = Lang.text('reset_defaults', 'Сбросить на 1-0');
-                    }, 1000);
-                  },
-                ],
-              },
-              Lang.text('reset_defaults', 'Сбросить на 1-0'),
-            ),
+  //                   const btn = document.querySelector('.reset-btn');
+  //                   btn.classList.add('action-success');
+  //                   btn.textContent = Lang.text('reset_complete', 'Сброшено!');
+  //                   setTimeout(() => {
+  //                     btn.classList.remove('action-success');
+  //                     btn.textContent = Lang.text('reset_defaults', 'Сбросить на 1-0');
+  //                   }, 1000);
+  //                 },
+  //               ],
+  //             },
+  //             Lang.text('reset_defaults', 'Сбросить на 1-0'),
+  //           ),
 
-            DOM(
-              {
-                domaudio: domAudioPresets.bigButton,
-                class: 'castle-menu-item-button save-btn',
-                event: [
-                  'click',
-                  async () => {
-                    try {
-                      let newConfig = '';
-                      for (let i = 1; i <= 10; i++) {
-                        const key = currentBinds[`slot${i}`] || defaultKeys[i - 1];
-                        newConfig += `bind cmd_action_bar_slot${i} '${key}'\n`;
-                      }
+  //           DOM(
+  //             {
+  //               domaudio: domAudioPresets.bigButton,
+  //               class: 'castle-menu-item-button save-btn',
+  //               event: [
+  //                 'click',
+  //                 async () => {
+  //                   try {
+  //                     let newConfig = '';
+  //                     for (let i = 1; i <= 10; i++) {
+  //                       const key = currentBinds[`slot${i}`] || defaultKeys[i - 1];
+  //                       newConfig += `bind cmd_action_bar_slot${i} '${key}'\n`;
+  //                     }
 
-                      await fs.writeFile(configPath, newConfig);
+  //                     await fs.writeFile(configPath, newConfig);
 
-                      const btn = document.querySelector('.save-btn');
-                      btn.classList.add('action-success');
-                      btn.textContent = Lang.text('saved', 'Сохранено!');
-                      setTimeout(() => {
-                        btn.classList.remove('action-success');
-                        btn.textContent = Lang.text('save', 'Сохранить');
-                      }, 1000);
-                    } catch (e) {
-                      console.error('Ошибка сохранения:', e);
-                      const btn = document.querySelector('.save-btn');
-                      btn.classList.add('action-error');
-                      btn.textContent = Lang.text('save_error', 'Ошибка!');
-                      setTimeout(() => {
-                        btn.classList.remove('action-error');
-                        btn.textContent = Lang.text('save', 'Сохранить');
-                      }, 1000);
-                    }
-                  },
-                ],
-              },
-              Lang.text('save', 'Сохранить'),
-            ),
-          ),
+  //                     const btn = document.querySelector('.save-btn');
+  //                     btn.classList.add('action-success');
+  //                     btn.textContent = Lang.text('saved', 'Сохранено!');
+  //                     setTimeout(() => {
+  //                       btn.classList.remove('action-success');
+  //                       btn.textContent = Lang.text('save', 'Сохранить');
+  //                     }, 1000);
+  //                   } catch (e) {
+  //                     console.error('Ошибка сохранения:', e);
+  //                     const btn = document.querySelector('.save-btn');
+  //                     btn.classList.add('action-error');
+  //                     btn.textContent = Lang.text('save_error', 'Ошибка!');
+  //                     setTimeout(() => {
+  //                       btn.classList.remove('action-error');
+  //                       btn.textContent = Lang.text('save', 'Сохранить');
+  //                     }, 1000);
+  //                   }
+  //                 },
+  //               ],
+  //             },
+  //             Lang.text('save', 'Сохранить'),
+  //           ),
+  //         ),
 
-      DOM(
-        {
-          domaudio: domAudioPresets.bigButton,
-          class: 'castle-menu-item-button',
-          event: ['click', () => Window.show('settings', 'menu')],
-        },
-        Lang.text('back', 'Назад'),
-      ),
-    );
-  }
+  //     DOM(
+  //       {
+  //         domaudio: domAudioPresets.bigButton,
+  //         class: 'castle-menu-item-button',
+  //         event: ['click', () => Window.show('settings', 'menu')],
+  //       },
+  //       Lang.text('back', 'Назад'),
+  //     ),
+  //   );
+  // }
 
   static async support() {
     return DOM(
@@ -1469,37 +1484,37 @@ export class Window {
       ),
     );
   }
-  
+
   static async callWindow() {
     console.log('callWindow вызван, данные:', Window.callData);
-    
+
     const data = Window.callData;
-    
+
     if (!data) {
       console.warn('Нет данных для окна звонка');
       return DOM({ id: 'wcastle-call' });
     }
-    
-	let displayName = data.name;
-	  if (displayName.length > 13) {
-		displayName = displayName.substring(0, 11) + '...';
-	}
-	
+
+    let displayName = data.name;
+    if (displayName.length > 13) {
+      displayName = displayName.substring(0, 11) + '...';
+    }
+
     const callTimeout = setTimeout(() => {
       console.log('Таймаут 15 секунд, звонок автоматически отменяется');
       Sound.stop('ui-call');
-      
+
       if (Window.windows['main'] && Window.windows['main'].id === 'wcastle-call') {
         App.api.request('user', 'callTimeout', { id: data.id }).catch(console.error);
         Window.close('main');
       }
-      
+
       Window.callData = null;
       Window.callTimeout = null;
     }, 15000);
-	
+
     Window.callTimeout = callTimeout;
-	
+
     return DOM(
       { id: 'wcastle-call' },
       DOM({ style: 'castle-menu-title' }, Lang.text('friendCallFrom').replace('{name}', displayName)),
@@ -1525,9 +1540,9 @@ export class Window {
               },
             ],
           },
-          Lang.text('friendAccept')
+          Lang.text('friendAccept'),
         ),
-        
+
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
@@ -1541,38 +1556,38 @@ export class Window {
               },
             ],
           },
-          Lang.text('friendDropCall')
-        )
-      )
+          Lang.text('friendDropCall'),
+        ),
+      ),
     );
   }
-  
+
   static async inviteWindow() {
     const data = Window.inviteData;
-    
+
     if (!data) {
       console.warn('Нет данных для окна приглашения');
       return DOM({ id: 'wcastle-invite' });
     }
-    
+
     let displayNickname = data.nickname;
     if (displayNickname.length > 13) {
       displayNickname = displayNickname.substring(0, 11) + '...';
     }
-    
+
     const inviteTimeout = setTimeout(() => {
       console.log('Таймаут 15 секунд, приглашение автоматически отменяется');
-      
+
       if (Window.windows['main'] && Window.windows['main'].id === 'wcastle-invite') {
         Window.close('main');
       }
-      
+
       Window.inviteData = null;
       Window.inviteTimeout = null;
     }, 15000);
-    
+
     Window.inviteTimeout = inviteTimeout;
-    
+
     return DOM(
       { id: 'wcastle-invite' },
       DOM({ style: 'castle-menu-title' }, Lang.text('friendInvitesToLobby').replace('{nickname}', displayNickname)),
@@ -1589,7 +1604,7 @@ export class Window {
                   clearTimeout(Window.inviteTimeout);
                   Window.inviteTimeout = null;
                 }
-                
+
                 try {
                   await App.api.request(App.CURRENT_MM, 'joinParty', {
                     code: data.code,
@@ -1604,15 +1619,15 @@ export class Window {
               },
             ],
           },
-          Lang.text('friendAccept')
+          Lang.text('friendAccept'),
         ),
-        
+
         DOM(
-          { 
-            domaudio: domAudioPresets.bigButton, 
-            style: 'splash-content-button', 
+          {
+            domaudio: domAudioPresets.bigButton,
+            style: 'splash-content-button',
             event: [
-              'click', 
+              'click',
               () => {
                 if (Window.inviteTimeout) {
                   clearTimeout(Window.inviteTimeout);
@@ -1620,12 +1635,13 @@ export class Window {
                 }
                 Window.inviteData = null;
                 Window.close('main');
-              }
-            ] 
+              },
+            ],
           },
-          Lang.text('friendCancle')
-        )
-      )
+          Lang.text('friendCancle'),
+        ),
+      ),
     );
-  } 
+  }
 }
+Window.keybindings = keybindings;

@@ -13,7 +13,7 @@ export class NativeAPI {
   static updated = false;
   static curLabel;
   static lastBranchV = null;
-  
+
   static testbridgelog = new Array();
 
   static modules = {
@@ -485,16 +485,31 @@ export class NativeAPI {
       App.OpenExternalLink(url);
     }
   }
-  
-  static async bridge(data){
-	  
-	  NativeAPI.testbridgelog.push(`${data} | ${new Date().toLocaleString()}`);
-	  
-	  await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE,data);
-	  
-	  
-	  await NativeAPI.fileSystem.promises.writeFile('../Game/Bin/bridgelog',NativeAPI.testbridgelog.join("\n"));
-	  
+
+  static async bridge(data) {
+    NativeAPI.testbridgelog.push(`${data} | ${new Date().toLocaleString()}`);
+
+    await NativeAPI.fileSystem.promises.writeFile(PWGame.PATH_LUA_BRIDGE, data);
+
+    await NativeAPI.fileSystem.promises.writeFile('../Game/Bin/bridgelog', NativeAPI.testbridgelog.join('\n'));
   }
-  
+
+  static getDocumentsDir() {
+    if (!NativeAPI.status) return;
+
+    switch (NativeAPI.platform) {
+      case 'win32':
+        return NativeAPI.childProcess
+          .execSync('powershell -NoProfile -Command "[Environment]::GetFolderPath(\'MyDocuments\')"', { encoding: 'utf-8' })
+          .trim();
+
+      case 'linux':
+        try {
+          return NativeAPI.childProcess.execSync('xdg-user-dir DOCUMENTS', { encoding: 'utf-8' }).trim();
+        } catch {}
+
+      default:
+        return NativeAPI.path.join(NativeAPI.os.homedir(), 'Documents');
+    }
+  }
 }

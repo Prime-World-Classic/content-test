@@ -13,6 +13,7 @@ import { Window } from './window.js';
 import { Castle } from './castle.js';
 import { Lang } from './lang.js';
 import { Sound } from './sound.js';
+import { loadKeybinds } from './keybindings/keybindings.io.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY, generateHeroSoundsNative, generateHeroSoundsFallback } from './soundsLibrary.js';
 
@@ -162,6 +163,7 @@ export class App {
             
         },3000);
         */
+    await loadKeybinds();
     Chat.init();
 
     document.addEventListener('keydown', (e) => {
