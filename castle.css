@@ -1295,6 +1295,23 @@ body {
   background-size: cover;
 }
 
+.account-rating-menu-item {
+  font-size: 7cqh;
+  overflow: hidden;
+  position: absolute;
+  left: 16cqw;
+  width: 55cqw;
+  text-align: center;
+  line-height: 1;
+  text-shadow:
+    rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh,
+    rgba(0, 0, 0, 1) 0.5cqh -0.5cqh 0.5cqh,
+    rgba(0, 0, 0, 1) -0.5cqh 0.5cqh 0.5cqh,
+    rgba(0, 0, 0, 1) -0.5cqh -0.5cqh 0.5cqh;
+  bottom: 2cqh;
+  color: wheat;
+}
+
 .settings-menu-item {
   left: 6.1cqw;
   top: 5.8cqh;

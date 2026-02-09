@@ -151,6 +151,9 @@
     rankMarshal: 'Marshal',
     rankGod: 'God',
 
+    accountRatingTitle: 'Player rating is a numerical value of the sum of rating points, awarded based on victories and defeats in battles. It determines your placement in one team or another.',
+    accountRating: 'Rating: {rating}',
+
     //pwgame
     pwgameUpdateFailed: 'Failed to update the game! Contact PWClassic support',
     pwgameFilesCorrupted: 'Game files are corrupted! Contact PWClassic support',

@@ -418,7 +418,7 @@ export class View {
     return body;
   }
 
-static async castlePlay() {
+  static async castlePlay() {
     let body = DOM({ style: 'castle-play' });
 
     let play = MM.play();
@@ -447,32 +447,32 @@ static async castlePlay() {
     MM.searchActive(data.users[MM.partyId].ready);
 
     try {
-        MM.hero = await App.api.request('build', 'heroAll');
-        console.log('DEBUG: Preloaded MM.hero for ratings:', MM.hero);
+      MM.hero = await App.api.request('build', 'heroAll');
+      console.log('DEBUG: Preloaded MM.hero for ratings:', MM.hero);
     } catch (e) {
-        console.warn('Could not preload heroes:', e);
-        MM.hero = [];
+      console.warn('Could not preload heroes:', e);
+      MM.hero = [];
     }
 
     for (let key in data.users) {
-        let userRating = data.users[key].heroRating || 1100;
-        
-        if (key == App.storage.data.id && data.users[key].hero && MM.hero.length > 0) {
-            const userHero = MM.hero.find(h => h.id === data.users[key].hero);
-            if (userHero && userHero.rating) {
-                userRating = userHero.rating;
-                console.log('DEBUG: Found hero rating in MM.hero:', userRating);
-            }
+      let userRating = data.users[key].heroRating || 1100;
+
+      if (key == App.storage.data.id && data.users[key].hero && MM.hero.length > 0) {
+        const userHero = MM.hero.find((h) => h.id === data.users[key].hero);
+        if (userHero && userHero.rating) {
+          userRating = userHero.rating;
+          console.log('DEBUG: Found hero rating in MM.hero:', userRating);
         }
-        
-        players.push({
-            id: key,
-            hero: data.users[key].hero,
-            nickname: data.users[key].nickname,
-            ready: data.users[key].ready,
-            rating: userRating,
-            skin: data.users[key].skin,
-        });
+      }
+
+      players.push({
+        id: key,
+        hero: data.users[key].hero,
+        nickname: data.users[key].nickname,
+        ready: data.users[key].ready,
+        rating: userRating,
+        skin: data.users[key].skin,
+      });
     }
     /*
         if(players.length < 5){
@@ -494,7 +494,6 @@ static async castlePlay() {
         data: { id: player.id },
       });
 
-      
       const rankIcon = DOM({ style: 'rank-icon' });
       rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
       const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
@@ -508,7 +507,7 @@ static async castlePlay() {
         rank.style.display = 'flex';
       }
 
-      let status = DOM(	
+      let status = DOM(
         {
           style: ['castle-party-middle-item-ready-notready', 'castle-party-middle-item-not-ready'],
         },
@@ -558,13 +557,13 @@ static async castlePlay() {
         }
 
         const heroImg = player.hero
-  ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`
-  : `url(content/hero/empty.webp)`;
+          ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`
+          : `url(content/hero/empty.webp)`;
 
-item.style.backgroundImage = `${heroImg}, url(content/hero/background.png)`;
-item.style.backgroundRepeat = 'no-repeat, no-repeat';
-item.style.backgroundPosition = 'center, center';
-item.style.backgroundSize = 'contain, contain';
+        item.style.backgroundImage = `${heroImg}, url(content/hero/background.png)`;
+        item.style.backgroundRepeat = 'no-repeat, no-repeat';
+        item.style.backgroundPosition = 'center, center';
+        item.style.backgroundSize = 'contain, contain';
       } else {
         item.innerHTML = '<div class="castle-play-lobby-empty"><div>+</div></div>';
 
@@ -641,7 +640,7 @@ item.style.backgroundSize = 'contain, contain';
       item.addEventListener('click', async () => {
         if (item.dataset.id == App.storage.data.id) {
           if (MM.active) {
-			App.notify(Lang.text('youSearchFight'));
+            App.notify(Lang.text('youSearchFight'));
             return;
           }
 
@@ -661,60 +660,60 @@ item.style.backgroundSize = 'contain, contain';
             let hero = DOM({ domaudio: domAudioPresets.smallButton });
 
             hero.addEventListener('click', async () => {
-				try {
-					await App.api.request(App.CURRENT_MM, 'heroParty', {
-						id: MM.partyId,
-						hero: item2.id,
-					});
-				} catch (error) {
-					return App.error(error);
-				}
+              try {
+                await App.api.request(App.CURRENT_MM, 'heroParty', {
+                  id: MM.partyId,
+                  hero: item2.id,
+                });
+              } catch (error) {
+                return App.error(error);
+              }
 
-        const newHeroImg = item2.id
-          ? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
-          : `url(content/hero/empty.webp)`;
-        item.style.backgroundImage = `${newHeroImg}, url(content/hero/background.png)`;
-        item.style.backgroundRepeat = 'no-repeat, no-repeat';
-        item.style.backgroundPosition = 'center, center';
-        item.style.backgroundSize = 'contain, contain';
+              const newHeroImg = item2.id
+                ? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
+                : `url(content/hero/empty.webp)`;
+              item.style.backgroundImage = `${newHeroImg}, url(content/hero/background.png)`;
+              item.style.backgroundRepeat = 'no-repeat, no-repeat';
+              item.style.backgroundPosition = 'center, center';
+              item.style.backgroundSize = 'contain, contain';
 
-				const rankContainer = item.querySelector('.rank');
-				if (rankContainer) {
-					const rankLvl = rankContainer.querySelector('.rank-lvl');
-					const rankIconWrapper = rankContainer.querySelector('.rank-icon-wrapper');
-					const rankIcon = rankIconWrapper ? rankIconWrapper.querySelector('.rank-icon') : rankContainer.querySelector('.rank-icon');
-					
-					if (rankLvl) {
-						const heroRating = item2.rating || player.rating || 1100;
-						
-						// Убеждаемся, что backgroundImage удален с rank-lvl
-						rankLvl.style.backgroundImage = '';
-						rankLvl.style.removeProperty('background-image');
-						// Удаляем атрибут style, если он пустой
-						if (!rankLvl.style.cssText || rankLvl.style.cssText.trim() === '') {
-							rankLvl.removeAttribute('style');
-						}
+              const rankContainer = item.querySelector('.rank');
+              if (rankContainer) {
+                const rankLvl = rankContainer.querySelector('.rank-lvl');
+                const rankIconWrapper = rankContainer.querySelector('.rank-icon-wrapper');
+                const rankIcon = rankIconWrapper ? rankIconWrapper.querySelector('.rank-icon') : rankContainer.querySelector('.rank-icon');
 
-						rankLvl.textContent = heroRating;
-					}
-					
-					// Восстанавливаем правильный фон на rank-icon-wrapper (rateIconBack.png)
-					if (rankIconWrapper) {
-						rankIconWrapper.style.backgroundImage = `url(content/ranks/rateIconBack.png)`;
-						rankIconWrapper.style.backgroundSize = 'contain';
-						rankIconWrapper.style.backgroundPosition = 'center center';
-						rankIconWrapper.style.backgroundRepeat = 'no-repeat';
-					}
-					
-					if (rankIcon) {
-						const heroRating = item2.rating || player.rating || 1100;
-						rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(parseInt(heroRating))}.webp)`;
-					}
-				}
+                if (rankLvl) {
+                  const heroRating = item2.rating || player.rating || 1100;
 
-				MM.activeSelectHero = item2.id;
-				Splash.hide();
-			});
+                  // Убеждаемся, что backgroundImage удален с rank-lvl
+                  rankLvl.style.backgroundImage = '';
+                  rankLvl.style.removeProperty('background-image');
+                  // Удаляем атрибут style, если он пустой
+                  if (!rankLvl.style.cssText || rankLvl.style.cssText.trim() === '') {
+                    rankLvl.removeAttribute('style');
+                  }
+
+                  rankLvl.textContent = heroRating;
+                }
+
+                // Восстанавливаем правильный фон на rank-icon-wrapper (rateIconBack.png)
+                if (rankIconWrapper) {
+                  rankIconWrapper.style.backgroundImage = `url(content/ranks/rateIconBack.png)`;
+                  rankIconWrapper.style.backgroundSize = 'contain';
+                  rankIconWrapper.style.backgroundPosition = 'center center';
+                  rankIconWrapper.style.backgroundRepeat = 'no-repeat';
+                }
+
+                if (rankIcon) {
+                  const heroRating = item2.rating || player.rating || 1100;
+                  rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(parseInt(heroRating))}.webp)`;
+                }
+              }
+
+              MM.activeSelectHero = item2.id;
+              Splash.hide();
+            });
 
             if (item2.id) {
               hero.dataset.url = `content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp`;
@@ -1073,7 +1072,7 @@ item.style.backgroundSize = 'contain, contain';
     return body;
   }
 
-  static castleHeroes() {
+  static async castleHeroes() {
     let tab = 1;
 
     let body = DOM({ style: 'castle-bottom' });
@@ -1134,6 +1133,18 @@ item.style.backgroundSize = 'contain, contain';
       ],
       title: Lang.text('titleflag'),
     });
+
+    const partyData = await App.api.request(App.CURRENT_MM, 'loadParty', {});
+    const rawPlayerRating = partyData.users[App.storage.data.id]?.playerRating || 0;
+    console.log('DEBUG: Received partyData from loadParty:', partyData);
+    let accountRatingItem = DOM(
+      {
+        style: 'account-rating-menu-item',
+        title: Lang.text('accountRatingTitle'),
+      },
+      Lang.text('accountRating').replace('{rating}', Rank.getVisualRating(rawPlayerRating)),
+    );
+
     let settingsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
       style: 'settings-menu-item',
@@ -1228,6 +1239,7 @@ item.style.backgroundSize = 'contain, contain';
         { style: 'castle-bottom-menu' },
         nicknameMenuItem,
         flagMenuItem,
+        accountRatingItem,
         settingsMenuItem,
         heroesMenuItem,
         friendsMenuItem,
@@ -1478,10 +1490,10 @@ item.style.backgroundSize = 'contain, contain';
 
           let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
 
-         let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
-         rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
-         const rankIconWrapper = DOM({ style: 'castle-hero-rank-icon-wrapper' }, rankIcon);
-         let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIconWrapper);
+          let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
+          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
+          const rankIconWrapper = DOM({ style: 'castle-hero-rank-icon-wrapper' }, rankIcon);
+          let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIconWrapper);
 
           let hero = DOM(
             {
@@ -1823,7 +1835,6 @@ item.style.backgroundSize = 'contain, contain';
               ),
             );
           } else if (item.status == 3) {
-            
             friend.append(
               DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('friendAcceptWaiting'))),
             );
@@ -2186,9 +2197,7 @@ item.style.backgroundSize = 'contain, contain';
           status.innerText = 'Подтвердить';
         }
 
-        const heroImg = item.hero
-          ? `url(content/hero/${item.hero}/${item.skin ? item.skin : 1}.webp)`
-          : `url(content/hero/empty.webp)`;
+        const heroImg = item.hero ? `url(content/hero/${item.hero}/${item.skin ? item.skin : 1}.webp)` : `url(content/hero/empty.webp)`;
         img.style.backgroundImage = `${heroImg}, url(content/hero/background.png)`;
         img.style.backgroundRepeat = 'no-repeat, no-repeat';
         img.style.backgroundPosition = 'center, center';
@@ -2424,9 +2433,7 @@ item.style.backgroundSize = 'contain, contain';
       event: [
         'click',
         () => {
-          HelpSplash(
-            Lang.text('top_help_content')
-          );
+          HelpSplash(Lang.text('top_help_content'));
         },
       ],
     });
