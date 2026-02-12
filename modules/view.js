@@ -1140,10 +1140,11 @@ export class View {
     let accountRatingItem = DOM(
       {
         style: 'account-rating-menu-item',
-        title: Lang.text('accountRatingTitle'),
       },
       Lang.text('accountRating').replace('{rating}', Rank.getVisualRating(rawPlayerRating)),
     );
+
+    accountRatingItem.style.setProperty('--filter-text-hover', `'${Lang.text('accountRatingTooltip')}'`);
 
     let settingsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1774,10 +1775,6 @@ export class View {
 
             bottom.append(call, group);
           } else if (item.status == 2) {
-            Sound.play(SOUNDS_LIBRARY.GROUP_INVITE, {
-              id: 'ui-groupInvite',
-              volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 1.2,
-            });
             bottom.append(
               DOM(
                 {

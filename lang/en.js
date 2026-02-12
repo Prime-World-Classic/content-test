@@ -151,7 +151,7 @@
     rankMarshal: 'Marshal',
     rankGod: 'God',
 
-    accountRatingTitle: 'Player rating is a numerical value of the sum of rating points, awarded based on victories and defeats in battles. It determines your placement in one team or another.',
+    accountRatingTooltip: 'Player rating is a numerical indicator of the sum of rating points. It is awarded based on match results (victories and defeats in battles). Your rating value helps in selecting opponents in combat sessions and distributing you into one team or another.',
     accountRating: 'Rating: {rating}',
 
     //pwgame

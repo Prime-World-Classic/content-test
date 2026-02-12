@@ -1565,6 +1565,11 @@ export class Window {
   static async inviteWindow() {
     const data = Window.inviteData;
 
+    Sound.play(SOUNDS_LIBRARY.GROUP_INVITE, {
+      id: 'ui-groupInvite',
+      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 1.2,
+    });
+
     if (!data) {
       console.warn('Нет данных для окна приглашения');
       return DOM({ id: 'wcastle-invite' });

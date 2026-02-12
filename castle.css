@@ -629,18 +629,18 @@ body {
   background-size: cover;
   position: absolute;
 }
-.castle-button-play-m1:hover::after, 
+.castle-button-play-m1:hover::after,
 .castle-button-play-m2:hover::after,
 .castle-button-play-m3:hover::after,
 .castle-button-play-m4:hover::after,
 .castle-button-play-m5:hover::after,
-.castle-button-play-m6:hover::after{
+.castle-button-play-m6:hover::after {
   display: flex;
   position: absolute;
   background: rgba(32, 32, 32, 0.784);
-  border: .2cqh groove rgba(154, 154, 154, 0.423);
+  border: 0.2cqh groove rgba(154, 154, 154, 0.423);
   color: rgba(255, 255, 255, 0.8);
-  padding: .5cqh 1cqh;
+  padding: 0.5cqh 1cqh;
   border-radius: 1cqh;
   font: 1.15cqh / 1.3 Tahoma;
   width: 35cqh;
@@ -649,24 +649,41 @@ body {
   text-align: center;
 }
 .castle-button-play-m1:hover::after {
-  content: var(--filter-text-hover, "Пограничье\AКлассический MOBA-режим. Сражение на специальной карте 5х5. На базе присутствует мини-игра, на карте на определенных местах располагаются Кристаллы. Так же присутствуют мини-боссы Кот Баюн и Змей-Горыныч, а на реке можно получить дополнительный прайм в виде Глифа.");
+  content: var(
+    --filter-text-hover,
+    'Пограничье\AКлассический MOBA-режим. Сражение на специальной карте 5х5. На базе присутствует мини-игра, на карте на определенных местах располагаются Кристаллы. Так же присутствуют мини-боссы Кот Баюн и Змей-Горыныч, а на реке можно получить дополнительный прайм в виде Глифа.'
+  );
 }
-.castle-button-play-m2:hover::after{
-  content: var(--filter-text-hover, "Форпост\AСражение на специальной карте 3х3. В этом режиме карта меньше, есть всего одна линия. Командам героев будет помогают осадные машины. Начальный Прайм увеличен. При убийстве героя все таланты восстанавливаются на 35 % быстрее.");
+.castle-button-play-m2:hover::after {
+  content: var(
+    --filter-text-hover,
+    'Форпост\AСражение на специальной карте 3х3. В этом режиме карта меньше, есть всего одна линия. Командам героев будет помогают осадные машины. Начальный Прайм увеличен. При убийстве героя все таланты восстанавливаются на 35 % быстрее.'
+  );
 }
-.castle-button-play-m3:hover::after{
-  content: var(--filter-text-hover, "Драгонвальд\AСражение на специальной карте 4х4. Режим, объединяющий в себе PvE и PvP. Прокачка героев возможна только в боях с чудью, равномерно заселяющей всю карту. Дорогу между базами защищает дракон. При его убийстве он роняет яйцо. Если взять яйцо, появляется особый солдат, который вам поможет достичь победы.");
+.castle-button-play-m3:hover::after {
+  content: var(
+    --filter-text-hover,
+    'Драгонвальд\AСражение на специальной карте 4х4. Режим, объединяющий в себе PvE и PvP. Прокачка героев возможна только в боях с чудью, равномерно заселяющей всю карту. Дорогу между базами защищает дракон. При его убийстве он роняет яйцо. Если взять яйцо, появляется особый солдат, который вам поможет достичь победы.'
+  );
 }
-.castle-button-play-m4:hover::after{
-  content: var(--filter-text-hover, "АРАМ\AРежим представляет собою одну линию, 5х5 игроков. Особенности: уменьшение лечения и кражи, отсутствие восстановления здоровья и маны на фонтане, увеличенное количество прайм на команду.");
+.castle-button-play-m4:hover::after {
+  content: var(
+    --filter-text-hover,
+    'АРАМ\AРежим представляет собою одну линию, 5х5 игроков. Особенности: уменьшение лечения и кражи, отсутствие восстановления здоровья и маны на фонтане, увеличенное количество прайм на команду.'
+  );
 }
-.castle-button-play-m5:hover::after{
-  content: var(--filter-text-hover, "Испытание\AПятеро игроков должны защитить начальную территорию от чуди, монстров, управляемых ИИ на специально созданной для этого карте. Монстры приходят волнами. Монстры появляются из четырёх точек, расположенных на карте, после каждой волны одну из точек надо уничтожить, нажав на особый выключатель.");
+.castle-button-play-m5:hover::after {
+  content: var(
+    --filter-text-hover,
+    'Испытание\AПятеро игроков должны защитить начальную территорию от чуди, монстров, управляемых ИИ на специально созданной для этого карте. Монстры приходят волнами. Монстры появляются из четырёх точек, расположенных на карте, после каждой волны одну из точек надо уничтожить, нажав на особый выключатель.'
+  );
 }
-.castle-button-play-m6:hover::after{
-  content: var(--filter-text-hover, "Дуэль\AСражение происходит на карте Пограничья, 1х1\AОсобенности: присутствуют задания внутри режима. Здесь игроки могут посоревноваться друг с другом.");
+.castle-button-play-m6:hover::after {
+  content: var(
+    --filter-text-hover,
+    'Дуэль\AСражение происходит на карте Пограничья, 1х1\AОсобенности: присутствуют задания внутри режима. Здесь игроки могут посоревноваться друг с другом.'
+  );
 }
-
 
 .castle-button-play-mode {
   z-index: 3;
@@ -749,7 +766,8 @@ body {
 .castle-button-play-m3:after,
 .castle-button-play-m4:after,
 .castle-button-play-m5:after,
-.castle-button-play-m6:after {
+.castle-button-play-m6:after,
+.account-rating-menu-item:after {
   font: 0.7vh/1 Arial; /* Изменено с vw на vh */
   position: absolute;
   top: 4.5vh; /* Изменено с vw на vh */
@@ -1013,7 +1031,6 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   container-type: size;
-
 }
 
 .castle-play-lobby-empty {
@@ -1047,27 +1064,26 @@ body {
   text-align: center;
   font: 1.4cqh / 1 Tahoma;
   text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
-  
+
   font-weight: 500;
   container-type: size;
 }
 
 .castle-party-middle-item-ready-notready div {
-  background: url(/content/ranks/ready.png)center center no-repeat;
-  background-size:cover;
+  background: url(/content/ranks/ready.png) center center no-repeat;
+  background-size: cover;
   padding: 2.5cqw 25cqw;
 }
 
-
 .castle-party-middle-item-ready {
- color: rgb(255, 237, 202);
+  color: rgb(255, 237, 202);
 }
 
 .castle-party-middle-item-not-ready {
   color: rgba(221, 221, 221, 0.3);
 }
-.castle-party-middle-item-not-ready div{
-   padding: 2.5cqw 17cqw;
+.castle-party-middle-item-not-ready div {
+  padding: 2.5cqw 17cqw;
 }
 
 .castle-party-middle-item {
@@ -1219,7 +1235,7 @@ body {
   margin: 0.5cqh 0cqh;
   text-align: center;
   font: bold 1.2cqh / 1 Tahoma;
-  padding: .75cqh 0;
+  padding: 0.75cqh 0;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 
   color: #cc5;
@@ -1253,6 +1269,7 @@ body {
 
 .castle-bottom-menu div:hover {
   filter: brightness(150%);
+  z-index: 1;
 }
 
 .settings-menu-item,
@@ -1297,7 +1314,6 @@ body {
 
 .account-rating-menu-item {
   font-size: 7cqh;
-  overflow: hidden;
   position: absolute;
   left: 16cqw;
   width: 55cqw;
@@ -1310,6 +1326,31 @@ body {
     rgba(0, 0, 0, 1) -0.5cqh -0.5cqh 0.5cqh;
   bottom: 2cqh;
   color: wheat;
+}
+
+.account-rating-menu-item::after {
+  display: none;
+  position: absolute;
+  top: 0;
+  transform: translateY(-100%);
+  content: var(
+    --filter-text-hover,
+    'Рейтинг игрока - это числовой показатель, определяющий сумму очков рейтинга. Начисляется он по итогам матчей (побед и поражений в боях). Значение вашего рейтинга помогает в процессе подбора вам оппонентов в боевых сессиях, распределении в ту или иную команду.'
+  );
+  background: rgba(32, 32, 32, 0.784);
+  border: 0.2cqh groove rgba(154, 154, 154, 0.423);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.5cqh 1cqh;
+  border-radius: 1cqh;
+  font: 6cqh / 1.3 Tahoma;
+  width: 20vw;
+  white-space: pre;
+  text-wrap: balance;
+  text-align: center;
+}
+
+.account-rating-menu-item:hover::after {
+  display: flex;
 }
 
 .settings-menu-item {
