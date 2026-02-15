@@ -723,6 +723,10 @@
     flag_Rose: 'Роза ARAM',
     flag_Space: 'Твоя Вселенная',
     flag_The_brown_cutie: 'Коричневая милашка',
+	flag_Yarilosolnce: 'Ярило',
+    flag_Samovar: 'Самовар и баранки',
+    flag_Pancakes: 'Масленица 2026',
+	
 
     // Переводы
     select_faction: 'Выбор Фракции',

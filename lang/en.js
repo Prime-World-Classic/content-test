@@ -731,6 +731,9 @@
     flag_Rose: 'ARAM Rose',
     flag_Space: 'Your Universe',
     flag_The_brown_cutie: 'Brown Cutie',
+	flag_Yarilosolnce: 'Yarilo the Sun',
+    flag_Samovar: 'Samovar and Baranki',
+    flag_Pancakes: 'Maslenitsa 2026',
 
     // Переводы
     select_faction: 'Select faction',
