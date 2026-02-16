@@ -734,6 +734,10 @@
 	flag_Yarilosolnce: 'Yarilo the Sun',
     flag_Samovar: 'Samovar and Baranki',
     flag_Pancakes: 'Maslenitsa 2026',
+	flag_Kitty_LO: 'Meow! LO (paired flags)',
+	flag_Kitty_VE: 'Meow! VE (paired flags)',
+	flag_FY_Pair1: 'Strong friendship',
+	flag_FY_Pair2: 'Very strong friendship',
 
     // Переводы
     select_faction: 'Select faction',

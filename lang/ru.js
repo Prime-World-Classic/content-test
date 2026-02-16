@@ -726,6 +726,10 @@
 	flag_Yarilosolnce: 'Ярило',
     flag_Samovar: 'Самовар и баранки',
     flag_Pancakes: 'Масленица 2026',
+    flag_Kitty_LO: 'Миу! (парные флаги)',
+	flag_Kitty_VE: 'Мяу! (парные флаги)',
+	flag_FY_Pair1: 'Крепкая дружба',
+	flag_FY_Pair2: 'Очень крепкая дружба',
 	
 
     // Переводы
