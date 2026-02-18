@@ -776,14 +776,19 @@ export class Castle {
     canvas.onmouseup = Castle.stopMove;
 
     oncontextmenu = (event) => {
-      event.preventDefault();
-      Castle.phantomBuilding.id = 0;
-      Castle.phantomBuilding.posX = 0;
-      Castle.phantomBuilding.posY = 1000;
-      if (Castle.buildMode && Castle.outlinedBuilding) {
-        Castle.findAndDeleteBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
-      }
-    };
+  event.preventDefault();
+  Castle.phantomBuilding.id = 0;
+  Castle.phantomBuilding.posX = 0;
+  Castle.phantomBuilding.posY = 1000;
+  document.querySelectorAll('.castle-building-item').forEach(item => {
+    item.classList.remove('selectedBuild');
+  });
+  
+  if (Castle.buildMode && Castle.outlinedBuilding) {
+    Castle.findAndDeleteBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
+  }
+};
+
 
     canvas.addEventListener('mousemove', Castle.moveMouse);
 

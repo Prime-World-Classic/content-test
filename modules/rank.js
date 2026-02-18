@@ -59,8 +59,9 @@ export class Rank {
   }
 
   static getVisualRating(raw) {
+    console.log('raw', raw);
     const x = raw * 0.0032;
     const fast = x / (1 + Math.abs(x));
-    return Math.round(fast * 1400 + 1400);
+    return Math.trunc(fast * 1400 + 1400);
   }
 }
