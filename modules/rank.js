@@ -57,11 +57,4 @@ export class Rank {
   static getName(rating) {
     return Rank.name[Rank.icon(rating)];
   }
-
-  static getVisualRating(raw) {
-    console.log('raw', raw);
-    const x = raw * 0.0032;
-    const fast = x / (1 + Math.abs(x));
-    return Math.trunc(fast * 1400 + 1400);
-  }
 }

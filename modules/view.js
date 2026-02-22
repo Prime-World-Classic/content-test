@@ -63,7 +63,6 @@ export class View {
 
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
-
   static setCss(name = 'content/style.css') {
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: name });
 
@@ -1075,7 +1074,7 @@ export class View {
 
   static async castleHeroes() {
     let tab = 1;
-    const SCROLL_MODIFIER = 1.5;
+    const SCROLL_MODIFIER = 1;
     let body = DOM({ style: 'castle-bottom' });
 
     View.castleBottom = DOM({ style: 'castle-bottom-content' });
@@ -1083,14 +1082,13 @@ export class View {
     View.castleBottom.addEventListener('wheel', function (event) {
       if (event.deltaY != 0) {
         if (event.deltaMode == event.DOM_DELTA_PIXEL) {
-          
           event.preventDefault();
 
-          View.scrollHero(event.deltaY / 100 * SCROLL_MODIFIER);
+          View.scrollHero((event.deltaY / 100) * SCROLL_MODIFIER);
         } else if (event.deltaMode == event.DOM_DELTA_LINE) {
           event.preventDefault();
 
-          View.scrollHeroLine(event.deltaY / 100 * SCROLL_MODIFIER);
+          View.scrollHeroLine((event.deltaY / 100) * SCROLL_MODIFIER);
         } else if (event.deltaMode == event.DOM_DELTA_PAGE) {
           event.preventDefault();
 
@@ -1137,13 +1135,13 @@ export class View {
     });
 
     const partyData = await App.api.request(App.CURRENT_MM, 'loadParty', {});
-    const rawPlayerRating = partyData.users[App.storage.data.id]?.playerRating || 0;
+    const playerRatingVisual = partyData.users[App.storage.data.id]?.playerRatingVisual || 0;
     console.log('DEBUG: Received partyData from loadParty:', partyData);
     let accountRatingItem = DOM(
       {
         style: 'account-rating-menu-item',
       },
-      Lang.text('accountRating').replace('{rating}', Rank.getVisualRating(rawPlayerRating)),
+      Lang.text('accountRating').replace('{rating}', playerRatingVisual),
     );
 
     accountRatingItem.style.setProperty('--filter-text-hover', `'${Lang.text('accountRatingTooltip')}'`);
@@ -1456,26 +1454,30 @@ export class View {
       }
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
-      let buildingIcon = DOM({style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img'},);
-      let buildingIconBox = DOM({style: 'buildingIconBox'}, buildingIcon);
+      let buildingIcon = DOM({ style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img' });
+      let buildingIconBox = DOM({ style: 'buildingIconBox' }, buildingIcon);
 
-      let building = DOM({ style: 'castle-building-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), buildingNameBase, buildingIconBox);
+      let building = DOM(
+        { style: 'castle-building-item' },
+        DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
+        buildingNameBase,
+        buildingIconBox,
+      );
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
 
       building.dataset.buildingId = i;
 
       building.addEventListener('click', async () => {
-  // Сначала удаляем класс selectedBuild со всех зданий
-  document.querySelectorAll('.castle-building-item').forEach(item => {
-    item.classList.remove('selectedBuild');
-  });
-  
-  // Затем устанавливаем ID выбранного здания и добавляем класс
-  Castle.phantomBuilding.id = building.dataset.buildingId;
-  building.classList.add('selectedBuild');
-});
+        // Сначала удаляем класс selectedBuild со всех зданий
+        document.querySelectorAll('.castle-building-item').forEach((item) => {
+          item.classList.remove('selectedBuild');
+        });
 
+        // Затем устанавливаем ID выбранного здания и добавляем класс
+        Castle.phantomBuilding.id = building.dataset.buildingId;
+        building.classList.add('selectedBuild');
+      });
 
       preload.add(building);
     }
@@ -1690,11 +1692,17 @@ export class View {
           },
           DOM(
             { style: 'castle-friend-item-middle' },
-            DOM({ style: 'castle-item-hero-name' }, DOM({ style: ['castle-hero-name', 'add-to-friend-text'] }, DOM({ tag: 'span' }, Lang.text("addFriend"))), ),
-            DOM({src: 'content/hero/addFriend.png', style: 'addToFriendIcon', tag: 'img'},),
+            DOM(
+              { style: 'castle-item-hero-name' },
+              DOM({ style: ['castle-hero-name', 'add-to-friend-text'] }, DOM({ tag: 'span' }, Lang.text('addFriend'))),
+            ),
+            DOM({ src: 'content/hero/addFriend.png', style: 'addToFriendIcon', tag: 'img' }),
 
-            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }, ),
-            DOM({style: 'castle-friend-item-bottom' }, DOM({style: ['castle-friend-add-group', 'add-to-friend-button']}, Lang.text('inviteToAFriend')),),
+            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
+            DOM(
+              { style: 'castle-friend-item-bottom' },
+              DOM({ style: ['castle-friend-add-group', 'add-to-friend-button'] }, Lang.text('inviteToAFriend')),
+            ),
           ),
         );
 
@@ -1702,7 +1710,6 @@ export class View {
 
         buttonAdd.dataset.url = `content/hero/empty.png`;
 
-        
         for (let item of result) {
           const heroName = DOM({ style: 'castle-hero-name' }, DOM({ tag: 'span' }, item.nickname));
 

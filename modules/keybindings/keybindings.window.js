@@ -57,7 +57,7 @@ function createGroup(title, rows) {
 function buildTalents(ui) {
   const rows = [];
 
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 12; i++) {
     const cmd = `cmd_action_bar_slot${i}`;
     rows.push(createRow(Lang.text('slot').replace('{num}', i), createKeyInput({ command: cmd })));
   }
@@ -74,7 +74,7 @@ function buildTalents(ui) {
 function buildAdditionalTalents() {
   const rows = [];
 
-  for (let i = 11; i <= 24; i++) {
+  for (let i = 13; i <= 24; i++) {
     const cmd = `cmd_action_bar_slot${i}`;
     rows.push(createRow(Lang.text('slot').replace('{num}', i), createKeyInput({ command: cmd })));
   }
