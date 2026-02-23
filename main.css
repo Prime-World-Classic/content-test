@@ -1302,19 +1302,6 @@ button.build-action-item:hover {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.active-bar-key-text {
-  position: absolute;
-  top: -0.1cqh;
-  left: -0.1cqh;
-  color: lightgray; 
-  font-size: 18cqw; 
-  font-weight: bold;
-  text-shadow: 1px 1px 2px black;
-  z-index: 10;
-  pointer-events: none;
-  white-space: nowrap;
-}
-
 .build-description {
   width: auto;
   max-width: 60cqh;
@@ -4818,6 +4805,27 @@ i-success {
     align-items: center;
     justify-content: center;
     position: relative;
+  }
+  .build-active-bar-key {
+    container-type: inline-size;
+    width: calc(80cqw / 12);
+    height: calc(80cqw / 12);
+    margin-left: 0.5cqw;
+    margin-right: 0.5cqw;
+    margin-bottom: 1cqh;
+    border-radius: 1cqh;
+    border: 0.5cqh solid transparent;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 11;
+    top: -0.4cqw;
+    left: 0.2cqw;
+    font-size: 1.2cqw;
+    white-space: nowrap;
+    color: lightgray;
+    pointer-events: none;
   }
   .build-hero-stats-settings {
     margin-top: 1cqh;
