@@ -4224,34 +4224,137 @@ i-success {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
   animation: volumeShine 2s infinite;
 }
+.modal-wrapper{
+    width: 70cqh;
+    height: 50cqh;
+    border-radius: 1cqh;
+    padding: 0 0 .2cqh 0;
+    border: .1cqh groove rgba(255, 186, 57, 0.774);
+}
+.title-modal {
+    display: flex;
+    width: 100%;
+    height: 2.2cqh;
+    position: absolute;
+    border-radius: .8cqh;
+    justify-content: center;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.705);
+    top: 0;
+    
+}
+
+.title-modal:before,.title-modal:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    border-radius: .8cqh;
+}
+
+.title-modal:before {
+    left: 0;
+    background-size: auto 100%;
+    width: 16.5cqh;
+    background-repeat: no-repeat;
+    background-image: url(img/modalHeader.png);
+    border-radius: .8cqh 0 0;
+    z-index: -1;
+    font-family: -webkit-body
+}
+
+.title-modal:after {
+    left: 16.4cqh;
+    right: 0;
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+    background-image: url(img/modalHeaderRight.png);
+    border-radius: 0 .8cqh 0 0;
+    z-index: -1
+}
+.modal-content{
+    border-top: .1cqh groove rgb(255, 186, 57);
+    width: 100%;
+    height: 47.8cqh;
+    background-color: rgba(16, 56, 59, 0.836);
+    backdrop-filter: blur(1px);
+    border-radius: 0 0 .8cqh .8cqh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.title-modal-text{
+  font-size: 1.2cqh;
+    text-shadow: rgba(0, 0, 0, .5) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh -0.1cqh 0.1cqh;
+  color: rgb(252, 229, 188);
+}
 #wcastle-call,
 #wcastle-invite {
   container-type: inline-size;
   position: absolute;
-  margin-top: 18cqh;
+  margin-top: 30cqh;
+  padding: 1cqh 3cqh;
   margin-left: auto;
   margin-right: auto;
   left: 0;
   right: 0;
   text-align: center;
-  width: calc(min(35cqh, 25cqw));
-  padding: 5.5cqmin 0.5cqmin;
+  width: 35cqh;
+  height: 17cqh;
   border-radius: 2cqh;
-  border: 0.1cqh solid rgb(158, 155, 104);
-  
   /* Фоновый рисунок как в splash без градиента */
-  background-image: url(img/main.png);
+  /* background-image: url(img/main.png); */
+  background:linear-gradient( rgba(12, 41, 43, 0.836),  rgba(20, 71, 73, 0.918));
+  backdrop-filter: blur(1px);
+  border-radius: .8cqh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-family: Tahoma, sans-serif;
   color: rgba(255, 255, 255, 0.9);
+  border: .1cqh groove rgba(255, 186, 57, 0.774);
+  filter: drop-shadow(0 0 2cqh black);
 }
 
+
+.castle-menu-items-modal{
+  width: 100%;
+  height: 20%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 5cqh;
+}
+.splash-content-button-modal{
+  width: 15cqh;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  margin-top: 2cqmin;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.8cqmin;
+  font-size: 1.25cqh;
+  background: url('img/button4.png') no-repeat center center/contain;
+  color: white;
+  border: none;
+  /*border-radius: 50px;*/
+  cursor: pointer;
+  transition: all 0.25s ease-out;
+  text-shadow: rgba(0, 0, 0, .5) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh -0.1cqh 0.1cqh;
+  color: rgb(252, 229, 188);
+    filter: brightness(1.1);
+}
+#splash-content-button-modal-red{
+  background: url('img/button5.png') no-repeat center center/contain;
+}
+.splash-content-button-modal:hover{
+  filter: brightness(.9);
+}
 #wcastle-menu,
 #wcastle-render-debug {
   container-type: inline-size;
@@ -4319,7 +4422,8 @@ i-success {
   width: 100cqw;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 10cqw Tahoma;
+  font: 1.5cqh Tahoma;
+  margin-top: 3cqh;
 }
 .castle-menu-items {
   width: 100cqw;

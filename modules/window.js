@@ -1517,13 +1517,16 @@ export class Window {
 
     return DOM(
       { id: 'wcastle-call' },
+      DOM({style: 'title-modal'},
+        DOM({style: 'title-modal-text'}, 'Звонок'),
+      ),
       DOM({ style: 'castle-menu-title' }, Lang.text('friendCallFrom').replace('{name}', displayName)),
       DOM(
-        { style: 'castle-menu-items' },
+        { style: 'castle-menu-items-modal' },
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
-            style: 'splash-content-button',
+            style: 'splash-content-button-modal',
             event: [
               'click',
               async () => {
@@ -1546,7 +1549,8 @@ export class Window {
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
-            style: 'splash-content-button',
+            style: 'splash-content-button-modal',
+            id: 'splash-content-button-modal-red',
             event: [
               'click',
               async () => {
@@ -1595,12 +1599,15 @@ export class Window {
 
     return DOM(
       { id: 'wcastle-invite' },
+      DOM({style: 'title-modal'},
+        DOM({style: 'title-modal-text'}, 'Сражение'),
+      ),
       DOM({ style: 'castle-menu-title' }, Lang.text('friendInvitesToLobby').replace('{nickname}', displayNickname)),
       DOM(
-        { style: 'castle-menu-items' },
+        { style: 'castle-menu-items-modal' },
         DOM(
           {
-            style: 'splash-content-button',
+            style: 'splash-content-button-modal',
             domaudio: domAudioPresets.bigButton,
             event: [
               'click',
@@ -1630,7 +1637,8 @@ export class Window {
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
-            style: 'splash-content-button',
+            style: 'splash-content-button-modal',
+            id: 'splash-content-button-modal-red',
             event: [
               'click',
               () => {

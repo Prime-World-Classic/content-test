@@ -1734,9 +1734,9 @@ export class View {
             let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
 
             if (!item.online) {
-              group.style.filter = 'grayscale(1)';
+              group.style.filter = 'grayscale(0.8)';
 
-              call.style.filter = 'grayscale(1)';
+              call.style.filter = 'grayscale(.8)';
             } else {
               group.onclick = async () => {
                 await App.api.request(App.CURRENT_MM, 'inviteParty', {
