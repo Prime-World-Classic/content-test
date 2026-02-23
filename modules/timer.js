@@ -9,11 +9,11 @@ export class Timer {
 
   static sfxOptions = 
   {
-    play: false, // will be set in mm.js of the timer for the current client(player)
+    play: false, // whether to play the sound or not, set to true when the timer is started for the current user
     lastSecond: -1, // the last second when the sound was played
     playFromSecond: 7, // from which second to play the sound (inclusive) 
     sound: SOUNDS_LIBRARY.SINGLE_TIMER, // sound to play
-    volumeModifier: 10, // volume modifier
+    volumeModifier: 1, // volume modifier
   }
 
   static init() {

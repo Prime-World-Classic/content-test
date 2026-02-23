@@ -52,7 +52,7 @@ export class Sound {
       Sound.all[object.id] = audio;
 
       if ("volume" in object) {
-        Sound.all[object.id].volume = object.volume;
+        Sound.all[object.id].volume = Math.min(Math.max(object.volume || 0, 0), 1);
       }
     }
 

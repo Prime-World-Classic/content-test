@@ -122,25 +122,25 @@ export class App {
     await MM.init();
     // tambur test
 
-        // setTimeout(() => {
+    //     setTimeout(() => {
             
-        //     let obj = {id:1, users:{
-        //         10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1,banhero:59},
-        //         1858:{nickname:'DOK',hero:6,ready:1,rating:1100,select:false,team:1,banhero:14},
-        //         2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1,banhero:62},
-        //         4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1,banhero:9},
-        //         5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2,banhero:20},
-        //         6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2,banhero:21},
-        //         7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2,banhero:22},
-        //         8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2,banhero:23},
-        //         9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2,banhero:26}
-        //     },target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
+    //         let obj = {id:1, users:{
+    //             10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1,banhero:59},
+    //             1858:{nickname:'DOK',hero:6,ready:1,rating:1100,select:false,team:1,banhero:14},
+    //             2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1,banhero:62},
+    //             4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1,banhero:9},
+    //             5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2,banhero:20},
+    //             6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2,banhero:21},
+    //             7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2,banhero:22},
+    //             8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2,banhero:23},
+    //             9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2,banhero:26}
+    //         },target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
 
-        //     obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:20,ready:0,rating:1284,select:true,team:1,mode:0,commander:true,banhero:16};
+    //         obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:20,ready:0,rating:1284,select:true,team:1,mode:0,commander:true,banhero:16};
             
-        //     MM.lobby(obj);
+    //         MM.lobby(obj);
             
-        // },1000);
+    //     },1000);
         
         // setTimeout(() => {
             
@@ -422,8 +422,7 @@ export class App {
             });
 
             factionElement.style.transform = 'scale(1.05)';
-            factionElement.style.filter = 'brightness(1)';
-            factionElement.style.boxShadow = '0 0 15px rgba(255,215,0,0.7)';
+            factionElement.style.filter = 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))';
           },
         ],
       });
@@ -443,8 +442,7 @@ export class App {
         cursor: 'pointer',
         transition: 'all 0.3s ease',
         transform: selectedFaction === faction.id ? 'scale(1.05)' : 'scale(1)',
-        filter: selectedFaction === faction.id ? 'brightness(1)' : 'brightness(0.7)',
-        boxShadow: selectedFaction === faction.id ? '0 0 15px rgba(255,215,0,0.7)' : 'none',
+        filter: selectedFaction === faction.id ? 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))' : 'brightness(0.7)',
         borderRadius: '10px',
       });
 
