@@ -33,6 +33,7 @@ function createKeyInput({ command, value = null }) {
     }
 
     const keys = normalizeKey(e);
+    
     KeybindStore.setBind(command, keys, value);
   });
 

@@ -120,49 +120,50 @@ export class App {
     await App.storage.init({ id: 0, token: '', login: '' });
 
     await MM.init();
-    /*
-        setTimeout(() => {
-            
-            let obj = {id:1, users:{
-                10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1,banhero:59},
-                1858:{nickname:'DOK',hero:6,ready:1,rating:1100,select:false,team:1,banhero:14},
-                2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1,banhero:62},
-                4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1,banhero:9},
-                5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2,banhero:20},
-                6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2,banhero:21},
-                7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2,banhero:22},
-                8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2,banhero:23},
-                9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2,banhero:26}
-            },target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
+    // tambur test
 
-            obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:20,ready:0,rating:1284,select:true,team:1,mode:0,commander:true,banhero:16};
+        // setTimeout(() => {
             
-            MM.lobby(obj);
+        //     let obj = {id:1, users:{
+        //         10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1,banhero:59},
+        //         1858:{nickname:'DOK',hero:6,ready:1,rating:1100,select:false,team:1,banhero:14},
+        //         2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1,banhero:62},
+        //         4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1,banhero:9},
+        //         5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2,banhero:20},
+        //         6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2,banhero:21},
+        //         7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2,banhero:22},
+        //         8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2,banhero:23},
+        //         9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2,banhero:26}
+        //     },target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
+
+        //     obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:20,ready:0,rating:1284,select:true,team:1,mode:0,commander:true,banhero:16};
             
-        },1000);
+        //     MM.lobby(obj);
+            
+        // },1000);
         
-        setTimeout(() => {
+        // setTimeout(() => {
             
-            MM.chat({id:0,message:'тестовое сообщение'});
-            MM.chat({id:2,message:'тестовое сообщение'});
-            MM.chat({id:7,message:'тестовое сообщение'});
+        //     MM.chat({id:0,message:'тестовое сообщение'});
+        //     MM.chat({id:2,message:'тестовое сообщение'});
+        //     MM.chat({id:7,message:'тестовое сообщение'});
             
-        },2000);
-        */
-    /*
-        setTimeout(() => {
+        // },2000);
+
+
+        // setTimeout(() => {
             
-            ARAM.briefing(6,1,() => alert(1));
+        //     ARAM.briefing(6,1,() => alert(1));
             
-        },3000);
-        */
-    /*
-        setTimeout(() => {
+        // },3000);
+
+
+        // setTimeout(() => {
             
-            Splash.show(DOM({style:'iframe-stats'},DOM({style:'iframe-stats-navbar',event:['click',() => Splash.hide()]},'X'),DOM({tag:'iframe',src:'https://stat.26rus-game.ru'})),false);
+        //     Splash.show(DOM({style:'iframe-stats'},DOM({style:'iframe-stats-navbar',event:['click',() => Splash.hide()]},'X'),DOM({tag:'iframe',src:'https://stat.26rus-game.ru'})),false);
             
-        },3000);
-        */
+        // },3000);
+
     await loadKeybinds();
     Chat.init();
 

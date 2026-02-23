@@ -613,12 +613,13 @@ export class Castle {
       Castle.WriteBuildings();
       Sound.play(SOUNDS_LIBRARY.BUY, {
         id: 'ui-buy',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
-    }
-    else{
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+      });
+    } else {
       Sound.play(SOUNDS_LIBRARY.ERROR, {
         id: 'ui-error',
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 0.25});
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 0.25,
+      });
     }
   }
 
@@ -629,7 +630,7 @@ export class Castle {
         building.rot = (building.rot + 1) % 4;
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
-        Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
+        Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, { volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
         return;
       }
     }
@@ -644,7 +645,8 @@ export class Castle {
         Castle.WriteBuildings();
         Sound.play(SOUNDS_LIBRARY.BUY, {
           id: 'ui-buy',
-          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS)});
+          volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+        });
         return;
       }
     }
@@ -753,7 +755,7 @@ export class Castle {
               Sound.play(SOUNDS_LIBRARY.CLICK_OPEN_BIG, {
                 id: 'ui-big-click',
                 volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-              })
+              });
               CastleBuildingsEvents[Castle.outlinedBuilding.name]();
             }
           }
@@ -776,19 +778,18 @@ export class Castle {
     canvas.onmouseup = Castle.stopMove;
 
     oncontextmenu = (event) => {
-  event.preventDefault();
-  Castle.phantomBuilding.id = 0;
-  Castle.phantomBuilding.posX = 0;
-  Castle.phantomBuilding.posY = 1000;
-  document.querySelectorAll('.castle-building-item').forEach(item => {
-    item.classList.remove('selectedBuild');
-  });
-  
-  if (Castle.buildMode && Castle.outlinedBuilding) {
-    Castle.findAndDeleteBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
-  }
-};
+      event.preventDefault();
+      Castle.phantomBuilding.id = 0;
+      Castle.phantomBuilding.posX = 0;
+      Castle.phantomBuilding.posY = 1000;
+      document.querySelectorAll('.castle-building-item').forEach((item) => {
+        item.classList.remove('selectedBuild');
+      });
 
+      if (Castle.buildMode && Castle.outlinedBuilding) {
+        Castle.findAndDeleteBuilding(Castle.outlinedBuilding.position[0], Castle.outlinedBuilding.position[1]);
+      }
+    };
 
     canvas.addEventListener('mousemove', Castle.moveMouse);
 

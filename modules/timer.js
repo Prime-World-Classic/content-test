@@ -1,12 +1,23 @@
 import { DOM } from './dom.js';
 import { App } from './app.js';
+import { Castle } from './castle.js';
+import { Sound } from './sound.js';
+import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 export class Timer {
   static intervalId = false;
 
+  static sfxOptions = 
+  {
+    play: false, // will be set in mm.js of the timer for the current client(player)
+    lastSecond: -1, // the last second when the sound was played
+    playFromSecond: 7, // from which second to play the sound (inclusive) 
+    sound: SOUNDS_LIBRARY.SINGLE_TIMER, // sound to play
+    volumeModifier: 10, // volume modifier
+  }
+
   static init() {
     Timer.sb = DOM(`${name} 00:00`);
-
     Timer.body = DOM({ style: 'mm-timer' }, Timer.sb);
   }
 
@@ -16,6 +27,9 @@ export class Timer {
     Timer.callback = callback;
 
     Timer.message = name;
+
+    Timer.sfxOptions.play = false;
+    Timer.sfxOptions.lastSecond = -1;
 
     Timer.timeFinish = await App.api.request(App.CURRENT_MM, 'getTimer', {
       id: id,
@@ -39,6 +53,8 @@ export class Timer {
     let seconds = Math.round(Math.abs(Date.now() - Timer.timeFinish) / 1000);
 
     Timer.sb.innerText = `${Timer.message} 00:${seconds < 10 ? '0' : ''}${seconds}`;
+
+    Timer.sfx(seconds);
   }
 
   static end() {
@@ -59,6 +75,20 @@ export class Timer {
 
       Timer.intervalId = false;
     }
+  }
+
+  static sfx(seconds) {
+    if (!Timer.sfxOptions.play) return;
+    if (seconds > Timer.sfxOptions.playFromSecond) return;
+    if (seconds <= 0) return;
+    if (seconds === Timer.sfxOptions.lastSecond) return;
+
+    Sound.play(
+      Timer.sfxOptions.sound, 
+      { volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * Timer.sfxOptions.volumeModifier, id: 'timer' },
+    );
+
+    Timer.sfxOptions.lastSecond = seconds;
   }
 
   static oneSecond = 1000;

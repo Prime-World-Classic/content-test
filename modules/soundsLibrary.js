@@ -38,7 +38,9 @@ export const SOUNDS_LIBRARY = {
   VC_ENABALED: 'content/sounds/voice/enabled.mp3',
   VC_DISABLED: 'content/sounds/voice/disabled.mp3',
 
+  // Tambur
   TAMBUR: 'content/sounds/tambur.ogg',
+  SINGLE_TIMER: 'content/sounds/ui/SingleTimer.mp3'
 };
 
 /*  HERO SOUNDS GENERATION */

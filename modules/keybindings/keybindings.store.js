@@ -1,5 +1,4 @@
 import { createEmptyUiModel } from './keybindings.schema.js';
-import { findConflicts } from './keybindings.validator.js';
 /**
  * KeybindStore: manages keybindings for the application,
  * observer pattern implementation
@@ -46,6 +45,7 @@ export const KeybindStore = {
       ],
       sections: ['adventure_screen', 'minigame'],
     },
+
     actionbarLock: {
       members: [
         { command: 'actionbar_lock_off', negated: false },
@@ -53,41 +53,13 @@ export const KeybindStore = {
       ],
       sections: ['adventure_screen'],
     },
+
     selfCast: {
       members: [
         { command: 'self_cast_on', negated: false },
         { command: 'self_cast_off', negated: true },
       ],
       sections: ['adventure_screen'],
-    },
-    enter: {
-      members: [
-        {
-          command: 'console_runcommand',
-          negated: false,
-        },
-        {
-          command: 'console_runcommand',
-          negated: false,
-        },
-        {
-          command: 'editline_return',
-          negated: false,
-        },
-        {
-          command: 'editline_return',
-          negated: false,
-        },
-        {
-          command: 'login_screen_enter',
-          negated: false,
-        },
-        {
-          command: 'login_screen_enter',
-          negated: false,
-        },
-      ],
-      sections: ['__global__'],
     },
   },
   source: 'native' | 'browser',
@@ -147,9 +119,6 @@ export const KeybindStore = {
 
     this.uiModel = this.mapFileToUiModel();
     this.notify();
-
-    console.log('Current conflicts:', findConflicts(this.fileModel, this.linkedGroups));
-
     return true;
   },
   notify() {
