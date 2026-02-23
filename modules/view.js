@@ -2804,6 +2804,7 @@ export class View {
         DOM({ style: 'build-field-with-tabs' }, Build.listView, DOM({ style: 'build-field-container' }, Build.levelView, Build.fieldView)),
         DOM(
           { style: 'build-active-bar-container' },
+		  Build.activeBarKeybindingsView,
           Build.activeBarView,
           DOM({ style: 'build-active-bar-hint' }, Lang.text('smartcastDescription')),
         ),

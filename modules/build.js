@@ -378,6 +378,8 @@ export class Build {
     Build.rarityView = DOM({ style: 'build-rarity' });
 
     Build.activeBarView = DOM({ style: 'build-active-bar' });
+	
+	Build.activeBarKeybindingsView = DOM({ style: 'build-active-bar' });
 
     let request = await App.api.request('build', 'data', {
       heroId: heroId,
@@ -2025,7 +2027,9 @@ export class Build {
     Build.activeBarItems = data;
 
     console.log('activeBar', data);
+	
     let index = 0;
+	
     for (let item of data) {
       const element = DOM({
         domaudio: domAudioPresets.defaultButton,
@@ -2047,7 +2051,7 @@ export class Build {
           },
         ],
       });
-
+	  
       if (item >= 0) {
         element.dataset.active = 0;
       } else {
@@ -2079,11 +2083,21 @@ export class Build {
       }
 
       Build.activeBarView.append(element);
-
+	  
+	  const keyElement = DOM({style: 'build-active-bar-key'}, Build.getKeyName(index));
+	  
+      Build.activeBarKeybindingsView.append(keyElement);
+		
       index++;
     }
   }
-
+	
+  static getKeyName(index) {  
+    const keys = ['Я', 'НЕ', 'Хочу', 'Работать', '🙃', '6', '7', 'SHIFT + F1', '9', '0', 'F1', 'F2', 'F3', 'F4'];
+	
+    return keys[index] || (index + 1).toString();
+  }
+  
   static setSortInventory(key, value) {
     if (!(key in Build.ruleSortInventory)) {
       Build.ruleSortInventory[key] = new Array();
