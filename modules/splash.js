@@ -1,3 +1,4 @@
+
 export class Splash {
   static init() {
     Splash.body = document.createElement('div');
@@ -20,7 +21,6 @@ export class Splash {
       let body = document.createElement('div');
 
       body.classList.add('splash-content');
-
       body.append(element);
 
       Splash.body.append(body);

@@ -1940,7 +1940,6 @@ body {
     inset 0 0 0.7cqh rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
-  padding: 1cqh;
   color: rgb(228, 228, 207);
   text-align: left;
   overflow: visible;
@@ -1975,6 +1974,7 @@ body {
   border: 0.1cqh solid rgba(0, 255, 255, 0.4);
   border-left: 0;
   border-right: 0;
+  border-radius: 3cqh 3cqh 0 0;
 }
 
 .shop_header_item {
@@ -1985,6 +1985,7 @@ body {
   font-weight: 400;
   text-align: center;
   display: block;
+  border-radius: 52cqh 0 0 0;
   text-shadow:
     0.1cqw 0.1cqw 0.3cqw black,
     -0.1cqw 0.1cqw 0.3cqw black,
@@ -1992,9 +1993,11 @@ body {
     -0.1cqw -0.1cqw 0.3cqw black;
 }
 
+
 .shop_header_selected {
   background-image: linear-gradient(180deg, rgba(12, 92, 107, 0.5), rgba(6, 41, 56, 0.5));
   filter: drop-shadow(0 0 1cqh rgba(10, 255, 200, 0.5));
+border-radius: 52cqh 0 0 0;
 }
 .shop_header_not_selected:hover {
   filter: brightness(120%);
@@ -2227,7 +2230,7 @@ body {
 }
 
 .splash-item-container {
-  margin: 2cqh;
+  margin: 2cqh auto;
   width: 10cqh;
   height: 10cqh;
   container-type: size;
@@ -2293,9 +2296,9 @@ body {
 }
 .splash_shop_item_price_icon {
   position: relative;
-  top: 1cqh;
-  width: 5cqh;
-  height: 5cqh;
+  top: .5cqh;
+  width: 3cqh;
+  height: 3cqh;
 }
 .shop_bottom {
   position: absolute;
@@ -2307,8 +2310,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-bottom-left-radius: 10%;
-  border-bottom-right-radius: 10%;
+  border-radius: 0 0 2.5cqh 2.5cqh;
 }
 .shop_bottom_time {
   color: rgba(236, 195, 117, 1);

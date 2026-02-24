@@ -1786,7 +1786,7 @@ button.build-action-item:hover {
 .splash-content {
   --splash-text-color: rgba(255, 255, 255, 0.9);
   /*--splash-bg-color: linear-gradient(to bottom, rgba(4, 32, 42, 0.9), rgba(18, 69, 73, 0.85), rgba(21, 51, 59, 0.8), rgba(18, 69, 73, 0.85), rgba(4, 32, 42, 0.9));*/
-  background-image: url(img/main.png);
+  background-color: ;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   width: min(35cqw, 500px); /* Ограничение максимальной ширины */
@@ -1805,6 +1805,9 @@ button.build-action-item:hover {
   container-type: inline-size;
   /*border: 0.1cqh solid rgb(158, 155, 104);*/
   position: relative;
+  border: 0.2cqh groove rgb(158, 155, 104);
+  background:linear-gradient( rgba(12, 41, 43, 0.603),  rgba(20, 71, 73, 0.829));
+  border-radius: .8cqh;
 }
 
 .splash-content input {
@@ -1812,15 +1815,14 @@ button.build-action-item:hover {
   padding: 0.6vmin 0;
   margin-bottom: 15px;
   font: 1rem / 1 Tahoma;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(132, 155, 154, 0.5);
   border: none;
-  border-radius: 50px;
-  color: rgba(0, 0, 0, 0.9);
+  border-radius: .8cqh;
+  color: rgba(212, 246, 255, 0.9);
   text-align: center;
 }
 
 .splash-content input:hover {
-  background: rgba(255, 255, 255, 0.8);
 }
 .splash-content-window {
   --splash-text-color: rgba(255, 255, 255, 0.9);
@@ -1869,28 +1871,28 @@ button.build-action-item:hover {
 
 .splash-content-button,
 .splash-content-button-red {
-  width: 30cqh;
+  width: 15cqh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  margin-top: 5cqmin;
+  margin-top: 2cqmin;
   margin-left: auto;
   margin-right: auto;
   padding: 1.8cqmin;
-  font-size: 1.3rem;
-  /*background: rgba(255, 255, 255, 0.15);*/
+  font-size: 1.25cqh;
+  background: url('img/button4.png') no-repeat center center/contain;
   color: white;
   border: none;
   /*border-radius: 50px;*/
   cursor: pointer;
   transition: all 0.25s ease-out;
+  text-shadow: rgba(0, 0, 0, .5) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh -0.1cqh 0.1cqh;
+  color: rgb(252, 229, 188);
+    filter: brightness(1.1);
 }
 
-.splash-content-button {
-  background-image: url(img/button1.png);
-}
 
 .splash-content-button-red {
-  background-image: url(img/button3.png);
+  background-image: url(img/button5.png);
 }
 
 /* Адаптация для маленьких экранов */
@@ -1916,8 +1918,6 @@ button.build-action-item:hover {
 
 .splash-content input:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.4);
 }
 .splash-content .close {
   top: -4cqh;
@@ -4241,9 +4241,13 @@ i-success {
     align-items: center;
     color: rgba(255, 255, 255, 0.705);
     top: 0;
+    left: 0;
+    z-index: 0.5;
     
 }
-
+#purchase-text{
+  font-size: 2.5cqh;
+}
 .title-modal:before,.title-modal:after {
     content: "";
     position: absolute;
@@ -4306,8 +4310,7 @@ i-success {
   border-radius: 2cqh;
   /* Фоновый рисунок как в splash без градиента */
   /* background-image: url(img/main.png); */
-  background:linear-gradient( rgba(12, 41, 43, 0.836),  rgba(20, 71, 73, 0.918));
-  backdrop-filter: blur(1px);
+  background:linear-gradient( rgba(12, 41, 43, 0.603),  rgba(20, 71, 73, 0.829));
   border-radius: .8cqh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -4317,7 +4320,7 @@ i-success {
   justify-content: center;
   font-family: Tahoma, sans-serif;
   color: rgba(255, 255, 255, 0.9);
-  border: .1cqh groove rgba(255, 186, 57, 0.774);
+  border: 0.2cqh groove rgb(158, 155, 104);
   filter: drop-shadow(0 0 2cqh black);
 }
 
