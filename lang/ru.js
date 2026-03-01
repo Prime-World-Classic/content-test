@@ -81,7 +81,7 @@
     notInThisGame: 'Вас нет в этой игре',
     playerNotInGame: 'Данного игрока нет в этой игре',
     notYourAlly: 'Это не ваш союзник',
-    purchase: 'Покупка',
+
     cannotPurchaseItem: 'Нельзя приобрести этот товар',
     alreadyPurchasedItem: 'Ранее, вы уже приобретали данный товар',
     insufficientFunds: 'Недостаточно средств',
@@ -127,7 +127,6 @@
     windowShopBuy: 'Купить',
     windowShopCancel: 'Отмена',
     windowShopEquip: 'Экипировать',
-    WindowShopEquipment: 'Экипировка',
     windowShopEquipItem: 'Экипировать ',
     windowShopUnequip: 'Снять',
     windowShopUnequipItem: 'Снять ',
@@ -211,7 +210,7 @@
     apiConnectionError: 'Нет соединения с API сервером Prime World Classic',
     loginRequiredError: 'Необходимо указать логин',
     passwordRequiredError: 'Необходимо указать пароль',
-    nicknameChangeCooldown: 'Смена имени возможна один раз в две недели.',
+    nicknameChangeCooldown: 'Сменить никнейм можно один раз в две недели',
     nicknamePlaceholder: 'Никнейм',
     apply: 'Применить',
     adorians: 'Адорнийцы',
@@ -266,6 +265,7 @@
       'Учитывание талантов, которые дают дополнительный баф от типа территории (земли) - родная, вражеская/нейтральная (например таланты красного качества "Оберег жизни", "Сияние естества")',
     makeStatPriorityTitle: 'Сделать характеристику приоритетной',
     talentQualityTitle: '{name} качество талантов',
+	titleTopBuilds: 'Топ билды (ЛКМ)',
 
     //Друзья
     callAFriend: 'Звонок',

@@ -80,7 +80,7 @@
 	notInThisGame: 'You are not in this game',
 	playerNotInGame: 'This player is not in this game',
 	notYourAlly: 'This is not your ally',
-	purchase: 'Purchase',
+	
 	cannotPurchaseItem: 'Cannot purchase this item',
 	alreadyPurchasedItem: 'You have already purchased this item before',
 	insufficientFunds: 'Insufficient funds',
@@ -124,7 +124,6 @@
     windowShopBuy: 'Buy',
     windowShopCancel: 'Cancel',
     windowShopEquip: 'Equip',
-    WindowShopEquipment: 'Equipment',
     windowShopEquipItem: 'Equip ',
     windowShopUnequip: 'Unequip',
     windowShopUnequipItem: 'Unequip ',
@@ -239,7 +238,7 @@
     stealBuild: 'Steal build?',
     overwriteBuild: 'Overwrite current build?',
     talents: 'Talents',
-    todoIncannotPurchaseItemgress: 'TODO not ready yet - PW Classic team is working on this',
+    todoInProgress: 'TODO not ready yet - PW Classic team is working on this',
     talentLibrary: 'Talent Library',
     sets: 'Sets',
     windowsLauncherRequired: 'Windows launcher version required',
@@ -262,6 +261,7 @@
       'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
     makeStatPriorityTitle: 'Make characteristic priority',
     talentQualityTitle: '{name} talent quality',
+	titleTopBuilds: 'Top builds (LMB)',
 
     //Друзья
 
@@ -277,7 +277,7 @@
     friendNicknamePlaceholder: 'Nickname',
     friendAcceptWaiting: 'Waiting',
     friendInvitesToLobby: 'Player {nickname} invites you to join the group',
-    friendCallFrom: 'Player {name} appears via voice communication.',
+    friendCallFrom: 'Accept call from {name}?',
     friendDropCall: 'Drop call',
     inviteToAFriend: 'Invite',
 

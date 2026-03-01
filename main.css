@@ -658,6 +658,21 @@ input::placeholder {
   container-type: size;
 }
 
+.avatar:hover::after {
+  content: attr(data-role);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(32, 32, 32, 0.784);
+  border: .2cqh groove rgba(154, 154, 154, 0.423);
+  color: rgba(255, 255, 255, 0.8);
+  padding: .5cqh 15cqh;
+  border-radius: 15cqh;
+  font: 15cqh / 1.3 Tahoma;
+  white-space: nowrap;
+}
+
 .build-hero-stats-view {
   display: flex;
   flex-flow: column nowrap;
@@ -1215,6 +1230,7 @@ button.build-action-item:hover {
 }
 
 .build-active-bar {
+  position: absolute;
   container-type: inline-size;
   width: 100cqw;
   height: 16cqw;
@@ -1251,6 +1267,28 @@ button.build-action-item:hover {
   right: -1cqh;
   bottom: -1cqh;
   border: 0.2cqh solid #000;
+}
+
+.build-active-bar-key {
+  container-type: inline-size;
+  width: calc(60cqw / 10);
+  height: calc(60cqw / 10);
+  margin-left: 0.5cqw;
+  margin-right: 0.5cqw;
+  margin-bottom: 1cqh;
+  border-radius: 1cqh;
+  border: 0.5cqh solid transparent;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 11;
+  top: -0.4cqw;
+  left: 0.2cqw;
+  font-size: 1.2cqw;
+  white-space: nowrap;
+  color: lightgray;
+  pointer-events: none;
 }
 
 .build-rarity {
@@ -1696,6 +1734,7 @@ button.build-action-item:hover {
   width: 100cqw;
   height: 100cqh;
   backdrop-filter: blur(1vmax);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .splash {
@@ -1786,7 +1825,7 @@ button.build-action-item:hover {
 .splash-content {
   --splash-text-color: rgba(255, 255, 255, 0.9);
   /*--splash-bg-color: linear-gradient(to bottom, rgba(4, 32, 42, 0.9), rgba(18, 69, 73, 0.85), rgba(21, 51, 59, 0.8), rgba(18, 69, 73, 0.85), rgba(4, 32, 42, 0.9));*/
-  background-color: ;
+  background-image: url(img/main.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   width: min(35cqw, 500px); /* Ограничение максимальной ширины */
@@ -1805,9 +1844,6 @@ button.build-action-item:hover {
   container-type: inline-size;
   /*border: 0.1cqh solid rgb(158, 155, 104);*/
   position: relative;
-  border: 0.2cqh groove rgb(158, 155, 104);
-  background:linear-gradient( rgba(12, 41, 43, 0.603),  rgba(20, 71, 73, 0.829));
-  border-radius: .8cqh;
 }
 
 .splash-content input {
@@ -1815,14 +1851,15 @@ button.build-action-item:hover {
   padding: 0.6vmin 0;
   margin-bottom: 15px;
   font: 1rem / 1 Tahoma;
-  background: rgba(132, 155, 154, 0.5);
+  background: rgba(255, 255, 255, 0.5);
   border: none;
-  border-radius: .8cqh;
-  color: rgba(212, 246, 255, 0.9);
+  border-radius: 50px;
+  color: rgba(0, 0, 0, 0.9);
   text-align: center;
 }
 
 .splash-content input:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 .splash-content-window {
   --splash-text-color: rgba(255, 255, 255, 0.9);
@@ -1871,28 +1908,28 @@ button.build-action-item:hover {
 
 .splash-content-button,
 .splash-content-button-red {
-  width: 15cqh;
+  width: 30cqh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  margin-top: 2cqmin;
+  margin-top: 5cqmin;
   margin-left: auto;
   margin-right: auto;
   padding: 1.8cqmin;
-  font-size: 1.25cqh;
-  background: url('img/button4.png') no-repeat center center/contain;
+  font-size: 1.3rem;
+  /*background: rgba(255, 255, 255, 0.15);*/
   color: white;
   border: none;
   /*border-radius: 50px;*/
   cursor: pointer;
   transition: all 0.25s ease-out;
-  text-shadow: rgba(0, 0, 0, .5) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, .5) -0.1cqh -0.1cqh 0.1cqh;
-  color: rgb(252, 229, 188);
-    filter: brightness(1.1);
 }
 
+.splash-content-button {
+  background-image: url(img/button1.png);
+}
 
 .splash-content-button-red {
-  background-image: url(img/button5.png);
+  background-image: url(img/button3.png);
 }
 
 /* Адаптация для маленьких экранов */
@@ -1918,6 +1955,8 @@ button.build-action-item:hover {
 
 .splash-content input:focus {
   outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 .splash-content .close {
   top: -4cqh;
@@ -2827,8 +2866,12 @@ button.build-action-item:hover {
   z-index: 9999;
   font: 1cqw / 1 Arial;
   padding: 0.3vw;
-  color: rgba(255, 255, 255, 0.5);
+  color: white;
   font-size: 1cqh;
+  text-shadow: 2px 2px 4px black;
+  background-color: gray;
+  border-radius: 4cqh;
+  opacity: 0.7;
 }
 
 .history {
@@ -4241,13 +4284,9 @@ i-success {
     align-items: center;
     color: rgba(255, 255, 255, 0.705);
     top: 0;
-    left: 0;
-    z-index: 0.5;
     
 }
-#purchase-text{
-  font-size: 2.5cqh;
-}
+
 .title-modal:before,.title-modal:after {
     content: "";
     position: absolute;
@@ -4310,7 +4349,8 @@ i-success {
   border-radius: 2cqh;
   /* Фоновый рисунок как в splash без градиента */
   /* background-image: url(img/main.png); */
-  background:linear-gradient( rgba(12, 41, 43, 0.603),  rgba(20, 71, 73, 0.829));
+  background:linear-gradient( rgba(12, 41, 43, 0.836),  rgba(20, 71, 73, 0.918));
+  backdrop-filter: blur(1px);
   border-radius: .8cqh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -4320,8 +4360,22 @@ i-success {
   justify-content: center;
   font-family: Tahoma, sans-serif;
   color: rgba(255, 255, 255, 0.9);
-  border: 0.2cqh groove rgb(158, 155, 104);
+  border: .1cqh groove rgba(255, 186, 57, 0.774);
   filter: drop-shadow(0 0 2cqh black);
+  z-index: 9999;
+}
+
+body:has(#wcastle-invite)::before,
+body:has(#wcastle-call)::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(1vmax);
+  z-index: 9998;
 }
 
 
@@ -4889,6 +4943,27 @@ i-success {
     align-items: center;
     justify-content: center;
     position: relative;
+  }
+  .build-active-bar-key {
+    container-type: inline-size;
+    width: calc(80cqw / 12);
+    height: calc(80cqw / 12);
+    margin-left: 0.5cqw;
+    margin-right: 0.5cqw;
+    margin-bottom: 1cqh;
+    border-radius: 1cqh;
+    border: 0.5cqh solid transparent;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    position: relative;
+    z-index: 11;
+    top: -0.4cqw;
+    left: 0.2cqw;
+    font-size: 1.2cqw;
+    white-space: nowrap;
+    color: lightgray;
+    pointer-events: none;
   }
   .build-hero-stats-settings {
     margin-top: 1cqh;

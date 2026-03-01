@@ -253,7 +253,7 @@ export class Events {
 
     Splash.show(body);
   }
-  
+
   static UChat(data) {
     Chat.viewMessage(data);
   }

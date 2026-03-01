@@ -309,29 +309,15 @@ export class App {
 
     let template = document.createDocumentFragment();
 
-    let title1 = DOM({ tag: 'div', style: 'castle-menu-title' }, Lang.text('nicknameChangeCooldown'));
-    Object.assign(title1.style, {
-      fontSize: '2.3cqh',
-      marginBottom: '1cqh',
-    });
-    let title2 = DOM({ tag: 'div', style: 'castle-menu-title-small' }, 'Внимание! Нецензурные никнеймы будут заблокированы');
-    Object.assign(title2.style, {
-      marginBottom: '1cqh',
-      fontSize: '1.4cqh',
-      filter: 'opacity(.5)'
-    });
-    const title = DOM({style: "title-modal"},
-        DOM({style: "title-modal-text"}, Lang.text('nicknamePlaceholder'))
-    );
+    let title = DOM({ tag: 'div', style: 'castle-menu-text' }, Lang.text('nicknameChangeCooldown'));
+
     let name = DOM({
       domaudio: domAudioPresets.defaultInput,
       tag: 'input',
       placeholder: Lang.text('nicknamePlaceholder'),
       value: App.storage.data.login,
     });
-    Object.assign(name.style, {
-      margin: '.5cqh'
-    });
+
     let button = DOM(
       {
         domaudio: domAudioPresets.bigButton,
@@ -368,7 +354,7 @@ export class App {
       Lang.text('apply'),
     );
 
-    template.append(title,title1, name,title2, button, close);
+    template.append(title, name, button, close);
 
     Splash.show(template);
   }
@@ -384,17 +370,21 @@ export class App {
 
     let template = document.createDocumentFragment();
 
-    const title = DOM({style: "title-modal"},
-        DOM({style: "title-modal-text"}, Lang.text('select_faction'))
-    );
-    
+    const title = DOM({ tag: 'h2', style: 'faction-title' }, Lang.text('select_faction'));
+    Object.assign(title.style, {
+      textAlign: 'center',
+      color: '#fff',
+      textShadow: '0 0 5px rgba(0,0,0,0.5)',
+      marginBottom: '30px',
+      fontSize: '24px',
+    });
 
     const factionsContainer = DOM({ tag: 'div', style: 'factions-container' });
     Object.assign(factionsContainer.style, {
       display: 'flex',
       gap: '5%',
       justifyContent: 'center',
-      marginBottom: '3cqh',
+      marginBottom: '30px',
       flexWrap: 'wrap',
       width: '90%',
       maxWidth: '600px',
@@ -460,7 +450,7 @@ export class App {
       Object.assign(nameLabel.style, {
         textAlign: 'center',
         color: '#fff',
-        marginTop: '3cqh',
+        marginTop: '10px',
         textShadow: '0 0 3px #000',
         fontSize: '16px',
       });
@@ -472,13 +462,14 @@ export class App {
         alignItems: 'center',
         margin: '10px',
       });
+
       wrapper.append(factionElement, nameLabel);
       factionsContainer.append(wrapper);
     });
 
     const button = DOM(
       {
-        style: 'splash-content-button-modal',
+        style: 'splash-content-button',
         domaudio: domAudioPresets.bigButton,
         event: [
           'click',
