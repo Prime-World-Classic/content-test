@@ -65,7 +65,7 @@ export function normalizeKey(e) {
 
   keys.push(main);
 
-  return keys;
+  return keys.length > 2 ? keys.slice(-2) : keys;
 }
 
 

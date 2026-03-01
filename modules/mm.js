@@ -1056,7 +1056,7 @@ export class MM {
     let message = DOM(`${data.message}`);
 
     if (App.isAdmin(data.id)) {
-      message.style.color = 'rgba(255, 50, 0, 0.9)';
+      message.style.color = 'rgba(255, 103, 90, 0.9)';
     } else if (data.id && 'commander' in MM.lobbyUsers[data.id]) {
       message.style.color = 'rgba(255,215,0,0.9)';
     }

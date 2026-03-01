@@ -4197,6 +4197,9 @@ i-success {
 }
 
 .voice-info-panel-body {
+  background-color: grey;
+  border-radius: 4cqh 4cqh 4cqh 4cqh / 4cqh 4cqh 4cqh 4cqh;
+  opacity: 0.8;
   width: 7vw;
   padding: 2vh 1vw;
   z-index: 9996;
@@ -4204,8 +4207,9 @@ i-success {
 
 .voice-info-panel-body-tutorial {
   font-size: clamp(0.5em, 0.3vw, 0.5em);
-  color: #f0f0f0;
-  text-shadow: 0 0 0.5em rgba(217, 70, 239, 0.5);
+  font-family: 'DejaVuSans', sans-serif;
+  color: rgb(255, 232, 29, 1);
+  text-shadow: 2px 2px 4px black;
   margin: 0.3vh;
 }
 
@@ -4221,13 +4225,14 @@ i-success {
 
 .voice-info-panel-body-item-name {
   font-size: clamp(0.5em, 0.5vw, 1em);
+  font-family: 'DejaVuSans', sans-serif;
   font-weight: bold;
-  color: #f0f0f0;
+  color: rgb(255, 232, 29, 1);
   margin-bottom: 0.1vh;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 0 0.5em rgba(217, 70, 239, 0.5);
+  text-shadow: 2px 2px 4px black;
 }
 
 .voice-info-panel-body-item-status {
