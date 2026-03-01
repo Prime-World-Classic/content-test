@@ -1,5 +1,9 @@
+import { App } from '../app.js';
+import { Lang } from '../lang.js';
 import { createEmptyUiModel } from './keybindings.schema.js';
+import { saveKeybinds } from './keybindings.io.js';
 import { findConflicts } from './keybindings.validator.js';
+
 /**
  * KeybindStore: manages keybindings for the application,
  * observer pattern implementation
@@ -181,6 +185,10 @@ export const KeybindStore = {
     this.fileModel = fileModel;
     this.source = source;
     this.configPath = configPath;
+    if (this.fixConflicts().length > 0) {
+      saveKeybinds(this.fileModel, this.configPath);
+      App.error(Lang.text('resetConflictedKeybindings'));
+    }
     this.uiModel = this.mapFileToUiModel();
     this.notify();
   },
@@ -224,16 +232,29 @@ export const KeybindStore = {
     bind.keys = [...keys];
 
     const linked = this.findLinkedBinds(bind);
-    for (const b of linked) {
-      b.keys = [...keys];
+    for (const linkedBind of linked) {
+      linkedBind.keys = [...keys];
     }
 
+    this.fixConflicts(command);
     this.uiModel = this.mapFileToUiModel();
     this.notify();
 
-    console.log('Current conflicts:', findConflicts(this.fileModel, this.linkedGroups));
-
     return true;
+  },
+
+  fixConflicts(command = null) {
+    const conflicts = findConflicts(this.fileModel, this.linkedGroups);
+    for (const conflict of conflicts) {
+      for (const entry of conflict.entries) {
+        if (entry.bind.command === command) continue;
+        const bind = this.getBind(entry.bind.command, entry.bind.value);
+        if (bind) {
+          this.setBind(bind.command, [''], bind.value);
+        }
+      }
+    }
+    return conflicts;
   },
   notify() {
     this.subscribers.forEach((fn) => fn(this.fileModel));
@@ -247,7 +268,7 @@ export const KeybindStore = {
     return unsubscribeFunc;
   },
 
-  mapFileToUiModel(fileModel = this.fileModel) {
+  mapFileToUiModel(fileModel = this.fileModel, conflicts) {
     const ui = createEmptyUiModel();
 
     for (const section of fileModel.sections) {

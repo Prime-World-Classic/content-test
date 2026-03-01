@@ -16,6 +16,7 @@ import { Timer } from './timer.js';
 import { Splash } from './splash.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
+import { loadKeybinds } from './keybindings/keybindings.io.js';
 
 export class MM {
   static id = '';
@@ -75,7 +76,10 @@ export class MM {
 
     let button = CastleNAVBAR.init();
 
-    button.onclick = () => MM.start();
+    button.onclick = async () => {
+      await loadKeybinds();
+      MM.start();
+    };
   }
 
   static async init() {

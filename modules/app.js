@@ -83,7 +83,6 @@ export class App {
     } else {
       generateHeroSoundsFallback();
     }
-    console.log('SOUNDS_LIBRARY', SOUNDS_LIBRARY);
     const tasks = [];
 
     const walk = (obj) => {

@@ -476,6 +476,7 @@
     
     discardChanges: 'Отменить',
 
+    resetConflictedKeybindings: 'Сброс конфликтующих привязок к пустому значению',
     savedKeybindings: 'Клавиши сохранены',
     errorKeybindings: 'Ошибка сохранения клавиш',
     errorKeybindingsLoad: 'Ошибка загрузки клавиш',

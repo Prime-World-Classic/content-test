@@ -482,10 +482,13 @@
 
     discardChanges: 'Cancel',
 
+    resetConflictedKeybindings: 'Conflicting keybindings were reset',
     savedKeybindings: 'Keybindings saved',
     errorKeybindings: 'Error saving keybindings',
     errorKeybindingsLoad: 'Error loading keybindings',
     restoredDefaultKeybindings: 'Restored default keybindings',
+
+
 
     frame_hint: 'The frame will be active when the hero has 25+ wins',
 

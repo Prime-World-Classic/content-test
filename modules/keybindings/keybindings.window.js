@@ -31,9 +31,7 @@ function createKeyInput({ command, value = null }) {
       input.blur();
       return;
     }
-
     const keys = normalizeKey(e);
-    
     KeybindStore.setBind(command, keys, value);
   });
 
