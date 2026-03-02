@@ -1283,13 +1283,13 @@ button.build-action-item:hover {
   justify-content: flex-end;
   position: relative;
   z-index: 11;
-  top: -0.4cqw;
-  left: 0.2cqw;
-  font-size: 1.1cqw;
+  top: -0.5cqw;
+  left: 0cqw;
+  font-size: 1.07cqw;
   white-space: nowrap;
   color: lightgray;
   pointer-events: none;
-  text-shadow: 1px 1px 2px black;
+  text-shadow: 2px 2px 2px black;
   font-weight: bold;
 }
 
@@ -4179,7 +4179,7 @@ i-success {
 
 .voice-info-panel {
   position: fixed;
-  top: 36vh;
+  top: 27vh;
   display: none;
   flex-flow: column nowrap;
   justify-content: center;

@@ -2,7 +2,7 @@ import { DOM } from '../dom.js';
 import { Lang } from '../lang.js';
 import { domAudioPresets } from '../domAudioPresets.js';
 import { KeybindStore } from './keybindings.store.js';
-import { loadKeybinds, saveKeybinds } from './keybindings.io.js';
+import { loadKeybinds, saveKeybinds, loadKeybindsBrowser } from './keybindings.io.js';
 import { normalizeKey } from './keybindings.input.js';
 
 const unsubscribers = [];
@@ -170,6 +170,26 @@ export async function keybindings() {
     Lang.text('save'),
   );
 
+  const resetBtn = DOM(
+    {
+      domaudio: domAudioPresets.bigButton,
+      style: ['castle-menu-item-button', 'castle-menu-item-button--small'],
+      event: [
+        'click',
+        async () => {
+          const temp = KeybindStore.configPath;
+          await loadKeybindsBrowser({
+            type: KeybindStore.source ?? 'browser',
+            path: "/content/keybindsFallback.cfg",
+          });
+          // reset the config path
+          KeybindStore.configPath = temp;
+        },
+      ],
+    },
+    Lang.text('reset'),
+  );
+
   const discardBtn = DOM(
     {
       domaudio: domAudioPresets.closeButton,
@@ -184,7 +204,7 @@ export async function keybindings() {
     Lang.text('discardChanges'),
   );
 
-  const controls = DOM({ style: 'keybindings-controls' }, saveBtn, discardBtn);
+  const controls = DOM({ style: 'keybindings-controls' }, saveBtn, resetBtn, discardBtn);
 
   const root = DOM({ id: 'wcastle-keybindings' }, content, controls);
 

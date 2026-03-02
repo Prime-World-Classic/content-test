@@ -4013,14 +4013,14 @@
           "mesh": "doct/rocks_12_01.bin",
           "indexCount": 20118,
           "shader": "shader_pos_tangent16_norm_uv16",
-          "texture": "doct4238_winter",
+          "texture": "doct4238",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "doct/rocks_14_01.bin",
           "indexCount": 32973,
           "shader": "shader_pos_tangent16_norm_uv16_uv",
-          "texture": "doct4238_winter",
+          "texture": "doct4238",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
@@ -4302,7 +4302,7 @@
           "mesh": "doct/terrain_14_01.bin",
           "indexCount": 7134,
           "shader": "shader_pos_tangent_norm_uv2",
-          "texture": "doct4238_winter",
+          "texture": "doct4238",
           "transform": [1.0, 0.0, 0.0, 1831.3385, 0.0, -1.19209e-7, 1.0, 189.78743, 0.0, -1.0, -1.19209e-7, 735.96417, 0, 0, 0, 1]
         },
         {
@@ -4771,26 +4771,6 @@
           "tintColor": [0.99, 0.99, 0.99, 0.3],
           "blend": ["SRC_ALPHA", "ONE"],
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
-        },
-        {
-          "mesh": "snow_9_01.bin",
-          "indexCount": 765,
-          "shader": "shader_pos_color_uv_falloff_snow",
-          "texture": "waterfall01",
-          "blend": ["ONE_MINUS_SRC_ALPHA", "ONE"],
-          "uvScale": [1.0, 1.0, 4.0, 16.0],
-          "transform": [25.10964, -4.0, -22.43118, 1425.92554, 0.0, 12.53167, 0.0, 157.4, 20.30888, -4.0, 38.22029, 1366.54523, 0, 0, 0, 1],
-          "uvScroll": [0.0, 0.2]
-        },
-        {
-          "mesh": "snow_9_02.bin",
-          "indexCount": 765,
-          "shader": "shader_pos_color_uv_falloff_snow",
-          "texture": "waterfall01",
-          "blend": ["ONE_MINUS_SRC_ALPHA", "ONE"],
-          "uvScale": [1.0, 1.0, 2.0, 8.0],
-          "transform": [15.10964, -2.0, -12.43118, 1425.92554, 0.0, 1.53167, 0.0, 377.4, 10.30888, -2.0, 18.22029, 1366.54523, 0, 0, 0, 1],
-          "uvScroll": [0.0, 0.2]
         }
       ]
     },
@@ -7762,7 +7742,7 @@
               "mesh": "ad/for-heroes/c_8_01.bin",
               "indexCount": 9816,
               "shader": "shader_pos_norm_uv_ak",
-              "texture": "build/a598440_winter",
+              "texture": "build/a598440",
               "transform": [
                 -0.02026, 0.0496, 0.99856, 1088.69788, -0.99428, 0.10375, -0.02533, 29.52122, -0.10486, -0.99337, 0.04722, 1378.35388,
 
@@ -7773,7 +7753,7 @@
               "mesh": "ad/for-heroes/c_8_02.bin",
               "indexCount": 624,
               "shader": "shader_pos_norm_uv",
-              "texture": "build/a598440_winter",
+              "texture": "build/a598440",
               "transform": [
                 0.75, 0.0, 0.0, 1089.0, 0.0, -8.9407e-8, 0.75, 27.58751, 0.0, -0.75, -8.9407e-8, 1378.0,
 
@@ -8231,7 +8211,7 @@
               "mesh": "ad/for-heroes/s_12_01.bin",
               "indexCount": 1530,
               "shader": "shader_pos_tangent_norm_uv_ak",
-              "texture": "build/a650384_winter",
+              "texture": "build/a650384",
               "transform": [
                 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
 
@@ -8242,7 +8222,7 @@
               "mesh": "ad/for-heroes/s_12_02.bin",
               "indexCount": 840,
               "shader": "shader_pos_tangent_norm_uv_ak",
-              "texture": "build/a650384_winter",
+              "texture": "build/a650384",
               "transform": [
                 0.79336, -0.08873, -0.05209, 1088.76526, 0.05954, 0.06567, 0.79507, 54.17001, -0.08391, -0.79235, 0.07173, 1377.68433,
 
@@ -8253,7 +8233,7 @@
               "mesh": "ad/for-heroes/s_12_03.bin",
               "indexCount": 6252,
               "shader": "shader_pos_tangent_norm_uv_ak",
-              "texture": "build/a650384_winter",
+              "texture": "build/a650384",
               "transform": [
                 0.8, 0.0, 0.0, 1089.0, 0.0, -9.53674e-8, 0.8, 27.58751, 0.0, -0.8, -9.53674e-8, 1378.0,
 
@@ -8264,7 +8244,7 @@
               "mesh": "ad/for-heroes/s_9_01b.bin",
               "indexCount": 144,
               "shader": "shader_pos_color_uv",
-              "texture": "build/a650384_winter",
+              "texture": "build/a650384",
               "transform": [
                 0.79336, -0.08873, -0.05209, 1090.44836, 0.05954, 0.06567, 0.79507, 23.54105, -0.08391, -0.79235, 0.07173, 1375.94531,
 
@@ -8826,100 +8806,100 @@
           "mesh": "ad/understage01_16_01.bin",
           "indexCount": 1254,
           "shader": "shader_pos_tangent16_norm_uv16_color",
-          "texture": "terrain_02_winter",
+          "texture": "terrain_02",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/bushes_8_01.bin",
           "indexCount": 552,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "bushes_winter"
+          "texture": "bushes"
         },
         {
           "mesh": "ad/bushes_8_02.bin",
           "indexCount": 1248,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "bushes_winter",
+          "texture": "bushes",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/bushes_8_03.bin",
           "indexCount": 522,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "bushes_winter"
+          "texture": "bushes"
         },
         {
           "mesh": "ad/bushes_8_04.bin",
           "indexCount": 708,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "bushes_winter"
+          "texture": "bushes"
         },
         {
           "mesh": "ad/bushes_8_05.bin",
           "indexCount": 474,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "bushes_winter"
+          "texture": "bushes"
         },
         {
           "mesh": "ad/trees_8_01.bin",
           "indexCount": 3564,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_8_02.bin",
           "indexCount": 6219,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_8_03.bin",
           "indexCount": 6519,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_8_04.bin",
           "indexCount": 9558,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_8_05.bin",
           "indexCount": 14022,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_8_06.bin",
           "indexCount": 4140,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_8_07.bin",
           "indexCount": 2754,
           "shader": "shader_pos_norm_uv_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/terrain_18_01.bin",
           "indexCount": 507,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_01c.bin",
           "indexCount": 507,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0],
           "transform": [1, 0, 0, -150, 0, 0, 1, -100, 0, -1, 0, 200, 0, 0, 0, 1]
         },
@@ -8927,228 +8907,228 @@
           "mesh": "ad/terrain_18_02.bin",
           "indexCount": 3219,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_03.bin",
           "indexCount": 3024,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_04.bin",
           "indexCount": 1623,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_05.bin",
           "indexCount": 1353,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_06.bin",
           "indexCount": 1038,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_07.bin",
           "indexCount": 1080,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_08.bin",
           "indexCount": 735,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_09.bin",
           "indexCount": 1791,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_10.bin",
           "indexCount": 4017,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_11.bin",
           "indexCount": 999,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_12.bin",
           "indexCount": 1509,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_13.bin",
           "indexCount": 6012,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_30.bin",
           "indexCount": 2214,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [4.0, 6.0, 8.0, 4.0]
         },
         {
           "mesh": "ad/building01_8_01.bin",
           "indexCount": 930,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1262, 0, 0, 1, 31, 0, -1, 0, 1239, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_02.bin",
           "indexCount": 1248,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1259, 0, 0, 1, 34, 0, -1, 0, 1233, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_03.bin",
           "indexCount": 930,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1252, 0, 0, 1, 29, 0, -1, 0, 1208, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_04.bin",
           "indexCount": 1224,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1261, 0, 0, 1, 27, 0, -1, 0, 1243, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_05.bin",
           "indexCount": 1140,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1245, 0, 0, 1, 19, 0, -1, 0, 1199, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_06.bin",
           "indexCount": 1062,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1228, 0, 0, 1, 5, 0, -1, 0, 1183, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_07.bin",
           "indexCount": 1140,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1233, 0, 0, 1, 6, 0, -1, 0, 1187, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_08.bin",
           "indexCount": 834,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_03_winter",
+          "texture": "building01_03",
           "transform": [1, 0, 0, 1238, 0, 0, 1, 8, 0, -1, 0, 1192, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_13.bin",
           "indexCount": 1224,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1250, 0, 0, 1, 23, 0, -1, 0, 1202, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_09.bin",
           "indexCount": 7590,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1259, 0, 0, 1, 28, 0, -1, 0, 1223, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_10.bin",
           "indexCount": 1122,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1256, 0, 0, 1, 35, 0, -1, 0, 1213, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_11.bin",
           "indexCount": 1050,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_02_winter",
+          "texture": "building01_02",
           "transform": [1, 0, 0, 1240, 0, 0, 1, 13, 0, -1, 0, 1196, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building01_8_12.bin",
           "indexCount": 834,
           "shader": "shader_pos_norm_uv",
-          "texture": "building01_03_winter",
+          "texture": "building01_03",
           "transform": [0.9, 0.29, 0, 1171, 0, 0, 0.95, 27, 0.29, -0.9, 0, 1336, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/rocks_16_08.bin",
           "indexCount": 7245,
           "shader": "shader_pos_tangent_norm_uv_color",
-          "texture": "terrain_03_winter"
+          "texture": "terrain_03"
         },
         {
           "mesh": "ad/rocks_16_01.bin",
@@ -9203,7 +9183,7 @@
           "mesh": "ad/terrain_16_01.bin",
           "indexCount": 1103,
           "shader": "shader_pos_tangent_norm_uv_color",
-          "texture": "terrain_02_winter",
+          "texture": "terrain_02",
           "strip": true,
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
@@ -9211,7 +9191,7 @@
           "mesh": "ad/building01_12_01.bin",
           "indexCount": 9492,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building01_03_winter",
+          "texture": "building01_03",
           "transform": [0.9, 0.3, 0, 1171, 0, 0, 0.95, 27, 0.29, -0.9, 0, 1336, 0, 0, 0, 1]
         },
         {
@@ -9266,160 +9246,160 @@
           "mesh": "ad/terrain_18_14.bin",
           "indexCount": 1674,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_15.bin",
           "indexCount": 495,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_16.bin",
           "indexCount": 681,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_17.bin",
           "indexCount": 3606,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_18.bin",
           "indexCount": 819,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_19.bin",
           "indexCount": 2136,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_20.bin",
           "indexCount": 111,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_21.bin",
           "indexCount": 1590,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_22.bin",
           "indexCount": 1464,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_23.bin",
           "indexCount": 1332,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_24.bin",
           "indexCount": 1011,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_25.bin",
           "indexCount": 219,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_26.bin",
           "indexCount": 3753,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_27.bin",
           "indexCount": 546,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_28.bin",
           "indexCount": 651,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
           "mesh": "ad/terrain_18_29.bin",
           "indexCount": 159,
           "shader": "shader_pos_norm_color_uv2_tangent",
-          "texture": "terrain_02_winter",
-          "texture_2": "terrain_03_winter",
-          "texture_3": "terrain_04_winter",
-          "texture_4": "terrain_05_winter",
+          "texture": "terrain_02",
+          "texture_2": "terrain_03",
+          "texture_3": "terrain_04",
+          "texture_4": "terrain_05",
           "uvScale": [2.0, 3.0, 5.0, 1.0]
         },
         {
@@ -9447,28 +9427,28 @@
           "mesh": "ad/trees_10_01.bin",
           "indexCount": 16668,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/trees_10_02.bin",
           "indexCount": 1140,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/trees_10_04.bin",
           "indexCount": 5748,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/trees_10_05.bin",
           "indexCount": 54,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
@@ -9482,121 +9462,121 @@
           "mesh": "ad/trees_10_06.bin",
           "indexCount": 37362,
           "shader": "shader_pos_norm_uv2_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/highland.bin",
           "indexCount": 43950,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/highland02.bin",
           "indexCount": 255,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/highland03.bin",
           "indexCount": 54,
           "shader": "shader_pos_norm_uv16_uv_ak",
-          "texture": "trees_winter",
+          "texture": "trees",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/trees_10_07.bin",
           "indexCount": 21831,
           "shader": "shader_pos_norm_uv2_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/trees_10_08.bin",
           "indexCount": 22413,
           "shader": "shader_pos_norm_uv2_ak",
-          "texture": "trees_winter"
+          "texture": "trees"
         },
         {
           "mesh": "ad/building02_12_01.bin",
           "indexCount": 966,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1165.61, 0, 0, 1, 39.61, -0.71, -0.71, 0, 1302.4, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_02.bin",
           "indexCount": 492,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1169.01, 0, 0, 1, 34.5, -0.71, -0.71, 0, 1314.2, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_03.bin",
           "indexCount": 453,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_04.bin",
           "indexCount": 522,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1147.5, 0, 0, 1, 67.77, -0.71, -0.71, 0, 1273.6, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_05.bin",
           "indexCount": 19710,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter"
+          "texture": "building02"
         },
         {
           "mesh": "ad/building02_12_06.bin",
           "indexCount": 606,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1147.34, 0, 0, 1, 49.45, -0.71, -0.71, 0, 1290.4, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_07.bin",
           "indexCount": 936,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_08.bin",
           "indexCount": 819,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1165, 0, 0, 1, 40, -0.71, -0.71, 0, 1297, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_09.bin",
           "indexCount": 435,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1141, 0, 0, 1, 51, -0.71, -0.71, 0, 1292, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_10.bin",
           "indexCount": 8226,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter"
+          "texture": "building02"
         },
         {
           "mesh": "ad/building02_12_11.bin",
           "indexCount": 2340,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.66, -0.75, 0.02, 1164, 0, 0.026, 1, 41, -0.75, -0.65, 0.02, 1282, 0, 0, 0, 1]
         },
         {
           "mesh": "ad/building02_12_12.bin",
           "indexCount": 798,
           "shader": "shader_pos_tangent_norm_uv_ak",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [0.71, -0.71, 0, 1166, 0, 0, 1, 37, -0.71, -0.71, 0, 1308, 0, 0, 0, 1]
         },
         {
@@ -9664,7 +9644,7 @@
           "mesh": "ad/flag_8_01.bin",
           "indexCount": 72,
           "shader": "shader_pos_norm_uv",
-          "texture": "building02_winter",
+          "texture": "building02",
           "transform": [
             0.07335, 0.70957, 0.70081, 1134.98145, -0.99457, 0.0, 0.10409, 94.44377, 0.07386, -0.70463, 0.70572, 1293.23096, 0.0, 0.0, 0.0,
             1.0
@@ -9734,7 +9714,7 @@
           "mesh": "ad/water_7_03.bin",
           "indexCount": 2922,
           "shader": "shader_pos_color",
-          "texture": "water03_winter",
+          "texture": "water03",
           "uvScale": [0.01, 1, 1, 1],
           "tintColor": [0.5, 0.9, 0.9, 1],
           "blend": ["SRC_ALPHA", "SRC_COLOR"]
@@ -9800,7 +9780,7 @@
           "mesh": "ad/water_7_01.bin",
           "indexCount": 621,
           "shader": "shader_pos_color",
-          "texture": "water_winter",
+          "texture": "water",
           "blend": ["SRC_ALPHA", "SRC_COLOR"],
           "uvScale": [0.002, 1, 1, 1],
           "tintColor": [0.3, 0.6, 0.6, 1.0],
@@ -9810,7 +9790,7 @@
           "mesh": "ad/water_7_02.bin",
           "indexCount": 12093,
           "shader": "shader_pos_color",
-          "texture": "water_winter",
+          "texture": "water",
           "blend": ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
           "uvScale": [0.002, 1, 1, 1],
           "tintColor": [0.3, 0.6, 0.6, 1.0],
@@ -10797,26 +10777,6 @@
           "transform": [
             -20.93209, 0.0, 8.0981, 1274.54407, 0.0, 3.63404, 0.0, 392.28159, -8.09811, 0.0, -20.93207, 1481.92737, 0.0, 0.0, 0.0, 1.0
           ]
-        },
-        {
-          "mesh": "snow_9_01.bin",
-          "indexCount": 765,
-          "shader": "shader_pos_color_uv_falloff_snow",
-          "texture": "waterfall01",
-          "blend": ["ONE_MINUS_SRC_ALPHA", "ONE"],
-          "uvScale": [1.0, 1.0, 4.0, 16.0],
-          "transform": [25.10964, -4.0, -22.43118, 1425.92554, 0.0, 12.53167, 0.0, 157.4, 20.30888, -4.0, 38.22029, 1366.54523, 0, 0, 0, 1],
-          "uvScroll": [0.0, 0.2]
-        },
-        {
-          "mesh": "snow_9_02.bin",
-          "indexCount": 765,
-          "shader": "shader_pos_color_uv_falloff_snow",
-          "texture": "waterfall01",
-          "blend": ["ONE_MINUS_SRC_ALPHA", "ONE"],
-          "uvScale": [1.0, 1.0, 2.0, 8.0],
-          "transform": [15.10964, -2.0, -12.43118, 1425.92554, 0.0, 1.53167, 0.0, 377.4, 10.30888, -2.0, 18.22029, 1366.54523, 0, 0, 0, 1],
-          "uvScroll": [0.0, 0.2]
         }
       ]
     }

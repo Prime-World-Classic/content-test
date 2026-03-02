@@ -13,6 +13,7 @@ import { domAudioPresets } from './domAudioPresets.js';
 import { Sound } from './sound.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { Castle } from './castle.js';
+import { KeybindStore } from './keybindings/keybindings.store.js';
 
 export class Build {
   static loading = false;
@@ -83,6 +84,8 @@ export class Build {
     1: 2.625,
     0: 11.28,
   };
+
+  static binds = [];
 
   static async view(user, hero, nickname = '', animate = true) {
     let request = await App.api.request('build', 'get', {
@@ -273,6 +276,36 @@ export class Build {
     Build.descriptionView.classList.add('build-description');
 
     Build.descriptionView.style.display = 'none';
+
+    const bindCommandsToGet = [
+      "cmd_action_bar_slot1",
+      "cmd_action_bar_slot2",
+      "cmd_action_bar_slot3",
+      "cmd_action_bar_slot4",
+      "cmd_action_bar_slot5",
+      "cmd_action_bar_slot6",
+      "cmd_action_bar_slot7",
+      "cmd_action_bar_slot8",
+      "cmd_action_bar_slot9",
+      "cmd_action_bar_slot10",
+      "cmd_action_bar_slot11",
+      "cmd_action_bar_slot12",
+      "cmd_action_bar_slot13",
+      "cmd_action_bar_slot14",
+      "cmd_action_bar_slot15",
+      "cmd_action_bar_slot16",
+      "cmd_action_bar_slot17",
+      "cmd_action_bar_slot18",
+      "cmd_action_bar_slot19",
+      "cmd_action_bar_slot20",
+      "cmd_action_bar_slot21",
+      "cmd_action_bar_slot22",
+      "cmd_action_bar_slot23",
+      "cmd_action_bar_slot24",
+    ]
+    this.binds = bindCommandsToGet.map((bindCommand) => {
+      return KeybindStore.getBind(bindCommand);
+    })
 
     Build.descriptionView.onmouseover = () => {
       Build.descriptionView.style.display = 'none';
@@ -2185,9 +2218,9 @@ export class Build {
   }
 
   static getKeyName(index) {
-    const keys = ['Я', 'НЕ', 'Хочу', 'Работать', '🙃', '6', '7', 'SHIFT + F1', '9', '0', 'F1', 'F2', 'F3', 'F4'];
+    
 
-    return keys[index] || (index + 1).toString();
+    return Build.binds[index].keys.join('+');
   }
 
   static setSortInventory(key, value) {
