@@ -85,8 +85,16 @@ export class Chat {
   }
 
   static viewMessage(data) {
+	let flag = null;  
+	
     let nickname = DOM({ tag: 'div' }, data.nickname + ': ');
-
+	
+    if (data.flag && data.flag !== 0) {
+        flag = DOM({ tag: 'img' });
+        flag.setAttribute('src', `content/flags/${data.flag}.png`);
+		flag.classList.add('chat-flag');
+    }
+	
     let message = DOM({ tag: 'div' });
 
     if (data.id == 1) {
@@ -117,6 +125,10 @@ export class Chat {
     } else if (data.to == App.storage.data.id) {
       message.style.color = 'rgba(51,255,0,0.9)';
     }
+
+	nickname.style.color = 'rgb(250, 229, 108)';
+
+    nickname.style.fontWeight = 100;
 
     if (data.id == 1) {		
       nickname.style.color = 'transparent';
@@ -154,25 +166,44 @@ export class Chat {
 	  
 	  nickname.dataset.role = Lang.text('titleHelper');
     }
-
-    let item = DOM(
-      {
-        style: 'chat-body-item',
-        domaudio: domAudioPresets.bigButton,
-        event: [
-          'click',
-          () => {
-            Chat.to = data.id;
-
-            Chat.body.lastChild.firstChild.value = `@${data.nickname}, `;
-
-            Chat.input.firstChild.focus();
-          },
-        ],
-      },
-      nickname,
-      message,
-    );
+		
+    let item;
+    if (flag) {
+        item = DOM(
+            {
+                style: 'chat-body-item',
+                domaudio: domAudioPresets.bigButton,
+                event: [
+                    'click',
+                    () => {
+                        Chat.to = data.id;
+                        Chat.body.lastChild.firstChild.value = `@${data.nickname}, `;
+                        Chat.input.firstChild.focus();
+                    },
+                ],
+            },
+            flag,
+            nickname,
+            message
+        );
+    } else {
+        item = DOM(
+            {
+                style: 'chat-body-item',
+                domaudio: domAudioPresets.bigButton,
+                event: [
+                    'click',
+                    () => {
+                        Chat.to = data.id;
+                        Chat.body.lastChild.firstChild.value = `@${data.nickname}, `;
+                        Chat.input.firstChild.focus();
+                    },
+                ],
+            },
+            nickname,
+            message
+        );
+    }
 
     item.addEventListener('contextmenu', () => {
       if (App.isAdmin() || App.isHelper()) {

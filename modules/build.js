@@ -378,8 +378,8 @@ export class Build {
     Build.rarityView = DOM({ style: 'build-rarity' });
 
     Build.activeBarView = DOM({ style: 'build-active-bar' });
-	
-	Build.activeBarKeybindingsView = DOM({ style: 'build-active-bar' });
+
+    Build.activeBarKeybindingsView = DOM({ style: 'build-active-bar' });
 
     let request = await App.api.request('build', 'data', {
       heroId: heroId,
@@ -435,7 +435,7 @@ export class Build {
 
     Build.activeBar(request.active);
 
-//	Build.activeBar([35,-35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+    //	Build.activeBar([35,-35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 
     Build.ruleSortInventory = new Object();
   }
@@ -1360,10 +1360,28 @@ export class Build {
 
         Splash.show(body);
       };
+    }
+
+    // оглавление
+    Build.heroImg.dataset.role = Lang.text('titleTopBuilds');
+
+    // подсказка
+    const tipTitle = 'Билды из Зала славы';
+    const tipBody = [
+      'Билды по данному герою из Зала славы топ-100 игроков.',
+      'Нажмите на иконку, чтобы посмотреть билды.',
+      '',
+      'Для копирования билда из Зала славы оставьте окно своего билда открытым на нужной вкладке.',
+      'Затем перейдите к выбранному билду из Зала славы и нажмите «Украсть билд».',
+    ].join('\n');
+    Build.heroImg.onclick = () => {
+      Window.show('main', 'top', data.id, 0);
     };
-	Build.heroImg.dataset.role = Lang.text('titleTopBuilds');
-	Build.heroImg.onclick = () => {Window.show('main', 'top', data.id, 0)};
-	
+    Build.heroImg.oncontextmenu = (e) => {
+      e.preventDefault();
+      Window.show('main', 'top', data.id, 0);
+    };
+
     Build.heroImg.style.backgroundImage = `url(content/hero/${data.id}/${
       Build.dataRequest.hero.skin.target ? Build.dataRequest.hero.skin.target : 1
     }.webp), url(content/hero/background.png)`;
@@ -1376,10 +1394,82 @@ export class Build {
     rankIcon.style.backgroundSize = '70%, 100%';
     rankIcon.style.backgroundPosition = 'center, center';
     rankIcon.style.backgroundRepeat = 'no-repeat, no-repeat';
+
     let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.rating), rankIcon);
     Build.heroImg.append(rank);
-    // Build.training
-    const wrapper = DOM({ style: 'build-hero-avatar-and-name' }, Build.heroImg, Build.skinView, Build.training);
+
+    const avatarTip = DOM({ style: 'build-avatar-tip' }, DOM({ style: 'tip-title' }, tipTitle), DOM({ style: 'tip-body' }, tipBody));
+    document.body.append(avatarTip);
+
+    
+    function placeAvatarTip() {
+      const r = Build.heroImg.getBoundingClientRect();
+      const gap = 12;
+
+      let left = r.right + gap;
+      let top = r.top + r.height / 2;
+
+      const tipRect = avatarTip.getBoundingClientRect();
+
+      top = top - tipRect.height / 2;
+
+      const pad = 10;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+
+      if (left + tipRect.width > vw - pad) {
+        left = r.left - gap - tipRect.width;
+      }
+
+      left = Math.max(pad, Math.min(left, vw - tipRect.width - pad));
+
+      top = Math.max(pad, Math.min(top, vh - tipRect.height - pad));
+
+      avatarTip.style.left = `${Math.round(left)}px`;
+      avatarTip.style.top = `${Math.round(top)}px`;
+    }
+
+    let tipOpen = false;
+
+    function openTip() {
+      if (tipOpen) return;
+      tipOpen = true;
+
+      avatarTip.classList.add('is-open');
+      requestAnimationFrame(() => {
+        placeAvatarTip();
+      });
+    }
+
+    function closeTip() {
+      if (!tipOpen) return;
+      tipOpen = false;
+      avatarTip.classList.remove('is-open');
+    }
+
+    Build.heroImg.addEventListener('mouseenter', openTip);
+    Build.heroImg.addEventListener('mouseleave', closeTip);
+
+    function onViewportChange() {
+      if (!tipOpen) return;
+      placeAvatarTip();
+    }
+    window.addEventListener('scroll', onViewportChange, true);
+    window.addEventListener('resize', onViewportChange);
+
+    const oldCleanup = Build.cleanup;
+    Build.cleanup = function () {
+      try {
+        window.removeEventListener('scroll', onViewportChange, true);
+        window.removeEventListener('resize', onViewportChange);
+        if (avatarTip && avatarTip.parentNode) avatarTip.remove();
+      } catch (e) {}
+      if (typeof oldCleanup === 'function') oldCleanup.call(Build);
+    };
+
+    const avatarWrap = DOM({ style: 'build-avatar-wrap' }, Build.heroImg);
+
+    const wrapper = DOM({ style: 'build-hero-avatar-and-name' }, avatarWrap, Build.skinView, Build.training);
 
     Build.heroView.append(wrapper, stats);
   }
@@ -2029,9 +2119,9 @@ export class Build {
     Build.activeBarItems = data;
 
     console.log('activeBar', data);
-	
+
     let index = 0;
-	
+
     for (let item of data) {
       const element = DOM({
         domaudio: domAudioPresets.defaultButton,
@@ -2053,7 +2143,7 @@ export class Build {
           },
         ],
       });
-	  
+
       if (item >= 0) {
         element.dataset.active = 0;
       } else {
@@ -2085,21 +2175,21 @@ export class Build {
       }
 
       Build.activeBarView.append(element);
-	  
-	  const keyElement = DOM({style: 'build-active-bar-key'}, Build.getKeyName(index));
-	  
+
+      const keyElement = DOM({ style: 'build-active-bar-key' }, Build.getKeyName(index));
+
       Build.activeBarKeybindingsView.append(keyElement);
-		
+
       index++;
     }
   }
-	
-  static getKeyName(index) {  
+
+  static getKeyName(index) {
     const keys = ['Я', 'НЕ', 'Хочу', 'Работать', '🙃', '6', '7', 'SHIFT + F1', '9', '0', 'F1', 'F2', 'F3', 'F4'];
-	
+
     return keys[index] || (index + 1).toString();
   }
-  
+
   static setSortInventory(key, value) {
     if (!(key in Build.ruleSortInventory)) {
       Build.ruleSortInventory[key] = new Array();
@@ -2233,25 +2323,25 @@ export class Build {
       element.style.willChange = 'transform';
       element.style.setProperty('transform', 'scale(1.1)', 'important');
       element.style.transition = 'transform 0.1s ease';
-	  
-	  let shiftX = 0;
+
+      let shiftX = 0;
       let shiftY = 0;
 
-	  if(element.dataset.state === '3'){
-		shiftX = event.clientX;
+      if (element.dataset.state === '3') {
+        shiftX = event.clientX;
         shiftY = event.clientY;
-	  } else {
-		let rect = element.getBoundingClientRect();
+      } else {
+        let rect = element.getBoundingClientRect();
         shiftX = event.pageX - rect.left - 5;
         shiftY = event.pageY - rect.top - 5;
-	   
+
         let offsetParent = element;
         do {
           shiftX += offsetParent.offsetParent.offsetLeft;
           shiftY += offsetParent.offsetParent.offsetTop;
           offsetParent = offsetParent.offsetParent;
         } while (!(offsetParent.id == 'wbuild' || offsetParent.id == 'viewbuild'));
-	  }
+      }
 
       element.style.zIndex = '9999';
       element.style.position = 'absolute';
@@ -2424,53 +2514,43 @@ export class Build {
           elementSetDisplay(element, 'block');
 
           if (elemBelow && elemBelow.className == 'build-hero-grid-item') {
-			  
             if (data.level && elemBelow.parentNode.dataset.level == data.level) {
-				
-				let conflictState = false;
+              let conflictState = false;
 
-				if ('conflict' in data) {
-					
-					for (let conflictId of data.conflict) {
-						
-						for (let installedTalent of Build.installedTalents) {
-							
-							if (installedTalent) {
-								
-								if (Math.abs(installedTalent.id) == conflictId) {
-									
-									let isCurrentOrdinary = data.id > 0;
-									
-									let isInstalledOrdinary = installedTalent.id > 0;
-									
-									if (isCurrentOrdinary === isInstalledOrdinary) {
-										
-										conflictState = true;
-										
-										break;
-									}
-								}
-							}
-						}
-						
-						if (conflictState) break;
-					}
-				}
+              if ('conflict' in data) {
+                for (let conflictId of data.conflict) {
+                  for (let installedTalent of Build.installedTalents) {
+                    if (installedTalent) {
+                      if (Math.abs(installedTalent.id) == conflictId) {
+                        let isCurrentOrdinary = data.id > 0;
 
-				if (conflictState) {
-					
-					if (typeof App !== 'undefined' && App.notify) {
-						
-						const message = Lang.text('talentConflict');
-						
-						App.notify(message);
-					}
-				}
+                        let isInstalledOrdinary = installedTalent.id > 0;
 
-				if (!conflictState) {
-					if ('conflict' in data) {
-						Build.fieldConflict[Math.abs(data.id)] = true;
-					}
+                        if (isCurrentOrdinary === isInstalledOrdinary) {
+                          conflictState = true;
+
+                          break;
+                        }
+                      }
+                    }
+                  }
+
+                  if (conflictState) break;
+                }
+              }
+
+              if (conflictState) {
+                if (typeof App !== 'undefined' && App.notify) {
+                  const message = Lang.text('talentConflict');
+
+                  App.notify(message);
+                }
+              }
+
+              if (!conflictState) {
+                if ('conflict' in data) {
+                  Build.fieldConflict[Math.abs(data.id)] = true;
+                }
 
                 let prevState = element.dataset.state;
                 element.dataset.state = 2;
@@ -2618,7 +2698,7 @@ export class Build {
               if (data.active && oldParentNode.dataset.position) {
                 await removeFromActive(oldParentNode.dataset.position);
               }
-			  
+
               await App.api.request('build', 'setZero', {
                 buildId: Build.id,
                 index: oldParentNode.dataset.position,
