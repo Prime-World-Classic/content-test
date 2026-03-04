@@ -261,7 +261,6 @@
       'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
     makeStatPriorityTitle: 'Make characteristic priority',
     talentQualityTitle: '{name} talent quality',
-	titleTopBuilds: 'Top builds (LMB)',
 
     //Друзья
 
@@ -283,7 +282,7 @@
 
     //Войс
 
-    enableMic: 'Press Ctrl+Z or click your Nickname to enable: {Voice.mic.label}',
+    enableMic: 'Press <strong>Ctrl+Z</strong> or click your Nickname to enable: {Voice.mic.label}',
     mediaDevicesError: 'Cannot access media devices: {error}',
     streamTracksError: 'Cannot get stream tracks: {error}',
     mediaTracksLack: 'No media tracks available',
@@ -293,8 +292,8 @@
     callsDropped: 'Calls successfully dropped except for your friends',
     voiceDisabled: 'Voice communication is disabled',
     synthesisLang: 'en-US',
-    hotkeyDropCalls: 'Ctrl+K - drop all calls except friends',
-    hotkeyVolumeControl: 'Ctrl+↑/↓ - increase/decrease volume',
+    hotkeyDropCalls: '<strong>Ctrl+K</strong> - drop all calls except friends',
+    hotkeyVolumeControl: '<strong>Ctrl+↑/↓</strong> - increase/decrease volume',
 
     // Квесты
     qDays: 'd.',

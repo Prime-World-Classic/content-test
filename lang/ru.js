@@ -265,7 +265,6 @@
       'Учитывание талантов, которые дают дополнительный баф от типа территории (земли) - родная, вражеская/нейтральная (например таланты красного качества "Оберег жизни", "Сияние естества")',
     makeStatPriorityTitle: 'Сделать характеристику приоритетной',
     talentQualityTitle: '{name} качество талантов',
-	titleTopBuilds: 'Топ билды (ЛКМ)',
 
     //Друзья
     callAFriend: 'Звонок',
@@ -286,7 +285,7 @@
     kristallik: 'qwe',
 
     //Войс
-    enableMic: 'Нажмите Ctrl+Z или на свой Ник, чтобы включить: {Voice.mic.label}',
+    enableMic: 'Нажмите <strong>Ctrl+Z</strong> или на свой Ник, чтобы включить: {Voice.mic.label}',
     mediaDevicesError: 'Не можем получить доступ к медиа устройствам: {error}',
     streamTracksError: 'Не можем получить дорожки потоков: {error}',
     mediaTracksLack: 'Отсутствие медиа потоков',
@@ -296,8 +295,8 @@
     callsDropped: 'Звонки успешно сброшены за исключением ваших друзей',
     voiceDisabled: 'Голосовая связь отключена',
     synthesisLang: 'ru-RU',
-    hotkeyDropCalls: 'Ctrl+K - сбросить все звонки кроме друзей',
-    hotkeyVolumeControl: 'Ctrl+↑/↓ - повысить/понизить громкость',
+    hotkeyDropCalls: '<strong>Ctrl+K</strong> - сбросить все звонки кроме друзей',
+    hotkeyVolumeControl: '<strong>Ctrl+↑/↓</strong> - повысить/понизить громкость',
 
     // Квесты
     qDays: 'д.',
