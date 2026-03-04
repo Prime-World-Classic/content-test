@@ -1409,10 +1409,12 @@ export class Build {
     ].join('\n');
     Build.heroImg.onclick = () => {
       Window.show('main', 'top', data.id, 0);
+      closeTip();
     };
     Build.heroImg.oncontextmenu = (e) => {
       e.preventDefault();
       Window.show('main', 'top', data.id, 0);
+      closeTip();
     };
 
     Build.heroImg.style.backgroundImage = `url(content/hero/${data.id}/${

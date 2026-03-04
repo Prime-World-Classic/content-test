@@ -236,13 +236,13 @@ export class Voice {
 
     if (Voice.mic) {
       if (Voice.mic.enabled) {
-        tutorial.innerText = Lang.text('hotkeyDropCalls') + '\n' + Lang.text('hotkeyVolumeControl');
+        tutorial.innerHTML = Lang.text('hotkeyDropCalls') + '<br>' + Lang.text('hotkeyVolumeControl');
       } else {
-        tutorial.innerText =
+        tutorial.innerHTML =
           Lang.text('hotkeyDropCalls') +
-          '\n' +
+          '<br>' +
           Lang.text('hotkeyVolumeControl') +
-          '\n────────────\n' +
+          '<br>────────────<br>' +
           Lang.text('enableMic').replace('{Voice.mic.label}', Voice.mic.label);
       }
     }
