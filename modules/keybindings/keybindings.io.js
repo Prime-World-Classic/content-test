@@ -54,10 +54,21 @@ export async function findConfigFile() {
   if (documentsPath) {
     console.log('Searching for native config file...');
     const configPath = NativeAPI.path.join(documentsPath, 'My Games', 'Prime World Classic', 'input_new.cfg');
+	const backupPath = NativeAPI.path.join(documentsPath, 'My Games', 'Prime World Classic', 'input_new_backup.cfg');
 
     try {
       await NativeAPI.fileSystem.promises.access(configPath);
       console.log('Found native config file at', configPath);
+      try {
+        await NativeAPI.fileSystem.promises.access(backupPath);
+        console.log('Backup already exists at', backupPath);
+      } catch (backupErr) {
+        if (backupErr.code === 'ENOENT') {
+          console.log('Creating backup at', backupPath);
+          await NativeAPI.fileSystem.promises.copyFile(configPath, backupPath);
+          console.log('Backup created successfully');
+        }
+      }	  
       return { type: 'native', path: configPath };
     } catch (e) {
       if (e.code === 'ENOENT') {

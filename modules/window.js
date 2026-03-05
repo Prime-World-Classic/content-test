@@ -842,7 +842,15 @@ export class Window {
 
   static async settings() {
     let soundTestId = 'sound_test';
+	
+	 setTimeout(() => {
+          const sliders = document.querySelectorAll('.castle-menu-slider');
+          sliders.forEach(slider => {
+              Window.updateSliderFill(slider);
+          });
+      }, 0);
 
+	
     return DOM(
       { id: 'wcastle-menu' },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('preferences'))),
@@ -946,6 +954,7 @@ export class Window {
                 Settings.ApplySettings({ render: false, window: false });
 
                 document.getElementById('global-volume-percentage').textContent = `${Math.round(Settings.settings.globalVolume * 100)}%`;
+				Window.updateSliderFill(e.target);
               },
             ],
           }),
@@ -977,6 +986,7 @@ export class Window {
                 Settings.ApplySettings({ render: false, window: false });
 
                 document.getElementById('music-volume-percentage').textContent = `${Math.round(Settings.settings.musicVolume * 100)}%`;
+				Window.updateSliderFill(e.target);
               },
             ],
           }),
@@ -1022,6 +1032,7 @@ export class Window {
                 }
 
                 document.getElementById('sounds-volume-percentage').textContent = `${Math.round(Settings.settings.soundsVolume * 100)}%`;
+				Window.updateSliderFill(e.target);
               },
             ],
           }),
@@ -1650,6 +1661,14 @@ export class Window {
         ),
       ),
     );
+  }
+  
+  static updateSliderFill(slider) {
+	const value = slider.value;
+	const max = slider.max;
+	const percentage = 2 + (value / max * 98);
+	console.log(value, max);
+	slider.style.setProperty('--fill-percentage', percentage + '%');
   }
 }
 Window.keybindings = keybindings;
