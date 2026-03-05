@@ -253,14 +253,12 @@
     renameBuild: 'Rename build',
     native: 'Native',
     enemy: 'Enemy',
-    gradualTalentsTitle:
-      'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
-    aoeTalentsTitle:
-      'Accounting for talents that affect "all allies/enemies" temporarily or permanently, actively or passively (e.g., red quality talents "Hymn of Determination", "Inspiring Hymn")',
-    territoryTalentsTitle:
-      'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
+    gradualTalentsTitle: 'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
+    aoeTalentsTitle: 'Accounting for talents that affect "all allies/enemies" temporarily or permanently, actively or passively (e.g., red quality talents "Hymn of Determination", "Inspiring Hymn")',
+    territoryTalentsTitle: 'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
     makeStatPriorityTitle: 'Make characteristic priority',
-    talentQualityTitle: '{name} talent quality',
+    tipTitle: 'Hall of Fame Builds (LMB)',
+	tipBody: 'Builds for this hero from the Hall of Fame top-100 players.\nClick on the icon to view builds.\n\nTo copy a build from the Hall of Fame, leave your build window open on the desired tab.\nThen go to the selected build from the Hall of Fame and click "Steal build".',
 
     //Друзья
 

@@ -1395,26 +1395,9 @@ export class Build {
       };
     }
 
-    // оглавление
-    Build.heroImg.dataset.role = Lang.text('titleTopBuilds');
-
-    // подсказка
-    const tipTitle = 'Билды из Зала славы';
-    const tipBody = [
-      'Билды по данному герою из Зала славы топ-100 игроков.',
-      'Нажмите на иконку, чтобы посмотреть билды.',
-      '',
-      'Для копирования билда из Зала славы оставьте окно своего билда открытым на нужной вкладке.',
-      'Затем перейдите к выбранному билду из Зала славы и нажмите «Украсть билд».',
-    ].join('\n');
     Build.heroImg.onclick = () => {
       Window.show('main', 'top', data.id, 0);
-      closeTip();
-    };
-    Build.heroImg.oncontextmenu = (e) => {
-      e.preventDefault();
-      Window.show('main', 'top', data.id, 0);
-      closeTip();
+	  closeTip();
     };
 
     Build.heroImg.style.backgroundImage = `url(content/hero/${data.id}/${
@@ -1433,7 +1416,7 @@ export class Build {
     let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.rating), rankIcon);
     Build.heroImg.append(rank);
 
-    const avatarTip = DOM({ style: 'build-avatar-tip' }, DOM({ style: 'tip-title' }, tipTitle), DOM({ style: 'tip-body' }, tipBody));
+    const avatarTip = DOM({ style: 'build-avatar-tip' }, DOM({ style: 'tip-title' }, Lang.text('tipTitle')), DOM({ style: 'tip-body' }, Lang.text('tipBody')));
     document.body.append(avatarTip);
 
     
