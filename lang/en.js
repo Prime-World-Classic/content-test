@@ -20,7 +20,7 @@
     ready: 'Ready!',
     ready2: "Confirm the hero's choice",
     library: 'Library',
-    menu: 'Menu',
+    menu: 'Game Menu',
     account: 'Account',
     steamConnect: 'Connect Steam',
     nicknameChange: 'Change your nickname',
@@ -1362,7 +1362,7 @@
     htalent_36_name: 'Explosive Mutagen',
     htalent_36_description:
       "Enemies finished off by the hero's attack or class talents explode, dealing <mag>%s</mag> damage around and restore <num>%s</num> Health to the hero (based on the higher of Strength or Intellect).<br>\n<rz>When finishing off an enemy from native terrain, the hero restores <num>2</num> times more Health.</rz>",
-    htalent_37_name: 'Dirty Fighting <mana>80</mana> <CD>14</CD>',
+    htalent_37_name: 'Dirty Fighting <mana>110</mana> <CD>14</CD>',
     htalent_37_description:
       'Deals <mag>%s</mag> damage (based on the higher of Strength or Intellect) to the specified target and all enemies around.</br><rz>When used from native terrain, blinds all affected enemies for <num>3</num> sec.</rz>',
     htalent_38_name: 'Flurry of Blows <mana>60</mana> <CD>15</CD>',
@@ -2176,7 +2176,7 @@
       'By reapplying the Lightsaber talent, you can detonate the lightsaber, spreading the effect enhanced by <num>2</num> times lasting <num>5</num> seconds, as well as increasing the regeneration of Health to allies by <num>%s</num> (from the Intellect).<br> The explosion causes all enemies <fiz>%s</fiz> damage (from Strength).',
     htalent_332_name: 'Spear of Retribution <mana>150</mana> <CD>60</CD>',
     htalent_332_description:
-      'Hits the specified area with a spear, dealing enemies <fiz>%s</fiz> damage and stunning them for <num>1</num> sec.<br>A line of sight opens in the spear area<br>If you pick up a spear within the next <num>10</num> seconds, talent is restored by <num>50%</num> faster.',
+      'Strikes the targeted area with a spear, dealing <fiz>%s</fiz> damage to enemies and stunning them for <num>1</num> second.<br>Reveals the area around the spear.<br>If the spear is picked up within the next <num>10</num> seconds, the talent recovers <num>50%</num> faster.<br>An enemy hit by the spear takes <num>30%</num> less damage from subsequent spears for the next <num>10</num> seconds.',
     htalent_333_name: 'Test of Faith',
     htalent_333_description:
       'The Angel Light talent also speeds up allies and slows down enemies in its path by <num>30%</num> for <num>3</num> seconds.',
@@ -2357,12 +2357,12 @@
       'A ball thrown with the Dizzying Throw talent marks the enemy hero for <num>3</num> seconds. While the target is marked, you can reactivate the talent to move behind her, deal <mag>%s</mag> damage and slow her down by <num>40%</num> for <num>3</num> seconds.',
     htalent_395_name: 'Milkshake <mana>80</mana> <CD>30</CD>',
     htalent_395_description:
-      'Removes all negative effects and restores <num>%s</num> Health (from the greatest of Strength and Intellect) for <num>6</num> seconds.<br>\n<rz>When used from the native land, it restores <num>30%</num> more Health.</rz>',
+      'Removes <num>1</num> negative effect and restores <num>%s</num> Health (based on the higher of Strength or Intellect) over <num>6</num> seconds.<br><rz>When used on native terrain, restores <num>30%</num> more Health.</rz>',
     htalent_396_name: 'A straight kiss <mana>300</mana> <CD>120</CD>',
     htalent_396_description:
       'Deals enemy hero <fiz>%s</fiz> damage (from the highest of Strength and Intellect), knocks him away, and then stuns him for <num>0.5</num> sec.<br>A dropped enemy hero deals <fiz>%s</fiz> damage to all enemies in its path before landing.',
     htalent_397_name: 'Whipped cream',
-    htalent_397_description: 'Using the Milkshake talent reduces damage by <num>40%</num> for <num>6</num> seconds.',
+    htalent_397_description: 'Using the Milkshake talent reduces incoming damage by <num>40%</num> for <num>6</num> seconds.',
     htalent_398_name: 'The Forgetting Stick',
     htalent_398_description:
       'Repeated application of the Kiss Through talent for <num>10</num> seconds takes the hero to the dropped enemy, after which the hero deals additional <fiz>%s</fiz> damage to him.',
@@ -3208,7 +3208,7 @@
       "The Clockwork talent additionally deals damage equal to <num>3%</num> of max. Attack target's health and stuns for <num>0.1</num> seconds longer.",
     htalent_706_name: 'Sugar riot',
     htalent_706_description:
-      'The Milkshake Talent additionally reduces damage by <num>10%</num> and reduces recovery time by <num>5</num> seconds.',
+      'The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent\'s cooldown by <num>5</num> seconds.',
     htalent_707_name: 'Terrifying experience',
     htalent_707_description: 'Familiar attack targets panic for <num>0.5</num> sec.',
     htalent_708_name: 'Witch Cover',

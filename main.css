@@ -4417,7 +4417,7 @@ body:has(#wcastle-call)::before {
   width: calc(min(35cqh, 25cqw));
   /*height: 59cqh;*/
   /*background-color: #8d8b8b;*/
-  border-radius: 2cqh;
+  border-radius: 1cqh;
   border: 0.1cqh solid rgb(158, 155, 104);
   background-image: linear-gradient(
     to bottom,
@@ -4433,6 +4433,8 @@ body:has(#wcastle-call)::before {
   justify-content: center;
   padding: 1cqh 1cqh;
   transition: background-color 0.3s ease-in-out;
+  position: fixed;
+  padding-top: 3cqh;
 }
 
 #wcastle-render-debug {
@@ -4483,7 +4485,7 @@ body:has(#wcastle-call)::before {
 }
 .castle-menu-text {
   width: 80cqw;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
   font: 6cqw / 1 Tahoma;
   line-height: 7cqw;
@@ -4495,12 +4497,12 @@ body:has(#wcastle-call)::before {
 
 .castle-menu-item-checkbox {
   width: 90cqw;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
   text-align: left;
   font: 7cqw / 1 Tahoma;
   padding: 1cqw 1cqw;
-  margin: 2cqw 2cqw;
+  margin: 1cqw 2cqw;
   position: relative;
 }
 
@@ -4534,12 +4536,12 @@ body:has(#wcastle-call)::before {
 .castle-menu-item-button {
   width: 90cqw;
   height: 8cqw;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
   font: 8cqw / 1 Tahoma;
   text-align: center;
   padding: 2cqw 2cqw;
-  margin: 4cqw 1cqw;
+  margin: 2cqw 1cqw;
   border-radius: 2cqw;
   border: 0.2cqw solid rgb(158, 155, 104);
   background-color: #002724;
@@ -4612,12 +4614,12 @@ body:has(#wcastle-call)::before {
 
 .castle-menu-label {
   width: 90cqw;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
   font: 8cqw / 1 Tahoma;
   text-align: center;
   padding: 1cqw 1cqw;
-  margin: 4cqw 1cqw;
+  margin: 1cqw 1cqw;
 }
 
 .castle-menu-label-description {

@@ -722,7 +722,7 @@ export class Window {
   static async menu() {
     return DOM(
       { id: 'wcastle-menu' },
-      DOM({ style: 'castle-menu-title' }, Lang.text('menu')),
+      DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('menu'))),
       DOM(
         { style: 'castle-menu-items' },
         App.isAdmin()
@@ -845,7 +845,7 @@ export class Window {
 
     return DOM(
       { id: 'wcastle-menu' },
-      DOM({ style: 'castle-menu-title' }, Lang.text('preferences')),
+      DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('preferences'))),
       DOM(
         { style: 'castle-menu-items' },
         DOM(
@@ -1278,7 +1278,7 @@ export class Window {
   static async support() {
     return DOM(
       { id: 'wcastle-menu' },
-      DOM({ style: 'castle-menu-title' }, Lang.text('support')),
+      DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('support'))),
       DOM(
         { style: 'castle-menu-items' },
         DOM({ style: 'castle-menu-text' }, Lang.text('supportDesk')),
@@ -1344,7 +1344,7 @@ export class Window {
   static async adminPanel() {
     return DOM(
       { id: 'wcastle-menu' },
-      DOM({ style: 'castle-menu-title' }, 'Админ Панель'),
+      DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, 'Админ Панель')),
       DOM(
         {
           domaudio: domAudioPresets.bigButton,
@@ -1424,9 +1424,7 @@ export class Window {
     );
   }
   static async accountPanel() {
-    return DOM(
-      { id: 'wcastle-menu' },
-      DOM({ style: 'castle-menu-title' }, Lang.text('account')),
+    return DOM({ id: 'wcastle-menu' }, DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('account')),),
       DOM(
         {
           domaudio: domAudioPresets.bigButton,
@@ -1598,10 +1596,7 @@ export class Window {
     Window.inviteTimeout = inviteTimeout;
 
     return DOM(
-      { id: 'wcastle-invite' },
-      DOM({style: 'title-modal'},
-        DOM({style: 'title-modal-text'}, 'Сражение'),
-      ),
+      { id: 'wcastle-invite' }, DOM({style: 'title-modal'},DOM({style: 'title-modal-text'}, 'Сражение'),),
       DOM({ style: 'castle-menu-title' }, Lang.text('friendInvitesToLobby').replace('{nickname}', displayNickname)),
       DOM(
         { style: 'castle-menu-items-modal' },
