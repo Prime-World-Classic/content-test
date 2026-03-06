@@ -2203,9 +2203,9 @@ export class Build {
   }
 
   static getKeyName(index) {
-    
 
-    return Build.binds[index].keys.join('+');
+    return index < 10 ? Build.binds[index].keys.join('+') : 'Отключен';
+	
   }
 
   static setSortInventory(key, value) {
