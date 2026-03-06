@@ -2141,6 +2141,7 @@ export class Build {
     let index = 0;
 
     for (let item of data) {
+	  if (index >= 10) break;
       const element = DOM({
         domaudio: domAudioPresets.defaultButton,
         data: { index: index },
