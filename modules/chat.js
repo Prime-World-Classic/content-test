@@ -238,24 +238,20 @@ export class Chat {
           existingItem.append(Chat.createPinButton(data));
         }
       }
-      if (!fromHistory) Chat.addMessageToHistory(data);
+      if (!fromHistory && !data.pinned) Chat.addMessageToHistory(data);
       Chat.scroll();
       return;
     }
 
     if (data.pinned) {
       Chat.syncPinnedMessage(data);
-      if (!fromHistory) {
-        Chat.addMessageToHistory(data);
-        Chat.revealChatIfNeeded();
-      }
+      if (!fromHistory) Chat.revealChatIfNeeded();
       return;
     }
 
     const wasOnlyPinned = Chat.pinnedMessages.some((m) => m.messageId === data.messageId);
     if (wasOnlyPinned) {
       Chat.syncPinnedMessage(data);
-      if (!fromHistory) Chat.addMessageToHistory(data);
       return;
     }
 
@@ -319,7 +315,7 @@ export class Chat {
     } else if (Chat.pinnedMessages.some((m) => m.messageId === data.messageId)) {
       Chat.syncPinnedMessage(data);
     }
-    if (!fromHistory) Chat.addMessageToHistory(data);
+    if (!fromHistory && !data.pinned) Chat.addMessageToHistory(data);
     Chat.scroll();
   }
 
