@@ -556,14 +556,7 @@ export class MM {
 
       let name = DOM({ style: 'mm-lobby-header-team-player-name' }, `${data.users[key].nickname}`);
 
-      const rankIcon = DOM({ style: 'rank-icon' });
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(data.users[key].rating)}.webp)`;
-      const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
-      rankIconWrapper.style.backgroundImage = `url(content/ranks/rateIconBack.png)`;
-      rankIconWrapper.style.backgroundSize = 'contain';
-      rankIconWrapper.style.backgroundPosition = 'center center';
-      rankIconWrapper.style.backgroundRepeat = 'no-repeat';
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.users[key].rating), rankIconWrapper);
+      let rank = Rank.createRankNode(data.users[key].rating);
 
       hero.append(rank, DOM({ style: 'mm-frame' }));
 
@@ -684,7 +677,7 @@ export class MM {
         MM.targetBanHeroId = item.id;
       };
 
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating));
+      let rank = Rank.createRankNode(item.rating, { withIcon: false });
 
       hero.append(rank);
 
@@ -718,22 +711,22 @@ export class MM {
     });
 
     chatInput.addEventListener('keyup', async (event) => {
-      if (event.code === 'Enter') {
-        if (chatInput.value.length < 2) {
-          throw 'Количество символов < 2';
-        }
+      if (!App.isEnterKey(event)) return;
 
-        if (chatInput.value.length > 256) {
-          throw 'Количество символов > 256';
-        }
-
-        await App.api.request(App.CURRENT_MM, 'chat', {
-          id: MM.id,
-          message: chatInput.value,
-        });
-
-        chatInput.value = '';
+      if (chatInput.value.length < 2) {
+        throw 'Количество символов < 2';
       }
+
+      if (chatInput.value.length > 256) {
+        throw 'Количество символов > 256';
+      }
+
+      await App.api.request(App.CURRENT_MM, 'chat', {
+        id: MM.id,
+        message: chatInput.value,
+      });
+
+      chatInput.value = '';
     });
 
     let body = DOM(
@@ -867,31 +860,7 @@ export class MM {
       findOldPlayer.firstChild.style.backgroundImage = `url(content/hero/${data.heroId}/${skinId}.webp)`;
 
       const rankContainer = findOldPlayer.firstChild.querySelector('.rank');
-      if (rankContainer) {
-        const rankLvl = rankContainer.querySelector('.rank-lvl');
-        const rankIconWrapper = rankContainer.querySelector('.rank-icon-wrapper');
-        const rankIcon = rankIconWrapper ? rankIconWrapper.querySelector('.rank-icon') : null;
-
-        if (rankLvl) {
-          rankLvl.innerText = data.rating;
-          // Убеждаемся, что backgroundImage удален с rank-lvl
-          rankLvl.style.backgroundImage = '';
-          rankLvl.style.removeProperty('background-image');
-        }
-
-        // Восстанавливаем правильный фон на rank-icon-wrapper (rateIconBack.png)
-        if (rankIconWrapper) {
-          rankIconWrapper.style.backgroundImage = `url(content/ranks/rateIconBack.png)`;
-          rankIconWrapper.style.backgroundSize = 'contain';
-          rankIconWrapper.style.backgroundPosition = 'center center';
-          rankIconWrapper.style.backgroundRepeat = 'no-repeat';
-        }
-
-        // Устанавливаем 99.png только на rank-icon (иконка "готов")
-        if (rankIcon) {
-          rankIcon.style.backgroundImage = `url(content/ranks/99.png)`;
-        }
-      }
+      Rank.setRankReady(rankContainer);
 
       if (data.banHeroId) {
         findOldPlayer.firstChild.lastChild.style.backgroundImage = `url(content/hero/${data.banHeroId}/1.webp)`;
@@ -1008,31 +977,7 @@ export class MM {
       findPlayer.firstChild.style.backgroundImage = url;
 
       const rankContainer = findPlayer.firstChild.querySelector('.rank');
-      if (rankContainer) {
-        const rankLvl = rankContainer.querySelector('.rank-lvl');
-        const rankIconWrapper = rankContainer.querySelector('.rank-icon-wrapper');
-        const rankIcon = rankIconWrapper ? rankIconWrapper.querySelector('.rank-icon') : null;
-
-        if (rankLvl) {
-          rankLvl.innerText = data.rating;
-          // Убеждаемся, что backgroundImage удален с rank-lvl
-          rankLvl.style.backgroundImage = '';
-          rankLvl.style.removeProperty('background-image');
-        }
-
-        // Восстанавливаем правильный фон на rank-icon-wrapper (rateIconBack.png)
-        if (rankIconWrapper) {
-          rankIconWrapper.style.backgroundImage = `url(content/ranks/rateIconBack.png)`;
-          rankIconWrapper.style.backgroundSize = 'contain';
-          rankIconWrapper.style.backgroundPosition = 'center center';
-          rankIconWrapper.style.backgroundRepeat = 'no-repeat';
-        }
-
-        // Устанавливаем backgroundImage только на rank-icon
-        if (rankIcon) {
-          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(data.rating)}.webp)`;
-        }
-      }
+      Rank.updateRankContainer(rankContainer, data.rating);
     }
 
     if (MM.renderBody) {

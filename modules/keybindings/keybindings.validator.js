@@ -74,7 +74,9 @@ function validateBindCommand(bind, line) {
   }
 }
 
-// key conflicts
+// key conflicts — только между активными слотами (cmd_action_bar_slot*)
+const SLOT_COMMAND_PREFIX = 'cmd_action_bar_slot';
+
 function createKeysBindMap(fileModel) {
   const map = new Map();
 
@@ -82,6 +84,7 @@ function createKeysBindMap(fileModel) {
     const sectionName = section.name ?? '__global__';
 
     for (const bind of section.binds) {
+      if (!bind.command.startsWith(SLOT_COMMAND_PREFIX)) continue;
       if (!bind.keys || bind.keys.length === 0) continue;
       if (bind.keys.some((k) => !k)) continue;
 

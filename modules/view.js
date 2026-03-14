@@ -125,9 +125,8 @@ export class View {
     let numEnterEvent = [
       'keyup',
       async (event) => {
-        if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-          App.authorization(login, password);
-        }
+        if (!App.isEnterKey(event)) return;
+        App.authorization(login, password);
       },
     ];
 
@@ -235,9 +234,8 @@ export class View {
     let numEnterEvent = [
       'keyup',
       async (event) => {
-        if (event.code === 'Enter' || event.code === 'NumpadEnter') {
-          App.registration(fraction, invite, login, password, password2);
-        }
+        if (!App.isEnterKey(event)) return;
+        App.registration(fraction, invite, login, password, password2);
       },
     ];
 
@@ -494,10 +492,7 @@ export class View {
         data: { id: player.id },
       });
 
-      const rankIcon = DOM({ style: 'rank-icon' });
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
-      const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, player.rating), rankIconWrapper);
+      let rank = Rank.createRankNode(player.rating);
 
       item.append(rank);
 
@@ -678,38 +673,8 @@ export class View {
               item.style.backgroundSize = 'contain, contain';
 
               const rankContainer = item.querySelector('.rank');
-              if (rankContainer) {
-                const rankLvl = rankContainer.querySelector('.rank-lvl');
-                const rankIconWrapper = rankContainer.querySelector('.rank-icon-wrapper');
-                const rankIcon = rankIconWrapper ? rankIconWrapper.querySelector('.rank-icon') : rankContainer.querySelector('.rank-icon');
-
-                if (rankLvl) {
-                  const heroRating = item2.rating || player.rating || 1100;
-
-                  // Убеждаемся, что backgroundImage удален с rank-lvl
-                  rankLvl.style.backgroundImage = '';
-                  rankLvl.style.removeProperty('background-image');
-                  // Удаляем атрибут style, если он пустой
-                  if (!rankLvl.style.cssText || rankLvl.style.cssText.trim() === '') {
-                    rankLvl.removeAttribute('style');
-                  }
-
-                  rankLvl.textContent = heroRating;
-                }
-
-                // Восстанавливаем правильный фон на rank-icon-wrapper (rateIconBack.png)
-                if (rankIconWrapper) {
-                  rankIconWrapper.style.backgroundImage = `url(content/ranks/rateIconBack.png)`;
-                  rankIconWrapper.style.backgroundSize = 'contain';
-                  rankIconWrapper.style.backgroundPosition = 'center center';
-                  rankIconWrapper.style.backgroundRepeat = 'no-repeat';
-                }
-
-                if (rankIcon) {
-                  const heroRating = item2.rating || player.rating || 1100;
-                  rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(parseInt(heroRating))}.webp)`;
-                }
-              }
+              const heroRating = item2.rating || player.rating || 1100;
+              Rank.updateRankContainer(rankContainer, parseInt(heroRating, 10));
 
               MM.activeSelectHero = item2.id;
               Splash.hide();
@@ -1505,10 +1470,7 @@ export class View {
 
           let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
 
-          let rankIcon = DOM({ style: 'castle-hero-rank-icon' });
-          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
-          const rankIconWrapper = DOM({ style: 'castle-hero-rank-icon-wrapper' }, rankIcon);
-          let rank = DOM({ style: 'castle-hero-rank' }, DOM({ style: 'castle-hero-rank-lvl' }, item.rating), rankIconWrapper);
+          let rank = Rank.createRankNode(item.rating, { stylePrefix: 'castle-hero-' });
 
           let hero = DOM(
             {
@@ -2164,11 +2126,7 @@ export class View {
     for (let item of players) {
       let img = DOM({ style: 'party-middle-item-middle' });
 
-      const rankIcon = DOM({ style: 'rank-icon' });
-      rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
-      const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
-      let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIconWrapper);
-
+      let rank = Rank.createRankNode(item.rating);
       img.append(rank);
 
       let status = DOM({ style: 'party-middle-item-not-ready' }, DOM({}, 'Не готов'));
@@ -2620,11 +2578,7 @@ export class View {
 
         for (const item of result) {
           //item.rating = App.getRandomInt(1100,3000);
-          const rankIcon = DOM({ style: 'rank-icon' });
-          rankIcon.style.backgroundImage = `url(content/ranks/${Rank.icon(item.rating)}.webp)`;
-          const rankIconWrapper = DOM({ style: 'rank-icon-wrapper' }, rankIcon);
-          let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, item.rating), rankIconWrapper);
-
+          let rank = Rank.createRankNode(item.rating);
           const hero = DOM({ style: 'hero-item' }, DOM({ tag: 'span', style: 'name' }, item.name), rank);
 
           hero.addEventListener('click', () => View.show('build', item.id));

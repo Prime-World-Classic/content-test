@@ -83,15 +83,13 @@ export class Chat {
 
     Chat.body.addEventListener('mouseleave', () => Chat.collapsePinnedList());
 
-		const handleSend = async (event) => {
-		  if (event.key === 'Enter' || event.keyCode === 13 || event.code === 'Enter' || event.code === 'NumpadEnter') {
-			event.preventDefault();
-			await Chat.sendMessage();
-		  }
-		};
+    const handleSend = async (event) => {
+      if (!App.isEnterKey(event)) return;
 
- // input.addEventListener('keyup', handleSend);
- // input.addEventListener('keypress', handleSend);
+      event.preventDefault();
+      await Chat.sendMessage();
+    };
+
     input.addEventListener('keydown', handleSend);
 
     input.addEventListener('input', () => {
@@ -414,6 +412,7 @@ export class Chat {
 
   static fillPinnedList(list) {
     while (list.firstChild) list.firstChild.remove();
+
     Chat.pinnedMessages.forEach((msg) => {
       const { flag, nickname, message } = Chat.buildMessageContent(msg);
       const contentWrap = DOM({ style: 'chat-body-item-content' }, ...(flag ? [flag, nickname, message] : [nickname, message]));
@@ -425,6 +424,7 @@ export class Chat {
         },
         contentWrap,
       );
+
       if (Chat.canManagePins) row.append(Chat.createPinButton(msg, '❌'));
       list.append(row);
     });
@@ -518,4 +518,5 @@ export class Chat {
       App.error(error);
     }
   }
+
 }

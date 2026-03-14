@@ -1,6 +1,71 @@
 import { Lang } from './lang.js';
+import { DOM } from './dom.js';
 
 export class Rank {
+
+  static RATE_ICON_BACK = 'url(content/ranks/rateIconBack.png)';
+  static RANK_ICON_PATH = (id) => `url(content/ranks/${id}.webp)`;
+
+  /** Создаёт DOM-блок ранга: .rank > .rank-lvl + .rank-icon-wrapper > .rank-icon (или с stylePrefix, например castle-hero-). */
+  static createRankNode(rating, options = {}) {
+    const prefix = options.stylePrefix || '';
+    const withIcon = options.withIcon !== false;
+
+    const lvl = DOM({ style: `${prefix}rank-lvl` }, rating);
+
+    if (!withIcon) {
+      return DOM({ style: `${prefix}rank` }, lvl);
+    }
+
+    const icon = DOM({ style: `${prefix}rank-icon` });
+    icon.style.backgroundImage = Rank.RANK_ICON_PATH(Rank.icon(rating));
+
+    const wrapper = DOM({ style: `${prefix}rank-icon-wrapper` }, icon);
+    wrapper.style.backgroundImage = Rank.RATE_ICON_BACK;
+    wrapper.style.backgroundSize = 'contain';
+    wrapper.style.backgroundPosition = 'center center';
+    wrapper.style.backgroundRepeat = 'no-repeat';
+
+    return DOM({ style: `${prefix}rank` }, lvl, wrapper);
+  }
+
+  /** Обновляет существующий контейнер .rank: текст рейтинга, сброс фона у .rank-lvl, иконка по рейтингу. */
+  static updateRankContainer(rankContainer, rating) {
+    if (!rankContainer) return;
+
+    const lvl = rankContainer.querySelector('.rank-lvl');
+    const wrapper = rankContainer.querySelector('.rank-icon-wrapper');
+    const icon = wrapper ? wrapper.querySelector('.rank-icon') : rankContainer.querySelector('.rank-icon');
+
+    if (lvl) {
+      lvl.innerText = rating;
+      lvl.style.backgroundImage = '';
+      lvl.style.removeProperty('background-image');
+    }
+
+    if (wrapper) {
+      wrapper.style.backgroundImage = Rank.RATE_ICON_BACK;
+      wrapper.style.backgroundSize = 'contain';
+      wrapper.style.backgroundPosition = 'center center';
+      wrapper.style.backgroundRepeat = 'no-repeat';
+    }
+
+    if (icon) {
+      icon.style.backgroundImage = Rank.RANK_ICON_PATH(Rank.icon(rating));
+    }
+  }
+
+  /** Ставит иконку "готов" (99.png) в блок ранга. */
+  static setRankReady(rankContainer) {
+    if (!rankContainer) return;
+
+    const wrapper = rankContainer.querySelector('.rank-icon-wrapper');
+    const icon = wrapper ? wrapper.querySelector('.rank-icon') : rankContainer.querySelector('.rank-icon');
+    if (icon) {
+      icon.style.backgroundImage = 'url(content/ranks/99.png)';
+    }
+  }
+
   static _names = null;
 
   static get name() {
