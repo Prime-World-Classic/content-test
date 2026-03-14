@@ -416,7 +416,7 @@ export class Chat {
 
     if (hasPinned && existingHeader && existingList) {
       const last = Chat.pinnedMessages[Chat.pinnedMessages.length - 1];
-      existingHeader.children[1].textContent = `${last.nickname}: ${last.message}`;
+      existingHeader.children[1].textContent = last.message;
       existingHeader.children[2].textContent = Chat.pinnedMessages.length;
       Chat.fillPinnedList(existingList);
       if (!Chat.pinnedCollapsed) existingListWrap.classList.remove('chat-pinned-list-wrap-collapsed');
@@ -452,7 +452,7 @@ export class Chat {
     );
 
     const title = DOM({ tag: 'div' }, '📌 ');
-    const headerText = DOM({ tag: 'div' }, `${last.nickname}: ${last.message}`);
+    const headerText = DOM({ tag: 'div' }, last.message);
     const count = DOM({ tag: 'div', style: 'chat-pinned-count' }, `${total}`);
 
     header.append(title, headerText, count);
