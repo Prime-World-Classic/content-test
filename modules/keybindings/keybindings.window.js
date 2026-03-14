@@ -31,6 +31,10 @@ function createKeyInput({ command, value = null }) {
       input.blur();
       return;
     }
+    if (e.key === 'Backspace') {
+      KeybindStore.setBind(command, [''], value);
+      return;
+    }
     const keys = normalizeKey(e);
     KeybindStore.setBind(command, keys, value);
   });
