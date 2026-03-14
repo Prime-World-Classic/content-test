@@ -216,6 +216,19 @@ export class Chat {
       return;
     }
 
+    if (data.pinned) {
+      if (!Array.isArray(Chat.pinnedMessages)) Chat.pinnedMessages = [];
+      Chat.pinnedMessages = Chat.pinnedMessages.filter((m) => m.messageId !== data.messageId);
+      Chat.pinnedMessages.push(data);
+      Chat.renderPinnedMessages();
+      if (!fromHistory) Chat.addMessageToHistory(data);
+      if (!fromHistory && Chat.hide) {
+        Chat.body.style.display = 'block';
+        Chat.hide = false;
+      }
+      return;
+    }
+
     const { flag, nickname, message } = Chat.buildMessageContent(data);
 
     const item = DOM(
