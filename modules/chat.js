@@ -53,6 +53,34 @@ export class Chat {
 
     Chat.body = DOM({ style: 'chat' }, DOM({ style: 'chat-body' }), Chat.pinnedContainer, Chat.input);
 
+    Chat.roleTooltip = DOM({ style: 'chat-role-tooltip' });
+    document.body.append(Chat.roleTooltip);
+
+    Chat.body.addEventListener('mouseenter', (e) => {
+      const el = e.target.closest('[data-role]');
+      if (!el || !Chat.body.contains(el)) return;
+      const role = el.getAttribute('data-role');
+      if (!role) return;
+      Chat.roleTooltip.textContent = role;
+      Chat.roleTooltip.style.display = 'block';
+      const place = () => {
+        const r = el.getBoundingClientRect();
+        const chatRect = Chat.body.getBoundingClientRect();
+        const tw = Chat.roleTooltip.offsetWidth;
+        const gap = 8;
+        Chat.roleTooltip.style.left = `${chatRect.left - tw - gap}px`;
+        Chat.roleTooltip.style.top = `${r.top}px`;
+      };
+      requestAnimationFrame(place);
+      requestAnimationFrame(place);
+    }, true);
+    Chat.body.addEventListener('mouseleave', (e) => {
+      if (e.relatedTarget !== Chat.roleTooltip && !Chat.roleTooltip.contains(e.relatedTarget)) {
+        Chat.roleTooltip.style.display = 'none';
+      }
+    }, true);
+    Chat.roleTooltip.addEventListener('mouseleave', () => { Chat.roleTooltip.style.display = 'none'; });
+
     Chat.body.addEventListener('mouseleave', () => Chat.collapsePinnedList());
 
 		const handleSend = async (event) => {
