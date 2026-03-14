@@ -229,6 +229,15 @@ export class Chat {
       return;
     }
 
+    const wasOnlyPinned =
+      Array.isArray(Chat.pinnedMessages) && Chat.pinnedMessages.some((m) => m.messageId === data.messageId);
+    if (wasOnlyPinned) {
+      Chat.pinnedMessages = Chat.pinnedMessages.filter((m) => m.messageId !== data.messageId);
+      Chat.renderPinnedMessages();
+      if (!fromHistory) Chat.addMessageToHistory(data);
+      return;
+    }
+
     const { flag, nickname, message } = Chat.buildMessageContent(data);
 
     const item = DOM(
