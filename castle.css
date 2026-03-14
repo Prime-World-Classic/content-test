@@ -1778,6 +1778,10 @@ body {
   z-index: 5;
 }
 
+.castle-chat:has(.chat.chat-has-pinned) {
+  bottom: 17cqh;
+}
+
 .castle-chat .chat {
   position: absolute;
   bottom: 0;

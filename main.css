@@ -3070,8 +3070,9 @@ button.build-action-item:hover {
 }
 
 .chat {
+  position: relative;
   width: 80%;
-  height: 14cqh;
+  height: 13cqh;
   padding: 5%;
   transition: all 0.3s ease-out;
   opacity: 80%;
@@ -3081,16 +3082,73 @@ button.build-action-item:hover {
   border-radius: 1cqh 1cqh 1cqh 1cqh / 1cqh 1cqh 1cqh 1cqh;
 }
 
+.chat.chat-has-pinned {
+  height: 18cqh;
+}
+
 .chat:hover {
-  height: 59cqh;
+  height: 58cqh;
   opacity: 100%;
   transition: all 0.3s ease-out;
+}
+
+.chat.chat-has-pinned:hover {
+  height: 63cqh;
 }
 
 .chat-body {
   height: 10cqh;
   overflow-y: scroll;
   transition: all 0.3s ease-out;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.chat-pinned-container {
+  position: relative;
+  margin-top: 0.5cqh;
+  padding-top: 0.5cqh;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.chat-pinned-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 0.4cqh 0.6cqh;
+  border: 0.2cqh groove rgb(158, 155, 104);
+  background-image: linear-gradient(1turn, rgba(25, 71, 67, 0.8), rgba(18, 69, 73, 0.9), rgba(21, 51, 59, 0.8), rgba(4, 32, 42, 0.8));
+  box-shadow: -2cqh 10cqh 5cqh #0c1f2220;
+  border-radius: 1cqh 1cqh 1cqh 1cqh / 1cqh 1cqh 1cqh 1cqh;
+}
+
+.chat-pinned-count {
+  margin-left: 0.5cqh;
+  padding: 0.1cqh 0.5cqh;
+  border-radius: 999px;
+  background: rgba(255, 215, 0, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  font: 1.6cqh / 1 Tahoma;
+}
+
+.chat-pinned-list-wrap {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 0.5cqh;
+  z-index: 2;
+  border: 0.2cqh groove rgb(158, 155, 104);
+  background-image: linear-gradient(1turn, rgba(25, 71, 67, 0.95), rgba(18, 69, 73, 0.95), rgba(21, 51, 59, 0.95), rgba(4, 32, 42, 0.95));
+  box-shadow: -2cqh 10cqh 5cqh #0c1f2220;
+  border-radius: 1cqh 1cqh 1cqh 1cqh / 1cqh 1cqh 1cqh 1cqh;
+  max-height: 35cqh;
+  overflow-y: auto;
+}
+
+.chat-pinned-list {
+  padding: 0.5cqh;
   display: flex;
   flex-direction: column-reverse;
 }
@@ -3137,6 +3195,7 @@ button.build-action-item:hover {
   font: 2cqh / 1 Tahoma;
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 0.2cqw;
   transition: all 0.3s ease-out;
+  color: rgba(240, 240, 230, 0.9);
 }
 
 .chat-body-item div a {
@@ -3159,10 +3218,35 @@ button.build-action-item:hover {
 
 .chat-body-item div:first-child {
   color: rgb(250, 229, 108);
+}	
+
+.chat-pinned-message {
+  background: rgba(255, 215, 0, 0.06);
+  border-left: 0.2cqh solid rgba(255, 215, 0, 0.7);
 }
 
-.chat-body-item div:last-child {
+.chat-pinned-message,
+.chat-pinned-item {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.chat-pinned-message div:last-child,
+.chat-pinned-item div:last-child {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.chat-pin-button {
+  margin-left: 0.5cqh;
+  padding: 0.2cqh 0.4cqh;
+  font: 1.6cqh / 1 Tahoma;
   color: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 0.4cqh;
+  cursor: pointer;
+}
+
+.chat-pin-button:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .map,
