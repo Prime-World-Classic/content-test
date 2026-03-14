@@ -3121,6 +3121,20 @@ button.build-action-item:hover {
   background-image: linear-gradient(1turn, rgba(25, 71, 67, 0.8), rgba(18, 69, 73, 0.9), rgba(21, 51, 59, 0.8), rgba(4, 32, 42, 0.8));
   box-shadow: -2cqh 10cqh 5cqh #0c1f2220;
   border-radius: 1cqh 1cqh 1cqh 1cqh / 1cqh 1cqh 1cqh 1cqh;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.chat-pinned-header > div:first-child,
+.chat-pinned-header .chat-pinned-count {
+  flex-shrink: 0;
+}
+
+.chat-pinned-header > div:nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .chat-pinned-count {
@@ -3145,6 +3159,15 @@ button.build-action-item:hover {
   border-radius: 1cqh 1cqh 1cqh 1cqh / 1cqh 1cqh 1cqh 1cqh;
   max-height: 35cqh;
   overflow-y: auto;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin-bottom 0.3s ease-out;
+}
+
+.chat-pinned-list-wrap.chat-pinned-list-wrap-collapsed {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  margin-bottom: 0;
+  pointer-events: none;
 }
 
 .chat-pinned-list {
@@ -3187,7 +3210,14 @@ button.build-action-item:hover {
 }
 
 .chat-body-item {
-  margin-top: .5cqh;
+  display: flex;
+  align-items: center;
+  padding: 0.7cqh;
+}
+
+.chat-body-item-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .chat-body-item div {
@@ -3236,7 +3266,8 @@ button.build-action-item:hover {
 }
 
 .chat-pin-button {
-  margin-left: 0.5cqh;
+  margin-left: auto;
+  flex-shrink: 0;
   padding: 0.2cqh 0.4cqh;
   font: 1.6cqh / 1 Tahoma;
   color: rgba(255, 255, 255, 0.9);
