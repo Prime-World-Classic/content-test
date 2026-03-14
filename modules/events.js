@@ -258,6 +258,10 @@ export class Events {
     Chat.viewMessage(data);
   }
 
+  static UChatPinned(data) {
+    Chat.viewMessage(data);
+  }
+
   static async VCall(data) {
     if (data.isCaller) {
       let playCallSoundLoop = () => {
