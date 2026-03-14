@@ -320,7 +320,7 @@ body {
   color: rgba(255, 255, 255, 0.8);
   padding: .5cqh 1cqh;
   border-radius: 1cqh;
-  font: 1.15cqh / 1.3 Tahoma;
+  font: 1.15cqh / 1.3 'DejaVuSans', sans-serif;
   white-space: pre;
   text-wrap: balance;
   text-align: center;
@@ -340,7 +340,7 @@ body {
   color: rgba(255, 255, 255, 0.8);
   padding: .5cqh 1cqh;
   border-radius: 1cqh;
-  font: 1.15cqh / 1.3 Tahoma;
+  font: 1.15cqh / 1.3 'DejaVuSans', sans-serif;
   white-space: pre;
   text-wrap: balance;
   text-align: center;
@@ -368,7 +368,7 @@ body {
   text-align: center;
   font-size: 1.4cqh;
   line-height: 1.9cqh;
-  font-family: 'Tahoma', sans-serif;
+  font-family: 'DejaVuSans', sans-serif;
   font-weight: bold;
   white-space: pre-line;
 }
@@ -677,7 +677,7 @@ body {
   color: rgba(255, 255, 255, 0.8);
   padding: 0.5cqh 1cqh;
   border-radius: 1cqh;
-  font: 1.15cqh / 1.3 Tahoma;
+  font: 1.15cqh / 1.3 'DejaVuSans', sans-serif;
   width: 35cqh;
   white-space: pre;
   text-wrap: balance;
@@ -803,7 +803,7 @@ body {
 .castle-button-play-m5:after,
 .castle-button-play-m6:after,
 .account-rating-menu-item:after {
-  font: 0.7vh/1 Arial; /* Изменено с vw на vh */
+  font: 0.7vh/1 'DejaVuSans', sans-serif; /* Изменено с vw на vh */
   position: absolute;
   top: 4.5vh; /* Изменено с vw на vh */
   width: 4vh; /* Изменено с vw на vh */
@@ -863,7 +863,7 @@ body {
   align-items: center;
   /* line-height: 3vh;   Заменено на центрирование по середине при помощи display: flex; */
   color: #ffe78a;
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
   font-size: 1.1vh; /* Изменено с vw на vh */
   text-shadow:
     rgba(0, 0, 0, 1) 0.05cqh 0.05cqh 0.2cqh,
@@ -881,7 +881,7 @@ body {
   text-align: center;
   line-height: 3vh; /* Изменено с vw на vh */
   color: #ffe78a;
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
   font-size: 1.4vh; /* Изменено с vw на vh */
   display: flex;
   justify-content: center;
@@ -943,7 +943,7 @@ body {
   font-weight: 600;
   font-size: 0.7vh; /* Изменено с vw на vh */
   color: rgba(255, 255, 255, 0.7);
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
 }
 
 .castle-button-play-queue-mode {
@@ -955,7 +955,7 @@ body {
   font-weight: 600;
   font-size: 1vh; /* Изменено с vw на vh */
   color: rgba(255, 255, 255, 0.7);
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
 }
 
 .castle-button-play-9 {
@@ -1042,7 +1042,7 @@ body {
   color: rgba(255, 255, 255, 0.9);
   justify-content: center;
   align-items: center;
-  font: 0.5vh / 1 Verdana;
+  font: 0.5vh / 1 'DejaVuSans', sans-serif;
   display: none;
 }
 
@@ -1086,7 +1086,7 @@ body {
   width: 100cqh;
   height: 100cqh;
   line-height: 100cqh;
-  font: 90cqw / 1 Tahoma;
+  font: 90cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.6);
 }
 
@@ -1097,7 +1097,7 @@ body {
   align-items: center;
   margin-top: 0.2cqh;
   text-align: center;
-  font: 1.4cqh / 1 Tahoma;
+  font: 1.4cqh / 1 'DejaVuSans', sans-serif;
   text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
 
   font-weight: 500;
@@ -1155,7 +1155,7 @@ body {
   border: 0.1cqh solid darkorange;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
   color: #fdd;
-  font: 1.5cqh / 1 Tahoma;
+  font: 1.5cqh / 1 'DejaVuSans', sans-serif;
   padding: 0.2cqh 0.5cqw;
 }
 
@@ -1197,7 +1197,7 @@ body {
   border: 0.1cqh solid darkorange;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
   color: #fdd;
-  font: 1.5cqh / 1 Tahoma;
+  font: 1.5cqh / 1 'DejaVuSans', sans-serif;
   padding: 0.2cqh 0.5cqw;
 }
 
@@ -1208,7 +1208,7 @@ body {
   text-overflow: clip;
   width: 100%;
   text-align: center;
-  font: 1.3cqh / 1 Tahoma;
+  font: 1.3cqh / 1 'DejaVuSans', sans-serif;
   height: 1.5cqh;
   text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
   color: rgb(255, 238, 206);
@@ -1269,7 +1269,7 @@ body {
   height: 1.2cqh;
   margin: 0.5cqh 0cqh;
   text-align: center;
-  font: bold 1.2cqh / 1 Tahoma;
+  font: bold 1.2cqh / 1 'DejaVuSans', sans-serif;
   padding: 0.75cqh 0;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 
@@ -1377,7 +1377,7 @@ body {
   color: rgba(255, 255, 255, 0.8);
   padding: 0.5cqh 1cqh;
   border-radius: 1cqh;
-  font: 6cqh / 1.3 Tahoma;
+  font: 6cqh / 1.3 'DejaVuSans', sans-serif;
   width: 20vw;
   white-space: pre;
   text-wrap: balance;
@@ -1673,7 +1673,7 @@ body {
   border-radius: 3.5cqh;
  text-shadow: rgba(0, 0, 0, 1) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh -0.1cqh 0.1cqh;
   color: rgb(252, 229, 188);
-  font: 9cqh / 1.4 Tahoma;
+  font: 9cqh / 1.4 'DejaVuSans', sans-serif;
   white-space: nowrap;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   transition:
@@ -1702,7 +1702,7 @@ body {
   background-size: contain;
   border-radius: 0.3vw;
   color: rgb(252, 229, 188);
-  font: 9cqh / 1.25 Tahoma;
+  font: 9cqh / 1.25 'DejaVuSans', sans-serif;
   padding: 1.5cqh 5cqh;
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -1721,7 +1721,7 @@ body {
   background-size: contain;
   filter: brightness(.85);
   color: rgb(252, 229, 188);
-  font: 9cqh / 1.3 Tahoma;
+  font: 9cqh / 1.3 'DejaVuSans', sans-serif;
   text-align: center;
   padding: 1cqh 5cqh;
   white-space: nowrap;
@@ -1737,7 +1737,7 @@ body {
   height: 10cqh;
   color: #cc5;
   overflow: scroll;
-  font: 9cqh / 1 Tahoma;
+  font: 9cqh / 1 'DejaVuSans', sans-serif;
   text-shadow: #000 0 0 0.5cqh;
   display: flex;
   align-items: center;
@@ -1949,7 +1949,7 @@ body {
   text-align: left;
   overflow: visible;
   container-type: size;
-  font-family: 'sans-serif', 'DejaVuSans';
+  font-family: 'DejaVuSans', sans-serif;
 }
 
 .shop_with_scroll {

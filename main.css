@@ -65,7 +65,7 @@ body {
   padding: 0;
   margin: 0;
   background: #dcdcdc;
-  font: 2.13cqh/1.5 Tahoma;
+  font: 2.13cqh/1.5 'DejaVuSans', sans-serif;
 }
 body {
   overscroll-behavior: contain;
@@ -430,7 +430,7 @@ select option {
 }
 
 .login-box-form-invite-text {
-  font: 0.9vw / 1 Tahoma;
+  font: 0.9vw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.8);
   font-style: italic;
   margin-bottom: 1vh;
@@ -473,7 +473,7 @@ input::placeholder {
   margin-left: 4%;
   margin-right: 4%;
   margin-bottom: 2vh;
-  font: 1.5rem / 1 Tahoma;
+  font: 1.5rem / 1 'DejaVuSans', sans-serif;
   border: none;
   border-radius: 5vh;
   text-align: center;
@@ -508,7 +508,7 @@ input::placeholder {
   background-color: transparent;
   padding: 2vmin 2vmin;
   /*border-radius:50px;*/
-  font: 1.3rem / 0.5 Tahoma;
+  font: 1.3rem / 0.5 'DejaVuSans', sans-serif;
   text-align: center;
   /*background:rgba(255,255,255,0.2);*/
   color: #fff;
@@ -633,7 +633,7 @@ input::placeholder {
 .game-button {
   color: rgba(255, 255, 255, 0.5);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqh;
-  font: 3cqh / 1 Tahoma;
+  font: 3cqh / 1 'DejaVuSans', sans-serif;
   text-align: center;
   transition: all 0.3s ease-out;
   padding: 0.8cqh 1cqw;
@@ -661,7 +661,7 @@ input::placeholder {
 .build-hero-stats-view {
   display: flex;
   flex-flow: column nowrap;
-  font: 4cqw / 1 Tahoma;
+  font: 4cqw / 1 'DejaVuSans', sans-serif;
   container-type: inline-size;
   width: 100cqmin;
   align-items: center;
@@ -1054,14 +1054,14 @@ button.build-action-item:hover {
 }
 
 .build-action-item {
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
   border-radius: 3cqh;
   box-shadow: 0 0 1cqh rgba(0, 0, 0, 0.3);
 }
 
 .build-play {
   background: rgba(255, 50, 0, 0.9);
-  font: 2rem / 1 Tahoma;
+  font: 2rem / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   padding: 15px 20px;
   border-radius: 75px;
@@ -1069,7 +1069,7 @@ button.build-action-item:hover {
 }
 
 .button-play {
-  font: 3cqh / 1 Tahoma;
+  font: 3cqh / 1 'DejaVuSans', sans-serif;
   background: rgba(255, 50, 0, 0.9);
   color: rgba(255, 255, 255, 0.9);
 }
@@ -1079,7 +1079,7 @@ button.build-action-item:hover {
   position: absolute;
   display: flex;
   flex-flow: column nowrap;
-  font: 3cqh / 1 Tahoma;
+  font: 3cqh / 1 'DejaVuSans', sans-serif;
   color: #fff;
   font-weight: 800;
 }
@@ -1308,7 +1308,7 @@ button.build-action-item:hover {
 .build-description {
   width: auto;
   max-width: 60cqh;
-  font: 1.4cqh / 1.3 Tahoma;
+  font: 1.4cqh / 1.3 'DejaVuSans', sans-serif;
   background: rgba(19, 26, 29, 0.933);
   border: .2cqh groove #6db9b95b;
   color: rgba(255, 255, 255, 0.8);
@@ -1317,7 +1317,7 @@ button.build-action-item:hover {
 }
 
 .build-description b {
-  font: 1.6cqh / 1 Tahoma;
+  font: 1.6cqh / 1 'DejaVuSans', sans-serif;
 }
 
 .build-description div {
@@ -1326,7 +1326,7 @@ button.build-action-item:hover {
 
 .build-description span {
   display: block;
-  font: 1.6cqh / 1 Tahoma;
+  font: 1.6cqh / 1 'DejaVuSans', sans-serif;
   color: rgb(107, 199, 71);
   margin-top: 1cqh;
 }
@@ -1352,12 +1352,12 @@ button.build-action-item:hover {
   width: 100cqw;
   color: rgba(255, 255, 255, 0.8);
   text-shadow: rgba(0, 0, 0, 1) 0 0 4cqh;
-  font: 8cqh / 1 Tahoma;
+  font: 8cqh / 1 'DejaVuSans', sans-serif;
 }
 
 .inventory {
   padding: 3cqh;
-  font: 1rem / 1 Tahoma;
+  font: 1rem / 1 'DejaVuSans', sans-serif;
   display: flex;
   flex-flow: row wrap;
   width: 100cqw;
@@ -1398,7 +1398,7 @@ button.build-action-item:hover {
 }
 
 .feed-item div {
-  font: 2rem / 1.5 Arial;
+  font: 2rem / 1.5 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -1409,7 +1409,7 @@ button.build-action-item:hover {
 
 .feed-item p {
   color: rgba(255, 255, 255, 0.7);
-  font: 1.5rem / 1.5 Arial;
+  font: 1.5rem / 1.5 'DejaVuSans', sans-serif;
   font-style: italic;
 }
 
@@ -1430,7 +1430,7 @@ button.build-action-item:hover {
   background: rgba(255, 255, 255, 0.1);
   padding: 2vmin 2vmin;
   border-radius: 75px;
-  font: 1.5rem / 1 Tahoma;
+  font: 1.5rem / 1 'DejaVuSans', sans-serif;
   color: rgba(0, 0, 0, 0.5);
   text-align: center;
 }
@@ -1494,7 +1494,7 @@ button.build-action-item:hover {
   top: -10cqh;
   width: 100cqw;
   text-align: center;
-  font: 0.9rem / 1 Arial;
+  font: 0.9rem / 1 'DejaVuSans', sans-serif;
   color: #fffd;
   text-shadow: rgba(0, 0, 0, 1) 0 0 5cqh;
 }
@@ -1543,7 +1543,7 @@ button.build-action-item:hover {
   background-size: contain;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
   color: #fdd;
-  font: 12cqw / 1 Tahoma;
+  font: 12cqw / 1 'DejaVuSans', sans-serif;
   font-weight: 600;
   padding: 4cqw 8cqw;
   text-align: center;
@@ -1554,7 +1554,7 @@ button.build-action-item:hover {
 
 .castle-hero-rank-lvl {
   height: 12cqw;
-  font: 14cqw / 1 Tahoma;
+  font: 14cqw / 1 'DejaVuSans', sans-serif;
   padding:  5cqw 8cqw;
 }
 
@@ -1575,7 +1575,7 @@ button.build-action-item:hover {
   overflow-y: auto;
   height: 100cqh;
   color: rgba(255, 255, 255, 0.9);
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-family: 'DejaVuSans', sans-serif;
   background: rgba(25, 25, 35, 0.8);
   backdrop-filter: blur(10px);
   border-radius: 10px;
@@ -1698,7 +1698,7 @@ button.build-action-item:hover {
 .notify-message div {
   padding: 1vmin 2vmin;
   border-radius: 15px;
-  font: 1rem / 1 Tahoma;
+  font: 1rem / 1 'DejaVuSans', sans-serif;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.9);
   text-align: center;
@@ -1766,7 +1766,7 @@ button.build-action-item:hover {
 .splash-text {
   text-align: center;
   margin: 0 0cqw;
-  font: 1.2rem / 1.3 Tahoma;
+  font: 1.2rem / 1.3 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 0.5cqw;
 }
@@ -1824,7 +1824,7 @@ button.build-action-item:hover {
 	border-radius: 12px;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 	backdrop-filter: blur(8px);*/
-  font-family: Tahoma, sans-serif;
+  font-family: 'DejaVuSans', sans-serif;
   font-size: clamp(1.5rem, 3.5cqw, 2rem); /* Адаптивный размер текста */
   line-height: 1.3;
   color: var(--splash-text-color);
@@ -1838,7 +1838,7 @@ button.build-action-item:hover {
   transition: all 0.3s ease-out;
   padding: 0.6vmin 0;
   margin-bottom: 15px;
-  font: 1rem / 1 Tahoma;
+  font: 1rem / 1 'DejaVuSans', sans-serif;
   background: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 50px;
@@ -1868,7 +1868,7 @@ button.build-action-item:hover {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(8px);
-  font-family: Tahoma, sans-serif;
+  font-family: 'DejaVuSans', sans-serif;
   font-size: clamp(1.5cqw, 3.5cqh, 2cqh); /* Адаптивный размер текста */
   line-height: 1.3;
   color: var(--splash-text-color);
@@ -1882,7 +1882,7 @@ button.build-action-item:hover {
   width: 100%;
   padding: 0.6vmin 0;
   margin-bottom: 15px;
-  font: 1rem / 1 Tahoma;
+  font: 1rem / 1 'DejaVuSans', sans-serif;
   background: rgba(255, 255, 255, 0.5);
   border: none;
   border-radius: 50px;
@@ -1993,7 +1993,7 @@ button.build-action-item:hover {
 
 /* Стили для окна замены билда */
 .build-replace-title {
-  font: 1.5rem / 1 Tahoma;
+  font: 1.5rem / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.8);
   margin-bottom: 3cqh;
   text-align: center;
@@ -2004,7 +2004,7 @@ button.build-action-item:hover {
   width: 100%;
   padding: 2vmin 0;
   margin-bottom: 1cqh;
-  font: 1.3rem / 1 Tahoma;
+  font: 1.3rem / 1 'DejaVuSans', sans-serif;
   background: rgba(255, 255, 255, 0.3);
   border: none;
   border-radius: 50px;
@@ -2021,7 +2021,7 @@ button.build-action-item:hover {
   width: 100%;
   padding: 2vmin 0;
   margin-top: 2cqh;
-  font: 1.3rem / 1 Tahoma;
+  font: 1.3rem / 1 'DejaVuSans', sans-serif;
   background: rgba(255, 255, 255, 0.3);
   border: none;
   border-radius: 50px;
@@ -2039,7 +2039,7 @@ button.build-action-item:hover {
   justify-content: center;
   align-items: center;
   /*background:rgba(255,50,0,0.9);*/
-  font: 2.5rem / 1 Tahoma;
+  font: 2.5rem / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.6);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
   padding: 1cqh 1cqw;
@@ -2051,7 +2051,7 @@ button.build-action-item:hover {
 }
 
 .mm-ready-count {
-  font: 4rem / 1 Tahoma;
+  font: 4rem / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
   text-align: center;
@@ -2065,7 +2065,7 @@ button.build-action-item:hover {
 }
 
 .mm-ready-button {
-  font: 1.3cqw / 1 Tahoma;
+  font: 1.3cqw / 1 'DejaVuSans', sans-serif;
   padding: 0.8cqw;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
@@ -2162,7 +2162,7 @@ button.build-action-item:hover {
 }
 
 .mm-lobby-middle-chat-body-item {
-  font: 1.1cqw / 1 Tahoma;
+  font: 1.1cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.7);
   padding: 0.5cqh 1cqw;
 }
@@ -2182,7 +2182,7 @@ button.build-action-item:hover {
   height: 5cqh;
   width: 94%;
   padding: 0 3%;
-  font: 1.3cqw / 1 Tahoma;
+  font: 1.3cqw / 1 'DejaVuSans', sans-serif;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 0 0 3px 3px;
   color: rgba(255, 255, 255, 0.7);
@@ -2224,7 +2224,7 @@ button.build-action-item:hover {
 .lobby-build-tab div {
   color: rgba(255, 255, 255, 0.5);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
-  font: 1cqw / 1 Tahoma;
+  font: 1cqw / 1 'DejaVuSans', sans-serif;
   text-align: center;
   transition: all 0.3s ease-out;
   padding: 0.8cqh 1cqw;
@@ -2245,7 +2245,7 @@ button.build-action-item:hover {
   text-align: center;
   width: 33.33cqw;
   margin: 1cqw 0;
-  font: 1.2cqw / 1 Tahoma;
+  font: 1.2cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.3);
 }
 
@@ -2267,7 +2267,7 @@ button.build-action-item:hover {
   align-items: center;
   width: 33.33cqw;
   margin: 1cqw 0;
-  font: 1.3cqw / 1 Tahoma;
+  font: 1.3cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.8);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
 }
@@ -2335,7 +2335,7 @@ button.build-action-item:hover {
 
 .mm-lobby-header-team-player-name {
   margin-top: 3cqh;
-  font: 1cqw / 1 Tahoma;
+  font: 1cqw / 1 'DejaVuSans', sans-serif;
   color: #fff;
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
   text-align: center;
@@ -2348,7 +2348,7 @@ button.build-action-item:hover {
   background-image: url(img/timer.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  font: 1.5cqw / 1 Tahoma;
+  font: 1.5cqw / 1 'DejaVuSans', sans-serif;
 }
 
 .lobby-select-hero {
@@ -2395,7 +2395,7 @@ button.build-action-item:hover {
 .party-middle-item-nickname {
   margin: 1cqw 0;
   text-align: center;
-  font: bold 1.5cqw / 1 Tahoma;
+  font: bold 1.5cqw / 1 'DejaVuSans', sans-serif;
   color: #ccc;
 }
 
@@ -2406,7 +2406,7 @@ button.build-action-item:hover {
 .party-middle-item-ready {
   margin: 1cqw 0;
   text-align: center;
-  font: 1.5cqw / 1 Tahoma;
+  font: 1.5cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(153, 255, 51, 0.8);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
   font-weight: 600;
@@ -2416,7 +2416,7 @@ button.build-action-item:hover {
 .party-middle-item-not-ready {
   margin: 1cqw 0;
   text-align: center;
-  font: 1.5cqw / 1 Tahoma;
+  font: 1.5cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.3);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
   font-weight: 600;
@@ -2433,7 +2433,7 @@ button.build-action-item:hover {
   background-position: center;
   background-repeat: no-repeat;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
-  font: 6cqw / 1 Tahoma;
+  font: 6cqw / 1 'DejaVuSans', sans-serif;
   line-height: 9.5cqw;
   text-align: center;
   color: rgba(255, 255, 255, 0.2);
@@ -2566,7 +2566,7 @@ button.build-action-item:hover {
   color: rgba(255, 255, 255, 0.8);
   padding: .5cqh 1cqh;
   border-radius: 1cqh;
-  font: 1.5cqh / 1.3 Tahoma;
+  font: 1.5cqh / 1.3 'DejaVuSans', sans-serif;
   white-space: nowrap;
   pointer-events: none;
 }
@@ -2584,7 +2584,7 @@ button.build-action-item:hover {
   color: rgba(255, 255, 255, 0.8);
   padding: 0.5cqh 1cqh;
   border-radius: 1cqh;
-  font: 1.5cqh / 1.3 Tahoma;
+  font: 1.5cqh / 1.3 'DejaVuSans', sans-serif;
   white-space: nowrap;
   pointer-events: none;
 }
@@ -2626,7 +2626,7 @@ button.build-action-item:hover {
   flex-flow: row wrap;
   justify-content: center;
   align-items: center;
-  font: 1.3cqw / 1 Arial;
+  font: 1.3cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.5);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
 }
@@ -2657,7 +2657,7 @@ button.build-action-item:hover {
 }
 
 .top-filter div:last-child {
-  font: 4cqw / 1 Arial;
+  font: 4cqw / 1 'DejaVuSans', sans-serif;
 }
 
 .top-filter:after {
@@ -2723,7 +2723,7 @@ button.build-action-item:hover {
 }
 
 .build-top {
-  font: 3cqw / 1 Tahoma;
+  font: 3cqw / 1 'DejaVuSans', sans-serif;
 }
 
 .build-top,
@@ -2757,7 +2757,7 @@ button.build-action-item:hover {
 }
 
 .build-bottom {
-  font: 1.5cqw / 1 Tahoma;
+  font: 1.5cqw / 1 'DejaVuSans', sans-serif;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -2785,7 +2785,7 @@ button.build-action-item:hover {
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(8px);
-  font-family: Tahoma, sans-serif;
+  font-family: 'DejaVuSans', sans-serif;
   color: var(--search-text-color);
   container-type: inline-size;
   border: 0.1cqh solid rgb(158, 155, 104);
@@ -2870,7 +2870,7 @@ button.build-action-item:hover {
   top: 10vh;
   right: 2vh;
   z-index: 9999;
-  font: 1cqw / 1 Arial;
+  font: 1cqw / 1 'DejaVuSans', sans-serif;
   padding: 0.3vw;
   color: white;
   font-size: 1cqh;
@@ -2885,7 +2885,7 @@ button.build-action-item:hover {
   flex-flow: column nowrap;
   overflow: scroll;
   height: 80cqh;
-  font: 2cqw / 1 Arial;
+  font: 2cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.7);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
 }
@@ -2895,7 +2895,7 @@ button.build-action-item:hover {
   flex-flow: column nowrap;
   overflow: scroll;
   height: 100cqh;
-  font: 2cqw / 1 Arial;
+  font: 2cqw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.7);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 5px;
 }
@@ -2934,7 +2934,7 @@ button.build-action-item:hover {
 }
 
 .ready-button {
-  font: 1.5cqw / 1 Tahoma;
+  font: 1.5cqw / 1 'DejaVuSans', sans-serif;
   padding: 1cqw;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.9);
@@ -3014,7 +3014,7 @@ button.build-action-item:hover {
     rgba(24, 180, 162, 0.8)
   );
   box-shadow: 0 0.1cqh 1cqh 0 rgba(49, 196, 190, 0.75);
-  font: 2cqh / 1.3 Tahoma;
+  font: 2cqh / 1.3 'DejaVuSans', sans-serif;
 }
 
 .list-not-highlight {
@@ -3023,7 +3023,7 @@ button.build-action-item:hover {
   color: rgba(255, 255, 255, 0.5);
   background-image: linear-gradient(to right, rgba(32, 131, 114, 0.7), rgba(32, 131, 114, 0.7));
   box-shadow: 0 0.1cqh 1cqh 0 rgba(49, 196, 190, 0.75);
-  font: 2cqh / 1.3 Tahoma;
+  font: 2cqh / 1.3 'DejaVuSans', sans-serif;
 }
 
 .list-not-highlight:hover {
@@ -3161,7 +3161,7 @@ button.build-action-item:hover {
   border-radius: 999px;
   background: rgba(255, 215, 0, 0.2);
   color: rgba(255, 255, 255, 0.9);
-  font: 1.6cqh / 1 Tahoma;
+  font: 1.6cqh / 1 'DejaVuSans', sans-serif;
 }
 
 .chat-pinned-list-wrap {
@@ -3210,7 +3210,7 @@ button.build-action-item:hover {
   width: 90%;
   height: 4cqh;
   background: none;
-  font: 2cqh / 1 Tahoma;
+  font: 2cqh / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   word-wrap: normal;
 }
@@ -3219,7 +3219,7 @@ button.build-action-item:hover {
   position: relative;
   width: 2.5cqh;
   height: 2.5cqh;
-  font: 2cqh / 1 Tahoma;
+  font: 2cqh / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.377);
 }
 
@@ -3240,7 +3240,7 @@ button.build-action-item:hover {
 
 .chat-body-item div {
   display: inline;
-  font: 2cqh / 1 Tahoma;
+  font: 2cqh / 1 'DejaVuSans', sans-serif;
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 0.2cqw;
   transition: all 0.3s ease-out;
   color: rgba(240, 240, 230, 0.9);
@@ -3287,7 +3287,7 @@ button.build-action-item:hover {
   margin-left: auto;
   flex-shrink: 0;
   padding: 0.2cqh 0.4cqh;
-  font: 1.6cqh / 1 Tahoma;
+  font: 1.6cqh / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   background: rgba(255, 255, 255, 0.06);
   border-radius: 0.4cqh;
@@ -3423,7 +3423,7 @@ button.build-action-item:hover {
 }
 
 .game-description {
-  font: 2.7cqh / 1.3 Tahoma;
+  font: 2.7cqh / 1.3 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.6);
   width: 60cqw;
   height: 100cqh;
@@ -3566,7 +3566,7 @@ button.build-action-item:hover {
 }
 
 .aram-text {
-  font: 2vw / 1.4 Tahoma;
+  font: 2vw / 1.4 'DejaVuSans', sans-serif;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -3608,7 +3608,7 @@ button.build-action-item:hover {
   position: absolute;
   bottom: -2vh;
   background: rgba(255, 50, 0, 0.9);
-  font: 1.5vw / 1 Tahoma;
+  font: 1.5vw / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   padding: 1cqh 1cqw;
   border-radius: 0.8vw;
@@ -3646,14 +3646,14 @@ button.build-action-item:hover {
 
 .aram-briefing-right h3 {
   margin: 0;
-  font: 1.2cqw / 1 Verdana;
+  font: 1.2cqw / 1 'DejaVuSans', sans-serif;
   font-style: italic;
   color: rgba(255, 255, 255, 0.9);
 }
 
 .aram-briefing-right p {
   margin: 4% 0;
-  font: 1cqw / 1.4 Verdana;
+  font: 1cqw / 1.4 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -4036,7 +4036,7 @@ button.build-action-item:hover {
 }
 
 .quest-button-text {
-  font: 2.3cqh / 1 Tahoma;
+  font: 2.3cqh / 1 'DejaVuSans', sans-serif;
   width: 25cqw;
   padding: 1.8cqh;
   text-align: center;
@@ -4142,7 +4142,7 @@ button.build-action-item:hover {
 .keybinding-label {
   width: 60%;
   text-align: left;
-  font: 2.5cqh / 1 Tahoma;
+  font: 2.5cqh / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 0.5cqh;
 }
@@ -4168,7 +4168,7 @@ button.build-action-item:hover {
 }
 
 .keybinding-group-title {
-  font: 5cqw / 1.2 Tahoma;
+  font: 5cqw / 1.2 'DejaVuSans', sans-serif;
   color: #ffe5b7;
   text-shadow:
     -1px -1px 0 #612e0c,
@@ -4266,7 +4266,7 @@ button.build-action-item:hover {
   width: 100cqw;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 7cqw / 1 Tahoma;
+  font: 7cqw / 1 'DejaVuSans', sans-serif;
   position: absolute;
   top: 18cqw;
 }
@@ -4430,7 +4430,7 @@ i-success {
     background-image: url(img/modalHeader.png);
     border-radius: .8cqh 0 0;
     z-index: -1;
-    font-family: -webkit-body
+    font-family: 'DejaVuSans', sans-serif
 }
 
 .title-modal:after {
@@ -4483,7 +4483,7 @@ i-success {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: Tahoma, sans-serif;
+  font-family: 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
   border: .1cqh groove rgba(255, 186, 57, 0.774);
   filter: drop-shadow(0 0 2cqh black);
@@ -4606,7 +4606,7 @@ body:has(#wcastle-call)::before {
   width: 100cqw;
   color: rgba(255, 255, 255, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 1.5cqh Tahoma;
+  font: 1.5cqh 'DejaVuSans', sans-serif;
   margin-top: 3cqh;
 }
 .castle-menu-items {
@@ -4620,7 +4620,7 @@ body:has(#wcastle-call)::before {
   width: 80cqw;
   color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 6cqw / 1 Tahoma;
+  font: 6cqw / 1 'DejaVuSans', sans-serif;
   line-height: 7cqw;
   text-align: center;
   padding: 1cqw 1cqw;
@@ -4633,7 +4633,7 @@ body:has(#wcastle-call)::before {
   color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
   text-align: left;
-  font: 7cqw / 1 Tahoma;
+  font: 7cqw / 1 'DejaVuSans', sans-serif;
   padding: 1cqw 1cqw;
   margin: 1cqw 2cqw;
   position: relative;
@@ -4671,7 +4671,7 @@ body:has(#wcastle-call)::before {
   height: 8cqw;
   color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 8cqw / 1 Tahoma;
+  font: 8cqw / 1 'DejaVuSans', sans-serif;
   text-align: center;
   padding: 2cqw 2cqw;
   margin: 2cqw 1cqw;
@@ -4731,7 +4731,7 @@ body:has(#wcastle-call)::before {
 .castle-menu-item-button--small {
   width: 30cqw;
   height: 4cqw;
-  font: 4cqw / 1 Tahoma;
+  font: 4cqw / 1 'DejaVuSans', sans-serif;
   padding: 1.5cqw 2cqw;
 }
 
@@ -4749,7 +4749,7 @@ body:has(#wcastle-call)::before {
   width: 90cqw;
   color: rgba(252, 229, 188, 0.9);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 8cqw / 1 Tahoma;
+  font: 8cqw / 1 'DejaVuSans', sans-serif;
   text-align: center;
   padding: 1cqw 1cqw;
   margin: 1cqw 1cqw;
@@ -4759,7 +4759,7 @@ body:has(#wcastle-call)::before {
   width: 90cqw;
   color: rgba(255, 255, 255, 0.6);
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 1cqw;
-  font: 4cqw / 1 Tahoma;
+  font: 4cqw / 1 'DejaVuSans', sans-serif;
   text-align: center;
   padding: 1cqw 1cqw;
   margin: 4cqw 1cqw;
@@ -4957,7 +4957,7 @@ body:has(#wcastle-call)::before {
   border-radius: 10px;
 
   color: #fff;
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
   font-size: 13px;
   line-height: 1.25;
 
@@ -4998,7 +4998,7 @@ body:has(#wcastle-call)::before {
 .build-hero-avatar-and-name .name {
   text-align: center;
   color: #fff;
-  font-family: Arial;
+  font-family: 'DejaVuSans', sans-serif;
   font-size: 4cqmin;
   height: 4cqmin;
   line-height: 4cqmin;
