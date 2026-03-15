@@ -600,8 +600,6 @@ export class MM {
 
         name.style.opacity = 0;
 
-        rankIcon.style.backgroundImage = 'none';
-
         rank.firstChild.innerText = 1100;
 
         rank.firstChild.style.opacity = 0;
