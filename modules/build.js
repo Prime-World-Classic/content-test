@@ -1928,14 +1928,21 @@ export class Build {
   }
 
   static inventory() {
-    if (Build.loading) {
-      return;
+    const container = Build.inventoryView?.querySelector('.build-talents');
+    if (container) {
+      container.replaceChildren();
     }
 
+    const requestedBuildId = Build.id;
     Build.loading = true;
 
     App.api.silent(
       (data) => {
+        if (requestedBuildId !== Build.id) {
+          Build.loading = false;
+          return;
+        }
+
         for (let item of data) {
           let talentContainer = DOM({ style: 'build-talent-item-container' });
 

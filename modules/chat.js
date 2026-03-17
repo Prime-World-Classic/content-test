@@ -14,6 +14,9 @@ export class Chat {
 
   static STORAGE_KEY = 'castle_chat_messages_v1';
 
+  /** Время жизни сообщений в истории (мс). */
+  static CHAT_HISTORY_TTL_MS = 2 * 60 * 60 * 1000;
+
   static MAX_HISTORY = 20;
 
   static messages = [];
@@ -374,7 +377,7 @@ export class Chat {
 
   static addMessageToHistory(data) {
     try {
-      const clone = { ...data };
+      const clone = { ...data, _ts: Date.now() };
       if (!Array.isArray(Chat.messages)) {
         Chat.messages = [];
       }
@@ -401,9 +404,17 @@ export class Chat {
       if (!Array.isArray(parsed)) {
         return;
       }
-      Chat.messages = parsed;
-      for (let i = parsed.length - 1; i >= 0; i--) {
-        Chat.viewMessage(parsed[i], true);
+      const now = Date.now();
+      const ttl = Chat.CHAT_HISTORY_TTL_MS;
+      Chat.messages = parsed.filter((msg) => {
+        const ts = msg._ts ?? 0;
+        return now - ts < ttl;
+      });
+      if (Chat.messages.length !== parsed.length) {
+        localStorage.setItem(Chat.STORAGE_KEY, JSON.stringify(Chat.messages));
+      }
+      for (let i = Chat.messages.length - 1; i >= 0; i--) {
+        Chat.viewMessage(Chat.messages[i], true);
       }
     } catch (e) {
       console.error('Failed to load chat history', e);
