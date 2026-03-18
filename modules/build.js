@@ -2115,7 +2115,75 @@ export class Build {
         ?.querySelectorAll('.build-talents .build-talent-item.build-set-highlight-lib')
         .forEach((el) => el.classList.remove('build-set-highlight-lib'));
     } catch {}
+
+    Build.clearEmptySlotPreviews();
   }
+
+  static clearEmptySlotPreviews() {
+    try {
+      Build.fieldView
+        ?.querySelectorAll('.build-hero-grid-item.build-set-empty-slot-preview')
+        .forEach((el) => {
+          el.classList.remove('build-set-empty-slot-preview');
+          el.style.backgroundImage = '';
+        });
+    } catch {}
+  }
+
+  static getFirstEmptySlotIndexForLevelIn(installedTalents, level) {
+    const lvl = Number(level);
+    if (!Number.isFinite(lvl) || lvl <= 0) return null;
+
+    for (let t = (lvl - 1) * 6; t < lvl * 6; t++) {
+      const index = 35 - t;
+      if (!installedTalents?.[index]) return index;
+    }
+    return null;
+  }
+
+  static previewSetTalentsInEmptySlots(set, slotDirection = 'right') {
+    try {
+      Build.clearEmptySlotPreviews();
+
+      const ids = TalentSets.getTalentIds(set);
+      const simInstalled = Array.isArray(Build.installedTalents) ? Build.installedTalents.slice() : new Array(36).fill(null);
+
+      for (const id of ids) {
+        if (Build.isTalentInBuild(id)) continue; // already installed in real build
+        const data = Build.talents?.[String(id)];
+        if (!data || !data.level || data.level <= 0) continue;
+
+        let emptyIndex = null;
+        if (slotDirection === 'left') {
+          // left-to-right within the row: indices increase from left to right in Build.field()
+          const lvl = Number(data.level);
+          const start = (6 - lvl) * 6;
+          if (Number.isFinite(start)) {
+            for (let idx = start; idx < start + 6; idx++) {
+              if (!simInstalled?.[idx]) {
+                emptyIndex = idx;
+                break;
+              }
+            }
+          }
+        } else {
+          // right-to-left (current behavior used by sets)
+          emptyIndex = Build.getFirstEmptySlotIndexForLevelIn(simInstalled, data.level);
+        }
+
+        if (emptyIndex == null) continue;
+
+        // simulate installation so next missing talent uses the correct next empty slot
+        simInstalled[emptyIndex] = data;
+
+        const cell = Build.fieldView?.querySelector(`.build-hero-grid-item[data-position="${emptyIndex}"]`);
+        if (!cell) continue;
+        cell.classList.add('build-set-empty-slot-preview');
+        cell.style.backgroundImage = `url("content/talents/${id}.webp")`;
+      }
+    } catch {}
+  }
+
 
   static positionDescriptionNearRect(anchorRect) {
     const gap = 8;
@@ -2347,6 +2415,7 @@ export class Build {
 
     Build.showSetDescription(set, item);
     Build.highlightSetTalents(ids);
+    Build.previewSetTalentsInEmptySlots(set);
     Build.highlightSetTalentsAfterRender(ids);
     if (withDelayedHighlights) {
       setTimeout(() => {
@@ -2360,6 +2429,7 @@ export class Build {
       if (Build._hoveredSetAnchorEl !== item || Build._hoveredSetTalentIds !== ids) return;
       Build.showSetDescription(set, item);
       Build.highlightSetTalents(ids);
+      Build.previewSetTalentsInEmptySlots(set);
     });
   }
 
@@ -2604,6 +2674,7 @@ export class Build {
         Build._hoveredSetTalentIds = ids;
         Build._hoveredSetAnchorEl = item;
         Build.highlightSetTalents(ids);
+        Build.previewSetTalentsInEmptySlots(set);
       });
       item.addEventListener('mouseleave', () => {
         Build.descriptionView.style.display = 'none';
@@ -3581,6 +3652,7 @@ export class Build {
     let descEvent = () => {
       let positionElement = element.getBoundingClientRect();
       let data = Build.talents[element.dataset.id];
+      const isInventoryTalent = !!element.closest?.('.build-talents');
 
       if (!data) {
         console.log('Не найден талант в билде: ' + element.dataset.id);
@@ -3697,10 +3769,18 @@ export class Build {
         anchorRect: positionElement,
         talentDataForParams: data,
       });
+
+      // Preview: where this library talent would land in the build.
+      if (isInventoryTalent && data.id > 0) {
+        // Single talent preview in library should pick the left-most empty slot.
+        Build.previewSetTalentsInEmptySlots({ _manualOrder: [data.id], key: `single_${data.id}` }, 'left');
+      }
     };
 
     let descEventEnd = () => {
       Build.descriptionView.style.display = 'none';
+      // Remove only slot previews (keeps set-highlight logic independent).
+      if (element.closest?.('.build-talents')) Build.clearEmptySlotPreviews();
     };
 
     element.ontouchstart = (e) => {
