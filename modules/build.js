@@ -2910,7 +2910,7 @@ export class Build {
 
   static getKeyName(index) {
 
-    return index < 10 ? Build.binds[index].keys.join('+') : 'Отключен';
+    return index < 24 ? Build.binds[index].keys.join('+') : 'Отключен';
 	
   }
 
