@@ -3022,9 +3022,12 @@ export class Build {
   }
 
   static getKeyName(index) {
+    if (index >= 24) return 'Отключен';
 
-    return index < 24 ? Build.binds[index].keys.join('+') : 'Отключен';
-	
+    const bind = Build.binds?.[index];
+    if (!bind || !Array.isArray(bind.keys) || !bind.keys.length) return 'Отключен';
+
+    return bind.keys.join('+');
   }
 
   static setSortInventory(key, value) {
