@@ -2151,9 +2151,12 @@ export class Build {
   static clearEmptySlotPreviews() {
     try {
       Build.fieldView
-        ?.querySelectorAll('.build-hero-grid-item.build-set-empty-slot-preview')
+        ?.querySelectorAll(
+          '.build-hero-grid-item.build-set-empty-slot-preview, .build-hero-grid-item.build-talent-empty-slot-preview',
+        )
         .forEach((el) => {
           el.classList.remove('build-set-empty-slot-preview');
+          el.classList.remove('build-talent-empty-slot-preview');
           el.style.backgroundImage = '';
         });
     } catch {}
@@ -2170,7 +2173,7 @@ export class Build {
     return null;
   }
 
-  static previewSetTalentsInEmptySlots(set, slotDirection = 'right') {
+  static previewSetTalentsInEmptySlots(set, slotDirection = 'right', { previewClass = 'build-set-empty-slot-preview' } = {}) {
     try {
       Build.clearEmptySlotPreviews();
 
@@ -2207,8 +2210,9 @@ export class Build {
 
         const cell = Build.fieldView?.querySelector(`.build-hero-grid-item[data-position="${emptyIndex}"]`);
         if (!cell) continue;
-        cell.classList.add('build-set-empty-slot-preview');
-        cell.style.backgroundImage = `url("content/talents/${id}.webp")`;
+        cell.classList.add(previewClass);
+        const src = id > 0 ? `content/talents/${id}.webp` : `content/htalents/${Math.abs(id)}.webp`;
+        cell.style.backgroundImage = `url("${src}")`;
       }
     } catch {}
   }
@@ -3780,9 +3784,13 @@ export class Build {
       });
 
       // Preview: where this library talent would land in the build.
-      if (isInventoryTalent && data.id > 0) {
+      if (isInventoryTalent) {
         // Single talent preview in library should pick the left-most empty slot.
-        Build.previewSetTalentsInEmptySlots({ _manualOrder: [data.id], key: `single_${data.id}` }, 'left');
+        Build.previewSetTalentsInEmptySlots(
+          { _manualOrder: [data.id], key: `single_${data.id}` },
+          'left',
+          { previewClass: 'build-talent-empty-slot-preview' },
+        );
       }
     };
 
