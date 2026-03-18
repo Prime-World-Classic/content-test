@@ -486,6 +486,8 @@ body {
   display: flex;
   height: 100cqh;
   width: 100cqw;
+  overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 #castle-body canvas {

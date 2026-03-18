@@ -14,6 +14,7 @@ import { Sound } from './sound.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { Castle } from './castle.js';
 import { KeybindStore } from './keybindings/keybindings.store.js';
+import { TalentSets } from './talentSets.js';
 
 export class Build {
   static loading = false;
@@ -358,6 +359,48 @@ export class Build {
     Build.inventoryView = document.createElement('div');
     Build.inventoryView.classList.add('build-talent-view');
 
+    Build.setsListView = DOM({ style: 'build-sets' });
+    Build.setsListView.addEventListener(
+      'wheel',
+      (e) => {
+        if (e.ctrlKey || e.shiftKey) return;
+        if (!Build.setsListView) return;
+
+        e.preventDefault();
+
+        const view = Build.setsListView;
+        const dy = Number(e.deltaY) || 0;
+        const scaled = dy / 3;
+
+        if (typeof Build._setsScrollTarget !== 'number') Build._setsScrollTarget = view.scrollTop;
+        Build._setsScrollTarget += scaled;
+
+        const max = Math.max(0, view.scrollHeight - view.clientHeight);
+        if (Build._setsScrollTarget < 0) Build._setsScrollTarget = 0;
+        if (Build._setsScrollTarget > max) Build._setsScrollTarget = max;
+
+        if (Build._setsScrollRaf) return;
+        const step = () => {
+          Build._setsScrollRaf = 0;
+          if (!Build.setsListView) return;
+          const v = Build.setsListView;
+          const target = typeof Build._setsScrollTarget === 'number' ? Build._setsScrollTarget : v.scrollTop;
+          const cur = v.scrollTop;
+
+          const next = cur + (target - cur) * 0.22;
+          v.scrollTop = next;
+
+          if (Math.abs(target - next) > 0.5) {
+            Build._setsScrollRaf = requestAnimationFrame(step);
+          } else {
+            v.scrollTop = target;
+          }
+        };
+        Build._setsScrollRaf = requestAnimationFrame(step);
+      },
+      { passive: false },
+    );
+
     Build.skinView = DOM(
       {
         tag: 'button',
@@ -404,7 +447,9 @@ export class Build {
       Lang.text('training'),
     );
 
-    Build.inventoryView.append(buildTalents);
+    Build.inventoryView.append(buildTalents, Build.setsListView);
+
+    Build.renderTalentSetsList();
 
     // ================================================
 
@@ -424,6 +469,7 @@ export class Build {
     Build.id = request.id;
 
     Build.heroId = heroId;
+    Build.targetId = targetId;
 
     Build.dataStats = new Object();
     Build.calculationStats = new Object();
@@ -471,6 +517,85 @@ export class Build {
     //	Build.activeBar([35,-35,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
 
     Build.ruleSortInventory = new Object();
+  }
+
+  static async refreshBuildStateFromServer({ refreshInventory = true } = {}) {
+    if (!Build.heroId || Build.targetId === undefined || Build.targetId === null) return;
+
+    let highlightedLevels = [];
+    try {
+      highlightedLevels = Array.from(Build.fieldView?.querySelectorAll?.('.build-field-row.highlight') || [])
+        .map((el) => el?.dataset?.level)
+        .filter(Boolean);
+    } catch {}
+
+    let request = null;
+    try {
+      request = await App.api.request('build', 'data', {
+        heroId: Build.heroId,
+        target: Build.targetId,
+      });
+    } catch {
+      return;
+    }
+
+    try {
+      Build.fieldConflict = new Object();
+      Build.installedTalents = new Array(36).fill(null);
+      Build.fieldView?.replaceChildren();
+    } catch {}
+
+    try {
+      if (request?.body) Build.field(request.body);
+    } catch {}
+
+    try {
+      for (const lvl of highlightedLevels) {
+        const row = Build.fieldView?.querySelector?.(`.build-field-row[data-level="${lvl}"]`);
+        if (row) row.classList.add('highlight');
+      }
+    } catch {}
+
+    if (refreshInventory) {
+      try {
+        Build.inventory();
+      } catch {}
+    }
+
+    try {
+      if (request?.active) Build.activeBar(request.active);
+    } catch {}
+  }
+
+  static beginSilentBuildUiUpdate() {
+    try {
+      Build.fieldView?.classList?.add('build-ui-updating');
+    } catch {}
+    try {
+      Build.inventoryView?.classList?.add('build-ui-updating');
+    } catch {}
+  }
+
+  static endSilentBuildUiUpdate() {
+    const end = () => {
+      try {
+        Build.fieldView?.classList?.remove('build-ui-updating');
+      } catch {}
+      try {
+        Build.inventoryView?.classList?.remove('build-ui-updating');
+      } catch {}
+    };
+
+    requestAnimationFrame(() => requestAnimationFrame(end));
+  }
+
+  static async runWithSilentBuildUiUpdate(callback) {
+    Build.beginSilentBuildUiUpdate();
+    try {
+      return await callback();
+    } finally {
+      Build.endSilentBuildUiUpdate();
+    }
   }
 
   static CleanInvalidDescriptions() {
@@ -1956,11 +2081,570 @@ export class Build {
         }
 
         Build.loading = false;
+        try {
+          Build.sortInventory();
+        } catch {}
       },
       'build',
       'inventory',
       { buildId: Build.id },
     );
+  }
+
+  static isTalentInBuild(talentId) {
+    for (const t of Build.installedTalents || []) {
+      if (t && t.id === talentId) return true;
+    }
+    return false;
+  }
+
+  static clearSetHighlights() {
+    try {
+      Build.fieldView?.querySelectorAll('.build-talent-item.build-set-highlight').forEach((el) => el.classList.remove('build-set-highlight'));
+    } catch {}
+    try {
+      Build.inventoryView
+        ?.querySelectorAll('.build-talents .build-talent-item.build-set-highlight-lib')
+        .forEach((el) => el.classList.remove('build-set-highlight-lib'));
+    } catch {}
+  }
+
+  static positionDescriptionNearRect(anchorRect) {
+    const gap = 8;
+    Build.descriptionView.style.zIndex = 9999;
+    Build.descriptionView.style.position = 'fixed';
+
+    let left = anchorRect.left + anchorRect.width + gap;
+    let top = anchorRect.top;
+
+    const w = Build.descriptionView.offsetWidth;
+    const h = Build.descriptionView.offsetHeight;
+
+    const overBottom = top + h - window.innerHeight;
+    if (overBottom > 0) {
+      top -= overBottom;
+    }
+
+    if (top < 0) top = 0;
+
+    Build.descriptionView.style.left = `${left}px`;
+    Build.descriptionView.style.top = `${top}px`;
+  }
+
+  static scheduleDescriptionReposition(anchorRect) {
+    Build.positionDescriptionNearRect(anchorRect);
+    requestAnimationFrame(() => Build.positionDescriptionNearRect(anchorRect));
+    try {
+      const imgs = Build.descriptionView.querySelectorAll('img');
+      imgs.forEach((img) => {
+        if (img.complete) return;
+        img.addEventListener(
+          'load',
+          () => {
+            Build.positionDescriptionNearRect(anchorRect);
+          },
+          { once: true },
+        );
+        img.addEventListener(
+          'error',
+          () => {
+            Build.positionDescriptionNearRect(anchorRect);
+          },
+          { once: true },
+        );
+      });
+    } catch {}
+  }
+
+  static applyTalentParamsToDescription(talentData) {
+    if (!talentData || !talentData.params || !Build.descriptionView) return;
+
+    try {
+      let paramIterator = 0;
+      const params = String(talentData.params || '').split(';').filter(Boolean);
+      if (!params.length) return;
+
+      const nodes = Build.descriptionView.querySelectorAll('*');
+      for (const outerTag of nodes) {
+        for (const specialTag of outerTag.childNodes || []) {
+          const tagString = specialTag.innerHTML ? specialTag.innerHTML : specialTag.data;
+          if (!tagString || tagString.indexOf('%s') === -1) continue;
+          if (paramIterator >= params.length) return;
+
+          const param = params[paramIterator];
+          const paramValues = String(param || '').split(',');
+
+          let statAffection, minValue, maxValue;
+          if (paramValues.length == 5) {
+            minValue = parseFloat(paramValues[1]);
+            maxValue = parseFloat(paramValues[2]);
+            statAffection = paramValues[4];
+          } else if (paramValues.length == 3) {
+            minValue = parseFloat(paramValues[0]);
+            maxValue = parseFloat(paramValues[1]);
+            statAffection = paramValues[2];
+          } else {
+            continue;
+          }
+
+          let resolvedStatAffection;
+          let resolvedStatAffection1;
+          let resolvedStatAffection2;
+          switch (statAffection) {
+            case 'sr_max':
+              resolvedStatAffection = Build.getMaxStat(['sila', 'razum']);
+              break;
+            case 'sv_max':
+              resolvedStatAffection = Build.getMaxStat(['stoikost', 'volia']);
+              break;
+            case 'ph_max':
+              resolvedStatAffection = Build.getMaxStat(['provorstvo', 'hitrost']);
+              break;
+            case 'hpmp_max':
+              resolvedStatAffection = Build.getMaxStat(['hp', 'mp']);
+              break;
+            case 'sr_sum':
+              resolvedStatAffection1 = 'sila';
+              resolvedStatAffection2 = 'razum';
+              break;
+            case 'ph_sum':
+              resolvedStatAffection1 = 'provorstvo';
+              resolvedStatAffection2 = 'hitrost';
+              break;
+            case 'sv_sum':
+              resolvedStatAffection1 = 'stoikost';
+              resolvedStatAffection2 = 'volia';
+              break;
+            case 'hpmp_sum':
+              resolvedStatAffection1 = 'hp';
+              resolvedStatAffection2 = 'mp';
+              break;
+            default:
+              resolvedStatAffection = statAffection;
+              break;
+          }
+
+          function lerp(a, b, alpha) {
+            return a + alpha * (b - a);
+          }
+
+          let outputString;
+          if (statAffection == 'sr_sum' || statAffection == 'ph_sum' || statAffection == 'sv_sum' || statAffection == 'hpmp_sum') {
+            let resolvedTotalStat1 = Build.totalStat(resolvedStatAffection1);
+            let resolvedTotalStat2 = Build.totalStat(resolvedStatAffection2);
+            const isHpOrEnergy =
+              resolvedStatAffection1 == 'hp' ||
+              resolvedStatAffection1 == 'mp' ||
+              resolvedStatAffection2 == 'hp' ||
+              resolvedStatAffection2 == 'mp';
+            const param1 = isHpOrEnergy ? 600.0 : 50.0;
+            const param2 = isHpOrEnergy ? 6250.0 : 250.0;
+            outputString = lerp(minValue, maxValue, (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2).toFixed(1);
+            if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
+          } else {
+            if (resolvedStatAffection in Build.dataStats && paramValues.length == 5) {
+              let resolvedTotalStat = Build.totalStat(resolvedStatAffection);
+              const isHpOrEnergy = resolvedStatAffection == 'hp' || resolvedStatAffection == 'mp';
+              const param1 = isHpOrEnergy ? 600.0 : 50.0;
+              const param2 = isHpOrEnergy ? 6250.0 : 250.0;
+              outputString = lerp(minValue, maxValue, (resolvedTotalStat - param1) / param2).toFixed(1);
+              if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
+            } else {
+              let refineBonus = Build.getTalentRefineByRarity(talentData.rarity);
+              outputString = (minValue + maxValue * refineBonus).toFixed(1);
+              if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
+            }
+          }
+
+          if (specialTag.innerHTML) specialTag.innerHTML = tagString.replace('%s', outputString);
+          else outerTag.innerHTML = tagString.replace('%s', outputString);
+
+          paramIterator++;
+        }
+      }
+    } catch {}
+  }
+
+  static renderDescriptionHtml({ html, anchorEl, anchorRect, talentDataForParams }) {
+    if (!Build.descriptionView) return;
+    Build.descriptionView.innerHTML = html || '';
+    Build.descriptionView.style.display = 'block';
+
+    if (talentDataForParams) {
+      Build.applyTalentParamsToDescription(talentDataForParams);
+    }
+
+    const rect = anchorRect || anchorEl?.getBoundingClientRect?.();
+    if (rect) Build.scheduleDescriptionReposition(rect);
+  }
+
+  static highlightSetTalents(talentIds) {
+    Build.clearSetHighlights();
+    const wanted = new Set((talentIds || []).map(String));
+    Build.fieldView?.querySelectorAll('.build-talent-item').forEach((el) => {
+      if (wanted.has(el.dataset.id)) el.classList.add('build-set-highlight');
+    });
+    Build.inventoryView?.querySelectorAll('.build-talents .build-talent-item').forEach((el) => {
+      if (wanted.has(el.dataset.id)) el.classList.add('build-set-highlight-lib');
+    });
+  }
+
+  static async highlightSetTalentsAfterRender(talentIds, timeoutMs = 2000) {
+    const ids = (talentIds || []).map(String);
+    if (!ids.length) return;
+    const hasAny = () => ids.some((id) => Build.fieldView?.querySelector(`.build-talent-item[data-id="${id}"]`) || Build.inventoryView?.querySelector(`.build-talents .build-talent-item[data-id="${id}"]`));
+    await Build.waitForCondition(hasAny, timeoutMs);
+    if (Build._hoveredSetTalentIds !== talentIds) return;
+    Build.highlightSetTalents(talentIds);
+  }
+
+  static showSetDescription(set, anchorEl) {
+    Build._descriptionPinnedBySet = true;
+    const mainId = TalentSets.chooseMainTalentId(set);
+    const ids = TalentSets.getTalentIds(set);
+
+    const iconHtml = ids
+      .map((id) => {
+        const inBuild = Build.isTalentInBuild(id);
+        const src = `content/talents/${id}.webp`;
+        const cls = inBuild ? 'build-set-desc-icon is-in-build' : 'build-set-desc-icon';
+        return `<img class="${cls}" src="${src}">`;
+      })
+      .join('');
+
+    let mainDesc = '';
+    if (mainId != null) {
+      const absId = Math.abs(mainId);
+      const prefix = 'talent_';
+      const nameKey = `${prefix}${absId}_name`;
+      const descriptionKey = `${prefix}${absId}_description`;
+      const mainName = Lang.text(nameKey);
+      const desc = Lang.text(descriptionKey);
+      mainDesc = `<div><b>${mainName}</b><br><br>${desc}</div>`;
+    }
+    const html =
+      `${mainDesc}` +
+      `<div class="build-set-desc-icons">${iconHtml}</div>` +
+      `<div class="build-set-desc-hints">` +
+      `<div>${Lang.text('setHintLmb')}</div>` +
+      `<div>${Lang.text('setHintRmb')}</div>` +
+      `</div>`;
+
+    const dataForParams = mainId != null ? Build.talents[String(mainId)] : null;
+    Build.renderDescriptionHtml({ html, anchorEl, talentDataForParams: dataForParams });
+  }
+
+  static refreshSetHoverState(set, item, ids, withDelayedHighlights = false) {
+    if (Build._hoveredSetAnchorEl !== item) return;
+
+    Build.showSetDescription(set, item);
+    Build.highlightSetTalents(ids);
+    Build.highlightSetTalentsAfterRender(ids);
+    if (withDelayedHighlights) {
+      setTimeout(() => {
+        if (Build._hoveredSetAnchorEl === item && Build._hoveredSetTalentIds === ids) Build.highlightSetTalents(ids);
+      }, 250);
+      setTimeout(() => {
+        if (Build._hoveredSetAnchorEl === item && Build._hoveredSetTalentIds === ids) Build.highlightSetTalents(ids);
+      }, 700);
+    }
+    requestAnimationFrame(() => {
+      if (Build._hoveredSetAnchorEl !== item || Build._hoveredSetTalentIds !== ids) return;
+      Build.showSetDescription(set, item);
+      Build.highlightSetTalents(ids);
+    });
+  }
+
+  static getFirstEmptySlotIndexForLevel(level) {
+    const lvl = Number(level);
+    if (!Number.isFinite(lvl) || lvl <= 0) return null;
+
+    for (let t = (lvl - 1) * 6; t < lvl * 6; t++) {
+      const index = 35 - t;
+      if (!Build.installedTalents?.[index]) return index;
+    }
+    return null;
+  }
+
+  static async removeTalentFromActiveByFieldIndex(fieldIndex) {
+    const pos = Number(fieldIndex);
+    if (!Number.isFinite(pos)) return;
+    for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
+      const talPos = Math.abs(Build.activeBarItems[i]) - 1;
+      if (talPos === pos) {
+        try {
+          await Build.removeTalentFromActive(i);
+        } catch {}
+      }
+    }
+  }
+
+  static findFirstFreeActiveBarIndex() {
+    for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
+      if (Build.activeBarItems[i] === 0) return i;
+    }
+    return -1;
+  }
+
+  static isFieldIndexAlreadyInActiveBar(fieldIndex) {
+    const pos = Number(fieldIndex);
+    if (!Number.isFinite(pos)) return false;
+    for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
+      const talPos = Math.abs(Build.activeBarItems[i]) - 1;
+      if (talPos === pos) return true;
+    }
+    return false;
+  }
+
+  static waitForCondition(check, timeoutMs = 1200) {
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const tick = () => {
+        let ok = false;
+        try {
+          ok = !!check();
+        } catch {
+          ok = false;
+        }
+        if (ok) return resolve(true);
+        if (performance.now() - start >= timeoutMs) return resolve(false);
+        requestAnimationFrame(tick);
+      };
+      tick();
+    });
+  }
+
+  static waitForApiIdle(objectName, timeoutMs = 3000) {
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const tick = () => {
+        let pending = 0;
+        try {
+          const awaiting = App?.api?.awaiting || {};
+          for (const v of Object.values(awaiting)) {
+            if (v?.object === objectName) pending++;
+          }
+        } catch {}
+
+        if (pending === 0) return resolve(true);
+        if (performance.now() - start >= timeoutMs) return resolve(false);
+        requestAnimationFrame(tick);
+      };
+      tick();
+    });
+  }
+
+  static async applySetToBuild(set) {
+    const ids = TalentSets.getTalentIds(set);
+    for (const id of ids) {
+      if (Build.isTalentInBuild(id)) continue;
+      const data = Build.talents?.[String(id)];
+      if (!data) continue;
+      if (!data.level || data.level <= 0) continue;
+
+      const emptyIndex = Build.getFirstEmptySlotIndexForLevel(data.level);
+      if (emptyIndex == null) continue;
+
+      try {
+        await App.api.request('build', 'set', {
+          buildId: Build.id,
+          talentId: data.id,
+          index: emptyIndex,
+        });
+
+        Build.installedTalents[emptyIndex] = data;
+
+        if (data.active) {
+          try {
+            if (!Build.isFieldIndexAlreadyInActiveBar(emptyIndex)) {
+              const free = Build.findFirstFreeActiveBarIndex();
+              if (free !== -1) {
+                const position = Number(emptyIndex) + 1;
+                await App.api.request('build', 'setActive', {
+                  buildId: Build.id,
+                  index: free,
+                  position: position,
+                });
+                Build.activeBarItems[free] = position;
+              }
+            }
+          } catch {}
+        }
+      } catch (e) {
+      }
+    }
+
+    try {
+      Build.updateHeroStats();
+    } catch {}
+
+    await Build.runWithSilentBuildUiUpdate(async () => {
+      await Build.refreshBuildStateFromServer({ refreshInventory: true });
+    });
+
+    try {
+      Build.promoteSetTalentsInInventoryAfterRender(set);
+    } catch {}
+  }
+
+  static applySetInventoryOrder(set) {
+    const list = Build.inventoryView?.querySelector('.build-talents');
+    if (!list) return;
+
+    const ids = TalentSets.getTalentIds(set);
+    const toMove = [];
+    for (const id of ids) {
+      if (Build.isTalentInBuild(id)) continue;
+      const el = list.querySelector(`.build-talent-item[data-id="${id}"]`);
+      if (!el) continue;
+      const container = el.closest('.build-talent-item-container');
+      if (!container) continue;
+      toMove.push(container);
+    }
+    if (!toMove.length) return;
+    for (let i = toMove.length - 1; i >= 0; i--) list.prepend(toMove[i]);
+    try {
+      list.scrollTop = 0;
+    } catch {}
+  }
+
+  static async promoteSetTalentsInInventoryAfterRender(set, timeoutMs = 2000) {
+    const list = Build.inventoryView?.querySelector('.build-talents');
+    if (!list) return;
+    const ids = TalentSets.getTalentIds(set);
+    await Build.waitForCondition(() => ids.some((id) => list.querySelector(`.build-talent-item[data-id="${id}"]`)), timeoutMs);
+    Build.applySetInventoryOrder(set);
+  }
+
+  static async removeSetFromBuild(set) {
+    const ids = TalentSets.getTalentIds(set);
+    for (const id of ids) {
+      for (let index = 0; index < (Build.installedTalents || []).length; index++) {
+        const t = Build.installedTalents[index];
+        if (!t || t.id !== id) continue;
+
+        try {
+          await Build.removeTalentFromActiveByFieldIndex(index);
+        } catch {}
+
+        try {
+          await App.api.request('build', 'setZero', { buildId: Build.id, index });
+          Build.installedTalents[index] = null;
+        } catch (e) {}
+      }
+    }
+
+    try {
+      Build.updateHeroStats();
+    } catch {}
+
+    await Build.runWithSilentBuildUiUpdate(async () => {
+      await Build.refreshBuildStateFromServer({ refreshInventory: true });
+    });
+
+    try {
+      Build.promoteSetTalentsInInventoryAfterRender(set);
+    } catch {}
+  }
+
+  static tryBeginSetAction() {
+    if (Build._setActionInProgress) return false;
+    Build._setActionInProgress = true;
+    return true;
+  }
+
+  static endSetAction() {
+    Build._setActionInProgress = false;
+  }
+
+  static renderTalentSetsList() {
+    if (!Build.setsListView) return;
+    Build.setsListView.replaceChildren();
+
+    if (!Build._setsHoverMonitorInstalled) {
+      Build._setsHoverMonitorInstalled = true;
+      document.addEventListener(
+        'mousemove',
+        (e) => {
+          const anchor = Build._hoveredSetAnchorEl;
+          if (!anchor) return;
+          const below = document.elementFromPoint(e.clientX, e.clientY);
+          const hoveredSet = below?.closest?.('.build-set-item');
+          if (hoveredSet === anchor) return;
+          Build.descriptionView.style.display = 'none';
+          Build._descriptionPinnedBySet = false;
+          Build._hoveredSetTalentIds = null;
+          Build._hoveredSetAnchorEl = null;
+          Build.clearSetHighlights();
+        },
+        { passive: true },
+      );
+    }
+
+    const sets = TalentSets.list();
+    for (const set of sets) {
+      const mainId = TalentSets.chooseMainTalentId(set);
+      if (mainId == null) continue;
+      const src = `content/talents/${mainId}.webp`;
+
+      const item = DOM({ style: 'build-set-item' });
+      item.style.backgroundImage = `url("${src}")`;
+
+      const ids = TalentSets.getTalentIds(set);
+      item.addEventListener('mouseenter', () => {
+        Build.showSetDescription(set, item);
+        Build._hoveredSetTalentIds = ids;
+        Build._hoveredSetAnchorEl = item;
+        Build.highlightSetTalents(ids);
+      });
+      item.addEventListener('mouseleave', () => {
+        Build.descriptionView.style.display = 'none';
+        Build._descriptionPinnedBySet = false;
+        Build._hoveredSetTalentIds = null;
+        Build._hoveredSetAnchorEl = null;
+        Build.clearSetHighlights();
+      });
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        try {
+          Sound.play(SOUNDS_LIBRARY.CLICK, { id: 'ui-set-down', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+          Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, { id: 'ui-set-up', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+        } catch {}
+        if (!Build.tryBeginSetAction()) return;
+        (async () => {
+          try {
+            Build._descriptionPinnedBySet = true;
+            Build._hoveredSetTalentIds = ids;
+            Build._forceShowTalentIds = new Set(ids.map(String));
+
+            Build.applySetInventoryOrder(set);
+            await Build.applySetToBuild(set);
+            Build.refreshSetHoverState(set, item, ids, true);
+          } finally {
+            Build.endSetAction();
+          }
+        })();
+      });
+      item.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        try {
+          Sound.play(SOUNDS_LIBRARY.CLICK, { id: 'ui-set-down', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+        } catch {}
+        if (!Build.tryBeginSetAction()) return;
+        (async () => {
+          try {
+            Build._hoveredSetTalentIds = ids;
+            Build._forceShowTalentIds = new Set(ids.map(String));
+            await Build.removeSetFromBuild(set);
+            Build.refreshSetHoverState(set, item, ids);
+          } finally {
+            Build.endSetAction();
+          }
+        })();
+      });
+
+      Build.setsListView.append(item);
+    }
   }
 
   static rarity() {
@@ -2145,6 +2829,13 @@ export class Build {
 
     console.log('activeBar', data);
 
+    try {
+      Build.activeBarView?.replaceChildren();
+    } catch {}
+    try {
+      Build.activeBarKeybindingsView?.replaceChildren();
+    } catch {}
+
     let index = 0;
 
     for (let item of data) {
@@ -2255,6 +2946,13 @@ export class Build {
     let data = Build.talents[item.dataset.id],
       flag = true;
 
+    try {
+      if (Build._forceShowTalentIds && Build._forceShowTalentIds.has(String(item.dataset.id))) {
+        itemContainer.style.display = 'block';
+        return;
+      }
+    } catch {}
+
     if (data.level == 0) {
       itemContainer.style.display = 'none';
       return;
@@ -2320,7 +3018,9 @@ export class Build {
   static move(element, fromActiveBar) {
     let elementFromPoint = (x, y) => {
       let elems = document.elementsFromPoint(x, y);
-      return elems[0].className == 'build-level' ? elems[1] : elems[0];
+      if (!elems || elems.length === 0) return document.body;
+      if (elems[0] && elems[0].className == 'build-level') return elems[1] || elems[0];
+      return elems[0] || document.body;
     };
     let elementSetDisplay = (element, display) => {
       if (element.parentElement.classList == 'build-talent-item-container') {
@@ -2333,14 +3033,24 @@ export class Build {
       if (event.button != 0) return;
 
       let moveStart = Date.now();
-      Build.descriptionView.style.display = 'none';
+      if (!Build._descriptionPinnedBySet) Build.descriptionView.style.display = 'none';
+
+      if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
+      try {
+        element.classList.remove('build-set-highlight', 'build-set-highlight-lib');
+      } catch {}
 
       let data = Build.talents[element.dataset.id];
+      if (!data || typeof data.level !== 'number') {
+        return;
+      }
       let fieldRow = document.getElementById(`bfr${data.level}`);
 
       if (!fromActiveBar) {
-        fieldRow.style.background = 'rgba(255,255,255,0.5)';
-        fieldRow.style.borderRadius = '1cqh';
+        if (fieldRow) {
+          fieldRow.style.background = 'rgba(255,255,255,0.5)';
+          fieldRow.style.borderRadius = '1cqh';
+        }
       }
 
       // Фикс для transform
@@ -2362,6 +3072,7 @@ export class Build {
 
         let offsetParent = element;
         do {
+          if (!offsetParent.offsetParent) break;
           shiftX += offsetParent.offsetParent.offsetLeft;
           shiftY += offsetParent.offsetParent.offsetTop;
           offsetParent = offsetParent.offsetParent;
@@ -2402,6 +3113,7 @@ export class Build {
 
         let offsetParent = element;
         do {
+          if (!offsetParent.offsetParent) break;
           left += offsetParent.offsetParent.offsetLeft;
           top += offsetParent.offsetParent.offsetTop;
           offsetParent = offsetParent.offsetParent;
@@ -2440,6 +3152,9 @@ export class Build {
           }
         }
 
+        if (Build._hoveredSetTalentIds) Build.highlightSetTalents(Build._hoveredSetTalentIds);
+        else Build.clearSetHighlights();
+
         let removeFromActive = async (position, skipActiveId) => {
           for (let i = 0; i < Build.activeBarItems.length; i++) {
             const talPos = Math.abs(Build.activeBarItems[i]) - 1;
@@ -2450,11 +3165,6 @@ export class Build {
         };
 
         let addToActive = async (index, position, datasetPosition, targetElem, clone, smartCast) => {
-          await App.api.request('build', 'setActive', {
-            buildId: Build.id,
-            index: index,
-            position: position,
-          });
           Build.activeBarItems[index] = position;
           targetElem.append(clone);
           clone.style.position = 'static';
@@ -2467,8 +3177,28 @@ export class Build {
           clone.style.position = 'static';
 
           Build.move(clone, true);
+
           if (smartCast) {
-            await Build.enableSmartCast(targetElem, true);
+            try {
+              await Build.enableSmartCast(targetElem, false);
+            } catch {}
+          }
+
+          try {
+            await App.api.request('build', 'setActive', {
+              buildId: Build.id,
+              index: index,
+              position: position,
+            });
+            if (smartCast) {
+              try {
+                await Build.requestSmartcast(targetElem);
+              } catch {}
+            }
+          } catch {
+            try {
+              await Build.refreshBuildStateFromServer({ refreshInventory: true });
+            } catch {}
           }
         };
 
@@ -2680,7 +3410,17 @@ export class Build {
                 } catch (e) {
                   element.dataset.state = 1;
 
-                  Build.inventoryView.querySelector('build-talents').prepend(element);
+                  const invList = Build.inventoryView?.querySelector('.build-talents');
+                  if (invList) {
+                    const container = element.closest('.build-talent-item-container');
+                    if (container && container.parentNode) {
+                      invList.prepend(container);
+                    } else {
+                      const wrapped = DOM({ style: 'build-talent-item-container' }, element);
+                      Build.applySorting(wrapped);
+                      invList.prepend(wrapped);
+                    }
+                  }
 
                   Build.installedTalents[parseInt(elemBelow.dataset.position)] = null;
                 }
@@ -2873,14 +3613,10 @@ export class Build {
 
       // Проверяем, есть ли переводы (если вернулся ключ, значит перевода нет)
       if (name === nameKey || description === descriptionKey) {
-        Build.descriptionView.innerHTML = `<b>Талант #${data.id}</b><div>Информация отсутствует. Сообщите пожалуйста об этом в отдельную тему Telegram сообщества Prime World Classic.</div><span>+1000 Уважение</span>`;
-
-        let positionDescription = Build.descriptionView.getBoundingClientRect();
-        Build.descriptionView.style.zIndex = 9999;
-        Build.descriptionView.style.position = 'fixed';
-        Build.descriptionView.style.display = 'block';
-        Build.descriptionView.style.left = positionElement.left + positionElement.height + 'px';
-        Build.descriptionView.style.top = positionElement.top + 'px';
+        Build.renderDescriptionHtml({
+          html: `<b>Талант #${data.id}</b><div>Информация отсутствует. Сообщите пожалуйста об этом в отдельную тему Telegram сообщества Prime World Classic.</div><span>+1000 Уважение</span>`,
+          anchorRect: positionElement,
+        });
         return;
       }
 
@@ -2967,134 +3703,11 @@ export class Build {
       // Используем переведенное описание
       let descriptionWithStars = `<b>${talentIsClassBased}</b>${stars} <br><br> ${description} `;
 
-      // Используем переведенное название
-      Build.descriptionView.innerHTML = `<b style="color:rgb(${rgb})">${name}</b><div>${descriptionWithStars}</div><span>${stats}</span>`;
-
-      let innerChilds = Build.descriptionView.childNodes[1].childNodes;
-      let paramIterator = 0;
-      for (let outerTag of innerChilds) {
-        for (let specialTag of outerTag.childNodes) {
-          let tagString = specialTag.innerHTML ? specialTag.innerHTML : specialTag.data;
-          if (!tagString || tagString.indexOf('%s') == -1 || !data.params) {
-            continue;
-          }
-          let params = data.params.split(';');
-          if (paramIterator >= params.length) {
-            continue;
-          }
-          let param = params[paramIterator];
-          let paramValues = param.split(',');
-
-          let statAffection, minValue, maxValue;
-
-          if (paramValues.length == 5) {
-            minValue = parseFloat(paramValues[1]);
-            maxValue = parseFloat(paramValues[2]);
-            statAffection = paramValues[4];
-          } else if (paramValues.length == 3) {
-            minValue = parseFloat(paramValues[0]);
-            maxValue = parseFloat(paramValues[1]);
-            statAffection = paramValues[2];
-          }
-
-          let resolvedStatAffection;
-          let resolvedStatAffection1;
-          let resolvedStatAffection2;
-          switch (statAffection) {
-            case 'sr_max':
-              resolvedStatAffection = Build.getMaxStat(['sila', 'razum']);
-              break;
-            case 'sv_max':
-              resolvedStatAffection = Build.getMaxStat(['stoikost', 'volia']);
-              break;
-            case 'ph_max':
-              resolvedStatAffection = Build.getMaxStat(['provorstvo', 'hitrost']);
-              break;
-            case 'hpmp_max':
-              resolvedStatAffection = Build.getMaxStat(['hp', 'mp']);
-              break;
-            case 'sr_sum':
-              resolvedStatAffection1 = 'sila';
-              resolvedStatAffection2 = 'razum';
-              break;
-            case 'ph_sum':
-              resolvedStatAffection1 = 'provorstvo';
-              resolvedStatAffection2 = 'hitrost';
-              break;
-            case 'sv_sum':
-              resolvedStatAffection1 = 'stoikost';
-              resolvedStatAffection2 = 'volia';
-              break;
-            case 'hpmp_sum':
-              resolvedStatAffection1 = 'hp';
-              resolvedStatAffection2 = 'mp';
-              break;
-            default:
-              resolvedStatAffection = statAffection;
-              break;
-          }
-
-          function lerp(a, b, alpha) {
-            return a + alpha * (b - a);
-          }
-
-          let outputString;
-          if (statAffection == 'sr_sum' || statAffection == 'ph_sum' || statAffection == 'sv_sum' || statAffection == 'hpmp_sum') {
-            let resolvedTotalStat1 = Build.totalStat(resolvedStatAffection1);
-            let resolvedTotalStat2 = Build.totalStat(resolvedStatAffection2);
-            const isHpOrEnergy =
-              resolvedStatAffection1 == 'hp' ||
-              resolvedStatAffection1 == 'mp' ||
-              resolvedStatAffection2 == 'hp' ||
-              resolvedStatAffection2 == 'mp';
-            const param1 = isHpOrEnergy ? 600.0 : 50.0;
-            const param2 = isHpOrEnergy ? 6250.0 : 250.0;
-            outputString = lerp(minValue, maxValue, (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2).toFixed(1);
-            if (outputString.endsWith('.0')) {
-              outputString = outputString.replace('.0', '');
-            }
-          } else {
-            if (resolvedStatAffection in Build.dataStats && paramValues.length == 5) {
-              let resolvedTotalStat = Build.totalStat(resolvedStatAffection);
-              const isHpOrEnergy = resolvedStatAffection == 'hp' || resolvedStatAffection == 'mp';
-              const param1 = isHpOrEnergy ? 600.0 : 50.0;
-              const param2 = isHpOrEnergy ? 6250.0 : 250.0;
-              outputString = lerp(minValue, maxValue, (resolvedTotalStat - param1) / param2).toFixed(1);
-              if (outputString.endsWith('.0')) {
-                outputString = outputString.replace('.0', '');
-              }
-            } else {
-              let refineBonus = Build.getTalentRefineByRarity(data.rarity);
-              outputString = (minValue + maxValue * refineBonus).toFixed(1);
-              if (outputString.endsWith('.0')) {
-                outputString = outputString.replace('.0', '');
-              }
-            }
-          }
-          if (specialTag.innerHTML) {
-            specialTag.innerHTML = tagString.replace('%s', outputString);
-          } else {
-            outerTag.innerHTML = tagString.replace('%s', outputString);
-          }
-          paramIterator++;
-        }
-      }
-
-      let positionDescription = Build.descriptionView.getBoundingClientRect();
-      Build.descriptionView.style.zIndex = 9999;
-      Build.descriptionView.style.position = 'fixed';
-      Build.descriptionView.style.display = 'block';
-
-      let descriptionWidth = Build.descriptionView.offsetWidth;
-      let ofSetW = 0,
-        ofSetH = 0;
-
-      if (Build.descriptionView.offsetHeight + positionElement.top > window.innerHeight) {
-        ofSetW = window.innerHeight - Build.descriptionView.offsetHeight - positionElement.top;
-      }
-
-      Build.descriptionView.style.left = positionElement.left + positionElement.height + 'px';
-      Build.descriptionView.style.top = positionElement.top + ofSetW + 'px';
+      Build.renderDescriptionHtml({
+        html: `<b style="color:rgb(${rgb})">${name}</b><div>${descriptionWithStars}</div><span>${stats}</span>`,
+        anchorRect: positionElement,
+        talentDataForParams: data,
+      });
     };
 
     let descEventEnd = () => {

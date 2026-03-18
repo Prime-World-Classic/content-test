@@ -1,4 +1,4 @@
-﻿export const en = {
+export const en = {
   locale: ['en_US'],
   name: 'English',
   word: {
@@ -241,6 +241,8 @@
     todoInProgress: 'TODO not ready yet - PW Classic team is working on this',
     talentLibrary: 'Talent Library',
     sets: 'Sets',
+    setHintLmb: 'LMB to move talents to build',
+    setHintRmb: 'RMB to remove talents from build',
     windowsLauncherRequired: 'Windows launcher version required',
     buildNamePlaceholder: 'Build name',
     createBuild: 'Create build',

@@ -119,9 +119,16 @@ export class NativeAPI {
 
     NativeAPI.platform = NativeAPI.os.platform();
 
-    window.addEventListener('error', (event) => NativeAPI.write('error.txt', event.error.toString()));
+    window.addEventListener('error', (event) => {
+      const msg = event?.error?.stack || event?.error?.toString?.() || String(event?.message || 'Unknown error');
+      NativeAPI.write('error.txt', msg);
+    });
 
-    window.addEventListener('unhandledrejection', (event) => NativeAPI.write('unhandledrejection.txt', event.reason.stack));
+    window.addEventListener('unhandledrejection', (event) => {
+      const reason = event?.reason;
+      const msg = reason?.stack || (typeof reason === 'string' ? reason : JSON.stringify(reason)) || 'Unknown rejection';
+      NativeAPI.write('unhandledrejection.txt', msg);
+    });
   }
 
   static loadModules() {
@@ -468,6 +475,7 @@ export class NativeAPI {
   }
 
   static async write(file, body, append = false) {
+    body = body === undefined ? '' : String(body);
     if (append) {
       await NativeAPI.fileSystem.promises.appendFile(file, body);
     } else {

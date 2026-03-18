@@ -1,4 +1,4 @@
-﻿export const ru = {
+export const ru = {
   locale: ['ru_RU'],
   name: 'Русский',
   word: {
@@ -245,6 +245,8 @@
     todoInProgress: 'TODO еще не готово - команда PW Classic работает над этим',
     talentLibrary: 'Библиотека талантов',
     sets: 'Сеты',
+    setHintLmb: 'ЛКМ для переноса талантов в билд',
+    setHintRmb: 'ПКМ для удаления талантов из билда',
     windowsLauncherRequired: 'Необходима Windows версия лаунчера',
     buildNamePlaceholder: 'Наименование билда',
     createBuild: 'Создать билд',

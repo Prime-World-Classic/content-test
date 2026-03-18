@@ -1138,11 +1138,13 @@ button.build-action-item:hover {
 }
 
 .build-talent-item-container {
-  background-size: calc(max(12cqw, 3cqh));
-  width: calc(max(12cqw, 3cqh));
-  height: calc(max(12cqw, 3cqh));
+  background-size: 100%;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
   container-type: size;
-  margin: calc(max(0.9cqw, 0.3cqh));
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .build-talent-item {
@@ -1152,6 +1154,9 @@ button.build-action-item:hover {
   background-position: center;
   background-repeat: no-repeat;
   position: relative; /* Изменено с static на relative */
+  isolation: isolate;
+  border-radius: 22%;
+  overflow: hidden;
   transform-origin: center; /* Масштабирование от центра */
   will-change: transform; /* Оптимизация анимации */
 }
@@ -1168,17 +1173,24 @@ button.build-action-item:hover {
 .build-rarity-other:after,
 .build-hero-grid-item .build-talent-item[data-active='1']:after {
   content: '';
+  position: absolute;
+  inset: 0;
   display: block;
-  width: 100cqh;
-  height: 100cqh;
-  background-size: contain;
+  border-radius: 22%;
+  pointer-events: none;
+  z-index: 999;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 86% 86%;
   background-image: url('icons/activeBorder.webp');
 }
 
 .build-rarity-other:after {
-  position: absolute;
-  top: 0;
-  transform: scale(1.15);
+  inset: 0;
+  border-radius: 50%;
+  transform: scale(1.3);
+  z-index: 999;
+  background-size: 94% 94%;
 }
 
 .build-talent-view {
@@ -1186,20 +1198,162 @@ button.build-action-item:hover {
   container-type: size;
   width: 120cqw;
   border-radius: 2cqh;
-  height: 85cqh;
+  height: 88cqh;
   align-self: end;
-  margin-top: 16cqh;
+  margin-top: 4cqh;
+  display: flex;
+  flex-direction: column;
+  gap: 1cqh;
 }
 
 .build-talents {
-  display: flex;
-  flex-flow: row wrap;
-  overflow: auto;
-  width: 100cqw;
-  height: 90cqh;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.6cqh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: 98cqw;
+  flex: 3;
+  height: auto;
   background: #33333352;
   justify-content: start;
   align-content: flex-start;
+  padding: 0.6cqh;
+  border: 0.35cqh solid rgba(255, 255, 255, 0.18);
+  border-radius: 2.2cqh;
+  box-sizing: border-box;
+}
+
+.build-ui-updating {
+  visibility: hidden;
+}
+
+.build-sets {
+  flex: 1;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  width: 98cqw;
+  background: #33333352;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-content: flex-start;
+  justify-content: flex-start;
+  padding: 0.6cqh;
+  gap: 0.6cqh;
+  border: 0.35cqh solid rgba(255, 255, 255, 0.18);
+  border-radius: 1.8cqh;
+  box-sizing: border-box;
+}
+
+.build-set-item {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 0.8cqh;
+  background-size: cover;
+  background-position: center;
+  box-shadow: none;
+  border: 0.25cqh solid rgb(205 154 154 / 22%);
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+}
+
+.build-set-item:hover {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.build-set-desc-icons {
+  margin-top: 0.6cqh;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6cqh;
+}
+
+.build-set-desc-hints {
+  margin-top: 0.8cqh;
+  opacity: 0.9;
+}
+
+.build-set-desc-hints div {
+  font-size: 1.2cqh;
+  line-height: 1.3;
+}
+
+.build-set-desc-icon {
+  width: 4cqh;
+  height: 4cqh;
+  border-radius: 0.6cqh;
+}
+
+.build-set-desc-icon.is-in-build {
+  filter: grayscale(100%);
+  opacity: 0.75;
+}
+
+@keyframes buildSetPulse {
+  0% {
+    opacity: 0.55;
+    box-shadow:
+      inset 0 0 0 0.55cqh rgba(80, 190, 255, 0.55),
+      inset 0 0 1.8cqh rgba(80, 190, 255, 0.22),
+      0 0 1.4cqh rgba(80, 190, 255, 0.22);
+  }
+  50% {
+    opacity: 1;
+    box-shadow:
+      inset 0 0 0 0.65cqh rgba(80, 190, 255, 0.75),
+      inset 0 0 2.4cqh rgba(80, 190, 255, 0.30),
+      0 0 2.0cqh rgba(80, 190, 255, 0.34);
+  }
+  100% {
+    opacity: 0.55;
+    box-shadow:
+      inset 0 0 0 0.55cqh rgba(80, 190, 255, 0.55),
+      inset 0 0 1.8cqh rgba(80, 190, 255, 0.22),
+      0 0 1.4cqh rgba(80, 190, 255, 0.22);
+  }
+}
+
+.build-field .build-talent-item.build-set-highlight {
+  outline: none;
+  border-radius: inherit;
+}
+
+.build-field .build-talent-item.build-set-highlight::before {
+  content: '';
+  position: absolute;
+  inset: 5%;
+  border-radius: 22%;
+  pointer-events: none;
+  z-index: 3;
+  border: 0.42cqh solid rgba(80, 190, 255, 0.55);
+  box-shadow:
+    inset 0 0 1.6cqh rgba(80, 190, 255, 0.22),
+    inset 0 0 0.6cqh rgba(80, 190, 255, 0.20),
+    0 0 1.2cqh rgba(80, 190, 255, 0.18);
+  animation: buildSetPulse 1.1s ease-in-out infinite;
+}
+
+/* Подсветка талантов в библиотеке при наведении на сет */
+.build-talents .build-talent-item.build-set-highlight-lib {
+  outline: none;
+  border-radius: inherit;
+  box-shadow: none;
+}
+
+.build-talents .build-talent-item.build-set-highlight-lib::before {
+  content: '';
+  position: absolute;
+  inset: 0.55cqh;
+  border-radius: 22%;
+  pointer-events: none;
+  z-index: 3;
+  border: 0.42cqh solid rgba(80, 190, 255, 0.55);
+  box-shadow:
+    inset 0 0 1.6cqh rgba(80, 190, 255, 0.22),
+    inset 0 0 0.6cqh rgba(80, 190, 255, 0.20),
+    0 0 1.2cqh rgba(80, 190, 255, 0.18);
+  animation: buildSetPulse 1.1s ease-in-out infinite;
 }
 
 .build-active-bar-container {
@@ -1285,7 +1439,7 @@ button.build-action-item:hover {
   justify-content: center;
   position: absolute;
   width: 120cqw;
-  top: 8cqh;
+  top: 2cqh;
   right: 0;
 }
 
@@ -1299,6 +1453,8 @@ button.build-action-item:hover {
 
 .build-rarity-other {
   background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  isolation: isolate;
   text-align: center;
   font-size: 5cqw;
   line-height: auto;
@@ -4901,6 +5057,8 @@ body:has(#wcastle-call)::before {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 5;
 }
 
 .build-hero {
@@ -5037,6 +5195,9 @@ body:has(#wcastle-call)::before {
 }
 
 @media (max-aspect-ratio: 1/1) {
+  .build-sets {
+    display: none;
+  }
   .build-horizontal {
     flex-direction: column;
     height: 100cqh;
