@@ -94,6 +94,54 @@ export async function findConfigFile() {
   return null;
 }
 
+export async function ensureActionBarSlotsInNativeCfg() {
+  if (!NativeAPI.status) return { changed: false };
+
+  const cfg = await findConfigFile();
+  if (!cfg || cfg.type !== 'native' || !cfg.path) return { changed: false };
+
+  const configPath = cfg.path;
+  let data = '';
+  try {
+    data = await NativeAPI.fileSystem.promises.readFile(configPath, 'utf8');
+  } catch {
+    return { changed: false };
+  }
+
+  const lines = data.split(/\r?\n/);
+  const present = new Set();
+  let lastFoundLineIndex = -1;
+
+  const re = /^\s*bind\s+cmd_action_bar_slot(\d+)\b/;
+  for (let i = 0; i < lines.length; i++) {
+    const m = lines[i].match(re);
+    if (!m) continue;
+
+    const n = Number(m[1]);
+    if (!Number.isFinite(n) || n < 1 || n > 24) continue;
+
+    present.add(n);
+    lastFoundLineIndex = i;
+  }
+
+  const missing = [];
+  for (let n = 1; n <= 24; n++) {
+    if (!present.has(n)) missing.push(n);
+  }
+
+  if (!missing.length) return { changed: false };
+
+  const toInsert = missing.map((n) => `bind cmd_action_bar_slot${n} ''`);
+  if (lastFoundLineIndex >= 0) lines.splice(lastFoundLineIndex + 1, 0, ...toInsert);
+  else lines.push(...toInsert);
+
+  let out = lines.join('\n');
+  if (!out.endsWith('\n')) out += '\n';
+
+  await NativeAPI.fileSystem.promises.writeFile(configPath, out, 'utf8');
+  return { changed: true, configPath };
+}
+
 export async function loadKeybindsNative(cfg) {
   const data = await NativeAPI.fileSystem.promises.readFile(cfg.path, 'utf8');
   const parsed = parseKeybindCfg(data);

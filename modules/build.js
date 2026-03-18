@@ -2987,34 +2987,30 @@ export class Build {
         Build.enableSmartCast(element);
       }
 
+      const keyName = Build.getKeyName(index);
+
       if (Math.abs(item)) {
         let position = Math.abs(item) - 1;
-
         let findTalent = Build.fieldView.querySelector(`[data-position = "${position}"]`);
 
         if (findTalent && findTalent.firstChild) {
           let clone = findTalent.firstChild.cloneNode(true);
-
           element.append(clone);
 
           clone.dataset.state = 3;
-
           clone.style.opacity = 1;
-
           clone.style.position = 'static';
-
           clone.style.backgroundImage = `url("${clone.dataset.url}")`;
-
           clone.dataset.position = position;
-
           Build.move(clone, true);
         }
       }
 
       Build.activeBarView.append(element);
 
-      const keyElement = DOM({ style: 'build-active-bar-key' }, Build.getKeyName(index));
-
+      // Keep key-label alignment: always append an element per slot.
+      // If no key is assigned, we render an empty text node.
+      const keyElement = DOM({ style: 'build-active-bar-key' }, keyName || '');
       Build.activeBarKeybindingsView.append(keyElement);
 
       index++;
@@ -3022,12 +3018,15 @@ export class Build {
   }
 
   static getKeyName(index) {
-    if (index >= 24) return 'Отключен';
-
-    const bind = Build.binds?.[index];
-    if (!bind || !Array.isArray(bind.keys) || !bind.keys.length) return 'Отключен';
-
-    return bind.keys.join('+');
+    try {
+      const bind = Build.binds?.[index];
+      const keys = bind?.keys;
+      if (!Array.isArray(keys) || !keys.length) return '';
+      return keys.join('+');
+    } catch {
+      return '';
+    }
+	
   }
 
   static setSortInventory(key, value) {

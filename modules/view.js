@@ -23,9 +23,11 @@ import { DomAudio } from './domAudio.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { Sound } from './sound.js';
+import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/keybindings.io.js';
 
 export class View {
   static mmQueueMap = {};
+  static _actionBarCfgEnsured = false;
 
   static getQueue(cssKey) {
     const map = {
@@ -84,6 +86,15 @@ export class View {
       App.error(error);
 
       return;
+    }
+
+    // Ensure action bar slots exist in native input_new.cfg once per app session.
+    if (method === 'castle' && !View._actionBarCfgEnsured) {
+      try {
+        const { changed } = await ensureActionBarSlotsInNativeCfg();
+        if (changed) await loadKeybinds();
+      } catch {}
+      View._actionBarCfgEnsured = true;
     }
 
     if (View.active) {
