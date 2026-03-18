@@ -2106,6 +2106,35 @@ export class Build {
     return false;
   }
 
+  static isTalentConflictState(talentData, installedTalents) {
+    try {
+      if (!talentData || !Array.isArray(installedTalents)) return false;
+      if (!('conflict' in talentData) || !Array.isArray(talentData.conflict)) return false;
+
+      for (const conflictId of talentData.conflict) {
+        for (const installedTalent of installedTalents) {
+          if (!installedTalent) continue;
+          if (Math.abs(installedTalent.id) == conflictId) {
+            const isCurrentOrdinary = talentData.id > 0;
+            const isInstalledOrdinary = installedTalent.id > 0;
+            if (isCurrentOrdinary === isInstalledOrdinary) return true;
+          }
+        }
+      }
+      return false;
+    } catch {
+      return false;
+    }
+  }
+
+  static notifyTalentConflict() {
+    try {
+      if (typeof App !== 'undefined' && App.notify) {
+        App.notify(Lang.text('talentConflict'));
+      }
+    } catch {}
+  }
+
   static clearSetHighlights() {
     try {
       Build.fieldView?.querySelectorAll('.build-talent-item.build-set-highlight').forEach((el) => el.classList.remove('build-set-highlight'));
@@ -2514,13 +2543,21 @@ export class Build {
 
   static async applySetToBuild(set) {
     const ids = TalentSets.getTalentIds(set);
+    const simInstalled = Array.isArray(Build.installedTalents) ? Build.installedTalents.slice() : new Array(36).fill(null);
     for (const id of ids) {
       if (Build.isTalentInBuild(id)) continue;
       const data = Build.talents?.[String(id)];
       if (!data) continue;
       if (!data.level || data.level <= 0) continue;
 
-      const emptyIndex = Build.getFirstEmptySlotIndexForLevel(data.level);
+      // Conflict handling: match Build.move() behavior.
+      const conflictState = Build.isTalentConflictState(data, simInstalled);
+      if (conflictState) {
+        Build.notifyTalentConflict();
+        continue;
+      }
+
+      const emptyIndex = Build.getFirstEmptySlotIndexForLevelIn(simInstalled, data.level);
       if (emptyIndex == null) continue;
 
       try {
@@ -2531,6 +2568,7 @@ export class Build {
         });
 
         Build.installedTalents[emptyIndex] = data;
+        simInstalled[emptyIndex] = data;
 
         if (data.active) {
           try {
@@ -3330,37 +3368,8 @@ export class Build {
 
           if (elemBelow && elemBelow.className == 'build-hero-grid-item') {
             if (data.level && elemBelow.parentNode.dataset.level == data.level) {
-              let conflictState = false;
-
-              if ('conflict' in data) {
-                for (let conflictId of data.conflict) {
-                  for (let installedTalent of Build.installedTalents) {
-                    if (installedTalent) {
-                      if (Math.abs(installedTalent.id) == conflictId) {
-                        let isCurrentOrdinary = data.id > 0;
-
-                        let isInstalledOrdinary = installedTalent.id > 0;
-
-                        if (isCurrentOrdinary === isInstalledOrdinary) {
-                          conflictState = true;
-
-                          break;
-                        }
-                      }
-                    }
-                  }
-
-                  if (conflictState) break;
-                }
-              }
-
-              if (conflictState) {
-                if (typeof App !== 'undefined' && App.notify) {
-                  const message = Lang.text('talentConflict');
-
-                  App.notify(message);
-                }
-              }
+              let conflictState = Build.isTalentConflictState(data, Build.installedTalents);
+              if (conflictState) Build.notifyTalentConflict();
 
               if (!conflictState) {
                 if ('conflict' in data) {
