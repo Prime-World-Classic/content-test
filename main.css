@@ -1200,10 +1200,46 @@ button.build-action-item:hover {
   border-radius: 2cqh;
   height: 88cqh;
   align-self: end;
-  margin-top: 4cqh;
+  margin-top: 0cqh;
   display: flex;
   flex-direction: column;
   gap: 1cqh;
+  
+}
+
+.build-inventory-fieldset {
+  width: 98cqw;
+  background: #33333352;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 0.35cqh solid rgba(255, 255, 255, 0.18);
+  border-radius: 2.2cqh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  /* remove default fieldset gap */
+  min-width: 0;
+}
+
+.build-inventory-legend {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: rgba(0, 0, 0, 1) 0 0 4cqh;
+  font: 3cqh / 1 'DejaVuSans', sans-serif;
+  padding: 0.25cqh 1.4cqh 0.1cqh;
+  user-select: none;
+}
+
+.build-talents-section {
+  flex: 3;
+  margin-top: 1cqh;
+}
+
+.build-sets-section {
+  flex: 1.3;
+  margin-top: -1cqh;
+  border-radius: 1.8cqh;
 }
 
 .build-talents {
@@ -1212,16 +1248,18 @@ button.build-action-item:hover {
   gap: 0.6cqh;
   overflow-y: scroll;
   overflow-x: hidden;
-  width: 98cqw;
-  flex: 3;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
   height: auto;
-  background: #33333352;
+  background: transparent;
   justify-content: start;
   align-content: flex-start;
   padding: 0.6cqh;
-  border: 0.35cqh solid rgba(255, 255, 255, 0.18);
-  border-radius: 2.2cqh;
   box-sizing: border-box;
+  border: none;
+  border-radius: 0;
+  margin-top: 0;
 }
 
 .build-ui-updating {
@@ -1229,20 +1267,22 @@ button.build-action-item:hover {
 }
 
 .build-sets {
-  flex: 1;
   overflow-y: scroll;
   overflow-x: hidden;
-  width: 98cqw;
-  background: #33333352;
+  width: 100%;
+  background: transparent;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   align-content: flex-start;
   justify-content: flex-start;
   padding: 0.6cqh;
   gap: 0.6cqh;
-  border: 0.35cqh solid rgba(255, 255, 255, 0.18);
-  border-radius: 1.8cqh;
   box-sizing: border-box;
+  border: none;
+  border-radius: 0;
+  margin-top: 0;
+  flex: 1;
+  min-height: 0;
 }
 
 .build-set-item {
@@ -5195,6 +5235,7 @@ body:has(#wcastle-call)::before {
 }
 
 @media (max-aspect-ratio: 1/1) {
+  .build-sets-section,
   .build-sets {
     display: none;
   }
@@ -5309,6 +5350,7 @@ body:has(#wcastle-call)::before {
     background: #33333352;
     justify-content: start;
     align-content: flex-start;
+	margin-top: 0cqh;
   }
   .build-active-bar-container {
     container-type: inline-size;

@@ -447,7 +447,15 @@ export class Build {
       Lang.text('training'),
     );
 
-    Build.inventoryView.append(buildTalents, Build.setsListView);
+    const talentsSection = DOM({ tag: 'fieldset', style: ['build-inventory-fieldset', 'build-talents-section'] });
+    const talentsHeader = DOM({ tag: 'legend', style: 'build-inventory-legend' }, Lang.text('library'));
+    talentsSection.append(talentsHeader, buildTalents);
+
+    const setsSection = DOM({ tag: 'fieldset', style: ['build-inventory-fieldset', 'build-sets-section'] });
+    const setsHeader = DOM({ tag: 'legend', style: 'build-inventory-legend' }, Lang.text('sets'));
+    setsSection.append(setsHeader, Build.setsListView);
+
+    Build.inventoryView.append(talentsSection, setsSection);
 
     Build.renderTalentSetsList();
 
@@ -2907,6 +2915,7 @@ export class Build {
   }
 
   static setSortInventory(key, value) {
+    Build._forceShowTalentIds = null;
     if (!(key in Build.ruleSortInventory)) {
       Build.ruleSortInventory[key] = new Array();
 
@@ -2921,6 +2930,7 @@ export class Build {
   }
 
   static removeSortInventory(key, value) {
+    Build._forceShowTalentIds = null;
     if (key in Build.ruleSortInventory) {
       let newArray = new Array();
 
@@ -3062,35 +3072,22 @@ export class Build {
       let shiftX = 0;
       let shiftY = 0;
 
-      if (element.dataset.state === '3') {
-        shiftX = event.clientX;
-        shiftY = event.clientY;
-      } else {
-        let rect = element.getBoundingClientRect();
-        shiftX = event.pageX - rect.left - 5;
-        shiftY = event.pageY - rect.top - 5;
-
-        let offsetParent = element;
-        do {
-          if (!offsetParent.offsetParent) break;
-          shiftX += offsetParent.offsetParent.offsetLeft;
-          shiftY += offsetParent.offsetParent.offsetTop;
-          offsetParent = offsetParent.offsetParent;
-        } while (!(offsetParent.id == 'wbuild' || offsetParent.id == 'viewbuild'));
-      }
+      const startRect = element.getBoundingClientRect();
+      shiftX = event.clientX - startRect.left;
+      shiftY = event.clientY - startRect.top;
 
       element.style.zIndex = '9999';
-      element.style.position = 'absolute';
-      element.style.left = event.pageX - shiftX + 'px';
-      element.style.top = event.pageY - shiftY + 'px';
+      element.style.position = 'fixed';
+      element.style.left = event.clientX - shiftX + 'px';
+      element.style.top = event.clientY - shiftY + 'px';
 
       elementSetDisplay(element, 'none');
       let startingElementBelow = elementFromPoint(event.clientX, event.clientY);
       elementSetDisplay(element, 'block');
 
       document.onmousemove = (e) => {
-        element.style.left = e.pageX - shiftX + 'px';
-        element.style.top = e.pageY - shiftY + 'px';
+        element.style.left = e.clientX - shiftX + 'px';
+        element.style.top = e.clientY - shiftY + 'px';
       };
 
       element.onmouseup = async (event) => {
@@ -3110,14 +3107,6 @@ export class Build {
 
         let left = parseInt(element.style.left) + target.width / 2;
         let top = parseInt(element.style.top) + target.height / 2;
-
-        let offsetParent = element;
-        do {
-          if (!offsetParent.offsetParent) break;
-          left += offsetParent.offsetParent.offsetLeft;
-          top += offsetParent.offsetParent.offsetTop;
-          offsetParent = offsetParent.offsetParent;
-        } while (!(offsetParent.id == 'wbuild' || offsetParent.id == 'viewbuild'));
 
         let isFieldTarget = left > field.x && left < field.x + field.width && top > field.y && top < field.y + field.height;
         let isInventoryTarget =
