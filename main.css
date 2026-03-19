@@ -1248,7 +1248,112 @@ button.build-action-item:hover {
   display: flex;
   flex-direction: column;
   gap: 1cqh;
-  
+}
+
+.build-list-settings {
+  position: absolute;
+  top: 6.8cqh;
+  right: 0;
+  width: 4.4cqh;
+  height: 4.4cqh;
+  border-radius: 50%;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  z-index: 10;
+
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain, cover;
+  background-image: url('icons/settings.png'), url('img/queue/321.png');
+
+  transform: translate(50%, -40%);
+  color: rgba(255, 255, 255, 0.9);
+  font: 1.8cqh / 1 'DejaVuSans', sans-serif;
+}
+
+.build-list-settings:hover {
+  transform: translate(50%, -40%) scale(1.06);
+}
+
+.build-settings-panel {
+  position: absolute;
+  left: calc(100% + 1.2cqh);
+  top: 10.6cqh;
+  width: 20cqh;
+  min-height: 17cqh;
+  container-type: inline-size;
+  border-radius: 2cqh;
+  border: 0.15cqh solid rgb(158, 155, 104);
+  background-image: linear-gradient(
+    to bottom,
+    rgba(4, 32, 42, 0.9),
+    rgba(18, 69, 73, 0.85),
+    rgba(21, 51, 59, 0.8),
+    rgba(18, 69, 73, 0.85),
+    rgba(4, 32, 42, 0.9)
+  );
+  padding: 1cqh 1.2cqh;
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15cqh;
+  z-index: 45;
+}
+
+.build-settings-panel .castle-menu-slider {
+  height: 1.05cqh;
+}
+
+.build-settings-panel .castle-menu-slider::-webkit-slider-runnable-track {
+  height: 1.05cqh;
+}
+
+.build-settings-panel .castle-menu-slider::-moz-range-progress {
+  height: 1.05cqh;
+}
+
+.build-settings-panel .castle-menu-slider::-moz-range-track {
+  height: 1.05cqh;
+}
+
+.build-settings-panel .castle-menu-slider::-webkit-slider-thumb {
+  width: 1.35cqh;
+  height: 1.35cqh;
+  margin-top: -0.15cqh;
+}
+
+.build-settings-panel .castle-menu-slider::-moz-range-thumb {
+  width: 1.35cqh;
+  height: 1.35cqh;
+}
+
+.build-settings-title {
+  color: rgba(255, 255, 255, 0.95);
+  font: 2cqh / 1.1 'DejaVuSans', sans-serif;
+  text-align: center;
+  margin-bottom: 0.3cqh;
+}
+
+.build-settings-row-label {
+  color: rgba(255, 255, 255, 0.85);
+  font: 1.4cqh / 1.1 'DejaVuSans', sans-serif;
+  text-align: center;
+  margin-top: 0.6cqh;
+}
+
+.build-settings-row-value {
+  color: rgba(200, 220, 255, 0.9);
+  font: 1.2cqh / 1.1 'DejaVuSans', sans-serif;
+  text-align: center;
+  margin-bottom: 0.2cqh;
+}
+
+.build-settings-slider-short {
+  width: 100%;
 }
 
 .build-inventory-fieldset {
@@ -1284,6 +1389,65 @@ button.build-action-item:hover {
   flex: 1.3;
   margin-top: -1cqh;
   border-radius: 1.8cqh;
+}
+
+/* Alternate inventory layout (row) */
+.build-talent-view.build-talent-view--row {
+  flex-direction: row;
+  margin-right: 1cqh;
+}
+
+.build-talent-view.build-talent-view--row .build-inventory-fieldset {
+  width: auto;
+  min-width: 0;
+}
+
+.build-talent-view.build-talent-view--row .build-talents-section {
+  flex: 4;
+  margin-top: 3cqh;
+}
+
+.build-talent-view.build-talent-view--row .build-sets-section {
+  flex: 3;
+  margin-top: 3cqh;
+  border-radius: 1.8cqh;
+}
+
+.build-talent-view.build-talent-view--row .build-talents {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.build-talent-view.build-talent-view--row .build-sets {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Build settings: alternate inventory layout (row) */
+.build-talent-view.build-talent-view--row {
+  flex-direction: row;
+  margin-right: 1cqh;
+}
+
+.build-talent-view.build-talent-view--row .build-inventory-fieldset {
+  width: auto;
+  min-width: 0;
+}
+
+.build-talent-view.build-talent-view--row .build-talents-section {
+  flex: 4;
+  margin-top: 3cqh;
+}
+
+.build-talent-view.build-talent-view--row .build-sets-section {
+  flex: 3;
+  margin-top: 3cqh;
+}
+
+.build-talent-view.build-talent-view--row .build-talents {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.build-talent-view.build-talent-view--row .build-sets {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .build-talents {
@@ -5398,6 +5562,10 @@ body:has(#wcastle-call)::before {
     width: 82cqw;
     height: 100cqh;
     align-self: center;
+  }
+  .build-list-settings,
+  .build-settings-panel {
+    display: none !important;
   }
   .build-talent-item-container {
     background-size: 12cqh;

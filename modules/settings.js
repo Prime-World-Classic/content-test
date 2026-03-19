@@ -14,6 +14,9 @@ export class Settings {
     radminPriority: false,
     language: 'ru',
     novoice: false,
+    buildSetLmbMode: 1,
+    buildRowHoverHighlight: true,
+    buildTalentViewLayout: 0,
   };
 
   static settings = JSON.parse(JSON.stringify(this.defaultSettings));
