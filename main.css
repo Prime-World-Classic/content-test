@@ -1263,13 +1263,11 @@ button.build-action-item:hover {
   box-sizing: border-box;
   cursor: pointer;
   z-index: 10;
-
-  background-color: transparent;
+  background-color: #9d1818d1;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain, cover;
   background-image: url('icons/settings.png'), url('img/queue/321.png');
-
   transform: translate(50%, -40%);
   color: rgba(255, 255, 255, 0.9);
   font: 1.8cqh / 1 'DejaVuSans', sans-serif;
@@ -1382,7 +1380,7 @@ button.build-action-item:hover {
 
 .build-talents-section {
   flex: 3;
-  margin-top: 1cqh;
+  margin-top: 3cqh;
 }
 
 .build-sets-section {

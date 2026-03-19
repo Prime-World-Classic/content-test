@@ -379,6 +379,37 @@ export class Build {
         if (e.ctrlKey || e.shiftKey) return;
         if (!Build.setsListView) return;
 
+        // Prevent tooltip churn while actively scrolling sets list.
+        Build._setsScrollLockUntil = performance.now() + 180;
+        Build._setsWheelMouseX = e.clientX;
+        Build._setsWheelMouseY = e.clientY;
+        try {
+          if (Build._setsScrollStopTimer) clearTimeout(Build._setsScrollStopTimer);
+        } catch {}
+        Build._setsScrollStopTimer = setTimeout(() => {
+          Build._setsScrollStopTimer = 0;
+          Build._setsScrollLockUntil = 0;
+          try {
+            const x = Number(Build._setsWheelMouseX) || 0;
+            const y = Number(Build._setsWheelMouseY) || 0;
+            const el = document.elementFromPoint(x, y);
+            const hoveredSet = el?.closest?.('.build-set-item');
+            if (hoveredSet) {
+              hoveredSet.dispatchEvent(
+                new MouseEvent('mouseenter', {
+                  bubbles: true,
+                  clientX: x,
+                  clientY: y,
+                }),
+              );
+            }
+          } catch {}
+        }, 140);
+        if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+
+        // In row layout, keep native wheel speed (same feel as library).
+        if (Build.inventoryView?.classList?.contains('build-talent-view--row')) return;
+
         e.preventDefault();
 
         const view = Build.setsListView;
@@ -2351,10 +2382,12 @@ export class Build {
           const anchor = Build._hoveredSetAnchorEl;
           if (ids?.length && anchor?.isConnected) {
             Build.highlightSetTalents(ids);
+            Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_inventory' });
             const start = performance.now();
             const tick = () => {
               if (Build._hoveredSetAnchorEl !== anchor || Build._hoveredSetTalentIds !== ids) return;
               Build.highlightSetTalents(ids);
+              Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_inventory_tick' });
               if (performance.now() - start >= 900) return;
               setTimeout(tick, 140);
             };
@@ -2674,9 +2707,11 @@ export class Build {
     await Build.waitForCondition(hasAny, timeoutMs);
     if (Build._hoveredSetTalentIds !== talentIds) return;
     Build.highlightSetTalents(talentIds);
+    Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_recover' });
   }
 
   static showSetDescription(set, anchorEl) {
+    if ((Build._setsScrollLockUntil || 0) > performance.now()) return;
     Build._descriptionPinnedBySet = true;
     const mode = Build.getSetLmbMode();
     const mainId = TalentSets.chooseMainTalentId(set);
@@ -3063,6 +3098,9 @@ export class Build {
         Build.previewSetTalentsInEmptySlots(set);
       });
       item.addEventListener('mouseleave', () => {
+        // After set click, transient mouseleave can happen during fast rerender.
+        // Keep current hover visuals pinned; global mousemove monitor will clear on real leave.
+        if (Build._descriptionPinnedBySet && Build._hoveredSetAnchorEl === item) return;
         Build.descriptionView.style.display = 'none';
         Build._descriptionPinnedBySet = false;
         Build._hoveredSetTalentIds = null;
@@ -3624,7 +3662,10 @@ export class Build {
           }
         }
 
-        if (Build._hoveredSetTalentIds) Build.highlightSetTalents(Build._hoveredSetTalentIds);
+        if (Build._hoveredSetTalentIds) {
+          Build.highlightSetTalents(Build._hoveredSetTalentIds);
+          Build.previewSetTalentsInEmptySlots({ _manualOrder: Build._hoveredSetTalentIds, key: 'hover_preview_move' });
+        }
         else Build.clearSetHighlights();
 
         let removeFromActive = async (position, skipActiveId) => {
@@ -4223,6 +4264,11 @@ export class Build {
   static cleanup() {
     Build.clearBuildRowHoverHighlight();
     Build.toggleBuildSettingsPanel(false);
+    try {
+      if (Build._setsScrollStopTimer) clearTimeout(Build._setsScrollStopTimer);
+    } catch {}
+    Build._setsScrollStopTimer = 0;
+    Build._setsScrollLockUntil = 0;
     try {
       if (Build._buildSettingsAttachTimer) clearTimeout(Build._buildSettingsAttachTimer);
     } catch {}
