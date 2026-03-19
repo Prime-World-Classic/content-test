@@ -379,47 +379,40 @@ export class Build {
         if (e.ctrlKey || e.shiftKey) return;
         if (!Build.setsListView) return;
 
-        // Prevent tooltip churn while actively scrolling sets list.
-        Build._setsScrollLockUntil = performance.now() + 180;
-        Build._setsWheelMouseX = e.clientX;
-        Build._setsWheelMouseY = e.clientY;
+        const view = Build.setsListView;
+        const dy = Number(e.deltaY) || 0;
+        if (!dy) return;
+
+        const max = Math.max(0, view.scrollHeight - view.clientHeight);
+        const cur = view.scrollTop;
+        const canScroll = max > 0 && ((dy < 0 && cur > 0) || (dy > 0 && cur < max));
+        // If list is already at edge and cannot scroll further, keep current hover preview.
+        if (!canScroll) return;
+
+        // Match library behavior: wheel scroll drops current hover visuals.
+        Build.clearEmptySlotPreviews();
+        if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+        Build._descriptionPinnedBySet = false;
+        Build._hoveredSetTalentIds = null;
+        Build._hoveredSetAnchorEl = null;
+        Build.clearSetHighlights();
         try {
           if (Build._setsScrollStopTimer) clearTimeout(Build._setsScrollStopTimer);
         } catch {}
         Build._setsScrollStopTimer = setTimeout(() => {
           Build._setsScrollStopTimer = 0;
-          Build._setsScrollLockUntil = 0;
-          try {
-            const x = Number(Build._setsWheelMouseX) || 0;
-            const y = Number(Build._setsWheelMouseY) || 0;
-            const el = document.elementFromPoint(x, y);
-            const hoveredSet = el?.closest?.('.build-set-item');
-            if (hoveredSet) {
-              hoveredSet.dispatchEvent(
-                new MouseEvent('mouseenter', {
-                  bubbles: true,
-                  clientX: x,
-                  clientY: y,
-                }),
-              );
-            }
-          } catch {}
         }, 140);
-        if (Build.descriptionView) Build.descriptionView.style.display = 'none';
 
         // In row layout, keep native wheel speed (same feel as library).
         if (Build.inventoryView?.classList?.contains('build-talent-view--row')) return;
 
         e.preventDefault();
 
-        const view = Build.setsListView;
-        const dy = Number(e.deltaY) || 0;
         const scaled = dy / 3;
 
         if (typeof Build._setsScrollTarget !== 'number') Build._setsScrollTarget = view.scrollTop;
         Build._setsScrollTarget += scaled;
 
-        const max = Math.max(0, view.scrollHeight - view.clientHeight);
         if (Build._setsScrollTarget < 0) Build._setsScrollTarget = 0;
         if (Build._setsScrollTarget > max) Build._setsScrollTarget = max;
 
@@ -2711,7 +2704,6 @@ export class Build {
   }
 
   static showSetDescription(set, anchorEl) {
-    if ((Build._setsScrollLockUntil || 0) > performance.now()) return;
     Build._descriptionPinnedBySet = true;
     const mode = Build.getSetLmbMode();
     const mainId = TalentSets.chooseMainTalentId(set);
@@ -4268,7 +4260,6 @@ export class Build {
       if (Build._setsScrollStopTimer) clearTimeout(Build._setsScrollStopTimer);
     } catch {}
     Build._setsScrollStopTimer = 0;
-    Build._setsScrollLockUntil = 0;
     try {
       if (Build._buildSettingsAttachTimer) clearTimeout(Build._buildSettingsAttachTimer);
     } catch {}
