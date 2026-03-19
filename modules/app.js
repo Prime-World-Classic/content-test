@@ -297,6 +297,7 @@ export class App {
   }
 
   static setNickname() {
+    
     const close = DOM({
       tag: 'div',
       domaudio: domAudioPresets.closeButton,
@@ -307,8 +308,8 @@ export class App {
     close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
     let template = document.createDocumentFragment();
-
-    let title = DOM({ tag: 'div', style: 'castle-menu-text' }, Lang.text('nicknameChangeCooldown'));
+    let modal = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('nicknamePlaceholder')));
+    let title = DOM({ tag: 'div', style: 'castle-menu-text', id: 'castle-menu-text-change-nickname' }, Lang.text('nicknameChangeCooldown'));
 
     let name = DOM({
       domaudio: domAudioPresets.defaultInput,
@@ -320,7 +321,7 @@ export class App {
     let button = DOM(
       {
         domaudio: domAudioPresets.bigButton,
-        style: 'splash-content-button',
+        style: 'splash-content-button-modal',
         event: [
           'click',
           async () => {
@@ -353,7 +354,7 @@ export class App {
       Lang.text('apply'),
     );
 
-    template.append(title, name, button, close);
+    template.append(modal, title,name, button, close);
 
     Splash.show(template);
   }
@@ -368,8 +369,7 @@ export class App {
     close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
     let template = document.createDocumentFragment();
-
-    const title = DOM({ tag: 'h2', style: 'faction-title' }, Lang.text('select_faction'));
+    const title = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('select_faction')));  
     Object.assign(title.style, {
       textAlign: 'center',
       color: '#fff',
@@ -388,6 +388,7 @@ export class App {
       width: '90%',
       maxWidth: '600px',
       margin: '0 auto',
+      marginTop: '4 cqh',
     });
 
     const factions = [
@@ -468,7 +469,8 @@ export class App {
 
     const button = DOM(
       {
-        style: 'splash-content-button',
+        style: 'splash-content-button-modal',
+        id: 'splash-content-button-modal-fraction',
         domaudio: domAudioPresets.bigButton,
         event: [
           'click',

@@ -1,4 +1,4 @@
-export const en = {
+﻿export const en = {
   locale: ['en_US'],
   name: 'English',
   word: {
@@ -128,6 +128,8 @@ export const en = {
     windowShopUnequip: 'Unequip',
     windowShopUnequipItem: 'Unequip ',
     windowShopCurrentFrame: 'the current frame',
+    buyModalText: 'Purchase',
+    equipment: 'Equipment',
 
     //Settings
     settingsFileAccessError: 'Settings file access error: ',
@@ -252,7 +254,7 @@ export const en = {
     duplicateToNewBuild: 'Duplicate to new build',
     resetTalentsTitle: 'Reset talents in this build?',
     reset: 'Reset',
-    renameBuild: 'Rename build',
+    renameBuild: 'Rename',
     native: 'Native',
     enemy: 'Enemy',
     gradualTalentsTitle: 'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
@@ -261,9 +263,10 @@ export const en = {
     makeStatPriorityTitle: 'Make characteristic priority',
     tipTitle: 'Hall of Fame Builds (LMB)',
 	tipBody: 'Builds for this hero from the Hall of Fame top-100 players.\nClick on the icon to view builds.\n\nTo copy a build from the Hall of Fame, leave your build window open on the desired tab.\nThen go to the selected build from the Hall of Fame and click "Steal build".',
-
+assembly: 'Assembly',
     //Друзья
-
+    friends: 'Friends',
+    searchForFriends: 'Search for friends',
     callAFriend: 'Call',
     inviteToAGroup: 'Party',
     friendIsOffline: 'Offline',
@@ -279,7 +282,7 @@ export const en = {
     friendCallFrom: 'Accept call from {name}?',
     friendDropCall: 'Drop call',
     inviteToAFriend: 'Invite',
-
+    battleText: 'Battle',
     //Войс
 
     enableMic: 'Press <strong>Ctrl+Z</strong> or click your Nickname to enable: {Voice.mic.label}',
@@ -442,6 +445,8 @@ export const en = {
       },
     ],
 
+
+    helpWindow: 'Help window',
     help_btn_close: 'Mark as read',
 
     // keybindings

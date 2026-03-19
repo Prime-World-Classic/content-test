@@ -1519,7 +1519,7 @@ export class View {
         }
         // status 1 - друг, 2 - запрос дружбы, 3 - дружбу отправил, игрок еще не подтвердил
         console.log('ДРУЗЬЯ', result);
-
+        const modal = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('searchForFriends')));
         let buttonAdd = DOM(
           {
             style: 'castle-friend-item',
@@ -1528,6 +1528,7 @@ export class View {
                 tag: 'input',
                 domaudio: domAudioPresets.defaultInput,
                 style: 'search-input',
+                id: 'search-friend-window-input',
                 placeholder: Lang.text('friendNicknamePlaceholder'),
               });
               let body = DOM({ style: 'search-body' });
@@ -1541,7 +1542,7 @@ export class View {
               });
               closeButton.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
 
-              let search = DOM({ style: 'search' }, input, body, closeButton);
+              let search = DOM({ style: 'search' },modal, input, body, closeButton);
 
               input.addEventListener('input', async () => {
                 let request = await App.api.request('user', 'find', {
@@ -1732,7 +1733,7 @@ export class View {
 
             friend.oncontextmenu = () => {
               let body = document.createDocumentFragment();
-
+              const modal = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('friends')));
               let b1 = DOM(
                 {
                   domaudio: domAudioPresets.smallButton,
@@ -1762,7 +1763,7 @@ export class View {
                 Lang.text('friendCancle'),
               );
 
-              body.append(DOM(Lang.text('friendRemoveText').replace('{nickname}', item.nickname)), b1, b2);
+              body.append(modal, DOM({id: 'friendRemoveText'},Lang.text('friendRemoveText').replace('{nickname}', item.nickname)), b1, b2);
 
               Splash.show(body);
 

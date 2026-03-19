@@ -56,7 +56,7 @@ export function HelpSplash(contentInnerHTML) {
   return Splash.show(
     DOM(
       { tag: 'article', style: 'splash-help' },
-
+      DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('helpWindow'))),
       DOM({ style: 'splash-help-container' }, renderContent()),
       DOM(
         {
