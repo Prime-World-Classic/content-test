@@ -1179,7 +1179,8 @@ button.build-action-item:hover {
   background-position: center;
   /* Slightly smaller than the full slot (match actual .build-talent-item look) */
   background-size: 86% 86%;
-  animation: buildSetEmptySlotPreviewBlink 0.9s ease-in-out infinite;
+  opacity: 0.35;
+  transition: opacity 0.18s linear;
 }
 
 .build-hero-grid-item.build-set-empty-slot-preview::before {
@@ -1194,7 +1195,8 @@ button.build-action-item:hover {
     inset 0 0 1.6cqh rgba(80, 190, 255, 0.22),
     inset 0 0 0.6cqh rgba(80, 190, 255, 0.2),
     0 0 1.2cqh rgba(80, 190, 255, 0.18);
-  animation: buildSetEmptySlotPreviewBlink 0.9s ease-in-out infinite;
+  opacity: 0.35;
+  transition: opacity 0.18s linear;
 }
 
 .build-hero-grid-item.build-talent-empty-slot-preview {
@@ -1202,7 +1204,17 @@ button.build-action-item:hover {
   background-repeat: no-repeat;
   background-position: center;
   background-size: 86% 86%;
-  animation: buildSetEmptySlotPreviewBlink 0.9s ease-in-out infinite;
+  opacity: 0.35;
+  transition: opacity 0.18s linear;
+}
+
+.build-field.build-preview-blink-on .build-hero-grid-item.build-set-empty-slot-preview,
+.build-field.build-preview-blink-on .build-hero-grid-item.build-talent-empty-slot-preview {
+  opacity: 1;
+}
+
+.build-field.build-preview-blink-on .build-hero-grid-item.build-set-empty-slot-preview::before {
+  opacity: 1;
 }
 
 .build-talent-item.dragging {
@@ -1334,6 +1346,27 @@ button.build-action-item:hover {
   font: 2cqh / 1.1 'DejaVuSans', sans-serif;
   text-align: center;
   margin-bottom: 0.3cqh;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  padding-bottom: 0.65cqh;
+}
+
+.build-settings-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 75%;
+  height: 0.12cqh;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(190, 214, 240, 0.08) 0%,
+    rgba(210, 228, 248, 0.52) 50%,
+    rgba(190, 214, 240, 0.08) 100%
+  );
 }
 
 .build-settings-row-label {
@@ -1341,6 +1374,7 @@ button.build-action-item:hover {
   font: 1.4cqh / 1.1 'DejaVuSans', sans-serif;
   text-align: center;
   margin-top: 0.6cqh;
+  margin-bottom: -0.6cqh;
 }
 
 .build-settings-row-value {
@@ -1348,6 +1382,84 @@ button.build-action-item:hover {
   font: 1.2cqh / 1.1 'DejaVuSans', sans-serif;
   text-align: center;
   margin-bottom: 0.2cqh;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  padding-bottom: 0.55cqh;
+}
+
+.build-settings-row-value::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 75%;
+  height: 0.1cqh;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    rgba(177, 203, 232, 0.07) 0%,
+    rgba(199, 220, 243, 0.44) 50%,
+    rgba(177, 203, 232, 0.07) 100%
+  );
+}
+
+.build-settings-panel .build-settings-row-value:last-of-type::after {
+  display: none;
+}
+
+.build-settings-mode-dots {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.4cqh 0 -0.25cqh;
+  padding: 0.1px 0.4cqh;
+}
+
+.build-settings-mode-dots::before {
+  content: '';
+  position: absolute;
+  left: 1cqh;
+  right: 1cqh;
+  top: 50%;
+  height: 0.18cqh;
+  border-radius: 1cqh;
+  background: linear-gradient(90deg, rgba(122, 159, 193, 0.8), rgba(174, 204, 234, 0.9), rgba(122, 159, 193, 0.8));
+  transform: translateY(-50%);
+}
+
+.build-settings-mode-dot {
+  position: relative;
+  z-index: 1;
+  width: 2.9cqh;
+  height: 2.9cqh;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: rgba(7, 34, 44, 0.96);
+  background-image: url('icons/circle.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  box-shadow: 0 0 0.35cqh rgba(35, 65, 92, 0.9);
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.14s ease, box-shadow 0.14s ease;
+}
+
+.build-settings-mode-dot:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 0.6cqh rgba(130, 199, 255, 0.95);
+}
+
+.build-settings-mode-dot-active {
+  background-image: url('icons/checkbox.webp');
+  box-shadow: 0 0 0.9cqh rgba(255, 220, 120, 0.95);
 }
 
 .build-settings-slider-short {
@@ -1355,7 +1467,7 @@ button.build-action-item:hover {
 }
 
 .build-alt-reset-hint {
-  color: rgba(226, 239, 255, 0.85);
+  color: rgb(255 255 255 / 50%);
   font: 1.25cqh / 1.2 'DejaVuSans', sans-serif;
   text-align: center;
   user-select: none;

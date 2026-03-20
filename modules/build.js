@@ -722,144 +722,140 @@ export class Build {
 
     const modeLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsLmbMode'));
     const modeValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
-    const modeSlider = DOM({
-      tag: 'input',
-      type: 'range',
-      min: '0',
-      max: '2',
-      step: '1',
-      style: 'castle-menu-slider',
-      value: String(Build.getSetLmbMode() - 1),
-      event: [
-        'input',
-        async (e) => {
-          const next = Math.min(3, Math.max(1, (Number(e.target.value) || 0) + 1));
-          Settings.settings.buildSetLmbMode = next;
-          modeValue.textContent = Build.getSetLmbModeLabel(next);
-          try {
-            await Settings.WriteSettings();
-          } catch {}
-
-          try {
-            Window.updateSliderFill(e.target);
-          } catch {}
-        },
-      ],
-    });
-
     modeValue.textContent = Build.getSetLmbModeLabel(Build.getSetLmbMode());
+    const modeDots = DOM({ style: 'build-settings-mode-dots' });
+    const buildSetModeValue = async (next) => {
+      Settings.settings.buildSetLmbMode = next;
+      modeValue.textContent = Build.getSetLmbModeLabel(next);
+      const items = modeDots.querySelectorAll('.build-settings-mode-dot');
+      items.forEach((dot, idx) => dot.classList.toggle('build-settings-mode-dot-active', idx + 1 === next));
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+
+    for (let i = 1; i <= 3; i++) {
+      const dotStyle = ['build-settings-mode-dot'];
+      if (Build.getSetLmbMode() === i) dotStyle.push('build-settings-mode-dot-active');
+      const dot = DOM({
+        tag: 'button',
+        type: 'button',
+        style: dotStyle,
+        title: Lang.text(`buildSettingsLmbMode${i}`),
+        event: [
+          'click',
+          async () => {
+            await buildSetModeValue(i);
+          },
+        ],
+      });
+      modeDots.append(dot);
+    }
 
     const hoverLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsRowHighlight'));
     const hoverValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
-    const hoverSlider = DOM({
-      tag: 'input',
-      type: 'range',
-      min: '0',
-      max: '1',
-      step: '1',
-      style: 'castle-menu-slider',
-      value: Build.isBuildRowHoverHighlightEnabled() ? '1' : '0',
-      event: [
-        'input',
-        async (e) => {
-          const enabled = Number(e.target.value) === 1;
-          Settings.settings.buildRowHoverHighlight = enabled;
-          hoverValue.textContent = enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
-          if (!enabled) Build.clearBuildRowHoverHighlight();
-          try {
-            await Settings.WriteSettings();
-          } catch {}
-
-          try {
-            Window.updateSliderFill(e.target);
-          } catch {}
-        },
-      ],
-    });
-    hoverValue.textContent = Build.isBuildRowHoverHighlightEnabled() ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+    const hoverDots = DOM({ style: 'build-settings-mode-dots' });
+    const applyHoverValue = async (enabled) => {
+      Settings.settings.buildRowHoverHighlight = enabled;
+      hoverValue.textContent = enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+      if (!enabled) Build.clearBuildRowHoverHighlight();
+      const activeIndex = enabled ? 1 : 0;
+      const items = hoverDots.querySelectorAll('.build-settings-mode-dot');
+      items.forEach((dot, idx) => dot.classList.toggle('build-settings-mode-dot-active', idx === activeIndex));
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+    const hoverEnabledNow = Build.isBuildRowHoverHighlightEnabled();
+    hoverValue.textContent = hoverEnabledNow ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+    for (let i = 0; i < 2; i++) {
+      const enabled = i === 1;
+      const dotStyle = ['build-settings-mode-dot'];
+      if ((hoverEnabledNow && enabled) || (!hoverEnabledNow && !enabled)) dotStyle.push('build-settings-mode-dot-active');
+      const dot = DOM({
+        tag: 'button',
+        type: 'button',
+        style: dotStyle,
+        title: enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff'),
+        event: ['click', async () => applyHoverValue(enabled)],
+      });
+      hoverDots.append(dot);
+    }
 
     const layoutLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsLayout'));
     const layoutValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
     const getLayoutText = (n) => (n === 1 ? Lang.text('buildSettingsLayoutRow') : Lang.text('buildSettingsLayoutColumn'));
     layoutValue.textContent = getLayoutText(Number(Settings.settings?.buildTalentViewLayout) === 1 ? 1 : 0);
 
-    const layoutSlider = DOM({
-      tag: 'input',
-      type: 'range',
-      min: '0',
-      max: '1',
-      step: '1',
-      style: 'castle-menu-slider',
-      value: String(Number(Settings.settings?.buildTalentViewLayout) === 1 ? 1 : 0),
-      event: [
-        'input',
-        async (e) => {
-          const next = Number(e.target.value) === 1 ? 1 : 0;
-          Settings.settings.buildTalentViewLayout = next;
-          layoutValue.textContent = getLayoutText(next);
-          Build.applyTalentViewLayoutFromSettings();
-          try {
-            await Settings.WriteSettings();
-          } catch {}
-          try {
-            Window.updateSliderFill(e.target);
-          } catch {}
-        },
-      ],
-    });
+    const layoutDots = DOM({ style: 'build-settings-mode-dots' });
+    const applyLayoutValue = async (next) => {
+      Settings.settings.buildTalentViewLayout = next;
+      layoutValue.textContent = getLayoutText(next);
+      Build.applyTalentViewLayoutFromSettings();
+      const items = layoutDots.querySelectorAll('.build-settings-mode-dot');
+      items.forEach((dot, idx) => dot.classList.toggle('build-settings-mode-dot-active', idx === next));
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+    const layoutNow = Number(Settings.settings?.buildTalentViewLayout) === 1 ? 1 : 0;
+    for (let i = 0; i < 2; i++) {
+      const dotStyle = ['build-settings-mode-dot'];
+      if (layoutNow === i) dotStyle.push('build-settings-mode-dot-active');
+      const dot = DOM({
+        tag: 'button',
+        type: 'button',
+        style: dotStyle,
+        title: i === 1 ? Lang.text('buildSettingsLayoutRow') : Lang.text('buildSettingsLayoutColumn'),
+        event: ['click', async () => applyLayoutValue(i)],
+      });
+      layoutDots.append(dot);
+    }
 
     const matchLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsSetMatchOnly'));
     const matchValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
-    const matchSlider = DOM({
-      tag: 'input',
-      type: 'range',
-      min: '0',
-      max: '1',
-      step: '1',
-      style: 'castle-menu-slider',
-      value: Settings.settings?.buildSetOnlyMatchingStats ? '1' : '0',
-      event: [
-        'input',
-        async (e) => {
-          const enabled = Number(e.target.value) === 1;
-          Settings.settings.buildSetOnlyMatchingStats = enabled;
-          matchValue.textContent = enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
-          try {
-            await Settings.WriteSettings();
-          } catch {}
-          try {
-            Window.updateSliderFill(e.target);
-          } catch {}
-        },
-      ],
-    });
-    matchValue.textContent = Settings.settings?.buildSetOnlyMatchingStats ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+    const matchDots = DOM({ style: 'build-settings-mode-dots' });
+    const applyMatchValue = async (enabled) => {
+      Settings.settings.buildSetOnlyMatchingStats = enabled;
+      matchValue.textContent = enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+      const activeIndex = enabled ? 1 : 0;
+      const items = matchDots.querySelectorAll('.build-settings-mode-dot');
+      items.forEach((dot, idx) => dot.classList.toggle('build-settings-mode-dot-active', idx === activeIndex));
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+    const matchEnabledNow = Boolean(Settings.settings?.buildSetOnlyMatchingStats);
+    matchValue.textContent = matchEnabledNow ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+    for (let i = 0; i < 2; i++) {
+      const enabled = i === 1;
+      const dotStyle = ['build-settings-mode-dot'];
+      if ((matchEnabledNow && enabled) || (!matchEnabledNow && !enabled)) dotStyle.push('build-settings-mode-dot-active');
+      const dot = DOM({
+        tag: 'button',
+        type: 'button',
+        style: dotStyle,
+        title: enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff'),
+        event: ['click', async () => applyMatchValue(enabled)],
+      });
+      matchDots.append(dot);
+    }
 
     panel.append(
       title,
       modeLabel,
-      modeSlider,
+      modeDots,
       modeValue,
       hoverLabel,
-      hoverSlider,
+      hoverDots,
       hoverValue,
       layoutLabel,
-      layoutSlider,
+      layoutDots,
       layoutValue,
       matchLabel,
-      matchSlider,
+      matchDots,
       matchValue,
     );
-
-    // Match slider track fill exactly like in Window.settings().
-    requestAnimationFrame(() => {
-      try {
-        Window.updateSliderFill(modeSlider);
-        Window.updateSliderFill(hoverSlider);
-        Window.updateSliderFill(layoutSlider);
-        Window.updateSliderFill(matchSlider);
-      } catch {}
-    });
 
     return panel;
   }
@@ -2492,6 +2488,39 @@ export class Build {
           el.style.backgroundImage = '';
         });
     } catch {}
+    Build.stopPreviewBlinkTickerIfIdle();
+  }
+
+  static ensurePreviewBlinkTicker() {
+    if (Build._previewBlinkTimer) return;
+    Build._previewBlinkState = false;
+    const tick = () => {
+      if (!Build._previewBlinkTimer) return;
+      Build._previewBlinkState = !Build._previewBlinkState;
+      try {
+        Build.fieldView?.classList?.toggle('build-preview-blink-on', Build._previewBlinkState);
+      } catch {}
+    };
+    Build._previewBlinkTimer = setInterval(tick, 450);
+    tick();
+  }
+
+  static stopPreviewBlinkTickerIfIdle() {
+    let hasPreview = false;
+    try {
+      hasPreview = !!Build.fieldView?.querySelector?.(
+        '.build-hero-grid-item.build-set-empty-slot-preview, .build-hero-grid-item.build-talent-empty-slot-preview',
+      );
+    } catch {}
+    if (hasPreview) return;
+    try {
+      if (Build._previewBlinkTimer) clearInterval(Build._previewBlinkTimer);
+    } catch {}
+    Build._previewBlinkTimer = 0;
+    Build._previewBlinkState = false;
+    try {
+      Build.fieldView?.classList?.remove('build-preview-blink-on');
+    } catch {}
   }
 
   static getFirstEmptySlotIndexForLevelIn(installedTalents, level) {
@@ -2550,6 +2579,7 @@ export class Build {
         const src = id > 0 ? `content/talents/${id}.webp` : `content/htalents/${Math.abs(id)}.webp`;
         cell.style.backgroundImage = `url("${src}")`;
       }
+      Build.ensurePreviewBlinkTicker();
     } catch {}
   }
 
@@ -4522,6 +4552,14 @@ export class Build {
       Build.altResetHintView?.parentNode?.removeChild?.(Build.altResetHintView);
     } catch {}
     Build.altResetHintView = null;
+    try {
+      if (Build._previewBlinkTimer) clearInterval(Build._previewBlinkTimer);
+    } catch {}
+    Build._previewBlinkTimer = 0;
+    Build._previewBlinkState = false;
+    try {
+      Build.fieldView?.classList?.remove('build-preview-blink-on');
+    } catch {}
     try {
       if (Build._setsScrollStopTimer) clearTimeout(Build._setsScrollStopTimer);
     } catch {}

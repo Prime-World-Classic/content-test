@@ -28,6 +28,8 @@ import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/key
 export class View {
   static mmQueueMap = {};
   static _actionBarCfgEnsured = false;
+  static friendsMenuItem = null;
+  static hasFriendIncomingRequest = false;
 
   static getQueue(cssKey) {
     const map = {
@@ -40,6 +42,19 @@ export class View {
     };
     const index = map[cssKey];
     return (View.mmQueueMap.mode && View.mmQueueMap.mode[index]) || '-';
+  }
+
+  static setFriendIncomingStatus(value) {
+    View.hasFriendIncomingRequest = Boolean(value);
+    View.updateFriendsMenuIncomingState();
+  }
+
+  static updateFriendsMenuIncomingState() {
+    if (!View.friendsMenuItem) {
+      return;
+    }
+
+    View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
   }
   static activeTemplate = false;
 
@@ -1172,6 +1187,8 @@ export class View {
       ],
       title: Lang.text('titlefriends'),
     });
+    View.friendsMenuItem = friendsMenuItem;
+    View.updateFriendsMenuIncomingState();
     let buildingsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
       style: 'buildings-menu-item',
@@ -1514,6 +1531,7 @@ export class View {
 
     App.api.silent(
       (result) => {
+        View.setFriendIncomingStatus(Array.isArray(result) && result.some((item) => Number(item?.status) == 2));
         while (View.castleBottom.firstChild) {
           View.castleBottom.firstChild.remove();
         }
@@ -1783,6 +1801,8 @@ export class View {
                       await App.api.request('friend', 'accept', {
                         id: item.id,
                       });
+                      item.status = 1;
+                      View.setFriendIncomingStatus(result.some((x) => Number(x?.status) == 2));
 
                       while (bottom.firstChild) {
                         bottom.firstChild.remove();
@@ -1820,6 +1840,8 @@ export class View {
                       await App.api.request('friend', 'remove', {
                         id: item.id,
                       });
+                      item.status = 0;
+                      View.setFriendIncomingStatus(result.some((x) => Number(x?.status) == 2));
 
                       friend.remove();
                     },

@@ -237,6 +237,10 @@ export class Events {
     Chat.viewMessage(data);
   }
 
+  static UFriendIncoming(data) {
+    View.setFriendIncomingStatus(data && Number(data.hasIncoming) == 1);
+  }
+
 
   static async VCall(data) {
     if (data.isCaller) {
