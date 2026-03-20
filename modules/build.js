@@ -2476,6 +2476,27 @@ export class Build {
     Build.clearEmptySlotPreviews();
   }
 
+  static setSelectedSetItem(item) {
+    try {
+      if (Build._selectedSetItem && Build._selectedSetItem !== item) {
+        Build._selectedSetItem.classList.remove('build-set-item-selected');
+      }
+      Build._selectedSetItem = item || null;
+      if (Build._selectedSetItem) {
+        Build._selectedSetItem.classList.add('build-set-item-selected');
+      }
+    } catch {}
+  }
+
+  static clearSelectedSetItem() {
+    try {
+      if (Build._selectedSetItem) {
+        Build._selectedSetItem.classList.remove('build-set-item-selected');
+      }
+    } catch {}
+    Build._selectedSetItem = null;
+  }
+
   static clearEmptySlotPreviews() {
     try {
       Build.fieldView
@@ -3355,6 +3376,7 @@ export class Build {
         if (!Build.tryBeginSetAction()) return;
         (async () => {
           try {
+            Build.setSelectedSetItem(item);
             const mode = Build.getSetLmbMode();
             Build._descriptionPinnedBySet = true;
             Build._hoveredSetTalentIds = ids;
@@ -3382,6 +3404,7 @@ export class Build {
         if (!Build.tryBeginSetAction()) return;
         (async () => {
           try {
+            Build.setSelectedSetItem(item);
             Build._hoveredSetTalentIds = ids;
             Build._forceShowTalentIds = new Set(ids.map(String));
             Build._forceShowOnlySetTalentIds = null;
@@ -3811,6 +3834,7 @@ export class Build {
     Build._forceShowTalentIds = null;
     Build._forceShowOnlySetTalentIds = null;
     Build._forceShowOnlyTalentIds = null;
+    Build.clearSelectedSetItem();
     try { Build.sortInventory(); } catch {}
   }
 

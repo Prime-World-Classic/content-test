@@ -1630,6 +1630,11 @@ button.build-action-item:hover {
   border-color: rgba(255, 255, 255, 0.35);
 }
 
+.build-set-item.build-set-item-selected {
+  border-color: rgba(255, 240, 138, 0.95);
+  box-shadow: 0 0 0.7cqh rgba(255, 224, 116, 0.75);
+}
+
 .build-set-desc-icons {
   margin-top: 0.6cqh;
   display: flex;
