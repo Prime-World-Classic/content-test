@@ -30,6 +30,7 @@ export class View {
   static _actionBarCfgEnsured = false;
   static friendsMenuItem = null;
   static hasFriendIncomingRequest = false;
+  static castleActiveTab = 'heroes';
 
   static getQueue(cssKey) {
     const map = {
@@ -1419,6 +1420,7 @@ export class View {
   }
 
   static bodyCastleBuildings() {
+    View.castleActiveTab = 'buildings';
     while (View.castleBottom.firstChild) {
       View.castleBottom.firstChild.remove();
     }
@@ -1477,6 +1479,7 @@ export class View {
   }
 
   static bodyCastleHeroes() {
+    View.castleActiveTab = 'heroes';
     let preload = new PreloadImages(View.castleBottom);
 
     App.api.silent(
@@ -1527,6 +1530,7 @@ export class View {
   }
 
   static bodyCastleFriends() {
+    View.castleActiveTab = 'friends';
     let preload = new PreloadImages(View.castleBottom);
 
     App.api.silent(
@@ -1808,23 +1812,29 @@ export class View {
                         bottom.firstChild.remove();
                       }
 
-                      bottom.append(
-                        DOM(
-                          {
-                            domaudio: domAudioPresets.bigButton,
-                            style: 'castle-friend-add-group',
-                            event: [
-                              'click',
-                              async () => {
-                                await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id });
+                      let group = DOM({ style: 'castle-friend-add-group' }, item.online ? Lang.text('inviteToAGroup') : Lang.text('friendIsOffline'));
+                      let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
 
-                                App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
-                              },
-                            ],
-                          },
-                          Lang.text('inviteToAGroup'),
-                        ),
-                      );
+                      if (!item.online) {
+                        group.style.filter = 'grayscale(0.8)';
+                        call.style.filter = 'grayscale(.8)';
+                      } else {
+                        group.onclick = async () => {
+                          await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id });
+                          App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
+                        };
+
+                        call.onclick = async () => {
+                          try {
+                            let voice = new Voice(item.id, 'friend', item.nickname, true);
+                            await voice.call();
+                          } catch (error) {
+                            App.error(error);
+                          }
+                        };
+                      }
+
+                      bottom.append(call, group);
                     },
                   ],
                 },
