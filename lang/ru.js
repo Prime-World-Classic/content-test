@@ -1,4 +1,4 @@
-﻿export const ru = {
+export const ru = {
   locale: ['ru_RU'],
   name: 'Русский',
   word: {
@@ -263,6 +263,7 @@
     buildSettingsLmbMode1: 'Обычный',
     buildSettingsLmbMode2: 'Остатки по строкам',
     buildSettingsLmbMode3: 'Только отобразить по строкам',
+    buildSettingsSetMatchOnly: 'Только совпадающие статы',
     windowsLauncherRequired: 'Необходима Windows версия лаунчера',
     buildNamePlaceholder: 'Наименование билда',
     createBuild: 'Создать билд',

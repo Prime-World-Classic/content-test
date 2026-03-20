@@ -54,7 +54,7 @@ export class PreloadImages {
           entry.target.style.backgroundImage = `url("${entry.target.dataset.url}")`;
 
           let animation = entry.target.animate(
-            { opacity: [0, 1], transform: ['scale(0.9)', 'scale(1)'] },
+            { opacity: [0, 1]},
             { duration: 500, easing: 'ease-out', fill: 'forwards' },
           );
 

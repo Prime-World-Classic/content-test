@@ -17,6 +17,7 @@ export class Settings {
     buildSetLmbMode: 1,
     buildRowHoverHighlight: true,
     buildTalentViewLayout: 0,
+    buildSetOnlyMatchingStats: false,
   };
 
   static settings = JSON.parse(JSON.stringify(this.defaultSettings));

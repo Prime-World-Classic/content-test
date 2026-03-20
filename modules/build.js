@@ -667,6 +667,9 @@ export class Build {
     if (Settings.settings.buildTalentViewLayout !== 0 && Settings.settings.buildTalentViewLayout !== 1) {
       Settings.settings.buildTalentViewLayout = 0;
     }
+    if (typeof Settings.settings.buildSetOnlyMatchingStats !== 'boolean') {
+      Settings.settings.buildSetOnlyMatchingStats = false;
+    }
   }
 
   static getSetLmbMode() {
@@ -802,6 +805,33 @@ export class Build {
       ],
     });
 
+    const matchLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsSetMatchOnly'));
+    const matchValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
+    const matchSlider = DOM({
+      tag: 'input',
+      type: 'range',
+      min: '0',
+      max: '1',
+      step: '1',
+      style: 'castle-menu-slider',
+      value: Settings.settings?.buildSetOnlyMatchingStats ? '1' : '0',
+      event: [
+        'input',
+        async (e) => {
+          const enabled = Number(e.target.value) === 1;
+          Settings.settings.buildSetOnlyMatchingStats = enabled;
+          matchValue.textContent = enabled ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+          try {
+            await Settings.WriteSettings();
+          } catch {}
+          try {
+            Window.updateSliderFill(e.target);
+          } catch {}
+        },
+      ],
+    });
+    matchValue.textContent = Settings.settings?.buildSetOnlyMatchingStats ? Lang.text('buildSettingsOn') : Lang.text('buildSettingsOff');
+
     panel.append(
       title,
       modeLabel,
@@ -813,6 +843,9 @@ export class Build {
       layoutLabel,
       layoutSlider,
       layoutValue,
+      matchLabel,
+      matchSlider,
+      matchValue,
     );
 
     // Match slider track fill exactly like in Window.settings().
@@ -821,6 +854,7 @@ export class Build {
         Window.updateSliderFill(modeSlider);
         Window.updateSliderFill(hoverSlider);
         Window.updateSliderFill(layoutSlider);
+        Window.updateSliderFill(matchSlider);
       } catch {}
     });
 
@@ -2472,7 +2506,11 @@ export class Build {
     try {
       Build.clearEmptySlotPreviews();
 
-      const ids = TalentSets.getTalentIds(set);
+      let ids = TalentSets.getTalentIds(set);
+      if (previewClass === 'build-set-empty-slot-preview' && Array.isArray(ids)) {
+        if (ids.length > 1) ids = Build.sortSetTalentIdsByPriority(ids);
+        ids = Build.filterSetTalentIdsByMatchingStats(ids);
+      }
       const simInstalled = Array.isArray(Build.installedTalents) ? Build.installedTalents.slice() : new Array(36).fill(null);
 
       for (const id of ids) {
@@ -2852,8 +2890,186 @@ export class Build {
     });
   }
 
+  static getSetApplyPriorityBases(useFallback = true) {
+    const bases = ['sila', 'razum', 'provorstvo', 'hitrost', 'stoikost', 'volia'];
+
+    // Source of truth: profile checkboxes (circle/checkbox) in hero stats block.
+    const profile = Build.profileStats || {};
+    const fromProfile = bases.filter((k) => Number(profile[k]) === 1);
+    if (fromProfile.length) return new Set(fromProfile);
+
+    if (!useFallback) return new Set();
+
+    // Fallback: current stats filter state.
+    const selected = Array.isArray(Build.ruleSortInventory?.stats) ? Build.ruleSortInventory.stats : [];
+    if (!selected.length) return new Set();
+    return new Set(bases.filter((k) => selected.includes(k)));
+  }
+
+  static getSetPriorityFamilyWeights() {
+    return {
+      sila: { pure: ['sila', 'silarz', 'silavz'], mixed: ['sr', 'srsv'] },
+      razum: { pure: ['razum', 'razumrz', 'razumvz'], mixed: ['sr', 'srsv'] },
+      provorstvo: { pure: ['provorstvo', 'provorstvorz', 'provorstvovz'], mixed: ['ph'] },
+      hitrost: { pure: ['hitrost', 'hitrostrz', 'hitrostvz'], mixed: ['ph'] },
+      stoikost: { pure: ['stoikost', 'stoikostrz'], mixed: ['sv', 'svvz', 'vs', 'srsv'] },
+      volia: { pure: ['volia', 'voliarz'], mixed: ['sv', 'svvz', 'vs', 'srsv'] },
+    };
+  }
+
+  static getSetSilaRazumPresence(stats = {}) {
+    const pureSilaKeys = ['sila', 'silarz', 'silavz'];
+    const pureRazumKeys = ['razum', 'razumrz', 'razumvz'];
+    const maxSrKeys = ['sr', 'srsv'];
+    const hasPureSila = pureSilaKeys.some((k) => Build.hasTalentStatKey(stats, k));
+    const hasPureRazum = pureRazumKeys.some((k) => Build.hasTalentStatKey(stats, k));
+    const hasSrMax = maxSrKeys.some((k) => Build.hasTalentStatKey(stats, k));
+    return { hasPureSila, hasPureRazum, hasSrMax };
+  }
+
+  static hasTalentStatKey(stats = {}, key = '') {
+    if (!key) return false;
+    return key in stats || `${key}buff` in stats;
+  }
+
+  static hasNonCheckboxStatKey(stats = {}, familyWeights = null) {
+    const map = familyWeights || Build.getSetPriorityFamilyWeights();
+    const checkboxKeys = new Set(['srMin', 'phMin', 'svMin', 'srsvMin']);
+    try {
+      for (const cfg of Object.values(map)) {
+        for (const k of cfg?.pure || []) checkboxKeys.add(k);
+        for (const k of cfg?.mixed || []) checkboxKeys.add(k);
+      }
+    } catch {}
+
+    for (const rawKey of Object.keys(stats || {})) {
+      const k = String(rawKey).endsWith('buff') ? String(rawKey).slice(0, -4) : String(rawKey);
+      if (!checkboxKeys.has(k)) return true;
+    }
+    return false;
+  }
+
+  static hasAnyCheckboxStatKey(stats = {}, familyWeights = null) {
+    const map = familyWeights || Build.getSetPriorityFamilyWeights();
+    const checkboxKeys = new Set(['srMin', 'phMin', 'svMin', 'srsvMin']);
+    try {
+      for (const cfg of Object.values(map)) {
+        for (const k of cfg?.pure || []) checkboxKeys.add(k);
+        for (const k of cfg?.mixed || []) checkboxKeys.add(k);
+      }
+    } catch {}
+
+    for (const rawKey of Object.keys(stats || {})) {
+      const k = String(rawKey).endsWith('buff') ? String(rawKey).slice(0, -4) : String(rawKey);
+      if (checkboxKeys.has(k)) return true;
+    }
+    return false;
+  }
+
+  static sortSetTalentIdsByPriority(ids) {
+    if (!Array.isArray(ids) || ids.length <= 1) return ids;
+    const bases = Build.getSetApplyPriorityBases(false);
+    if (!bases.size) return ids;
+
+    const familyWeights = Build.getSetPriorityFamilyWeights();
+    const hasSilaSelected = bases.has('sila');
+    const hasRazumSelected = bases.has('razum');
+    const dominantSr = hasSilaSelected && hasRazumSelected ? Build.getMaxStat(['sila', 'razum']) : null;
+
+    const pureWeight = 10;
+    const mixedWeight = 3;
+
+    const scored = ids.map((id, idx) => {
+      const data = Build.talents?.[String(id)];
+      const score = Build.getSetTalentPriorityScore(data, bases, familyWeights, pureWeight, mixedWeight, { dominantSr });
+
+      return { id, idx, score };
+    });
+
+    scored.sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.idx - b.idx;
+    });
+
+    return scored.map((x) => x.id);
+  }
+
+  static getSetTalentPriorityScore(data, bases, familyWeights, pureWeight = 10, mixedWeight = 3, options = {}) {
+    const stats = data?.stats || {};
+    let score = 0;
+    for (const base of bases || []) {
+      const map = familyWeights?.[base];
+      if (!map) continue;
+      let basePureWeight = pureWeight;
+      let baseMixedWeight = mixedWeight;
+
+      // If both Sila and Razum are selected, prioritize the larger of those
+      // stats in current build state.
+      if (options?.dominantSr && (base === 'sila' || base === 'razum')) {
+        if (base === options.dominantSr) {
+          basePureWeight += 4;
+          baseMixedWeight += 1;
+        } else {
+          basePureWeight = Math.max(0, basePureWeight - 2);
+          baseMixedWeight = Math.max(0, baseMixedWeight - 1);
+        }
+      }
+
+      for (const k of map.pure) {
+        if (Build.hasTalentStatKey(stats, k)) score += basePureWeight;
+      }
+      for (const k of map.mixed) {
+        if (Build.hasTalentStatKey(stats, k)) score += baseMixedWeight;
+      }
+    }
+    return score;
+  }
+
+  static filterSetTalentIdsByMatchingStats(ids) {
+    if (!Array.isArray(ids) || !ids.length) return ids || [];
+    if (!Settings.settings?.buildSetOnlyMatchingStats) return ids;
+
+    const bases = Build.getSetApplyPriorityBases();
+    if (!bases.size) return [];
+
+    const familyWeights = Build.getSetPriorityFamilyWeights();
+    const hasSilaSelected = bases.has('sila');
+    const hasRazumSelected = bases.has('razum');
+    const bothSelected = hasSilaSelected && hasRazumSelected;
+    const dominantSr = bothSelected ? Build.getMaxStat(['sila', 'razum']) : null;
+    const nonSrBases = new Set([...bases].filter((b) => b !== 'sila' && b !== 'razum'));
+
+    return ids.filter((id) => {
+      const data = Build.talents?.[String(id)];
+      const stats = data?.stats || {};
+      const hasCheckbox = Build.hasAnyCheckboxStatKey(stats, familyWeights);
+      const hasNonCheckbox = Build.hasNonCheckboxStatKey(stats, familyWeights);
+      // Always allow "other stats" only when talent has no checkbox-related
+      // stats at all. Mixed talents must still obey checkbox filters.
+      if (!hasCheckbox && hasNonCheckbox) return true;
+      const srPresence = Build.getSetSilaRazumPresence(stats);
+
+      // If only Razum is selected, reject only pure Sila talents.
+      // "Largest stat" aliases (sr/srsv) are allowed.
+      if (hasRazumSelected && !hasSilaSelected && srPresence.hasPureSila) return false;
+      // If only Sila is selected, reject only pure Razum talents.
+      // "Largest stat" aliases (sr/srsv) are allowed.
+      if (hasSilaSelected && !hasRazumSelected && srPresence.hasPureRazum) return false;
+
+      // If neither Sila nor Razum is selected, reject talents that are only
+      // Sila/Razum-based (including "max between them" aliases like sr/srsv).
+      if (!hasSilaSelected && !hasRazumSelected && (srPresence.hasPureSila || srPresence.hasPureRazum || srPresence.hasSrMax)) {
+        const nonSrScore = Build.getSetTalentPriorityScore(data, nonSrBases, familyWeights);
+        if (nonSrScore <= 0) return false;
+      }
+
+      return Build.getSetTalentPriorityScore(data, bases, familyWeights, 10, 3, { dominantSr }) > 0;
+    });
+  }
+
   static async applySetToBuild(set) {
-    const ids = TalentSets.getTalentIds(set);
+    let ids = Build.sortSetTalentIdsByPriority(TalentSets.getTalentIds(set));
+    ids = Build.filterSetTalentIdsByMatchingStats(ids);
     const simInstalled = Array.isArray(Build.installedTalents) ? Build.installedTalents.slice() : new Array(36).fill(null);
     for (const id of ids) {
       if (Build.isTalentInBuild(id)) continue;

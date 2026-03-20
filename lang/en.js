@@ -1,4 +1,4 @@
-﻿export const en = {
+export const en = {
   locale: ['en_US'],
   name: 'English',
   word: {
@@ -259,6 +259,7 @@
     buildSettingsLmbMode1: '1: Standard',
     buildSettingsLmbMode2: '2: Leftovers by rows',
     buildSettingsLmbMode3: '3: Preview only',
+    buildSettingsSetMatchOnly: 'Matching stats only',
     windowsLauncherRequired: 'Windows launcher version required',
     buildNamePlaceholder: 'Build name',
     createBuild: 'Create build',
