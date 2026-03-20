@@ -3169,21 +3169,18 @@ export class Build {
 
     const ids = TalentSets.getTalentIds(set);
     const mode = Build.getSetLmbMode();
+    Build._forceShowOnlySetTalentIds = null;
     Build._forceShowOnlyTalentIds = null;
 
     if (mode === 2 || mode === 3) {
-      const leftovers = new Set();
-      for (const id of ids) {
-        if (Build.isTalentInBuild(id)) continue;
-        leftovers.add(String(id));
-      }
-      if (!leftovers.size) return;
+      Build._forceShowOnlySetTalentIds = new Set(ids.map(String));
+      Build.refreshForcedSetOnlyTalentIds();
+      if (!Build._forceShowOnlyTalentIds?.size) return;
 
       const prevScroll = list.scrollTop;
 
       // Show only leftovers; then rebuild DOM order grouped by build rows (levels 6..1).
       // We preserve the original relative order inside each level group.
-      Build._forceShowOnlyTalentIds = leftovers;
       Build.sortInventory();
 
       const visibleContainers = Array.from(list.querySelectorAll('.build-talent-item-container')).filter((container) => {
@@ -3227,6 +3224,7 @@ export class Build {
       } catch {}
       return;
     }
+    Build._forceShowOnlySetTalentIds = null;
 
     const toMove = [];
     for (const id of ids) {
@@ -3361,6 +3359,7 @@ export class Build {
             Build._descriptionPinnedBySet = true;
             Build._hoveredSetTalentIds = ids;
             Build._forceShowTalentIds = mode === 1 ? new Set(ids.map(String)) : null;
+            Build._forceShowOnlySetTalentIds = null;
             Build._forceShowOnlyTalentIds = null;
 
             Build.applySetInventoryOrder(set);
@@ -3385,6 +3384,7 @@ export class Build {
           try {
             Build._hoveredSetTalentIds = ids;
             Build._forceShowTalentIds = new Set(ids.map(String));
+            Build._forceShowOnlySetTalentIds = null;
             Build._forceShowOnlyTalentIds = null;
             await Build.removeSetFromBuild(set);
             Build.refreshSetHoverState(set, item, ids);
@@ -3661,6 +3661,7 @@ export class Build {
 
   static setSortInventory(key, value) {
     Build._forceShowTalentIds = null;
+    Build._forceShowOnlySetTalentIds = null;
     Build._forceShowOnlyTalentIds = null;
     if (!(key in Build.ruleSortInventory)) {
       Build.ruleSortInventory[key] = new Array();
@@ -3677,6 +3678,7 @@ export class Build {
 
   static removeSortInventory(key, value) {
     Build._forceShowTalentIds = null;
+    Build._forceShowOnlySetTalentIds = null;
     Build._forceShowOnlyTalentIds = null;
     if (key in Build.ruleSortInventory) {
       let newArray = new Array();
@@ -3774,9 +3776,20 @@ export class Build {
   }
 
   static sortInventory() {
+    Build.refreshForcedSetOnlyTalentIds();
     for (let itemContainer of Build.inventoryView.querySelectorAll('.build-talent-item-container')) {
       Build.applySorting(itemContainer);
     }
+  }
+
+  static refreshForcedSetOnlyTalentIds() {
+    if (!Build._forceShowOnlySetTalentIds) return;
+    const leftovers = new Set();
+    for (const id of Build._forceShowOnlySetTalentIds) {
+      if (Build.isTalentInBuild(id)) continue;
+      leftovers.add(String(id));
+    }
+    Build._forceShowOnlyTalentIds = leftovers;
   }
 
   static attachAltResetHintBelowInventory() {
@@ -3796,6 +3809,7 @@ export class Build {
 
   static resetSetForcedLibraryView() {
     Build._forceShowTalentIds = null;
+    Build._forceShowOnlySetTalentIds = null;
     Build._forceShowOnlyTalentIds = null;
     try { Build.sortInventory(); } catch {}
   }
