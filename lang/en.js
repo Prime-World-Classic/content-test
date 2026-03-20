@@ -260,6 +260,7 @@ export const en = {
     buildSettingsLmbMode2: '2: Leftovers by rows',
     buildSettingsLmbMode3: '3: Preview only',
     buildSettingsSetMatchOnly: 'Matching stats only',
+    buildAltResetHint: 'Alt: reset set filter in library',
     windowsLauncherRequired: 'Windows launcher version required',
     buildNamePlaceholder: 'Build name',
     createBuild: 'Create build',

@@ -492,7 +492,10 @@ export class Build {
     const setsHeader = DOM({ tag: 'legend', style: 'build-inventory-legend' }, Lang.text('sets'));
     setsSection.append(setsHeader, Build.setsListView);
 
+    Build.altResetHintView = DOM({ style: 'build-alt-reset-hint' }, Lang.text('buildAltResetHint'));
     Build.inventoryView.append(talentsSection, setsSection);
+    Build.attachAltResetHintBelowInventory();
+    Build.installAltResetHandler();
     Build.buildSettingsButton = Build.createBuildSettingsButton();
     Build.buildSettingsPanel = Build.createBuildSettingsPanel();
     Build.attachBuildSettingsToWbuild();
@@ -3029,8 +3032,7 @@ export class Build {
     if (!Array.isArray(ids) || !ids.length) return ids || [];
     if (!Settings.settings?.buildSetOnlyMatchingStats) return ids;
 
-    const bases = Build.getSetApplyPriorityBases();
-    if (!bases.size) return [];
+    const bases = Build.getSetApplyPriorityBases(false);
 
     const familyWeights = Build.getSetPriorityFamilyWeights();
     const hasSilaSelected = bases.has('sila');
@@ -3044,6 +3046,7 @@ export class Build {
       const stats = data?.stats || {};
       const hasCheckbox = Build.hasAnyCheckboxStatKey(stats, familyWeights);
       const hasNonCheckbox = Build.hasNonCheckboxStatKey(stats, familyWeights);
+      if (!bases.size) return !hasCheckbox && hasNonCheckbox;
       // Always allow "other stats" only when talent has no checkbox-related
       // stats at all. Mixed talents must still obey checkbox filters.
       if (!hasCheckbox && hasNonCheckbox) return true;
@@ -3744,6 +3747,45 @@ export class Build {
     for (let itemContainer of Build.inventoryView.querySelectorAll('.build-talent-item-container')) {
       Build.applySorting(itemContainer);
     }
+  }
+
+  static attachAltResetHintBelowInventory() {
+    try {
+      const hint = Build.altResetHintView;
+      const inv = Build.inventoryView;
+      const parent = inv?.parentElement;
+      if (!hint || !inv || !parent) {
+        requestAnimationFrame(() => Build.attachAltResetHintBelowInventory());
+        return;
+      }
+      if (hint.parentNode !== parent || hint.previousSibling !== inv) {
+        inv.insertAdjacentElement('afterend', hint);
+      }
+    } catch {}
+  }
+
+  static resetSetForcedLibraryView() {
+    Build._forceShowTalentIds = null;
+    Build._forceShowOnlyTalentIds = null;
+    try { Build.sortInventory(); } catch {}
+  }
+
+  static installAltResetHandler() {
+    try {
+      if (Build._altResetHandler) {
+        window.removeEventListener('keydown', Build._altResetHandler, true);
+      }
+    } catch {}
+
+    Build._altResetHandler = (e) => {
+      const isAlt = e?.key === 'Alt' || e?.code === 'AltLeft' || e?.code === 'AltRight';
+      if (!isAlt || e?.repeat) return;
+      Build.resetSetForcedLibraryView();
+    };
+
+    try {
+      window.addEventListener('keydown', Build._altResetHandler, true);
+    } catch {}
   }
 
   static cancelSortInventory() {
@@ -4472,6 +4514,14 @@ export class Build {
   static cleanup() {
     Build.clearBuildRowHoverHighlight();
     Build.toggleBuildSettingsPanel(false);
+    try {
+      if (Build._altResetHandler) window.removeEventListener('keydown', Build._altResetHandler, true);
+    } catch {}
+    Build._altResetHandler = null;
+    try {
+      Build.altResetHintView?.parentNode?.removeChild?.(Build.altResetHintView);
+    } catch {}
+    Build.altResetHintView = null;
     try {
       if (Build._setsScrollStopTimer) clearTimeout(Build._setsScrollStopTimer);
     } catch {}

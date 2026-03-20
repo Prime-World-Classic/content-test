@@ -1354,6 +1354,16 @@ button.build-action-item:hover {
   width: 100%;
 }
 
+.build-alt-reset-hint {
+  color: rgba(226, 239, 255, 0.85);
+  font: 1.25cqh / 1.2 'DejaVuSans', sans-serif;
+  text-align: center;
+  user-select: none;
+  margin: 0.35cqh 0 0;
+  padding: 0 0.8cqh;
+  margin-left: -34cqh;
+}
+
 .build-inventory-fieldset {
   width: 98cqw;
   background: #33333352;
