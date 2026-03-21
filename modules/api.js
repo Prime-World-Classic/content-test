@@ -156,10 +156,17 @@ export class Api {
             const [paramName, paramValue] = parts[i].split('=');
             translated = translated.replace(`\${${paramName}}`, paramValue || '');
           }
+          try {
+            await App.handleAuthPulseSignal(translated);
+          } catch {}
         
           this.awaiting[request].reject(translated);
 		} else {
-        this.awaiting[request].reject(Lang.text(error));
+        const translated = Lang.text(error);
+        try {
+          await App.handleAuthPulseSignal(translated);
+        } catch {}
+        this.awaiting[request].reject(translated);
 		}
       } else {
         this.awaiting[request].resolve(data);
@@ -279,9 +286,13 @@ export class Api {
 
   async say(request, object, method, data = '', retryCount = 0) {
     if (this.WebSocket.readyState === this.WebSocket.OPEN) {
+      const shouldIgnoreSessionToken =
+        object === 'user' &&
+        (method === 'authorization' || method === 'registration' || method === 'recover');
+      const outgoingToken = shouldIgnoreSessionToken ? '' : App.storage.data.token;
       this.WebSocket.send(
         JSON.stringify({
-          token: App.storage.data.token,
+          token: outgoingToken,
           request: request,
           object: object,
           method: method,

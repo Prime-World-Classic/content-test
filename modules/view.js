@@ -414,7 +414,12 @@ export class View {
       body.append(castlePlay);
     } catch (error) {
       if (String(error).search(new RegExp(`session is not valid`, 'i')) != -1) {
-        await App.exit();
+        const pulse = await App.syncAuthPulse();
+        if (App.isAuthPulseActive(pulse)) {
+          await View.show('authorization');
+        } else {
+          await App.exit();
+        }
 
         NativeAPI.reset();
 

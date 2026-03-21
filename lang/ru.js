@@ -62,6 +62,7 @@ export const ru = {
     structureError: 'Ошибка структуры',
     accountNotFoundOrRecover: 'Аккаунт не найден, пройдите регистрацию или восстановите через Telegram бота @primeworldclassic_bot',
     accountBanned: 'Аккаунт заблокирован навсегда. Для подробностей обратитесь в службу поддержки.',
+    accountBlockedForMinutes: 'Ваш аккаунт заблокирован на ${blocked} мин.',
     //accountBlocked: 'Аккаунт заблокирован за нарушение правил сообщества на ${blocked} мин.',
     invalidCredentials: 'Неверный пара логин или пароль. Восстановить аккаунт можно через Telegram бота @primeworldclassic_bot',
     invalidInvite: 'Инвайт-код недействителен. Получить инвайт-код можно через Telegram бота @primeworldclassic_bot',

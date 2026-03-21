@@ -61,6 +61,7 @@ export const en = {
 	structureError: 'Structure error',
 	accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
 	accountBanned: 'Account is permanently banned. For details, please contact support.',
+	accountBlockedForMinutes: 'Your account is blocked for ${blocked} min.',
 	//accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
 	invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
 	invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',

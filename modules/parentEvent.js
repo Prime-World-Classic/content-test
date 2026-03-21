@@ -11,10 +11,30 @@ export class ParentEvent {
       }
 
       if ('error' in body) {
+        await App.handleAuthPulseSignal(body.error, { ownerLogin: body?.login || '' });
         App.error(body.error);
       }
 
       return;
+    }
+
+    const pulse = await App.syncAuthPulse();
+    if (App.isAuthPulseActive(pulse)) {
+      const ownerId = Number(pulse?.ownerId || 0);
+      const ownerLogin = `${pulse?.ownerLogin || ''}`.trim().toLowerCase();
+      const hasOwnerMeta = ownerId > 0 || !!ownerLogin;
+      const isOwnerById = ownerId > 0 && Number(body.id) === ownerId;
+      const isOwnerByLogin = ownerLogin && `${body.login || ''}`.trim().toLowerCase() === ownerLogin;
+      if (!hasOwnerMeta || isOwnerById || isOwnerByLogin) {
+        await App.writeAuthPulse(null);
+      } else {
+        if (ParentEvent.children) {
+          ParentEvent.children.close();
+        }
+        App.error(App.buildAuthPulseMessage(pulse));
+        View.show('authorization');
+        return;
+      }
     }
 
     await App.storage.set({
