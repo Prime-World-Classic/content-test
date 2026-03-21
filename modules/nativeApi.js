@@ -66,54 +66,7 @@ export class NativeAPI {
     });
 
     NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
-
-    NativeAPI.voiceShortcut = new nw.Shortcut({
-      key: 'Ctrl+Z',
-      active: () => {
-        Voice.toggleEnabledMic();
-      },
-      failed: (error) => {
-        console.log(error);
-      },
-    });
-
-    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceShortcut);
-
-    NativeAPI.voiceDestroyShortcut = new nw.Shortcut({
-      key: 'Ctrl+K',
-      active: () => {
-        Voice.destroy(false, true);
-      },
-      failed: (error) => {
-        console.log(error);
-      },
-    });
-
-    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDestroyShortcut);
-
-    NativeAPI.voiceUpVolume = new nw.Shortcut({
-      key: 'Ctrl+Up',
-      active: () => {
-        Voice.volumeControl(true);
-      },
-      failed: (error) => {
-        console.log(error);
-      },
-    });
-
-    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceUpVolume);
-
-    NativeAPI.voiceDownVolume = new nw.Shortcut({
-      key: 'Ctrl+Down',
-      active: () => {
-        Voice.volumeControl(false);
-      },
-      failed: (error) => {
-        console.log(error);
-      },
-    });
-
-    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDownVolume);
+    NativeAPI.refreshVoiceHotkeys();
 
     NativeAPI.loadModules();
 
@@ -135,6 +88,108 @@ export class NativeAPI {
     for (let module in NativeAPI.modules) {
       NativeAPI[module] = require(NativeAPI.modules[module]);
     }
+  }
+
+  static formatShortcutFromTokens(tokens, fallback = '') {
+    if (!Array.isArray(tokens)) return fallback;
+    const cleaned = tokens.map((x) => String(x || '').trim().toUpperCase()).filter(Boolean);
+    if (!cleaned.length) return '';
+    const map = {
+      CTRL: 'Ctrl',
+      ALT: 'Alt',
+      SHIFT: 'Shift',
+      WIN: 'Win',
+      UP: 'Up',
+      DOWN: 'Down',
+      LEFT: 'Left',
+      RIGHT: 'Right',
+      SPACE: 'Space',
+      ENTER: 'Enter',
+      ESC: 'Esc',
+      TAB: 'Tab',
+      BACKSPACE: 'Backspace',
+      DELETE: 'Delete',
+      INSERT: 'Insert',
+      HOME: 'Home',
+      END: 'End',
+      PG_UP: 'PageUp',
+      PG_DOWN: 'PageDown',
+    };
+    return cleaned.map((x) => (map[x] ? map[x] : x)).join('+');
+  }
+
+  static unregisterVoiceHotkeys() {
+    try {
+      if (NativeAPI.voiceShortcut) NativeAPI.app.unregisterGlobalHotKey(NativeAPI.voiceShortcut);
+    } catch {}
+    try {
+      if (NativeAPI.voiceDestroyShortcut) NativeAPI.app.unregisterGlobalHotKey(NativeAPI.voiceDestroyShortcut);
+    } catch {}
+    try {
+      if (NativeAPI.voiceUpVolume) NativeAPI.app.unregisterGlobalHotKey(NativeAPI.voiceUpVolume);
+    } catch {}
+    try {
+      if (NativeAPI.voiceDownVolume) NativeAPI.app.unregisterGlobalHotKey(NativeAPI.voiceDownVolume);
+    } catch {}
+    NativeAPI.voiceShortcut = null;
+    NativeAPI.voiceDestroyShortcut = null;
+    NativeAPI.voiceUpVolume = null;
+    NativeAPI.voiceDownVolume = null;
+  }
+
+  static refreshVoiceHotkeys() {
+    if (!NativeAPI.status || !NativeAPI.app) return;
+    NativeAPI.unregisterVoiceHotkeys();
+
+    const toggleKey = NativeAPI.formatShortcutFromTokens(Settings.settings?.voiceToggleHotkey, 'Ctrl+Z');
+    if (toggleKey) {
+      NativeAPI.voiceShortcut = new nw.Shortcut({
+        key: toggleKey,
+        active: () => {
+          Voice.toggleEnabledMic();
+        },
+        failed: (error) => {
+          console.log(error);
+        },
+      });
+      NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceShortcut);
+    }
+
+    const dropKey = NativeAPI.formatShortcutFromTokens(Settings.settings?.voiceDropHotkey, 'Ctrl+K');
+    if (dropKey) {
+      NativeAPI.voiceDestroyShortcut = new nw.Shortcut({
+        key: dropKey,
+        active: () => {
+          Voice.destroy(false, true);
+        },
+        failed: (error) => {
+          console.log(error);
+        },
+      });
+      NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDestroyShortcut);
+    }
+
+    NativeAPI.voiceUpVolume = new nw.Shortcut({
+      key: 'Ctrl+Up',
+      active: () => {
+        Voice.volumeControl(true);
+      },
+      failed: (error) => {
+        console.log(error);
+      },
+    });
+    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceUpVolume);
+
+    NativeAPI.voiceDownVolume = new nw.Shortcut({
+      key: 'Ctrl+Down',
+      active: () => {
+        Voice.volumeControl(false);
+      },
+      failed: (error) => {
+        console.log(error);
+      },
+    });
+    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDownVolume);
   }
 
   static async exec(exeFile, workingDir, args, callback, cwd = process.cwd()) {

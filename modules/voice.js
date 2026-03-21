@@ -235,15 +235,37 @@ export class Voice {
     let tutorial = DOM({ style: 'voice-info-panel-body-tutorial' });
 
     if (Voice.mic) {
+      const formatHotkey = (tokens, fallback) => {
+        if (!Array.isArray(tokens)) return fallback;
+        const cleaned = tokens.map((x) => String(x || '').trim().toUpperCase()).filter(Boolean);
+        if (!cleaned.length) return fallback;
+        const map = {
+          CTRL: 'Ctrl',
+          ALT: 'Alt',
+          SHIFT: 'Shift',
+          WIN: 'Win',
+          UP: 'Up',
+          DOWN: 'Down',
+          LEFT: 'Left',
+          RIGHT: 'Right',
+          SPACE: 'Space',
+          ENTER: 'Enter',
+          ESC: 'Esc',
+          TAB: 'Tab',
+        };
+        return cleaned.map((x) => (map[x] ? map[x] : x)).join('+');
+      };
+      const dropKey = formatHotkey(Settings.settings?.voiceDropHotkey, 'Ctrl+K');
+      const toggleKey = formatHotkey(Settings.settings?.voiceToggleHotkey, 'Ctrl+Z');
       if (Voice.mic.enabled) {
-        tutorial.innerHTML = Lang.text('hotkeyDropCalls') + '<br>' + Lang.text('hotkeyVolumeControl');
+        tutorial.innerHTML = `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}<br>${Lang.text('hotkeyVolumeControl')}`;
       } else {
         tutorial.innerHTML =
-          Lang.text('hotkeyDropCalls') +
+          `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}` +
           '<br>' +
           Lang.text('hotkeyVolumeControl') +
           '<br>────────────<br>' +
-          Lang.text('enableMic').replace('{Voice.mic.label}', Voice.mic.label);
+          `<strong>${toggleKey}</strong>${Lang.text('enableMicSuffix').replace('{Voice.mic.label}', Voice.mic.label)}`;
       }
     }
 

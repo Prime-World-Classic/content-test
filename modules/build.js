@@ -390,6 +390,9 @@ export class Build {
         if (!canScroll) return;
 
         // Match library behavior: wheel scroll drops current hover visuals.
+        Build._setsHoverSuppressed = true;
+        Build._setsLastPointerX = e.clientX;
+        Build._setsLastPointerY = e.clientY;
         Build.clearEmptySlotPreviews();
         if (Build.descriptionView) Build.descriptionView.style.display = 'none';
         Build._descriptionPinnedBySet = false;
@@ -401,6 +404,24 @@ export class Build {
         } catch {}
         Build._setsScrollStopTimer = setTimeout(() => {
           Build._setsScrollStopTimer = 0;
+          Build._setsHoverSuppressed = false;
+          try {
+            const x = Number(Build._setsLastPointerX);
+            const y = Number(Build._setsLastPointerY);
+            if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+            const below = document.elementFromPoint(x, y);
+            const hoveredSet = below?.closest?.('.build-set-item');
+            if (!hoveredSet || !Build.setsListView?.contains?.(hoveredSet)) return;
+            hoveredSet.dispatchEvent(
+              new MouseEvent('mouseenter', {
+                bubbles: false,
+                cancelable: false,
+                view: window,
+                clientX: x,
+                clientY: y,
+              }),
+            );
+          } catch {}
         }, 140);
 
         // In row layout, keep native wheel speed (same feel as library).
@@ -620,37 +641,6 @@ export class Build {
     try {
       if (request?.active) Build.activeBar(request.active);
     } catch {}
-  }
-
-  static beginSilentBuildUiUpdate() {
-    try {
-      Build.fieldView?.classList?.add('build-ui-updating');
-    } catch {}
-    try {
-      Build.inventoryView?.classList?.add('build-ui-updating');
-    } catch {}
-  }
-
-  static endSilentBuildUiUpdate() {
-    const end = () => {
-      try {
-        Build.fieldView?.classList?.remove('build-ui-updating');
-      } catch {}
-      try {
-        Build.inventoryView?.classList?.remove('build-ui-updating');
-      } catch {}
-    };
-
-    requestAnimationFrame(() => requestAnimationFrame(end));
-  }
-
-  static async runWithSilentBuildUiUpdate(callback) {
-    Build.beginSilentBuildUiUpdate();
-    try {
-      return await callback();
-    } finally {
-      Build.endSilentBuildUiUpdate();
-    }
   }
 
   static ensureBuildSettingsDefaults() {
@@ -2376,6 +2366,7 @@ export class Build {
     if (container) {
       container.replaceChildren();
     }
+    Build._inventoryDefaultOrder = new Map();
 
     const requestedBuildId = Build.id;
     Build.loading = true;
@@ -2387,8 +2378,12 @@ export class Build {
           return;
         }
 
+        let orderIndex = 0;
         for (let item of data) {
+          const key = `${Number(item?.id)}`;
+          Build._inventoryDefaultOrder.set(key, orderIndex);
           let talentContainer = DOM({ style: 'build-talent-item-container' });
+          talentContainer.dataset.defaultOrder = `${orderIndex}`;
 
           Build.inventoryView.querySelector('.build-talents').append(talentContainer);
 
@@ -2397,6 +2392,7 @@ export class Build {
           item.state = 1;
 
           preload.add(Build.templateViewTalent(item));
+          orderIndex++;
         }
 
         Build.loading = false;
@@ -2428,8 +2424,14 @@ export class Build {
   }
 
   static isTalentInBuild(talentId) {
+    const numericId = Number(talentId);
     for (const t of Build.installedTalents || []) {
-      if (t && t.id === talentId) return true;
+      if (!t) continue;
+      if (Number.isFinite(numericId)) {
+        if (Number(t.id) === numericId) return true;
+      } else if (`${t.id}` === `${talentId}`) {
+        return true;
+      }
     }
     return false;
   }
@@ -3122,7 +3124,8 @@ export class Build {
   }
 
   static async applySetToBuild(set) {
-    let ids = Build.sortSetTalentIdsByPriority(TalentSets.getTalentIds(set));
+    const setIds = TalentSets.getTalentIds(set);
+    let ids = Build.sortSetTalentIdsByPriority(setIds);
     ids = Build.filterSetTalentIdsByMatchingStats(ids);
     const simInstalled = Array.isArray(Build.installedTalents) ? Build.installedTalents.slice() : new Array(36).fill(null);
     for (const id of ids) {
@@ -3171,17 +3174,8 @@ export class Build {
       }
     }
 
-    try {
-      Build.updateHeroStats();
-    } catch {}
+    Build.refreshLocalBuildUiAfterSet(setIds);
 
-    await Build.runWithSilentBuildUiUpdate(async () => {
-      await Build.refreshBuildStateFromServer({ refreshInventory: true });
-    });
-
-    try {
-      Build.promoteSetTalentsInInventoryAfterRender(set);
-    } catch {}
   }
 
   static applySetInventoryOrder(set) {
@@ -3247,36 +3241,61 @@ export class Build {
     }
     Build._forceShowOnlySetTalentIds = null;
 
-    const toMove = [];
+    Build.sortInventory();
+    const allContainers = Array.from(list.querySelectorAll('.build-talent-item-container'));
+    const setContainers = [];
+    const setContainerKeys = new Set();
     for (const id of ids) {
       if (Build.isTalentInBuild(id)) continue;
       const el = list.querySelector(`.build-talent-item[data-id="${id}"]`);
       if (!el) continue;
       const container = el.closest('.build-talent-item-container');
       if (!container) continue;
-      toMove.push(container);
+      if (container.style.display === 'none') continue;
+      const key = `${Number(id)}`;
+      if (setContainerKeys.has(key)) continue;
+      setContainerKeys.add(key);
+      setContainers.push(container);
     }
-    if (!toMove.length) return;
-    for (let i = toMove.length - 1; i >= 0; i--) list.prepend(toMove[i]);
+    const getDefaultOrder = (container) => {
+      const item = container?.querySelector?.('.build-talent-item');
+      const id = `${Number(item?.dataset?.id)}`;
+      const byData = Number(container?.dataset?.defaultOrder);
+      if (Number.isFinite(byData)) return byData;
+      const byMap = Number(Build._inventoryDefaultOrder?.get?.(id));
+      if (Number.isFinite(byMap)) return byMap;
+      return Number.MAX_SAFE_INTEGER;
+    };
+    const restContainers = allContainers.filter((container) => {
+      const item = container?.querySelector?.('.build-talent-item');
+      const id = `${Number(item?.dataset?.id)}`;
+      return !setContainerKeys.has(id);
+    });
+    restContainers.sort((a, b) => getDefaultOrder(a) - getDefaultOrder(b));
+    const ordered = [...setContainers, ...restContainers];
+    for (const container of ordered) {
+      try {
+        list.appendChild(container);
+      } catch {}
+    }
     try {
       list.scrollTop = 0;
     } catch {}
   }
 
-  static async promoteSetTalentsInInventoryAfterRender(set, timeoutMs = 2000) {
-    const list = Build.inventoryView?.querySelector('.build-talents');
-    if (!list) return;
-    const ids = TalentSets.getTalentIds(set);
-    await Build.waitForCondition(() => ids.some((id) => list.querySelector(`.build-talent-item[data-id="${id}"]`)), timeoutMs);
-    Build.applySetInventoryOrder(set);
-  }
-
   static async removeSetFromBuild(set) {
     const ids = TalentSets.getTalentIds(set);
     for (const id of ids) {
+      const setTalentIdNum = Number(id);
       for (let index = 0; index < (Build.installedTalents || []).length; index++) {
         const t = Build.installedTalents[index];
-        if (!t || t.id !== id) continue;
+        if (!t) continue;
+        const installedIdNum = Number(t.id);
+        if (Number.isFinite(setTalentIdNum) && Number.isFinite(installedIdNum)) {
+          if (installedIdNum !== setTalentIdNum) continue;
+        } else if (`${t.id}` !== `${id}`) {
+          continue;
+        }
 
         try {
           await Build.removeTalentFromActiveByFieldIndex(index);
@@ -3289,17 +3308,8 @@ export class Build {
       }
     }
 
-    try {
-      Build.updateHeroStats();
-    } catch {}
+    Build.refreshLocalBuildUiAfterSet(ids, set);
 
-    await Build.runWithSilentBuildUiUpdate(async () => {
-      await Build.refreshBuildStateFromServer({ refreshInventory: true });
-    });
-
-    try {
-      Build.promoteSetTalentsInInventoryAfterRender(set);
-    } catch {}
   }
 
   static tryBeginSetAction() {
@@ -3351,6 +3361,7 @@ export class Build {
 
       const ids = TalentSets.getTalentIds(set);
       item.addEventListener('mouseenter', () => {
+        if (Build._setsHoverSuppressed) return;
         Build.showSetDescription(set, item);
         Build._hoveredSetTalentIds = ids;
         Build._hoveredSetAnchorEl = item;
@@ -3384,11 +3395,17 @@ export class Build {
             Build._forceShowOnlySetTalentIds = null;
             Build._forceShowOnlyTalentIds = null;
 
-            Build.applySetInventoryOrder(set);
+            if (mode === 2) {
+              Build._forceShowOnlySetTalentIds = new Set(ids.map(String));
+              Build._forceShowOnlyTalentIds = new Set();
+            } else if (mode === 3) {
+              Build.applySetInventoryOrder(set);
+            }
             if (mode !== 3) {
               await Build.applySetToBuild(set);
+              Build.applySetInventoryOrder(set);
             } else {
-              Build.sortInventory();
+              Build.applySetInventoryOrder(set);
             }
             Build.refreshSetHoverState(set, item, ids, true);
           } finally {
@@ -3405,10 +3422,12 @@ export class Build {
         (async () => {
           try {
             Build.setSelectedSetItem(item);
+            const mode = Build.getSetLmbMode();
             Build._hoveredSetTalentIds = ids;
-            Build._forceShowTalentIds = new Set(ids.map(String));
+            Build._forceShowTalentIds = mode === 1 ? new Set(ids.map(String)) : null;
             Build._forceShowOnlySetTalentIds = null;
             Build._forceShowOnlyTalentIds = null;
+            Build.applySetInventoryOrder(set);
             await Build.removeSetFromBuild(set);
             Build.refreshSetHoverState(set, item, ids);
           } finally {
@@ -3745,7 +3764,8 @@ export class Build {
       }
       itemContainer.style.gridRow = '';
       if (Build._forceShowTalentIds && Build._forceShowTalentIds.has(String(item.dataset.id))) {
-        itemContainer.style.display = 'block';
+        const inBuild = Build.isTalentInBuild(Number(item.dataset.id));
+        itemContainer.style.display = inBuild ? 'none' : 'block';
         return;
       }
     } catch {}
@@ -3802,6 +3822,68 @@ export class Build {
     Build.refreshForcedSetOnlyTalentIds();
     for (let itemContainer of Build.inventoryView.querySelectorAll('.build-talent-item-container')) {
       Build.applySorting(itemContainer);
+    }
+  }
+
+  static refreshLocalBuildUiAfterSet(ids, set = null) {
+    try {
+      Build.updateHeroStats();
+    } catch {}
+    try {
+      const highlightedLevels = Array.from(Build.fieldView?.querySelectorAll?.('.build-field-row.highlight') || [])
+        .map((el) => el?.dataset?.level)
+        .filter(Boolean);
+      Build.fieldConflict = new Object();
+      Build.fieldView?.replaceChildren();
+      Build.field(Array.isArray(Build.installedTalents) ? Build.installedTalents : new Array(36).fill(null));
+      for (const lvl of highlightedLevels) {
+        const row = Build.fieldView?.querySelector?.(`.build-field-row[data-level="${lvl}"]`);
+        if (row) row.classList.add('highlight');
+      }
+      Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+      Build.ensureTalentIdsPresentInInventory(ids);
+      Build.sortInventory();
+      if (set) Build.applySetInventoryOrder(set);
+    } catch {}
+  }
+
+  static ensureTalentIdsPresentInInventory(ids) {
+    const list = Build.inventoryView?.querySelector('.build-talents');
+    if (!list || !Array.isArray(ids)) return;
+    const normalizeId = (v) => {
+      const n = Number(v);
+      if (Number.isFinite(n)) return `${n}`;
+      return `${v}`;
+    };
+    const existing = new Map();
+    for (const item of Array.from(list.querySelectorAll('.build-talent-item'))) {
+      const id = item?.dataset?.id;
+      if (!id) continue;
+      const key = normalizeId(id);
+      const container = item.closest('.build-talent-item-container');
+      if (!container) continue;
+      if (existing.has(key)) {
+        try { container.remove(); } catch {}
+        continue;
+      }
+      existing.set(key, container);
+    }
+    const uniqueIds = new Set((ids || []).map((id) => normalizeId(id)));
+    for (const key of uniqueIds) {
+      if (Build.isTalentInBuild(key)) continue;
+      if (existing.has(key)) continue;
+      const data = Build.talents?.[key] || Build.talents?.[String(key)];
+      if (!data) continue;
+      const talentContainer = DOM({ style: 'build-talent-item-container' });
+      const defaultOrder = Number(Build._inventoryDefaultOrder?.get?.(key));
+      if (Number.isFinite(defaultOrder)) {
+        talentContainer.dataset.defaultOrder = `${defaultOrder}`;
+      }
+      const preload = new PreloadImages(talentContainer);
+      const talentView = Build.templateViewTalent({ ...data, state: 1 });
+      preload.add(talentView);
+      list.append(talentContainer);
+      existing.set(key, talentContainer);
     }
   }
 
@@ -4374,6 +4456,12 @@ export class Build {
         } else if (fromActiveBar) {
           await removeFromActive(element.dataset.position);
         }
+
+        try {
+          if (Build._forceShowOnlySetTalentIds || Build._forceShowOnlyTalentIds || Build._forceShowTalentIds) {
+            Build.sortInventory();
+          }
+        } catch {}
 
         Build.updateHeroStats();
 

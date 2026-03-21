@@ -256,7 +256,7 @@ export const en = {
     buildSettingsOff: 'Off',
     buildSettingsLayoutColumn: 'Horizontally',
     buildSettingsLayoutRow: 'Vertically',
-    buildSettingsLmbMode1: '1: Standard',
+    buildSettingsLmbMode1: 'Display all talents in Library',
     buildSettingsLmbMode2: 'Show set leftovers in Library',
     buildSettingsLmbMode3: 'Show set in Library',
     buildSettingsSetMatchOnly: 'Matching stats only',
@@ -302,6 +302,7 @@ assembly: 'Assembly',
     //Войс
 
     enableMic: 'Press <strong>Ctrl+Z</strong> or click your Nickname to enable: {Voice.mic.label}',
+    enableMicSuffix: ' or click your Nickname to enable: {Voice.mic.label}',
     mediaDevicesError: 'Cannot access media devices: {error}',
     streamTracksError: 'Cannot get stream tracks: {error}',
     mediaTracksLack: 'No media tracks available',
@@ -312,6 +313,7 @@ assembly: 'Assembly',
     voiceDisabled: 'Voice communication is disabled',
     synthesisLang: 'en-US',
     hotkeyDropCalls: '<strong>Ctrl+K</strong> - drop all calls except friends',
+    hotkeyDropCallsSuffix: ' - drop all calls except friends',
     hotkeyVolumeControl: '<strong>Ctrl+↑/↓</strong> - increase/decrease volume',
 
     // Квесты
@@ -466,6 +468,10 @@ assembly: 'Assembly',
     help_btn_close: 'Mark as read',
 
     // keybindings
+
+    voiceHotkeys: 'Voice communication',
+    voiceEnableToggle: 'Toggle microphone',
+    voiceDropCalls: 'Drop calls',
 
     slot: 'Slot {num}',
     selfCast: 'Self-cast',

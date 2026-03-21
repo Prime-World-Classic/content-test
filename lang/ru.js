@@ -308,6 +308,7 @@ export const ru = {
 
     //Войс
     enableMic: 'Нажмите <strong>Ctrl+Z</strong> или на свой Ник, чтобы включить: {Voice.mic.label}',
+    enableMicSuffix: ' или на свой Ник, чтобы включить: {Voice.mic.label}',
     mediaDevicesError: 'Не можем получить доступ к медиа устройствам: {error}',
     streamTracksError: 'Не можем получить дорожки потоков: {error}',
     mediaTracksLack: 'Отсутствие медиа потоков',
@@ -318,6 +319,7 @@ export const ru = {
     voiceDisabled: 'Голосовая связь отключена',
     synthesisLang: 'ru-RU',
     hotkeyDropCalls: '<strong>Ctrl+K</strong> - сбросить все звонки кроме друзей',
+    hotkeyDropCallsSuffix: ' - сбросить все звонки кроме друзей',
     hotkeyVolumeControl: '<strong>Ctrl+↑/↓</strong> - повысить/понизить громкость',
 
     // Квесты
@@ -463,6 +465,10 @@ export const ru = {
     help_btn_close: 'Прочитано',
 
     // keybindings
+
+    voiceHotkeys: 'Голосовая связь',
+    voiceEnableToggle: 'Вкл/выкл микрофон',
+    voiceDropCalls: 'Сбросить звонки',
 
     slot: 'Ячейка {num}',
     selfCast: 'Использовать на себя',

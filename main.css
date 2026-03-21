@@ -1459,7 +1459,7 @@ button.build-action-item:hover {
 
 .build-settings-mode-dot-active {
   background-image: url('icons/checkbox.webp');
-  box-shadow: 0 0 0.9cqh rgba(255, 220, 120, 0.95);
+  box-shadow: 0 0 0.9cqh rgba(22, 251, 103, 0.95);
 }
 
 .build-settings-slider-short {

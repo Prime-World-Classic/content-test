@@ -1,6 +1,9 @@
 import { DOM } from '../dom.js';
 import { Lang } from '../lang.js';
 import { domAudioPresets } from '../domAudioPresets.js';
+import { Settings } from '../settings.js';
+import { NativeAPI } from '../nativeApi.js';
+import { Voice } from '../voice.js';
 import { KeybindStore } from './keybindings.store.js';
 import { loadKeybinds, saveKeybinds, loadKeybindsBrowser } from './keybindings.io.js';
 import { normalizeKey } from './keybindings.input.js';
@@ -45,6 +48,40 @@ function createKeyInput({ command, value = null }) {
   return input;
 }
 
+function createSettingsKeyInput({ settingKey }) {
+  const input = DOM({
+    tag: 'input',
+    style: 'castle-keybinding-input',
+    readonly: true,
+  });
+
+  function refresh() {
+    const keys = Settings.settings?.[settingKey];
+    input.value = formatKeys(Array.isArray(keys) ? keys : []);
+  }
+
+  input.addEventListener('keydown', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      input.blur();
+      return;
+    }
+    if (e.key === 'Backspace') {
+      Settings.settings[settingKey] = [''];
+      refresh();
+      return;
+    }
+    const keys = normalizeKey(e);
+    Settings.settings[settingKey] = Array.isArray(keys) ? keys : [];
+    refresh();
+  });
+
+  refresh();
+  return input;
+}
+
 function createRow(label, inputEl) {
   return DOM({ style: 'keybinding-row' }, DOM({}, label), inputEl);
 }
@@ -72,6 +109,13 @@ function buildTalents(ui) {
   rows.push(createRow(Lang.text('actionBarLock'), createKeyInput({ command: 'actionbar_lock_off' })));
 
   return createGroup(Lang.text('talents'), rows);
+}
+
+function buildVoiceHotkeys() {
+  const rows = [];
+  rows.push(createRow(Lang.text('voiceEnableToggle'), createSettingsKeyInput({ settingKey: 'voiceToggleHotkey' })));
+  rows.push(createRow(Lang.text('voiceDropCalls'), createSettingsKeyInput({ settingKey: 'voiceDropHotkey' })));
+  return createGroup(Lang.text('voiceHotkeys'), rows);
 }
 
 function buildAdditionalTalents() {
@@ -148,10 +192,12 @@ function buildCamera() {
 export async function keybindings() {
   const ok = await loadKeybinds();
   if (!ok) return DOM({}, Lang.text('settingsReadError'));
+  let initialVoiceToggleHotkey = JSON.stringify(Array.isArray(Settings.settings?.voiceToggleHotkey) ? Settings.settings.voiceToggleHotkey : []);
+  let initialVoiceDropHotkey = JSON.stringify(Array.isArray(Settings.settings?.voiceDropHotkey) ? Settings.settings.voiceDropHotkey : []);
 
   const content = DOM(
     { style: 'keybindings-wrapper' },
-
+    buildVoiceHotkeys(),
     buildTalents(),
     buildAdditionalTalents(),
     buildSmartChat(),
@@ -167,6 +213,17 @@ export async function keybindings() {
       event: [
         'click',
         async () => {
+          await Settings.WriteSettings();
+          NativeAPI.refreshVoiceHotkeys?.();
+          const currentVoiceToggleHotkey = JSON.stringify(Array.isArray(Settings.settings?.voiceToggleHotkey) ? Settings.settings.voiceToggleHotkey : []);
+          const currentVoiceDropHotkey = JSON.stringify(Array.isArray(Settings.settings?.voiceDropHotkey) ? Settings.settings.voiceDropHotkey : []);
+          const voiceHotkeysChanged =
+            currentVoiceToggleHotkey !== initialVoiceToggleHotkey || currentVoiceDropHotkey !== initialVoiceDropHotkey;
+          if (voiceHotkeysChanged) {
+            Voice.updateInfoPanel?.();
+            initialVoiceToggleHotkey = currentVoiceToggleHotkey;
+            initialVoiceDropHotkey = currentVoiceDropHotkey;
+          }
           await saveKeybinds();
         },
       ],
