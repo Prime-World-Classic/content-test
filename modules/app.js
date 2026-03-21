@@ -528,7 +528,7 @@ export class App {
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
-        cursor: 'pointer',
+        cursor: 'url(content/img/cursor_button32x32.png) 0 0, pointer',
         transition: 'all 0.3s ease',
         transform: selectedFaction === faction.id ? 'scale(1.05)' : 'scale(1)',
         filter: selectedFaction === faction.id ? 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))' : 'brightness(0.7)',
