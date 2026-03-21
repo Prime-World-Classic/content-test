@@ -4360,6 +4360,21 @@ export class Build {
 
             element.dataset.state = 1;
 
+            try {
+              const duplicates = Array.from(
+                targetElement.querySelectorAll(`.build-talent-item[data-id="${data.id}"]`)
+              );
+              for (const dup of duplicates) {
+                if (dup === element) continue;
+                const dupContainer = dup.closest('.build-talent-item-container');
+                if (dupContainer) {
+                  dupContainer.remove();
+                } else {
+                  dup.remove();
+                }
+              }
+            } catch {}
+
             let containedTalent = DOM({ style: 'build-talent-item-container' }, element);
 
             Build.applySorting(containedTalent);
