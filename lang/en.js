@@ -95,6 +95,11 @@ export const en = {
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',
+    topColPlace: '#',
+    topColPlayer: 'Nickname',
+    topColHero: 'Hero',
+    topColRating: 'Rating',
+    topEmpty: 'No data',
     gm1: 'Borderlands',
     gm2: 'Outpost',
     gm3: 'Dragonwald',
@@ -456,7 +461,7 @@ assembly: 'Assembly',
       {
         type: 'p',
         content:
-          'To view the top of certain heroes, click on top #1 at the top of the window and select the hero you are interested in from the suggested list. The table will sort the top 100 server players on the selected hero.',
+          'To view the top for specific heroes, click the medal icon to the right of the top 3 and select the hero you want from the list. The table will show the top 100 server players for that hero.',
       },
       {
         type: 'img',

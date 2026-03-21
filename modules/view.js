@@ -821,13 +821,13 @@ export class View {
       'pve-ep2-red': 5,
     };
 
-    // тип медалей
+    // тип медалей (Испытание / Дуэль — без зала славы в лаунчере)
     const medalMap = {
       pvp: 'gold',
       anderkrug: 'gold',
       cte: 'gold',
       m4: 'gold',
-      'pve-ep2-red': 'gold',
+      'pve-ep2-red': 'silver',
       'custom-battle': 'silver',
     };
 
@@ -2441,19 +2441,236 @@ export class View {
     }
     */
   static async top(hero = 0, isSplah = false, mode = 0) {
+    const TOP_MODE_TABS = [
+      { id: 0, labelKey: 'gm1' },
+      { id: 1, labelKey: 'gm2' },
+      { id: 2, labelKey: 'gm3' },
+      { id: 3, labelKey: 'gm4' },
+    ];
+
+    const heroId = hero == null || hero === '' ? 0 : Number(hero) || 0;
+    let activeMode = mode == null || mode === '' ? 0 : Number(mode);
+    if (!Number.isFinite(activeMode) || activeMode < 0) {
+      activeMode = 0;
+    }
+    if (activeMode === 4 || activeMode === 5) {
+      activeMode = 0;
+    }
+
     let body = DOM({ style: 'main' });
 
-    let result = await App.api.request(App.CURRENT_MM, 'top', {
-      limit: 100,
-      hero: hero,
-      mode: mode,
-    });
+    const [result] = await Promise.all([
+      App.api.request(App.CURRENT_MM, 'top', {
+        limit: 100,
+        hero: heroId,
+        mode: activeMode,
+      }),
+      (async () => {
+        if (!MM.hero) {
+          try {
+            MM.hero = await App.api.request('build', 'heroAll');
+          } catch {
+            MM.hero = [];
+          }
+        }
+      })(),
+    ]);
 
-    if (!result) {
+    if (result == null) {
       throw 'Рейтинг отсутствует';
     }
 
-    let helpBtn = DOM({
+    const list = Array.isArray(result) ? result : [];
+
+    const heroNameById = (id) => {
+      const row = MM.hero && MM.hero.find((h) => Number(h.id) === Number(id));
+      return row && row.name ? row.name : '';
+    };
+
+    const makeCrownForRank = (rankNum, variant) => {
+      if (rankNum < 1 || rankNum > 3) {
+        return [];
+      }
+      const src =
+        rankNum === 1
+          ? 'content/icons/crown_5.png'
+          : rankNum === 2
+            ? 'content/icons/crown_3.png'
+            : 'content/icons/crown_2.png';
+      const style =
+        variant === 'podium' ? ['wtop-crown', 'wtop-crown--podium'] : ['wtop-crown', 'wtop-crown--row'];
+      return [
+        DOM({
+          tag: 'img',
+          src,
+          alt: '',
+          style,
+          draggable: false,
+        }),
+      ];
+    };
+
+    const makePodiumCard = (player, rankNum) => {
+      const rank = DOM({ style: 'top-item-hero-rank' });
+      rank.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
+      const heroFace = DOM({ style: 'top-item-hero' }, rank);
+      heroFace.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
+      const heroBlock = DOM({ style: 'wtop-podium-hero-wrap' }, heroFace);
+      const crownSlot = DOM({ style: 'wtop-podium-crown-slot' }, ...makeCrownForRank(rankNum, 'podium'));
+      const playerBlock = DOM(
+        { style: 'wtop-podium-player' },
+        DOM({ style: 'wtop-podium-name-line' }, `#${rankNum}. ${player.nickname}`),
+        DOM(`${player.rating}`),
+      );
+      const middle = DOM({ style: 'wtop-podium-card-body' }, playerBlock, crownSlot);
+      return DOM(
+        {
+          domaudio: domAudioPresets.defaultButton,
+          style: ['top-item', 'wtop-podium-card', `wtop-podium-card--${rankNum}`],
+          event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
+        },
+        heroBlock,
+        middle,
+      );
+    };
+
+    const makeTableRow = (player, rankNum) => {
+      const hName = heroNameById(player.hero);
+      const placeCell = DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, String(rankNum));
+      const nameCell = DOM(
+        { style: ['wtop-cell', 'wtop-cell--name'] },
+        DOM({ tag: 'span', style: 'wtop-cell-name-text' }, player.nickname || '—'),
+      );
+      const heroIcon = DOM({ style: 'wtop-cell-hero-icon' });
+      heroIcon.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
+      const heroNameEl = DOM({ style: 'wtop-cell-hero-name' }, hName || '—');
+      const heroCellStyle = ['wtop-cell', 'wtop-cell--hero'];
+      if (rankNum <= 3) {
+        heroCellStyle.push('wtop-cell--hero-with-crown');
+      }
+      const heroCell = DOM(
+        { style: heroCellStyle },
+        heroIcon,
+        heroNameEl,
+        ...makeCrownForRank(rankNum, 'row'),
+      );
+      const ratingCell = DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, String(player.rating));
+      return DOM(
+        {
+          domaudio: domAudioPresets.defaultButton,
+          style: 'wtop-table-row',
+          event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
+        },
+        placeCell,
+        nameCell,
+        heroCell,
+        ratingCell,
+      );
+    };
+
+    const openHeroPicker = async () => {
+      let request = await App.api.request('build', 'heroAll');
+      request.push({ id: 0 });
+      const bodyHero = DOM({ style: 'party-hero' });
+      const preload = new PreloadImages(bodyHero);
+      for (let item of request) {
+        const heroEl = DOM({ domaudio: domAudioPresets.smallButton });
+        if (item.id) {
+          heroEl.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
+        } else {
+          heroEl.dataset.url = `content/hero/empty.webp`;
+        }
+        heroEl.addEventListener('click', async () => {
+          if (isSplah) {
+            Window.show('main', 'top', item.id, activeMode);
+          } else {
+            View.show('top', item.id, false, activeMode);
+          }
+          Splash.hide();
+        });
+        preload.add(heroEl);
+      }
+      Splash.show(bodyHero, false);
+    };
+
+    const scrollClass = isSplah ? 'wtop-scroll' : 'top-scroll';
+    const modeBar = DOM({ style: 'wtop-mode-bar' });
+    for (const tab of TOP_MODE_TABS) {
+      const isActive = tab.id === activeMode;
+      const btn = DOM({
+        domaudio: domAudioPresets.defaultButton,
+        style: ['wtop-mode-tab', isActive ? 'is-active' : null].filter(Boolean),
+        tag: 'button',
+        type: 'button',
+        textContent: Lang.text(tab.labelKey),
+        event: [
+          'click',
+          () => {
+            if (tab.id === activeMode) return;
+            if (isSplah) {
+              Window.show('main', 'top', heroId, tab.id);
+            } else {
+              View.show('top', heroId, false, tab.id);
+            }
+          },
+        ],
+      });
+      modeBar.append(btn);
+    }
+
+    const podium = DOM({ style: 'wtop-podium' });
+    for (let i = 0; i < 3 && i < list.length; i++) {
+      podium.append(makePodiumCard(list[i], i + 1));
+    }
+
+    const listScroll = DOM({ style: 'wtop-list-scroll' });
+    if (list.length === 0) {
+      listScroll.append(DOM({ style: 'wtop-empty-hint', textContent: Lang.text('topEmpty') }));
+    } else {
+      listScroll.append(
+        DOM(
+          { style: 'wtop-table-header' },
+          DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, Lang.text('topColPlace')),
+          DOM(
+            { style: ['wtop-cell', 'wtop-cell--name'] },
+            DOM({ tag: 'span', style: 'wtop-cell-name-text' }, Lang.text('topColPlayer')),
+          ),
+          DOM({ style: ['wtop-cell', 'wtop-cell--hero'] }, Lang.text('topColHero')),
+          DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, Lang.text('topColRating')),
+        ),
+      );
+      for (let i = 0; i < list.length; i++) {
+        listScroll.append(makeTableRow(list[i], i + 1));
+      }
+    }
+
+    const heroFilterImg = DOM({
+      tag: 'img',
+      src: 'content/icons/ЗалСлавы.png',
+      alt: '',
+      style: 'wtop-hero-filter-img',
+      draggable: false,
+    });
+    const heroFilterBtn = DOM(
+      {
+        domaudio: domAudioPresets.defaultButton,
+        tag: 'button',
+        type: 'button',
+        style: 'wtop-hero-filter',
+        title: Lang.text('clickToViewHeroRating'),
+        event: ['click', openHeroPicker],
+      },
+      heroFilterImg,
+    );
+    heroFilterBtn.setAttribute('aria-label', Lang.text('clickToViewHeroRating'));
+
+    const podiumRow = DOM({ style: 'wtop-podium-row' }, podium, heroFilterBtn);
+
+    const listRow = DOM({ style: 'wtop-list-row' }, listScroll);
+
+    const top = DOM({ style: [scrollClass, 'top-layout'] }, modeBar, podiumRow, listRow);
+
+    const helpBtn = DOM({
       id: 'wtop_help',
       domaudio: domAudioPresets.defaultButton,
       style: 'help-button',
@@ -2464,90 +2681,6 @@ export class View {
         },
       ],
     });
-    let top = DOM(
-      { style: isSplah ? 'wtop-scroll' : 'top-scroll' },
-      DOM(
-        {
-          domaudio: domAudioPresets.defaultButton,
-          style: 'top-filter',
-          title: Lang.text('titleClickToViewHeroRating'),
-          event: [
-            'click',
-            async () => {
-              let request = await App.api.request('build', 'heroAll');
-
-              request.push({ id: 0 });
-
-              let bodyHero = DOM({ style: 'party-hero' });
-
-              let preload = new PreloadImages(bodyHero);
-
-              for (let item of request) {
-                let hero = DOM({ domaudio: domAudioPresets.smallButton });
-
-                if (item.id) {
-                  hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
-                } else {
-                  hero.dataset.url = `content/hero/empty.webp`;
-                }
-
-                hero.addEventListener('click', async () => {
-                  if (isSplah) {
-                    Window.show('main', 'top', item.id, mode);
-                  } else {
-                    View.show('top', item.id, false, mode);
-                  }
-
-                  Splash.hide();
-                });
-
-                preload.add(hero);
-              }
-
-              Splash.show(bodyHero, false);
-            },
-          ],
-        },
-        DOM({ tag: 'div' }),
-        DOM({ tag: 'div' }),
-      ),
-    );
-
-    const topFilter = top.querySelector('.top-filter');
-
-    topFilter.style.setProperty('--filter-text', `'${Lang.text('clickToViewHeroRating')}'`);
-
-    top.firstChild.classList.add('animation1');
-
-    top.firstChild.firstChild.style.backgroundImage = `url(content/hero/${result[0].hero}/${result[0].skin ? result[0].skin : 1}.webp)`;
-
-    top.firstChild.lastChild.innerText = `#1. ${result[0].nickname}`;
-
-    let number = 1;
-
-    for (let player of result) {
-      let rank = DOM({ style: 'top-item-hero-rank' });
-
-      rank.style.backgroundImage = `url(content/ranks/${Rank.icon(player.rating)}.webp)`;
-
-      let hero = DOM({ style: 'top-item-hero' }, rank);
-
-      hero.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
-
-      let item = DOM(
-        {
-          domaudio: domAudioPresets.defaultButton,
-          style: 'top-item',
-          event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
-        },
-        hero,
-        DOM({ style: 'top-item-player' }, DOM(`#${number}. ${player.nickname}`), DOM(`${player.rating}`)),
-      );
-
-      top.append(item);
-
-      number++;
-    }
 
     if (!isSplah) {
       body.append(View.header());

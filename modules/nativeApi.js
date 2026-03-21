@@ -561,10 +561,27 @@ export class NativeAPI {
     if (!NativeAPI.status) return;
 
     switch (NativeAPI.platform) {
-      case 'win32':
-        return NativeAPI.childProcess
-          .execSync('powershell -NoProfile -Command "[Environment]::GetFolderPath(\'MyDocuments\')"', { encoding: 'utf-8' })
-          .trim();
+      case 'win32': {
+        const home = NativeAPI.os.homedir();
+        if (home) {
+          return NativeAPI.path.join(home, 'Documents');
+        }
+        const profile = process.env.USERPROFILE;
+        if (profile) {
+          return NativeAPI.path.join(profile, 'Documents');
+        }
+        const sysRoot = process.env.SystemRoot || 'C:\\Windows';
+        const ps = NativeAPI.path.join(sysRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
+        try {
+          return NativeAPI.childProcess
+            .execFileSync(ps, ['-NoProfile', '-NoLogo', '-Command', '[Environment]::GetFolderPath([Environment+SpecialFolder]::MyDocuments)'], {
+              encoding: 'utf8',
+            })
+            .trim();
+        } catch {
+          return undefined;
+        }
+      }
 
       case 'linux':
         try {
