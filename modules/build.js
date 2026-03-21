@@ -3830,21 +3830,44 @@ export class Build {
       Build.updateHeroStats();
     } catch {}
     try {
-      const highlightedLevels = Array.from(Build.fieldView?.querySelectorAll?.('.build-field-row.highlight') || [])
-        .map((el) => el?.dataset?.level)
-        .filter(Boolean);
-      Build.fieldConflict = new Object();
-      Build.fieldView?.replaceChildren();
-      Build.field(Array.isArray(Build.installedTalents) ? Build.installedTalents : new Array(36).fill(null));
-      for (const lvl of highlightedLevels) {
-        const row = Build.fieldView?.querySelector?.(`.build-field-row[data-level="${lvl}"]`);
-        if (row) row.classList.add('highlight');
-      }
+      Build.rebuildFieldConflictFromInstalledTalents();
+      Build.syncFieldSlotsFromInstalledTalents();
       Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
       Build.ensureTalentIdsPresentInInventory(ids);
       Build.sortInventory();
       if (set) Build.applySetInventoryOrder(set);
     } catch {}
+  }
+
+  static rebuildFieldConflictFromInstalledTalents() {
+    Build.fieldConflict = new Object();
+    for (const talent of Build.installedTalents || []) {
+      if (!talent) continue;
+      if ('conflict' in talent) {
+        Build.fieldConflict[Math.abs(talent.id)] = true;
+      }
+    }
+  }
+
+  static syncFieldSlotsFromInstalledTalents() {
+    for (let index = 0; index < 36; index++) {
+      const cell = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${index}"]`);
+      if (!cell) continue;
+      const currentEl = cell.querySelector('.build-talent-item');
+      const expectedTalent = Build.installedTalents?.[index] || null;
+      const currentId = currentEl ? Number(currentEl.dataset.id) : null;
+      const expectedId = expectedTalent ? Number(expectedTalent.id) : null;
+      if (currentEl && expectedTalent && currentId === expectedId) continue;
+      if (currentEl) {
+        try {
+          currentEl.remove();
+        } catch {}
+      }
+      if (!expectedTalent) continue;
+      const view = Build.templateViewTalent({ ...expectedTalent, state: 2 });
+      const preload = new PreloadImages(cell);
+      preload.add(view, cell);
+    }
   }
 
   static ensureTalentIdsPresentInInventory(ids) {
