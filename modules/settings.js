@@ -20,6 +20,12 @@ export class Settings {
     buildRowHoverHighlight: true,
     buildTalentViewLayout: 0,
     buildSetOnlyMatchingStats: false,
+    /** 0: выкл; 1: все подходящие по ключам; 2: только фактический вклад. */
+    buildStatFilterHighlightMode: 1,
+    /** Оттенок рамки подсветки талантов (HSL hue 0–360), ≈ голубой как rgba(80,190,255). */
+    buildHighlightHue: 199,
+    /** Толщина рамки подсветки (мм), макс. 1.5; по умолчанию как было 0.42cqh. */
+    buildHighlightBorderMm: 0.42,
   };
 
   static settings = JSON.parse(JSON.stringify(this.defaultSettings));

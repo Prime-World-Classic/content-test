@@ -20,6 +20,16 @@ import { Settings } from './settings.js';
 export class Build {
   static loading = false;
 
+  /** HSL hue для подсветки сетов (как rgba(80,190,255)); толщина рамки в мм (макс. 1.5). */
+  static BUILD_HIGHLIGHT_HUE_DEFAULT = 199;
+  static BUILD_HIGHLIGHT_BORDER_MM_DEFAULT = 0.42;
+  static BUILD_HIGHLIGHT_BORDER_MM_MIN = 0.08;
+  static BUILD_HIGHLIGHT_BORDER_MM_MAX = 1.5;
+
+  /** span с числом подсвеченных по стат-фильтру талантов (см. .build-hero-stats-highlight-count). */
+  static statFilterHighlightCountValueEl = null;
+  static statFilterHighlightCountWrapEl = null;
+
   static language = {
     sr: 'Сила/Разум',
     hp: 'Здоровье',
@@ -62,6 +72,16 @@ export class Build {
     speedvz: 'Скорость на вражеской или нейтральной земле',
     dopspeed: 'Дополнительный бонус к скорости',
     speedstak: 'Стак скорости',
+  };
+
+  /** Индексы в build.profile для галочек приоритета статов (на сервере массив из 9 слотов; 0–2 не использовались) */
+  static heroStatProfileIndex = {
+    sila: 3,
+    razum: 4,
+    provorstvo: 5,
+    hitrost: 6,
+    stoikost: 7,
+    volia: 8,
   };
 
   static talentRefineByRarity = {
@@ -270,6 +290,7 @@ export class Build {
 
   static async init(heroId, targetId, isWindow) {
     Build.ensureBuildSettingsDefaults();
+    Build.applyBuildHighlightVariablesFromSettings();
 
     try {
       Build.buildSettingsButton?.parentNode?.removeChild?.(Build.buildSettingsButton);
@@ -520,6 +541,7 @@ export class Build {
     Build.buildSettingsButton = Build.createBuildSettingsButton();
     Build.buildSettingsPanel = Build.createBuildSettingsPanel();
     Build.attachBuildSettingsToWbuild();
+    Build.applyBuildHighlightVariablesFromSettings();
 
     Build.renderTalentSetsList();
 
@@ -550,6 +572,8 @@ export class Build {
     Build.heroStatsFromPower = {
       hp: 0.0,
       mp: 0.0,
+      regenhp: 0.0,
+      regenmp: 0.0,
       sila: 0.0,
       razum: 0.0,
       provorstvo: 0.0,
@@ -568,12 +592,20 @@ export class Build {
     Build.list(request.build, isWindow);
     Build.buildActions(request.build, isWindow);
 
-    request.hero.stats['damage'] = 0;
-    request.hero.stats['critProb'] = 0;
-    request.hero.stats['attackSpeed'] = 0;
-    request.hero.stats['punching'] = 0;
-    request.hero.stats['protectionBody'] = 0;
-    request.hero.stats['protectionSpirit'] = 0;
+    const hs = request.hero.stats;
+    hs['damage'] = 0;
+    hs['critProb'] = 0;
+    hs['attackSpeed'] = 0;
+    hs['punching'] = 0;
+    hs['protectionBody'] = 0;
+    hs['protectionSpirit'] = 0;
+    if (hs.regenhp === undefined || hs.regenhp === null) hs.regenhp = 0;
+    else hs.regenhp = parseFloat(hs.regenhp) || 0;
+    if (hs.regenmp === undefined || hs.regenmp === null) hs.regenmp = 0;
+    else hs.regenmp = parseFloat(hs.regenmp) || 0;
+    hs.krajahp = 0;
+    hs.krajamp = 0;
+    hs.speedtal = 0;
     Build.hero(request.hero);
 
     Build.level();
@@ -663,6 +695,73 @@ export class Build {
     if (typeof Settings.settings.buildSetOnlyMatchingStats !== 'boolean') {
       Settings.settings.buildSetOnlyMatchingStats = false;
     }
+    if (!Number.isFinite(Number(Settings.settings.buildStatFilterHighlightMode))) {
+      Settings.settings.buildStatFilterHighlightMode = 1;
+    }
+    if (Settings.settings.buildStatFilterHighlightMode < 0 || Settings.settings.buildStatFilterHighlightMode > 2) {
+      Settings.settings.buildStatFilterHighlightMode = 1;
+    }
+    if (!Number.isFinite(Number(Settings.settings.buildHighlightHue))) {
+      Settings.settings.buildHighlightHue = Build.BUILD_HIGHLIGHT_HUE_DEFAULT;
+    }
+    let bhHue = Number(Settings.settings.buildHighlightHue);
+    bhHue = ((bhHue % 360) + 360) % 360;
+    Settings.settings.buildHighlightHue = bhHue;
+    if (!Number.isFinite(Number(Settings.settings.buildHighlightBorderMm))) {
+      Settings.settings.buildHighlightBorderMm = Build.BUILD_HIGHLIGHT_BORDER_MM_DEFAULT;
+    }
+    const bhMm = Number(Settings.settings.buildHighlightBorderMm);
+    Settings.settings.buildHighlightBorderMm = Math.min(
+      Build.BUILD_HIGHLIGHT_BORDER_MM_MAX,
+      Math.max(Build.BUILD_HIGHLIGHT_BORDER_MM_MIN, bhMm),
+    );
+  }
+
+  static getBuildHighlightHue() {
+    let h = Number(Settings.settings?.buildHighlightHue);
+    if (!Number.isFinite(h)) h = Build.BUILD_HIGHLIGHT_HUE_DEFAULT;
+    return ((h % 360) + 360) % 360;
+  }
+
+  static getBuildHighlightBorderMm() {
+    let mm = Number(Settings.settings?.buildHighlightBorderMm);
+    if (!Number.isFinite(mm)) mm = Build.BUILD_HIGHLIGHT_BORDER_MM_DEFAULT;
+    return Math.min(
+      Build.BUILD_HIGHLIGHT_BORDER_MM_MAX,
+      Math.max(Build.BUILD_HIGHLIGHT_BORDER_MM_MIN, mm),
+    );
+  }
+
+  static applyBuildHighlightVariablesFromSettings() {
+    try {
+      const h = String(Build.getBuildHighlightHue());
+      const b = `${Build.getBuildHighlightBorderMm()}mm`;
+      document.documentElement.style.setProperty('--build-hl-h', h);
+      document.documentElement.style.setProperty('--build-hl-border-mm', b);
+    } catch {}
+  }
+
+  /** Пока зажата ЛКМ на полосках цвета/толщины подсветки — подсветить все таланты (поле + библиотека). */
+  static setHighlightSettingsStripPreviewActive(on) {
+    const fieldCls = 'build-highlight-settings-demo';
+    const libCls = 'build-highlight-settings-demo-lib';
+    const v = !!on;
+    try {
+      Build.fieldView?.querySelectorAll?.('.build-talent-item')?.forEach((el) => {
+        el.classList.toggle(fieldCls, v);
+      });
+    } catch {}
+    try {
+      Build.inventoryView?.querySelectorAll?.('.build-talents .build-talent-item')?.forEach((el) => {
+        el.classList.toggle(libCls, v);
+      });
+    } catch {}
+  }
+
+  static getBuildStatFilterHighlightMode() {
+    const m = Number(Settings.settings?.buildStatFilterHighlightMode);
+    if (!Number.isFinite(m) || m < 0 || m > 2) return 1;
+    return m;
   }
 
   static getSetLmbMode() {
@@ -831,6 +930,175 @@ export class Build {
       matchDots.append(dot);
     }
 
+    const statFiltLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsStatFilterHighlight'));
+    const statFiltValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
+    const statFiltModeNow = Build.getBuildStatFilterHighlightMode();
+    statFiltValue.textContent = Build.getBuildStatFilterHighlightModeLabel(statFiltModeNow);
+    const statFiltDots = DOM({ style: 'build-settings-mode-dots' });
+    const applyStatFiltMode = async (next) => {
+      Settings.settings.buildStatFilterHighlightMode = next;
+      statFiltValue.textContent = Build.getBuildStatFilterHighlightModeLabel(next);
+      const items = statFiltDots.querySelectorAll('.build-settings-mode-dot');
+      items.forEach((dot, idx) => dot.classList.toggle('build-settings-mode-dot-active', idx === next));
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+    for (let i = 0; i < 3; i++) {
+      const dotStyle = ['build-settings-mode-dot'];
+      if (statFiltModeNow === i) dotStyle.push('build-settings-mode-dot-active');
+      const dot = DOM({
+        tag: 'button',
+        type: 'button',
+        style: dotStyle,
+        title: Build.getBuildStatFilterHighlightModeLabel(i),
+        event: ['click', async () => applyStatFiltMode(i)],
+      });
+      statFiltDots.append(dot);
+    }
+
+    const hlBlock = DOM({ style: 'build-settings-hl-block' });
+    const hlSliders = DOM({ style: 'build-settings-hl-sliders' });
+    const hlHueLabel = DOM({ style: 'build-settings-hl-line-label' }, Lang.text('buildSettingsHighlightHue'));
+    const hlHueTrack = DOM({ style: 'build-settings-hl-hue-track' });
+    const hlHueThumb = DOM({ style: 'build-settings-hl-thumb' });
+    hlHueTrack.append(hlHueThumb);
+    const hlBorderLabel = DOM({ style: 'build-settings-hl-line-label' }, Lang.text('buildSettingsHighlightBorder'));
+    const hlBorderTrack = DOM({ style: 'build-settings-hl-mm-track' });
+    const hlBorderThumb = DOM({ style: 'build-settings-hl-thumb' });
+    hlBorderTrack.append(hlBorderThumb);
+    hlSliders.append(hlHueLabel, hlHueTrack, hlBorderLabel, hlBorderTrack);
+
+    const hlReset = DOM(
+      {
+        tag: 'button',
+        type: 'button',
+        style: 'build-settings-hl-reset',
+        title: Lang.text('buildSettingsHighlightReset'),
+        domaudio: domAudioPresets.defaultButton,
+      },
+      '↺',
+    );
+
+    const syncHlPanelThumbs = () => {
+      const hue = Build.getBuildHighlightHue();
+      hlHueThumb.style.left = `${(hue / 360) * 100}%`;
+      const mm = Build.getBuildHighlightBorderMm();
+      const span = Build.BUILD_HIGHLIGHT_BORDER_MM_MAX - Build.BUILD_HIGHLIGHT_BORDER_MM_MIN;
+      const t = span > 0 ? (mm - Build.BUILD_HIGHLIGHT_BORDER_MM_MIN) / span : 0;
+      hlBorderThumb.style.left = `${Math.min(1, Math.max(0, t)) * 100}%`;
+    };
+
+    const commitHlSettings = async () => {
+      Build.applyBuildHighlightVariablesFromSettings();
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+
+    const setHueFromClientX = (clientX) => {
+      const r = hlHueTrack.getBoundingClientRect();
+      if (r.width <= 0) return Build.getBuildHighlightHue();
+      const t = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+      const hue = t * 360;
+      Settings.settings.buildHighlightHue = hue;
+      hlHueThumb.style.left = `${t * 100}%`;
+      Build.applyBuildHighlightVariablesFromSettings();
+      return hue;
+    };
+
+    const setBorderMmFromClientX = (clientX) => {
+      const r = hlBorderTrack.getBoundingClientRect();
+      if (r.width <= 0) return Build.getBuildHighlightBorderMm();
+      const t = Math.min(1, Math.max(0, (clientX - r.left) / r.width));
+      const mm =
+        Build.BUILD_HIGHLIGHT_BORDER_MM_MIN +
+        t * (Build.BUILD_HIGHLIGHT_BORDER_MM_MAX - Build.BUILD_HIGHLIGHT_BORDER_MM_MIN);
+      Settings.settings.buildHighlightBorderMm = mm;
+      hlBorderThumb.style.left = `${t * 100}%`;
+      Build.applyBuildHighlightVariablesFromSettings();
+      return mm;
+    };
+
+    let hlHueDrag = false;
+    let hlBorderDrag = false;
+    const syncHlStripPreview = () => {
+      Build.setHighlightSettingsStripPreviewActive(hlHueDrag || hlBorderDrag);
+    };
+    hlHueTrack.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      hlHueDrag = true;
+      hlHueTrack.setPointerCapture(e.pointerId);
+      setHueFromClientX(e.clientX);
+      syncHlStripPreview();
+    });
+    hlHueTrack.addEventListener('pointermove', (e) => {
+      if (!hlHueDrag) return;
+      setHueFromClientX(e.clientX);
+    });
+    const endHueDrag = async (e) => {
+      if (!hlHueDrag) return;
+      hlHueDrag = false;
+      syncHlStripPreview();
+      try {
+        hlHueTrack.releasePointerCapture(e.pointerId);
+      } catch {}
+      setHueFromClientX(e.clientX);
+      await commitHlSettings();
+    };
+    hlHueTrack.addEventListener('pointerup', endHueDrag);
+    hlHueTrack.addEventListener('pointercancel', endHueDrag);
+    hlHueTrack.addEventListener('lostpointercapture', async () => {
+      if (!hlHueDrag) return;
+      hlHueDrag = false;
+      syncHlStripPreview();
+      await commitHlSettings();
+    });
+
+    hlBorderTrack.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      hlBorderDrag = true;
+      hlBorderTrack.setPointerCapture(e.pointerId);
+      setBorderMmFromClientX(e.clientX);
+      syncHlStripPreview();
+    });
+    hlBorderTrack.addEventListener('pointermove', (e) => {
+      if (!hlBorderDrag) return;
+      setBorderMmFromClientX(e.clientX);
+    });
+    const endBorderDrag = async (e) => {
+      if (!hlBorderDrag) return;
+      hlBorderDrag = false;
+      syncHlStripPreview();
+      try {
+        hlBorderTrack.releasePointerCapture(e.pointerId);
+      } catch {}
+      setBorderMmFromClientX(e.clientX);
+      await commitHlSettings();
+    };
+    hlBorderTrack.addEventListener('pointerup', endBorderDrag);
+    hlBorderTrack.addEventListener('pointercancel', endBorderDrag);
+    hlBorderTrack.addEventListener('lostpointercapture', async () => {
+      if (!hlBorderDrag) return;
+      hlBorderDrag = false;
+      syncHlStripPreview();
+      await commitHlSettings();
+    });
+
+    hlReset.addEventListener('click', async (e) => {
+      e?.preventDefault?.();
+      e?.stopPropagation?.();
+      Settings.settings.buildHighlightHue = Build.BUILD_HIGHLIGHT_HUE_DEFAULT;
+      Settings.settings.buildHighlightBorderMm = Build.BUILD_HIGHLIGHT_BORDER_MM_DEFAULT;
+      Build.ensureBuildSettingsDefaults();
+      syncHlPanelThumbs();
+      await commitHlSettings();
+    });
+
+    syncHlPanelThumbs();
+    Build.refreshBuildHighlightSettingsPanel = syncHlPanelThumbs;
+
+    hlBlock.append(hlSliders, hlReset);
     panel.append(
       title,
       modeLabel,
@@ -845,6 +1113,10 @@ export class Build {
       matchLabel,
       matchDots,
       matchValue,
+      statFiltLabel,
+      statFiltDots,
+      statFiltValue,
+      hlBlock,
     );
 
     return panel;
@@ -856,11 +1128,22 @@ export class Build {
     return Lang.text('buildSettingsLmbMode1');
   }
 
+  static getBuildStatFilterHighlightModeLabel(mode) {
+    if (mode === 0) return Lang.text('buildSettingsStatFilterHighlightModeOff');
+    if (mode === 2) return Lang.text('buildSettingsStatFilterHighlightModeAffectsTotal');
+    return Lang.text('buildSettingsStatFilterHighlightModeHasStat');
+  }
+
   static toggleBuildSettingsPanel(force) {
     const panel = Build.buildSettingsPanel;
     if (!panel) return;
     const shouldOpen = typeof force === 'boolean' ? force : panel.style.display === 'none';
     panel.style.display = shouldOpen ? 'flex' : 'none';
+    if (shouldOpen) {
+      try {
+        Build.refreshBuildHighlightSettingsPanel?.();
+      } catch {}
+    }
   }
 
   static attachBuildSettingsToWbuild() {
@@ -872,6 +1155,7 @@ export class Build {
       if (!wbuild) return;
       if (Build.buildSettingsButton && Build.buildSettingsButton.parentNode !== wbuild) wbuild.append(Build.buildSettingsButton);
       if (Build.buildSettingsPanel && Build.buildSettingsPanel.parentNode !== wbuild) wbuild.append(Build.buildSettingsPanel);
+      Build.applyBuildHighlightVariablesFromSettings();
     } catch {}
   }
 
@@ -1333,11 +1617,16 @@ export class Build {
 
   static totalStat(stat) {
     let initialStat = Build.initialStats[stat];
+    if (!Number.isFinite(Number(initialStat))) initialStat = 0;
+    else initialStat = Number(initialStat);
     let talentsStat = Build.calculationStats[stat];
+    if (!Number.isFinite(Number(talentsStat))) talentsStat = 0;
+    else talentsStat = Number(talentsStat);
     let powerStat = 0.0;
     if (stat in Build.heroStatsFromPower) {
       powerStat += Build.heroStatsFromPower[stat];
     }
+    if (!Number.isFinite(powerStat)) powerStat = 0;
     return initialStat + talentsStat + powerStat;
   }
 
@@ -1355,12 +1644,19 @@ export class Build {
       Build.initialStats[stat] = parseFloat(data.stats[stat]);
       Build.calculationStats[stat] = 0.0;
     }
+    Build.initialStats['talentCdPct'] = 0;
+    Build.calculationStats['talentCdPct'] = 0;
 
     let stats = DOM({ style: 'build-hero-stats-view' });
 
     const template = {
       hp: Lang.text('health'),
       mp: Lang.text('energy'),
+      regenhp: Lang.text('statRegenHealth'),
+      regenmp: Lang.text('statRegenEnergy'),
+      krajahp: Lang.text('statStealHealth'),
+      krajamp: Lang.text('statStealEnergy'),
+      talentCdPct: Lang.text('statTalentCooldownPct'),
       speed: Lang.text('speed'),
       sila: Lang.text('strength'),
       razum: Lang.text('intelligence'),
@@ -1409,18 +1705,26 @@ export class Build {
 
                     if (key == 'hp') {
                       Build.removeSortInventory('stats', 'hp');
-                      Build.removeSortInventory('stats', 'krajahp');
-                      Build.removeSortInventory('stats', 'krajahprz');
-                      Build.removeSortInventory('stats', 'regenhpvz');
-                      Build.removeSortInventory('stats', 'krajahpvz');
-                      Build.removeSortInventory('stats', 'regenhp');
                       Build.removeSortInventory('stats', 'hpmp');
                     } else if (key == 'mp') {
                       Build.removeSortInventory('stats', 'mp');
-                      Build.removeSortInventory('stats', 'regenmp');
-                      Build.removeSortInventory('stats', 'krajamp');
-                      Build.removeSortInventory('stats', 'regenmpvz');
                       Build.removeSortInventory('stats', 'hpmp');
+                    } else if (key == 'regenhp') {
+                      Build.removeSortInventory('stats', 'regenhp');
+                      Build.removeSortInventory('stats', 'regenhpvz');
+                    } else if (key == 'regenmp') {
+                      Build.removeSortInventory('stats', 'regenmp');
+                      Build.removeSortInventory('stats', 'regenmpvz');
+                    } else if (key == 'krajahp') {
+                      Build.removeSortInventory('stats', 'krajahp');
+                      Build.removeSortInventory('stats', 'krajahprz');
+                      Build.removeSortInventory('stats', 'krajahpvz');
+                    } else if (key == 'krajamp') {
+                      Build.removeSortInventory('stats', 'krajamp');
+                    } else if (key == 'talentCdPct') {
+                      Build.removeSortInventory('stats', 'speedtal');
+                      Build.removeSortInventory('stats', 'speedtalrz');
+                      Build.removeSortInventory('stats', 'speedtalvz');
                     } else if (key == 'speed') {
                       Build.removeSortInventory('stats', 'speed');
                       Build.removeSortInventory('stats', 'speedrz');
@@ -1468,18 +1772,26 @@ export class Build {
                     item.style.background = '#5899';
                     if (key == 'hp') {
                       Build.setSortInventory('stats', 'hp');
-                      Build.setSortInventory('stats', 'krajahp');
-                      Build.setSortInventory('stats', 'krajahprz');
-                      Build.setSortInventory('stats', 'regenhpvz');
-                      Build.setSortInventory('stats', 'krajahpvz');
-                      Build.setSortInventory('stats', 'regenhp');
                       Build.setSortInventory('stats', 'hpmp');
                     } else if (key == 'mp') {
                       Build.setSortInventory('stats', 'mp');
-                      Build.setSortInventory('stats', 'regenmp');
-                      Build.setSortInventory('stats', 'krajamp');
-                      Build.setSortInventory('stats', 'regenmpvz');
                       Build.setSortInventory('stats', 'hpmp');
+                    } else if (key == 'regenhp') {
+                      Build.setSortInventory('stats', 'regenhp');
+                      Build.setSortInventory('stats', 'regenhpvz');
+                    } else if (key == 'regenmp') {
+                      Build.setSortInventory('stats', 'regenmp');
+                      Build.setSortInventory('stats', 'regenmpvz');
+                    } else if (key == 'krajahp') {
+                      Build.setSortInventory('stats', 'krajahp');
+                      Build.setSortInventory('stats', 'krajahprz');
+                      Build.setSortInventory('stats', 'krajahpvz');
+                    } else if (key == 'krajamp') {
+                      Build.setSortInventory('stats', 'krajamp');
+                    } else if (key == 'talentCdPct') {
+                      Build.setSortInventory('stats', 'speedtal');
+                      Build.setSortInventory('stats', 'speedtalrz');
+                      Build.setSortInventory('stats', 'speedtalvz');
                     } else if (key == 'speed') {
                       Build.setSortInventory('stats', 'speed');
                       Build.setSortInventory('stats', 'speedrz');
@@ -1535,7 +1847,20 @@ export class Build {
           ],
         },
         DOM({ tag: 'div' }, template[key]),
-        DOM({ tag: 'div' }, data.stats[key] || 0),
+        DOM(
+          { tag: 'div' },
+          key === 'talentCdPct'
+            ? 0
+            : key === 'regenhp' || key === 'regenmp'
+              ? (() => {
+                  const v =
+                    data.stats[key] !== undefined && data.stats[key] !== null ? parseFloat(data.stats[key]) : 0;
+                  return Build.formatRegenStatDisplay(v);
+                })()
+              : data.stats[key] !== undefined && data.stats[key] !== null
+                ? data.stats[key]
+                : 0,
+        ),
       );
 
       if (key === 'groundType') {
@@ -1689,6 +2014,11 @@ export class Build {
         ![
           'hp',
           'mp',
+          'regenhp',
+          'regenmp',
+          'krajahp',
+          'krajamp',
+          'talentCdPct',
           'speed',
           'damage',
           'critProb',
@@ -1722,6 +2052,16 @@ export class Build {
                 Build.profileStats[key] = 0;
 
                 Build.updateHeroStats();
+                try {
+                  if (Build._statFilterHoverRowKey) {
+                    Build.applyStatFilterHoverHighlightOnBuild(Build._statFilterHoverRowKey);
+                  } else {
+                    Build.refreshStatFilterHighlightCountDisplay();
+                  }
+                  if (Build._hoveredSetTalentIds) {
+                    Build.previewSetTalentsInEmptySlots({ _manualOrder: Build._hoveredSetTalentIds });
+                  }
+                } catch {}
               } else {
                 await App.api.request('build', 'setProfile', {
                   id: Build.id,
@@ -1735,16 +2075,32 @@ export class Build {
                 Build.profileStats[key] = 1;
 
                 Build.updateHeroStats();
+                try {
+                  if (Build._statFilterHoverRowKey) {
+                    Build.applyStatFilterHoverHighlightOnBuild(Build._statFilterHoverRowKey);
+                  } else {
+                    Build.refreshStatFilterHighlightCountDisplay();
+                  }
+                  if (Build._hoveredSetTalentIds) {
+                    Build.previewSetTalentsInEmptySlots({ _manualOrder: Build._hoveredSetTalentIds });
+                  }
+                } catch {}
               }
             },
           ],
         });
 
-        daw.dataset.index = i;
+        const profileIdx =
+          key in Build.heroStatProfileIndex ? Build.heroStatProfileIndex[key] : i;
+        daw.dataset.index = profileIdx;
 
-        daw.dataset.status = Build.dataRequest.profile[i];
+        const prof = Build.dataRequest.profile;
+        daw.dataset.status =
+          prof && profileIdx in prof && prof[profileIdx] !== undefined && prof[profileIdx] !== null
+            ? prof[profileIdx]
+            : 0;
 
-        Build.profileStats[key] = parseInt(daw.dataset.status);
+        Build.profileStats[key] = parseInt(daw.dataset.status, 10) || 0;
 
         if (daw.dataset.status == 1) {
           daw.src = 'content/icons/checkbox.webp';
@@ -1752,9 +2108,19 @@ export class Build {
           daw.src = 'content/icons/circle.webp';
         }
 
-        stats.append(DOM({ style: 'build-hero-stats-line' }, daw, item));
+        const statsLineWithDaw = DOM({ style: 'build-hero-stats-line' }, daw, item);
+        if (!cond(key)) {
+          statsLineWithDaw.addEventListener('mouseenter', () => Build.applyStatFilterHoverHighlightOnBuild(key));
+          statsLineWithDaw.addEventListener('mouseleave', () => Build.clearStatFilterHoverHighlightOnBuild());
+        }
+        stats.append(statsLineWithDaw);
       } else {
-        stats.append(DOM({ style: 'build-hero-stats-line' }, item));
+        const statsLinePlain = DOM({ style: 'build-hero-stats-line' }, item);
+        if (!cond(key)) {
+          statsLinePlain.addEventListener('mouseenter', () => Build.applyStatFilterHoverHighlightOnBuild(key));
+          statsLinePlain.addEventListener('mouseleave', () => Build.clearStatFilterHoverHighlightOnBuild());
+        }
+        stats.append(statsLinePlain);
       }
       i++;
     }
@@ -1781,6 +2147,25 @@ export class Build {
     });
 
     stats.append(DOM({ style: 'build-hero-stats-settings' }, landTypeSetting));
+
+    const statFilterHighlightCountValue = DOM({
+      tag: 'span',
+      style: 'build-hero-stats-highlight-count-value',
+    });
+    statFilterHighlightCountValue.textContent = '0';
+    const statFilterHighlightCountBadge = DOM(
+      { style: 'build-hero-stats-highlight-count-badge' },
+      statFilterHighlightCountValue,
+    );
+    const statFilterHighlightCountEl = DOM({ style: 'build-hero-stats-highlight-count' }, statFilterHighlightCountBadge);
+    const statFilterHighlightCountTitle = Lang.text('buildStatsHighlightedTalentsCountTitle');
+    statFilterHighlightCountEl.title = statFilterHighlightCountTitle;
+    statFilterHighlightCountBadge.title = statFilterHighlightCountTitle;
+    statFilterHighlightCountValue.title = statFilterHighlightCountTitle;
+    stats.append(statFilterHighlightCountEl);
+    Build.statFilterHighlightCountValueEl = statFilterHighlightCountValue;
+    Build.statFilterHighlightCountWrapEl = statFilterHighlightCountEl;
+    Build.refreshStatFilterHighlightCountDisplay();
 
     Build.heroName = DOM({ tag: 'div', style: 'name' });
 
@@ -1921,12 +2306,21 @@ export class Build {
 
     const avatarWrap = DOM({ style: 'build-avatar-wrap' }, Build.heroImg);
 
-    const wrapper = DOM({ style: 'build-hero-avatar-and-name' }, avatarWrap, Build.skinView, Build.training);
+    const avatarActions = DOM({ style: 'build-hero-avatar-actions' }, Build.skinView, Build.training);
+    const wrapper = DOM({ style: 'build-hero-avatar-and-name' }, avatarWrap, avatarActions);
 
     Build.heroView.append(wrapper, stats);
   }
 
-  static updateHeroStats() {
+  /** Одна десятичная, без «.0» у целых (реген HP/MP). */
+  static formatRegenStatDisplay(value) {
+    const r = Math.round(Number(value) * 10) / 10;
+    const s = r.toFixed(1);
+    return s.endsWith('.0') ? String(Math.round(r)) : s;
+  }
+
+  /** Пересчёт вкладов талантов в calculationStats / силу героя (без обновления подписей в UI). */
+  static recomputeTalentCalculationTotals() {
     Build.heroPower = 0.0;
     for (let key in Build.calculationStats) {
       Build.calculationStats[key] = 0.0;
@@ -1939,9 +2333,22 @@ export class Build {
         Build.setStat(talent, true, false);
       }
     }
+  }
+
+  static updateHeroStats() {
+    Build.recomputeTalentCalculationTotals();
 
     for (let key2 in Build.dataStats) {
-      Build.dataStats[key2].lastChild.innerText = Math.round(Build.totalStat(key2));
+      if (key2 === 'talentCdPct') continue;
+      const total = Build.totalStat(key2);
+      if (key2 === 'regenhp' || key2 === 'regenmp') {
+        Build.dataStats[key2].lastChild.innerText = Build.formatRegenStatDisplay(total);
+      } else {
+        Build.dataStats[key2].lastChild.innerText = Math.round(total);
+      }
+    }
+    if (Build.dataStats['talentCdPct']) {
+      Build.dataStats['talentCdPct'].lastChild.innerText = Math.max(0, Math.round(Build.totalStat('speedtal'))) + '%';
     }
 
     const statAg = Build.totalStat('provorstvo');
@@ -2015,7 +2422,8 @@ export class Build {
     }
 
     for (let stat in Build.heroStatsFromPower) {
-      let Lvl = Build.heroStatMods[stat];
+      let Lvl = Number(Build.heroStatMods[stat]);
+      if (!Number.isFinite(Lvl)) Lvl = 0;
       let q = Build.heroPowerModifier;
       let m = Build.heroPower * Build.heroPowerFromInstalledTalents;
       Build.heroStatsFromPower[stat] = Lvl * (0.6 * q * (m / 10.0 - 16.0) + 36.0);
@@ -2476,6 +2884,324 @@ export class Build {
     } catch {}
 
     Build.clearEmptySlotPreviews();
+    Build.refreshStatFilterHighlightCountDisplay();
+  }
+
+  /** Ключи stats у таланта, совпадающие с фильтром строки героя (как при setSortInventory). */
+  static getHeroStatRowFilterStatKeys(heroRowKey) {
+    const m = {
+      hp: ['hp', 'hpmp'],
+      mp: ['mp', 'hpmp'],
+      regenhp: ['regenhp', 'regenhpvz'],
+      regenmp: ['regenmp', 'regenmpvz'],
+      krajahp: ['krajahp', 'krajahprz', 'krajahpvz'],
+      krajamp: ['krajamp'],
+      talentCdPct: ['speedtal', 'speedtalrz', 'speedtalvz'],
+      speed: ['speed', 'speedrz', 'speedvz'],
+      sila: ['sila', 'sr', 'srsv', 'silarz', 'silavz'],
+      razum: ['razum', 'sr', 'srsv', 'razumrz', 'razumvz'],
+      provorstvo: ['provorstvo', 'ph', 'provorstvorz', 'provorstvovz'],
+      hitrost: ['hitrost', 'ph', 'hitrostrz', 'hitrostvz'],
+      stoikost: ['stoikost', 'sv', 'srsv', 'stoikostrz', 'svvz', 'vs'],
+      volia: ['volia', 'sv', 'srsv', 'voliarz', 'svvz', 'vs'],
+    };
+    return m[heroRowKey] ? m[heroRowKey].slice() : [heroRowKey];
+  }
+
+  /** Ключ в calculationStats (прямой вклад талантов через setStat), соответствующий строке героя. */
+  static getHeroStatRowDisplayTotalKey(heroRowKey) {
+    if (heroRowKey === 'talentCdPct') return 'speedtal';
+    return heroRowKey;
+  }
+
+  static getTalentDirectCalculationValue(statKey) {
+    const v = Number(Build.calculationStats[statKey]);
+    return Number.isFinite(v) ? v : 0;
+  }
+
+  /**
+   * Состояние расчёта до применения таланта в слоте slotIndex (порядок i=35..0 как в updateHeroStats).
+   */
+  static computeStatsStateBeforeSlot(slotIndex) {
+    Build.heroPower = 0.0;
+    for (let key in Build.calculationStats) {
+      Build.calculationStats[key] = 0.0;
+    }
+    for (let i = 35; i > slotIndex; i--) {
+      const talent = Build.installedTalents[i];
+      if (talent) {
+        Build.calcStatsFromPower(i);
+        Build.setStat(talent, true, false);
+      }
+    }
+  }
+
+  /** Меняется ли calculationStats[calcKey] при удалении таланта (для строк без max/min-алиасов). */
+  static talentMarginalContributesToCalcKey(slotIndex, calcKey) {
+    const installed = Build.installedTalents;
+    const t = installed?.[slotIndex];
+    if (!t) return false;
+    const eps = 1e-4;
+    Build.recomputeTalentCalculationTotals();
+    const full = Build.getTalentDirectCalculationValue(calcKey);
+    installed[slotIndex] = null;
+    Build.recomputeTalentCalculationTotals();
+    const without = Build.getTalentDirectCalculationValue(calcKey);
+    installed[slotIndex] = t;
+    Build.recomputeTalentCalculationTotals();
+    return Math.abs(full - without) > eps;
+  }
+
+  static isCompositeHeroStatRowForHighlight(heroRowKey) {
+    return ['hitrost', 'provorstvo', 'sila', 'razum', 'stoikost', 'volia', 'hp', 'mp'].includes(heroRowKey);
+  }
+
+  /**
+   * Режим «есть ключ стата»: совпадение с фильтром библиотеки по ключам в данных таланта
+   * (в т.ч. ph на обеих строках ловкости/хитрости), без проверки фактического вклада.
+   */
+  static statRowMatchesTalentByFilterKeysOnly(heroRowKey, t) {
+    const base = t.id != null ? Build.talents?.[String(t.id)] : null;
+    const stats = { ...(base?.stats || {}), ...(t.stats || {}) };
+    const statKeys = Build.getHeroStatRowFilterStatKeys(heroRowKey);
+    for (const sk of statKeys) {
+      if (sk in stats) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Подсветка строки героя: для ph/sr/sv/srsv/hpmp смотрим куда уйдёт бонус в момент setStat
+   * (getMaxStat/getMinStat на состоянии до слота). Маргинальный пересчёт неверен — соседний талант с ph
+   * может перекинуться на другую характеристику при удалении «проворства».
+   */
+  static statRowMatchesTalentForHighlight(heroRowKey, t, slotIndex) {
+    const base = t.id != null ? Build.talents?.[String(t.id)] : null;
+    const stats = { ...(base?.stats || {}), ...(t.stats || {}) };
+    const has = (k) => k in stats;
+
+    if (heroRowKey === 'hitrost') {
+      if (has('hitrost') || has('hitrostrz') || has('hitrostvz')) return true;
+      if (has('ph')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['provorstvo', 'hitrost']) === 'hitrost';
+      }
+      if (has('phMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['provorstvo', 'hitrost']) === 'hitrost';
+      }
+      return false;
+    }
+    if (heroRowKey === 'provorstvo') {
+      if (has('provorstvo') || has('provorstvorz') || has('provorstvovz')) return true;
+      if (has('ph')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['provorstvo', 'hitrost']) === 'provorstvo';
+      }
+      if (has('phMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['provorstvo', 'hitrost']) === 'provorstvo';
+      }
+      return false;
+    }
+    if (heroRowKey === 'sila') {
+      if (has('sila') || has('silarz') || has('silavz')) return true;
+      if (has('sr')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['sila', 'razum']) === 'sila';
+      }
+      if (has('srsv')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['sila', 'razum', 'stoikost', 'volia']) === 'sila';
+      }
+      if (has('srMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['sila', 'razum']) === 'sila';
+      }
+      if (has('srsvMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['sila', 'razum', 'stoikost', 'volia']) === 'sila';
+      }
+      return false;
+    }
+    if (heroRowKey === 'razum') {
+      if (has('razum') || has('razumrz') || has('razumvz')) return true;
+      if (has('sr')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['sila', 'razum']) === 'razum';
+      }
+      if (has('srsv')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['sila', 'razum', 'stoikost', 'volia']) === 'razum';
+      }
+      if (has('srMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['sila', 'razum']) === 'razum';
+      }
+      if (has('srsvMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['sila', 'razum', 'stoikost', 'volia']) === 'razum';
+      }
+      return false;
+    }
+    if (heroRowKey === 'stoikost') {
+      if (has('stoikost') || has('stoikostrz')) return true;
+      if (has('sv')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['stoikost', 'volia']) === 'stoikost';
+      }
+      if (has('srsv')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['sila', 'razum', 'stoikost', 'volia']) === 'stoikost';
+      }
+      if (has('svMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['volia', 'stoikost']) === 'stoikost';
+      }
+      if (has('srsvMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['sila', 'razum', 'stoikost', 'volia']) === 'stoikost';
+      }
+      if (has('svvz') || has('vs')) {
+        return Build.talentMarginalContributesToCalcKey(slotIndex, 'stoikost');
+      }
+      return false;
+    }
+    if (heroRowKey === 'volia') {
+      if (has('volia') || has('voliarz')) return true;
+      if (has('sv')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['stoikost', 'volia']) === 'volia';
+      }
+      if (has('srsv')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['sila', 'razum', 'stoikost', 'volia']) === 'volia';
+      }
+      if (has('svMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['volia', 'stoikost']) === 'volia';
+      }
+      if (has('srsvMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['sila', 'razum', 'stoikost', 'volia']) === 'volia';
+      }
+      if (has('svvz') || has('vs')) {
+        return Build.talentMarginalContributesToCalcKey(slotIndex, 'volia');
+      }
+      return false;
+    }
+    if (heroRowKey === 'hp') {
+      if (has('hp')) return true;
+      if (has('hpmp')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['hp', 'mp']) === 'hp';
+      }
+      if (has('hpmpMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['hp', 'mp']) === 'hp';
+      }
+      return false;
+    }
+    if (heroRowKey === 'mp') {
+      if (has('mp')) return true;
+      if (has('hpmp')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMaxStat(['hp', 'mp']) === 'mp';
+      }
+      if (has('hpmpMin')) {
+        Build.computeStatsStateBeforeSlot(slotIndex);
+        return Build.getMinStat(['hp', 'mp']) === 'mp';
+      }
+      return false;
+    }
+
+    const statKeys = Build.getHeroStatRowFilterStatKeys(heroRowKey);
+    for (const sk of statKeys) {
+      if (sk in stats) return true;
+    }
+    return false;
+  }
+
+  static refreshStatFilterHighlightCountDisplay() {
+    try {
+      const el = Build.statFilterHighlightCountValueEl;
+      const wrap = Build.statFilterHighlightCountWrapEl;
+      if (!el) return;
+      const nodes =
+        Build.fieldView?.querySelectorAll?.(
+          '.build-talent-item.build-stat-filter-hover, .build-talent-item.build-set-highlight',
+        ) || [];
+      el.textContent = String(new Set(Array.from(nodes)).size);
+      // Title is not inherited; put it on all hover targets for reliability.
+      if (wrap) wrap.title = Lang.text('buildStatsHighlightedTalentsCountTitle');
+      el.title = Lang.text('buildStatsHighlightedTalentsCountTitle');
+    } catch {}
+  }
+
+  static clearStatFilterHoverHighlightOnBuild() {
+    try {
+      Build.fieldView
+        ?.querySelectorAll('.build-talent-item.build-stat-filter-hover')
+        .forEach((el) => el.classList.remove('build-stat-filter-hover'));
+    } catch {}
+    Build._statFilterHoverRowKey = null;
+    Build.refreshStatFilterHighlightCountDisplay();
+  }
+
+  /** Подсветка слотов билда при наведении на строку стат-фильтра. */
+  static applyStatFilterHoverHighlightOnBuild(heroRowKey) {
+    Build.clearStatFilterHoverHighlightOnBuild();
+    const mode = Build.getBuildStatFilterHighlightMode();
+    if (mode === 0) {
+      Build._statFilterHoverRowKey = null;
+      return;
+    }
+    Build._statFilterHoverRowKey = heroRowKey;
+    const installed = Build.installedTalents || [];
+    const highlightAt = (index) => {
+      const cell = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${index}"]`);
+      const el = cell?.querySelector?.('.build-talent-item');
+      if (el) el.classList.add('build-stat-filter-hover');
+    };
+
+    if (mode === 1) {
+      for (let index = 0; index < installed.length; index++) {
+        const t = installed[index];
+        if (!t) continue;
+        if (Build.statRowMatchesTalentByFilterKeysOnly(heroRowKey, t)) highlightAt(index);
+      }
+      Build.refreshStatFilterHighlightCountDisplay();
+      return;
+    }
+
+    if (Build.isCompositeHeroStatRowForHighlight(heroRowKey)) {
+      for (let index = 0; index < installed.length; index++) {
+        const t = installed[index];
+        if (!t) continue;
+        if (Build.statRowMatchesTalentForHighlight(heroRowKey, t, index)) highlightAt(index);
+      }
+      Build.recomputeTalentCalculationTotals();
+      Build.refreshStatFilterHighlightCountDisplay();
+      return;
+    }
+
+    const displayKey = Build.getHeroStatRowDisplayTotalKey(heroRowKey);
+    Build.recomputeTalentCalculationTotals();
+    const fullDirect = Build.getTalentDirectCalculationValue(displayKey);
+    const eps = 1e-4;
+    for (let index = 0; index < installed.length; index++) {
+      const t = installed[index];
+      if (!t) continue;
+      installed[index] = null;
+      Build.recomputeTalentCalculationTotals();
+      const withoutDirect = Build.getTalentDirectCalculationValue(displayKey);
+      installed[index] = t;
+      if (Math.abs(fullDirect - withoutDirect) > eps) {
+        highlightAt(index);
+      }
+    }
+    Build.recomputeTalentCalculationTotals();
+    Build.refreshStatFilterHighlightCountDisplay();
   }
 
   static setSelectedSetItem(item) {
@@ -2785,6 +3511,7 @@ export class Build {
     Build.inventoryView?.querySelectorAll('.build-talents .build-talent-item').forEach((el) => {
       if (wanted.has(el.dataset.id)) el.classList.add('build-set-highlight-lib');
     });
+    Build.refreshStatFilterHighlightCountDisplay();
   }
 
   static async highlightSetTalentsAfterRender(talentIds, timeoutMs = 2000) {
@@ -3178,6 +3905,69 @@ export class Build {
 
   }
 
+  /** Индекс порядка из карты загрузки библиотеки (устойчиво к типу id). */
+  static lookupInventoryDefaultOrderIndex(talentIdRaw) {
+    try {
+      const m = Build._inventoryDefaultOrder;
+      if (!m) return null;
+      if (talentIdRaw === undefined || talentIdRaw === null) return null;
+      const s = String(talentIdRaw).trim();
+      if (!s) return null;
+      const n = Number(s);
+      if (Number.isFinite(n)) {
+        const v = m.get(`${n}`);
+        if (Number.isFinite(Number(v))) return Number(v);
+      }
+      const v2 = m.get(s);
+      if (Number.isFinite(Number(v2))) return Number(v2);
+    } catch {}
+    return null;
+  }
+
+  /** Проставить data-default-order с карты (новые обёртки после билда часто без него). */
+  static attachDefaultOrderDatasetToInventoryContainer(container) {
+    try {
+      const item = container?.querySelector?.('.build-talent-item');
+      const idx = Build.lookupInventoryDefaultOrderIndex(item?.dataset?.id);
+      if (idx !== null) container.dataset.defaultOrder = `${idx}`;
+    } catch {}
+  }
+
+  /** Порядок таланта в библиотеке как при загрузке (не после перестановок сета). */
+  static getInventoryContainerDefaultOrder(container) {
+    const item = container?.querySelector?.('.build-talent-item');
+    const byData = Number(container?.dataset?.defaultOrder);
+    if (Number.isFinite(byData)) return byData;
+    const fromMap = Build.lookupInventoryDefaultOrderIndex(item?.dataset?.id);
+    if (fromMap !== null) return fromMap;
+    return Number.MAX_SAFE_INTEGER;
+  }
+
+  /** Вернуть узлы библиотеки в исходный порядок (после Alt / сброса режима сета). */
+  static reorderInventoryByDefaultOrder() {
+    const list = Build.inventoryView?.querySelector('.build-talents');
+    if (!list) return;
+    const allContainers = Array.from(list.querySelectorAll('.build-talent-item-container'));
+    for (const c of allContainers) {
+      Build.attachDefaultOrderDatasetToInventoryContainer(c);
+    }
+    if (allContainers.length < 2) return;
+    const sorted = allContainers.slice().sort((a, b) => {
+      const da = Build.getInventoryContainerDefaultOrder(a);
+      const db = Build.getInventoryContainerDefaultOrder(b);
+      if (da !== db) return da - db;
+      const ia = Number(a.querySelector('.build-talent-item')?.dataset?.id);
+      const ib = Number(b.querySelector('.build-talent-item')?.dataset?.id);
+      if (Number.isFinite(ia) && Number.isFinite(ib) && ia !== ib) return ia - ib;
+      return 0;
+    });
+    for (const container of sorted) {
+      try {
+        list.appendChild(container);
+      } catch {}
+    }
+  }
+
   static applySetInventoryOrder(set) {
     const list = Build.inventoryView?.querySelector('.build-talents');
     if (!list) return;
@@ -3190,7 +3980,13 @@ export class Build {
     if (mode === 2 || mode === 3) {
       Build._forceShowOnlySetTalentIds = new Set(ids.map(String));
       Build.refreshForcedSetOnlyTalentIds();
-      if (!Build._forceShowOnlyTalentIds?.size) return;
+      // Весь сет уже в билде — не оставляем «пустой» фильтр (вся библиотека пропадала без sortInventory).
+      if (!Build._forceShowOnlyTalentIds?.size) {
+        Build._forceShowOnlySetTalentIds = null;
+        Build._forceShowOnlyTalentIds = null;
+        Build.sortInventory();
+        return;
+      }
 
       const prevScroll = list.scrollTop;
 
@@ -3257,21 +4053,14 @@ export class Build {
       setContainerKeys.add(key);
       setContainers.push(container);
     }
-    const getDefaultOrder = (container) => {
-      const item = container?.querySelector?.('.build-talent-item');
-      const id = `${Number(item?.dataset?.id)}`;
-      const byData = Number(container?.dataset?.defaultOrder);
-      if (Number.isFinite(byData)) return byData;
-      const byMap = Number(Build._inventoryDefaultOrder?.get?.(id));
-      if (Number.isFinite(byMap)) return byMap;
-      return Number.MAX_SAFE_INTEGER;
-    };
     const restContainers = allContainers.filter((container) => {
       const item = container?.querySelector?.('.build-talent-item');
       const id = `${Number(item?.dataset?.id)}`;
       return !setContainerKeys.has(id);
     });
-    restContainers.sort((a, b) => getDefaultOrder(a) - getDefaultOrder(b));
+    restContainers.sort(
+      (a, b) => Build.getInventoryContainerDefaultOrder(a) - Build.getInventoryContainerDefaultOrder(b),
+    );
     const ordered = [...setContainers, ...restContainers];
     for (const container of ordered) {
       try {
@@ -3748,7 +4537,16 @@ export class Build {
       flag = true;
 
     try {
-      if (Build._forceShowOnlyTalentIds) {
+      // Сначала: в билде — никогда не показывать в библиотеке (в т.ч. при режиме «остаток сета» и после Alt).
+      const tid0 = item?.dataset?.id;
+      if (tid0 != null && `${tid0}` !== '' && Build.isTalentInBuild(tid0)) {
+        itemContainer.style.display = 'none';
+        itemContainer.style.gridRow = '';
+        return;
+      }
+
+      // Пустой Set — не режим «только остаток сета» (иначе скрывается вся библиотека).
+      if (Build._forceShowOnlyTalentIds && Build._forceShowOnlyTalentIds.size > 0) {
         const id = String(item.dataset.id);
         const visible = Build._forceShowOnlyTalentIds.has(id);
         itemContainer.style.display = visible ? 'block' : 'none';
@@ -3764,8 +4562,7 @@ export class Build {
       }
       itemContainer.style.gridRow = '';
       if (Build._forceShowTalentIds && Build._forceShowTalentIds.has(String(item.dataset.id))) {
-        const inBuild = Build.isTalentInBuild(Number(item.dataset.id));
-        itemContainer.style.display = inBuild ? 'none' : 'block';
+        itemContainer.style.display = 'block';
         return;
       }
     } catch {}
@@ -3898,20 +4695,21 @@ export class Build {
       const data = Build.talents?.[key] || Build.talents?.[String(key)];
       if (!data) continue;
       const talentContainer = DOM({ style: 'build-talent-item-container' });
-      const defaultOrder = Number(Build._inventoryDefaultOrder?.get?.(key));
-      if (Number.isFinite(defaultOrder)) {
-        talentContainer.dataset.defaultOrder = `${defaultOrder}`;
-      }
       const preload = new PreloadImages(talentContainer);
       const talentView = Build.templateViewTalent({ ...data, state: 1 });
       preload.add(talentView);
       list.append(talentContainer);
+      Build.attachDefaultOrderDatasetToInventoryContainer(talentContainer);
       existing.set(key, talentContainer);
     }
   }
 
   static refreshForcedSetOnlyTalentIds() {
-    if (!Build._forceShowOnlySetTalentIds) return;
+    if (!Build._forceShowOnlySetTalentIds) {
+      // Без активного сета не держим «остаток» — иначе после Alt/sortInventory остаётся устаревший фильтр.
+      Build._forceShowOnlyTalentIds = null;
+      return;
+    }
     const leftovers = new Set();
     for (const id of Build._forceShowOnlySetTalentIds) {
       if (Build.isTalentInBuild(id)) continue;
@@ -3940,7 +4738,18 @@ export class Build {
     Build._forceShowOnlySetTalentIds = null;
     Build._forceShowOnlyTalentIds = null;
     Build.clearSelectedSetItem();
-    try { Build.sortInventory(); } catch {}
+    try {
+      Build._descriptionPinnedBySet = false;
+      Build._hoveredSetTalentIds = null;
+      Build._hoveredSetAnchorEl = null;
+      Build.clearSetHighlights();
+      Build.clearEmptySlotPreviews();
+      if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+    } catch {}
+    try {
+      Build.sortInventory();
+      Build.reorderInventoryByDefaultOrder();
+    } catch {}
   }
 
   static installAltResetHandler() {
@@ -3991,7 +4800,9 @@ export class Build {
 
       if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
       try {
-        element.classList.remove('build-set-highlight', 'build-set-highlight-lib');
+        const hadStatHover = element.classList.contains('build-stat-filter-hover');
+        element.classList.remove('build-set-highlight', 'build-set-highlight-lib', 'build-stat-filter-hover');
+        if (hadStatHover) Build.refreshStatFilterHighlightCountDisplay();
       } catch {}
 
       let data = Build.talents[element.dataset.id];
@@ -4324,6 +5135,7 @@ export class Build {
                       invList.prepend(container);
                     } else {
                       const wrapped = DOM({ style: 'build-talent-item-container' }, element);
+                      Build.attachDefaultOrderDatasetToInventoryContainer(wrapped);
                       Build.applySorting(wrapped);
                       invList.prepend(wrapped);
                     }
@@ -4376,6 +5188,7 @@ export class Build {
             } catch {}
 
             let containedTalent = DOM({ style: 'build-talent-item-container' }, element);
+            Build.attachDefaultOrderDatasetToInventoryContainer(containedTalent);
 
             Build.applySorting(containedTalent);
 
@@ -4496,9 +5309,8 @@ export class Build {
         }
 
         try {
-          if (Build._forceShowOnlySetTalentIds || Build._forceShowOnlyTalentIds || Build._forceShowTalentIds) {
-            Build.sortInventory();
-          }
+          // Всегда пересчитать видимость (в т.ч. скрыть дубликаты «в билде + в библиотеке» без режима сета).
+          Build.sortInventory();
         } catch {}
 
         Build.updateHeroStats();
@@ -4612,8 +5424,16 @@ export class Build {
             statValue += refineBonus * refineMul;
           }
 
-          let sign = key == 'speedtal' || key == 'speedtalrz' || key == 'speedtalvz' ? '-' : '+';
-          stats += sign + `${Math.floor(statValue * 10.0) / 10.0} ${Lang.text(key)}<br>`;
+          const v = Math.floor(statValue * 10.0) / 10.0;
+          if (key == 'speedtal' || key == 'speedtalrz' || key == 'speedtalvz') {
+            if (Math.abs(v) < 1e-9) {
+              stats += `0 ${Lang.text(key)}<br>`;
+            } else {
+              stats += `-${Math.abs(v)} ${Lang.text(key)}<br>`;
+            }
+          } else {
+            stats += '+' + `${v} ${Lang.text(key)}<br>`;
+          }
         }
       }
 
