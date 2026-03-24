@@ -753,8 +753,8 @@ input::placeholder {
   pointer-events: auto;
 }
 
-.build-hero-stats-highlight-count[title]:hover::after {
-  content: attr(title);
+.build-hero-stats-highlight-count[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
   position: absolute;
   bottom: calc(100% + 1.2cqh);
   left: 50%;

@@ -275,7 +275,7 @@ export const ru = {
     buildSettingsLmbMode2: 'Отобразить остатки сета в Библиотеке',
     buildSettingsLmbMode3: 'Отобразить сет в Библиотеке',
     buildSettingsSetMatchOnly: 'Только совпадающие статы',
-    buildSettingsStatFilterHighlight: 'Подсветка талантов по фильтру',
+    buildSettingsStatFilterHighlight: 'Подсветка талантов (наведите на харакатеристику)',
     buildSettingsStatFilterHighlightModeOff: 'Выкл',
     buildSettingsStatFilterHighlightModeHasStat: 'Все подходящие таланты',
     buildSettingsStatFilterHighlightModeAffectsTotal: 'Только фактические таланты',

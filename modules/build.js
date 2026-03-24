@@ -1215,6 +1215,9 @@ export class Build {
     MM.hero.filter((hero) => {
       return hero.id == heroId;
     })[0].skin = skinId;
+    if (Build.heroId === heroId) {
+      Build.applyBuildHeroAvatarSkin(heroId, skinId);
+    }
 
     try {
       let heroItem = View.castleBottom.querySelector(`#id${heroId}`);
@@ -1233,6 +1236,16 @@ export class Build {
     //await App.ShowCurrentViewAsync();
   }
 
+  static applyBuildHeroAvatarSkin(heroId, skinId) {
+    if (!Build.heroImg) return;
+    const sid = Number.isFinite(Number(skinId)) ? Number(skinId) : 1;
+    Build.heroImg.style.backgroundImage = `url(content/hero/${heroId}/${sid}.webp), url(content/hero/background.png)`;
+    // Use contain for hero layer so built-in frame inside skin image is not clipped on non-uniform source sizes.
+    Build.heroImg.style.backgroundSize = 'contain, 100%';
+    Build.heroImg.style.backgroundPosition = 'center, center';
+    Build.heroImg.style.backgroundRepeat = 'no-repeat, no-repeat';
+  }
+
   static skinChange() {
     let bodyHero = DOM({ style: 'skin-change' });
 
@@ -1246,9 +1259,8 @@ export class Build {
       hero.dataset.skin = i;
 
       hero.addEventListener('click', async () => {
-        Build.changeSkinForHero(Build.heroId, hero.dataset.skin);
-
-        Build.heroImg.style.backgroundImage = `url(content/hero/${Build.heroId}/${hero.dataset.skin}.webp)`;
+        await Build.changeSkinForHero(Build.heroId, hero.dataset.skin);
+        Build.applyBuildHeroAvatarSkin(Build.heroId, hero.dataset.skin);
 
         Splash.hide();
       });
@@ -1653,7 +1665,7 @@ export class Build {
     }
     if (!('speeda' in Build.initialStats)) Build.initialStats['speeda'] = 0;
     if (!('speeda' in Build.calculationStats)) Build.calculationStats['speeda'] = 0;
-    // Прямой бонус шанса крита из талантов (descriptionStat ... ,crit).
+    // Прямой бонус шанса крита из талантов/сетов.
     if (!('crit' in Build.initialStats)) Build.initialStats['crit'] = 0;
     if (!('crit' in Build.calculationStats)) Build.calculationStats['crit'] = 0;
     Build.initialStats['talentCdPct'] = 0;
@@ -2183,9 +2195,7 @@ export class Build {
     );
     const statFilterHighlightCountEl = DOM({ style: 'build-hero-stats-highlight-count' }, statFilterHighlightCountBadge);
     const statFilterHighlightCountTitle = Lang.text('buildStatsHighlightedTalentsCountTitle');
-    statFilterHighlightCountEl.title = statFilterHighlightCountTitle;
-    statFilterHighlightCountBadge.title = statFilterHighlightCountTitle;
-    statFilterHighlightCountValue.title = statFilterHighlightCountTitle;
+    statFilterHighlightCountEl.dataset.tooltip = statFilterHighlightCountTitle;
     stats.append(statFilterHighlightCountEl);
     Build.statFilterHighlightCountValueEl = statFilterHighlightCountValue;
     Build.statFilterHighlightCountWrapEl = statFilterHighlightCountEl;
@@ -2243,12 +2253,7 @@ export class Build {
 	  closeTip();
     };
 
-    Build.heroImg.style.backgroundImage = `url(content/hero/${data.id}/${
-      Build.dataRequest.hero.skin.target ? Build.dataRequest.hero.skin.target : 1
-    }.webp), url(content/hero/background.png)`;
-    Build.heroImg.style.backgroundSize = '100%, 100%';
-    Build.heroImg.style.backgroundPosition = 'center, center';
-    Build.heroImg.style.backgroundRepeat = 'no-repeat, no-repeat';
+    Build.applyBuildHeroAvatarSkin(data.id, Build.dataRequest.hero.skin.target ? Build.dataRequest.hero.skin.target : 1);
 
     let rankIcon = DOM({ style: 'rank-icon' });
     rankIcon.style.backgroundImage = `url("content/ranks/${Rank.icon(data.rating)}.webp"), url("content/ranks/rateIconBack.png")`;
@@ -2259,7 +2264,16 @@ export class Build {
     let rank = DOM({ style: 'rank' }, DOM({ style: 'rank-lvl' }, data.rating), rankIcon);
     Build.heroImg.append(rank);
 
+    try {
+      Build._avatarTipEl?.parentNode?.removeChild?.(Build._avatarTipEl);
+    } catch {}
+    Build._avatarTipEl = null;
+    try {
+      document.querySelectorAll('.build-avatar-tip').forEach((el) => el.remove());
+    } catch {}
+
     const avatarTip = DOM({ style: 'build-avatar-tip' }, DOM({ style: 'tip-title' }, Lang.text('tipTitle')), DOM({ style: 'tip-body' }, Lang.text('tipBody')));
+    Build._avatarTipEl = avatarTip;
     document.body.append(avatarTip);
 
     
@@ -2324,6 +2338,7 @@ export class Build {
         window.removeEventListener('scroll', onViewportChange, true);
         window.removeEventListener('resize', onViewportChange);
         if (avatarTip && avatarTip.parentNode) avatarTip.remove();
+        if (Build._avatarTipEl === avatarTip) Build._avatarTipEl = null;
       } catch (e) {}
       if (typeof oldCleanup === 'function') oldCleanup.call(Build);
     };
@@ -2468,19 +2483,7 @@ export class Build {
         if (Number.isFinite(refineMul)) statValue += refineBonus * refineMul;
       }
 
-      let resolvedKey = key;
-      if (Build.applyStak && resolvedKey.indexOf('stak') !== -1) {
-        resolvedKey = resolvedKey.replace('stak', '');
-      } else if (Build.applyRz && resolvedKey.indexOf('rz') !== -1) {
-        resolvedKey = resolvedKey.replace('rz', '');
-      } else if (Build.applyVz && resolvedKey.indexOf('vz') !== -1) {
-        resolvedKey = resolvedKey.replace('vz', '');
-      } else if (resolvedKey.indexOf('dop') !== -1) {
-        resolvedKey = resolvedKey.replace('dop', '');
-      } else if (Build.applyBuffs && resolvedKey.indexOf('buff') !== -1) {
-        resolvedKey = resolvedKey.replace('buff', '');
-      }
-
+      const resolvedKey = Build.resolveConditionalStatKey(key);
       if (resolvedKey !== targetKey) continue;
       hasAny = true;
       if (targetKey === 'speed') {
@@ -3388,9 +3391,7 @@ export class Build {
           '.build-talent-item.build-stat-filter-hover, .build-talent-item.build-set-highlight',
         ) || [];
       el.textContent = String(new Set(Array.from(nodes)).size);
-      // Title is not inherited; put it on all hover targets for reliability.
-      if (wrap) wrap.title = Lang.text('buildStatsHighlightedTalentsCountTitle');
-      el.title = Lang.text('buildStatsHighlightedTalentsCountTitle');
+      if (wrap) wrap.dataset.tooltip = Lang.text('buildStatsHighlightedTalentsCountTitle');
     } catch {}
   }
 
@@ -5816,6 +5817,13 @@ export class Build {
     } catch {}
     Build.buildSettingsButton = null;
     Build.buildSettingsPanel = null;
+    try {
+      Build._avatarTipEl?.parentNode?.removeChild?.(Build._avatarTipEl);
+    } catch {}
+    Build._avatarTipEl = null;
+    try {
+      document.querySelectorAll('.build-avatar-tip').forEach((el) => el.remove());
+    } catch {}
     if (Build.descriptionView && Build.descriptionView.parentNode) {
       Build.descriptionView.remove();
       Build.descriptionView = null;
