@@ -9,6 +9,8 @@ export class TalentSets {
         key,
         set_name: s?.set_name,
         set_desc: s?.set_desc,
+        addStats: s?.addStats,
+        mainNeed: s?.mainNeed,
         _manualOrder: (s?.talents || []).filter((id) => Number(id) > 0),
       }))
       .filter((set) => Array.isArray(set._manualOrder) && set._manualOrder.length > 0)

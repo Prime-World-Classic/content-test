@@ -69,9 +69,16 @@ export const TALENT_SETS = {
   },
   setId_21: {
     talents: [435, 436, 437, 438, 439],
+	addStats: {
+	  2: { sr: 6 },
+      3: { ph: 6 },
+	},
   },
   setId_22: {
     talents: [448, 447, 449, 450, 451, 452],
+	addStats: {
+      4: { sr: 8 },
+	},
   },
   setId_23: {
     talents: [458, 454, 455, 456, 457],
@@ -81,6 +88,9 @@ export const TALENT_SETS = {
   },
   setId_25: {
     talents: [464, 465, 466, 467],
+	addStats: {
+      3: { sv: 8 },
+	},
   },
   setId_26: {
     talents: [470, 468, 469, 471],
@@ -90,6 +100,9 @@ export const TALENT_SETS = {
   },
   setId_28: {
     talents: [479, 477, 478, 732],
+	addStats: {
+      2: { sr: 4 },
+	},
   },
   setId_29: {
     talents: [480, 481, 482, 483, 484],
@@ -144,27 +157,52 @@ export const TALENT_SETS = {
   },
   setId_46: {
     talents: [578, 577, 576, 575, 574],
+	addStats: {
+      2: { sila: 2, razum: 2, provorstvo: 2, hitrost: 2, stoikost: 2, volia: 2 },
+	  4: { sila: 2, razum: 2, provorstvo: 2, hitrost: 2, stoikost: 2, volia: 2 },
+	},
   },
   setId_47: {
     talents: [584, 585, 586, 587],
+	addStats: {
+      3: { sr: 6 },
+	},
   },
   setId_48: {
     talents: [588, 589, 590, 591],
+	addStats: {
+      2: { sv: 6 },
+	},
   },
   setId_49: {
     talents: [592, 593, 594, 595],
+	addStats: {
+      2: { razum: 7 },
+	},
   },
   setId_50: {
     talents: [596, 597, 598, 599],
+	addStats: {
+      2: { sila: 7 },
+	},
   },
   setId_51: {
     talents: [600, 601, 602, 603],
+	addStats: {
+      3: { sr: 6 },
+	},
   },
   setId_52: {
     talents: [604, 605, 606, 607],
+	addStats: {
+      2: { crajahp: 5 },
+	},
   },
   setId_53: {
     talents: [609, 610, 611, 612, 613],
+	addStats: {
+      2: { sr: 6 },
+	},
   },
   setId_54: {
     talents: [614, 615, 616, 617, 618],
@@ -174,48 +212,90 @@ export const TALENT_SETS = {
   },
   setId_56: {
     talents: [624, 623, 625, 626],
+	addStats: {
+      2: { speedtal: 6 },
+	},
   },
   setId_57: {
     talents: [628, 627, 629, 630],
+	addStats: {
+      2: { sv: 6 },
+	},
   },
   setId_58: {
     talents: [632, 631, 633, 634],
+	addStats: {
+      2: { ph: 6 },
+	},
   },
   setId_59: {
     talents: [638, 635, 636, 637],
+	addStats: {
+      2: { sr: 6 },
+	},
   },
   setId_60: {
     talents: [639, 640, 641, 642, 643, 644],
+	addStats: {
+      2: { sr: 6 },
+	},
   },
   setId_61: {
     talents: [654, 651, 652, 653],
+	addStats: {
+      2: { srrz: 8 },
+	},
   },
   setId_62: {
     talents: [658, 655, 656, 657],
+	addStats: {
+      2: { svrz: 8 },
+	},
   },
   setId_63: {
     talents: [662, 659, 660, 661],
+	addStats: {
+      2: { srrz: 8 },
+	},
   },
   setId_64: {
     talents: [663, 664, 665],
   },
   setId_65: {
     talents: [669, 666, 667, 668],
+	addStats: {
+      2: { sr: 8 },
+	},
   },
   setId_66: {
     talents: [673, 670, 671, 672],
+	addStats: {
+      2: { ph: 8 },
+	},
   },
   setId_67: {
     talents: [674, 675, 676, 677, 678, 679],
+	addStats: {
+      2: { sr: 6 },
+	},
   },
   setId_68: {
     talents: [684, 680, 681, 682, 683, 685],
+	addStats: {
+      2: { sr: 8 },
+	},
   },
   setId_69: {
     talents: [686, 687, 688, 689],
+	addStats: {
+      2: { crit: 3 },
+    },
   },
   setId_70: {
     talents: [690, 691, 692, 693],
+	addStats: {
+      2: { speedtal: 6 },
+    },
   },
   setId_71: {
     talents: [694, 695, 696, 697],
@@ -237,6 +317,9 @@ export const TALENT_SETS = {
   },
   setId_77: {
     talents: [728, 724, 725, 726, 727, 729, 730, 731],
+    addStats: {
+      2: { speeda: 2 },
+    },
   },
   setId_78: {
     talents: [733, 734, 735, 736, 737, 738, 739],
@@ -246,18 +329,36 @@ export const TALENT_SETS = {
   },
   setId_80: {
     talents: [752, 750, 751, 753, 754, 755, 756],
+	addStats: {
+		2: {speedd: 1},
+		3: {speedd: 1},
+		4: {speedd: 1},
+	},
+	mainNeed: 752,
   },
   setId_81: {
     talents: [757, 758, 759, 760, 761],
   },
   setId_82: {
     talents: [764, 442, 443, 444, 445, 446],
+	addStats: {
+      3: { sr: 7 },
+    },
   },
   setId_83: {
     talents: [17, 63, 72, 155, 160, 194, 195, 201, 202],
+    addStats: {
+      2: { sr: 8 },
+      3: { ph: 8 },
+      4: { sv: 8 },
+	},
   },
   setId_84: {
     talents: [200, 215, 277],
+    addStats: {
+      2: { sr: 8 },
+      3: { sr: 16 },
+    },
   },
 };
 

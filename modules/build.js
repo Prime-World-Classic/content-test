@@ -1627,6 +1627,13 @@ export class Build {
       powerStat += Build.heroStatsFromPower[stat];
     }
     if (!Number.isFinite(powerStat)) powerStat = 0;
+    // speeda — отдельный аддитивный вклад в скорость, суммируется с max-speed.
+    if (stat === 'speed') {
+      let speedAdd = Build.calculationStats['speeda'];
+      if (!Number.isFinite(Number(speedAdd))) speedAdd = 0;
+      else speedAdd = Number(speedAdd);
+      talentsStat += speedAdd;
+    }
     return initialStat + talentsStat + powerStat;
   }
 
@@ -1644,6 +1651,11 @@ export class Build {
       Build.initialStats[stat] = parseFloat(data.stats[stat]);
       Build.calculationStats[stat] = 0.0;
     }
+    if (!('speeda' in Build.initialStats)) Build.initialStats['speeda'] = 0;
+    if (!('speeda' in Build.calculationStats)) Build.calculationStats['speeda'] = 0;
+    // Прямой бонус шанса крита из талантов (descriptionStat ... ,crit).
+    if (!('crit' in Build.initialStats)) Build.initialStats['crit'] = 0;
+    if (!('crit' in Build.calculationStats)) Build.calculationStats['crit'] = 0;
     Build.initialStats['talentCdPct'] = 0;
     Build.calculationStats['talentCdPct'] = 0;
 
@@ -1729,6 +1741,12 @@ export class Build {
                       Build.removeSortInventory('stats', 'speed');
                       Build.removeSortInventory('stats', 'speedrz');
                       Build.removeSortInventory('stats', 'speedvz');
+                      Build.removeSortInventory('stats', 'speeda');
+                      Build.removeSortInventory('stats', 'speedarz');
+                      Build.removeSortInventory('stats', 'speedavz');
+                      Build.removeSortInventory('stats', 'speedd');
+                      Build.removeSortInventory('stats', 'speeddrz');
+                      Build.removeSortInventory('stats', 'speeddvz');
                     } else if (key == 'sila') {
                       Build.removeSortInventory('stats', 'sila');
                       Build.removeSortInventory('stats', 'sr');
@@ -1796,6 +1814,12 @@ export class Build {
                       Build.setSortInventory('stats', 'speed');
                       Build.setSortInventory('stats', 'speedrz');
                       Build.setSortInventory('stats', 'speedvz');
+                      Build.setSortInventory('stats', 'speeda');
+                      Build.setSortInventory('stats', 'speedarz');
+                      Build.setSortInventory('stats', 'speedavz');
+                      Build.setSortInventory('stats', 'speedd');
+                      Build.setSortInventory('stats', 'speeddrz');
+                      Build.setSortInventory('stats', 'speeddvz');
                     } else if (key == 'sila') {
                       Build.setSortInventory('stats', 'sila');
                       Build.setSortInventory('stats', 'sr');
@@ -2333,6 +2357,208 @@ export class Build {
         Build.setStat(talent, true, false);
       }
     }
+
+    Build.applySetAddStatsForInstalledTalents(Build.installedTalents);
+  }
+
+  static normalizeSetAddStatsRules(addStats) {
+    const normalized = [];
+    const pushRule = (needRaw, stats) => {
+      const need = Number(needRaw);
+      if (!Number.isFinite(need) || need <= 0 || !stats || typeof stats !== 'object' || Array.isArray(stats)) return;
+      normalized.push({ need, stats });
+    };
+
+    if (Array.isArray(addStats)) {
+      for (const entry of addStats) {
+        if (Array.isArray(entry) && entry.length >= 2) {
+          pushRule(entry[0], entry[1]);
+          continue;
+        }
+        if (!entry || typeof entry !== 'object') continue;
+        if ('need' in entry && 'stats' in entry) {
+          pushRule(entry.need, entry.stats);
+          continue;
+        }
+        for (const [k, v] of Object.entries(entry)) {
+          pushRule(k, v);
+        }
+      }
+    } else if (addStats && typeof addStats === 'object') {
+      for (const [k, v] of Object.entries(addStats)) {
+        pushRule(k, v);
+      }
+    }
+
+    normalized.sort((a, b) => a.need - b.need);
+    return normalized;
+  }
+
+  static resolveCompositeStatAlias(statKey) {
+    if (statKey === 'critProb') return 'crit';
+    if (statKey === 'sr') return Build.getMaxStat(['sila', 'razum']);
+    if (statKey === 'ph') return Build.getMaxStat(['provorstvo', 'hitrost']);
+    if (statKey === 'sv') return Build.getMaxStat(['stoikost', 'volia']);
+    if (statKey === 'srsv') return Build.getMaxStat(['sila', 'razum', 'stoikost', 'volia']);
+    if (statKey === 'hpmp') return Build.getMaxStat(['hp', 'mp']);
+    if (statKey === 'srMin') return Build.getMinStat(['sila', 'razum']);
+    if (statKey === 'phMin') return Build.getMinStat(['provorstvo', 'hitrost']);
+    if (statKey === 'svMin') return Build.getMinStat(['volia', 'stoikost']);
+    if (statKey === 'srsvMin') return Build.getMinStat(['sila', 'razum', 'stoikost', 'volia']);
+    if (statKey === 'hpmpMin') return Build.getMinStat(['hp', 'mp']);
+    return statKey;
+  }
+
+  static applyCalculatedStatDelta(calcKey, statChange) {
+    if (!(calcKey in Build.calculationStats)) return;
+    if (calcKey === 'speed') {
+      Build.calculationStats[calcKey] = Math.max(Build.calculationStats[calcKey], statChange);
+      return;
+    }
+    Build.calculationStats[calcKey] += statChange;
+  }
+
+  static resolveConditionalStatKey(rawKey) {
+    if (Build.applyStak && rawKey.indexOf('stak') !== -1) return rawKey.replace('stak', '');
+    if (Build.applyRz && rawKey.indexOf('rz') !== -1) return rawKey.replace('rz', '');
+    if (Build.applyVz && rawKey.indexOf('vz') !== -1) return rawKey.replace('vz', '');
+    if (rawKey.indexOf('dop') !== -1) return rawKey.replace('dop', '');
+    if (Build.applyBuffs && rawKey.indexOf('buff') !== -1) return rawKey.replace('buff', '');
+    return rawKey;
+  }
+
+  static applySetStatMap(statsMap) {
+    if (!statsMap || typeof statsMap !== 'object') return;
+    const resolved = new Object();
+    for (const [rawKey, rawValue] of Object.entries(statsMap)) {
+      const val = Number(rawValue);
+      if (!Number.isFinite(val)) continue;
+      const targetKey = Build.resolveCompositeStatAlias(rawKey);
+      if (!targetKey) continue;
+      resolved[targetKey] = (resolved[targetKey] || 0) + val;
+    }
+
+    for (const [key2, statChange] of Object.entries(resolved)) {
+      Build.applyCalculatedStatDelta(Build.resolveConditionalStatKey(key2), statChange);
+    }
+  }
+
+  static findInstalledTalentById(installedTalents, talentId) {
+    const wanted = Math.abs(Number(talentId));
+    if (!Number.isFinite(wanted) || wanted <= 0) return null;
+    for (const talent of installedTalents || []) {
+      const tid = Math.abs(Number(talent?.id));
+      if (Number.isFinite(tid) && tid === wanted) return talent;
+    }
+    return null;
+  }
+
+  static getResolvedTalentStatValue(talent, targetKey) {
+    if (!talent || !talent.stats || typeof talent.stats !== 'object') return 0;
+    let maxValue = -Infinity;
+    let sumValue = 0;
+    let hasAny = false;
+
+    for (const key in talent.stats) {
+      let statValue = parseFloat(talent.stats[key]);
+      if (!Number.isFinite(statValue)) continue;
+      if ('statsRefine' in talent && 'rarity' in talent) {
+        let refineBonus = Build.getTalentRefineByRarity(talent.rarity);
+        let refineMul = parseFloat(talent.statsRefine[key]);
+        if (Number.isFinite(refineMul)) statValue += refineBonus * refineMul;
+      }
+
+      let resolvedKey = key;
+      if (Build.applyStak && resolvedKey.indexOf('stak') !== -1) {
+        resolvedKey = resolvedKey.replace('stak', '');
+      } else if (Build.applyRz && resolvedKey.indexOf('rz') !== -1) {
+        resolvedKey = resolvedKey.replace('rz', '');
+      } else if (Build.applyVz && resolvedKey.indexOf('vz') !== -1) {
+        resolvedKey = resolvedKey.replace('vz', '');
+      } else if (resolvedKey.indexOf('dop') !== -1) {
+        resolvedKey = resolvedKey.replace('dop', '');
+      } else if (Build.applyBuffs && resolvedKey.indexOf('buff') !== -1) {
+        resolvedKey = resolvedKey.replace('buff', '');
+      }
+
+      if (resolvedKey !== targetKey) continue;
+      hasAny = true;
+      if (targetKey === 'speed') {
+        if (statValue > maxValue) maxValue = statValue;
+      } else {
+        sumValue += statValue;
+      }
+    }
+
+    if (!hasAny) return 0;
+    if (targetKey === 'speed') return Number.isFinite(maxValue) ? maxValue : 0;
+    return Number.isFinite(sumValue) ? sumValue : 0;
+  }
+
+  static applySetAddStatsForInstalledTalents(installedTalents) {
+    const installedIds = new Set();
+    for (const talent of installedTalents || []) {
+      const tid = Number(talent?.id);
+      if (Number.isFinite(tid) && tid !== 0) installedIds.add(Math.abs(tid));
+    }
+    if (!installedIds.size) return;
+
+    const mainTalentSpeedBonusById = new Map();
+    const sets = TalentSets.list();
+    for (const set of sets) {
+      const setIds = TalentSets.getTalentIds(set)
+        .map((id) => Math.abs(Number(id)))
+        .filter((id) => Number.isFinite(id) && id > 0);
+      if (!setIds.length) continue;
+
+      let count = 0;
+      for (const id of setIds) {
+        if (installedIds.has(id)) count++;
+      }
+      if (count <= 0) continue;
+
+      const requiredMain = Number(set?.mainNeed);
+      if (Number.isFinite(requiredMain) && requiredMain > 0 && !installedIds.has(Math.abs(requiredMain))) {
+        continue;
+      }
+
+      const rules = Build.normalizeSetAddStatsRules(set?.addStats);
+      for (const rule of rules) {
+        if (count >= rule.need) {
+          const map = rule.stats && typeof rule.stats === 'object' ? { ...rule.stats } : null;
+          if (!map) continue;
+
+          for (const rawKey of Object.keys(map)) {
+            const resolvedKey = Build.resolveConditionalStatKey(rawKey);
+            if (resolvedKey !== 'speedd') continue;
+            const speedDeltaResolved = Number(map[rawKey]);
+            if (!Number.isFinite(speedDeltaResolved) || speedDeltaResolved === 0) {
+              delete map[rawKey];
+              continue;
+            }
+            let mainId = Number(set?.mainNeed);
+            if (!Number.isFinite(mainId) || mainId <= 0) {
+              mainId = Number(TalentSets.chooseMainTalentId(set));
+            }
+            mainId = Math.abs(mainId);
+            if (Number.isFinite(mainId) && mainId > 0 && installedIds.has(mainId)) {
+              const prev = Number(mainTalentSpeedBonusById.get(mainId)) || 0;
+              mainTalentSpeedBonusById.set(mainId, prev + speedDeltaResolved);
+            }
+            delete map[rawKey];
+          }
+
+          Build.applySetStatMap(map);
+        }
+      }
+    }
+
+    for (const [mainId, bonus] of mainTalentSpeedBonusById.entries()) {
+      const mainTalent = Build.findInstalledTalentById(installedTalents, mainId);
+      if (!mainTalent) continue;
+      const baseMainSpeed = Build.getResolvedTalentStatValue(mainTalent, 'speed');
+      Build.applyCalculatedStatDelta('speed', baseMainSpeed + bonus);
+    }
   }
 
   static updateHeroStats() {
@@ -2348,7 +2574,8 @@ export class Build {
       }
     }
     if (Build.dataStats['talentCdPct']) {
-      Build.dataStats['talentCdPct'].lastChild.innerText = Math.max(0, Math.round(Build.totalStat('speedtal'))) + '%';
+      const cdPct = Math.max(0, Math.round(Build.totalStat('speedtal')));
+      Build.dataStats['talentCdPct'].lastChild.innerText = cdPct === 0 ? '0%' : `-${cdPct}%`;
     }
 
     const statAg = Build.totalStat('provorstvo');
@@ -2392,6 +2619,7 @@ export class Build {
 
     {
       let crit = 62.765 - 11534.0 / (126.04 + statCun);
+      crit += Build.getTalentDirectCalculationValue('crit');
       Build.dataStats['critProb'].lastChild.innerText = Math.max(0.0, Math.round(crit)) + '%';
     }
 
@@ -2550,21 +2778,25 @@ export class Build {
       }
     }
 
+    let hasSpeedCandidate = false;
+    let speedBaseCandidate = -Infinity;
+    let speedDeltaCandidate = 0;
+    let speedNeedsAnimation = false;
+
     // Apply animation and change stats in Build.calculationStats
     for (let key2 in add) {
       let statChange = parseFloat(add[key2]);
-      if (Build.applyStak && key2.indexOf('stak') != -1) {
-        calcualteSpecialStats(key2.replace('stak', ''), statChange);
-      } else if (Build.applyRz && key2.indexOf('rz') != -1) {
-        calcualteSpecialStats(key2.replace('rz', ''), statChange);
-      } else if (Build.applyVz && key2.indexOf('vz') != -1) {
-        calcualteSpecialStats(key2.replace('vz', ''), statChange);
-      } else if (key2.indexOf('dop') != -1) {
-        calcualteSpecialStats(key2.replace('dop', ''), statChange);
-      } else if (Build.applyBuffs && key2.indexOf('buff') != -1) {
-        calcualteSpecialStats(key2.replace('buff', ''), statChange);
+      const resolvedKey = Build.resolveConditionalStatKey(key2);
+      if (resolvedKey === 'speed') {
+        hasSpeedCandidate = true;
+        if (Number.isFinite(statChange)) speedBaseCandidate = Math.max(speedBaseCandidate, statChange);
+        speedNeedsAnimation = true;
+      } else if (resolvedKey === 'speedd') {
+        hasSpeedCandidate = true;
+        if (Number.isFinite(statChange)) speedDeltaCandidate += statChange;
+        speedNeedsAnimation = true;
       } else {
-        calcualteSpecialStats(key2, statChange);
+        calcualteSpecialStats(resolvedKey, statChange);
       }
 
       if (!(key2 in Build.dataStats)) {
@@ -2577,6 +2809,20 @@ export class Build {
           { duration: 250, fill: 'both', easing: 'ease-out' },
         );
 
+        Build.heroImg.animate({ transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] }, { duration: 250, fill: 'both', easing: 'ease-out' });
+      }
+    }
+
+    if (hasSpeedCandidate) {
+      const base = Number.isFinite(speedBaseCandidate) ? speedBaseCandidate : 0;
+      const addSpeed = Number.isFinite(speedDeltaCandidate) ? speedDeltaCandidate : 0;
+      calcualteSpecialStats('speed', base + addSpeed);
+
+      if (animation && speedNeedsAnimation && Build.dataStats['speed']) {
+        Build.dataStats['speed'].animate(
+          { transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] },
+          { duration: 250, fill: 'both', easing: 'ease-out' },
+        );
         Build.heroImg.animate({ transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] }, { duration: 250, fill: 'both', easing: 'ease-out' });
       }
     }
@@ -2897,7 +3143,7 @@ export class Build {
       krajahp: ['krajahp', 'krajahprz', 'krajahpvz'],
       krajamp: ['krajamp'],
       talentCdPct: ['speedtal', 'speedtalrz', 'speedtalvz'],
-      speed: ['speed', 'speedrz', 'speedvz'],
+      speed: ['speed', 'speedrz', 'speedvz', 'speeda', 'speedarz', 'speedavz', 'speedd', 'speeddrz', 'speeddvz'],
       sila: ['sila', 'sr', 'srsv', 'silarz', 'silavz'],
       razum: ['razum', 'sr', 'srsv', 'razumrz', 'razumvz'],
       provorstvo: ['provorstvo', 'ph', 'provorstvorz', 'provorstvovz'],
@@ -2915,6 +3161,13 @@ export class Build {
   }
 
   static getTalentDirectCalculationValue(statKey) {
+    if (statKey === 'speed') {
+      const base = Number(Build.calculationStats['speed']);
+      const add = Number(Build.calculationStats['speeda']);
+      const b = Number.isFinite(base) ? base : 0;
+      const a = Number.isFinite(add) ? add : 0;
+      return b + a;
+    }
     const v = Number(Build.calculationStats[statKey]);
     return Number.isFinite(v) ? v : 0;
   }
@@ -2927,13 +3180,16 @@ export class Build {
     for (let key in Build.calculationStats) {
       Build.calculationStats[key] = 0.0;
     }
+    const partialInstalledTalents = new Array(36).fill(null);
     for (let i = 35; i > slotIndex; i--) {
       const talent = Build.installedTalents[i];
       if (talent) {
+        partialInstalledTalents[i] = talent;
         Build.calcStatsFromPower(i);
         Build.setStat(talent, true, false);
       }
     }
+    Build.applySetAddStatsForInstalledTalents(partialInstalledTalents);
   }
 
   /** Меняется ли calculationStats[calcKey] при удалении таланта (для строк без max/min-алиасов). */
