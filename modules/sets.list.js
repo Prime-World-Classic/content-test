@@ -195,7 +195,7 @@ export const TALENT_SETS = {
   setId_52: {
     talents: [604, 605, 606, 607],
 	addStats: {
-      2: { crajahp: 5 },
+      2: { krajahp: 5 },
 	},
   },
   setId_53: {
