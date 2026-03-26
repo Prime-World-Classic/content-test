@@ -20,6 +20,10 @@ import { loadKeybinds } from './keybindings/keybindings.io.js';
 
 export class MM {
   static id = '';
+  
+  static pendingHeroEvents = new Map();
+  
+  static pendingHeroFlushTimer = 0;
 
   static hero = false;
 
@@ -132,6 +136,13 @@ export class MM {
     Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, true);
 
     MM.isInTambur = false;
+    
+    MM.pendingHeroEvents.clear();
+    
+    if (MM.pendingHeroFlushTimer) {
+      clearTimeout(MM.pendingHeroFlushTimer);
+      MM.pendingHeroFlushTimer = 0;
+    }
 
     MM.view.style.display = 'none';
 
@@ -300,7 +311,11 @@ export class MM {
   static async ready(data) {
     MM.id = data.id;
 
-    let body = DOM({ style: 'mm-ready' }, Timer.body, DOM({ id: `MMReady`, style: 'mm-ready-count' }, `0/${data.limit}`));
+    let initialCount = ('count' in data) ? data.count : 0;
+    
+    let body = DOM({ style: 'mm-ready' }, Timer.body, DOM({ id: `MMReady`, style: 'mm-ready-count' }, `${initialCount}/${data.limit}`));
+    
+    let canConfirm = !('canConfirm' in data) || data.canConfirm;
 
     await Timer.start(data.id, Lang.text('mmMatchFound'), () => {
       MM.close();
@@ -312,46 +327,48 @@ export class MM {
 
     MM.soundEvent();
 
-    let button = DOM(
-      {
-        style: 'mm-ready-button',
-        domaudio: domAudioPresets.defaultButton,
-        event: [
-          'click',
-          async () => {
-            try {
-              Voice.destroy();
-            } catch (error) {
-              console.log(error);
-            }
-
-            try {
-              await App.api.request(App.CURRENT_MM, 'ready', { id: data.id });
-            } catch (error) {
-              Timer.stop();
-
-              MM.close();
-
-              MM.searchActive(false);
-
-              return;
-            }
-
-            button.style.opacity = 0;
-          },
-        ],
-      },
-      Lang.text('ready'),
-    );
-
-    button.style.fontSize = '2cqw';
-
-    button.animate(
-      { transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] },
-      { duration: 500, iterations: Infinity, easing: 'ease-in-out' },
-    );
-
-    body.append(button);
+    if (canConfirm) {
+      let button = DOM(
+        {
+          style: 'mm-ready-button',
+          domaudio: domAudioPresets.defaultButton,
+          event: [
+            'click',
+            async () => {
+              try {
+                Voice.destroy();
+              } catch (error) {
+                console.log(error);
+              }
+  
+              try {
+                await App.api.request(App.CURRENT_MM, 'ready', { id: data.id });
+              } catch (error) {
+                Timer.stop();
+  
+                MM.close();
+  
+                MM.searchActive(false);
+  
+                return;
+              }
+  
+              button.style.opacity = 0;
+            },
+          ],
+        },
+        Lang.text('ready'),
+      );
+  
+      button.style.fontSize = '2cqw';
+  
+      button.animate(
+        { transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] },
+        { duration: 500, iterations: Infinity, easing: 'ease-in-out' },
+      );
+  
+      body.append(button);
+    }
 
     MM.show(body);
   }
@@ -752,6 +769,12 @@ export class MM {
     Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, false);
 
     MM.show(body);
+    
+    MM.flushPendingHeroEvents(data.id);
+    
+    setTimeout(() => MM.flushPendingHeroEvents(data.id), 300);
+    
+    setTimeout(() => MM.flushPendingHeroEvents(data.id), 1200);
 
     for (let key in data.users) {
       if (!data.users[key].hero) {
@@ -824,23 +847,37 @@ export class MM {
   }
 
   static async select(data) {
-    Sound.play(SOUNDS_LIBRARY[`HERO_${data.heroId}_revive_${data.sound}`], {
-      id: `heroSound_${data.heroId}_${data.sound}`,
-      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-    });
+    let findOldPlayer = document.getElementById(`PLAYER${data.userId}`);
+    
+    if (!findOldPlayer || !MM.lobbyHeroes) {
+      MM.pendingHeroEvents.set(`${data.id}:${data.userId}`, data);
+      
+      MM.schedulePendingHeroFlush(data.id);
+      return;
+    }
+    
+    if (!data.silent) {
+      Sound.play(SOUNDS_LIBRARY[`HERO_${data.heroId}_revive_${data.sound}`], {
+        id: `heroSound_${data.heroId}_${data.sound}`,
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+      });
+    }
 
-    MM.lobbyPlayerAnimate.cancel();
+    if (!data.noAnimate && MM.lobbyPlayerAnimate) {
+      MM.lobbyPlayerAnimate.cancel();
+    }
 
-    await Timer.start(data.id, '', () => {
-      MM.close();
+    if (!data.noTimer) {
+      await Timer.start(data.id, '', () => {
+        MM.close();
+  
+        MM.searchActive(true);
+      });
+  
+      Timer.sfxOptions.play = App.storage.data.id == data.target;
+    }
 
-      MM.searchActive(true);
-    });
-
-    Timer.sfxOptions.play = App.storage.data.id == data.target;
-
-    let findOldPlayer = document.getElementById(`PLAYER${data.userId}`),
-      skinId = 1;
+    let skinId = 1;
 
     if (findOldPlayer) {
       findOldPlayer.dataset.hero = data.heroId;
@@ -869,7 +906,7 @@ export class MM {
       }
     }
 
-    if (data.target != 0) {
+    if (!data.noAnimate && data.target != 0) {
       let findPlayer = document.getElementById(`PLAYER${data.target}`);
 
       if (findPlayer) {
@@ -923,6 +960,70 @@ export class MM {
     } else {
       MM.lobbyConfirm.style.opacity = 0;
     }
+  }
+  
+  static syncHeroes(data) {
+    if (!data || `${data.id}` != `${MM.id}`) {
+      return;
+    }
+    
+    if (!MM.lobbyHeroes || !document.getElementById(`PLAYER${App.storage.data.id}`)) {
+      let retry = data._retry || 0;
+      
+      if (retry < 20) {
+        setTimeout(() => MM.syncHeroes({ ...data, _retry: retry + 1 }), 150);
+      }
+      
+      return;
+    }
+    
+    if (!Array.isArray(data.selected)) {
+      data.selected = new Array();
+    }
+    
+    for (let item of data.selected) {
+      MM.select({
+        ...item,
+        id: data.id,
+        target: data.target,
+        sound: 1,
+        silent: true,
+        noTimer: true,
+        noAnimate: true,
+      });
+    }
+    
+    if (App.storage.data.id == data.target) {
+      MM.lobbyConfirm.style.opacity = 1;
+    } else {
+      MM.lobbyConfirm.style.opacity = 0;
+    }
+  }
+  
+  static flushPendingHeroEvents(lobbyId = MM.id) {
+    for (let [key, payload] of MM.pendingHeroEvents) {
+      if (`${payload.id}` != `${lobbyId}`) {
+        continue;
+      }
+      
+      MM.pendingHeroEvents.delete(key);
+      MM.select(payload);
+    }
+  }
+  
+  static schedulePendingHeroFlush(lobbyId = MM.id) {
+    if (MM.pendingHeroFlushTimer) {
+      return;
+    }
+    
+    MM.pendingHeroFlushTimer = setTimeout(() => {
+      MM.pendingHeroFlushTimer = 0;
+      MM.flushPendingHeroEvents(lobbyId);
+      
+      if (MM.pendingHeroEvents.size) {
+        MM.schedulePendingHeroFlush(lobbyId);
+      }
+    }, 200);
   }
 
   static finish(data) {

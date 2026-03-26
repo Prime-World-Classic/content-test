@@ -3301,7 +3301,8 @@ button.build-action-item:hover {
   pointer-events: none;
 }
 
-.chat [data-role]:hover::after {
+.chat [data-tooltip-role]:hover::after,
+.chat [data-tooltip-source]:hover::after {
   display: none;
 }
 
@@ -3315,7 +3316,7 @@ button.build-action-item:hover {
   padding: 0.5cqh 1cqh;
   border-radius: 1cqh;
   font: 1.5cqh / 1.3 'DejaVuSans', sans-serif;
-  white-space: nowrap;
+  white-space: normal;
   pointer-events: none;
 }
 
@@ -6252,6 +6253,42 @@ body:has(#wcastle-call)::before {
     margin-left: 0.2cqh;
     margin-bottom: -0.2cqh;
     display: inline-block;
+}
+
+.chat-source-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1cqh;
+  height: 2.1cqh;
+  margin-right: 0.25cqh;
+  margin-left: 0.1cqh;
+  margin-bottom: -0.25cqh;
+  border-radius: 0.45cqh;
+  background: rgba(16, 44, 58, 0.9);
+  color: rgba(232, 247, 255, 0.96);
+  font: 1.1cqh / 1 'DejaVuSans', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.04cqh;
+  box-shadow: inset 0 0 0 0.07cqh rgba(160, 198, 224, 0.45);
+}
+
+.chat-source-icon-telegram {
+  background-image: url('icons/telegram.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: rgba(17, 96, 146, 0.18);
+  box-shadow: none;
+}
+
+.chat-source-icon-phone {
+  background: transparent;
+  color: rgba(215, 241, 255, 0.98);
+  box-shadow: none;
+  min-width: auto;
+  width: 2.1cqh;
+  font-size: 1.9cqh;
 }
 
 @media (max-aspect-ratio: 1/1) {

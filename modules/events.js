@@ -124,6 +124,14 @@ export class Events {
 
     MM.select(data);
   }
+  
+  static MMSyncHeroes(data) {
+    if (!NativeAPI.status) {
+      return;
+    }
+    
+    MM.syncHeroes(data);
+  }
 
   static MMEnd(data) {
     if (!NativeAPI.status) {

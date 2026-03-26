@@ -60,11 +60,18 @@ export class Chat {
     document.body.append(Chat.roleTooltip);
 
     Chat.body.addEventListener('mouseenter', (e) => {
-      const el = e.target.closest('[data-role]');
+      const el = e.target.closest('[data-tooltip-source], [data-tooltip-role]');
       if (!el || !Chat.body.contains(el)) return;
-      const role = el.getAttribute('data-role');
-      if (!role) return;
-      Chat.roleTooltip.textContent = role;
+      const source = el.getAttribute('data-tooltip-source');
+      const role = el.getAttribute('data-tooltip-role');
+      if (!source && !role) return;
+      const lines = [];
+      if (source) lines.push(source);
+      if (role) lines.push(role);
+      Chat.roleTooltip.innerHTML = '';
+      lines.forEach((line) => {
+        Chat.roleTooltip.append(DOM({ tag: 'div' }, line));
+      });
       Chat.roleTooltip.style.display = 'block';
       const place = () => {
         const r = el.getBoundingClientRect();
@@ -180,6 +187,39 @@ export class Chat {
     Chat.pinnedCollapsed = true;
   }
 
+  static getMessageSourceType(data) {
+    if (Number(data?.client) === 1) return 'phone';
+    if (Number(data?.id) === -2) return 'telegram';
+    return null;
+  }
+
+  static getMessageSourceLabel(data) {
+    const source = Chat.getMessageSourceType(data);
+    if (source === 'phone') return Lang.text('titlePhone');
+    if (source === 'telegram') return Lang.text('titleTelegram');
+    return '';
+  }
+
+  static isFromCastleMessage(data) {
+    if (!data || typeof data !== 'object') return true;
+    if (typeof data.fromCastle === 'boolean') return data.fromCastle;
+    if (typeof data.isCastle === 'boolean') return data.isCastle;
+    if ('castle' in data) {
+      const v = data.castle;
+      if (typeof v === 'boolean') return v;
+      if (Number.isFinite(Number(v))) return Number(v) !== 0;
+    }
+    return false;
+  }
+
+  static getFlagLabel(flagId) {
+    if (!flagId || flagId === 0) return '';
+    const key = `flag_${flagId}`;
+    const text = Lang.text(key);
+    if (!text || text === key) return String(flagId);
+    return text;
+  }
+
   /** Builds flag, nickname and message nodes with same styling as chat (for viewMessage and pinned list). */
   static buildMessageContent(data) {
     let flag = null;
@@ -187,6 +227,18 @@ export class Chat {
       flag = DOM({ tag: 'img' });
       flag.setAttribute('src', `content/flags/${data.flag}.png`);
       flag.classList.add('chat-flag');
+      const flagLabel = Chat.getFlagLabel(data.flag);
+      if (flagLabel) flag.dataset.tooltipSource = flagLabel;
+    }
+
+    const sourceLabel = Chat.getMessageSourceLabel(data);
+    const fromCastle = Chat.isFromCastleMessage(data);
+    let sourceIcon = null;
+    if (sourceLabel && !fromCastle) {
+      const sourceType = Chat.getMessageSourceType(data) || 'unknown';
+      sourceIcon = DOM({ tag: 'span', style: ['chat-source-icon', `chat-source-icon-${sourceType}`] });
+      sourceIcon.dataset.tooltipSource = sourceLabel;
+      sourceIcon.textContent = sourceType === 'phone' ? '📱' : '';
     }
 
     const nickname = DOM({ tag: 'div' }, data.nickname + ': ');
@@ -196,22 +248,20 @@ export class Chat {
       nickname.style.color = 'transparent';
       nickname.style.fontWeight = 600;
       nickname.classList.add('owner-text');
-      nickname.dataset.role = Lang.text('titleOwner');
+      nickname.dataset.tooltipRole = Lang.text('titleOwner');
     } else if (data.id == -2) {
-      nickname.style.color = 'transparent';
+      nickname.style.color = 'rgb(250, 229, 108)';
       nickname.style.fontWeight = 600;
-      nickname.classList.add('telegrambot-text');
-      nickname.dataset.role = Lang.text('titleTelegram');
     } else if (App.isAdmin(data.id)) {
       nickname.style.color = 'transparent';
       nickname.style.fontWeight = 600;
       nickname.classList.add('administration-text');
-      nickname.dataset.role = Lang.text('titleAdministration');
+      nickname.dataset.tooltipRole = Lang.text('titleAdministration');
     } else if (App.isHelper(data.id)) {
       nickname.style.color = '#48D1CC';
       nickname.style.fontWeight = 600;
       nickname.classList.add('helper-text');
-      nickname.dataset.role = Lang.text('titleHelper');
+      nickname.dataset.tooltipRole = Lang.text('titleHelper');
     }
 
     const message = DOM({ tag: 'div' });
@@ -240,7 +290,7 @@ export class Chat {
       message.style.color = 'rgba(51,255,0,0.9)';
     }
 
-    return { flag, nickname, message };
+    return { flag, sourceIcon, nickname, message };
   }
 
   static viewMessage(data, fromHistory = false) {
@@ -284,9 +334,12 @@ export class Chat {
       return;
     }
 
-    const { flag, nickname, message } = Chat.buildMessageContent(data);
-
-    const contentWrap = DOM({ style: 'chat-body-item-content' }, ...(flag ? [flag, nickname, message] : [nickname, message]));
+    const { flag, sourceIcon, nickname, message } = Chat.buildMessageContent(data);
+    const parts = [];
+    if (flag) parts.push(flag);
+    if (sourceIcon) parts.push(sourceIcon);
+    parts.push(nickname, message);
+    const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
     const item = DOM(
       {
         style: 'chat-body-item',
@@ -425,8 +478,12 @@ export class Chat {
     while (list.firstChild) list.firstChild.remove();
 
     Chat.pinnedMessages.forEach((msg) => {
-      const { flag, nickname, message } = Chat.buildMessageContent(msg);
-      const contentWrap = DOM({ style: 'chat-body-item-content' }, ...(flag ? [flag, nickname, message] : [nickname, message]));
+      const { flag, sourceIcon, nickname, message } = Chat.buildMessageContent(msg);
+      const parts = [];
+      if (flag) parts.push(flag);
+      if (sourceIcon) parts.push(sourceIcon);
+      parts.push(nickname, message);
+      const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
       const row = DOM(
         {
           style: ['chat-body-item', 'chat-pinned-item'],
