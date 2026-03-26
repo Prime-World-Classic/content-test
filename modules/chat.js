@@ -297,6 +297,13 @@ export class Chat {
     if (!data) {
       return;
     }
+    
+    if (data.echoId && !data.localEcho) {
+      const localEcho = Chat.body?.firstChild?.querySelector(`.chat-body-item[data-echo-id="${data.echoId}"]`);
+      if (localEcho) {
+        localEcho.remove();
+      }
+    }
 
     if (!data.messageId) {
       data.messageId = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
@@ -317,7 +324,7 @@ export class Chat {
           existingItem.append(Chat.createPinButton(data));
         }
       }
-      if (!fromHistory && !data.pinned) Chat.addMessageToHistory(data);
+      if (!fromHistory && !data.pinned && !data.localEcho) Chat.addMessageToHistory(data);
       Chat.scroll();
       return;
     }
@@ -350,6 +357,7 @@ export class Chat {
     );
 
     item.dataset.messageId = data.messageId;
+    item.dataset.echoId = data.echoId || '';
     if (Chat.canManagePins && !data.pinned) item.append(Chat.createPinButton(data));
 
     item.addEventListener('contextmenu', () => {
@@ -397,7 +405,7 @@ export class Chat {
     } else if (Chat.pinnedMessages.some((m) => m.messageId === data.messageId)) {
       Chat.syncPinnedMessage(data);
     }
-    if (!fromHistory && !data.pinned) Chat.addMessageToHistory(data);
+    if (!fromHistory && !data.pinned && !data.localEcho) Chat.addMessageToHistory(data);
     Chat.scroll();
   }
 
@@ -405,11 +413,37 @@ export class Chat {
     if (Chat.input.firstChild.value.length > 128) {
       return;
     }
-
-    await App.api.request('user', 'chat', {
-      message: Chat.input.firstChild.value,
-      to: Chat.to,
+    
+    const text = Chat.input.firstChild.value;
+    const to = Chat.to;
+    const echoId = `${App.storage.data.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    
+    Chat.viewMessage({
+      messageId: `local-${echoId}`,
+      id: App.storage.data.id,
+      nickname: App.storage.data.login,
+      to,
+      flag: 0,
+      message: text,
+      pinned: false,
+      client: 0,
+      echoId,
+      localEcho: true,
     });
+
+    try {
+      await App.api.request('user', 'chat', {
+        message: text,
+        to,
+        echoId,
+      });
+    } catch (error) {
+      const localEcho = Chat.body?.firstChild?.querySelector(`.chat-body-item[data-echo-id="${echoId}"]`);
+      if (localEcho) {
+        localEcho.remove();
+      }
+      throw error;
+    }
 
     Chat.to = 0;
 
