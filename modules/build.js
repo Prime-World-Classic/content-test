@@ -25,6 +25,8 @@ export class Build {
   static BUILD_HIGHLIGHT_BORDER_MM_DEFAULT = 0.42;
   static BUILD_HIGHLIGHT_BORDER_MM_MIN = 0.08;
   static BUILD_HIGHLIGHT_BORDER_MM_MAX = 1.5;
+  static REGEN_HP_FROM_MAX_HP_PCT = 0.0015; // 0.15%
+  static REGEN_MP_FROM_MAX_MP_PCT = 0.0036; // 0.36%
 
   /** span с числом подсвеченных по стат-фильтру талантов (см. .build-hero-stats-highlight-count). */
   static statFilterHighlightCountValueEl = null;
@@ -2569,8 +2571,13 @@ export class Build {
 
     for (let key2 in Build.dataStats) {
       if (key2 === 'talentCdPct') continue;
-      const total = Build.totalStat(key2);
+      let total = Build.totalStat(key2);
       if (key2 === 'regenhp' || key2 === 'regenmp') {
+        if (key2 === 'regenhp') {
+          total += Build.totalStat('hp') * Build.REGEN_HP_FROM_MAX_HP_PCT;
+        } else {
+          total += Build.totalStat('mp') * Build.REGEN_MP_FROM_MAX_MP_PCT;
+        }
         Build.dataStats[key2].lastChild.innerText = Build.formatRegenStatDisplay(total);
       } else {
         Build.dataStats[key2].lastChild.innerText = Math.round(total);

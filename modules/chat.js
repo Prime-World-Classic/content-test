@@ -414,7 +414,12 @@ export class Chat {
       return;
     }
     
-    const text = Chat.input.firstChild.value;
+    const text = String(Chat.input.firstChild.value || '').trim();
+    if (!text.length) {
+      Chat.input.firstChild.value = '';
+      Chat.to = 0;
+      return;
+    }
     const to = Chat.to;
     const echoId = `${App.storage.data.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     
