@@ -32,6 +32,8 @@ export class Api {
     this.RECONNECT_TIME = 1000; // через сколько делаем повторное соединение (1000 = 1 секунда)
 
     this.awaiting = new Object();
+    
+    this.requestSeq = 0;
 
     this.events = events ? events : new Object();
   }
@@ -205,7 +207,7 @@ export class Api {
       }
     }
 
-    let identify = Date.now();
+    let identify = this.nextRequestId();
 
     try {
       await this.say(identify, object, method, data);
@@ -238,7 +240,7 @@ export class Api {
   }
 
   async silent(callback, object, method, data, infinity = false) {
-    let identify = `${method}${Date.now()}`; // если у нас более одного silent, то они перебивают друг друга так как это не async
+    let identify = `${method}${this.nextRequestId()}`; // unique id to avoid collisions
 
     try {
       await this.say(identify, object, method, data);
@@ -282,6 +284,11 @@ export class Api {
     } catch (error) {}
 
     return;
+  }
+  
+  nextRequestId() {
+    this.requestSeq = (this.requestSeq + 1) % 1000000;
+    return `${Date.now()}_${this.requestSeq}`;
   }
 
   async say(request, object, method, data = '', retryCount = 0) {

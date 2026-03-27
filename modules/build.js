@@ -16,6 +16,7 @@ import { Castle } from './castle.js';
 import { KeybindStore } from './keybindings/keybindings.store.js';
 import { TalentSets } from './talentSets.js';
 import { Settings } from './settings.js';
+import { getMainHeroTalentId } from './mainHeroTalent.js';
 
 export class Build {
   static loading = false;
@@ -2838,6 +2839,15 @@ export class Build {
     }
   }
 
+  static isMainHeroClassTalent(talent) {
+    const mainTalentId = Math.abs(Number(getMainHeroTalentId(Build.heroId)));
+    if (!Number.isFinite(mainTalentId) || mainTalentId <= 0) return false;
+    const rawTalentId = Number(talent?.id);
+    if (!Number.isFinite(rawTalentId) || rawTalentId >= 0) return false; // only heroic/class talents
+    const classTalentId = Math.abs(rawTalentId);
+    return classTalentId === mainTalentId;
+  }
+
   static level() {
     let i = 6;
     for (const number of ['VI', 'V', 'IV', 'III', 'II', 'I']) {
@@ -5305,6 +5315,14 @@ export class Build {
                 } else {
                   if (performSwapFromLibrary) {
                     swappingTal = Build.installedTalents[parseInt(elemBelow.dataset.position)];
+                    if (Build.isMainHeroClassTalent(swappingTal)) {
+                      App.notify(Lang.text('mainHeroClassTalentLocked'));
+                      elementSetDisplay(element, 'block');
+                      fieldRow.style.background = '';
+                      element.style.position = 'static';
+                      element.style.zIndex = 'auto';
+                      return;
+                    }
                   }
                   Build.installedTalents[parseInt(elemBelow.dataset.position)] = data;
                   Build.installedTalents[parseInt(swapParentNode.dataset.position)] = null;
@@ -5433,6 +5451,14 @@ export class Build {
 
           if (elemBelow && targetElement.className == 'build-talents' && element.dataset.state != 1) {
             let oldParentNode = element.parentNode;
+            if (Build.isMainHeroClassTalent(data)) {
+              App.notify(Lang.text('mainHeroClassTalentLocked'));
+              elementSetDisplay(element, 'block');
+              fieldRow.style.background = '';
+              element.style.position = 'static';
+              element.style.zIndex = 'auto';
+              return;
+            }
 
             element.dataset.state = 1;
 

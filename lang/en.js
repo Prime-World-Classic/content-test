@@ -827,6 +827,7 @@ assembly: 'Assembly',
     titleafk: 'OK',
     titleafk1: 'One of the party participants was AFK, so you are excluded from the match selection',
     titleafk2: 'You have been excluded from matchmaking for AFK!',
+    mainHeroClassTalentLocked: 'The main class talent of the Hero cannot be removed from the build!',
     titleClickToViewHeroRating: 'Click here to select a hero and sort hall of fame players',
 
     // Постройки
