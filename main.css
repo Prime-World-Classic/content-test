@@ -1018,10 +1018,9 @@ input::placeholder {
 }
 
 button.build-action-item {
-  background-color: #279aac !important;
+  background-color: transparent;
   background-size: 30cqmin;
   background-repeat: no-repeat;
-  box-shadow: none !important;
   width: 17cqmin;
   height: 17cqmin;
   border-width: 0;
@@ -1034,7 +1033,8 @@ button.build-action-item {
 }
 
 button.build-action-item:hover {
-  transform: scale(1.1);
+  transform: scale(1.06);
+  filter: brightness(1.1);
 }
 
 .build-action-item-background {
@@ -1043,6 +1043,37 @@ button.build-action-item:hover {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  transition: filter 0.16s ease, transform 0.16s ease;
+}
+
+.build-action-item:hover .build-action-item-background,
+.build-action-item:hover .btn-duplicate {
+  filter: brightness(1.14) drop-shadow(0 0 0.35cqh rgba(255, 255, 255, 0.3));
+}
+
+/* Recreated action buttons: only icon, no legacy frame/background effects. */
+button.build-action-item.btn-hover.color-1 {
+  background: transparent;
+  background-image: none;
+  box-shadow: none;
+  border: 0;
+  padding: 0;
+}
+
+button.build-action-item.btn-hover.color-1 .build-action-item-background,
+button.build-action-item.btn-hover.color-1 .btn-duplicate {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  filter: none;
+  opacity: 1;
+}
+
+button.build-action-item.btn-hover.color-1 .btn-duplicate {
+  position: static;
+  transform: none;
 }
 
 .btn-create {

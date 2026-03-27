@@ -5,6 +5,10 @@ body {
     default;
 }
 
+:root {
+  --castle-play-lobby-item-scale: 1;
+}
+
 @keyframes search {
   0% {
     transform: rotate(0deg) scale(1);
@@ -1050,24 +1054,90 @@ body {
 
 .castle-play-lobby {
   height: auto;
-  width: 40%;
+  --castle-play-lobby-max-in-row: 5;
+  --castle-play-lobby-item-scale: 1;
+  --castle-play-lobby-gap-x: 1cqh;
+  --castle-play-lobby-gap-y: 0cqh;
+  width: calc(
+    var(--castle-play-lobby-max-in-row) *
+    ((13cqh * var(--castle-play-lobby-item-scale)) + (2 * var(--castle-play-lobby-gap-x)))
+  );
+  max-width: 100%;
   display: flex;
   flex-flow: row wrap;
+  column-gap: var(--castle-play-lobby-gap-x);
+  row-gap: var(--castle-play-lobby-gap-y);
   justify-content: start;
   align-items: start;
+  align-content: flex-start;
   position: absolute;
   left: 0;
   top: 0;
 }
 
+.castle-play-lobby[data-rows='2'] {
+  --castle-play-lobby-item-scale: 0.65;
+  --castle-play-lobby-gap-x: 0.22cqh;
+  --castle-play-lobby-gap-y: 0.95cqh;
+}
+
+.castle-play-lobby[data-rows='2']::after {
+  content: '';
+  position: absolute;
+  left: 1%;
+  right: 1%;
+  top: calc(50% - 0.16cqh);
+  transform: translateY(-50%);
+  height: 0.32cqh;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(255, 255, 255, 0.26),
+    rgba(255, 255, 255, 0)
+  );
+  pointer-events: none;
+}
+
+.castle-play-lobby[data-rows='2'] .castle-party-middle-item-nickname {
+  margin: 0.55cqh 0 0.9cqh;
+}
+
+.castle-play-lobby[data-rows='2'] .castle-party-middle-item-ready-notready {
+  margin-top: 0.55cqh;
+  min-height: 1.9cqh;
+}
+
 .castle-play-lobby-player {
   width: auto;
-  height: 10cqh;
-  margin: 0 1cqh;
+  height: calc(10cqh * var(--castle-play-lobby-item-scale));
+  margin: 0;
+  position: relative;
   background-size: 100%;
   background-position: center;
   background-repeat: no-repeat;
   container-type: size;
+}
+
+/* Use actual rank classes rendered in castle-play-lobby (.rank*), not castle-hero classes. */
+.castle-play-lobby .rank {
+  width: 95cqw;
+  left: 2.5cqw;
+  bottom: 0.2cqh;
+}
+
+.castle-play-lobby .rank-icon-wrapper {
+  padding: calc(2cqw * var(--castle-play-lobby-item-scale));
+}
+
+.castle-play-lobby .rank-icon {
+  width: calc(22cqw * var(--castle-play-lobby-item-scale));
+  height: calc(22cqw * var(--castle-play-lobby-item-scale));
+}
+
+.castle-play-lobby .rank-lvl {
+  height: calc(12cqw * var(--castle-play-lobby-item-scale));
+  font: calc(12cqw * var(--castle-play-lobby-item-scale)) / 1 'DejaVuSans', sans-serif;
+  padding: calc(4cqw * var(--castle-play-lobby-item-scale)) calc(8cqw * var(--castle-play-lobby-item-scale));
 }
 
 .castle-play-lobby-empty {
@@ -1097,19 +1167,29 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 0.2cqh;
+  margin-top: calc(0.2cqh * var(--castle-play-lobby-item-scale));
   text-align: center;
-  font: 1.4cqh / 1 'DejaVuSans', sans-serif;
+  font: calc(1.4cqh * var(--castle-play-lobby-item-scale)) / 1 'DejaVuSans', sans-serif;
   text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
 
   font-weight: 500;
   container-type: size;
 }
 
+.castle-play-lobby[data-rows='1'] .castle-party-middle-item-ready-notready {
+  margin-top: 1.05cqh;
+  min-height: 2.2cqh;
+}
+
 .castle-party-middle-item-ready-notready div {
   background: url(/content/ranks/ready.png) center center no-repeat;
-  background-size: cover;
-  padding: 2.5cqw 25cqw;
+  background-size: 100% 100%;
+  padding: calc(2.5cqw * var(--castle-play-lobby-item-scale)) calc(25cqw * var(--castle-play-lobby-item-scale));
+  display: inline-flex;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .castle-party-middle-item-ready {
@@ -1120,12 +1200,12 @@ body {
   color: rgba(221, 221, 221, 0.3);
 }
 .castle-party-middle-item-not-ready div {
-  padding: 2.5cqw 17cqw;
+  padding: calc(2.5cqw * var(--castle-play-lobby-item-scale)) calc(17cqw * var(--castle-play-lobby-item-scale));
 }
 
 .castle-party-middle-item {
-  margin: 0 1cqh;
-  width: 13cqh;
+  margin: 0;
+  width: calc(13cqh * var(--castle-play-lobby-item-scale));
   height: 100%;
 }
 
@@ -1181,10 +1261,10 @@ body {
 .castle-rank-icon {
   position: relative;
   right: 0;
-  width: 2.3cqh;
-  height: 2.3cqh;
+  width: calc(2.3cqh * var(--castle-play-lobby-item-scale));
+  height: calc(2.3cqh * var(--castle-play-lobby-item-scale));
   background: #244;
-  border: 0.1cqh solid orange;
+  border: calc(0.1cqh * var(--castle-play-lobby-item-scale)) solid orange;
   border-radius: 50%;
   background-size: 80%;
   background-position: center;
@@ -1192,15 +1272,15 @@ body {
 }
 
 .castle-rank-lvl {
-  width: 3.5cqh;
+  width: calc(3.5cqh * var(--castle-play-lobby-item-scale));
   text-align: center;
-  height: 1.5cqh;
+  height: calc(1.5cqh * var(--castle-play-lobby-item-scale));
   background: rgb(68, 34, 34);
-  border: 0.1cqh solid darkorange;
+  border: calc(0.1cqh * var(--castle-play-lobby-item-scale)) solid darkorange;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
   color: #fdd;
-  font: 1.5cqh / 1 'DejaVuSans', sans-serif;
-  padding: 0.2cqh 0.5cqw;
+  font: calc(1.5cqh * var(--castle-play-lobby-item-scale)) / 1 'DejaVuSans', sans-serif;
+  padding: calc(0.2cqh * var(--castle-play-lobby-item-scale)) calc(0.5cqw * var(--castle-play-lobby-item-scale));
 }
 
 .castle-player-nickname {
@@ -1210,8 +1290,8 @@ body {
   text-overflow: clip;
   width: 100%;
   text-align: center;
-  font: 1.3cqh / 1 'DejaVuSans', sans-serif;
-  height: 1.5cqh;
+  font: calc(1.3cqh * var(--castle-play-lobby-item-scale)) / 1 'DejaVuSans', sans-serif;
+  height: calc(1.5cqh * var(--castle-play-lobby-item-scale));
   text-shadow: rgba(0, 0, 0, 1) 0.5cqh 0.5cqh 0.5cqh;
   color: rgb(255, 238, 206);
 }
@@ -1244,10 +1324,10 @@ body {
 
 .castle-party-remove {
   position: relative;
-  right: -1cqh;
-  margin-left: -2cqh;
-  width: 3.6cqh;
-  height: 3.6cqh;
+  right: -0.4cqh;
+  margin-left: -2.2cqh;
+  width: calc(3.2cqh * var(--castle-play-lobby-item-scale));
+  height: calc(3.2cqh * var(--castle-play-lobby-item-scale));
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -1268,11 +1348,11 @@ body {
 
 .castle-party-middle-item-nickname {
   width: auto;
-  height: 1.2cqh;
-  margin: 0.5cqh 0cqh;
+  height: calc(1.2cqh * var(--castle-play-lobby-item-scale));
+  margin: calc(0.5cqh * var(--castle-play-lobby-item-scale)) 0;
   text-align: center;
-  font: bold 1.2cqh / 1 'DejaVuSans', sans-serif;
-  padding: 0.75cqh 0;
+  font: bold calc(1.2cqh * var(--castle-play-lobby-item-scale)) / 1 'DejaVuSans', sans-serif;
+  padding: calc(0.75cqh * var(--castle-play-lobby-item-scale)) 0;
   border-radius: 150px 150px 154px 154px / 131px 131px 125px 125px;
 
   color: #cc5;

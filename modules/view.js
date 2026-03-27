@@ -470,6 +470,7 @@ export class View {
   }
 
   static async castlePlay() {
+    const DEMO_PARTY_SIZE = 0;
     let body = DOM({ style: 'castle-play' });
 
     let play = MM.play();
@@ -523,8 +524,58 @@ export class View {
         ready: data.users[key].ready,
         rating: userRating,
         skin: data.users[key].skin,
+        demo: false,
       });
     }
+
+    if (players.length < DEMO_PARTY_SIZE) {
+      const heroPool = Array.isArray(MM.hero) ? MM.hero.filter((h) => Number(h?.id) > 0) : [];
+      const usedHeroIds = new Set(players.map((p) => Number(p.hero)).filter((id) => Number.isFinite(id) && id > 0));
+      const pickDemoHero = (seed) => {
+        if (!heroPool.length) return { hero: 0, skin: 1, rating: 1100 };
+        let idx = Math.abs(Number(seed) || 0) % heroPool.length;
+        for (let tries = 0; tries < heroPool.length; tries++) {
+          const cand = heroPool[(idx + tries) % heroPool.length];
+          const cid = Number(cand?.id);
+          if (!Number.isFinite(cid) || cid <= 0) continue;
+          if (!usedHeroIds.has(cid)) {
+            usedHeroIds.add(cid);
+            return {
+              hero: cid,
+              skin: Number(cand?.skin) > 0 ? Number(cand.skin) : 1,
+              rating: Number(cand?.rating) || 1100,
+            };
+          }
+        }
+        const fallback = heroPool[idx];
+        return {
+          hero: Number(fallback?.id) || 0,
+          skin: Number(fallback?.skin) > 0 ? Number(fallback.skin) : 1,
+          rating: Number(fallback?.rating) || 1100,
+        };
+      };
+
+      const need = DEMO_PARTY_SIZE - players.length;
+      for (let i = 0; i < need; i++) {
+        const demoId = `demo-${i + 1}`;
+        const demoHero = pickDemoHero(i + 37);
+        players.push({
+          id: demoId,
+          hero: demoHero.hero,
+          nickname: `Teammate ${i + 1}`,
+          ready: i % 3 !== 0 ? 1 : 0,
+          rating: demoHero.rating,
+          skin: demoHero.skin,
+          demo: true,
+        });
+      }
+    }
+
+    const partySize = Math.max(1, players.length);
+    const maxInRow = partySize <= 4 ? partySize : Math.max(1, Math.ceil(partySize / 2));
+    lobby.style.setProperty('--castle-play-lobby-max-in-row', String(maxInRow));
+    const rowCount = Math.max(1, Math.ceil(partySize / maxInRow));
+    lobby.dataset.rows = String(rowCount);
     /*
         if(players.length < 5){
             
@@ -655,7 +706,7 @@ export class View {
 
       nickname.firstChild.firstChild.classList.add('castle-player-nickname');
 
-      if (MM.partyId == App.storage.data.id && playerX.dataset.id != App.storage.data.id && playerX.dataset.id != 0) {
+      if (MM.partyId == App.storage.data.id && !player.demo && playerX.dataset.id != App.storage.data.id && playerX.dataset.id != 0) {
         removeButton.addEventListener('click', async () => {
           await App.api.request(App.CURRENT_MM, 'leaderKickParty', {
             id: playerX.dataset.id,

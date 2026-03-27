@@ -1335,7 +1335,7 @@ export class Build {
       let createBg = DOM({
         style: ['btn-create', 'build-action-item-background'],
       });
-      createBg.style.backgroundImage = `url('content/icons/plus.svg')`;
+      createBg.style.backgroundImage = `url('content/img/create.png')`;
       create.append(createBg);
       Build.buildActionsView.append(create);
     }
@@ -1477,7 +1477,7 @@ export class Build {
     });
 
     let duplicateBg = DOM({ style: ['btn-duplicate'] });
-    duplicateBg.style.backgroundImage = `url('content/icons/copy.svg')`;
+    duplicateBg.style.backgroundImage = `url('content/img/copy.png')`;
     duplicate.append(duplicateBg);
     Build.buildActionsView.append(duplicate);
 
@@ -1500,7 +1500,7 @@ export class Build {
       let randomBg = DOM({
         style: ['btn-random', 'build-action-item-background'],
       });
-      randomBg.style.backgroundImage = `url('content/icons/dice.svg')`;
+      randomBg.style.backgroundImage = `url('content/img/random.png')`;
       random.append(randomBg);
       Build.buildActionsView.append(random);
     }
@@ -1567,7 +1567,7 @@ export class Build {
       let resetBg = DOM({
         style: ['btn-trash', 'build-action-item-background'],
       });
-      resetBg.style.backgroundImage = `url('content/icons/trash.svg')`;
+      resetBg.style.backgroundImage = `url('content/img/remove.png')`;
       resetBuild.append(resetBg);
       Build.buildActionsView.append(resetBuild);
     }
