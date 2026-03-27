@@ -2348,10 +2348,76 @@ export class Build {
 
     const avatarWrap = DOM({ style: 'build-avatar-wrap' }, Build.heroImg);
 
+    const navPrev = DOM({
+      style: ['build-hero-nav-btn', 'build-hero-nav-btn-left'],
+      domaudio: domAudioPresets.defaultButton,
+      event: [
+        'click',
+        async () => {
+          await Build.switchHeroFromCastleBottomList(-1);
+        },
+      ],
+    });
+    navPrev.style.backgroundImage = 'url("content/img/goLeft.png")';
+
+    const navNext = DOM({
+      style: ['build-hero-nav-btn', 'build-hero-nav-btn-right'],
+      domaudio: domAudioPresets.defaultButton,
+      event: [
+        'click',
+        async () => {
+          await Build.switchHeroFromCastleBottomList(1);
+        },
+      ],
+    });
+    navNext.style.backgroundImage = 'url("content/img/goRight.png")';
+
     const avatarActions = DOM({ style: 'build-hero-avatar-actions' }, Build.skinView, Build.training);
     const wrapper = DOM({ style: 'build-hero-avatar-and-name' }, avatarWrap, avatarActions);
+    const heroNav = DOM({ style: 'build-hero-nav-controls' }, navPrev, navNext);
 
-    Build.heroView.append(wrapper, stats);
+    Build.heroView.append(wrapper, stats, heroNav);
+  }
+
+  static getHeroIdsFromCastleBottomList() {
+    const ids = [];
+    const seen = new Set();
+    try {
+      const nodes = View.castleBottom?.querySelectorAll?.('.castle-hero-item');
+      for (const node of nodes || []) {
+        let heroId = Number(node?.dataset?.heroId);
+        if (!Number.isFinite(heroId) || heroId <= 0) {
+          const m = String(node?.id || '').match(/^id(\d+)$/);
+          heroId = m ? Number(m[1]) : NaN;
+        }
+        if (!Number.isFinite(heroId) || heroId <= 0 || seen.has(heroId)) continue;
+        seen.add(heroId);
+        ids.push(heroId);
+      }
+    } catch {}
+    return ids;
+  }
+
+  static async switchHeroFromCastleBottomList(direction = 1) {
+    const ids = Build.getHeroIdsFromCastleBottomList();
+    if (!ids.length) return;
+    const dir = Number(direction) < 0 ? -1 : 1;
+    const currentHeroId = Number(Build.heroId);
+    let index = ids.indexOf(currentHeroId);
+    if (index < 0) index = 0;
+    const nextHeroId = ids[(index + dir + ids.length) % ids.length];
+    if (!Number.isFinite(nextHeroId) || nextHeroId <= 0 || nextHeroId === currentHeroId) return;
+
+    try {
+      View.setCastleOpenedBuildHero?.(nextHeroId);
+    } catch {}
+
+    const isWindowBuild = Window.windows?.main?.id === 'wbuild';
+    if (isWindowBuild) {
+      await Window.show('main', 'build', nextHeroId, 0, true);
+      return;
+    }
+    await View.show('build', nextHeroId);
   }
 
   /** Одна десятичная, без «.0» у целых (реген HP/MP). */

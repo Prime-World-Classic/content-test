@@ -1516,10 +1516,11 @@ body {
   border: 0.1vh solid rgba(142, 150, 96, 1);
   border-bottom: 0;
   background-image: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  will-change: scroll-position;
 }
 
 .castle-bottom-content::-webkit-scrollbar {
@@ -1570,6 +1571,10 @@ body {
   }
 }
 .castle-hero-item:has(.hover-brightness):not(.no-hover-brightness):hover .hover-brightness {
+  filter: brightness(150%);
+}
+
+.castle-hero-item.castle-hero-item-build-open .hover-brightness {
   filter: brightness(150%);
 }
 

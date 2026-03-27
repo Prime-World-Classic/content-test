@@ -31,6 +31,7 @@ export class View {
   static friendsMenuItem = null;
   static hasFriendIncomingRequest = false;
   static castleActiveTab = 'heroes';
+  static castleOpenedBuildHeroId = 0;
 
   static getQueue(cssKey) {
     const map = {
@@ -56,6 +57,26 @@ export class View {
     }
 
     View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
+  }
+
+  static setCastleOpenedBuildHero(heroId = 0) {
+    const id = Number(heroId);
+    View.castleOpenedBuildHeroId = Number.isFinite(id) && id > 0 ? id : 0;
+    View.syncCastleOpenedBuildHeroGlow();
+  }
+
+  static syncCastleOpenedBuildHeroGlow() {
+    try {
+      const container = View.castleBottom;
+      if (!container) return;
+      const isBuildOpen = Window.windows?.main?.id === 'wbuild';
+      const targetId = Number(View.castleOpenedBuildHeroId);
+      container.querySelectorAll('.castle-hero-item').forEach((el) => {
+        const heroId = Number(el.dataset.heroId);
+        const isActive = isBuildOpen && Number.isFinite(targetId) && targetId > 0 && heroId === targetId;
+        el.classList.toggle('castle-hero-item-build-open', isActive);
+      });
+    } catch {}
   }
   static activeTemplate = false;
 
@@ -1078,25 +1099,31 @@ export class View {
 
     View.castleBottom.addEventListener('wheel', function (event) {
       if (event.deltaY != 0) {
+        let deltaPx = 0;
         if (event.deltaMode == event.DOM_DELTA_PIXEL) {
-          event.preventDefault();
-
-          View.scrollHero((event.deltaY / 100) * SCROLL_MODIFIER);
+          deltaPx = event.deltaY * SCROLL_MODIFIER;
         } else if (event.deltaMode == event.DOM_DELTA_LINE) {
-          event.preventDefault();
-
-          View.scrollHeroLine((event.deltaY / 100) * SCROLL_MODIFIER);
+          deltaPx = event.deltaY * 18 * SCROLL_MODIFIER;
         } else if (event.deltaMode == event.DOM_DELTA_PAGE) {
+          deltaPx = this.clientWidth;
+        }
+        if (deltaPx !== 0) {
           event.preventDefault();
-
-          let modifier = this.clientWidth;
-
-          View.castleBottom.scrollLeft += modifier;
-
-          View.updateArrows();
+          View.applyCastleBottomScrollDelta(deltaPx);
         }
       }
-    });
+    }, { passive: false });
+    View.castleBottom.addEventListener(
+      'scroll',
+      () => {
+        View.currentFloatScroll = Number(View.castleBottom?.scrollLeft) || 0;
+        if (!View.castleBottomScrollRaf) {
+          View.castleBottomTargetScroll = View.currentFloatScroll;
+        }
+        View.updateArrows();
+      },
+      { passive: true },
+    );
 
     View.bodyCastleHeroes();
 
@@ -1172,8 +1199,7 @@ export class View {
         'click',
         () => {
           View.bodyCastleHeroes();
-          View.castleBottom.scrollLeft = 0;
-          View.updateArrows();
+          View.resetCastleBottomScroll(0);
           Castle.buildMode = false;
         },
       ],
@@ -1186,8 +1212,7 @@ export class View {
         'click',
         () => {
           View.bodyCastleFriends();
-          View.castleBottom.scrollLeft = 0;
-          View.updateArrows();
+          View.resetCastleBottomScroll(0);
           Castle.buildMode = false;
         },
       ],
@@ -1202,8 +1227,7 @@ export class View {
         'click',
         () => {
           View.bodyCastleBuildings();
-          View.castleBottom.scrollLeft = 0;
-          View.updateArrows();
+          View.resetCastleBottomScroll(0);
           Castle.buildMode = true;
         },
       ],
@@ -1254,41 +1278,85 @@ export class View {
       ),
     );
 
-    View.updateArrows();
+    View.resetCastleBottomScroll(Number(View.castleBottom?.scrollLeft) || 0);
 
     return body;
   }
 
   static currentFloatScroll = 0.0;
+  static castleBottomTargetScroll = 0.0;
+  static castleBottomScrollRaf = 0;
 
-  static scrollHero(delta) {
-    let modifier =
-      parseFloat(getComputedStyle(View.castleBottom.firstChild).width) +
-      parseFloat(getComputedStyle(View.castleBottom.firstChild).borderRightWidth);
+  static getCastleBottomMaxScrollLeft() {
+    if (!View.castleBottom) return 0;
+    return Math.max(0, View.castleBottom.scrollWidth - View.castleBottom.clientWidth);
+  }
 
-    let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
-    if (isNaN(View.currentFloatScroll)) {
-      View.currentFloatScroll = 0;
+  static stopCastleBottomScrollAnimation() {
+    if (!View.castleBottomScrollRaf) return;
+    cancelAnimationFrame(View.castleBottomScrollRaf);
+    View.castleBottomScrollRaf = 0;
+  }
+
+  static animateCastleBottomScroll() {
+    if (!View.castleBottom) {
+      View.castleBottomScrollRaf = 0;
+      return;
     }
-    View.currentFloatScroll += modifier * delta;
-    View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
-    View.castleBottom.scrollLeft = View.currentFloatScroll;
+    const max = View.getCastleBottomMaxScrollLeft();
+    View.castleBottomTargetScroll = Castle.clamp(View.castleBottomTargetScroll, 0, max);
+    const current = Number(View.castleBottom.scrollLeft) || 0;
+    const target = Number(View.castleBottomTargetScroll) || 0;
+    const diff = target - current;
+    if (Math.abs(diff) <= 0.35) {
+      View.castleBottom.scrollLeft = target;
+      View.currentFloatScroll = target;
+      View.castleBottomScrollRaf = 0;
+      View.updateArrows();
+      return;
+    }
 
+    const next = current + diff * 0.22;
+    View.castleBottom.scrollLeft = next;
+    View.currentFloatScroll = next;
+    View.castleBottomScrollRaf = requestAnimationFrame(() => View.animateCastleBottomScroll());
+  }
+
+  static applyCastleBottomScrollDelta(deltaPx) {
+    if (!View.castleBottom) return;
+    const max = View.getCastleBottomMaxScrollLeft();
+    if (!Number.isFinite(View.castleBottomTargetScroll)) {
+      View.castleBottomTargetScroll = Number(View.castleBottom.scrollLeft) || 0;
+    }
+    View.castleBottomTargetScroll = Castle.clamp(View.castleBottomTargetScroll + deltaPx, 0, max);
+    if (!View.castleBottomScrollRaf) {
+      View.castleBottomScrollRaf = requestAnimationFrame(() => View.animateCastleBottomScroll());
+    }
+  }
+
+  static resetCastleBottomScroll(value = 0) {
+    if (!View.castleBottom) return;
+    View.stopCastleBottomScrollAnimation();
+    const max = View.getCastleBottomMaxScrollLeft();
+    const v = Castle.clamp(Number(value) || 0, 0, max);
+    View.castleBottomTargetScroll = v;
+    View.currentFloatScroll = v;
+    View.castleBottom.scrollLeft = v;
     View.updateArrows();
   }
 
+  static scrollHero(delta) {
+    if (!View.castleBottom?.firstChild) return;
+    const style = getComputedStyle(View.castleBottom.firstChild);
+    const itemWidth = parseFloat(style.width) || View.castleBottom.clientHeight;
+    const itemBorder = parseFloat(style.borderRightWidth) || 0;
+    const modifier = itemWidth + itemBorder;
+    View.applyCastleBottomScrollDelta(modifier * delta);
+  }
+
   static scrollHeroLine(delta) {
-    let width = parseFloat(getComputedStyle(View.castleBottom).width);
-
-    let maxScrollLeft = View.castleBottom.scrollWidth - View.castleBottom.clientWidth;
-    if (isNaN(View.currentFloatScroll)) {
-      View.currentFloatScroll = 0;
-    }
-    View.currentFloatScroll += width * delta;
-    View.currentFloatScroll = Castle.clamp(View.currentFloatScroll, 0, maxScrollLeft);
-    View.castleBottom.scrollLeft = View.currentFloatScroll;
-
-    View.updateArrows();
+    const width = parseFloat(getComputedStyle(View.castleBottom).width) || View.castleBottom.clientWidth;
+    View.applyCastleBottomScrollDelta(width * delta);
   }
 
   static updateArrows() {
@@ -1522,12 +1590,18 @@ export class View {
             heroNameBase,
           );
 
-          hero.addEventListener('click', async () => Window.show('main', 'build', item.id, 0, true));
+          hero.dataset.heroId = String(item.id);
+          hero.addEventListener('click', async () => {
+            View.setCastleOpenedBuildHero(item.id);
+            await Window.show('main', 'build', item.id, 0, true);
+            View.syncCastleOpenedBuildHeroGlow();
+          });
 
           hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
 
           preload.add(hero);
         }
+        View.syncCastleOpenedBuildHeroGlow();
       },
       'build',
       'heroAll',

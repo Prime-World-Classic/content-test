@@ -27,6 +27,11 @@ export class Window {
     if (!(method in Window)) {
       return;
     }
+    if (category === 'main' && method !== 'build') {
+      try {
+        View.setCastleOpenedBuildHero(0);
+      } catch {}
+    }
     let template = await Window[method](value, value2, value3);
     template.requestClose = () => {
       Window.close(category);
@@ -67,6 +72,15 @@ export class Window {
   }
 
   static close(category) {
+    if (category === 'main') {
+      try {
+        const closingWindow = Window.windows[category];
+        if (closingWindow?.id === 'wbuild') {
+          View.setCastleOpenedBuildHero(0);
+        }
+      } catch {}
+    }
+
     if (category === 'main' && typeof Build !== 'undefined' && Build.cleanup) {
       Build.cleanup();
     }

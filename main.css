@@ -6153,6 +6153,51 @@ body:has(#wcastle-call)::before {
   align-self: stretch;
 }
 
+.build-hero-nav-btn {
+  width: 4cqh;
+  height: 4cqh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: var(--cursor-pointer);
+  opacity: 1 !important;
+  filter: none !important;
+  transform: scale(1);
+  transition:
+    transform 120ms ease,
+    filter 120ms ease;
+}
+
+.build-hero-nav-btn:hover {
+  transform: scale(1.08);
+  filter: brightness(1.14) drop-shadow(0 0 0.5cqh rgba(255, 255, 255, 0.35)) !important;
+}
+
+.build-hero-nav-controls {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  z-index: 7;
+}
+
+.build-hero-nav-btn-left {
+  position: absolute;
+  top: -9cqh;
+  left: 3.3cqh;
+  width: 6cqh;
+  height: 6cqh;
+}
+
+.build-hero-nav-btn-right {
+  position: absolute;
+  top: -9cqh;
+  left: 18.9cqh;
+  width: 6cqh;
+  height: 6cqh;
+}
+
 .build-avatar-wrap {
   position: relative;
   display: inline-block;
