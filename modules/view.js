@@ -1345,6 +1345,39 @@ export class View {
     View.updateArrows();
   }
 
+  static scrollCastleBottomToHero(heroId, { center = false } = {}) {
+    const targetHeroId = Number(heroId);
+    if (!View.castleBottom || !Number.isFinite(targetHeroId) || targetHeroId <= 0) return;
+    const item = View.castleBottom.querySelector(`.castle-hero-item[data-hero-id="${targetHeroId}"]`);
+    if (!item) return;
+
+    const max = View.getCastleBottomMaxScrollLeft();
+    let target = Number(item.offsetLeft) || 0;
+    if (center) {
+      target = target - (View.castleBottom.clientWidth - item.clientWidth) / 2;
+    } else {
+      // Scroll only when selected hero starts touching/leaving edges.
+      const current = Number(View.castleBottom.scrollLeft) || 0;
+      const edgePad = Math.max(12, Math.round(item.clientWidth * 1.5));
+      const itemLeft = Number(item.offsetLeft) || 0;
+      const itemRight = itemLeft + (Number(item.offsetWidth) || 0);
+      const safeLeft = current + edgePad;
+      const safeRight = current + View.castleBottom.clientWidth - edgePad;
+
+      if (itemLeft < safeLeft) {
+        target = itemLeft - edgePad;
+      } else if (itemRight > safeRight) {
+        target = itemRight - View.castleBottom.clientWidth + edgePad;
+      } else {
+        return;
+      }
+    }
+    View.castleBottomTargetScroll = Castle.clamp(target, 0, max);
+    if (!View.castleBottomScrollRaf) {
+      View.castleBottomScrollRaf = requestAnimationFrame(() => View.animateCastleBottomScroll());
+    }
+  }
+
   static scrollHero(delta) {
     if (!View.castleBottom?.firstChild) return;
     const style = getComputedStyle(View.castleBottom.firstChild);

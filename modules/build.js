@@ -2410,11 +2410,15 @@ export class Build {
 
     try {
       View.setCastleOpenedBuildHero?.(nextHeroId);
+      View.scrollCastleBottomToHero?.(nextHeroId);
     } catch {}
 
     const isWindowBuild = Window.windows?.main?.id === 'wbuild';
     if (isWindowBuild) {
       await Window.show('main', 'build', nextHeroId, 0, true);
+      try {
+        View.scrollCastleBottomToHero?.(nextHeroId);
+      } catch {}
       return;
     }
     await View.show('build', nextHeroId);
@@ -4735,15 +4739,44 @@ export class Build {
       { id: '2', name: Lang.text('titleThePurple'), color: '205,0,205' },
       { id: '1', name: Lang.text('titleTheBlue'), color: '17,105,237' },
     ];
+    const rarityImageBaseById = {
+      4: 'red',
+      3: 'orange',
+      2: 'purple',
+      1: 'blue',
+    };
+    const applyActiveFilterVisualByState = (button, isActive) => {
+      if (!button) return;
+      const suffix = isActive ? 'Show' : 'NoShow';
+      button.style.backgroundImage = `url("content/img/active${suffix}.png")`;
+      button.style.backgroundColor = 'transparent';
+      button.style.backgroundRepeat = 'no-repeat';
+      button.style.backgroundPosition = 'center';
+      button.style.backgroundSize = 'cover';
+      button.style.filter = isActive
+        ? 'brightness(1.04) saturate(2.02) drop-shadow(0 0 0.45cqh rgba(255,255,255,0.35))'
+        : 'none';
+    };
+    const applyRarityVisualByState = (button, rarityId, isActive) => {
+      const base = rarityImageBaseById[Number(rarityId)];
+      if (!base || !button) return;
+      const suffix = isActive ? 'Show' : 'NoShow';
+      button.style.backgroundImage = `url("content/img/${base}${suffix}.png")`;
+      button.style.backgroundColor = 'transparent';
+      button.style.backgroundRepeat = 'no-repeat';
+      button.style.backgroundPosition = 'center';
+      button.style.backgroundSize = 'cover';
+    };
 
     let a = document.createElement('div');
     a.title = Lang.text('titleActiveTalents');
 
     a.classList.add('build-rarity-other');
 
-    a.innerText = 'А';
+    a.innerText = '';
 
     a.dataset.active = 0;
+    applyActiveFilterVisualByState(a, false);
 
     a.addEventListener('click', (e) => {
       Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
@@ -4751,21 +4784,19 @@ export class Build {
         volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
       if (a.dataset.active == 1) {
-        a.style.background = 'rgba(255,255,255,0.1)';
-
         Build.removeSortInventory('active', '1');
 
         Build.sortInventory();
 
         a.dataset.active = 0;
+        applyActiveFilterVisualByState(a, false);
       } else {
-        a.style.background = 'rgba(153,255,51,0.7)';
-
         Build.setSortInventory('active', '1');
 
         Build.sortInventory();
 
         a.dataset.active = 1;
+        applyActiveFilterVisualByState(a, true);
       }
     });
 
@@ -4781,18 +4812,21 @@ export class Build {
       }
 
       for (let l = 0; l < a.parentElement.childNodes.length; l++) {
-        a.parentElement.childNodes[l].dataset.active = 0;
-        a.parentElement.childNodes[l].style.border = 'none';
+        const node = a.parentElement.childNodes[l];
+        node.dataset.active = 0;
+        node.style.border = 'none';
+        if (node !== a) {
+          applyRarityVisualByState(node, node?.dataset?.rarityId, false);
+        }
       }
-      a.style.background = 'rgba(255,255,255,0.1)';
+      applyActiveFilterVisualByState(a, false);
 
       Build.setSortInventory('active', '1');
 
       Build.sortInventory();
 
       a.dataset.active = 1;
-
-      a.style.background = 'rgba(153,255,51,0.7)';
+      applyActiveFilterVisualByState(a, true);
     });
 
     Build.rarityView.append(a);
@@ -4803,6 +4837,7 @@ export class Build {
       button.dataset.active = 0;
 
       button.style.boxSizing = 'border-box';
+      button.dataset.rarityId = item.id;
 
       button.addEventListener('click', (e) => {
         Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
@@ -4817,14 +4852,16 @@ export class Build {
           Build.sortInventory();
 
           button.dataset.active = 0;
+          applyRarityVisualByState(button, item.id, false);
         } else {
-          button.style.border = 'solid calc(min(0.5cqh, 1cqw)) rgb(153,255,51)';
+          button.style.border = 'none';
 
           Build.setSortInventory('rarity', item.id);
 
           Build.sortInventory();
 
           button.dataset.active = 1;
+          applyRarityVisualByState(button, item.id, true);
         }
       });
 
@@ -4837,10 +4874,14 @@ export class Build {
         Build.removeSortInventory('active', '1');
 
         for (let l = 0; l < button.parentElement.childNodes.length; l++) {
-          button.parentElement.childNodes[l].dataset.active = 0;
-          button.parentElement.childNodes[l].style.border = 'none';
+          const node = button.parentElement.childNodes[l];
+          node.dataset.active = 0;
+          node.style.border = 'none';
+          if (node !== a) {
+            applyRarityVisualByState(node, node?.dataset?.rarityId, false);
+          }
         }
-        a.style.background = 'rgba(255,255,255,0.1)';
+        applyActiveFilterVisualByState(a, false);
 
         Build.setSortInventory('rarity', item.id);
 
@@ -4848,10 +4889,11 @@ export class Build {
 
         button.dataset.active = 1;
 
-        button.style.border = 'solid calc(min(0.5cqh, 1cqw)) rgb(153,255,51)';
+        button.style.border = 'none';
+        applyRarityVisualByState(button, item.id, true);
       });
 
-      button.style.background = `rgba(${item.color},0.6)`;
+      applyRarityVisualByState(button, item.id, false);
 
       button.title = Lang.text('talentQualityTitle').replace('{name}', item.name);
 
