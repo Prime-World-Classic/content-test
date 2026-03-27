@@ -3412,12 +3412,106 @@ export class Build {
     } catch {}
   }
 
+  static clearStatFilterHoverHighlightOnSets() {
+    try {
+      Build.setsListView?.querySelectorAll('.build-set-item.build-stat-filter-hover-set').forEach((el) => {
+        el.classList.remove('build-stat-filter-hover-set');
+      });
+    } catch {}
+  }
+
+  static heroRowMatchesResolvedSetStatKey(heroRowKey, resolvedSetStatKey) {
+    const key = Build.resolveConditionalStatKey(Build.resolveCompositeStatAlias(resolvedSetStatKey));
+    if (!key) return false;
+    if (heroRowKey === 'critProb' && key === 'crit') return true;
+    const rowKeys = Build.getHeroStatRowFilterStatKeys(heroRowKey);
+    for (const rowKey of rowKeys) {
+      const normalizedRowKey = Build.resolveConditionalStatKey(Build.resolveCompositeStatAlias(rowKey));
+      if (normalizedRowKey === key) return true;
+    }
+    return false;
+  }
+
+  static applyStatFilterHoverHighlightOnSets(heroRowKey) {
+    Build.clearStatFilterHoverHighlightOnSets();
+    if (!Build.setsListView) return;
+    const rendered = Array.isArray(Build._renderedSetEntries) ? Build._renderedSetEntries : [];
+    if (!rendered.length) return;
+
+    const installedIds = new Set();
+    for (const talent of Build.installedTalents || []) {
+      const tid = Math.abs(Number(talent?.id));
+      if (Number.isFinite(tid) && tid > 0) installedIds.add(tid);
+    }
+    if (!installedIds.size) return;
+
+    for (const entry of rendered) {
+      const set = entry?.set;
+      const item = entry?.item;
+      if (!set || !item || !item.isConnected) continue;
+
+      const setIds = TalentSets.getTalentIds(set)
+        .map((id) => Math.abs(Number(id)))
+        .filter((id) => Number.isFinite(id) && id > 0);
+      if (!setIds.length) continue;
+
+      let count = 0;
+      for (const id of setIds) {
+        if (installedIds.has(id)) count++;
+      }
+      if (count <= 0) continue;
+
+      const requiredMain = Number(set?.mainNeed);
+      if (Number.isFinite(requiredMain) && requiredMain > 0 && !installedIds.has(Math.abs(requiredMain))) {
+        continue;
+      }
+
+      const rules = Build.normalizeSetAddStatsRules(set?.addStats);
+      let matched = false;
+      for (const rule of rules) {
+        if (count < rule.need) continue;
+        const stats = rule?.stats;
+        if (!stats || typeof stats !== 'object') continue;
+
+        let speeddTotal = 0;
+        for (const [rawKey, rawValue] of Object.entries(stats)) {
+          const value = Number(rawValue);
+          if (!Number.isFinite(value) || value === 0) continue;
+          const resolvedStatKey = Build.resolveConditionalStatKey(Build.resolveCompositeStatAlias(rawKey));
+          if (!resolvedStatKey) continue;
+          if (resolvedStatKey === 'speedd') {
+            speeddTotal += value;
+            continue;
+          }
+          if (Build.heroRowMatchesResolvedSetStatKey(heroRowKey, resolvedStatKey)) {
+            matched = true;
+            break;
+          }
+        }
+        if (matched) break;
+
+        if (speeddTotal !== 0 && Build.heroRowMatchesResolvedSetStatKey(heroRowKey, 'speed')) {
+          let mainId = Number(set?.mainNeed);
+          if (!Number.isFinite(mainId) || mainId <= 0) mainId = Number(TalentSets.chooseMainTalentId(set));
+          mainId = Math.abs(mainId);
+          if (Number.isFinite(mainId) && mainId > 0 && installedIds.has(mainId)) {
+            matched = true;
+            break;
+          }
+        }
+      }
+
+      if (matched) item.classList.add('build-stat-filter-hover-set');
+    }
+  }
+
   static clearStatFilterHoverHighlightOnBuild() {
     try {
       Build.fieldView
         ?.querySelectorAll('.build-talent-item.build-stat-filter-hover')
         .forEach((el) => el.classList.remove('build-stat-filter-hover'));
     } catch {}
+    Build.clearStatFilterHoverHighlightOnSets();
     Build._statFilterHoverRowKey = null;
     Build.refreshStatFilterHighlightCountDisplay();
   }
@@ -3444,6 +3538,7 @@ export class Build {
         if (!t) continue;
         if (Build.statRowMatchesTalentByFilterKeysOnly(heroRowKey, t)) highlightAt(index);
       }
+      Build.applyStatFilterHoverHighlightOnSets(heroRowKey);
       Build.refreshStatFilterHighlightCountDisplay();
       return;
     }
@@ -3455,6 +3550,7 @@ export class Build {
         if (Build.statRowMatchesTalentForHighlight(heroRowKey, t, index)) highlightAt(index);
       }
       Build.recomputeTalentCalculationTotals();
+      Build.applyStatFilterHoverHighlightOnSets(heroRowKey);
       Build.refreshStatFilterHighlightCountDisplay();
       return;
     }
@@ -3475,6 +3571,7 @@ export class Build {
       }
     }
     Build.recomputeTalentCalculationTotals();
+    Build.applyStatFilterHoverHighlightOnSets(heroRowKey);
     Build.refreshStatFilterHighlightCountDisplay();
   }
 
@@ -3763,6 +3860,62 @@ export class Build {
     } catch {}
   }
 
+  static formatCooldownValue(value) {
+    const num = Number(value);
+    if (!Number.isFinite(num)) return null;
+    const rounded = Math.round(num * 10) / 10;
+    if (Math.abs(rounded - Math.round(rounded)) < 1e-9) return String(Math.round(rounded));
+    return String(rounded).replace(/\.0$/, '');
+  }
+
+  static applyCooldownReductionToDescriptionMarkup() {
+    if (!Build.descriptionView) return;
+    const cdNodes = Build.descriptionView.querySelectorAll('cd');
+    if (!cdNodes.length) return;
+
+    const rawPct = Number(Build.totalStat('speedtal'));
+    const cdPct = Number.isFinite(rawPct) ? Math.max(0, Math.min(100, rawPct)) : 0;
+    if (cdPct <= 0) return;
+
+    for (const cdNode of cdNodes) {
+      const source = String(cdNode.textContent || '').trim();
+      let base = NaN;
+      const explicit = source.match(/^([0-9]+(?:[.,][0-9]+)?)$/);
+      if (explicit) {
+        base = Number(String(explicit[1]).replace(',', '.'));
+      } else if (!source) {
+        const parent = cdNode.parentElement;
+        if (parent) {
+          const textNodes = Array.from(parent.childNodes).filter((n) => n !== cdNode && n.nodeType === 3);
+          const rawNeighborNumber = textNodes
+            .map((n) => String(n.textContent || ''))
+            .join('')
+            .trim();
+          const implicit = rawNeighborNumber.match(/^([0-9]+(?:[.,][0-9]+)?)$/);
+          if (implicit) {
+            base = Number(String(implicit[1]).replace(',', '.'));
+            for (const tn of textNodes) tn.textContent = '';
+          }
+        }
+      }
+
+      if (!Number.isFinite(base) || base <= 0) continue;
+
+      const reduced = base * (1 - cdPct / 100);
+      const reducedText = Build.formatCooldownValue(reduced);
+      const baseText = Build.formatCooldownValue(base);
+      if (!reducedText || !baseText) continue;
+
+      const leftCd = document.createElement('cd');
+      leftCd.textContent = baseText;
+      const rightCd = document.createElement('cd');
+      rightCd.textContent = reducedText;
+      const fragment = document.createDocumentFragment();
+      fragment.append(leftCd, document.createTextNode(' -> '), rightCd);
+      cdNode.replaceWith(fragment);
+    }
+  }
+
   static renderDescriptionHtml({ html, anchorEl, anchorRect, talentDataForParams }) {
     if (!Build.descriptionView) return;
     Build.descriptionView.innerHTML = html || '';
@@ -3771,6 +3924,7 @@ export class Build {
     if (talentDataForParams) {
       Build.applyTalentParamsToDescription(talentDataForParams);
     }
+    Build.applyCooldownReductionToDescriptionMarkup();
 
     const rect = anchorRect || anchorEl?.getBoundingClientRect?.();
     if (rect) Build.scheduleDescriptionReposition(rect);
@@ -3821,7 +3975,7 @@ export class Build {
       const descriptionKey = `${prefix}${absId}_description`;
       const mainName = Lang.text(nameKey);
       const desc = Lang.text(descriptionKey);
-      mainDesc = `<div><b>${mainName}</b><br><br>${desc}</div>`;
+      mainDesc = `<div class="build-set-main-desc"><b>${mainName}</b><br><br>${desc}</div>`;
     }
 
     let lmbHint = Lang.text('setHintLmb');
@@ -4388,6 +4542,7 @@ export class Build {
   static renderTalentSetsList() {
     if (!Build.setsListView) return;
     Build.setsListView.replaceChildren();
+    Build._renderedSetEntries = [];
 
     if (!Build._setsHoverMonitorInstalled) {
       Build._setsHoverMonitorInstalled = true;
@@ -4421,6 +4576,7 @@ export class Build {
 
       const item = DOM({ style: 'build-set-item' });
       item.style.backgroundImage = `url("${src}")`;
+      Build._renderedSetEntries.push({ set, item });
 
       const ids = TalentSets.getTalentIds(set);
       item.addEventListener('mouseenter', () => {
@@ -4500,6 +4656,9 @@ export class Build {
       });
 
       Build.setsListView.append(item);
+    }
+    if (Build._statFilterHoverRowKey) {
+      Build.applyStatFilterHoverHighlightOnSets(Build._statFilterHoverRowKey);
     }
   }
 

@@ -1807,6 +1807,14 @@ button.build-action-item:hover {
   box-shadow: 0 0 0.7cqh rgba(255, 224, 116, 0.75);
 }
 
+.build-set-item.build-stat-filter-hover-set {
+  border-width: calc(var(--build-hl-border-mm) * 1.2);
+  border-color: hsl(var(--build-hl-h) 100% 68% / 0.95);
+  box-shadow:
+    inset 0 0 0 calc(var(--build-hl-border-mm) * 0.9) hsl(var(--build-hl-h) 100% 68% / 0.45),
+    0 0 calc(var(--build-hl-border-mm) * 6.5) hsl(var(--build-hl-h) 100% 68% / 0.5);
+}
+
 .build-set-desc-icons {
   margin-top: 0.6cqh;
   display: flex;
@@ -2029,6 +2037,10 @@ button.build-action-item:hover {
 
 .build-description div {
   margin-top: 1cqh;
+}
+
+.build-description .build-set-main-desc {
+  margin-top: 0;
 }
 
 .build-description span {
