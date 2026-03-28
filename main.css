@@ -681,8 +681,8 @@ input::placeholder {
   width: 100cqmin;
   align-items: center;
   justify-content: center;
-  position: relative;
-  top: 1cqh;
+  position: absolute;
+  top: 10cqh;
   left: 2cqh;
 }
 
@@ -760,8 +760,8 @@ input::placeholder {
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
-  padding: 0.35cqh 0.7cqw;
-  border-radius: 1cqh;
+  padding: 0.85cqh 1cqw;
+  border-radius: 1.5cqh;
   background: rgba(0, 0, 0, 0.72);
   border: 0.01cqh solid rgba(104, 158, 154, 0.4);
   color: rgba(232, 248, 248, 0.95);
@@ -1037,6 +1037,11 @@ button.build-action-item:hover {
   filter: brightness(1.1);
 }
 
+button.build-action-item.build-action-item-active {
+  transform: scale(1.06);
+  filter: brightness(1.12);
+}
+
 .build-action-item-background {
   width: 100cqw;
   height: 100cqw;
@@ -1049,6 +1054,21 @@ button.build-action-item:hover {
 .build-action-item:hover .build-action-item-background,
 .build-action-item:hover .btn-duplicate {
   filter: brightness(1.14) drop-shadow(0 0 0.35cqh rgba(255, 255, 255, 0.3));
+}
+
+button.build-action-item.build-action-item-active .build-action-item-background,
+button.build-action-item.build-action-item-active .btn-duplicate {
+  filter: brightness(1.2) saturate(1.1) drop-shadow(0 0 0.5cqh rgba(255, 255, 255, 0.4));
+}
+
+button.build-action-item.btn-hover.color-1.build-action-item-disabled .build-action-item-background,
+button.build-action-item.btn-hover.color-1.build-action-item-disabled .btn-duplicate {
+  filter: grayscale(1) brightness(0.72);
+}
+
+button.build-action-item.build-action-item-disabled:hover {
+  transform: none;
+  filter: none;
 }
 
 /* Recreated action buttons: only icon, no legacy frame/background effects. */
@@ -1262,6 +1282,31 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   overflow: hidden;
   transform-origin: center; /* Масштабирование от центра */
   will-change: transform; /* Оптимизация анимации */
+}
+
+.build-talent-item.build-combat-locked {
+  filter: grayscale(0.9) brightness(0.7);
+}
+
+.build-talent-item .build-combat-order-badge {
+  position: absolute;
+  right: 4cqw;
+  bottom: 4cqw;
+  min-width: 22cqw;
+  height: 22cqw;
+  padding: 0 4cqw;
+  border-radius: 6cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font: 16cqw / 1 'DejaVuSans', sans-serif;
+  font-weight: 700;
+  text-shadow: 0 0 1.2cqw rgba(0, 0, 0, 0.9);
+  background: linear-gradient(180deg, rgba(17, 86, 118, 0.95), rgba(12, 54, 76, 0.95));
+  box-shadow: 0 0 1cqw rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+  z-index: 1200;
 }
 
 @keyframes buildSetEmptySlotPreviewBlink {
@@ -1950,7 +1995,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   justify-content: center;
   flex-flow: column;
   position: absolute;
-  top: 88cqw;
+  top: 89cqw;
   right: 17cqw;
 }
 

@@ -32,6 +32,11 @@ export class Build {
   /** span с числом подсвеченных по стат-фильтру талантов (см. .build-hero-stats-highlight-count). */
   static statFilterHighlightCountValueEl = null;
   static statFilterHighlightCountWrapEl = null;
+  static combatModeButtonEl = null;
+  static combatModeEnabled = false;
+  static combatModeLearnOrder = [];
+  static combatModeLearnOrderBySlot = new Map();
+  static combatModeLearnedSlots = new Set();
 
   static language = {
     sr: 'Сила/Разум',
@@ -108,6 +113,16 @@ export class Build {
     2: 3.24,
     1: 2.625,
     0: 11.28,
+  };
+
+  /** Доля строки билда (слоты сверху вниз) в мощи: суммарно по 6 слотам строки = вклад веса. */
+  static TALENT_POWER_LINE_WEIGHTS = {
+    5: 33.0 / 600.0,
+    4: 23.0 / 600.0,
+    3: 16.0 / 600.0,
+    2: 13.0 / 600.0,
+    1: 9.0 / 600.0,
+    0: 6.0 / 600.0,
   };
 
   static binds = [];
@@ -585,6 +600,7 @@ export class Build {
       volia: 0.0,
     };
     Build.installedTalents = new Array(36).fill(null);
+    Build.resetCombatModeState();
     Build.profileStats = new Object();
 
     Build.applyRz = true;
@@ -614,6 +630,8 @@ export class Build {
     Build.level();
 
     Build.field(request.body);
+    Build.syncCombatModeButtonState();
+    Build.renderCombatOrderBadges();
 
     Build.inventory();
 
@@ -651,6 +669,7 @@ export class Build {
     }
 
     try {
+      Build.setCombatMode(false, { force: true });
       Build.fieldConflict = new Object();
       Build.installedTalents = new Array(36).fill(null);
       Build.fieldView?.replaceChildren();
@@ -676,6 +695,7 @@ export class Build {
     try {
       if (request?.active) Build.activeBar(request.active);
     } catch {}
+    Build.syncCombatModeButtonState();
   }
 
   static ensureBuildSettingsDefaults() {
@@ -1323,6 +1343,29 @@ export class Build {
   }
 
   static buildActions(builds, isWindow) {
+    // Переключаемый боевой режим (симуляция прокачки талантов в текущем билде)
+    {
+      const combatMode = DOM({
+        tag: 'button',
+        domaudio: domAudioPresets.defaultButton,
+        style: ['build-action-item', 'btn-hover', 'color-1', 'build-action-item-combat-mode'],
+        event: [
+          'click',
+          () => {
+            Build.toggleCombatMode();
+          },
+        ],
+      });
+      const combatModeBg = DOM({
+        style: ['btn-combat-mode', 'build-action-item-background'],
+      });
+      combatModeBg.style.backgroundImage = `url('content/img/combatMode.png')`;
+      combatMode.append(combatModeBg);
+      Build.buildActionsView.append(combatMode);
+      Build.combatModeButtonEl = combatMode;
+      Build.syncCombatModeButtonState();
+    }
+
     if (builds.length < 6) {
       const create = DOM({
         tag: 'button',
@@ -1571,6 +1614,319 @@ export class Build {
       resetBuild.append(resetBg);
       Build.buildActionsView.append(resetBuild);
     }
+
+  }
+
+  static resetCombatModeState() {
+    Build.combatModeButtonEl = null;
+    Build.combatModeEnabled = false;
+    Build.combatModeLearnOrder = [];
+    Build.combatModeLearnOrderBySlot = new Map();
+    Build.combatModeLearnedSlots = new Set();
+  }
+
+  static getCombatModeHeroLevel() {
+    return Build.combatModeLearnOrder.length;
+  }
+
+  static getCombatMainTalentSlotIndex() {
+    for (let i = 0; i < (Build.installedTalents || []).length; i++) {
+      const t = Build.installedTalents[i];
+      if (Build.isMainHeroClassTalent(t)) return i;
+    }
+    return -1;
+  }
+
+  static isBuildCompleteForCombatMode() {
+    const list = Build.installedTalents || [];
+    if (!Array.isArray(list) || list.length !== 36) return false;
+    for (const t of list) {
+      if (!t) return false;
+    }
+    return true;
+  }
+
+  static hasMainTalentInBuildForCombatMode() {
+    return Build.getCombatMainTalentSlotIndex() >= 0;
+  }
+
+  static canEnableCombatMode() {
+    return Build.isBuildCompleteForCombatMode() && Build.hasMainTalentInBuildForCombatMode();
+  }
+
+  static getCombatModeTooltip() {
+    if (!Build.canEnableCombatMode()) {
+      return `${Lang.text('combatModeName')}\n${Lang.text('combatModeBuildNotComplete')}`;
+    }
+    return Lang.text('combatModeName');
+  }
+
+  static syncCombatModeButtonState() {
+    const btn = Build.combatModeButtonEl;
+    if (!btn) return;
+    const canEnable = Build.canEnableCombatMode();
+    if (!canEnable && Build.combatModeEnabled) {
+      Build.setCombatMode(false, { force: true });
+    }
+    btn.classList.toggle('build-action-item-active', Build.combatModeEnabled);
+    btn.classList.toggle('build-action-item-disabled', !canEnable);
+    btn.title = Build.getCombatModeTooltip();
+  }
+
+  static getCombatUnlockedRowsForLevel(level) {
+    const lvl = Math.max(1, Number(level) || 1);
+    if (lvl >= 20) return 6;
+    return Math.max(1, Math.min(6, 1 + Math.floor(lvl / 4)));
+  }
+
+  static renderCombatOrderBadges() {
+    try {
+      Build.fieldView?.querySelectorAll('.build-combat-order-badge').forEach((el) => el.remove());
+      Build.fieldView?.querySelectorAll('.build-talent-item.build-combat-learned').forEach((el) => el.classList.remove('build-combat-learned'));
+      Build.fieldView?.querySelectorAll('.build-talent-item.build-combat-locked').forEach((el) => el.classList.remove('build-combat-locked'));
+    } catch {}
+    if (!Build.combatModeEnabled) {
+      Build.fieldView?.classList.remove('build-combat-mode-on');
+      return;
+    }
+    Build.fieldView?.classList.add('build-combat-mode-on');
+    const unlockedRows = Build.getCombatUnlockedRowsForLevel(Build.getCombatModeHeroLevel());
+    const cells = Build.fieldView?.querySelectorAll('.build-hero-grid-item') || [];
+    for (const cell of cells) {
+      const talentEl = cell?.querySelector?.('.build-talent-item');
+      if (!talentEl) continue;
+      const slot = Number(cell?.dataset?.position);
+      const slotTalent = Build.installedTalents?.[slot];
+      const row = Math.max(1, Number(slotTalent?.level) || 1);
+      const learnedOrder = Build.combatModeLearnOrderBySlot.get(slot);
+      const isLearned = Number.isFinite(learnedOrder);
+      if (isLearned) {
+        talentEl.classList.add('build-combat-learned');
+        const badge = DOM({ style: 'build-combat-order-badge' }, String(learnedOrder));
+        talentEl.append(badge);
+      } else if (row > unlockedRows) {
+        talentEl.classList.add('build-combat-locked');
+      }
+    }
+  }
+
+  static getCombatLearnedInstalledTalents() {
+    const effective = new Array(36).fill(null);
+    for (const slot of Build.combatModeLearnedSlots) {
+      if (slot < 0 || slot >= 36) continue;
+      effective[slot] = Build.installedTalents?.[slot] || null;
+    }
+    return effective;
+  }
+
+  static getEffectiveInstalledTalents() {
+    if (!Build.combatModeEnabled) return Build.installedTalents;
+    return Build.getCombatLearnedInstalledTalents();
+  }
+
+  static canLearnTalentInCombatMode(slotIndex) {
+    if (!Build.combatModeEnabled) return false;
+    if (Build.combatModeLearnedSlots.has(slotIndex)) return false;
+    const talent = Build.installedTalents?.[slotIndex];
+    if (!talent) return false;
+    const currentLevel = Build.getCombatModeHeroLevel();
+    const unlockedRows = Build.getCombatUnlockedRowsForLevel(currentLevel);
+    const talentRow = Math.max(1, Number(talent.level) || 1);
+    return talentRow <= unlockedRows;
+  }
+
+  static learnCombatTalentAtSlot(slotIndex) {
+    if (!Build.canLearnTalentInCombatMode(slotIndex)) return false;
+    const order = Build.combatModeLearnOrder.length + 1;
+    Build.combatModeLearnOrder.push(slotIndex);
+    Build.combatModeLearnedSlots.add(slotIndex);
+    Build.combatModeLearnOrderBySlot.set(slotIndex, order);
+    return true;
+  }
+
+  static rebuildCombatLearnOrderMapsFromOrderArray() {
+    Build.combatModeLearnedSlots = new Set(Build.combatModeLearnOrder);
+    Build.combatModeLearnOrderBySlot = new Map();
+    for (let i = 0; i < Build.combatModeLearnOrder.length; i++) {
+      Build.combatModeLearnOrderBySlot.set(Build.combatModeLearnOrder[i], i + 1);
+    }
+  }
+
+  /**
+   * После изменения числа изученных: уровень = длина списка; строки выше допустимой для этого уровня снимаются
+   * (с конца порядка изучения среди нарушителей).
+   */
+  static enforceCombatLearnedRowConstraints() {
+    const requirements = [4, 8, 12, 16, 20];
+    
+    let changed = true;
+    while (changed) {
+      changed = false;
+      
+      const talentsByRow = new Map();
+      Build.combatModeLearnOrder.forEach(slot => {
+        const t = Build.installedTalents?.[slot];
+        const row = Math.max(1, Number(t?.level) || 1);
+        talentsByRow.set(row, (talentsByRow.get(row) || 0) + 1);
+      });
+      
+      let totalTalents = 0;
+      for (let row = 1; row <= 5; row++) {
+        totalTalents += talentsByRow.get(row) || 0;
+        if (totalTalents < requirements[row - 1]) {
+          for (let i = Build.combatModeLearnOrder.length - 1; i > 0; i--) {
+            const slot = Build.combatModeLearnOrder[i];
+            const t = Build.installedTalents?.[slot];
+            const talentRow = Math.max(1, Number(t?.level) || 1);
+            if (talentRow === row + 1) {
+              Build.combatModeLearnOrder.splice(i, 1);
+              Build.rebuildCombatLearnOrderMapsFromOrderArray();
+              changed = true;
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+    
+    while (Build.combatModeLearnOrder.length > 0) {
+      const level = Build.combatModeLearnOrder.length;
+      const unlockedRows = Build.getCombatUnlockedRowsForLevel(level);
+      let removeIdx = -1;
+      for (let j = Build.combatModeLearnOrder.length - 1; j > 0; j--) {
+        const slot = Build.combatModeLearnOrder[j];
+        const t = Build.installedTalents?.[slot];
+        const row = Math.max(1, Number(t?.level) || 1);
+        if (row > unlockedRows) {
+          removeIdx = j;
+          break;
+        }
+      }
+      if (removeIdx < 0) break;
+      Build.combatModeLearnOrder.splice(removeIdx, 1);
+      Build.rebuildCombatLearnOrderMapsFromOrderArray();
+    }
+    
+    if (Build.combatModeLearnOrder.length === 0) {
+      const mainSlot = Build.getCombatMainTalentSlotIndex();
+      if (mainSlot >= 0) {
+        Build.combatModeLearnOrder = [mainSlot];
+        Build.rebuildCombatLearnOrderMapsFromOrderArray();
+      }
+    }
+  }
+
+  /**
+   * Оставить только первые keepLastOrder шагов (номера 1…keepLastOrder). 0 — ни одного; пусто → снова только главный классовый талант.
+   */
+  static rollbackCombatProgressToOrder(keepLastOrder) {
+    let keep = Number(keepLastOrder);
+    if (!Number.isFinite(keep)) keep = 0;
+    keep = Math.max(0, Math.floor(keep));
+    const nextOrder = [];
+    const nextSet = new Set();
+    const nextMap = new Map();
+    for (let i = 0; i < Build.combatModeLearnOrder.length; i++) {
+      const slot = Build.combatModeLearnOrder[i];
+      const ord = i + 1;
+      if (ord > keep) break;
+      nextOrder.push(slot);
+      nextSet.add(slot);
+      nextMap.set(slot, ord);
+    }
+    Build.combatModeLearnOrder = nextOrder;
+    Build.combatModeLearnedSlots = nextSet;
+    Build.combatModeLearnOrderBySlot = nextMap;
+    if (Build.combatModeLearnOrder.length === 0) {
+      const mainSlot = Build.getCombatMainTalentSlotIndex();
+      if (mainSlot >= 0) {
+        Build.combatModeLearnOrder = [mainSlot];
+        Build.rebuildCombatLearnOrderMapsFromOrderArray();
+      }
+    }
+    Build.enforceCombatLearnedRowConstraints();
+  }
+
+  /** ПКМ по изученному таланту: снять только его, номера следующих −1; затем проверка строк по уровню. */
+  static handleCombatTalentContextMenu(talentEl, event) {
+    if (!Build.combatModeEnabled) return false;
+    if (Number(talentEl?.dataset?.state) !== 2) return false;
+    const slot = Number(talentEl?.parentElement?.dataset?.position);
+    if (!Number.isFinite(slot)) return false;
+    
+    const mainSlot = Build.getCombatMainTalentSlotIndex();
+    if (slot === mainSlot) return false;
+    
+    if (!Build.combatModeLearnOrderBySlot.has(slot)) return false;
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    const idx = Build.combatModeLearnOrder.indexOf(slot);
+    if (idx < 0) return true;
+    Build.combatModeLearnOrder.splice(idx, 1);
+    Build.rebuildCombatLearnOrderMapsFromOrderArray();
+    Build.enforceCombatLearnedRowConstraints();
+    Build.renderCombatOrderBadges();
+    Build.updateHeroStats();
+    Build.refreshStatFilterHighlightCountDisplay();
+    return true;
+  }
+
+  static handleCombatTalentClick(element, event) {
+    if (!Build.combatModeEnabled) return false;
+    if (Number(element?.dataset?.state) !== 2) return false;
+    const slot = Number(element?.parentElement?.dataset?.position);
+    if (!Number.isFinite(slot)) return false;
+    event?.preventDefault?.();
+    event?.stopPropagation?.();
+    const existingOrder = Build.combatModeLearnOrderBySlot.get(slot);
+    if (Number.isFinite(existingOrder)) {
+      Build.rollbackCombatProgressToOrder(existingOrder - 1);
+    } else {
+      const learned = Build.learnCombatTalentAtSlot(slot);
+      if (!learned) return true;
+    }
+    Build.renderCombatOrderBadges();
+    Build.updateHeroStats();
+    Build.refreshStatFilterHighlightCountDisplay();
+    return true;
+  }
+
+  static toggleCombatMode() {
+    Build.setCombatMode(!Build.combatModeEnabled);
+  }
+
+  static setCombatMode(enabled, { force = false } = {}) {
+    const next = !!enabled;
+    if (!force && next && !Build.canEnableCombatMode()) {
+      Build.syncCombatModeButtonState();
+      return;
+    }
+    if (Build.combatModeEnabled === next) {
+      Build.syncCombatModeButtonState();
+      return;
+    }
+
+    Build.combatModeEnabled = next;
+    Build.combatModeLearnOrder = [];
+    Build.combatModeLearnOrderBySlot = new Map();
+    Build.combatModeLearnedSlots = new Set();
+
+    if (next) {
+      const mainSlot = Build.getCombatMainTalentSlotIndex();
+      if (mainSlot < 0) {
+        Build.combatModeEnabled = false;
+      } else {
+        Build.combatModeLearnOrder = [mainSlot];
+        Build.combatModeLearnedSlots = new Set([mainSlot]);
+        Build.combatModeLearnOrderBySlot = new Map([[mainSlot, 1]]);
+      }
+    }
+
+    Build.renderCombatOrderBadges();
+    Build.updateHeroStats();
+    Build.refreshStatFilterHighlightCountDisplay();
+    Build.syncCombatModeButtonState();
   }
 
   static list(builds, isWindow) {
@@ -2433,20 +2789,82 @@ export class Build {
 
   /** Пересчёт вкладов талантов в calculationStats / силу героя (без обновления подписей в UI). */
   static recomputeTalentCalculationTotals() {
+    const effectiveInstalledTalents = Build.getEffectiveInstalledTalents() || [];
     Build.heroPower = 0.0;
     for (let key in Build.calculationStats) {
       Build.calculationStats[key] = 0.0;
     }
 
     for (let i = 35; i >= 0; i--) {
-      let talent = Build.installedTalents[i];
+      let talent = effectiveInstalledTalents[i];
       if (talent) {
-        Build.calcStatsFromPower(i);
+        if (!Build.combatModeEnabled) {
+          Build.calcStatsFromPower(i, effectiveInstalledTalents);
+        }
         Build.setStat(talent, true, false);
       }
     }
 
-    Build.applySetAddStatsForInstalledTalents(Build.installedTalents);
+    // Итоговая мощь: последний calcStatsFromPower(i) шёл до setStat слота i — в heroPower не хватало этого таланта.
+    // Пересчитываем один раз при полном Build.heroPower, как в боевом режиме при полной сумме мощи.
+    if (!Build.combatModeEnabled) {
+      Build.calcStatsFromPower(0, effectiveInstalledTalents);
+    }
+
+    Build.applySetAddStatsForInstalledTalents(effectiveInstalledTalents);
+    if (Build.combatModeEnabled) {
+      Build.applyCombatModeHeroStatsFromPower();
+    }
+  }
+
+  /** Мощь таланта по редкости/заточке (как в setStat). */
+  static getTalentRarityPowerContribution(talent) {
+    if (!talent) return 0;
+    const talentPowerByRarity = {
+      4: Build.talentPowerByRarityFirstLevel[4] + Build.talentPowerByRarityPerLevel[4] * (Build.talentRefineByRarity[4] - 1),
+      3: Build.talentPowerByRarityFirstLevel[3] + Build.talentPowerByRarityPerLevel[3] * (Build.talentRefineByRarity[3] - 1),
+      2: Build.talentPowerByRarityFirstLevel[2] + Build.talentPowerByRarityPerLevel[2] * (Build.talentRefineByRarity[2] - 1),
+      1: Build.talentPowerByRarityFirstLevel[1] + Build.talentPowerByRarityPerLevel[1] * (Build.talentRefineByRarity[1] - 1),
+      0: Build.talentPowerByRarityFirstLevel[0] + Build.talentPowerByRarityPerLevel[0] * (Build.talentRefineByRarity[4] - 1),
+    };
+    return 'rarity' in talent ? talentPowerByRarity[talent.rarity] : talentPowerByRarity[0];
+  }
+
+  /**
+   * Боевой режим: вклад мощи в статы героя.
+   * Сначала по полному билду считаются heroPowerFull и сумма весов строк (позиция на сетке),
+   * от m = heroPowerFull * sumWeightFull получаем «чистый» стат от мощи (как раньше по формуле),
+   * затем к базе идут только доли: statPowerFull * вес_строки_таланта для каждого изученного таланта (уровень строки = talent.level).
+   */
+  static applyCombatModeHeroStatsFromPower() {
+    const w = Build.TALENT_POWER_LINE_WEIGHTS;
+    const full = Build.installedTalents || [];
+    let heroPowerFull = 0;
+    let sumWeightFull = 0;
+    for (let i = 35; i >= 0; i--) {
+      const t = full[i];
+      if (!t) continue;
+      heroPowerFull += Build.getTalentRarityPowerContribution(t);
+      const gridLine = Math.floor((35 - i) / 6);
+      const wl = w[gridLine];
+      if (Number.isFinite(wl)) sumWeightFull += wl;
+    }
+    const mFull = heroPowerFull * sumWeightFull;
+    const q = Build.heroPowerModifier;
+    let sumLearnedLineWeights = 0;
+    for (const slot of Build.combatModeLearnedSlots) {
+      const t = full[slot];
+      if (!t) continue;
+      const rowIdx = Math.max(0, Math.min(5, (Number(t.level) || 1) - 1));
+      const wl = w[rowIdx];
+      if (Number.isFinite(wl)) sumLearnedLineWeights += wl;
+    }
+    for (let stat in Build.heroStatsFromPower) {
+      let Lvl = Number(Build.heroStatMods[stat]);
+      if (!Number.isFinite(Lvl)) Lvl = 0;
+      const statPowerFull = Lvl * (0.6 * q * (mFull / 10.0 - 16.0) + 36.0);
+      Build.heroStatsFromPower[stat] = statPowerFull * sumLearnedLineWeights;
+    }
   }
 
   static normalizeSetAddStatsRules(addStats) {
@@ -2710,20 +3128,13 @@ export class Build {
     }
   }
 
-  static calcStatsFromPower(maxTalentId) {
-    const talentPowerByLine = {
-      5: 33.0 / 600.0,
-      4: 23.0 / 600.0,
-      3: 16.0 / 600.0,
-      2: 13.0 / 600.0,
-      1: 9.0 / 600.0,
-      0: 6.0 / 600.0,
-    };
+  static calcStatsFromPower(maxTalentId, installedTalents = Build.installedTalents) {
+    const talentPowerByLine = Build.TALENT_POWER_LINE_WEIGHTS;
 
     Build.heroPowerFromInstalledTalents = 0.0;
 
     for (let i = 35; i >= 0 && i >= maxTalentId; i--) {
-      let talent = Build.installedTalents[i];
+      let talent = installedTalents[i];
       if (talent) {
         let line = Math.floor((35 - i) / 6);
         Build.heroPowerFromInstalledTalents += talentPowerByLine[line];
@@ -3055,6 +3466,7 @@ export class Build {
     }
 
     Build.updateHeroStats();
+    Build.renderCombatOrderBadges();
   }
 
   static templateViewTalent(data) {
@@ -3095,6 +3507,12 @@ export class Build {
     Build.move(talent);
 
     Build.description(talent);
+    talent.addEventListener('click', (event) => {
+      Build.handleCombatTalentClick(talent, event);
+    });
+    talent.addEventListener('contextmenu', (event) => {
+      Build.handleCombatTalentContextMenu(talent, event);
+    });
 
     if (data.level == 0) {
       talent.style.display = 'none';
@@ -3473,6 +3891,11 @@ export class Build {
       const el = Build.statFilterHighlightCountValueEl;
       const wrap = Build.statFilterHighlightCountWrapEl;
       if (!el) return;
+      if (Build.combatModeEnabled) {
+        el.textContent = String(Build.getCombatModeHeroLevel());
+        if (wrap) wrap.dataset.tooltip = Lang.text('combatModeLevelCounterTitle');
+        return;
+      }
       const nodes =
         Build.fieldView?.querySelectorAll?.(
           '.build-talent-item.build-stat-filter-hover, .build-talent-item.build-set-highlight',
@@ -4704,6 +5127,7 @@ export class Build {
       });
       item.addEventListener('contextmenu', (e) => {
         e.preventDefault();
+        if (Build.combatModeEnabled) return;
         try {
           Sound.play(SOUNDS_LIBRARY.CLICK, { id: 'ui-set-down', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
         } catch {}
@@ -5335,6 +5759,11 @@ export class Build {
 
     element.onmousedown = (event) => {
       if (event.button != 0) return;
+      if (Build.combatModeEnabled) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
 
       let moveStart = Date.now();
       if (!Build._descriptionPinnedBySet) Build.descriptionView.style.display = 'none';
@@ -5871,6 +6300,7 @@ export class Build {
         } catch {}
 
         Build.updateHeroStats();
+        Build.syncCombatModeButtonState();
 
         fieldRow.style.background = '';
 

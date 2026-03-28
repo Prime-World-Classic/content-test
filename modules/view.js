@@ -1573,6 +1573,26 @@ export class View {
       btnDown.classList.toggle('disabled', noScroll || start >= maxStart);
     }
 
+    list.addEventListener(
+      'wheel',
+      (event) => {
+        if (items.length <= PAGE) return;
+        if (!event.deltaY) return;
+        event.preventDefault();
+        const maxStart = Math.max(0, items.length - PAGE);
+        if (event.deltaY > 0) {
+          if (start < maxStart) {
+            start++;
+            render();
+          }
+        } else if (start > 0) {
+          start--;
+          render();
+        }
+      },
+      { passive: false },
+    );
+
     render();
   }
 

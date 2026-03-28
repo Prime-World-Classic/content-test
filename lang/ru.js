@@ -827,6 +827,9 @@ export const ru = {
     titleafk1: 'Один из участников пати был АФК, поэтому вы исключены из подбора матча',
     titleafk2: 'Вы были исключены из матчмейкинга за АФК!',
     mainHeroClassTalentLocked: 'Главный классовый талант Героя нельзя удалить из билда!',
+    combatModeName: 'Боевой режим',
+    combatModeBuildNotComplete: 'Билд не полный',
+    combatModeLevelCounterTitle: 'Уровень героя',
     titleClickToViewHeroRating: 'Выберите героя, чтобы отсортировать игроков зала славы',
 
     // Постройки
