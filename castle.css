@@ -13,6 +13,7 @@ body {
   --castle-hero-lists-controls-lift: 0.78cqh;
   --castle-hero-lists-content-lift: 3.54cqh;
   --castle-hero-lists-all-icon-lift: 1.8cqh;
+  --castle-hero-lists-active-badge-lift: 0.25cqh;
   --castle-hero-lists-search-width: 16.8cqh;
 }
 
@@ -1655,6 +1656,19 @@ body {
   filter: brightness(1.2);
 }
 
+.castle-hero-list-btn-active:not(.castle-hero-list-btn-all):not(.castle-hero-list-btn-add)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2.25cqh;
+  height: 2.25cqh;
+  transform: translate(-50%, calc(-50% - var(--castle-hero-lists-active-badge-lift)));
+  background: url('icons/favouriteHero.png') center/contain no-repeat;
+  pointer-events: none;
+  z-index: -1;
+}
+
 .castle-hero-list-btn-all {
   margin-right: 1.25cqh;
   min-width: 4.5cqh;
@@ -1664,12 +1678,12 @@ body {
 .castle-hero-list-btn-all::before {
   content: '';
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 2.15cqh;
-  height: 2.15cqh;
+  left: 53%;
+  top: 51%;
+  width: 3.5cqh;
+  height: 3.5cqh;
   transform: translate(-50%, calc(-50% - var(--castle-hero-lists-all-icon-lift)));
-  background-image: url('icons/heroes.png');
+  background-image: url('icons/allHero.png');
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
@@ -1678,8 +1692,13 @@ body {
 
 .castle-hero-list-btn-add {
   min-width: 4.5cqh;
-  font-size: 2.35cqh;
-  line-height: 1;
+}
+
+.castle-hero-list-btn-add::before {
+  content: '';
+  width: 2cqh;
+  height: 2cqh;
+  background: url('icons/add.png') center/contain no-repeat;
 }
 
 .castle-hero-list-btn-clear {
@@ -1699,7 +1718,7 @@ body {
   border-radius: 1cqh 1cqh 0.55cqh 0.55cqh;
   border: 0.18cqh groove rgb(158, 155, 104);
   outline: none;
-  color: rgba(238, 242, 248, 0.95);
+  color: rgb(229 212 79 / 95%);
   font: 1.35cqh / 1 'DejaVuSans', sans-serif;
   padding: 0 0.95cqh var(--castle-hero-lists-content-lift) 0.95cqh;
   background-image: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
@@ -1830,20 +1849,30 @@ body {
   width: 25cqh;
   height: 25cqh;
   border-radius: 1.1cqh;
-  border: 0.18cqh groove rgba(200, 188, 132, 0.95);
+  border: none;
   font: bold 23.8cqh / 1 'DejaVuSans', sans-serif;
   color: #f5f0ca;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: linear-gradient(to bottom, rgba(13, 63, 78, 0.95), rgba(10, 43, 56, 0.95));
+  background: url('icons/enableButton.png') center/100% 100% no-repeat;
 }
 
-/* Минус в квадрате: глиф U+002D часто «плывёт» по вертикали — grid + line-height 0 выравнивает оптически */
-.castle-hero-list-editor-sign-remove {
-  display: grid;
-  place-items: center;
-  line-height: 0;
+.castle-hero-list-editor-sign::before {
+  content: '';
+  width: 11cqh;
+  height: 11cqh;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.castle-hero-list-editor-sign-add::before {
+  background-image: url('icons/add.png');
+}
+
+.castle-hero-list-editor-sign-remove::before {
+  background-image: url('icons/remove.png');
 }
 
 .castle-hero-list-editor-sign-active {
@@ -1856,7 +1885,7 @@ body {
 }
 
 .castle-hero-list-editor-sign-disabled {
-  filter: grayscale(1) brightness(0.75);
+  background-image: url('icons/disableButton.png');
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
@@ -1865,25 +1894,41 @@ body {
 .castle-hero-list-editor-confirm {
   min-width: 25.2cqh;
   height: 15cqh;
-  border-radius: 0.85cqh;
-  border: 1.15cqh groove rgba(200, 188, 132, 0.95);
-  font: bold 7.35cqh / 1 'DejaVuSans', sans-serif;
-  color: #ece2af;
-  padding: 0 3.45cqh;
+  border-radius: 3.5cqh;
+  border: none;
+  text-shadow: rgba(0, 0, 0, 1) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh -0.1cqh 0.1cqh;
+  color: rgb(252, 229, 188);
+  font: 9cqh / 1.4 'DejaVuSans', sans-serif;
+  white-space: nowrap;
+  padding: 1cqh 1cqh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: linear-gradient(to bottom, rgba(14, 57, 70, 0.95), rgba(5, 35, 49, 0.95));
+  background: url('/content/hero/button.png') center center no-repeat;
+  background-size: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  transition: background 0.3s, transform 0.2s;
+  text-align: center;
+}
+
+.castle-hero-list-editor-confirm:hover {
+  filter: brightness(1.15);
 }
 
 .castle-hero-list-editor-confirm-action {
   display: none;
   pointer-events: none;
+  width: inherit;
 }
 
 .castle-hero-list-editor-delete-action {
   display: flex;
   pointer-events: auto;
+  width: max-content;
+  min-width: 34cqh;
+  padding-left: 3.2cqh;
+  padding-right: 3.2cqh;
+  background-size: 100% 100%;
 }
 
 .castle-hero-list-editor-item.castle-hero-list-editor-mode-add .castle-hero-list-editor-confirm-action,
@@ -1902,24 +1947,14 @@ body {
   position: absolute;
   left: 2cqh;
   bottom: 2cqh;
-  width: 14cqh;
-  height: 14cqh;
-  border-radius: 50%;
-  border: 0.15cqh solid rgba(238, 234, 194, 0.95);
-  background: rgba(6, 31, 42, 0.88);
-  color: rgba(228, 241, 252, 0.9);
-  font: bold 17.75cqh / 1 'DejaVuSans', sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  width: 18cqh;
+  height: 18cqh;
+  background: url('icons/circle.webp') center/contain no-repeat;
   z-index: 3;
 }
 
 .castle-hero-list-pick-active {
-  background: rgba(48, 128, 92, 0.9);
-  color: #fff;
-  border-color: rgba(220, 248, 220, 0.98);
-  box-shadow: 0 0 0.7cqh rgba(120, 255, 174, 0.45);
+  background-image: url('icons/checkbox.webp');
 }
 
 .castle-hero-list-empty-item {

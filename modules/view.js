@@ -1620,6 +1620,7 @@ export class View {
     View.castleHeroListsBar?.classList?.add('castle-hero-lists-bar-hidden');
     View.castleHeroListsBar?.replaceChildren?.();
     View.castleHeroPinnedEditor?.replaceChildren?.();
+    View.castleBottom?.classList?.remove('castle-bottom-content-with-editor');
     while (View.castleBottom.firstChild) {
       View.castleBottom.firstChild.remove();
     }
@@ -1839,7 +1840,7 @@ export class View {
             },
           ],
         },
-        '+',
+        '',
       );
       bar.append(addBtn);
     }
@@ -1897,7 +1898,7 @@ export class View {
           },
         ],
       },
-      '+',
+      '',
     );
     const bottomMinus = DOM(
       {
@@ -1913,7 +1914,7 @@ export class View {
           },
         ],
       },
-      '\u2212',
+      '',
     );
 
     const confirm = DOM(
@@ -1935,7 +1936,7 @@ export class View {
           },
         ],
       },
-      `Подтвердить (${selectedCount})`,
+      'Подтвердить',
     );
     const clear = DOM(
       {
@@ -2037,7 +2038,7 @@ export class View {
 
       if (editMode) {
         const selected = View.castleHeroEditSelection.has(Number(item.id));
-        const pick = DOM({ style: ['castle-hero-list-pick', selected ? 'castle-hero-list-pick-active' : null].filter(Boolean) }, selected ? '✓' : '');
+        const pick = DOM({ style: ['castle-hero-list-pick', selected ? 'castle-hero-list-pick-active' : null].filter(Boolean) }, '');
         hero.append(pick);
         hero.addEventListener('click', () => {
           const heroId = Number(item.id);
@@ -2081,6 +2082,7 @@ export class View {
 
     App.api.silent(
       (result) => {
+        if (View.castleActiveTab !== 'heroes') return;
         MM.hero = Array.isArray(result) ? result : [];
         View.castleHeroAll = Array.isArray(result) ? result : [];
         View.cleanupCastleHeroPhantomList();
@@ -2104,10 +2106,15 @@ export class View {
     View.castleHeroListsBar?.classList?.add('castle-hero-lists-bar-hidden');
     View.castleHeroListsBar?.replaceChildren?.();
     View.castleHeroPinnedEditor?.replaceChildren?.();
+    View.castleBottom?.classList?.remove('castle-bottom-content-with-editor');
+    while (View.castleBottom.firstChild) {
+      View.castleBottom.firstChild.remove();
+    }
     let preload = new PreloadImages(View.castleBottom);
 
     App.api.silent(
       (result) => {
+        if (View.castleActiveTab !== 'friends') return;
         View.setFriendIncomingStatus(Array.isArray(result) && result.some((item) => Number(item?.status) == 2));
         while (View.castleBottom.firstChild) {
           View.castleBottom.firstChild.remove();

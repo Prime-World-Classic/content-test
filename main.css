@@ -1108,6 +1108,37 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   background-position: 0cqw 0;
 }
 
+.btn-combat-mode {
+  position: relative;
+  background-image: url('img/buttonColor.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  overflow: hidden;
+}
+
+.btn-combat-mode-count {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -52%);
+  color: rgb(211 205 124 / 98%);
+  font: 600 3.8cqh / 1 'DejaVuSans', sans-serif;
+  text-shadow: 0 0.25cqh 0.35cqh rgba(0, 0, 0, 0.72);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.btn-combat-mode-glass {
+  position: absolute;
+  inset: 0;
+  background: url('img/buttonGlass.png') center/contain no-repeat;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* On hover/active global button filter changes text rasterization; keep combat-mode number stable */
+
 .buttons-talents-and-sets {
   display: none;
   justify-content: center;
@@ -1286,6 +1317,43 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .build-talent-item.build-combat-locked {
   filter: grayscale(0.9) brightness(0.7);
+}
+
+/* Combat mode readability: learned talents are slightly brighter than unlearned ones */
+.build-field.build-combat-mode-on .build-talent-item.build-combat-learned {
+  filter: saturate(1.36) brightness(1.52);
+}
+
+.build-field.build-combat-mode-on .build-talent-item.build-combat-learned::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 22%;
+  background: rgba(0, 0, 0, 0.28);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.build-field.build-combat-mode-on .build-talent-item:not(.build-combat-learned):not(.build-combat-locked) {
+  filter: saturate(0.92) brightness(0.9);
+}
+
+@keyframes buildCombatSurroundedBlinkPulse {
+  0%,
+  86%,
+  100% {
+    transform: scale(1);
+  }
+  91% {
+    transform: scale(0.9);
+  }
+  96% {
+    transform: scale(1.06);
+  }
+}
+
+.build-field.build-combat-mode-on .build-talent-item.build-combat-surrounded-blink {
+  animation: buildCombatSurroundedBlinkPulse 3s ease-in-out infinite;
 }
 
 .build-talent-item .build-combat-order-badge {

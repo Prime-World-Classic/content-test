@@ -33,6 +33,7 @@ export class Build {
   static statFilterHighlightCountValueEl = null;
   static statFilterHighlightCountWrapEl = null;
   static combatModeButtonEl = null;
+  static combatModeButtonCountEl = null;
   static combatModeEnabled = false;
   static combatModeLearnOrder = [];
   static combatModeLearnOrderBySlot = new Map();
@@ -1359,10 +1360,13 @@ export class Build {
       const combatModeBg = DOM({
         style: ['btn-combat-mode', 'build-action-item-background'],
       });
-      combatModeBg.style.backgroundImage = `url('content/img/combatMode.png')`;
+      const combatModeCount = DOM({ tag: 'span', style: 'btn-combat-mode-count' }, '36');
+      const combatModeGlass = DOM({ tag: 'span', style: 'btn-combat-mode-glass' });
+      combatModeBg.append(combatModeCount, combatModeGlass);
       combatMode.append(combatModeBg);
       Build.buildActionsView.append(combatMode);
       Build.combatModeButtonEl = combatMode;
+      Build.combatModeButtonCountEl = combatModeCount;
       Build.syncCombatModeButtonState();
     }
 
@@ -1619,6 +1623,7 @@ export class Build {
 
   static resetCombatModeState() {
     Build.combatModeButtonEl = null;
+    Build.combatModeButtonCountEl = null;
     Build.combatModeEnabled = false;
     Build.combatModeLearnOrder = [];
     Build.combatModeLearnOrderBySlot = new Map();
@@ -1671,6 +1676,9 @@ export class Build {
     btn.classList.toggle('build-action-item-active', Build.combatModeEnabled);
     btn.classList.toggle('build-action-item-disabled', !canEnable);
     btn.title = Build.getCombatModeTooltip();
+    if (Build.combatModeButtonCountEl) {
+      Build.combatModeButtonCountEl.textContent = Build.combatModeEnabled ? String(Build.getCombatModeHeroLevel()) : '36';
+    }
   }
 
   static getCombatUnlockedRowsForLevel(level) {
@@ -1684,6 +1692,9 @@ export class Build {
       Build.fieldView?.querySelectorAll('.build-combat-order-badge').forEach((el) => el.remove());
       Build.fieldView?.querySelectorAll('.build-talent-item.build-combat-learned').forEach((el) => el.classList.remove('build-combat-learned'));
       Build.fieldView?.querySelectorAll('.build-talent-item.build-combat-locked').forEach((el) => el.classList.remove('build-combat-locked'));
+      Build.fieldView?.querySelectorAll('.build-talent-item.build-combat-surrounded-blink').forEach((el) =>
+        el.classList.remove('build-combat-surrounded-blink'),
+      );
     } catch {}
     if (!Build.combatModeEnabled) {
       Build.fieldView?.classList.remove('build-combat-mode-on');
@@ -1692,10 +1703,13 @@ export class Build {
     Build.fieldView?.classList.add('build-combat-mode-on');
     const unlockedRows = Build.getCombatUnlockedRowsForLevel(Build.getCombatModeHeroLevel());
     const cells = Build.fieldView?.querySelectorAll('.build-hero-grid-item') || [];
+    const slotToTalentEl = new Map();
     for (const cell of cells) {
       const talentEl = cell?.querySelector?.('.build-talent-item');
       if (!talentEl) continue;
       const slot = Number(cell?.dataset?.position);
+      if (!Number.isFinite(slot)) continue;
+      slotToTalentEl.set(slot, talentEl);
       const slotTalent = Build.installedTalents?.[slot];
       const row = Math.max(1, Number(slotTalent?.level) || 1);
       const learnedOrder = Build.combatModeLearnOrderBySlot.get(slot);
@@ -1706,6 +1720,22 @@ export class Build {
         talentEl.append(badge);
       } else if (row > unlockedRows) {
         talentEl.classList.add('build-combat-locked');
+      }
+    }
+
+    // Blink enclosed unlearned talents (4 sides are either walls or already learned talents).
+    const GRID_SIZE = 6;
+    const learnedSet = Build.combatModeLearnedSlots || new Set();
+    for (const [slot, talentEl] of slotToTalentEl.entries()) {
+      if (learnedSet.has(slot)) continue;
+      const row = Math.floor(slot / GRID_SIZE);
+      const col = slot % GRID_SIZE;
+      const topBlocked = row === 0 || learnedSet.has(slot - GRID_SIZE);
+      const rightBlocked = col === GRID_SIZE - 1 || learnedSet.has(slot + 1);
+      const bottomBlocked = row === GRID_SIZE - 1 || learnedSet.has(slot + GRID_SIZE);
+      const leftBlocked = col === 0 || learnedSet.has(slot - 1);
+      if (topBlocked && rightBlocked && bottomBlocked && leftBlocked) {
+        talentEl.classList.add('build-combat-surrounded-blink');
       }
     }
   }
@@ -1869,6 +1899,7 @@ export class Build {
     Build.renderCombatOrderBadges();
     Build.updateHeroStats();
     Build.refreshStatFilterHighlightCountDisplay();
+    Build.syncCombatModeButtonState();
     return true;
   }
 
@@ -1889,6 +1920,7 @@ export class Build {
     Build.renderCombatOrderBadges();
     Build.updateHeroStats();
     Build.refreshStatFilterHighlightCountDisplay();
+    Build.syncCombatModeButtonState();
     return true;
   }
 
@@ -3891,11 +3923,6 @@ export class Build {
       const el = Build.statFilterHighlightCountValueEl;
       const wrap = Build.statFilterHighlightCountWrapEl;
       if (!el) return;
-      if (Build.combatModeEnabled) {
-        el.textContent = String(Build.getCombatModeHeroLevel());
-        if (wrap) wrap.dataset.tooltip = Lang.text('combatModeLevelCounterTitle');
-        return;
-      }
       const nodes =
         Build.fieldView?.querySelectorAll?.(
           '.build-talent-item.build-stat-filter-hover, .build-talent-item.build-set-highlight',
