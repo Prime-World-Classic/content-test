@@ -632,13 +632,14 @@ export class Window {
 
     const body = DOM({ style: 'wquest__body' }, quest.description);
 
-    const objective = DOM({ style: 'wquest__objective' });
-    const objText = DOM({ style: 'wquest__objective' }, quest.target);
-    objective.appendChild(objText);
+    const objective = DOM({ style: 'wquest__objective' }, quest.target);
+    //const objText = DOM({ style: 'wquest__objective' }, quest.target);
+    //objective.appendChild(objText);
 
     if (quest.total) {
       const counter = DOM({}, quest.score, ' / ', quest.total);
-      objText.append(counter);
+      //objText.append(counter);
+	  objective.append(counter);
     }
 
     const tokens = item.reward;

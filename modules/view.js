@@ -24,6 +24,7 @@ import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { Sound } from './sound.js';
 import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/keybindings.io.js';
+import { getHeroSearchAliases } from './heroSearchAliases.js';
 
 export class View {
   static mmQueueMap = {};
@@ -32,6 +33,17 @@ export class View {
   static hasFriendIncomingRequest = false;
   static castleActiveTab = 'heroes';
   static castleOpenedBuildHeroId = 0;
+  static CASTLE_HERO_LISTS_MAX = 8;
+  static CASTLE_HERO_LIST_STORAGE_KEY = 'castleHeroSelectedList';
+  static castleHeroAll = [];
+  static castleHeroSelectedList = 0;
+  static castleHeroSearch = '';
+  static castleHeroPhantomList = 0;
+  static castleHeroListEditMode = '';
+  static castleHeroEditSelection = new Set();
+  static castleHeroPrevSelectedList = 0;
+  static castleHeroListsBar = null;
+  static castleHeroPinnedEditor = null;
 
   static getQueue(cssKey) {
     const map = {
@@ -1176,8 +1188,6 @@ export class View {
       { passive: true },
     );
 
-    View.bodyCastleHeroes();
-
     let nicknameValue = String(App?.storage?.data?.login || '').trim();
     let nicknameMenuItem = DOM(
       {
@@ -1309,6 +1319,8 @@ export class View {
       style: 'castle-bottom-right-scroll-double',
       event: ['click', () => View.scrollHeroLine(1)],
     });
+    View.castleHeroListsBar = DOM({ style: 'castle-hero-lists-bar' });
+    View.castleHeroPinnedEditor = DOM({ style: 'castle-hero-pinned-editor' });
     body.append(
       DOM(
         { style: 'castle-bottom-menu' },
@@ -1323,11 +1335,17 @@ export class View {
       ),
       DOM(
         { style: 'castle-bottom-content-container' },
+        View.castleHeroListsBar,
+        View.castleHeroPinnedEditor,
         View.castleBottom,
         DOM({ style: 'castle-bottom-content-left-scroll' }, View.arrows.ls, View.arrows.ld),
         DOM({ style: 'castle-bottom-content-right-scroll' }, View.arrows.rs, View.arrows.rd),
       ),
     );
+
+    // Инициализируем вкладку героев после создания toolbar-контейнера,
+    // чтобы кнопки списков появились сразу при входе в замок.
+    View.bodyCastleHeroes();
 
     View.resetCastleBottomScroll(Number(View.castleBottom?.scrollLeft) || 0);
 
@@ -1598,6 +1616,10 @@ export class View {
 
   static bodyCastleBuildings() {
     View.castleActiveTab = 'buildings';
+    View.cleanupCastleHeroPhantomList();
+    View.castleHeroListsBar?.classList?.add('castle-hero-lists-bar-hidden');
+    View.castleHeroListsBar?.replaceChildren?.();
+    View.castleHeroPinnedEditor?.replaceChildren?.();
     while (View.castleBottom.firstChild) {
       View.castleBottom.firstChild.remove();
     }
@@ -1655,57 +1677,421 @@ export class View {
     }
   }
 
+  static getCastleHeroFavouriteMask(hero) {
+    const raw = Number(hero?.favourite);
+    if (!Number.isFinite(raw)) return 0;
+    return Math.max(0, Math.min(255, raw | 0));
+  }
+
+  static isCastleHeroInList(hero, listId) {
+    if (!Number.isFinite(listId) || listId < 1 || listId > View.CASTLE_HERO_LISTS_MAX) return false;
+    const mask = View.getCastleHeroFavouriteMask(hero);
+    return (mask & (1 << (listId - 1))) !== 0;
+  }
+
+  static getCastleCreatedHeroListCount() {
+    let maxList = 0;
+    for (const hero of View.castleHeroAll || []) {
+      const mask = View.getCastleHeroFavouriteMask(hero);
+      for (let bit = 0; bit < View.CASTLE_HERO_LISTS_MAX; bit++) {
+        if (mask & (1 << bit)) {
+          maxList = Math.max(maxList, bit + 1);
+        }
+      }
+    }
+    return maxList;
+  }
+
+  static persistCastleHeroSelectedList() {
+    try {
+      localStorage.setItem(View.CASTLE_HERO_LIST_STORAGE_KEY, String(View.castleHeroSelectedList || 0));
+    } catch {}
+  }
+
+  static loadCastleHeroSelectedList() {
+    try {
+      const value = Number(localStorage.getItem(View.CASTLE_HERO_LIST_STORAGE_KEY));
+      if (Number.isFinite(value) && value >= 0 && value <= View.CASTLE_HERO_LISTS_MAX) {
+        View.castleHeroSelectedList = value;
+      }
+    } catch {}
+  }
+
+  static cleanupCastleHeroPhantomList() {
+    if (!View.castleHeroPhantomList) return;
+    const hasHeroes = (View.castleHeroAll || []).some((hero) => View.isCastleHeroInList(hero, View.castleHeroPhantomList));
+    if (hasHeroes) {
+      View.castleHeroPhantomList = 0;
+      return;
+    }
+    if (View.castleHeroSelectedList === View.castleHeroPhantomList) {
+      View.castleHeroSelectedList = 0;
+    }
+    View.castleHeroPhantomList = 0;
+    View.castleHeroListEditMode = '';
+    View.castleHeroEditSelection = new Set();
+  }
+
+  static async updateCastleHeroListBackend(action, listId, heroIds = []) {
+    try {
+      await App.api.request('build', 'favouriteSet', {
+        action,
+        list: listId,
+        heroes: heroIds,
+      });
+    } catch (error) {
+      App.error(error);
+    }
+  }
+
+  static patchCastleHeroListLocal(action, listId, heroIds = []) {
+    const bit = 1 << (listId - 1);
+    const heroIdSet = new Set((heroIds || []).map((id) => Number(id)));
+    for (const hero of View.castleHeroAll || []) {
+      const heroId = Number(hero?.id);
+      if (action === 'clear' || heroIdSet.has(heroId)) {
+        let mask = View.getCastleHeroFavouriteMask(hero);
+        if (action === 'add') mask = mask | bit;
+        else mask = mask & (255 ^ bit);
+        hero.favourite = mask;
+      }
+    }
+  }
+
+  static getCastleListButtonLabel(listId) {
+    return listId === 0 ? '' : String(listId);
+  }
+
+  static renderCastleHeroListsToolbar() {
+    const bar = View.castleHeroListsBar;
+    if (!bar) return;
+    bar.replaceChildren();
+
+    const createdCount = View.getCastleCreatedHeroListCount();
+    const visibleCount = Math.max(createdCount, View.castleHeroPhantomList || 0);
+
+    const allBtn = DOM(
+      {
+        style: ['castle-hero-list-btn', 'castle-hero-list-btn-all', View.castleHeroSelectedList === 0 ? 'castle-hero-list-btn-active' : null].filter(Boolean),
+        domaudio: domAudioPresets.defaultButton,
+        title: Lang.text('titleheroes'),
+        event: [
+          'click',
+          () => {
+            View.castleHeroSelectedList = 0;
+            View.castleHeroListEditMode = '';
+            View.castleHeroEditSelection = new Set();
+            View.cleanupCastleHeroPhantomList();
+            View.persistCastleHeroSelectedList();
+            View.renderCastleHeroesFromCache();
+          },
+        ],
+      },
+      View.getCastleListButtonLabel(0),
+    );
+    bar.append(allBtn);
+
+    for (let i = 1; i <= View.CASTLE_HERO_LISTS_MAX; i++) {
+      if (i > visibleCount) continue;
+      const isActive = View.castleHeroSelectedList === i;
+      const isPhantom = View.castleHeroPhantomList === i;
+      const btn = DOM(
+        {
+          style: ['castle-hero-list-btn', isActive ? 'castle-hero-list-btn-active' : null, isPhantom ? 'castle-hero-list-btn-phantom' : null].filter(Boolean),
+          domaudio: domAudioPresets.defaultButton,
+          event: [
+            'click',
+            () => {
+              if (!isPhantom) {
+                View.cleanupCastleHeroPhantomList();
+              }
+              View.castleHeroSelectedList = i;
+              if (isPhantom && !View.castleHeroListEditMode) View.castleHeroListEditMode = 'add';
+              View.castleHeroEditSelection = new Set();
+              View.persistCastleHeroSelectedList();
+              View.renderCastleHeroesFromCache();
+            },
+          ],
+        },
+        View.getCastleListButtonLabel(i),
+      );
+      bar.append(btn);
+    }
+
+    if (visibleCount < View.CASTLE_HERO_LISTS_MAX) {
+      const addBtn = DOM(
+        {
+          style: ['castle-hero-list-btn', 'castle-hero-list-btn-add'],
+          domaudio: domAudioPresets.defaultButton,
+          event: [
+            'click',
+            () => {
+              if (View.castleHeroPhantomList) {
+                View.castleHeroSelectedList = View.castleHeroPhantomList;
+              } else {
+                View.castleHeroPhantomList = visibleCount + 1;
+                View.castleHeroSelectedList = View.castleHeroPhantomList;
+              }
+              View.castleHeroListEditMode = 'add';
+              View.castleHeroEditSelection = new Set();
+              View.persistCastleHeroSelectedList();
+              View.renderCastleHeroesFromCache();
+            },
+          ],
+        },
+        '+',
+      );
+      bar.append(addBtn);
+    }
+
+    const search = DOM({
+      tag: 'input',
+      style: 'castle-hero-list-search',
+      placeholder: Lang.text('castleHeroFilterPlaceholder'),
+      value: View.castleHeroSearch || '',
+      event: [
+        'input',
+        (event) => {
+          View.castleHeroSearch = String(event?.target?.value || '');
+          /* Не пересобирать toolbar: replaceChildren() снимает фокус с input */
+          View.renderCastleHeroesFromCache({ refreshToolbar: false });
+        },
+      ],
+    });
+    bar.append(search);
+
+  }
+
+  static buildCastleHeroListEditorCard(listId) {
+    const mode = View.castleHeroListEditMode || '';
+    const modeClass = mode === 'add'
+      ? 'castle-hero-list-editor-mode-add'
+      : mode === 'remove'
+        ? 'castle-hero-list-editor-mode-remove'
+        : 'castle-hero-list-editor-mode-idle';
+    const titleText = mode === 'add'
+      ? `Добавить выбранных героев в список ${listId}`
+      : mode === 'remove'
+        ? `Удалить выбранных героев из списка ${listId}`
+        : `Список ${listId}`;
+    const selectedCount = View.castleHeroEditSelection?.size || 0;
+    const totalHeroes = (View.castleHeroAll || []).length;
+    let heroesInList = 0;
+    for (const hero of View.castleHeroAll || []) {
+      if (View.isCastleHeroInList(hero, listId)) heroesInList++;
+    }
+    const canAddToList = totalHeroes > 0 && heroesInList < totalHeroes;
+    const canRemoveFromList = heroesInList > 0;
+
+    const topPlus = DOM(
+      {
+        style: ['castle-hero-list-editor-sign', 'castle-hero-list-editor-sign-add', canAddToList ? null : 'castle-hero-list-editor-sign-disabled'].filter(Boolean),
+        domaudio: domAudioPresets.defaultButton,
+        event: [
+          'click',
+          () => {
+            if (!canAddToList) return;
+            View.castleHeroListEditMode = 'add';
+            View.castleHeroEditSelection = new Set();
+            View.renderCastleHeroesFromCache();
+          },
+        ],
+      },
+      '+',
+    );
+    const bottomMinus = DOM(
+      {
+        style: ['castle-hero-list-editor-sign', 'castle-hero-list-editor-sign-remove', canRemoveFromList ? null : 'castle-hero-list-editor-sign-disabled'].filter(Boolean),
+        domaudio: domAudioPresets.defaultButton,
+        event: [
+          'click',
+          () => {
+            if (!canRemoveFromList) return;
+            View.castleHeroListEditMode = 'remove';
+            View.castleHeroEditSelection = new Set();
+            View.renderCastleHeroesFromCache();
+          },
+        ],
+      },
+      '\u2212',
+    );
+
+    const confirm = DOM(
+      {
+        style: ['castle-hero-list-editor-confirm', 'castle-hero-list-editor-confirm-action'],
+        domaudio: domAudioPresets.defaultButton,
+        event: [
+          'click',
+          async () => {
+            if (!selectedCount) return;
+            const action = mode === 'add' ? 'add' : 'remove';
+            const heroIds = Array.from(View.castleHeroEditSelection || []);
+            await View.updateCastleHeroListBackend(action, listId, heroIds);
+            View.patchCastleHeroListLocal(action, listId, heroIds);
+            View.castleHeroEditSelection = new Set();
+            View.castleHeroListEditMode = '';
+            View.cleanupCastleHeroPhantomList();
+            View.renderCastleHeroesFromCache();
+          },
+        ],
+      },
+      `Подтвердить (${selectedCount})`,
+    );
+    const clear = DOM(
+      {
+        style: ['castle-hero-list-editor-confirm', 'castle-hero-list-editor-delete-action'],
+        domaudio: domAudioPresets.defaultButton,
+        title: `Удалить список ${listId}`,
+        event: [
+          'click',
+          async () => {
+            await View.updateCastleHeroListBackend('clear', listId, []);
+            View.patchCastleHeroListLocal('clear', listId, []);
+            View.castleHeroEditSelection = new Set();
+            View.castleHeroListEditMode = '';
+            View.cleanupCastleHeroPhantomList();
+            View.renderCastleHeroesFromCache();
+          },
+        ],
+      },
+      'Удалить список',
+    );
+
+    return DOM(
+      { style: ['castle-hero-item', 'castle-hero-list-editor-item', modeClass] },
+      DOM({ style: 'castle-item-background' }),
+      DOM({ style: 'castle-item-ornament' }),
+      DOM({ style: 'castle-hero-list-editor-top' }, topPlus, bottomMinus),
+      DOM({ style: 'castle-hero-list-editor-middle' }, DOM({}, titleText)),
+      DOM({ style: 'castle-hero-list-editor-bottom' }, confirm, clear),
+    );
+  }
+
+  static renderCastleHeroesFromCache(options = {}) {
+    if (!View.castleBottom) return;
+    if (options.refreshToolbar !== false) {
+      View.renderCastleHeroListsToolbar();
+    }
+
+    const selectedList = Number(View.castleHeroSelectedList) || 0;
+    if (View.castleHeroPrevSelectedList !== selectedList) {
+      View.castleHeroEditSelection = new Set();
+      View.castleHeroPrevSelectedList = selectedList;
+    }
+    const editMode = selectedList > 0 ? View.castleHeroListEditMode : '';
+    const searchValue = String(View.castleHeroSearch || '').trim().toLowerCase();
+    const preload = new PreloadImages(View.castleBottom);
+    const pinnedEditorRoot = View.castleHeroPinnedEditor;
+    let renderedHeroCount = 0;
+
+    View.castleBottom.replaceChildren();
+    pinnedEditorRoot?.replaceChildren?.();
+    View.castleBottom.classList.toggle('castle-bottom-content-with-editor', selectedList > 0);
+
+    if (selectedList > 0) {
+      pinnedEditorRoot?.append(View.buildCastleHeroListEditorCard(selectedList));
+    }
+
+    for (let item of View.castleHeroAll || []) {
+      const localizedNameRaw = String(Lang.heroName(item.id, item.skin) || item.name || `Hero ${item.id}`);
+      const localizedName = localizedNameRaw.replace(/<[^>]*>/g, '').trim();
+      const fallbackName = String(item?.name || '').replace(/<[^>]*>/g, '').trim();
+      const customNames = getHeroSearchAliases(item.id)
+        .map((name) => String(name).replace(/<[^>]*>/g, '').trim())
+        .filter(Boolean)
+        .join(' ');
+      const filterHaystack = `${localizedName} ${fallbackName} ${customNames}`.toLowerCase();
+      if (searchValue && !filterHaystack.includes(searchValue)) {
+        continue;
+      }
+
+      if (selectedList > 0) {
+        const inList = View.isCastleHeroInList(item, selectedList);
+        if (!editMode && !inList) continue;
+        if (editMode === 'add' && inList) continue;
+        if (editMode === 'remove' && !inList) continue;
+      }
+
+      const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, localizedName));
+      if (localizedName.length > 10) {
+        heroName.firstChild.classList.add('castle-name-autoscroll');
+      }
+      let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
+      let rank = Rank.createRankNode(item.rating, { stylePrefix: 'castle-hero-' });
+      const hero = DOM(
+        {
+          domaudio: domAudioPresets.defaultButton,
+          id: `id${item.id}`,
+          style: ['castle-hero-item', 'hover-brightness'],
+        },
+        DOM({ style: ['castle-item-background', 'hover-brightness'] }),
+        DOM({ style: ['castle-hero-item-bg', 'hover-brightness'] }),
+        DOM({ style: ['castle-hero-item-img', 'no-hover-brightness'] }),
+        DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
+        rank,
+        heroNameBase,
+      );
+
+      hero.dataset.heroId = String(item.id);
+      hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
+
+      if (editMode) {
+        const selected = View.castleHeroEditSelection.has(Number(item.id));
+        const pick = DOM({ style: ['castle-hero-list-pick', selected ? 'castle-hero-list-pick-active' : null].filter(Boolean) }, selected ? '✓' : '');
+        hero.append(pick);
+        hero.addEventListener('click', () => {
+          const heroId = Number(item.id);
+          if (View.castleHeroEditSelection.has(heroId)) View.castleHeroEditSelection.delete(heroId);
+          else View.castleHeroEditSelection.add(heroId);
+          View.renderCastleHeroesFromCache();
+        });
+      } else {
+        hero.addEventListener('click', async () => {
+          View.setCastleOpenedBuildHero(item.id);
+          await Window.show('main', 'build', item.id, 0, true);
+          View.syncCastleOpenedBuildHeroGlow();
+        });
+      }
+
+      preload.add(hero);
+      renderedHeroCount++;
+    }
+
+    if (renderedHeroCount === 0) {
+      const emptyText = searchValue ? 'Ничего не найдено' : 'Список пуст';
+      View.castleBottom.append(
+        DOM(
+          { style: ['castle-hero-item', 'castle-hero-list-empty-item'] },
+          DOM({ style: 'castle-item-background' }),
+          DOM({ style: 'castle-item-ornament' }),
+          DOM({ style: 'castle-hero-list-empty-label' }, emptyText),
+        ),
+      );
+    }
+
+    View.syncCastleOpenedBuildHeroGlow();
+    View.updateArrows();
+  }
+
   static bodyCastleHeroes() {
     View.castleActiveTab = 'heroes';
-    let preload = new PreloadImages(View.castleBottom);
+    View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
+    View.loadCastleHeroSelectedList();
+    if (View.castleHeroSelectedList === 0) View.castleHeroListEditMode = '';
 
     App.api.silent(
       (result) => {
-        MM.hero = result;
-
-        while (View.castleBottom.firstChild) {
-          View.castleBottom.firstChild.remove();
+        MM.hero = Array.isArray(result) ? result : [];
+        View.castleHeroAll = Array.isArray(result) ? result : [];
+        View.cleanupCastleHeroPhantomList();
+        const maxAllowed = Math.max(View.getCastleCreatedHeroListCount(), View.castleHeroPhantomList || 0);
+        if (View.castleHeroSelectedList > maxAllowed && View.castleHeroSelectedList > 0) {
+          View.castleHeroSelectedList = 0;
+          View.castleHeroListEditMode = '';
+          View.castleHeroEditSelection = new Set();
         }
-
-        for (let item of result) {
-          // Используем новый метод для получения имени с учётом скина
-          const localizedName = Lang.heroName(item.id, item.skin);
-          const heroName = DOM({ style: 'castle-hero-name' }, DOM({}, localizedName));
-
-          if (localizedName.length > 10) {
-            heroName.firstChild.classList.add('castle-name-autoscroll');
-          }
-
-          let heroNameBase = DOM({ style: ['castle-item-hero-name', 'hover-brightness'] }, heroName);
-
-          let rank = Rank.createRankNode(item.rating, { stylePrefix: 'castle-hero-' });
-
-          let hero = DOM(
-            {
-              domaudio: domAudioPresets.defaultButton,
-              id: `id${item.id}`,
-              style: ['castle-hero-item', 'hover-brightness'],
-            },
-            DOM({ style: ['castle-item-background', 'hover-brightness'] }),
-            DOM({ style: ['castle-hero-item-bg', 'hover-brightness'] }),
-            DOM({ style: ['castle-hero-item-img', 'no-hover-brightness'] }),
-            DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
-            rank,
-            heroNameBase,
-          );
-
-          hero.dataset.heroId = String(item.id);
-          hero.addEventListener('click', async () => {
-            View.setCastleOpenedBuildHero(item.id);
-            await Window.show('main', 'build', item.id, 0, true);
-            View.syncCastleOpenedBuildHeroGlow();
-          });
-
-          hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
-
-          preload.add(hero);
-        }
-        View.syncCastleOpenedBuildHeroGlow();
+        View.persistCastleHeroSelectedList();
+        View.renderCastleHeroesFromCache();
       },
       'build',
       'heroAll',
@@ -1714,6 +2100,10 @@ export class View {
 
   static bodyCastleFriends() {
     View.castleActiveTab = 'friends';
+    View.cleanupCastleHeroPhantomList();
+    View.castleHeroListsBar?.classList?.add('castle-hero-lists-bar-hidden');
+    View.castleHeroListsBar?.replaceChildren?.();
+    View.castleHeroPinnedEditor?.replaceChildren?.();
     let preload = new PreloadImages(View.castleBottom);
 
     App.api.silent(

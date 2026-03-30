@@ -800,6 +800,7 @@ export const ru = {
     titlesettings: 'Настройки',
     titlechat: 'Отображение чата',
     titleheroes: 'Герои',
+    castleHeroFilterPlaceholder: 'Имя героя',
     titlefriends: 'Друзья',
     titleconstruction: 'Строительство',
     titlestatistic: 'Статистика',
