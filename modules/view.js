@@ -45,6 +45,7 @@ export class View {
   static castleHeroListEditMode = '';
   static castleHeroEditSelection = new Set();
   static castleHeroListNames = {};
+  static castleHeroDeleteConfirmListId = 0;
   static castleHeroPrevSelectedList = 0;
   static castleHeroListsBar = null;
   static castleHeroPinnedEditor = null;
@@ -53,6 +54,7 @@ export class View {
   static castleFriendSearch = '';
   static castleFriendListEditMode = '';
   static castleFriendEditSelection = new Set();
+  static castleFriendClearConfirm = false;
 
   static getQueue(cssKey) {
     const map = {
@@ -1625,6 +1627,8 @@ export class View {
 
   static bodyCastleBuildings() {
     View.castleActiveTab = 'buildings';
+    View.castleHeroDeleteConfirmListId = 0;
+    View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
     View.castleHeroListsBar?.classList?.add('castle-hero-lists-bar-hidden');
     View.castleHeroListsBar?.replaceChildren?.();
@@ -1867,6 +1871,7 @@ export class View {
             View.castleHeroSelectedList = 0;
             View.castleHeroListEditMode = '';
             View.castleHeroEditSelection = new Set();
+            View.castleHeroDeleteConfirmListId = 0;
             View.cleanupCastleHeroPhantomList();
             View.persistCastleHeroSelectedList();
             View.renderCastleHeroesFromCache();
@@ -1895,6 +1900,7 @@ export class View {
               View.castleHeroSelectedList = i;
               if (isPhantom && !View.castleHeroListEditMode) View.castleHeroListEditMode = 'add';
               View.castleHeroEditSelection = new Set();
+              View.castleHeroDeleteConfirmListId = 0;
               View.persistCastleHeroSelectedList();
               View.renderCastleHeroesFromCache();
             },
@@ -1921,6 +1927,7 @@ export class View {
               }
               View.castleHeroListEditMode = 'add';
               View.castleHeroEditSelection = new Set();
+              View.castleHeroDeleteConfirmListId = 0;
               View.persistCastleHeroSelectedList();
               View.renderCastleHeroesFromCache();
             },
@@ -1962,7 +1969,6 @@ export class View {
       : mode === 'remove'
         ? `Удалить выбранных героев из ${listName}`
         : listName;
-    const selectedCount = View.castleHeroEditSelection?.size || 0;
     const totalHeroes = (View.castleHeroAll || []).length;
     let heroesInList = 0;
     for (const hero of View.castleHeroAll || []) {
@@ -1981,6 +1987,7 @@ export class View {
             if (!canAddToList) return;
             View.castleHeroListEditMode = 'add';
             View.castleHeroEditSelection = new Set();
+            View.castleHeroDeleteConfirmListId = 0;
             View.renderCastleHeroesFromCache();
           },
         ],
@@ -1997,6 +2004,7 @@ export class View {
             if (!canRemoveFromList) return;
             View.castleHeroListEditMode = 'remove';
             View.castleHeroEditSelection = new Set();
+            View.castleHeroDeleteConfirmListId = 0;
             View.renderCastleHeroesFromCache();
           },
         ],
@@ -2011,13 +2019,16 @@ export class View {
         event: [
           'click',
           async () => {
+            const selectedCount = View.castleHeroEditSelection?.size || 0;
             if (!selectedCount) return;
-            const action = mode === 'add' ? 'add' : 'remove';
+            const currentMode = View.castleHeroListEditMode || '';
+            const action = currentMode === 'add' ? 'add' : 'remove';
             const heroIds = Array.from(View.castleHeroEditSelection || []);
             await View.updateCastleHeroListBackend(action, listId, heroIds);
             View.patchCastleHeroListLocal(action, listId, heroIds);
             View.castleHeroEditSelection = new Set();
             View.castleHeroListEditMode = '';
+            View.castleHeroDeleteConfirmListId = 0;
             View.cleanupCastleHeroPhantomList();
             View.renderCastleHeroesFromCache();
           },
@@ -2033,17 +2044,23 @@ export class View {
         event: [
           'click',
           async () => {
+            if (View.castleHeroDeleteConfirmListId !== listId) {
+              View.castleHeroDeleteConfirmListId = listId;
+              View.renderCastleHeroesFromCache({ refreshToolbar: false });
+              return;
+            }
             await View.updateCastleHeroListBackend('clear', listId, []);
             View.patchCastleHeroListLocal('clear', listId, []);
             View.setCastleHeroListName(listId, '');
             View.castleHeroEditSelection = new Set();
             View.castleHeroListEditMode = '';
+            View.castleHeroDeleteConfirmListId = 0;
             View.cleanupCastleHeroPhantomList();
             View.renderCastleHeroesFromCache();
           },
         ],
       },
-      'Удалить список',
+      View.castleHeroDeleteConfirmListId === listId ? Lang.text('confirmAction') : 'Удалить список',
     );
 
     const middle = DOM(
@@ -2084,6 +2101,7 @@ export class View {
     const selectedList = Number(View.castleHeroSelectedList) || 0;
     if (View.castleHeroPrevSelectedList !== selectedList) {
       View.castleHeroEditSelection = new Set();
+      View.castleHeroDeleteConfirmListId = 0;
       View.castleHeroPrevSelectedList = selectedList;
     }
     const editMode = selectedList > 0 ? View.castleHeroListEditMode : '';
@@ -2149,9 +2167,10 @@ export class View {
         hero.append(pick);
         hero.addEventListener('click', () => {
           const heroId = Number(item.id);
-          if (View.castleHeroEditSelection.has(heroId)) View.castleHeroEditSelection.delete(heroId);
+          const isSelected = View.castleHeroEditSelection.has(heroId);
+          if (isSelected) View.castleHeroEditSelection.delete(heroId);
           else View.castleHeroEditSelection.add(heroId);
-          View.renderCastleHeroesFromCache();
+          pick.classList.toggle('castle-hero-list-pick-active', !isSelected);
         });
       } else {
         hero.addEventListener('click', async () => {
@@ -2246,6 +2265,7 @@ export class View {
             View.castleFriendSelectedList = 0;
             View.castleFriendListEditMode = '';
             View.castleFriendEditSelection = new Set();
+            View.castleFriendClearConfirm = false;
             View.persistCastleFriendSelectedList();
             View.renderCastleFriendsFromCache();
           },
@@ -2264,6 +2284,7 @@ export class View {
           () => {
             View.castleFriendSelectedList = 1;
             View.castleFriendEditSelection = new Set();
+            View.castleFriendClearConfirm = false;
             View.persistCastleFriendSelectedList();
             View.renderCastleFriendsFromCache();
           },
@@ -2291,7 +2312,6 @@ export class View {
 
   static buildCastleFriendListEditorCard() {
     const mode = View.castleFriendListEditMode || '';
-    const selectedCount = View.castleFriendEditSelection?.size || 0;
     let friendsInList = 0;
     for (const f of View.castleFriendAll || []) {
       if (Number(f?.status) === 1 && View.isCastleFriendInList(f, 1)) friendsInList++;
@@ -2310,6 +2330,7 @@ export class View {
             if (!canAdd) return;
             View.castleFriendListEditMode = 'add';
             View.castleFriendEditSelection = new Set();
+            View.castleFriendClearConfirm = false;
             View.renderCastleFriendsFromCache({ refreshToolbar: false });
           },
         ],
@@ -2326,6 +2347,7 @@ export class View {
             if (!canRemove) return;
             View.castleFriendListEditMode = 'remove';
             View.castleFriendEditSelection = new Set();
+            View.castleFriendClearConfirm = false;
             View.renderCastleFriendsFromCache({ refreshToolbar: false });
           },
         ],
@@ -2340,9 +2362,11 @@ export class View {
         event: [
           'click',
           async () => {
+            const selectedCount = View.castleFriendEditSelection?.size || 0;
             if (!selectedCount) return;
             const ids = Array.from(View.castleFriendEditSelection || []);
-            if (mode === 'add') {
+            const currentMode = View.castleFriendListEditMode || '';
+            if (currentMode === 'add') {
               await View.updateCastleFriendListBackend('add', 1, ids);
               View.patchCastleFriendListLocal('add', 1, ids);
             } else {
@@ -2351,6 +2375,7 @@ export class View {
             }
             View.castleFriendEditSelection = new Set();
             View.castleFriendListEditMode = '';
+            View.castleFriendClearConfirm = false;
             View.renderCastleFriendsFromCache({ refreshToolbar: false });
           },
         ],
@@ -2365,17 +2390,23 @@ export class View {
         event: [
           'click',
           async () => {
+            if (!View.castleFriendClearConfirm) {
+              View.castleFriendClearConfirm = true;
+              View.renderCastleFriendsFromCache({ refreshToolbar: false });
+              return;
+            }
             await View.updateCastleFriendListBackend('clear', 1, []);
             View.patchCastleFriendListLocal('clear', 1, []);
             View.castleFriendEditSelection = new Set();
             View.castleFriendListEditMode = '';
+            View.castleFriendClearConfirm = false;
             View.castleFriendSelectedList = 0;
             View.persistCastleFriendSelectedList();
             View.renderCastleFriendsFromCache({ refreshToolbar: false });
           },
         ],
       },
-      Lang.text('friendListClear'),
+      View.castleFriendClearConfirm ? Lang.text('confirmAction') : Lang.text('friendListClear'),
     );
 
     const modeClass = mode === 'add'
@@ -2577,12 +2608,14 @@ export class View {
 
       if (editMode && status === 1) {
         const selected = View.castleFriendEditSelection.has(Number(item.id));
-        friend.append(DOM({ style: ['castle-hero-list-pick', selected ? 'castle-hero-list-pick-active' : null].filter(Boolean) }));
+        const pick = DOM({ style: ['castle-hero-list-pick', selected ? 'castle-hero-list-pick-active' : null].filter(Boolean) });
+        friend.append(pick);
         friend.addEventListener('click', () => {
           const id = Number(item.id);
-          if (View.castleFriendEditSelection.has(id)) View.castleFriendEditSelection.delete(id);
+          const isSelected = View.castleFriendEditSelection.has(id);
+          if (isSelected) View.castleFriendEditSelection.delete(id);
           else View.castleFriendEditSelection.add(id);
-          View.renderCastleFriendsFromCache({ refreshToolbar: false });
+          pick.classList.toggle('castle-hero-list-pick-active', !isSelected);
         });
       } else {
         // Keep existing friend actions in non-edit mode (copied minimal core behavior).
@@ -2693,6 +2726,8 @@ export class View {
 
   static bodyCastleHeroes() {
     View.castleActiveTab = 'heroes';
+    View.castleHeroDeleteConfirmListId = 0;
+    View.castleFriendClearConfirm = false;
     View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
     View.loadCastleHeroSelectedList();
     View.loadCastleHeroListNames();
@@ -2720,6 +2755,8 @@ export class View {
 
   static bodyCastleFriends() {
     View.castleActiveTab = 'friends';
+    View.castleHeroDeleteConfirmListId = 0;
+    View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
     View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
     View.castleHeroPinnedEditor?.replaceChildren?.();

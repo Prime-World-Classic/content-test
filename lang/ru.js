@@ -1,4 +1,4 @@
-﻿export const ru = {
+export const ru = {
   locale: ['ru_RU'],
   name: 'Русский',
   word: {
@@ -220,6 +220,11 @@
     loginRequiredError: 'Необходимо указать логин',
     passwordRequiredError: 'Необходимо указать пароль',
     nicknameChangeCooldown: 'Сменить никнейм можно один раз в две недели',
+    nicknameChangeReadyNow: 'Никнейм можно сменить сейчас',
+    nicknameChangeRemaining: 'До следующей смены ника: {time}',
+    nicknameTimeDayShort: 'д',
+    nicknameTimeHourShort: 'ч',
+    nicknameTimeMinuteShort: 'м',
     nicknamePlaceholder: 'Никнейм',
     apply: 'Применить',
     adorians: 'Адорнийцы',
@@ -319,6 +324,7 @@
     friendRemoveText: 'Удалить {nickname} из друзей?',
     friendAcceptText: 'Приглашение отправлено игроку {nickname}',
 	friendListClear: 'Очистить список',
+    confirmAction: 'Вы уверены?',
     friendNicknamePlaceholder: 'Ник игрока',
     friendAcceptWaiting: 'Ожидание',
     friendInvitesToLobby: 'Игрок {nickname} приглашает Вас вступить в группу.',

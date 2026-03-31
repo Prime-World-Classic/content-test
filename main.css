@@ -2826,6 +2826,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 #castle-menu-text-change-nickname{
   font-size: 1.6cqh;
+  white-space: nowrap;
 }
 #splash-content-button-modal-fraction{
   margin-top: 1.5cqh;
