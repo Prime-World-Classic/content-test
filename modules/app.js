@@ -385,7 +385,22 @@ export class App {
     View.show('castle');
   }
 
-  static setNickname() {
+  static formatNicknameCooldown(ms = 0) {
+    const totalMinutes = Math.max(0, Math.ceil(Number(ms || 0) / 60000));
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+    const dayUnit = Lang.text('nicknameTimeDayShort');
+    const hourUnit = Lang.text('nicknameTimeHourShort');
+    const minuteUnit = Lang.text('nicknameTimeMinuteShort');
+    const parts = [];
+    if (days > 0) parts.push(`${days}${dayUnit}`);
+    if (hours > 0 || days > 0) parts.push(`${hours}${hourUnit}`);
+    parts.push(`${minutes}${minuteUnit}`);
+    return parts.join(' ');
+  }
+
+  static async setNickname() {
     
     const close = DOM({
       tag: 'div',
@@ -399,6 +414,13 @@ export class App {
     let template = document.createDocumentFragment();
     let modal = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('nicknamePlaceholder')));
     let title = DOM({ tag: 'div', style: 'castle-menu-text', id: 'castle-menu-text-change-nickname' }, Lang.text('nicknameChangeCooldown'));
+    try {
+      const cooldown = await App.api.request('user', 'nicknameCooldown', {});
+      const remainingMs = Number(cooldown?.remainingMs || 0);
+      title.textContent = remainingMs > 0
+        ? Lang.text('nicknameChangeRemaining').replace('{time}', App.formatNicknameCooldown(remainingMs))
+        : Lang.text('nicknameChangeReadyNow');
+    } catch {}
 
     let name = DOM({
       domaudio: domAudioPresets.defaultInput,

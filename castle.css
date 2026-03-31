@@ -1383,6 +1383,7 @@ body {
 
 .castle-bottom-menu {
   position: absolute;
+  z-index: 20;
   bottom: -0.1vh;
   background-image: url('img/menu.png');
   background-size: contain;
@@ -1440,6 +1441,7 @@ body {
 .account-rating-menu-item {
   font-size: 7cqh;
   position: absolute;
+  z-index: 13000;
   left: 16cqw;
   width: 55cqw;
   text-align: center;
@@ -1456,6 +1458,7 @@ body {
 .account-rating-menu-item::after {
   display: none;
   position: absolute;
+  z-index: 13001;
   top: 0;
   transform: translateY(-100%);
   content: var(
@@ -1598,6 +1601,18 @@ body {
   z-index: 8;
 }
 
+.castle-bottom-content-container::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.1vh;
+  background: rgb(142, 150, 96);
+  z-index: 13;
+  pointer-events: none;
+}
+
 .castle-hero-pinned-editor {
   position: absolute;
   left: 0;
@@ -1605,10 +1620,26 @@ body {
   height: calc(max(9.9vw * 18 / 43, 9.9vh) * 13.5 / 9.9);
   z-index: 12;
   pointer-events: none;
+  display: flex;
+  align-items: stretch;
 }
 
 .castle-hero-pinned-editor > * {
   pointer-events: auto;
+}
+
+/* Pinned editor should not inherit row offset from scrolling cards */
+.castle-hero-pinned-editor .castle-hero-item,
+.castle-hero-pinned-editor .castle-friend-item {
+  margin-top: 0;
+  bottom: 0;
+  height: 100%;
+  border-top: 0;
+  border-bottom: 0;
+  box-shadow:
+    inset 0.1vh 0 0 rgb(142, 150, 96),
+    inset 0 0.2vh 0 rgb(142, 150, 96),
+    inset 0 -0.2vh 0 rgba(142, 150, 96);
 }
 
 .castle-hero-lists-bar {
@@ -1656,7 +1687,7 @@ body {
   filter: brightness(1.2);
 }
 
-.castle-hero-list-btn-active:not(.castle-hero-list-btn-all):not(.castle-hero-list-btn-add)::after {
+.castle-hero-list-btn-active:not(.castle-hero-list-btn-all):not(.castle-hero-list-btn-add):not(.castle-friend-list-btn-fav)::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -1690,14 +1721,33 @@ body {
   filter: brightness(1.15);
 }
 
+.castle-friend-lists-bar .castle-hero-list-btn-all::before {
+  background-image: url('icons/allFriend.png');
+}
+
+.castle-friend-list-btn-fav::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3.5cqh;
+  height: 3.5cqh;
+  transform: translate(-50%, calc(-50% - var(--castle-hero-lists-all-icon-lift)));
+  background-image: url('icons/favouriteFriend.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  filter: brightness(1.15);
+}
+
 .castle-hero-list-btn-add {
   min-width: 4.5cqh;
 }
 
 .castle-hero-list-btn-add::before {
   content: '';
-  width: 2cqh;
-  height: 2cqh;
+  width: 1.5cqh;
+  height: 1.5cqh;
   background: url('icons/add.png') center/contain no-repeat;
 }
 
@@ -1805,11 +1855,11 @@ body {
 }
 
 .castle-hero-list-editor-top {
-  padding: 0.8cqh 0.9cqh 0 0.9cqh;
+  padding: 6cqh 0cqh 0cqh 0cqh;
 }
 
 .castle-hero-list-editor-bottom {
-  padding: 0 0.9cqh 0.8cqh 0.9cqh;
+  padding: 0cqh 0cqh 6cqh 0cqh;
 }
 
 .castle-hero-list-editor-middle {
@@ -1926,9 +1976,12 @@ body {
   pointer-events: auto;
   width: max-content;
   min-width: 34cqh;
+  max-width: 64.9cqh;
   padding-left: 3.2cqh;
   padding-right: 3.2cqh;
   background-size: 100% 100%;
+  position: relative;
+  left: -0.8cqh;
 }
 
 .castle-hero-list-editor-item.castle-hero-list-editor-mode-add .castle-hero-list-editor-confirm-action,
