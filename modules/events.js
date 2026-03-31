@@ -301,6 +301,10 @@ export class Events {
     await Voice.remoteDrop(data.id);
   }
 
+  static async VFriendMerge(data) {
+    await Voice.mergeFriendCalls(data?.users || []);
+  }
+
   static VKick() {
     Voice.destroy(true);
   }
