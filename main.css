@@ -1122,11 +1122,18 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -52%);
-  color: rgb(211 205 124 / 98%);
+  color: rgb(175 170 104 / 98%);
   font: 600 3.8cqh / 1 'DejaVuSans', sans-serif;
   text-shadow: 0 0.25cqh 0.35cqh rgba(0, 0, 0, 0.72);
   pointer-events: none;
   z-index: 2;
+}
+
+.btn-combat-mode-count.btn-combat-mode-count-raw {
+  width: 7.2cqh;
+  height: 4.6cqh;
+  transform: translate(-50%, -50%);
+  background: url('img/combatModeRaw.png') center/contain no-repeat;
 }
 
 .btn-combat-mode-glass {

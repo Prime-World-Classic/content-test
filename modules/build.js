@@ -1360,7 +1360,7 @@ export class Build {
       const combatModeBg = DOM({
         style: ['btn-combat-mode', 'build-action-item-background'],
       });
-      const combatModeCount = DOM({ tag: 'span', style: 'btn-combat-mode-count' }, '36');
+      const combatModeCount = DOM({ tag: 'span', style: 'btn-combat-mode-count' }, '');
       const combatModeGlass = DOM({ tag: 'span', style: 'btn-combat-mode-glass' });
       combatModeBg.append(combatModeCount, combatModeGlass);
       combatMode.append(combatModeBg);
@@ -1677,7 +1677,9 @@ export class Build {
     btn.classList.toggle('build-action-item-disabled', !canEnable);
     btn.title = Build.getCombatModeTooltip();
     if (Build.combatModeButtonCountEl) {
-      Build.combatModeButtonCountEl.textContent = Build.combatModeEnabled ? String(Build.getCombatModeHeroLevel()) : '36';
+      const isRawMode = !Build.combatModeEnabled;
+      Build.combatModeButtonCountEl.classList.toggle('btn-combat-mode-count-raw', isRawMode);
+      Build.combatModeButtonCountEl.textContent = isRawMode ? '' : String(Build.getCombatModeHeroLevel());
     }
   }
 
