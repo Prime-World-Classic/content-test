@@ -65,6 +65,8 @@ export class Voice {
 
   static infoPanel = null;
 
+  static infoPanelHiddenByUser = false;
+
   static cacheCandidate = new Object();
 
   static limit = 10;
@@ -103,6 +105,16 @@ export class Voice {
   static getReconnectJob(id, key) {
     const token = Voice.getReconnectToken(id, key);
     return Voice.reconnectJobs.get(token) || null;
+  }
+
+  static getInfoPanelBody() {
+    return Voice.infoPanel?.querySelector?.('.voice-info-panel-body') || null;
+  }
+
+  static showInfoPanel(force = false) {
+    if (!Voice.infoPanel) return;
+    if (!force && Voice.infoPanelHiddenByUser) return;
+    Voice.infoPanel.style.display = 'flex';
   }
 
   static stopAllReconnectJobs() {
@@ -165,7 +177,22 @@ export class Voice {
 
   static init() {
     if (!Voice.infoPanel) {
-      Voice.infoPanel = DOM({ style: ['voice-info-panel', 'left-offset-with-shift'] }, DOM({ style: 'voice-info-panel-body' }));
+      const closeButton = DOM(
+        {
+          tag: 'div',
+          style: ['close-button', 'voice-info-panel-close'],
+          domaudio: domAudioPresets.defaultButton,
+          event: [
+            'click',
+            () => {
+              Voice.infoPanelHiddenByUser = true;
+              if (Voice.infoPanel) Voice.infoPanel.style.display = 'none';
+            },
+          ],
+        },
+      );
+      closeButton.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
+      Voice.infoPanel = DOM({ style: ['voice-info-panel', 'left-offset-with-shift'] }, closeButton, DOM({ style: 'voice-info-panel-body' }));
     }
 
     document.body.append(Voice.infoPanel);
@@ -178,7 +205,7 @@ export class Voice {
       return;
     }
 
-    Voice.infoPanel.style.display = 'flex';
+    Voice.showInfoPanel();
 
     try {
       Voice.userMedia = await navigator.mediaDevices.getUserMedia({
@@ -215,6 +242,8 @@ export class Voice {
   }
 
   static async toggleEnabledMic() {
+    Voice.infoPanelHiddenByUser = false;
+    Voice.showInfoPanel(true);
     if (!Voice.userMedia) {
       await Voice.initLocalMedia();
 
@@ -287,8 +316,10 @@ export class Voice {
   }
 
   static updateInfoPanel() {
-    while (Voice.infoPanel.firstChild.firstChild) {
-      Voice.infoPanel.firstChild.firstChild.remove();
+    const panelBody = Voice.getInfoPanelBody();
+    if (!panelBody) return;
+    while (panelBody.firstChild) {
+      panelBody.firstChild.remove();
     }
 
     let level = DOM({ style: 'voice-info-panel-body-item-bar-level' });
@@ -303,7 +334,7 @@ export class Voice {
       bar.classList.add('voice-info-panel-body-item-nostream');
     }
 
-    Voice.infoPanel.firstChild.append(
+    panelBody.append(
       DOM(
         { style: 'voice-info-panel-body-item' },
         DOM(
@@ -359,7 +390,7 @@ export class Voice {
       }
     }
 
-    Voice.infoPanel.firstChild.append(tutorial);
+    panelBody.append(tutorial);
   }
 
   static playerInfoPanel(id) {
@@ -436,7 +467,9 @@ export class Voice {
       indication();
     };
 
-    Voice.infoPanel.firstChild.append(
+    const panelBody = Voice.getInfoPanelBody();
+    if (!panelBody) return;
+    panelBody.append(
       DOM({ style: 'voice-info-panel-body-item' }, item, DOM({ style: 'voice-info-panel-body-item-status' }, bar)),
     );
   }
@@ -567,6 +600,9 @@ export class Voice {
     if (Settings.settings.novoice) {
       throw Lang.text('voiceDisabled');
     }
+
+    Voice.infoPanelHiddenByUser = false;
+    Voice.showInfoPanel(true);
 
     let start = false;
 
@@ -730,6 +766,9 @@ export class Voice {
       throw Lang.text('voiceDisabled');
     }
 
+    Voice.infoPanelHiddenByUser = false;
+    Voice.showInfoPanel(true);
+
     if (!this.peer) {
       return;
     }
@@ -773,6 +812,9 @@ export class Voice {
     if (Settings.settings.novoice) {
       throw Lang.text('voiceDisabled');
     }
+
+    Voice.infoPanelHiddenByUser = false;
+    Voice.showInfoPanel(true);
 
     if (!this.peer) {
       return;
