@@ -1231,8 +1231,15 @@ export class View {
     });
 
     const partyData = await App.api.request(App.CURRENT_MM, 'loadParty', {});
+    const dbNickname = String(partyData?.users?.[App.storage.data.id]?.nickname || '').trim();
+    if (dbNickname) {
+      nicknameMenuItem.firstChild.textContent = dbNickname;
+      nicknameMenuItem.firstChild.classList.toggle('castle-name-autoscroll', dbNickname.length > 10);
+      if (App?.storage?.data?.login !== dbNickname) {
+        App.storage.data.login = dbNickname;
+      }
+    }
     const playerRatingVisual = partyData.users[App.storage.data.id]?.playerRatingVisual || 0;
-    console.log('DEBUG: Received partyData from loadParty:', partyData);
     let accountRatingItem = DOM(
       {
         style: 'account-rating-menu-item',
