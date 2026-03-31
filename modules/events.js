@@ -257,7 +257,7 @@ export class Events {
 
 
   static async VCall(data) {
-    if (data.isCaller) {
+    if (data.isCaller && Number(data?.reconnect || 0) !== 1) {
       let playCallSoundLoop = () => {
         Sound.stop('ui-call');
         Sound.play(

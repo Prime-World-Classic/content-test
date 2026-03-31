@@ -73,6 +73,91 @@ export class Voice {
 
   static volumeLevelStep = 0.2;
 
+  static reconnectJobs = new Map();
+
+  static reconnectPlanMs = [2000, 5000, 10000, 15000, 20000];
+
+  static reconnectMaxDurationMs = 15 * 60 * 1000;
+
+  static reconnectDisconnectedGraceMs = 3000;
+
+  static getReconnectToken(id, key) {
+    return `${String(key || '')}:${Number(id) || 0}`;
+  }
+
+  static shouldAutoReconnectKey(key) {
+    return !!key;
+  }
+
+  static stopReconnectJob(id, key) {
+    const token = Voice.getReconnectToken(id, key);
+    const job = Voice.reconnectJobs.get(token);
+    if (!job) return;
+    if (job.timer) {
+      clearTimeout(job.timer);
+      job.timer = null;
+    }
+    Voice.reconnectJobs.delete(token);
+  }
+
+  static stopAllReconnectJobs() {
+    for (const job of Voice.reconnectJobs.values()) {
+      if (job.timer) {
+        clearTimeout(job.timer);
+        job.timer = null;
+      }
+    }
+    Voice.reconnectJobs.clear();
+  }
+
+  static ensureReconnectJob(id, key, name = '', important = false, initialDelayMs = 0) {
+    if (!Voice.shouldAutoReconnectKey(key)) return;
+    const token = Voice.getReconnectToken(id, key);
+    if (Voice.reconnectJobs.has(token)) return;
+    const job = {
+      id: Number(id),
+      key: String(key || ''),
+      name: String(name || ''),
+      important: Boolean(important),
+      attempt: 0,
+      startedAt: Date.now(),
+      timer: null,
+      activeCallAttempt: false,
+    };
+    Voice.reconnectJobs.set(token, job);
+    const run = async () => {
+      const current = Voice.reconnectJobs.get(token);
+      if (!current) return;
+      if (Date.now() - current.startedAt > Voice.reconnectMaxDurationMs) {
+        Voice.stopReconnectJob(current.id, current.key);
+        return;
+      }
+      const existing = Voice.manager[current.id];
+      if (existing && existing.peer && existing.peer.connectionState !== 'closed') {
+        const delayBusy = Voice.reconnectPlanMs[Math.min(current.attempt, Voice.reconnectPlanMs.length - 1)];
+        current.timer = setTimeout(run, delayBusy);
+        return;
+      }
+      let voice = null;
+      try {
+        current.activeCallAttempt = true;
+        voice = new Voice(current.id, current.key, current.name, current.important);
+        await voice.call({ reconnect: 1 });
+      } catch (error) {
+        console.log('Voice reconnect attempt failed:', error);
+        try {
+          voice?.close({ keepReconnect: true });
+        } catch {}
+      } finally {
+        current.activeCallAttempt = false;
+      }
+      current.attempt += 1;
+      const delay = Voice.reconnectPlanMs[Math.min(current.attempt, Voice.reconnectPlanMs.length - 1)];
+      current.timer = setTimeout(run, delay);
+    };
+    job.timer = setTimeout(run, Math.max(0, Number(initialDelayMs) || 0));
+  }
+
   static init() {
     if (!Voice.infoPanel) {
       Voice.infoPanel = DOM({ style: ['voice-info-panel', 'left-offset-with-shift'] }, DOM({ style: 'voice-info-panel-body' }));
@@ -380,6 +465,7 @@ export class Voice {
   }
 
   static destroy(full = false, say = false) {
+    Voice.stopAllReconnectJobs();
     for (let id in Voice.manager) {
       if (!full && Voice.manager[id].important) {
         continue;
@@ -486,6 +572,10 @@ export class Voice {
 
     this.isCaller = false;
 
+    this.reconnectScheduled = false;
+    
+    this.hasEverConnected = false;
+
     this.stream = null;
 
     this.controller = null;
@@ -549,15 +639,40 @@ export class Voice {
       switch (this.peer.iceConnectionState) {
         case 'connected':
           console.log('Соединение успешно установлено');
+          this.hasEverConnected = true;
+          Voice.stopReconnectJob(this.id, this.key);
+          this.reconnectScheduled = false;
           break;
 
         case 'disconnected':
-          this.close();
-          break; // reconnect
+          if (
+            Voice.shouldAutoReconnectKey(this.key) &&
+            this.isCaller &&
+            !this.reconnectScheduled &&
+            (this.key !== 'friend' || this.hasEverConnected)
+          ) {
+            this.reconnectScheduled = true;
+            Voice.ensureReconnectJob(this.id, this.key, this.name, this.important, Voice.reconnectDisconnectedGraceMs);
+            this.close({ keepReconnect: true });
+          } else {
+            this.close();
+          }
+          break;
 
         case 'failed':
-          this.close();
-          break; // reconnect
+          if (
+            Voice.shouldAutoReconnectKey(this.key) &&
+            this.isCaller &&
+            !this.reconnectScheduled &&
+            (this.key !== 'friend' || this.hasEverConnected)
+          ) {
+            this.reconnectScheduled = true;
+            Voice.ensureReconnectJob(this.id, this.key, this.name, this.important, 0);
+            this.close({ keepReconnect: true });
+          } else {
+            this.close();
+          }
+          break;
 
         case 'closed':
           this.close();
@@ -568,7 +683,7 @@ export class Voice {
     };
   }
 
-  async call() {
+  async call(options = {}) {
     if (Settings.settings.novoice) {
       throw Lang.text('voiceDisabled');
     }
@@ -604,6 +719,7 @@ export class Voice {
       id: this.id,
       key: this.key,
       offer: offer,
+      reconnect: Number(options?.reconnect || 0) ? 1 : 0,
     });
 
     this.isCaller = true;
@@ -638,24 +754,20 @@ export class Voice {
   }
 
   async reconnect() {
-    console.log('Реконнект...');
-    this.close();
-
-    if (!this.isCaller) {
-      return;
-    }
-
-    let voice = new Voice(this.id, this.key);
-
-    try {
-      voice.call();
-    } catch (error) {
-      console.log(error);
-    }
+    if (!Voice.shouldAutoReconnectKey(this.key) || !this.isCaller) return;
+    Voice.ensureReconnectJob(this.id, this.key, this.name, this.important, 0);
+    this.close({ keepReconnect: true });
   }
 
-  async close() {
-    this.peer.close();
+  async close(options = {}) {
+    const keepReconnect = Boolean(options?.keepReconnect);
+    if (!keepReconnect) {
+      Voice.stopReconnectJob(this.id, this.key);
+    }
+
+    try {
+      this.peer?.close?.();
+    } catch {}
 
     delete Voice.manager[this.id];
 
