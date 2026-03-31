@@ -572,16 +572,21 @@ export class Voice {
     if (!Array.isArray(users) || !users.length) {
       return;
     }
+    const selfId = Number(App.storage?.data?.id || 0);
 
     for (const item of users) {
       const id = Number(item?.id);
       if (!Number.isFinite(id) || id <= 0) {
         continue;
       }
-      if (id === Number(App.storage?.data?.id || 0)) {
+      if (id === selfId) {
         continue;
       }
       if (id in Voice.manager) {
+        continue;
+      }
+      // Anti-glare rule: only one side initiates (smaller id).
+      if (Number.isFinite(selfId) && selfId > 0 && selfId > id) {
         continue;
       }
 
