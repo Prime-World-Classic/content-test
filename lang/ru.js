@@ -342,6 +342,7 @@ export const ru = {
     cantDefaultMic: 'Не можем найти микрофон по умолчанию',
     waitingResponse: 'ожидание ответа',
     voiceConnecting: 'соединение',
+    voiceReconnectingAttempt: 'переподключение {attempt}',
     callsDropped: 'Звонки успешно сброшены за исключением ваших друзей',
     voiceDisabled: 'Голосовая связь отключена',
     synthesisLang: 'ru-RU',

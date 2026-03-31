@@ -100,6 +100,11 @@ export class Voice {
     Voice.reconnectJobs.delete(token);
   }
 
+  static getReconnectJob(id, key) {
+    const token = Voice.getReconnectToken(id, key);
+    return Voice.reconnectJobs.get(token) || null;
+  }
+
   static stopAllReconnectJobs() {
     for (const job of Voice.reconnectJobs.values()) {
       if (job.timer) {
@@ -362,19 +367,24 @@ export class Voice {
 
     let state = () => {
       let status = '';
+      const reconnectJob = Voice.getReconnectJob(id, Voice.manager[id].key);
 
-      switch (Voice.manager[id].peer.connectionState) {
-        case 'new':
-          status = Lang.text('waitingResponse');
-          break;
+      if (reconnectJob && Voice.manager[id].peer.connectionState !== 'connected') {
+        status = Lang.text('voiceReconnectingAttempt').replace('{attempt}', String((reconnectJob.attempt || 0) + 1));
+      } else {
+        switch (Voice.manager[id].peer.connectionState) {
+          case 'new':
+            status = Lang.text('waitingResponse');
+            break;
 
-        case 'connecting':
-          status = Lang.text('voiceConnecting');
-          break;
+          case 'connecting':
+            status = Lang.text('voiceConnecting');
+            break;
 
-        default:
-          status = Voice.manager[id].peer.connectionState;
-          break;
+          default:
+            status = Voice.manager[id].peer.connectionState;
+            break;
+        }
       }
 
       return Voice.manager[id].peer.connectionState == 'connected' ? `${name} [Х]` : `${name} (${status})`;
@@ -576,6 +586,8 @@ export class Voice {
     
     this.hasEverConnected = false;
 
+    this.allowAutoReconnect = true;
+
     this.stream = null;
 
     this.controller = null;
@@ -646,6 +658,7 @@ export class Voice {
 
         case 'disconnected':
           if (
+            this.allowAutoReconnect &&
             Voice.shouldAutoReconnectKey(this.key) &&
             this.isCaller &&
             !this.reconnectScheduled &&
@@ -661,6 +674,7 @@ export class Voice {
 
         case 'failed':
           if (
+            this.allowAutoReconnect &&
             Voice.shouldAutoReconnectKey(this.key) &&
             this.isCaller &&
             !this.reconnectScheduled &&
@@ -675,7 +689,19 @@ export class Voice {
           break;
 
         case 'closed':
-          this.close();
+          if (
+            this.allowAutoReconnect &&
+            Voice.shouldAutoReconnectKey(this.key) &&
+            this.isCaller &&
+            !this.reconnectScheduled &&
+            (this.key !== 'friend' || this.hasEverConnected)
+          ) {
+            this.reconnectScheduled = true;
+            Voice.ensureReconnectJob(this.id, this.key, this.name, this.important, Voice.reconnectDisconnectedGraceMs);
+            this.close({ keepReconnect: true });
+          } else {
+            this.close();
+          }
           break;
       }
 
@@ -761,6 +787,9 @@ export class Voice {
 
   async close(options = {}) {
     const keepReconnect = Boolean(options?.keepReconnect);
+    if (!keepReconnect) {
+      this.allowAutoReconnect = false;
+    }
     if (!keepReconnect) {
       Voice.stopReconnectJob(this.id, this.key);
     }
