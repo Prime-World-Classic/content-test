@@ -397,7 +397,7 @@ export class Voice {
         event: [
           'click',
           () => {
-            Voice.manager[id].close();
+            Voice.drop(Number(id));
 
             item.remove();
           },
@@ -474,6 +474,19 @@ export class Voice {
     await Voice.manager[id].peer.addIceCandidate(candidate);
   }
 
+  static async remoteDrop(id) {
+    const target = Voice.manager[id];
+    if (!target) return;
+    await target.close();
+  }
+
+  static drop(id) {
+    const target = Voice.manager[id];
+    if (!target) return;
+    App.api.ghost('user', 'callDrop', { id }).catch(() => {});
+    target.close();
+  }
+
   static destroy(full = false, say = false) {
     Voice.stopAllReconnectJobs();
     for (let id in Voice.manager) {
@@ -481,6 +494,9 @@ export class Voice {
         continue;
       }
 
+      if (Number(id) > 0) {
+        App.api.ghost('user', 'callDrop', { id: Number(id) }).catch(() => {});
+      }
       Voice.manager[id].close();
     }
 

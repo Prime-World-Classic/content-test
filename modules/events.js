@@ -293,6 +293,10 @@ export class Events {
     await Voice.candidate(data.id, data.candidate);
   }
 
+  static async VDrop(data) {
+    await Voice.remoteDrop(data.id);
+  }
+
   static VKick() {
     Voice.destroy(true);
   }
