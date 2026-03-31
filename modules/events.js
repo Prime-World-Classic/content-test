@@ -219,6 +219,10 @@ export class Events {
     setTimeout(() => {
       MM.searchActive(false);
     }, 1000);
+    
+    if ((data && Number(data.noWarning) === 1) || data?.noWarning === true) {
+      return;
+    }
 
     let body = document.createDocumentFragment();
 
