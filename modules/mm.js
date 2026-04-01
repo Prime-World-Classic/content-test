@@ -336,7 +336,7 @@ export class MM {
             'click',
             async () => {
               try {
-                Voice.destroy();
+                Voice.destroyTamburCallsOnly();
               } catch (error) {
                 console.log(error);
               }

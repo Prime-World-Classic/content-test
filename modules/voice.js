@@ -89,6 +89,8 @@ export class Voice {
 
   static reconnectJobs = new Map();
 
+  static mergeAutoAcceptUntil = new Map();
+
   static reconnectPlanMs = [2000, 5000, 10000, 15000, 20000];
 
   static reconnectMaxDurationMs = 15 * 60 * 1000;
@@ -97,6 +99,21 @@ export class Voice {
 
   static getReconnectToken(id, key) {
     return `${String(key || '')}:${Number(id) || 0}`;
+  }
+
+  static markMergeAutoAccept(id, ttlMs = 20000) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) return;
+    Voice.mergeAutoAcceptUntil.set(targetId, Date.now() + Math.max(1000, Number(ttlMs) || 20000));
+  }
+
+  static consumeMergeAutoAccept(id) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) return false;
+    const until = Voice.mergeAutoAcceptUntil.get(targetId);
+    if (!until) return false;
+    Voice.mergeAutoAcceptUntil.delete(targetId);
+    return until >= Date.now();
   }
 
   static shouldAutoReconnectKey(key) {
@@ -442,12 +459,13 @@ export class Voice {
       if (Voice.mic.enabled) {
         tutorial.innerHTML = `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}<br>${Lang.text('hotkeyVolumeControl')}`;
       } else {
+        const micLabel = String(Voice.rawMic?.label || Voice.mic?.label || 'microphone');
         tutorial.innerHTML =
           `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}` +
           '<br>' +
           Lang.text('hotkeyVolumeControl') +
           '<br>────────────<br>' +
-          `<strong>${toggleKey}</strong>${Lang.text('enableMicSuffix').replace('{Voice.mic.label}', Voice.mic.label)}`;
+          `<strong>${toggleKey}</strong>${Lang.text('enableMicSuffix').replace('{Voice.mic.label}', micLabel)}`;
       }
     }
 
@@ -585,18 +603,47 @@ export class Voice {
       if (id in Voice.manager) {
         continue;
       }
-      // Anti-glare rule: only one side initiates (smaller id).
+      // Deterministic initiator to avoid both sides calling simultaneously.
       if (Number.isFinite(selfId) && selfId > 0 && selfId > id) {
         continue;
       }
 
       try {
+        Voice.markMergeAutoAccept(id);
         const voice = new Voice(id, 'friend', String(item?.name || ''), true);
         await voice.call({ reconnect: 1 });
       } catch (error) {
         console.log('Voice friend merge failed:', error);
+        const msg = String(error || '').toLowerCase();
+        if (msg.includes('request') && msg.includes('pending')) {
+          setTimeout(async () => {
+            if (id in Voice.manager) return;
+            try {
+              Voice.markMergeAutoAccept(id);
+              const retryVoice = new Voice(id, 'friend', String(item?.name || ''), true);
+              await retryVoice.call({ reconnect: 1 });
+            } catch (retryError) {
+              console.log('Voice friend merge retry failed:', retryError);
+            }
+          }, 700);
+        }
       }
     }
+  }
+
+  static getConnectedPeerIds(excludeId = 0) {
+    const skipId = Number(excludeId) || 0;
+    const result = [];
+    for (const key of Object.keys(Voice.manager)) {
+      const id = Number(key);
+      if (!Number.isFinite(id) || id <= 0 || id === skipId) continue;
+      const item = Voice.manager[key];
+      const state = String(item?.peer?.connectionState || '');
+      if (state === 'connected' || state === 'connecting') {
+        result.push(id);
+      }
+    }
+    return Array.from(new Set(result));
   }
 
   static async remoteDrop(id) {
@@ -652,6 +699,28 @@ export class Voice {
         }
       }
 
+      Voice.updateInfoPanel();
+    }
+  }
+
+  static destroyTamburCallsOnly() {
+    for (let id in Voice.manager) {
+      const target = Voice.manager[id];
+      if (!target) continue;
+      const key = String(target.key || '');
+      // Preserve friend/friend-of-friend calls; drop only MM/tambur scoped calls.
+      if (!key || key === 'friend') {
+        continue;
+      }
+      Voice.stopReconnectJob(Number(id), key);
+      if (Number(id) > 0) {
+        App.api.ghost('user', 'callDrop', { id: Number(id) }).catch(() => {});
+      }
+      target.close();
+    }
+
+    if (Voice.mic && !Object.keys(Voice.manager).length) {
+      Voice.mic.enabled = false;
       Voice.updateInfoPanel();
     }
   }
@@ -930,7 +999,11 @@ export class Voice {
 
     let answer = await this.peer.createAnswer();
 
-    await App.api.ghost('user', 'callAccept', { id: this.id, answer: answer });
+    await App.api.ghost('user', 'callAccept', {
+      id: this.id,
+      answer: answer,
+      mergePeers: Voice.getConnectedPeerIds(this.id),
+    });
 
     await this.peer.setLocalDescription(answer);
 
