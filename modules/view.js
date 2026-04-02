@@ -1945,6 +1945,10 @@ export class View {
       bar.append(addBtn);
     }
 
+    const searchWrap = DOM({
+      style: ['castle-hero-list-search-wrap', View.castleHeroSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
+    });
+
     const search = DOM({
       tag: 'input',
       style: 'castle-hero-list-search',
@@ -1954,12 +1958,38 @@ export class View {
         'input',
         (event) => {
           View.castleHeroSearch = String(event?.target?.value || '');
+          if (View.castleHeroSearch) {
+            searchWrap.classList.add('castle-hero-list-search-wrap-has-value');
+          } else {
+            searchWrap.classList.remove('castle-hero-list-search-wrap-has-value');
+          }
           /* Не пересобирать toolbar: replaceChildren() снимает фокус с input */
           View.renderCastleHeroesFromCache({ refreshToolbar: false });
         },
       ],
     });
-    bar.append(search);
+    const clearSearchBtn = DOM(
+      {
+        tag: 'button',
+        type: 'button',
+        style: 'castle-hero-list-search-clear',
+        domaudio: domAudioPresets.defaultButton,
+        event: [
+          'click',
+          () => {
+            if (!search.value) return;
+            search.value = '';
+            View.castleHeroSearch = '';
+            searchWrap.classList.remove('castle-hero-list-search-wrap-has-value');
+            search.focus();
+            View.renderCastleHeroesFromCache({ refreshToolbar: false });
+          },
+        ],
+      },
+      '×',
+    );
+    searchWrap.append(search, clearSearchBtn);
+    bar.append(searchWrap);
 
   }
 
@@ -2301,6 +2331,10 @@ export class View {
     );
     bar.append(favBtn);
 
+    const searchWrap = DOM({
+      style: ['castle-hero-list-search-wrap', View.castleFriendSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
+    });
+
     const search = DOM({
       tag: 'input',
       style: 'castle-hero-list-search',
@@ -2310,11 +2344,37 @@ export class View {
         'input',
         (event) => {
           View.castleFriendSearch = String(event?.target?.value || '');
+          if (View.castleFriendSearch) {
+            searchWrap.classList.add('castle-hero-list-search-wrap-has-value');
+          } else {
+            searchWrap.classList.remove('castle-hero-list-search-wrap-has-value');
+          }
           View.renderCastleFriendsFromCache({ refreshToolbar: false });
         },
       ],
     });
-    bar.append(search);
+    const clearSearchBtn = DOM(
+      {
+        tag: 'button',
+        type: 'button',
+        style: 'castle-hero-list-search-clear',
+        domaudio: domAudioPresets.defaultButton,
+        event: [
+          'click',
+          () => {
+            if (!search.value) return;
+            search.value = '';
+            View.castleFriendSearch = '';
+            searchWrap.classList.remove('castle-hero-list-search-wrap-has-value');
+            search.focus();
+            View.renderCastleFriendsFromCache({ refreshToolbar: false });
+          },
+        ],
+      },
+      '×',
+    );
+    searchWrap.append(search, clearSearchBtn);
+    bar.append(searchWrap);
   }
 
   static buildCastleFriendListEditorCard() {

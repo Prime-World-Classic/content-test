@@ -1601,6 +1601,10 @@ body {
   z-index: 8;
 }
 
+.castle-bottom-content-container:hover {
+  z-index: 130;
+}
+
 .castle-bottom-content-container::before {
   content: '';
   position: absolute;
@@ -1761,19 +1765,58 @@ body {
 }
 
 .castle-hero-list-search {
-  margin-left: 0.4cqh;
-  width: var(--castle-hero-lists-search-width);
-  height: var(--castle-hero-lists-btn-height);
+  margin-left: 0;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
   border-radius: 1cqh 1cqh 0.55cqh 0.55cqh;
   border: 0.18cqh groove rgb(158, 155, 104);
   outline: none;
   color: rgb(229 212 79 / 95%);
   font: 1.35cqh / 1 'DejaVuSans', sans-serif;
-  padding: 0 0.95cqh var(--castle-hero-lists-content-lift) 0.95cqh;
+  padding: 0 2.75cqh var(--castle-hero-lists-content-lift) 0.95cqh;
   background-image: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
   position: relative;
+  top: 0;
+}
+
+.castle-hero-list-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 0.4cqh;
+  width: var(--castle-hero-lists-search-width);
+  height: var(--castle-hero-lists-btn-height);
   top: var(--castle-hero-lists-controls-lift);
+}
+
+.castle-hero-list-search-clear {
+  position: absolute;
+  right: 0.95cqh;
+  top: 0;
+  width: 2.1cqh;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0 0 var(--castle-hero-lists-content-lift) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: rgba(235, 223, 170, 0.88);
+  font: bold 1.8cqh / 1 'DejaVuSans', sans-serif;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.castle-hero-list-search-wrap-has-value .castle-hero-list-search-clear {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.castle-hero-list-search-clear:hover {
+  filter: brightness(1.2);
 }
 
 .castle-hero-list-search::placeholder {
@@ -2285,6 +2328,14 @@ body {
   z-index: 5;
 }
 
+.castle-chat:hover {
+  z-index: 130;
+}
+
+#wbuild:hover {
+  z-index: 140;
+}
+
 .castle-chat:has(.chat.chat-has-pinned) {
   bottom: 17cqh;
 }
@@ -2372,8 +2423,6 @@ body {
   bottom: 20cqh;
 }
 
-.quest-item-hero {
-}
 .quest-list {
   display: flex;
   flex-direction: column;
@@ -2556,11 +2605,6 @@ body {
 }
 .shop_category_hidden {
   display: none;
-}
-.shop_category_hint {
-  font-size: 2cqh;
-  line-height: 2cqh;
-  color: rgb(234, 230, 123);
 }
 .shop_category_hint {
   font-size: 2cqh;

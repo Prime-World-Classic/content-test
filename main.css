@@ -2,13 +2,6 @@
   width: 0px;
   height: 0px;
 }
-::-webkit-scrollbar-button {
-}
-::-webkit-scrollbar-track-piece {
-}
-::-webkit-scrollbar-thumb {
-}
-
 :root {
   --cursor-pointer: url('img/cursor_button32x32.png') 0 0, pointer;
   --build-hl-h: 199;
@@ -995,26 +988,18 @@ input::placeholder {
   
 }
 
-/* Модификаторы ДОЛЖНЫ содержать только отличия от базового стиля */
-.build-list-close {
-  /* Если нужны специфичные стили, иначе можно удалить этот класс */
-}
-
-
-
 .close-image-style {
   width: 5vh !important;
   height: 5vh !important;
 }
 
 .build-active-bar-hint {
-  width: 150cqw;
+  width: 100cqw;
   font-size: 1.5cqmin;
   font-family: 'DejaVuSans', sans-serif;
   color: rgb(255 255 255 / 50%);
   position: absolute;
   bottom: -7cqh;
-  left: -25cqw;
 }
 
 button.build-action-item {
@@ -1365,20 +1350,20 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .build-talent-item .build-combat-order-badge {
   position: absolute;
-  right: 4cqw;
-  bottom: 4cqw;
+  right: 6cqw;
+  bottom: 6cqw;
   min-width: 22cqw;
-  height: 22cqw;
+  height: 26cqw;
   padding: 0 4cqw;
   border-radius: 6cqw;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font: 16cqw / 1 'DejaVuSans', sans-serif;
+  color: #c2c786b8;
+  font: 21cqw / 1 'DejaVuSans', sans-serif;
   font-weight: 700;
   text-shadow: 0 0 1.2cqw rgba(0, 0, 0, 0.9);
-  background: linear-gradient(180deg, rgba(17, 86, 118, 0.95), rgba(12, 54, 76, 0.95));
+  background: linear-gradient(178deg, rgb(17 86 118 / 65%), rgb(12 54 76 / 65%));
   box-shadow: 0 0 1cqw rgba(0, 0, 0, 0.55);
   pointer-events: none;
   z-index: 1200;
@@ -2937,9 +2922,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 	box-shadow:0 0 25px rgba(0,0,0,0.3);*/
 }
 
-.mm-ready {
-}
-
 .mm-ready-count {
   font: 4rem / 1 'DejaVuSans', sans-serif;
   color: rgba(255, 255, 255, 0.9);
@@ -3002,9 +2984,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   height: 100cqh;
   display: flex;
   flex-flow: column nowrap;
-}
-
-.mm-lobby-confirm {
 }
 
 .mm-lobby-header {
@@ -3076,9 +3055,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 0 0 3px 3px;
   color: rgba(255, 255, 255, 0.7);
-}
-
-.mm-lobby-ready-button {
 }
 
 .mm-lobby-middle-build {
@@ -5124,7 +5100,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   left: 50%;
   top: 15cqh;
   transform: translateX(-50%);
-  z-index: 9998;
+  z-index: 100;
   width: 80cqh;
   max-width: 92vw;
   height: auto;
@@ -5147,6 +5123,10 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   color: #e7f7f9;
   text-align: left;
   overflow: visible;
+}
+
+#wquest:hover {
+  z-index: 140;
 }
 .wquest__avatar,
 .quest_container {
@@ -6556,7 +6536,8 @@ body:has(#wcastle-call)::before {
     align-content: center;
     margin-bottom: 20cqh;
     margin: 0;
-	top: -21cqh;
+	position: relative;
+	top: -26cqh;
   }
   .build-hero-stats-line {
     height: 18cqh;
@@ -6699,9 +6680,7 @@ body:has(#wcastle-call)::before {
   .build-hero-stats-settings {
     margin-top: 1cqh;
     display: flex;
-    position: absolute;
-	top: 30cqh;
-    left: 222cqw;
+    left: 7cqh;
   }
   .build-hero {
     width: 86cqw;
