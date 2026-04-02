@@ -6,6 +6,7 @@ import { Castle } from './castle.js';
 import { Lang } from './lang.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
+import { normalizeKey } from './keybindings/keybindings.input.js';
 
 export class Voice {
   static peerConnectionConfig = {
@@ -96,6 +97,12 @@ export class Voice {
   static reconnectMaxDurationMs = 15 * 60 * 1000;
 
   static reconnectDisconnectedGraceMs = 3000;
+
+  static radioHotkeyListenersBound = false;
+
+  static radioPressedByKeyboard = false;
+
+  static radioPulseTimer = null;
 
   static getReconnectToken(id, key) {
     return `${String(key || '')}:${Number(id) || 0}`;
@@ -226,7 +233,110 @@ export class Voice {
 
     document.body.append(Voice.infoPanel);
 
+    Voice.ensureRadioHotkeyListeners();
+
     requestAnimationFrame(() => Voice.updatePanelPosition());
+  }
+
+  static getVoiceToggleTokens() {
+    const fallback = ['CTRL', 'Z'];
+    const tokens = Array.isArray(Settings.settings?.voiceToggleHotkey) ? Settings.settings.voiceToggleHotkey : fallback;
+    return tokens.map((x) => String(x || '').trim().toUpperCase()).filter(Boolean);
+  }
+
+  static tokensEqual(a, b) {
+    if (!Array.isArray(a) || !Array.isArray(b)) return false;
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (String(a[i]) !== String(b[i])) return false;
+    }
+    return true;
+  }
+
+  static eventMatchesVoiceToggleHotkey(event) {
+    const expected = Voice.getVoiceToggleTokens();
+    if (!expected.length) return false;
+    const actual = normalizeKey(event);
+    return Voice.tokensEqual(expected, Array.isArray(actual) ? actual : []);
+  }
+
+  static async setMicEnabled(enabled) {
+    if (Settings.settings.novoice) return;
+    if (!Voice.userMedia || !Voice.mic) {
+      await Voice.initLocalMedia();
+    }
+    if (!Voice.mic) return;
+    if (Voice.mic.enabled === Boolean(enabled)) return;
+    Voice.mic.enabled = Boolean(enabled);
+    Voice.updateInfoPanel();
+  }
+
+  static async setRadioPressed(pressed) {
+    if (!Settings.settings?.voiceRadioMode) return;
+    const next = Boolean(pressed);
+    if (Voice.radioPressedByKeyboard === next) return;
+    Voice.radioPressedByKeyboard = next;
+    await Voice.setMicEnabled(next);
+  }
+
+  static clearRadioPulseTimer() {
+    if (!Voice.radioPulseTimer) return;
+    clearTimeout(Voice.radioPulseTimer);
+    Voice.radioPulseTimer = null;
+  }
+
+  static async pulseRadioTalk(durationMs = 700) {
+    if (!Settings.settings?.voiceRadioMode) return;
+    if (Voice.radioPressedByKeyboard) return;
+    await Voice.setMicEnabled(true);
+    Voice.clearRadioPulseTimer();
+    Voice.radioPulseTimer = setTimeout(async () => {
+      Voice.radioPulseTimer = null;
+      if (Voice.radioPressedByKeyboard) return;
+      await Voice.setMicEnabled(false);
+    }, Math.max(120, Number(durationMs) || 700));
+  }
+
+  static ensureRadioHotkeyListeners() {
+    if (Voice.radioHotkeyListenersBound) return;
+    Voice.radioHotkeyListenersBound = true;
+
+    document.addEventListener('keydown', async (event) => {
+      if (!Settings.settings?.voiceRadioMode) return;
+      if (event.repeat) return;
+      if (!Voice.eventMatchesVoiceToggleHotkey(event)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      Voice.clearRadioPulseTimer();
+      await Voice.setRadioPressed(true);
+    });
+
+    document.addEventListener('keyup', async (event) => {
+      if (!Settings.settings?.voiceRadioMode) return;
+      if (!Voice.radioPressedByKeyboard) return;
+      const keyUpper = String(event.key || '').trim().toUpperCase();
+      const isModifierRelease = keyUpper === 'CONTROL' || keyUpper === 'ALT' || keyUpper === 'SHIFT' || keyUpper === 'META';
+      const isMainRelease = Voice.eventMatchesVoiceToggleHotkey(event);
+      if (!isModifierRelease && !isMainRelease) return;
+      Voice.clearRadioPulseTimer();
+      await Voice.setRadioPressed(false);
+    });
+
+    window.addEventListener('blur', async () => {
+      Voice.clearRadioPulseTimer();
+      Voice.radioPressedByKeyboard = false;
+      if (Settings.settings?.voiceRadioMode) {
+        await Voice.setMicEnabled(false);
+      }
+    });
+  }
+
+  static async handleVoiceToggleHotkey() {
+    if (Settings.settings?.voiceRadioMode) {
+      await Voice.pulseRadioTalk(700);
+      return;
+    }
+    await Voice.toggleEnabledMic();
   }
 
   static async initLocalMedia() {
@@ -404,12 +514,20 @@ export class Voice {
 
     let bar = DOM({ style: 'voice-info-panel-body-item-bar' }, level);
 
-    if (Voice.mic) {
+    if (!Voice.mic) {
+      level.style.width = '0%';
+      level.classList.remove('voice-info-panel-body-item-bar-level-muted');
+      bar.classList.add('voice-info-panel-body-item-nostream');
+    } else if (Voice.mic.enabled) {
+      level.classList.remove('voice-info-panel-body-item-bar-level-muted');
+      bar.classList.remove('voice-info-panel-body-item-nostream');
       Voice.indication(Voice.userMedia, (percent) => {
         level.style.width = `${percent}%`;
       });
     } else {
-      bar.classList.add('voice-info-panel-body-item-nostream');
+      level.style.width = '0%';
+      bar.classList.remove('voice-info-panel-body-item-nostream');
+      level.classList.add('voice-info-panel-body-item-bar-level-muted');
     }
 
     panelBody.append(
@@ -806,6 +924,8 @@ export class Voice {
     this.reconnectScheduled = false;
     
     this.hasEverConnected = false;
+    
+    this.disconnectTimer = null;
 
     this.allowAutoReconnect = true;
 
@@ -869,31 +989,57 @@ export class Voice {
     };
 
     this.peer.oniceconnectionstatechange = () => {
+      const clearDisconnectTimer = () => {
+        if (this.disconnectTimer) {
+          clearTimeout(this.disconnectTimer);
+          this.disconnectTimer = null;
+        }
+      };
+
       switch (this.peer.iceConnectionState) {
         case 'connected':
           console.log('Соединение успешно установлено');
           this.hasEverConnected = true;
+          if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+          }
+          clearDisconnectTimer();
           Voice.stopReconnectJob(this.id, this.key);
           this.reconnectScheduled = false;
           break;
 
         case 'disconnected':
-          if (
-            this.allowAutoReconnect &&
-            Voice.shouldAutoReconnectKey(this.key) &&
-            this.isCaller &&
-            !this.reconnectScheduled &&
-            (this.key !== 'friend' || this.hasEverConnected)
-          ) {
-            this.reconnectScheduled = true;
-            Voice.ensureReconnectJob(this.id, this.key, this.name, this.important, Voice.reconnectDisconnectedGraceMs);
-            this.close({ keepReconnect: true });
-          } else {
-            this.close();
-          }
+          // WebRTC may report transient "disconnected" during glare/rechecks.
+          // Do not drop UI entry immediately; wait and close only if it persists.
+          clearDisconnectTimer();
+          this.disconnectTimer = setTimeout(() => {
+            this.disconnectTimer = null;
+            if (!this.peer || this.peer.connectionState === 'closed') {
+              this.close();
+              return;
+            }
+            if (this.peer.iceConnectionState !== 'disconnected') {
+              return;
+            }
+            if (
+              this.allowAutoReconnect &&
+              Voice.shouldAutoReconnectKey(this.key) &&
+              this.isCaller &&
+              !this.reconnectScheduled &&
+              (this.key !== 'friend' || this.hasEverConnected)
+            ) {
+              this.reconnectScheduled = true;
+              Voice.ensureReconnectJob(this.id, this.key, this.name, this.important, Voice.reconnectDisconnectedGraceMs);
+              this.close({ keepReconnect: true });
+            } else {
+              this.close();
+            }
+          }, Voice.reconnectDisconnectedGraceMs);
           break;
 
         case 'failed':
+          clearDisconnectTimer();
           if (
             this.allowAutoReconnect &&
             Voice.shouldAutoReconnectKey(this.key) &&
@@ -910,6 +1056,7 @@ export class Voice {
           break;
 
         case 'closed':
+          clearDisconnectTimer();
           if (
             this.allowAutoReconnect &&
             Voice.shouldAutoReconnectKey(this.key) &&
@@ -1023,6 +1170,14 @@ export class Voice {
     }
     if (!keepReconnect) {
       Voice.stopReconnectJob(this.id, this.key);
+    }
+    if (this.disconnectTimer) {
+      clearTimeout(this.disconnectTimer);
+      this.disconnectTimer = null;
+    }
+    if (this.timer) {
+      clearTimeout(this.timer);
+      this.timer = null;
     }
 
     try {

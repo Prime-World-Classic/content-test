@@ -151,7 +151,7 @@ export class NativeAPI {
       NativeAPI.voiceShortcut = new nw.Shortcut({
         key: toggleKey,
         active: () => {
-          Voice.toggleEnabledMic();
+          Voice.handleVoiceToggleHotkey?.();
         },
         failed: (error) => {
           console.log(error);

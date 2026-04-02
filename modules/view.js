@@ -2828,9 +2828,7 @@ export class View {
     View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
     View.castleHeroPinnedEditor?.replaceChildren?.();
     View.loadCastleFriendSelectedList();
-    while (View.castleBottom.firstChild) {
-      View.castleBottom.firstChild.remove();
-    }
+    View.renderCastleFriendsFromCache();
 
     App.api.silent(
       (result) => {

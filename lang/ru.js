@@ -1,4 +1,4 @@
-﻿export const ru = {
+export const ru = {
   locale: ['ru_RU'],
   name: 'Русский',
   word: {
@@ -33,6 +33,7 @@
     radminPriority: 'Приоритет RadminVPN',
     threeD: '3D графика',
     voiceEnabled: 'Выключить войс чат',
+    voiceRadioMode: 'Включить режим рации',
     volume: 'Общая громкость',
     volumeMusic: 'Громкость музыки',
     volumeSound: 'Громкость звуков',

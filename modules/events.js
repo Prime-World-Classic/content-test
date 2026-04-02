@@ -261,6 +261,12 @@ export class Events {
 
 
   static async VCall(data) {
+    const existing = Voice.manager?.[Number(data?.id)];
+    if (existing?.peer && existing.peer.connectionState !== 'closed') {
+      // Cross-calls may arrive while we already have an active/pending connection.
+      // Ignore duplicate incoming invite for the same peer to prevent race-induced drops.
+      return;
+    }
     const forceAutoAccept = Voice.consumeMergeAutoAccept(data?.id);
     if (data.isCaller && Number(data?.reconnect || 0) !== 1 && !forceAutoAccept) {
       let playCallSoundLoop = () => {

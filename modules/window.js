@@ -953,6 +953,26 @@ export class Window {
           DOM({ tag: 'label', for: 'novoice' }, Lang.text('voiceEnabled')),
         ),
         DOM(
+          { style: 'castle-menu-item-checkbox' },
+          DOM(
+            {
+              tag: 'input',
+              domaudio: domAudioPresets.defaultSelect,
+              type: 'checkbox',
+              id: 'voice-radio-mode',
+              checked: Settings.settings.voiceRadioMode,
+              event: [
+                'change',
+                (e) => {
+                  Settings.settings.voiceRadioMode = e.target.checked;
+                },
+              ],
+            },
+            { checked: Settings.settings.voiceRadioMode },
+          ),
+          DOM({ tag: 'label', for: 'voice-radio-mode' }, Lang.text('voiceRadioMode')),
+        ),
+        DOM(
           { style: 'castle-menu-label' },
           Lang.text('volume'),
           DOM({
