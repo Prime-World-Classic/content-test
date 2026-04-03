@@ -284,6 +284,8 @@ export class CastleNAVBAR {
     CastleNAVBAR.body.children[15].style.display = 'none';
 
     CastleNAVBAR.body.children[16].style.display = 'none';
+	
+	window.dispatchEvent(new CustomEvent('CastleModeChanged', { detail: { mode: CastleNAVBAR.mode } }));
   }
 
   static queue(data) {

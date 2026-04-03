@@ -220,6 +220,39 @@ export class Chat {
     return text;
   }
 
+  static extractMessageTimestamp(data) {
+    const candidates = [data?._ts, data?.timestamp, data?.time, data?.date, data?.createdAt];
+    for (const value of candidates) {
+      if (value === undefined || value === null || value === '') continue;
+      let ts = NaN;
+      if (typeof value === 'number') {
+        ts = Number(value);
+      } else if (typeof value === 'string') {
+        const numeric = Number(value);
+        if (Number.isFinite(numeric)) {
+          ts = numeric;
+        } else {
+          const parsed = Date.parse(value);
+          if (Number.isFinite(parsed)) ts = parsed;
+        }
+      } else if (value instanceof Date) {
+        ts = value.getTime();
+      }
+      if (!Number.isFinite(ts)) continue;
+      // treat small numeric timestamps as seconds
+      if (ts > 0 && ts < 1e12) ts *= 1000;
+      if (Number.isFinite(ts) && ts > 0) return Math.floor(ts);
+    }
+    return Date.now();
+  }
+
+  static formatMessageTime(data) {
+    const date = new Date(Chat.extractMessageTimestamp(data));
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+    return `${hh}:${mm}`;
+  }
+
   /** Builds flag, nickname and message nodes with same styling as chat (for viewMessage and pinned list). */
   static buildMessageContent(data) {
     let flag = null;
@@ -290,7 +323,9 @@ export class Chat {
       message.style.color = 'rgba(51,255,0,0.9)';
     }
 
-    return { flag, sourceIcon, nickname, message };
+    const time = DOM({ tag: 'span', style: 'chat-body-item-time' }, `${Chat.formatMessageTime(data)}`);
+
+    return { flag, sourceIcon, nickname, message, time };
   }
 
   static viewMessage(data, fromHistory = false) {
@@ -307,6 +342,9 @@ export class Chat {
 
     if (!data.messageId) {
       data.messageId = `${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+    }
+    if (!Number.isFinite(Number(data?._ts))) {
+      data._ts = Chat.extractMessageTimestamp(data);
     }
 
     const existingItem = Chat.body?.firstChild?.querySelector(
@@ -341,11 +379,11 @@ export class Chat {
       return;
     }
 
-    const { flag, sourceIcon, nickname, message } = Chat.buildMessageContent(data);
+    const { flag, sourceIcon, nickname, message, time } = Chat.buildMessageContent(data);
     const parts = [];
     if (flag) parts.push(flag);
     if (sourceIcon) parts.push(sourceIcon);
-    parts.push(nickname, message);
+    parts.push(nickname, message, time);
     const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
     const item = DOM(
       {
@@ -517,11 +555,11 @@ export class Chat {
     while (list.firstChild) list.firstChild.remove();
 
     Chat.pinnedMessages.forEach((msg) => {
-      const { flag, sourceIcon, nickname, message } = Chat.buildMessageContent(msg);
+      const { flag, sourceIcon, nickname, message, time } = Chat.buildMessageContent(msg);
       const parts = [];
       if (flag) parts.push(flag);
       if (sourceIcon) parts.push(sourceIcon);
-      parts.push(nickname, message);
+      parts.push(nickname, message, time);
       const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
       const row = DOM(
         {

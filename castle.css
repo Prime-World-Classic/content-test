@@ -1792,9 +1792,8 @@ body {
 
 .castle-hero-list-search-clear {
   position: absolute;
-  right: 0.95cqh;
-  top: 0;
-  width: 2.1cqh;
+  right: 0cqh;
+  width: 2.6cqh;
   height: 100%;
   box-sizing: border-box;
   padding: 0 0 var(--castle-hero-lists-content-lift) 0;
@@ -1804,7 +1803,7 @@ body {
   border: none;
   background: transparent;
   color: rgba(235, 223, 170, 0.88);
-  font: bold 1.8cqh / 1 'DejaVuSans', sans-serif;
+  font: bold 1.9cqh / 1 'DejaVuSans', sans-serif;
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s ease;

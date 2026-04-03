@@ -188,6 +188,7 @@ export const ru = {
     mmRandomBuild: 'Случайный билд',
     mmConfirm: 'Подтвердить',
     mmMouseControls: 'ЛКМ (ВЫБРАТЬ) / ПКМ (ЗАБЛОКИРОВАТЬ)',
+    thisHeroIsUnavailableInCurrentGameMode: 'Герой запрещен для текущего режима',
 
     //NativeApi
     updateCheckComplete: 'Проверка обновлений и файлов игры завершена',

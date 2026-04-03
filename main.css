@@ -4588,6 +4588,13 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   color: rgb(250, 229, 108);
 }	
 
+.chat-body-item-time {
+  display: inline-block;
+  margin-left: 0.5cqh;
+  font: 1.25cqh / 1 'DejaVuSans', sans-serif;
+  color: rgb(254 255 235 / 60%);
+}
+
 .chat-pinned-message {
   background: rgba(255, 215, 0, 0.06);
   border-left: 0.2cqh solid rgba(255, 215, 0, 0.7);

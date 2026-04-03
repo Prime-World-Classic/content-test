@@ -40,6 +40,8 @@ export class MM {
   static targetPlayerAnimate = false;
 
   static activeSelectHero = 0;
+  
+  static modeRules = {};
 
   static isInTambur = false;
 
@@ -88,6 +90,12 @@ export class MM {
 
   static async init() {
     MM.initView();
+    
+    MM.loadModeRules();
+    
+    window.addEventListener('CastleModeChanged', () => {
+      MM.loadModeRules();
+    });
 
     // Linux test
     //let testRun = DOM({style:'castle-button-play-test'}, "Test");
@@ -112,6 +120,25 @@ export class MM {
       id: 'MM_found',
       volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
     });
+  }
+  
+  static async loadModeRules() {
+    try {
+      const response = await App.api.request(App.CURRENT_MM, 'modes');
+      MM.modeRules = response || {};
+    } catch (error) {
+      MM.modeRules = {};
+    }
+  }
+  
+  static getBannedHeroesForCurrentMode() {
+    const modeId = Number(CastleNAVBAR.mode);
+    const modeRule = MM.modeRules && MM.modeRules[`${modeId}`] ? MM.modeRules[`${modeId}`] : MM.modeRules?.[modeId];
+    const list = modeRule?.bannedHeroes;
+    if (!Array.isArray(list)) {
+      return new Set();
+    }
+    return new Set(list.map((item) => Number(item)).filter((item) => Number.isFinite(item) && item > 0));
   }
 
   static play() {

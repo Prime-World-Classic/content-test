@@ -771,6 +771,19 @@ export class View {
           // request.sort((a, b) => b.rating - a.rating);
 
           MM.hero = request;
+          
+          let bannedHeroesResponse = new Array();
+          try {
+            bannedHeroesResponse = await App.api.request(App.CURRENT_MM, 'bannedHeroes', { mode: CastleNAVBAR.mode });
+          } catch (error) {
+            bannedHeroesResponse = new Array();
+          }
+          
+          const bannedHeroes = new Set(
+            (Array.isArray(bannedHeroesResponse) ? bannedHeroesResponse : new Array())
+              .map((id) => Number(id))
+              .filter((id) => Number.isFinite(id) && id > 0),
+          );
 
           request.push({ id: 0 });
 
@@ -780,8 +793,20 @@ export class View {
 
           for (let item2 of request) {
             let hero = DOM({ domaudio: domAudioPresets.smallButton });
+            
+            const isBannedInMode = item2.id && bannedHeroes.has(Number(item2.id));
+            if (isBannedInMode) {
+              hero.style.filter = 'grayscale(100%)';
+              hero.style.opacity = '0.6';
+              hero.title = Lang.text('thisHeroIsUnavailableInCurrentGameMode');
+            }
 
             hero.addEventListener('click', async () => {
+              if (isBannedInMode) {
+                App.error(Lang.text('thisHeroIsUnavailableInCurrentGameMode'));
+                return;
+              }
+              
               try {
                 await App.api.request(App.CURRENT_MM, 'heroParty', {
                   id: MM.partyId,
@@ -3236,6 +3261,19 @@ export class View {
           let request = await App.api.request('build', 'heroAll');
 
           MM.hero = request;
+          
+          let bannedHeroesResponse = new Array();
+          try {
+            bannedHeroesResponse = await App.api.request(App.CURRENT_MM, 'bannedHeroes', { mode: CastleNAVBAR.mode });
+          } catch (error) {
+            bannedHeroesResponse = new Array();
+          }
+          
+          const bannedHeroes = new Set(
+            (Array.isArray(bannedHeroesResponse) ? bannedHeroesResponse : new Array())
+              .map((id) => Number(id))
+              .filter((id) => Number.isFinite(id) && id > 0),
+          );
 
           request.push({ id: 0 });
 
@@ -3245,8 +3283,20 @@ export class View {
 
           for (let item of request) {
             let hero = DOM({ domaudio: domAudioPresets.smallButton });
+            
+            const isBannedInMode = item.id && bannedHeroes.has(Number(item.id));
+            if (isBannedInMode) {
+              hero.style.filter = 'grayscale(100%)';
+              hero.style.opacity = '0.6';
+              hero.title = Lang.text('thisHeroIsUnavailableInCurrentGameMode');
+            }
 
             hero.addEventListener('click', async () => {
+              if (isBannedInMode) {
+                App.error(Lang.text('thisHeroIsUnavailableInCurrentGameMode'));
+                return;
+              }
+              
               try {
                 await App.api.request(App.CURRENT_MM, 'heroParty', {
                   id: MM.partyId,

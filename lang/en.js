@@ -185,6 +185,7 @@ export const en = {
     mmRandomBuild: 'Random build',
     mmConfirm: 'Confirm',
     mmMouseControls: 'LMB (SELECT) / RMB (BAN)',
+    thisHeroIsUnavailableInCurrentGameMode: 'This hero is unavailable in the current mode',
 
     //NativeApi
     updateCheckComplete: 'Game update and file check completed',
