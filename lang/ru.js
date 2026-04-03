@@ -1266,8 +1266,10 @@ export const ru = {
     hero_58_skin_2_name: 'Греза',
     hero_59_skin_2_name: 'Снегирь',
     hero_60_skin_2_name: 'Голограмма',
+	hero_61_skin_2_name: 'Индиго',
     hero_62_skin_2_name: 'Чернокнижник',
     hero_63_skin_2_name: 'Проклятая Графиня',
+	hero_64_skin_2_name: 'Факир',
     hero_65_skin_2_name: 'Детоняша',
 
     //Стата талантов

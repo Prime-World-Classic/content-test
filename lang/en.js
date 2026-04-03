@@ -1267,8 +1267,10 @@ assembly: 'Assembly',
     hero_58_skin_2_name: 'Dream',
     hero_59_skin_2_name: 'Bullfinch',
     hero_60_skin_2_name: 'Hologram',
+	hero_61_skin_2_name: 'Indigo',
     hero_62_skin_2_name: 'Warlock',
     hero_63_skin_2_name: 'Cursed Countess',
+	hero_64_skin_2_name: 'Fakir',
     hero_65_skin_2_name: 'Explonya',
 
     //Стата талантов
