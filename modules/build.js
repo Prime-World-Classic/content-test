@@ -2960,12 +2960,28 @@ export class Build {
   }
 
   static applyCalculatedStatDelta(calcKey, statChange) {
+    calcKey = Build.remapTalentStatKeyForHeroResource(calcKey);
+    if (!calcKey) return;
     if (!(calcKey in Build.calculationStats)) return;
     if (calcKey === 'speed') {
       Build.calculationStats[calcKey] = Math.max(Build.calculationStats[calcKey], statChange);
       return;
     }
     Build.calculationStats[calcKey] += statChange;
+  }
+
+  static heroHasZeroBaseEnergy() {
+    const baseMp = Number(Build.initialStats?.mp);
+    return Number.isFinite(baseMp) && Math.abs(baseMp) < 1e-9;
+  }
+
+  static remapTalentStatKeyForHeroResource(statKey) {
+    if (!statKey) return statKey;
+    if (!Build.heroHasZeroBaseEnergy()) return statKey;
+    if (statKey === 'mp') return null;
+    if (statKey === 'regenmp') return 'regenhp';
+    if (statKey === 'regenmpvz') return 'regenhpvz';
+    return statKey;
   }
 
   static resolveConditionalStatKey(rawKey) {
@@ -3321,7 +3337,9 @@ export class Build {
     // Apply animation and change stats in Build.calculationStats
     for (let key2 in add) {
       let statChange = parseFloat(add[key2]);
-      const resolvedKey = Build.resolveConditionalStatKey(key2);
+      const resolvedRawKey = Build.resolveConditionalStatKey(key2);
+      const resolvedKey = Build.remapTalentStatKeyForHeroResource(resolvedRawKey);
+      if (!resolvedKey) continue;
       if (resolvedKey === 'speed') {
         hasSpeedCandidate = true;
         if (Number.isFinite(statChange)) speedBaseCandidate = Math.max(speedBaseCandidate, statChange);
@@ -3334,12 +3352,18 @@ export class Build {
         calcualteSpecialStats(resolvedKey, statChange);
       }
 
-      if (!(key2 in Build.dataStats)) {
+      const animationKey =
+        resolvedKey in Build.dataStats
+          ? resolvedKey
+          : key2 in Build.dataStats
+            ? key2
+            : null;
+      if (!animationKey) {
         continue;
       }
 
       if (animation) {
-        Build.dataStats[key2].animate(
+        Build.dataStats[animationKey].animate(
           { transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] },
           { duration: 250, fill: 'both', easing: 'ease-out' },
         );
