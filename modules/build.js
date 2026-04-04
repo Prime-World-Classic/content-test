@@ -4354,11 +4354,6 @@ export class Build {
               if (Number.isFinite(parsed)) clampMax = parsed;
             }
           }
-          if (Number.isFinite(clampMin) && Number.isFinite(clampMax) && clampMin > clampMax) {
-            const swap = clampMin;
-            clampMin = clampMax;
-            clampMax = swap;
-          }
 
           let resolvedStatAffection;
           let resolvedStatAffection1;
@@ -4430,8 +4425,8 @@ export class Build {
             paramIterator++;
             continue;
           }
-          if (Number.isFinite(clampMin)) outputValue = Math.max(outputValue, clampMin);
-          if (Number.isFinite(clampMax)) outputValue = Math.min(outputValue, clampMax);
+          if (Number.isFinite(clampMin)) outputValue = Math.min(outputValue, clampMin);
+          if (Number.isFinite(clampMax)) outputValue = Math.max(outputValue, clampMax);
           let outputString = outputValue.toFixed(1);
           if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
 
