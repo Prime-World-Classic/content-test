@@ -201,7 +201,10 @@ export const TALENT_SETS = {
   setId_53: {
     talents: [609, 610, 611, 612, 613],
 	addStats: {
-      2: { sr: 6 },
+      1: { speedtal: 5 },
+	  2: { speedtal: 6 },
+	  3: { speedtal: 7 },
+	  4: { speedtal: 8 },
 	},
   },
   setId_54: {
@@ -359,6 +362,12 @@ export const TALENT_SETS = {
       2: { sr: 8 },
       3: { sr: 16 },
     },
+  },
+  setId_85: {
+    talents: [768, 769, 770, 771, 772, 773],
+  },
+  setId_86: {
+    talents: [774, 775, 776, 777],
   },
 };
 

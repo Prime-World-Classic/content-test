@@ -21,6 +21,10 @@ import { getMainHeroTalentId } from './mainHeroTalent.js';
 export class Build {
   static loading = false;
 
+  static shouldShowMmtestIds() {
+    return App.CURRENT_MM === 'mmtest';
+  }
+
   /** HSL hue для подсветки сетов (как rgba(80,190,255)); толщина рамки в мм (макс. 1.5). */
   static BUILD_HIGHLIGHT_HUE_DEFAULT = 199;
   static BUILD_HIGHLIGHT_BORDER_MM_DEFAULT = 0.42;
@@ -28,6 +32,8 @@ export class Build {
   static BUILD_HIGHLIGHT_BORDER_MM_MAX = 1.5;
   static REGEN_HP_FROM_MAX_HP_PCT = 0.0015; // 0.15%
   static REGEN_MP_FROM_MAX_MP_PCT = 0.0036; // 0.36%
+  // Max talent cooldown reduction percent shown in build hero stats and used in CD calculations.
+  static TALENT_COOLDOWN_PCT_MAX = 40;
 
   /** span с числом подсвеченных по стат-фильтру талантов (см. .build-hero-stats-highlight-count). */
   static statFilterHighlightCountValueEl = null;
@@ -2039,7 +2045,11 @@ export class Build {
       else speedAdd = Number(speedAdd);
       talentsStat += speedAdd;
     }
-    return initialStat + talentsStat + powerStat;
+    let total = initialStat + talentsStat + powerStat;
+    if (stat === 'speedtal') {
+      total = Math.max(0, Math.min(Build.TALENT_COOLDOWN_PCT_MAX, total));
+    }
+    return total;
   }
 
   static hero(data) {
@@ -3027,7 +3037,7 @@ export class Build {
     const installedIds = new Set();
     for (const talent of installedTalents || []) {
       const tid = Number(talent?.id);
-      if (Number.isFinite(tid) && tid !== 0) installedIds.add(Math.abs(tid));
+      if (Number.isFinite(tid) && tid !== 0) installedIds.add(tid);
     }
     if (!installedIds.size) return;
 
@@ -3035,8 +3045,8 @@ export class Build {
     const sets = TalentSets.list();
     for (const set of sets) {
       const setIds = TalentSets.getTalentIds(set)
-        .map((id) => Math.abs(Number(id)))
-        .filter((id) => Number.isFinite(id) && id > 0);
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id !== 0);
       if (!setIds.length) continue;
 
       let count = 0;
@@ -3046,7 +3056,7 @@ export class Build {
       if (count <= 0) continue;
 
       const requiredMain = Number(set?.mainNeed);
-      if (Number.isFinite(requiredMain) && requiredMain > 0 && !installedIds.has(Math.abs(requiredMain))) {
+      if (Number.isFinite(requiredMain) && requiredMain !== 0 && !installedIds.has(requiredMain)) {
         continue;
       }
 
@@ -3068,8 +3078,7 @@ export class Build {
             if (!Number.isFinite(mainId) || mainId <= 0) {
               mainId = Number(TalentSets.chooseMainTalentId(set));
             }
-            mainId = Math.abs(mainId);
-            if (Number.isFinite(mainId) && mainId > 0 && installedIds.has(mainId)) {
+            if (Number.isFinite(mainId) && mainId !== 0 && installedIds.has(mainId)) {
               const prev = Number(mainTalentSpeedBonusById.get(mainId)) || 0;
               mainTalentSpeedBonusById.set(mainId, prev + speedDeltaResolved);
             }
@@ -3477,6 +3486,12 @@ export class Build {
           data[index].state = 2;
 
           preload.add(Build.templateViewTalent(data[index]), item);
+          if (Build.shouldShowMmtestIds()) {
+            const talentId = Number(data[index]?.id);
+            if (Number.isFinite(talentId)) {
+              item.dataset.mmtestId = String(talentId);
+            }
+          }
         }
 
         row.append(item);
@@ -3501,6 +3516,7 @@ export class Build {
 
     Build.updateHeroStats();
     Build.renderCombatOrderBadges();
+    Build.syncMmtestTalentIdBadges();
   }
 
   static templateViewTalent(data) {
@@ -3580,6 +3596,12 @@ export class Build {
           Build._inventoryDefaultOrder.set(key, orderIndex);
           let talentContainer = DOM({ style: 'build-talent-item-container' });
           talentContainer.dataset.defaultOrder = `${orderIndex}`;
+          if (Build.shouldShowMmtestIds()) {
+            const talentId = Number(item?.id);
+            if (Number.isFinite(talentId)) {
+              talentContainer.dataset.mmtestId = String(talentId);
+            }
+          }
 
           Build.inventoryView.querySelector('.build-talents').append(talentContainer);
 
@@ -3591,6 +3613,7 @@ export class Build {
           orderIndex++;
         }
 
+        Build.syncMmtestTalentIdBadges();
         Build.loading = false;
         try {
           Build.sortInventory();
@@ -3962,8 +3985,8 @@ export class Build {
 
     const installedIds = new Set();
     for (const talent of Build.installedTalents || []) {
-      const tid = Math.abs(Number(talent?.id));
-      if (Number.isFinite(tid) && tid > 0) installedIds.add(tid);
+      const tid = Number(talent?.id);
+      if (Number.isFinite(tid) && tid !== 0) installedIds.add(tid);
     }
     if (!installedIds.size) return;
 
@@ -3973,8 +3996,8 @@ export class Build {
       if (!set || !item || !item.isConnected) continue;
 
       const setIds = TalentSets.getTalentIds(set)
-        .map((id) => Math.abs(Number(id)))
-        .filter((id) => Number.isFinite(id) && id > 0);
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id !== 0);
       if (!setIds.length) continue;
 
       let count = 0;
@@ -3984,7 +4007,7 @@ export class Build {
       if (count <= 0) continue;
 
       const requiredMain = Number(set?.mainNeed);
-      if (Number.isFinite(requiredMain) && requiredMain > 0 && !installedIds.has(Math.abs(requiredMain))) {
+      if (Number.isFinite(requiredMain) && requiredMain !== 0 && !installedIds.has(requiredMain)) {
         continue;
       }
 
@@ -4015,8 +4038,7 @@ export class Build {
         if (speeddTotal !== 0 && Build.heroRowMatchesResolvedSetStatKey(heroRowKey, 'speed')) {
           let mainId = Number(set?.mainNeed);
           if (!Number.isFinite(mainId) || mainId <= 0) mainId = Number(TalentSets.chooseMainTalentId(set));
-          mainId = Math.abs(mainId);
-          if (Number.isFinite(mainId) && mainId > 0 && installedIds.has(mainId)) {
+          if (Number.isFinite(mainId) && mainId !== 0 && installedIds.has(mainId)) {
             matched = true;
             break;
           }
@@ -4289,19 +4311,53 @@ export class Build {
           if (paramIterator >= params.length) return;
 
           const param = params[paramIterator];
-          const paramValues = String(param || '').split(',');
+          const paramValues = String(param || '')
+            .split(',')
+            .map((value) => String(value).trim());
 
           let statAffection, minValue, maxValue;
-          if (paramValues.length == 5) {
+          let dynamicByStat = false;
+          let optionalTokens = new Array();
+          if (paramValues.length >= 5) {
             minValue = parseFloat(paramValues[1]);
             maxValue = parseFloat(paramValues[2]);
             statAffection = paramValues[4];
-          } else if (paramValues.length == 3) {
+            dynamicByStat = true;
+            optionalTokens = paramValues.slice(5);
+          } else if (paramValues.length >= 3) {
             minValue = parseFloat(paramValues[0]);
             maxValue = parseFloat(paramValues[1]);
             statAffection = paramValues[2];
+            optionalTokens = paramValues.slice(3);
           } else {
             continue;
+          }
+
+          if (!Number.isFinite(minValue) || !Number.isFinite(maxValue) || !statAffection) {
+            paramIterator++;
+            continue;
+          }
+
+          let clampMin = null;
+          let clampMax = null;
+          for (const token of optionalTokens) {
+            const rawToken = String(token || '');
+            const minMatch = rawToken.match(/^min\s*:\s*(-?\d+(?:\.\d+)?)$/i);
+            if (minMatch) {
+              const parsed = Number(minMatch[1]);
+              if (Number.isFinite(parsed)) clampMin = parsed;
+              continue;
+            }
+            const maxMatch = rawToken.match(/^max\s*:\s*(-?\d+(?:\.\d+)?)$/i);
+            if (maxMatch) {
+              const parsed = Number(maxMatch[1]);
+              if (Number.isFinite(parsed)) clampMax = parsed;
+            }
+          }
+          if (Number.isFinite(clampMin) && Number.isFinite(clampMax) && clampMin > clampMax) {
+            const swap = clampMin;
+            clampMin = clampMax;
+            clampMax = swap;
           }
 
           let resolvedStatAffection;
@@ -4345,7 +4401,7 @@ export class Build {
             return a + alpha * (b - a);
           }
 
-          let outputString;
+          let outputValue;
           if (statAffection == 'sr_sum' || statAffection == 'ph_sum' || statAffection == 'sv_sum' || statAffection == 'hpmp_sum') {
             let resolvedTotalStat1 = Build.totalStat(resolvedStatAffection1);
             let resolvedTotalStat2 = Build.totalStat(resolvedStatAffection2);
@@ -4356,22 +4412,28 @@ export class Build {
               resolvedStatAffection2 == 'mp';
             const param1 = isHpOrEnergy ? 600.0 : 50.0;
             const param2 = isHpOrEnergy ? 6250.0 : 250.0;
-            outputString = lerp(minValue, maxValue, (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2).toFixed(1);
-            if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
+            outputValue = lerp(minValue, maxValue, (resolvedTotalStat1 + resolvedTotalStat2 - param1) / param2);
           } else {
-            if (resolvedStatAffection in Build.dataStats && paramValues.length == 5) {
+            if (resolvedStatAffection in Build.dataStats && dynamicByStat) {
               let resolvedTotalStat = Build.totalStat(resolvedStatAffection);
               const isHpOrEnergy = resolvedStatAffection == 'hp' || resolvedStatAffection == 'mp';
               const param1 = isHpOrEnergy ? 600.0 : 50.0;
               const param2 = isHpOrEnergy ? 6250.0 : 250.0;
-              outputString = lerp(minValue, maxValue, (resolvedTotalStat - param1) / param2).toFixed(1);
-              if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
+              outputValue = lerp(minValue, maxValue, (resolvedTotalStat - param1) / param2);
             } else {
               let refineBonus = Build.getTalentRefineByRarity(talentData.rarity);
-              outputString = (minValue + maxValue * refineBonus).toFixed(1);
-              if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
+              outputValue = minValue + maxValue * refineBonus;
             }
           }
+
+          if (!Number.isFinite(outputValue)) {
+            paramIterator++;
+            continue;
+          }
+          if (Number.isFinite(clampMin)) outputValue = Math.max(outputValue, clampMin);
+          if (Number.isFinite(clampMax)) outputValue = Math.min(outputValue, clampMax);
+          let outputString = outputValue.toFixed(1);
+          if (outputString.endsWith('.0')) outputString = outputString.replace('.0', '');
 
           if (specialTag.innerHTML) specialTag.innerHTML = tagString.replace('%s', outputString);
           else outerTag.innerHTML = tagString.replace('%s', outputString);
@@ -4396,7 +4458,7 @@ export class Build {
     if (!cdNodes.length) return;
 
     const rawPct = Number(Build.totalStat('speedtal'));
-    const cdPct = Number.isFinite(rawPct) ? Math.max(0, Math.min(100, rawPct)) : 0;
+    const cdPct = Number.isFinite(rawPct) ? Math.max(0, Math.min(Build.TALENT_COOLDOWN_PCT_MAX, rawPct)) : 0;
     if (cdPct <= 0) return;
 
     for (const cdNode of cdNodes) {
@@ -5098,6 +5160,13 @@ export class Build {
 
       const item = DOM({ style: 'build-set-item' });
       item.style.backgroundImage = `url("${src}")`;
+      if (Build.shouldShowMmtestIds()) {
+        const rawSetId = String(set?.key || '').match(/setId_(\d+)/);
+        const numericSetId = Number(rawSetId?.[1]);
+        if (Number.isFinite(numericSetId)) {
+          item.dataset.mmtestId = String(numericSetId);
+        }
+      }
       Build._renderedSetEntries.push({ set, item });
 
       const ids = TalentSets.getTalentIds(set);
@@ -5616,6 +5685,30 @@ export class Build {
     }
   }
 
+  static syncMmtestTalentIdBadges() {
+    const shouldShow = Build.shouldShowMmtestIds();
+    const syncHost = (host) => {
+      if (!host) return;
+      if (!shouldShow) {
+        delete host.dataset.mmtestId;
+        return;
+      }
+      const talentNode = host.querySelector('.build-talent-item');
+      const talentId = Number(talentNode?.dataset?.id);
+      if (Number.isFinite(talentId) && talentId !== 0) {
+        host.dataset.mmtestId = String(talentId);
+      } else {
+        delete host.dataset.mmtestId;
+      }
+    };
+    for (const container of Build.inventoryView?.querySelectorAll?.('.build-talent-item-container') || []) {
+      syncHost(container);
+    }
+    for (const cell of Build.fieldView?.querySelectorAll?.('.build-hero-grid-item') || []) {
+      syncHost(cell);
+    }
+  }
+
   static refreshLocalBuildUiAfterSet(ids, set = null) {
     try {
       Build.updateHeroStats();
@@ -5626,6 +5719,7 @@ export class Build {
       Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
       Build.ensureTalentIdsPresentInInventory(ids);
       Build.sortInventory();
+      Build.syncMmtestTalentIdBadges();
       if (set) Build.applySetInventoryOrder(set);
     } catch {}
   }
@@ -5659,6 +5753,7 @@ export class Build {
       const preload = new PreloadImages(cell);
       preload.add(view, cell);
     }
+    Build.syncMmtestTalentIdBadges();
   }
 
   static ensureTalentIdsPresentInInventory(ids) {
@@ -5696,6 +5791,7 @@ export class Build {
       Build.attachDefaultOrderDatasetToInventoryContainer(talentContainer);
       existing.set(key, talentContainer);
     }
+    Build.syncMmtestTalentIdBadges();
   }
 
   static refreshForcedSetOnlyTalentIds() {
@@ -6325,6 +6421,7 @@ export class Build {
 
         try {
           // Всегда пересчитать видимость (в т.ч. скрыть дубликаты «в билде + в библиотеке» без режима сета).
+          Build.syncMmtestTalentIdBadges();
           Build.sortInventory();
         } catch {}
 

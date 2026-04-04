@@ -26,6 +26,46 @@ import { Sound } from './sound.js';
 import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/keybindings.io.js';
 import { getHeroSearchAliases } from './heroSearchAliases.js';
 
+const KEYBOARD_LAYOUT_EN_TO_RU = {
+  q: 'й',
+  w: 'ц',
+  e: 'у',
+  r: 'к',
+  t: 'е',
+  y: 'н',
+  u: 'г',
+  i: 'ш',
+  o: 'щ',
+  p: 'з',
+  '[': 'х',
+  ']': 'ъ',
+  a: 'ф',
+  s: 'ы',
+  d: 'в',
+  f: 'а',
+  g: 'п',
+  h: 'р',
+  j: 'о',
+  k: 'л',
+  l: 'д',
+  ';': 'ж',
+  "'": 'э',
+  z: 'я',
+  x: 'ч',
+  c: 'с',
+  v: 'м',
+  b: 'и',
+  n: 'т',
+  m: 'ь',
+  ',': 'б',
+  '.': 'ю',
+  '/': '.',
+  '`': 'ё',
+};
+const KEYBOARD_LAYOUT_RU_TO_EN = Object.fromEntries(
+  Object.entries(KEYBOARD_LAYOUT_EN_TO_RU).map(([enChar, ruChar]) => [ruChar, enChar]),
+);
+
 export class View {
   static mmQueueMap = {};
   static _actionBarCfgEnsured = false;
@@ -80,6 +120,26 @@ export class View {
     }
 
     View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
+  }
+
+  static shouldShowMmtestIds() {
+    return App.CURRENT_MM === 'mmtest';
+  }
+
+  static remapQueryByKeyboardLayout(value, layoutMap) {
+    return String(value || '')
+      .split('')
+      .map((char) => layoutMap[char] || char)
+      .join('');
+  }
+
+  static getLayoutAwareSearchVariants(value) {
+    const normalized = String(value || '').trim().toLowerCase();
+    if (!normalized) return [];
+    const variants = new Set([normalized]);
+    variants.add(View.remapQueryByKeyboardLayout(normalized, KEYBOARD_LAYOUT_EN_TO_RU));
+    variants.add(View.remapQueryByKeyboardLayout(normalized, KEYBOARD_LAYOUT_RU_TO_EN));
+    return [...variants].filter(Boolean);
   }
 
   static setCastleOpenedBuildHero(heroId = 0) {
@@ -2167,7 +2227,8 @@ export class View {
       View.castleHeroPrevSelectedList = selectedList;
     }
     const editMode = selectedList > 0 ? View.castleHeroListEditMode : '';
-    const searchValue = String(View.castleHeroSearch || '').trim().toLowerCase();
+    const searchVariants = View.getLayoutAwareSearchVariants(View.castleHeroSearch);
+    const hasSearch = searchVariants.length > 0;
     const preload = new PreloadImages(View.castleBottom);
     const pinnedEditorRoot = View.castleHeroPinnedEditor;
     let renderedHeroCount = 0;
@@ -2189,7 +2250,7 @@ export class View {
         .filter(Boolean)
         .join(' ');
       const filterHaystack = `${localizedName} ${fallbackName} ${customNames}`.toLowerCase();
-      if (searchValue && !filterHaystack.includes(searchValue)) {
+      if (hasSearch && !searchVariants.some((variant) => filterHaystack.includes(variant))) {
         continue;
       }
 
@@ -2220,6 +2281,10 @@ export class View {
         heroNameBase,
       );
 
+      if (View.shouldShowMmtestIds()) {
+        hero.dataset.mmtestId = String(item.id);
+      }
+
       hero.dataset.heroId = String(item.id);
       hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;
 
@@ -2247,7 +2312,7 @@ export class View {
     }
 
     if (renderedHeroCount === 0) {
-      const emptyText = searchValue ? 'Ничего не найдено' : 'Список пуст';
+      const emptyText = hasSearch ? 'Ничего не найдено' : 'Список пуст';
       View.castleBottom.append(
         DOM(
           { style: ['castle-hero-item', 'castle-hero-list-empty-item'] },
@@ -2526,7 +2591,8 @@ export class View {
 
     const selectedList = Number(View.castleFriendSelectedList) || 0;
     const editMode = selectedList > 0 ? View.castleFriendListEditMode : '';
-    const searchValue = String(View.castleFriendSearch || '').trim().toLowerCase();
+    const searchVariants = View.getLayoutAwareSearchVariants(View.castleFriendSearch);
+    const hasSearch = searchVariants.length > 0;
     const pinnedEditorRoot = View.castleHeroPinnedEditor;
     const preload = new PreloadImages(View.castleBottom);
 
@@ -2674,7 +2740,8 @@ export class View {
     for (let item of View.castleFriendAll || []) {
       const status = Number(item?.status);
       const nickname = String(item?.nickname || '');
-      if (searchValue && !nickname.toLowerCase().includes(searchValue)) continue;
+      const nicknameLower = nickname.toLowerCase();
+      if (hasSearch && !searchVariants.some((variant) => nicknameLower.includes(variant))) continue;
       const inList = status === 1 && View.isCastleFriendInList(item, 1);
       if (selectedList > 0) {
         const inFavList = View.isCastleFriendInList(item, 1);
