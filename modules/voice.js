@@ -91,6 +91,8 @@ export class Voice {
   static reconnectJobs = new Map();
 
   static mergeAutoAcceptUntil = new Map();
+  
+  static battleSuspendedPeers = new Map();
 
   static reconnectPlanMs = [2000, 5000, 10000, 15000, 20000];
 
@@ -125,6 +127,15 @@ export class Voice {
 
   static shouldAutoReconnectKey(key) {
     return !!key;
+  }
+
+  static isFriendScopedConnection(target) {
+    const key = String(target?.key || '');
+    if (key === 'friend') {
+      return true;
+    }
+    // Backward compatibility: old friend calls could arrive without key.
+    return !key && Boolean(target?.important);
   }
 
   static stopReconnectJob(id, key) {
@@ -764,6 +775,72 @@ export class Voice {
     return Array.from(new Set(result));
   }
 
+  static suspendPeersForBattle(allyIds = []) {
+    const cleanIds = Array.from(new Set((allyIds || []).map((x) => Number(x)).filter((x) => Number.isFinite(x) && x > 0)));
+    const allySet = new Set(cleanIds);
+    for (const idText of Object.keys(Voice.manager)) {
+      const id = Number(idText);
+      if (allySet.has(id)) {
+        continue;
+      }
+      const target = Voice.manager[idText];
+      if (!target) {
+        continue;
+      }
+
+      const key = String(target.key || '');
+      Voice.stopReconnectJob(id, key);
+
+      if (Voice.isFriendScopedConnection(target)) {
+        if (!Voice.battleSuspendedPeers.has(id)) {
+          Voice.battleSuspendedPeers.set(id, {
+            id,
+            key: key || 'friend',
+            name: String(target.name || ''),
+            important: Boolean(target.important),
+          });
+        }
+        App.api.ghost('user', 'callPause', { id }).catch(() => {
+          App.api.ghost('user', 'callDrop', { id }).catch(() => {});
+        });
+      } else {
+        App.api.ghost('user', 'callDrop', { id }).catch(() => {});
+      }
+
+      target.close();
+    }
+
+    if (Voice.mic && !Object.keys(Voice.manager).length) {
+      Voice.mic.enabled = false;
+      Voice.updateInfoPanel();
+    }
+  }
+
+  static restoreSuspendedBattlePeers() {
+    if (!Voice.battleSuspendedPeers.size) {
+      return;
+    }
+
+    const list = Array.from(Voice.battleSuspendedPeers.values());
+    Voice.battleSuspendedPeers.clear();
+
+    let delayMs = 0;
+    for (const item of list) {
+      setTimeout(async () => {
+        if (item.id in Voice.manager) {
+          return;
+        }
+        try {
+          const voice = new Voice(item.id, String(item.key || 'friend'), String(item.name || ''), Boolean(item.important));
+          await voice.call({ reconnect: 1 });
+        } catch (error) {
+          console.log('Voice battle restore failed:', error);
+        }
+      }, delayMs);
+      delayMs += 250;
+    }
+  }
+
   static async remoteDrop(id) {
     const target = Voice.manager[id];
     if (!target) return;
@@ -779,6 +856,7 @@ export class Voice {
 
   static destroy(full = false, say = false) {
     Voice.stopAllReconnectJobs();
+    Voice.battleSuspendedPeers.clear();
     for (let id in Voice.manager) {
       if (!full && Voice.manager[id].important) {
         continue;
@@ -827,7 +905,7 @@ export class Voice {
       if (!target) continue;
       const key = String(target.key || '');
       // Preserve friend/friend-of-friend calls; drop only MM/tambur scoped calls.
-      if (!key || key === 'friend') {
+      if (Voice.isFriendScopedConnection(target)) {
         continue;
       }
       Voice.stopReconnectJob(Number(id), key);

@@ -1532,12 +1532,9 @@ export class Window {
   }
 
   static async callWindow() {
-    console.log('callWindow вызван, данные:', Window.callData);
-
     const data = Window.callData;
 
     if (!data) {
-      console.warn('Нет данных для окна звонка');
       return DOM({ id: 'wcastle-call' });
     }
 
@@ -1547,7 +1544,6 @@ export class Window {
     }
 
     const callTimeout = setTimeout(() => {
-      console.log('Таймаут 15 секунд, звонок автоматически отменяется');
       Sound.stop('ui-call');
 
       if (Window.windows['main'] && Window.windows['main'].id === 'wcastle-call') {
@@ -1578,7 +1574,7 @@ export class Window {
               async () => {
                 Sound.stop('ui-call');
                 try {
-                  let voice = new Voice(data.id, '', data.name, true);
+                  let voice = new Voice(data.id, String(data?.key || ''), data.name, true);
                   await voice.accept(data.offer);
                   Window.callData = null;
                   Window.close('main');

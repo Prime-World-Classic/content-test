@@ -261,6 +261,14 @@ export class Events {
 
 
   static async VCall(data) {
+    const callKey = String(data?.key || '');
+    if (MM.isInBattle && callKey === 'friend') {
+      return;
+    }
+    const activeMatchKey = String(MM.id || '');
+    if ((MM.isInTambur || MM.isInBattle) && (!activeMatchKey || callKey !== activeMatchKey)) {
+      return;
+    }
     const existing = Voice.manager?.[Number(data?.id)];
     if (existing?.peer && existing.peer.connectionState !== 'closed') {
       // Cross-calls may arrive while we already have an active/pending connection.
@@ -290,7 +298,7 @@ export class Events {
       Window.show('main', 'callWindow');
 		
     } else {
-      let voice = new Voice(data.id, '', data.name);
+      let voice = new Voice(data.id, callKey, data.name);
 
       await voice.accept(data.offer);
     }
@@ -309,6 +317,9 @@ export class Events {
   }
 
   static async VFriendMerge(data) {
+    if (MM.isInTambur || MM.isInBattle) {
+      return;
+    }
     await Voice.mergeFriendCalls(data?.users || []);
   }
 

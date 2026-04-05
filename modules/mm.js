@@ -42,8 +42,13 @@ export class MM {
   static activeSelectHero = 0;
 
   static isInTambur = false;
+  
+  static isInBattle = false;
+  
+  static skipVoiceRestoreOnClose = false;
 
   static gameRunEvent() {
+    MM.isInBattle = true;
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, false);
     document.body.style.display = 'none';
@@ -53,6 +58,7 @@ export class MM {
   }
 
   static gameStopEvent() {
+    MM.isInBattle = false;
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, true);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, true);
     document.body.style.display = 'block';
@@ -69,6 +75,8 @@ export class MM {
     }
 
     View.show('castle');
+
+    Voice.restoreSuspendedBattlePeers();
   }
 
   static initView() {
@@ -143,6 +151,12 @@ export class MM {
       clearTimeout(MM.pendingHeroFlushTimer);
       MM.pendingHeroFlushTimer = 0;
     }
+    
+    if (!MM.skipVoiceRestoreOnClose) {
+      Voice.restoreSuspendedBattlePeers();
+    }
+    
+    MM.skipVoiceRestoreOnClose = false;
 
     MM.view.style.display = 'none';
 
@@ -293,6 +307,8 @@ export class MM {
 
         if (request.type == 'reconnect') {
           MM.searchActive(false);
+          
+          MM.id = request.id;
 
           MM.gameRunEvent();
 
@@ -326,6 +342,12 @@ export class MM {
     MM.searchActive(false);
 
     MM.soundEvent();
+    
+    try {
+      Voice.destroyTamburCallsOnly();
+    } catch (error) {
+      console.log(error);
+    }
 
     if (canConfirm) {
       let button = DOM(
@@ -335,12 +357,6 @@ export class MM {
           event: [
             'click',
             async () => {
-              try {
-                Voice.destroyTamburCallsOnly();
-              } catch (error) {
-                console.log(error);
-              }
-  
               try {
                 await App.api.request(App.CURRENT_MM, 'ready', { id: data.id });
               } catch (error) {
@@ -844,13 +860,23 @@ export class MM {
     }
 
     try {
+      const myId = Number(App.storage?.data?.id || 0);
+      const myTeam = data?.users?.[myId]?.team;
+      const allyIds = new Array();
       let list = new Array();
 
       for (let key of data.map) {
-        if (data.users[App.storage.data.id].team == data.users[key].team) {
-          list.push({ id: key, name: data.users[key].nickname });
+        const peerId = Number(key);
+        if (!Number.isFinite(peerId) || peerId <= 0) {
+          continue;
+        }
+        if (myTeam && data.users[key].team == myTeam) {
+          allyIds.push(peerId);
+          list.push({ id: peerId, name: data.users[key].nickname });
         }
       }
+      
+      Voice.suspendPeersForBattle(allyIds);
 
       Voice.association(App.storage.data.id, list, data.id);
     } catch (error) {
@@ -1069,6 +1095,7 @@ export class MM {
 
   static finish(data) {
     Timer.stop();
+    MM.skipVoiceRestoreOnClose = true;
     MM.close();
 
     MM.isInTambur = false;
