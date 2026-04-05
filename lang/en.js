@@ -1380,7 +1380,7 @@ assembly: 'Assembly',
       'With a <num>25%</num> chance, ghosts of the fallen may appear near the hero for <num>30</num> sec. Ghosts additionally gain <num>%s</num> Stamina or Will (based on the higher of Strength or Intellect).<br>Ghosts of enemies killed by the hero always appear.',
     htalent_20_name: 'All for One',
     htalent_20_description:
-      'For each controlled creature, the hero gains <num>%s</num> Health (based on Strength) and <num>%s</num> to the higher of Stamina or Will (based on Strength).<br>Enemy heroes under the effect of Call of the Flute or Charming Melody count as <num>3</num> controlled creatures.',
+      'For each creature under the hero\'s control (up to <num>5</num>), the hero\'s Health and Agility increase by <num>3%</num>.<br>Enemy heroes under Call of the Flute or Charming Melody count as <num>3</num> controlled creatures.',
     htalent_21_name: 'Enchanted Arrows',
     htalent_21_description:
       "The hero's attack deals additional <mag>%s</mag> - <mag>%s</mag> damage (based on Strength). Passively provides <num>%s</num> Life Steal (based on Intellect).<br>Class talents simultaneously deal <fiz></fiz> and <mag></mag> damage.",
@@ -2409,7 +2409,7 @@ assembly: 'Assembly',
     htalent_389_description: 'Increases the range of the Stasis talent.',
     htalent_390_name: 'Groovy',
     htalent_390_description:
-      "Applying class talent enhances the next hit by <mag>%s</mag> damage. While an enhanced attack is prepared, the hero has a <num>20%</num> chance to evade the enemy's attack.<br>\The hero's next blow also stuns the target for 0.2</num> seconds.",
+      'Using a class talent empowers the next attack with <mag>%s</mag> damage. The effect stacks up to <num>3</num> times and lasts for <num>10</num> sec; damage and stun duration stack. While an empowered attack is readied, the hero has a <num>7%</num> chance to dodge an enemy attack for each active stack.<br>The next attack also stuns the target for <num>0.2</num> sec.',
     htalent_391_name: 'Somersault <mana>50</mana> <CD>14</CD>',
     htalent_391_description:
       'Moves in the specified direction and deals <mag>%s</mag> damage to all enemies on the way.<br>\n Within <num>6</num> seconds, the talent can be applied <num>1</num> more times.',
@@ -2428,7 +2428,8 @@ assembly: 'Assembly',
     htalent_396_description:
       'Deals enemy hero <fiz>%s</fiz> damage (from the highest of Strength and Intellect), knocks him away, and then stuns him for <num>0.5</num> sec.<br>A dropped enemy hero deals <fiz>%s</fiz> damage to all enemies in its path before landing.',
     htalent_397_name: 'Whipped cream',
-    htalent_397_description: 'Using the Milkshake talent reduces incoming damage by <num>40%</num> for <num>6</num> seconds.',
+    htalent_397_description:
+      'Using the Milkshake talent reduces incoming damage by <num>%s%</num> (based on the higher of Strength or Intellect) for <num>6</num> sec.',
     htalent_398_name: 'The Forgetting Stick',
     htalent_398_description:
       'Repeated application of the Kiss Through talent for <num>10</num> seconds takes the hero to the dropped enemy, after which the hero deals additional <fiz>%s</fiz> damage to him.',
@@ -3271,7 +3272,7 @@ assembly: 'Assembly',
     htalent_704_description: 'The Frost Onslaught talent stuns for <num>0.2</num> seconds more and deals <num>35%</num> more damage.',
     htalent_705_name: 'Reckless',
     htalent_705_description:
-      "The Clockwork talent additionally deals damage equal to <num>3%</num> of max. Attack target's health and stuns for <num>0.1</num> seconds longer.",
+      "The Clockwork talent additionally deals damage equal to <mag>1.7%</mag> of the attack target's maximum Health and stuns for <num>0.15</num> sec longer.",
     htalent_706_name: 'Sugar riot',
     htalent_706_description:
       'The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent\'s cooldown by <num>5</num> seconds.',
@@ -3650,7 +3651,7 @@ assembly: 'Assembly',
     talent_16_description: 'Increases the Health regeneration of the hero and nearby allies by <num>%s</num>',
     talent_17_name: 'Self-confidence',
     talent_17_description:
-      'The stamina and Will of all allies around increase by <num>%s</num>.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The stamina and Will of all allies around increase by <num>%s</num>.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_18_name: 'Education',
     talent_18_description: ' ',
     talent_19_name: 'Stealing a life',
@@ -3716,7 +3717,7 @@ assembly: 'Assembly',
     talent_44_description: 'Every <num>5</num> seconds restores <num>%s</num> (From Intellect) Health to all allies around.',
     talent_45_name: 'Determination',
     talent_45_description:
-      'For every <num>1%</num> reduce <CD></CD> of the talents, the hero gains <num>0.8</num> to the higher of Strength or Intellect.',
+      'For every <num>1%</num> reduce <CD></CD> of the talents, the hero gains <num>0.5</num> to the higher of Strength or Intellect.',
     talent_46_name: 'Ferocity',
     talent_46_description: ' ',
     talent_47_name: 'Master',
@@ -3761,7 +3762,7 @@ assembly: 'Assembly',
     talent_62_description: ' ',
     talent_63_name: 'Regeneration',
     talent_63_description:
-      'The Health regeneration of all allies around increases by <num>%s</num>. <br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The Health regeneration of all allies around increases by <num>%s</num>. <br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_64_name: 'Sprout of Life',
     talent_64_description:
       "The hero's maximum health increases by <num>14</num> every minute. The maximum total increase is <num>%s</num>.",
@@ -3784,7 +3785,7 @@ assembly: 'Assembly',
     talent_71_description: ' ',
     talent_72_name: 'The Undying Intellect',
     talent_72_description:
-      'The energy regeneration of all allies around increases by <num>%s</num>.<br><br><gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The energy regeneration of all allies around increases by <num>%s</num>.<br><br><gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_73_name: 'The Power of Life',
     talent_73_description:
       'The attack deals an additional <fiz>10</fiz> damage to the enemy hero for each killed forest monster and an additional <fiz>+2</fiz> damage for each hero level. Superimposed a maximum of <num>8</num> times.',
@@ -3968,7 +3969,7 @@ assembly: 'Assembly',
     talent_154_description: ' ',
     talent_155_name: 'Relentless Onslaught',
     talent_155_description:
-      '<num>+%s</num> Cunnings for all the allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Cunning to all allies around. (On summoned creatures, <num>30%</num> weaker.)<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_156_name: 'Temple of the Soul',
     talent_156_description: ' ',
     talent_157_name: 'Aspiring Strength',
@@ -3979,7 +3980,7 @@ assembly: 'Assembly',
     talent_159_description: ' ',
     talent_160_name: 'A swift onslaught',
     talent_160_description:
-      '<num>+%s</num> Agility to all the allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Agility to all allies around. (On summoned creatures, <num>30%</num> weaker.)<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_161_name: 'Universal regeneration',
     talent_161_description: ' ',
     talent_162_name: 'Taste of blood',
@@ -4065,10 +4066,10 @@ assembly: 'Assembly',
       'The hero gets <num>1.1</num> Health for every soldier he kills and <num>11</num> for every hero he kills. The maximum total increase is <num>%s</num>.',
     talent_194_name: 'Opposition to magic',
     talent_194_description:
-      'The will of all allies around increases by <num>%s</num>.<br><br><gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The will of all allies around increases by <num>%s</num>.<br><br><gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_195_name: 'Resisting the force',
     talent_195_description:
-      'The durability of all allies around increases by <num>%s</num>.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> to the damage received by all allies around</font> ',
+      'The durability of all allies around increases by <num>%s</num>.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_196_name: 'Tainted blood<white> <CD>120</CD></white>',
     talent_196_description:
       '<num>The attacker</num><br><br>When activated, it inflicts <mag>%s</mag> on the specified enemy, and the treatment affects it by <num>50%</num> worse for <num>7</num> seconds.',
@@ -4084,10 +4085,10 @@ assembly: 'Assembly',
       '<gray>Set</gray> <orange-d>"Divine potential"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+8</num> to the greatest of Strength and Intellect </font> <br> <orange-l>3 talents</orange-l> <br> <num>+16</num> to the greatest of Strength and Intellect </font> ',
     talent_201_name: 'Combat Onslaught',
     talent_201_description:
-      '<num>+%s</num> Strength to all allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Strength to all allies around. (On summoned creatures, <num>30%</num> weaker.)<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_202_name: 'The Magical Onslaught',
     talent_202_description:
-      '<num>+%s</num> Intellect to all the allies around.<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-7%</num> damage to all allies around</font> ',
+      '<num>+%s</num> Intellect to all allies around. (On summoned creatures, <num>30%</num> weaker.)<br><br> <gray>Set</gray> <orange-d>"Command Banner"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+8</num> to the greatest of Strength and Intellect to all the allies around</font> <br> <orange-l>3 talents</orange-l> <br> <num>+8</num> to the greatest of Agility and Cunning to all the allies around</font> <br> <orange-l>4 talents</orange-l> <br> <num>+8</num> to the greatest of Stamina and Will to all the allies around</font> <br> <orange-l>6 talents</orange-l> <br> <num>-5%</num> to the damage received by all allies around</font> ',
     talent_203_name: 'Survival Instinct<white> <CD>150</CD></white>',
     talent_203_description:
       'Restores <num>%s</num> health. The talent is triggered automatically if the health drops below <num>15%</num>.\r\n',
@@ -4794,21 +4795,21 @@ assembly: 'Assembly',
     talent_471_name: 'The Triumph of the Unbroken',
     talent_471_description:
       'Talent <tn>Unwavering triumph</tn> additionally restores to the allies <num>%s</num> It deals <mag>%s</mag> damage to enemies.<br> <br> <gray>Set</gray> <orange-d>"An unshakable celebration"</orange-d>',
-    talent_472_name: 'Harmful energy',
+    talent_472_name: 'Pernicious regeneration',
     talent_472_description:
-      'Talent Recovery Time <tn>The destructive power of </tn> is reduced by <num>60</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
-    talent_473_name: 'The malign power of<white> <CD>150</CD></white>',
+      'The cooldown of <tn>Pernicious Power</tn> is reduced by <num>30</num> sec. If the hero has no energy, increases health regeneration. <br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn>',
+    talent_473_name: 'Pernicious Power<white> <CD>90</CD></white>',
     talent_473_description:
-      '<num>The attacker</num><br><br>Deals the specified enemy hero <fiz>100</fiz> damage in total.<br>Each kill made by this talent increases its damage by <fiz>20</fiz>.<br> <br> <gray>Set</gray> <orange-d>"Destructive passion"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+      '<num>Attacking</num><br><br>Deals a total of <fiz>%s</fiz> damage (from the highest of Strength and Intellect) to the specified enemy hero.<br>Each kill made with this talent increases its damage by <fiz>%s</fiz> (from the highest of Strength and Intellect).<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_474_name: 'A Pernicious Ploy',
     talent_474_description:
-      'Talent <tn>Destructive power</tn> causes <fiz>100</fiz> more damage.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
+      'Increases talent penetration by <num>0.8%</num> for each kill made with <tn>Pernicious Power</tn>.<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn>',
     talent_475_name: 'Pernicious insidiousness',
     talent_475_description:
-      'Talent <tn>The destructive power</tn> deals 20</fiz> more damage for each kill it commits.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
+      'Increases by <num>50%</num> all effects received from <tn>Pernicious Power</tn>.<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn>',
     talent_476_name: 'Harmful influence',
     talent_476_description:
-      'Talent <tn>Destructive power</tn> is restored by <num>90%</num> faster if it kills an enemy hero.<br> <br> <gray>Set</gray> <orange-d>"Pernicious passion"</orange-d>',
+      'The <tn>Pernicious Power</tn> talent recovers <num>90%</num> faster if it kills an enemy hero.<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn>',
     talent_477_name: "The Seer's Cunning",
     talent_477_description:
       '<gray>Set</gray> <orange-d>"The Blind Seer"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Power of the Seer</orange-d></gray><br><gray><num>+4</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the seer</orange-d> on the allied hero, revealing the hidden enemy hero closest to him</gray>',
@@ -4850,7 +4851,7 @@ assembly: 'Assembly',
       'Talent <tn>Life-giving radiance</tn> removes all negative effects.<br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d>',
     talent_490_name: 'The excitement of a bomber<white> <CD>80</CD></white>',
     talent_490_description:
-      '<num>The attacker</num><br><br>The specified target becomes Explosive for <num>3</num> seconds, and its Speed decreases by <num>20%</num>. When dying or after completing the effect, all enemies around receive <fiz>%s</fiz> damage.<br> <br> <gray>Set</gray> <orange-d>"Demolition Man\'s Excitement"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
+      '<num>The attacker</num><br><br>The selected target becomes Explosive for <num>3</num> sec, and its Speed is reduced by <num>20%</num>. On death or when the effect ends, all enemies around take <fiz>%s</fiz> damage (from the highest of Strength and Intellect). Each learned talent in the set increases the number of explosive targets after the first explosion by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Demolition Man\'s Excitement"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_491_name: 'Explosive persistence',
     talent_491_description:
       'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber</tn> is also explosive.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
@@ -4862,7 +4863,7 @@ assembly: 'Assembly',
       'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber is also explosive.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
     talent_494_name: 'Explosive Domination',
     talent_494_description:
-      'Talent <tn>The  The excitement of a bomber</tn> additionally deals damage equal to <num>10%</num> of the target\'s maximum Health.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
+      'Talent <tn>The excitement of a bomber</tn> additionally deals damage equal to <num>3%</num> (<num>1.5%</num> against structures) of the target\'s maximum Health. <br> <br> <gray>Set</gray> <orange-d>"Demolition Man\'s Excitement"</orange-d>',
     talent_495_name: 'Ritual extermination<white> <CD>100</CD></white>',
     talent_495_description:
       '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> damage to the specified enemy.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
@@ -5075,7 +5076,7 @@ assembly: 'Assembly',
       'Soldiers and monsters receive additional <fiz>%s</fiz> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Power for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
     talent_565_name: "The Wizard's Superiority",
     talent_565_description:
-      'Soldiers and monsters receive additional <mag>%s</mag> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Intellect for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
+      'Soldiers and monsters take an additional <num>%s</num> damage from the hero\'s talents.<br> The hero gains <num>0.05</num> to the highest of Strength and Intellect for each creature that dies near them. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
     talent_566_name: 'The superiority of health<white> <CD>60</CD></white>',
     talent_566_description:
       '<num>Influx of prime</num><br><br>Deals <num>%s</num> <red-d>net damage</red-d> to the specified soldier or monster. <br> If the victim dies, the hero will receive <num>+30</num> Health points. <br>The number of stats is unlimited<br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
@@ -5207,19 +5208,19 @@ assembly: 'Assembly',
       'The Hero\'s speed increases by <yellow>%s</yellow> and additionally by <yellow>0.3</yellow> every minute. The maximum total increase is <yellow>6</yellow><br><br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_609_name: 'The Time of the first',
     talent_609_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
     talent_610_name: 'The Time of the Wise ',
     talent_610_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
     talent_611_name: 'The Time of the Strong ',
     talent_611_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
     talent_612_name: 'The Time of the Brave',
     talent_612_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
     talent_613_name: 'Time for change ',
     talent_613_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>4 talents</orange-l> <br> <gray>Ultimate ability recovery time is <num>30%</num> less</gray>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
     talent_614_name: 'Life path<white> <CD>70</CD></white>',
     talent_614_description:
       '<num>Protective</num><br><br>Restores <num>%s</num> when used. Healths.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
@@ -5678,5 +5679,36 @@ assembly: 'Assembly',
     talent_767_name: 'Energy Spinner',
     talent_767_description:
       'the Hero\'s energy increases every minute by <yellow>11.1</yellow>. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+    talent_768_name: 'Sea Symbol<white> <CD>7</CD></white>',
+    talent_768_description:
+      'An ally who received a buff from the class ability for <num>3</num> sec will gain <num>%s</num> Health per second from the highest of your hero\'s Strength and Intellect. Triggers on each hero no more than once every <num>7</num> sec.  <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn><br><br><gray>- can be improved by <num>3</num> talents</gray>',
+    talent_769_name: 'Sea Aspiration',
+    talent_769_description:
+      'The hero\'s Base Speed increases by <num>%s</num>. Of passive speed increases, the highest applies. Vision radius increases by <num>4.2</num>.<br> While the Sea Symbol effect is active, the target\'s speed increases by <num>%s</num> (from the highest of Strength and Intellect of the set owner).  <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn>',
+    talent_770_name: 'Sea Treasure',
+    talent_770_description:
+      'Increases the duration of Sea Symbol effects by <num>2</num> seconds.<br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn>',
+    talent_771_name: 'Sea Guardian',
+    talent_771_description:
+      'While under the Sea Symbol effect, the hero additionally gains <num>%s</num> to the highest of Stamina and Will (from the highest of Strength and Intellect of the set owner) <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn>',
+    talent_772_name: 'Sea Harmony',
+    talent_772_description:
+      'While under the Sea Symbol effect, the hero additionally gains <num>%s</num> to the highest of Strength and Intellect (from the highest of Strength and Intellect of the set owner) <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn>',
+    talent_773_name: 'Sea Versatility',
+    talent_773_description:
+      'While under the Sea Symbol effect, the hero deals <num>7%</num> more damage. <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn>',
+    talent_774_name: 'Boarding Harpoon <white><CD>80</CD></white>',
+    talent_774_description:
+      'Fires a harpoon in the chosen direction and stuns the first enemy hit on its path for <num>0.7</num> sec, then pulls your hero toward them.  <br>Increases melee heroes\' attack range by <num>1</num>. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn><br><br><gray>- can be improved by <num>2</num> talents</gray>',
+    talent_775_name: 'Boarding Might',
+    talent_775_description:
+      'Increases stun duration by <num>0.7</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
+    talent_776_name: 'Boarding Accuracy',
+    talent_776_description:
+      'Increases harpoon range and flight speed by <num>50%</num>. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
+    talent_777_name: 'Boarding Supremacy',
+    talent_777_description:
+      'Reduces the Boarding Harpoon talent cooldown by <num>20</num> sec. Stuns not only the main target but all enemies around it within radius <num>5</num>. After the stun, targets are additionally slowed by <num>50%</num> for <num>2</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
+
   },
 };
