@@ -122,10 +122,6 @@ export class View {
     View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
   }
 
-  static shouldShowMmtestIds() {
-    return App.CURRENT_MM === 'mmtest';
-  }
-
   static remapQueryByKeyboardLayout(value, layoutMap) {
     return String(value || '')
       .split('')
@@ -2280,10 +2276,6 @@ export class View {
         rank,
         heroNameBase,
       );
-
-      if (View.shouldShowMmtestIds()) {
-        hero.dataset.mmtestId = String(item.id);
-      }
 
       hero.dataset.heroId = String(item.id);
       hero.dataset.url = `content/hero/${item.id}/${item.skin ? item.skin : 1}.webp`;

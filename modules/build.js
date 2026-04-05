@@ -21,10 +21,6 @@ import { getMainHeroTalentId } from './mainHeroTalent.js';
 export class Build {
   static loading = false;
 
-  static shouldShowMmtestIds() {
-    return App.CURRENT_MM === 'mmtest';
-  }
-
   /** HSL hue для подсветки сетов (как rgba(80,190,255)); толщина рамки в мм (макс. 1.5). */
   static BUILD_HIGHLIGHT_HUE_DEFAULT = 199;
   static BUILD_HIGHLIGHT_BORDER_MM_DEFAULT = 0.42;
@@ -3510,12 +3506,6 @@ export class Build {
           data[index].state = 2;
 
           preload.add(Build.templateViewTalent(data[index]), item);
-          if (Build.shouldShowMmtestIds()) {
-            const talentId = Number(data[index]?.id);
-            if (Number.isFinite(talentId)) {
-              item.dataset.mmtestId = String(talentId);
-            }
-          }
         }
 
         row.append(item);
@@ -3540,7 +3530,6 @@ export class Build {
 
     Build.updateHeroStats();
     Build.renderCombatOrderBadges();
-    Build.syncMmtestTalentIdBadges();
   }
 
   static templateViewTalent(data) {
@@ -3620,12 +3609,6 @@ export class Build {
           Build._inventoryDefaultOrder.set(key, orderIndex);
           let talentContainer = DOM({ style: 'build-talent-item-container' });
           talentContainer.dataset.defaultOrder = `${orderIndex}`;
-          if (Build.shouldShowMmtestIds()) {
-            const talentId = Number(item?.id);
-            if (Number.isFinite(talentId)) {
-              talentContainer.dataset.mmtestId = String(talentId);
-            }
-          }
 
           Build.inventoryView.querySelector('.build-talents').append(talentContainer);
 
@@ -3637,7 +3620,6 @@ export class Build {
           orderIndex++;
         }
 
-        Build.syncMmtestTalentIdBadges();
         Build.loading = false;
         try {
           Build.sortInventory();
@@ -5179,13 +5161,6 @@ export class Build {
 
       const item = DOM({ style: 'build-set-item' });
       item.style.backgroundImage = `url("${src}")`;
-      if (Build.shouldShowMmtestIds()) {
-        const rawSetId = String(set?.key || '').match(/setId_(\d+)/);
-        const numericSetId = Number(rawSetId?.[1]);
-        if (Number.isFinite(numericSetId)) {
-          item.dataset.mmtestId = String(numericSetId);
-        }
-      }
       Build._renderedSetEntries.push({ set, item });
 
       const ids = TalentSets.getTalentIds(set);
@@ -5704,30 +5679,6 @@ export class Build {
     }
   }
 
-  static syncMmtestTalentIdBadges() {
-    const shouldShow = Build.shouldShowMmtestIds();
-    const syncHost = (host) => {
-      if (!host) return;
-      if (!shouldShow) {
-        delete host.dataset.mmtestId;
-        return;
-      }
-      const talentNode = host.querySelector('.build-talent-item');
-      const talentId = Number(talentNode?.dataset?.id);
-      if (Number.isFinite(talentId) && talentId !== 0) {
-        host.dataset.mmtestId = String(talentId);
-      } else {
-        delete host.dataset.mmtestId;
-      }
-    };
-    for (const container of Build.inventoryView?.querySelectorAll?.('.build-talent-item-container') || []) {
-      syncHost(container);
-    }
-    for (const cell of Build.fieldView?.querySelectorAll?.('.build-hero-grid-item') || []) {
-      syncHost(cell);
-    }
-  }
-
   static refreshLocalBuildUiAfterSet(ids, set = null) {
     try {
       Build.updateHeroStats();
@@ -5738,7 +5689,6 @@ export class Build {
       Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
       Build.ensureTalentIdsPresentInInventory(ids);
       Build.sortInventory();
-      Build.syncMmtestTalentIdBadges();
       if (set) Build.applySetInventoryOrder(set);
     } catch {}
   }
@@ -5772,7 +5722,6 @@ export class Build {
       const preload = new PreloadImages(cell);
       preload.add(view, cell);
     }
-    Build.syncMmtestTalentIdBadges();
   }
 
   static ensureTalentIdsPresentInInventory(ids) {
@@ -5810,7 +5759,6 @@ export class Build {
       Build.attachDefaultOrderDatasetToInventoryContainer(talentContainer);
       existing.set(key, talentContainer);
     }
-    Build.syncMmtestTalentIdBadges();
   }
 
   static refreshForcedSetOnlyTalentIds() {
@@ -6440,7 +6388,6 @@ export class Build {
 
         try {
           // Всегда пересчитать видимость (в т.ч. скрыть дубликаты «в билде + в библиотеке» без режима сета).
-          Build.syncMmtestTalentIdBadges();
           Build.sortInventory();
         } catch {}
 

@@ -1291,7 +1291,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   container-type: size;
   margin: 0;
   box-sizing: border-box;
-  position: relative;
 }
 
 .build-talent-item {
@@ -1306,35 +1305,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   overflow: hidden;
   transform-origin: center; /* Масштабирование от центра */
   will-change: transform; /* Оптимизация анимации */
-}
-
-.build-talent-item-container[data-mmtest-id]::before,
-.build-hero-grid-item[data-mmtest-id]::before {
-  content: attr(data-mmtest-id);
-  position: absolute;
-  z-index: 1201;
-  left: 5cqw;
-  top: 5cqw;
-  min-width: 20cqw;
-  max-width: 90cqw;
-  padding: 2cqw 4cqw;
-  border-radius: 5cqw;
-  color: #f7f2d2;
-  font: 700 16cqw / 1 'DejaVuSans', sans-serif;
-  text-align: center;
-  text-shadow: 0 0 0.8cqw rgba(0, 0, 0, 0.95);
-  background: linear-gradient(180deg, rgba(18, 24, 35, 0.92), rgba(5, 9, 15, 0.84));
-  border: 0.36cqw solid rgba(229, 217, 164, 0.52);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s ease-out;
-}
-
-.build-talent-item-container[data-mmtest-id]:hover::before,
-.build-talent-item-container[data-mmtest-id]:focus-within::before,
-.build-hero-grid-item[data-mmtest-id]:hover::before,
-.build-hero-grid-item[data-mmtest-id]:focus-within::before {
-  opacity: 1;
 }
 
 .build-talent-item.build-combat-locked {
@@ -1958,33 +1928,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   border: 0.25cqh solid rgb(205 154 154 / 22%);
   background-repeat: no-repeat;
   box-sizing: border-box;
-  position: relative;
-}
-
-.build-set-item[data-mmtest-id]::after {
-  content: attr(data-mmtest-id);
-  position: absolute;
-  left: 0.38cqh;
-  top: 0.38cqh;
-  z-index: 6;
-  min-width: 1.7cqh;
-  max-width: calc(100% - 0.76cqh);
-  padding: 0.2cqh 0.45cqh;
-  border-radius: 0.45cqh;
-  color: #f7f2d2;
-  font: 700 1.3cqh / 1 'DejaVuSans', sans-serif;
-  text-align: center;
-  text-shadow: 0 0.04cqh 0.08cqh rgba(0, 0, 0, 0.95);
-  background: linear-gradient(180deg, rgba(18, 24, 35, 0.92), rgba(5, 9, 15, 0.84));
-  border: 0.08cqh solid rgba(229, 217, 164, 0.52);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s ease-out;
-}
-
-.build-set-item[data-mmtest-id]:hover::after,
-.build-set-item[data-mmtest-id]:focus-within::after {
-  opacity: 1;
 }
 
 .build-set-item:hover {

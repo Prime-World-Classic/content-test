@@ -2098,32 +2098,6 @@ body {
   filter: brightness(150%);
 }
 
-.castle-hero-item[data-mmtest-id]::after {
-  content: attr(data-mmtest-id);
-  position: absolute;
-  left: 1.2cqh;
-  top: 1.2cqh;
-  z-index: 5;
-  min-width: 12cqh;
-  max-width: calc(100% - 2.4cqh);
-  padding: 0.5cqh 0.9cqh;
-  border-radius: 0.8cqh;
-  color: #f4edcd;
-  font: bold 6.2cqh / 1 'DejaVuSans', sans-serif;
-  text-align: center;
-  text-shadow: 0 0.1cqh 0.2cqh rgba(0, 0, 0, 0.95);
-  background: linear-gradient(180deg, rgba(15, 18, 27, 0.9), rgba(4, 7, 13, 0.82));
-  border: 0.18cqh solid rgba(229, 217, 164, 0.5);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s ease-out;
-}
-
-.castle-hero-item[data-mmtest-id]:hover::after,
-.castle-hero-item[data-mmtest-id]:focus-within::after {
-  opacity: 1;
-}
-
 .no-hover-brightness:hover {
   filter: brightness(100%);
 }
