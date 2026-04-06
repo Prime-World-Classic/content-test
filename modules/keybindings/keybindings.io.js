@@ -94,10 +94,10 @@ export async function findConfigFile() {
   return null;
 }
 
-export async function ensureActionBarSlotsInNativeCfg() {
+export async function ensureActionBarSlotsInNativeCfg(cfgOverride = null) {
   if (!NativeAPI.status) return { changed: false };
 
-  const cfg = await findConfigFile();
+  const cfg = cfgOverride || (await findConfigFile());
   if (!cfg || cfg.type !== 'native' || !cfg.path) return { changed: false };
 
   const configPath = cfg.path;
@@ -108,9 +108,28 @@ export async function ensureActionBarSlotsInNativeCfg() {
     return { changed: false };
   }
 
+  const hasCrlf = data.includes('\r\n');
+  const eol = hasCrlf ? '\r\n' : '\n';
   const lines = data.split(/\r?\n/);
   const present = new Set();
+  const emptySlotsToFill = [];
   let lastFoundLineIndex = -1;
+  const defaultActionBarBindings = {
+    11: "'CTRL' + 'F11'",
+    12: "'CTRL' + 'F12'",
+    13: "'F13'",
+    14: "'F14'",
+    15: "'F15'",
+    16: "'F16'",
+    17: "'F17'",
+    18: "'F18'",
+    19: "'F19'",
+    20: "'F20'",
+    21: "'F21'",
+    22: "'F22'",
+    23: "'F23'",
+    24: "'F24'",
+  };
 
   const re = /^\s*bind\s+cmd_action_bar_slot(\d+)\b/;
   for (let i = 0; i < lines.length; i++) {
@@ -122,6 +141,15 @@ export async function ensureActionBarSlotsInNativeCfg() {
 
     present.add(n);
     lastFoundLineIndex = i;
+
+    if (n >= 11 && n <= 24) {
+      const rhsMatch = lines[i].match(/^\s*bind\s+cmd_action_bar_slot\d+\s*(.*)$/);
+      const rhs = String(rhsMatch?.[1] || '').trim();
+      if (!rhs || rhs === "''" || rhs === '""') {
+        lines[i] = `bind cmd_action_bar_slot${n} ${defaultActionBarBindings[n]}`;
+        emptySlotsToFill.push(n);
+      }
+    }
   }
 
   const missing = [];
@@ -129,17 +157,19 @@ export async function ensureActionBarSlotsInNativeCfg() {
     if (!present.has(n)) missing.push(n);
   }
 
-  if (!missing.length) return { changed: false };
+  if (missing.length) {
+    const toInsert = missing.map((n) => `bind cmd_action_bar_slot${n} ${defaultActionBarBindings[n] || "''"}`);
+    if (lastFoundLineIndex >= 0) lines.splice(lastFoundLineIndex + 1, 0, ...toInsert);
+    else lines.push(...toInsert);
+  }
 
-  const toInsert = missing.map((n) => `bind cmd_action_bar_slot${n} ''`);
-  if (lastFoundLineIndex >= 0) lines.splice(lastFoundLineIndex + 1, 0, ...toInsert);
-  else lines.push(...toInsert);
+  if (!missing.length && !emptySlotsToFill.length) return { changed: false };
 
-  let out = lines.join('\n');
-  if (!out.endsWith('\n')) out += '\n';
+  let out = lines.join(eol);
+  if (!out.endsWith(eol)) out += eol;
 
   await NativeAPI.fileSystem.promises.writeFile(configPath, out, 'utf8');
-  return { changed: true, configPath };
+  return { changed: true, configPath, missingAdded: missing.length, emptyFixed: emptySlotsToFill.length };
 }
 
 export async function loadKeybindsNative(cfg) {
@@ -166,6 +196,7 @@ export async function loadKeybinds() {
 
   try {
     if (cfg.type === 'native') {
+      await ensureActionBarSlotsInNativeCfg(cfg);
       await loadKeybindsNative(cfg);
     } else {
       await loadKeybindsBrowser(cfg);
