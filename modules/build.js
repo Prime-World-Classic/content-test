@@ -331,6 +331,7 @@ export class Build {
     Build.descriptionView.classList.add('build-description');
 
     Build.descriptionView.style.display = 'none';
+    Build._hoveredDescriptionTalentEl = null;
 
     const bindCommandsToGet = [
       "cmd_action_bar_slot1",
@@ -1902,6 +1903,7 @@ export class Build {
     Build.enforceCombatLearnedRowConstraints();
     Build.renderCombatOrderBadges();
     Build.updateHeroStats();
+    Build.refreshActiveTalentDescription();
     Build.refreshStatFilterHighlightCountDisplay();
     Build.syncCombatModeButtonState();
     return true;
@@ -1923,6 +1925,7 @@ export class Build {
     }
     Build.renderCombatOrderBadges();
     Build.updateHeroStats();
+    Build.refreshActiveTalentDescription();
     Build.refreshStatFilterHighlightCountDisplay();
     Build.syncCombatModeButtonState();
     return true;
@@ -1961,6 +1964,7 @@ export class Build {
 
     Build.renderCombatOrderBadges();
     Build.updateHeroStats();
+    Build.refreshActiveTalentDescription();
     Build.refreshStatFilterHighlightCountDisplay();
     Build.syncCombatModeButtonState();
   }
@@ -6400,11 +6404,11 @@ export class Build {
 
         element.style.zIndex = 'auto';
 
-        // If cursor stays over a library talent after click/drag-end,
+        // If cursor stays over a talent after click/drag-end,
         // restore tooltip/row-highlight without requiring mouse movement.
         try {
           const hovered = document.elementFromPoint(event.clientX, event.clientY);
-          const hoveredTalent = hovered?.closest?.('.build-talents .build-talent-item');
+          const hoveredTalent = hovered?.closest?.('.build-talent-item');
           if (hoveredTalent) {
             hoveredTalent.dispatchEvent(
               new MouseEvent('mouseover', {
@@ -6437,6 +6441,17 @@ export class Build {
     Build._hoveredBuildRowEl.style.background = '';
     Build._hoveredBuildRowEl.style.borderRadius = '';
     Build._hoveredBuildRowEl = null;
+  }
+
+  static refreshActiveTalentDescription() {
+    if (!Build.descriptionView) return;
+    if (Build.descriptionView.style.display === 'none') return;
+    if (Build._descriptionPinnedBySet) return;
+    const activeTalentEl = Build._hoveredDescriptionTalentEl;
+    if (!activeTalentEl || !activeTalentEl.isConnected) return;
+    try {
+      activeTalentEl.dispatchEvent(new MouseEvent('mouseover', { bubbles: false, cancelable: false, view: window }));
+    } catch {}
   }
 
   static description(element) {
@@ -6595,16 +6610,20 @@ export class Build {
     };
 
     element.onmouseover = () => {
+      Build._hoveredDescriptionTalentEl = element;
       descEvent();
     };
     element.onmouseout = () => {
+      if (Build._hoveredDescriptionTalentEl === element) Build._hoveredDescriptionTalentEl = null;
       descEventEnd();
     };
     element.ontouchend = () => {
+      if (Build._hoveredDescriptionTalentEl === element) Build._hoveredDescriptionTalentEl = null;
       descEventEnd();
     };
   }
   static cleanup() {
+    Build._hoveredDescriptionTalentEl = null;
     Build.clearBuildRowHoverHighlight();
     Build.toggleBuildSettingsPanel(false);
     try {
