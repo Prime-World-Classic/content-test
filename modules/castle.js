@@ -462,12 +462,18 @@ export class Castle {
   }
 
   static prepareMove(event) {
+    if (!event || event.button !== 0) {
+      return;
+    }
     if (Castle.phantomBuilding.id == 0) {
       Castle.doMove = true;
     }
   }
 
   static stopMove(event) {
+    if (event && event.button !== 0) {
+      return;
+    }
     Castle.doMove = false;
     setTimeout((_) => {
       Castle.wasMoved = false;

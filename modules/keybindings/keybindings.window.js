@@ -74,9 +74,19 @@ function createSettingsKeyInput({ settingKey }) {
       return;
     }
     const keys = normalizeKey(e);
-    Settings.settings[settingKey] = Array.isArray(keys) ? keys : [];
+    if (!Array.isArray(keys)) {
+      Settings.settings[settingKey] = [];
+      refresh();
+      return;
+    }
+    const modifiers = new Set(['CTRL', 'ALT', 'SHIFT', 'WIN']);
+    if (keys.length === 1 && modifiers.has(keys[0])) {
+      refresh();
+      return;
+    }
+    Settings.settings[settingKey] = keys;
     refresh();
-  });
+  }, true);
 
   refresh();
   return input;
@@ -192,6 +202,7 @@ function buildCamera() {
 export async function keybindings() {
   const ok = await loadKeybinds();
   if (!ok) return DOM({}, Lang.text('settingsReadError'));
+  NativeAPI.unregisterVoiceHotkeys?.();
   let initialVoiceToggleHotkey = JSON.stringify(Array.isArray(Settings.settings?.voiceToggleHotkey) ? Settings.settings.voiceToggleHotkey : []);
   let initialVoiceDropHotkey = JSON.stringify(Array.isArray(Settings.settings?.voiceDropHotkey) ? Settings.settings.voiceDropHotkey : []);
 
@@ -270,6 +281,7 @@ export async function keybindings() {
   const root = DOM({ id: 'wcastle-keybindings' }, content, controls);
 
   root.cleanup = () => {
+    NativeAPI.refreshVoiceHotkeys?.();
     unsubscribers.forEach((fn) => fn());
     unsubscribers.length = 0;
   };

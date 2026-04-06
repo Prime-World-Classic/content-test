@@ -5230,16 +5230,16 @@ export const ru = {
       '<gray>Сет</gray> <tn>"Исцеляющий столп"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <gray>Увеличивает восстановления Здоровья себе и союзникам рядом с Героем на <num>10%</num></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Позволяет использовать талант <tn>Исцеляющий столп</tn></gray>',
     talent_623_name: 'Миг коварства',
     talent_623_description:
-      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>60</num> cек</gray>',
+      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_624_name: 'Отчаянный миг<white> <CD>240</CD></white>',
     talent_624_description:
-      '<num>Тактический</num><br><br>Мнгновенно восстанавливает все классовые таланты кроме ультимативной способности <br> <br> <gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>60</num> cек</gray>',
+      '<num>Тактический</num><br><br>Мнгновенно восстанавливает все классовые таланты кроме ультимативной способности <br> <br> <gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_625_name: 'Миг дерзости',
     talent_625_description:
-      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>60</num> cек</gray>',
+      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_626_name: 'Миг смекалки',
     talent_626_description:
-      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>60</num> cек</gray>',
+      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_627_name: 'Поборник выносливости',
     talent_627_description:
       '<gray>Сет</gray> <tn>"Воздаяние поборника"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+6</num> <gray>к наибольшему из Стойкости и Воли</gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Позволяет использовать талант <tn>Воздаяние поборника</tn></gray>',

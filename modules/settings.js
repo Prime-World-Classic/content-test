@@ -196,6 +196,7 @@ export class Settings {
 
   static async init() {
     await this.ReadSettings();
+    NativeAPI.refreshVoiceHotkeys?.();
     await this.ApplySettings();
 
     // Инициализируем глобальные горячие клавиши

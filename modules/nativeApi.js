@@ -98,7 +98,10 @@ export class NativeAPI {
   static formatShortcutFromTokens(tokens, fallback = '') {
     if (!Array.isArray(tokens)) return fallback;
     const cleaned = tokens.map((x) => String(x || '').trim().toUpperCase()).filter(Boolean);
-    if (!cleaned.length) return '';
+    if (!cleaned.length) return fallback;
+    const modifiers = new Set(['CTRL', 'ALT', 'SHIFT', 'WIN']);
+    // NW.js shortcut requires at least one non-modifier key.
+    if (!cleaned.some((x) => !modifiers.has(x))) return fallback;
     const map = {
       CTRL: 'Ctrl',
       ALT: 'Alt',
@@ -120,7 +123,9 @@ export class NativeAPI {
       PG_UP: 'PageUp',
       PG_DOWN: 'PageDown',
     };
-    return cleaned.map((x) => (map[x] ? map[x] : x)).join('+');
+    const formatted = cleaned.map((x) => (map[x] ? map[x] : x)).join('+');
+    if (!formatted || formatted.includes('_')) return fallback;
+    return formatted;
   }
 
   static unregisterVoiceHotkeys() {
@@ -579,6 +584,32 @@ export class NativeAPI {
 
     switch (NativeAPI.platform) {
       case 'win32': {
+        const regPaths = [
+          'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders',
+          'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders',
+        ];
+        for (const regPath of regPaths) {
+          try {
+            const out = NativeAPI.childProcess.execFileSync('reg', ['query', regPath, '/v', 'Personal'], {
+              encoding: 'utf8',
+            });
+            const line = out
+              .split(/\r?\n/)
+              .map((x) => x.trim())
+              .find((x) => /^Personal\s+REG_\w+\s+.+$/i.test(x));
+            if (!line) continue;
+            const m = line.match(/^Personal\s+REG_\w+\s+(.+)$/i);
+            if (!m || !m[1]) continue;
+            const expanded = m[1].trim().replace(/%([^%]+)%/g, (full, name) => {
+              const v = process.env[name] || process.env[String(name).toUpperCase()];
+              return v || full;
+            });
+            if (expanded && !/%[^%]+%/.test(expanded)) {
+              return expanded;
+            }
+          } catch {}
+        }
+
         const home = NativeAPI.os.homedir();
         if (home) {
           return NativeAPI.path.join(home, 'Documents');

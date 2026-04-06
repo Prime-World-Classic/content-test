@@ -252,7 +252,8 @@ export class Voice {
   static getVoiceToggleTokens() {
     const fallback = ['CTRL', 'Z'];
     const tokens = Array.isArray(Settings.settings?.voiceToggleHotkey) ? Settings.settings.voiceToggleHotkey : fallback;
-    return tokens.map((x) => String(x || '').trim().toUpperCase()).filter(Boolean);
+    const cleaned = tokens.map((x) => String(x || '').trim().toUpperCase()).filter(Boolean);
+    return cleaned.length ? cleaned : fallback;
   }
 
   static tokensEqual(a, b) {

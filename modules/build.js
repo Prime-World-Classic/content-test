@@ -3164,8 +3164,8 @@ export class Build {
     }
 
     {
-      let defStamina = 0.5355 * (statStamina + 0.3 * statWill) - 20;
-      let defWill = 0.5355 * (statWill + 0.3 * statStamina) - 20;
+      let defStamina = 0.5355 * (statStamina + 0.15 * statWill) - 20;
+      let defWill = 0.5355 * (statWill + 0.15 * statStamina) - 20;
 
       Build.dataStats['protectionBody'].lastChild.innerText = Math.round(defStamina) + '%';
       Build.dataStats['protectionSpirit'].lastChild.innerText = Math.round(defWill) + '%';
