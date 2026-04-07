@@ -93,6 +93,8 @@ export class Voice {
   static mergeAutoAcceptUntil = new Map();
   
   static battleSuspendedPeers = new Map();
+  
+  static mutedPeers = new Set();
 
   static reconnectPlanMs = [2000, 5000, 10000, 15000, 20000];
 
@@ -127,6 +129,36 @@ export class Voice {
 
   static shouldAutoReconnectKey(key) {
     return !!key;
+  }
+
+  static isPeerMuted(id) {
+    const targetId = Number(id);
+    return Number.isFinite(targetId) && targetId > 0 && Voice.mutedPeers.has(targetId);
+  }
+
+  static setPeerMuted(id, muted = true) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) {
+      return;
+    }
+    if (muted) {
+      Voice.mutedPeers.add(targetId);
+    } else {
+      Voice.mutedPeers.delete(targetId);
+    }
+    const target = Voice.manager?.[targetId];
+    if (target?.controller) {
+      target.controller.muted = Boolean(muted);
+    }
+  }
+
+  static togglePeerMuted(id) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) {
+      return;
+    }
+    Voice.setPeerMuted(targetId, !Voice.isPeerMuted(targetId));
+    Voice.updateInfoPanel();
   }
 
   static isFriendScopedConnection(target) {
@@ -627,7 +659,7 @@ export class Voice {
         }
       }
 
-      return Voice.manager[id].peer.connectionState == 'connected' ? `${name} [Х]` : `${name} (${status})`;
+      return Voice.manager[id].peer.connectionState == 'connected' ? `${name}` : `${name} (${status})`;
     };
 
     let item = DOM(
@@ -638,13 +670,31 @@ export class Voice {
           'click',
           () => {
             Voice.drop(Number(id));
-
             item.remove();
           },
         ],
       },
-      state(),
+      '',
     );
+    
+    let mute = DOM(
+      {
+        domaudio: domAudioPresets.defaultButton,
+        style: ['voice-info-panel-body-item-name', 'voice-info-panel-body-item-mute'],
+        event: ['click', () => Voice.togglePeerMuted(Number(id))],
+      },
+      '',
+    );
+    
+    mute.style.marginRight = '0.5cqw';
+    
+    const updateItemView = () => {
+      const mutedMark = Voice.isPeerMuted(Number(id)) ? ' [MUTED]' : '';
+      item.innerText = `${state()}${mutedMark}`;
+      mute.innerText = Voice.isPeerMuted(Number(id)) ? '🔇' : '🔊';
+    };
+    
+    updateItemView();
 
     let level = DOM({ style: 'voice-info-panel-body-item-bar-level' });
 
@@ -671,7 +721,7 @@ export class Voice {
     indication();
 
     Voice.manager[id].peer.onconnectionstatechange = () => {
-      item.innerText = state();
+      updateItemView();
 
       indication();
     };
@@ -679,7 +729,11 @@ export class Voice {
     const panelBody = Voice.getInfoPanelBody();
     if (!panelBody) return;
     panelBody.append(
-      DOM({ style: 'voice-info-panel-body-item' }, item, DOM({ style: 'voice-info-panel-body-item-status' }, bar)),
+      DOM(
+        { style: 'voice-info-panel-body-item' },
+        DOM({ style: 'voice-info-panel-body-item-controls' }, mute, item),
+        DOM({ style: 'voice-info-panel-body-item-status' }, bar),
+      ),
     );
   }
 
@@ -1036,6 +1090,8 @@ export class Voice {
       this.controller.controls = true;
 
       this.controller.volume = Voice.volumeLevel;
+      
+      this.controller.muted = Voice.isPeerMuted(this.id);
 
       this.controller.play();
 

@@ -5700,6 +5700,18 @@ i-success {
   flex-flow: column nowrap;
 }
 
+.voice-info-panel-body-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4cqw;
+  min-width: 0;
+}
+
+.voice-info-panel-body-item-mute {
+  font-size: clamp(0.9em, 1.2vw, 1.6em);
+  line-height: 1;
+}
+
 .voice-info-panel-body-item-nostream {
   animation: pulse 2s infinite;
 }
