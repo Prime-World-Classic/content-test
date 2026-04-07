@@ -52,7 +52,11 @@ export class MM {
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, false);
     document.body.style.display = 'none';
-    NativeAPI.openVoiceWindow();
+    try {
+      NativeAPI.openVoiceWindow();
+    } catch (error) {
+      console.log('Voice window init failed:', error);
+    }
     NativeAPI.window.hide();
 
     NativeAPI.app.unregisterGlobalHotKey(NativeAPI.altEnterShortcut);

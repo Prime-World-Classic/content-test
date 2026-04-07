@@ -260,122 +260,166 @@ export class NativeAPI {
       Math.max(560, Math.round(760 * monitorScale)),
     );
     const popupCssHref = new URL('content/main.css', window.location.href).href;
+    const baseWindowOptions = {
+      frame: false,
+      show: true,
+      focus: false,
+      show_in_taskbar: true,
+      always_on_top: false,
+      resizable: false,
+      width,
+      height,
+      position: 'center',
+    };
 
-    nw.Window.open(
-      'about:blank',
-      {
-        frame: false,
-        show: true,
-        focus: false,
-        show_in_taskbar: true,
-        always_on_top: false,
-        transparent: true,
-        resizable: false,
-        width,
-        height,
-        position: 'center',
-      },
-      (win) => {
-        NativeAPI.voiceWindow = win;
+    const mountVoiceWindow = (win) => {
+      if (!win) {
+        return;
+      }
+      NativeAPI.voiceWindow = win;
 
-        const mountPanel = () => {
-          const doc = win.window.document;
-          doc.title = 'Voice';
-          doc.documentElement.style.margin = '0';
-          doc.documentElement.style.background = 'transparent';
-          doc.documentElement.style.overflow = 'hidden';
-          doc.body.style.margin = '0';
-          doc.body.style.background = 'transparent';
-          doc.body.style.overflow = 'hidden';
+      const mountPanel = () => {
+        const doc = win.window.document;
+        doc.title = 'Voice';
+        doc.documentElement.style.margin = '0';
+        doc.documentElement.style.background = 'transparent';
+        doc.documentElement.style.overflow = 'hidden';
+        doc.body.style.margin = '0';
+        doc.body.style.background = 'transparent';
+        doc.body.style.overflow = 'hidden';
 
-          const css = doc.createElement('link');
-          css.rel = 'stylesheet';
-          css.href = popupCssHref;
-          doc.head.append(css);
+        const css = doc.createElement('link');
+        css.rel = 'stylesheet';
+        css.href = popupCssHref;
+        doc.head.append(css);
 
-          if (panel.parentElement) {
-            panel.parentElement.removeChild(panel);
-          }
-          panel.classList.remove('left-offset-with-shift');
-          panel.classList.remove('left-offset-no-shift');
-          panel.classList.add('voice-window-mode');
-          panel.style.setProperty('--voice-monitor-scale', String(monitorScale));
-          panel.style.setProperty('--voice-monitor-width', `${monitorWidth}px`);
-          panel.style.setProperty('--voice-monitor-height', `${monitorHeight}px`);
-          doc.body.append(panel);
+        if (panel.parentElement) {
+          panel.parentElement.removeChild(panel);
+        }
+        panel.classList.remove('left-offset-with-shift');
+        panel.classList.remove('left-offset-no-shift');
+        panel.classList.add('voice-window-mode');
+        panel.style.setProperty('--voice-monitor-scale', String(monitorScale));
+        panel.style.setProperty('--voice-monitor-width', `${monitorWidth}px`);
+        panel.style.setProperty('--voice-monitor-height', `${monitorHeight}px`);
+        doc.body.append(panel);
 
-          Voice.showInfoPanel(true);
-          Voice.updateInfoPanel();
+        Voice.showInfoPanel(true);
+        Voice.updateInfoPanel();
 
-          // Allow moving frameless popup by dragging any non-interactive area.
-          const interactiveSelector = [
-            'button',
-            'a',
-            'input',
-            'textarea',
-            'select',
-            '[role="button"]',
-            '.voice-info-panel-body-item-name',
-            '.voice-info-panel-close',
-          ].join(',');
+        // Allow moving frameless popup by dragging any non-interactive area.
+        const interactiveSelector = [
+          'button',
+          'a',
+          'input',
+          'textarea',
+          'select',
+          '[role="button"]',
+          '.voice-info-panel-body-item-name',
+          '.voice-info-panel-close',
+        ].join(',');
 
-          let dragState = null;
+        let dragState = null;
 
-          const onMouseMove = (event) => {
-            if (!dragState) return;
-            const nextX = dragState.winX + (event.screenX - dragState.mouseX);
-            const nextY = dragState.winY + (event.screenY - dragState.mouseY);
-            try {
-              win.moveTo(Math.round(nextX), Math.round(nextY));
-            } catch {}
-          };
-
-          const stopDrag = () => {
-            if (!dragState) return;
-            dragState = null;
-            doc.removeEventListener('mousemove', onMouseMove, true);
-            doc.removeEventListener('mouseup', stopDrag, true);
-            doc.removeEventListener('mouseleave', stopDrag, true);
-          };
-
-          doc.addEventListener(
-            'mousedown',
-            (event) => {
-              if (event.button !== 0) return;
-              const target = event.target;
-              if (target?.closest?.(interactiveSelector)) {
-                return;
-              }
-              dragState = {
-                mouseX: event.screenX,
-                mouseY: event.screenY,
-                winX: Number(win.x || 0),
-                winY: Number(win.y || 0),
-              };
-              doc.addEventListener('mousemove', onMouseMove, true);
-              doc.addEventListener('mouseup', stopDrag, true);
-              doc.addEventListener('mouseleave', stopDrag, true);
-            },
-            true,
-          );
+        const onMouseMove = (event) => {
+          if (!dragState) return;
+          const nextX = dragState.winX + (event.screenX - dragState.mouseX);
+          const nextY = dragState.winY + (event.screenY - dragState.mouseY);
+          try {
+            win.moveTo(Math.round(nextX), Math.round(nextY));
+          } catch {}
         };
 
-        if (win.window.document.readyState === 'complete') {
-          mountPanel();
-        } else {
-          win.on('loaded', mountPanel);
-        }
+        const stopDrag = () => {
+          if (!dragState) return;
+          dragState = null;
+          doc.removeEventListener('mousemove', onMouseMove, true);
+          doc.removeEventListener('mouseup', stopDrag, true);
+          doc.removeEventListener('mouseleave', stopDrag, true);
+        };
 
-        win.on('close', () => {
-          NativeAPI.restoreVoicePanelToMainWindow();
-          const current = NativeAPI.voiceWindow;
-          NativeAPI.voiceWindow = null;
-          try {
-            current?.close(true);
-          } catch {}
-        });
-      },
-    );
+        doc.addEventListener(
+          'mousedown',
+          (event) => {
+            if (event.button !== 0) return;
+            const target = event.target;
+            if (target?.closest?.(interactiveSelector)) {
+              return;
+            }
+            dragState = {
+              mouseX: event.screenX,
+              mouseY: event.screenY,
+              winX: Number(win.x || 0),
+              winY: Number(win.y || 0),
+            };
+            doc.addEventListener('mousemove', onMouseMove, true);
+            doc.addEventListener('mouseup', stopDrag, true);
+            doc.addEventListener('mouseleave', stopDrag, true);
+          },
+          true,
+        );
+      };
+
+      if (win.window.document.readyState === 'complete') {
+        mountPanel();
+      } else {
+        win.on('loaded', mountPanel);
+      }
+
+      win.on('close', () => {
+        NativeAPI.restoreVoicePanelToMainWindow();
+        const current = NativeAPI.voiceWindow;
+        NativeAPI.voiceWindow = null;
+        try {
+          current?.close(true);
+        } catch {}
+      });
+    };
+
+    const safeOpenVoicePopup = (options, onReady) => {
+      try {
+        nw.Window.open('about:blank', options, (win) => onReady(win || null));
+        return true;
+      } catch (error) {
+        console.log('Voice window open failed:', error);
+        return false;
+      }
+    };
+
+    const fallbackWindowOptions = {
+      ...baseWindowOptions,
+      transparent: false,
+    };
+
+    const tryFallbackOpen = () => {
+      const fallbackStarted = safeOpenVoicePopup(fallbackWindowOptions, (win) => {
+        if (!win) {
+          console.log('Voice window fallback failed: popup not created');
+          return;
+        }
+        mountVoiceWindow(win);
+      });
+      if (!fallbackStarted) {
+        console.log('Voice window fallback failed: open threw synchronously');
+      }
+    };
+
+    const primaryWindowOptions = {
+      ...baseWindowOptions,
+      transparent: true,
+    };
+
+    const primaryStarted = safeOpenVoicePopup(primaryWindowOptions, (win) => {
+      if (!win) {
+        tryFallbackOpen();
+        return;
+      }
+      mountVoiceWindow(win);
+    });
+
+    if (!primaryStarted) {
+      tryFallbackOpen();
+    }
   }
 
   static closeVoiceWindow() {
