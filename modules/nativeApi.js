@@ -7,6 +7,7 @@ import { Lang } from './lang.js';
 export class NativeAPI {
   static status = false;
   static exitRequested = false;
+  static voiceWindow = null;
 
   static platform;
 
@@ -202,6 +203,189 @@ export class NativeAPI {
     NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDownVolume);
   }
 
+  static restoreVoicePanelToMainWindow() {
+    if (!Voice.infoPanel) return;
+    if (Voice.infoPanel.parentElement) {
+      Voice.infoPanel.parentElement.removeChild(Voice.infoPanel);
+    }
+    Voice.infoPanel.classList.remove('voice-window-mode');
+    Voice.infoPanel.classList.remove('left-offset-with-shift');
+    Voice.infoPanel.classList.remove('left-offset-no-shift');
+    Voice.infoPanel.style.position = '';
+    Voice.infoPanel.style.left = '';
+    Voice.infoPanel.style.top = '';
+    Voice.infoPanel.style.right = '';
+    Voice.infoPanel.style.bottom = '';
+    Voice.infoPanel.style.width = '';
+    Voice.infoPanel.style.height = '';
+    Voice.infoPanel.style.maxWidth = '';
+    Voice.infoPanel.style.maxHeight = '';
+    Voice.infoPanel.style.transform = '';
+    Voice.infoPanel.style.zIndex = '';
+    Voice.infoPanel.style.boxSizing = '';
+    Voice.infoPanel.style.padding = '';
+    Voice.infoPanel.style.margin = '';
+    Voice.infoPanel.style.gap = '';
+    Voice.infoPanel.style.removeProperty('--voice-monitor-scale');
+    Voice.infoPanel.style.removeProperty('--voice-monitor-width');
+    Voice.infoPanel.style.removeProperty('--voice-monitor-height');
+    document.body.append(Voice.infoPanel);
+    requestAnimationFrame(() => Voice.updatePanelPosition());
+  }
+
+  static openVoiceWindow() {
+    if (!NativeAPI.status || !NativeAPI.app || NativeAPI.voiceWindow) {
+      return;
+    }
+
+    if (!Voice.infoPanel) {
+      Voice.init();
+    }
+
+    const panel = Voice.infoPanel;
+    if (!panel) {
+      return;
+    }
+
+    const monitorWidth = Number(window.screen?.availWidth || window.screen?.width || 1920);
+    const monitorHeight = Number(window.screen?.availHeight || window.screen?.height || 1080);
+    const monitorScale = Math.max(0.85, Math.min(1.6, Math.min(monitorWidth / 1920, monitorHeight / 1080)));
+    const baseWidth = Math.min(
+      Math.round(monitorWidth * 0.5),
+      Math.max(520, Math.round(560 * monitorScale)),
+    );
+    const width = Math.max(360, Math.round(baseWidth * 0.7));
+    const height = Math.min(
+      Math.round(monitorHeight * 0.85),
+      Math.max(560, Math.round(760 * monitorScale)),
+    );
+    const popupCssHref = new URL('content/main.css', window.location.href).href;
+
+    nw.Window.open(
+      'about:blank',
+      {
+        frame: false,
+        show: true,
+        focus: false,
+        show_in_taskbar: true,
+        always_on_top: false,
+        resizable: false,
+        width,
+        height,
+        position: 'center',
+      },
+      (win) => {
+        NativeAPI.voiceWindow = win;
+
+        const mountPanel = () => {
+          const doc = win.window.document;
+          doc.title = 'Voice';
+          doc.body.style.margin = '0';
+          doc.body.style.background = 'transparent';
+          doc.body.style.overflow = 'hidden';
+
+          const css = doc.createElement('link');
+          css.rel = 'stylesheet';
+          css.href = popupCssHref;
+          doc.head.append(css);
+
+          if (panel.parentElement) {
+            panel.parentElement.removeChild(panel);
+          }
+          panel.classList.remove('left-offset-with-shift');
+          panel.classList.remove('left-offset-no-shift');
+          panel.classList.add('voice-window-mode');
+          panel.style.setProperty('--voice-monitor-scale', String(monitorScale));
+          panel.style.setProperty('--voice-monitor-width', `${monitorWidth}px`);
+          panel.style.setProperty('--voice-monitor-height', `${monitorHeight}px`);
+          doc.body.append(panel);
+
+          Voice.showInfoPanel(true);
+          Voice.updateInfoPanel();
+
+          // Allow moving frameless popup by dragging any non-interactive area.
+          const interactiveSelector = [
+            'button',
+            'a',
+            'input',
+            'textarea',
+            'select',
+            '[role="button"]',
+            '.voice-info-panel-body-item-name',
+            '.voice-info-panel-close',
+          ].join(',');
+
+          let dragState = null;
+
+          const onMouseMove = (event) => {
+            if (!dragState) return;
+            const nextX = dragState.winX + (event.screenX - dragState.mouseX);
+            const nextY = dragState.winY + (event.screenY - dragState.mouseY);
+            try {
+              win.moveTo(Math.round(nextX), Math.round(nextY));
+            } catch {}
+          };
+
+          const stopDrag = () => {
+            if (!dragState) return;
+            dragState = null;
+            doc.removeEventListener('mousemove', onMouseMove, true);
+            doc.removeEventListener('mouseup', stopDrag, true);
+            doc.removeEventListener('mouseleave', stopDrag, true);
+          };
+
+          doc.addEventListener(
+            'mousedown',
+            (event) => {
+              if (event.button !== 0) return;
+              const target = event.target;
+              if (target?.closest?.(interactiveSelector)) {
+                return;
+              }
+              dragState = {
+                mouseX: event.screenX,
+                mouseY: event.screenY,
+                winX: Number(win.x || 0),
+                winY: Number(win.y || 0),
+              };
+              doc.addEventListener('mousemove', onMouseMove, true);
+              doc.addEventListener('mouseup', stopDrag, true);
+              doc.addEventListener('mouseleave', stopDrag, true);
+            },
+            true,
+          );
+        };
+
+        if (win.window.document.readyState === 'complete') {
+          mountPanel();
+        } else {
+          win.on('loaded', mountPanel);
+        }
+
+        win.on('close', () => {
+          NativeAPI.restoreVoicePanelToMainWindow();
+          const current = NativeAPI.voiceWindow;
+          NativeAPI.voiceWindow = null;
+          try {
+            current?.close(true);
+          } catch {}
+        });
+      },
+    );
+  }
+
+  static closeVoiceWindow() {
+    const win = NativeAPI.voiceWindow;
+    if (!win) {
+      return;
+    }
+    NativeAPI.restoreVoicePanelToMainWindow();
+    NativeAPI.voiceWindow = null;
+    try {
+      win.close(true);
+    } catch {}
+  }
+
   static async exec(exeFile, workingDir, args, callback, cwd = process.cwd()) {
     return new Promise((resolve, reject) => {
       if (!NativeAPI.status) {
@@ -263,6 +447,10 @@ export class NativeAPI {
 
     try {
       Voice.destroy(true);
+    } catch {}
+
+    try {
+      NativeAPI.closeVoiceWindow();
     } catch {}
 
     setTimeout(() => {

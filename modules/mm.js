@@ -52,6 +52,7 @@ export class MM {
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, false);
     document.body.style.display = 'none';
+    NativeAPI.openVoiceWindow();
     NativeAPI.window.hide();
 
     NativeAPI.app.unregisterGlobalHotKey(NativeAPI.altEnterShortcut);
@@ -67,6 +68,7 @@ export class MM {
       try {
         Settings.ApplySettings();
 
+        NativeAPI.closeVoiceWindow();
         NativeAPI.window.show();
         NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
       } catch (e) {
