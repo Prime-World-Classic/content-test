@@ -4,6 +4,7 @@
 }
 :root {
   --cursor-pointer: url('img/cursor_button32x32.png') 0 0, pointer;
+  --cursor-default: url('img/cursor32x32.png') 0 0, default;
   --build-hl-h: 199;
   --build-hl-border-mm: 0.42mm;
 }
@@ -5659,7 +5660,21 @@ i-success {
   transform: none !important;
   z-index: 1 !important;
   --voice-monitor-scale: 1;
-  --voice-window-size-factor: 0.6;
+  --voice-window-size-factor: 0.9;
+}
+
+.voice-window-mode,
+.voice-window-mode * {
+  cursor: var(--cursor-default);
+}
+
+.voice-window-mode .voice-info-panel-body-item-name,
+.voice-window-mode .voice-info-panel-body-item-mute,
+.voice-window-mode .voice-info-panel-close,
+.voice-window-mode button,
+.voice-window-mode [role='button'],
+.voice-window-mode a:any-link {
+  cursor: var(--cursor-pointer);
 }
 
 .voice-window-mode .voice-info-panel-close {

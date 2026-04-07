@@ -269,6 +269,7 @@ export class NativeAPI {
         focus: false,
         show_in_taskbar: true,
         always_on_top: false,
+        transparent: true,
         resizable: false,
         width,
         height,
@@ -280,6 +281,9 @@ export class NativeAPI {
         const mountPanel = () => {
           const doc = win.window.document;
           doc.title = 'Voice';
+          doc.documentElement.style.margin = '0';
+          doc.documentElement.style.background = 'transparent';
+          doc.documentElement.style.overflow = 'hidden';
           doc.body.style.margin = '0';
           doc.body.style.background = 'transparent';
           doc.body.style.overflow = 'hidden';
