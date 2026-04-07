@@ -5710,6 +5710,14 @@ i-success {
   line-height: 1;
 }
 
+.voice-window-mode .voice-info-panel-body-item-muted-by {
+  font-size: calc(22px * var(--voice-monitor-scale) * var(--voice-window-size-factor));
+  line-height: 1;
+  color: #ff3b30;
+  text-shadow: 0 0 6px rgba(255, 59, 48, 0.65);
+  user-select: none;
+}
+
 .voice-window-mode .voice-info-panel-body-item-nostream {
   animation: pulse 2s infinite;
 }
@@ -5840,6 +5848,14 @@ i-success {
 .voice-info-panel-body-item-mute {
   font-size: clamp(0.9em, 1.2vw, 1.6em);
   line-height: 1;
+}
+
+.voice-info-panel-body-item-muted-by {
+  font-size: clamp(0.8em, 1.1vw, 1.4em);
+  line-height: 1;
+  color: #ff3b30;
+  text-shadow: 0 0 0.4em rgba(255, 59, 48, 0.65);
+  user-select: none;
 }
 
 .voice-info-panel-body-item-nostream {

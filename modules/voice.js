@@ -96,6 +96,8 @@ export class Voice {
   
   static mutedPeers = new Set();
   
+  static mutedByPeers = new Set();
+  
   static panelMeterStops = new Set();
 
   static reconnectPlanMs = [2000, 5000, 10000, 15000, 20000];
@@ -159,7 +161,32 @@ export class Voice {
     if (!Number.isFinite(targetId) || targetId <= 0) {
       return;
     }
-    Voice.setPeerMuted(targetId, !Voice.isPeerMuted(targetId));
+    const nextMuted = !Voice.isPeerMuted(targetId);
+    Voice.setPeerMuted(targetId, nextMuted);
+    App.api
+      .ghost('user', 'callMuteState', {
+        id: targetId,
+        muted: nextMuted ? 1 : 0,
+      })
+      .catch(() => {});
+    Voice.updateInfoPanel();
+  }
+
+  static isMutedByPeer(id) {
+    const targetId = Number(id);
+    return Number.isFinite(targetId) && targetId > 0 && Voice.mutedByPeers.has(targetId);
+  }
+
+  static setMutedByPeer(id, muted = true) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) {
+      return;
+    }
+    if (muted) {
+      Voice.mutedByPeers.add(targetId);
+    } else {
+      Voice.mutedByPeers.delete(targetId);
+    }
     Voice.updateInfoPanel();
   }
 
@@ -742,10 +769,18 @@ export class Voice {
     
     mute.style.marginRight = '0.5cqw';
     
+    let mutedByIcon = DOM(
+      {
+        style: 'voice-info-panel-body-item-muted-by',
+      },
+      '✖',
+    );
+    
     const updateItemView = () => {
       const mutedMark = Voice.isPeerMuted(Number(id)) ? ' [MUTED]' : '';
       item.innerText = `${state()}${mutedMark}`;
       mute.innerText = Voice.isPeerMuted(Number(id)) ? '🔇' : '🔊';
+      mutedByIcon.style.display = Voice.isMutedByPeer(Number(id)) ? '' : 'none';
     };
     
     updateItemView();
@@ -797,7 +832,7 @@ export class Voice {
     panelBody.append(
       DOM(
         { style: 'voice-info-panel-body-item' },
-        DOM({ style: 'voice-info-panel-body-item-controls' }, mute, item),
+        DOM({ style: 'voice-info-panel-body-item-controls' }, mute, mutedByIcon, item),
         DOM({ style: 'voice-info-panel-body-item-status' }, bar),
       ),
     );
@@ -965,6 +1000,7 @@ export class Voice {
   static async remoteDrop(id) {
     const target = Voice.manager[id];
     if (!target) return;
+    Voice.setMutedByPeer(id, false);
     await target.close();
   }
 
@@ -1440,6 +1476,8 @@ export class Voice {
     } catch {}
 
     delete Voice.manager[this.id];
+    
+    Voice.mutedByPeers.delete(this.id);
 
     if (this.id in Voice.cacheCandidate) {
       delete Voice.cacheCandidate[this.id];

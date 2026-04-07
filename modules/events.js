@@ -315,6 +315,10 @@ export class Events {
   static async VDrop(data) {
     await Voice.remoteDrop(data.id);
   }
+  
+  static async VMuteState(data) {
+    Voice.setMutedByPeer(data?.id, Number(data?.muted || 0) === 1);
+  }
 
   static async VFriendMerge(data) {
     if (MM.isInTambur || MM.isInBattle) {
