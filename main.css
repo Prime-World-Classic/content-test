@@ -6114,6 +6114,10 @@ body:has(#wcastle-call)::before {
   padding-top: 3cqh;
 }
 
+#wcastle-menu {
+  z-index: 2147483647 !important;
+}
+
 #wcastle-render-debug {
   bottom: 0;
 }
@@ -6181,6 +6185,14 @@ body:has(#wcastle-call)::before {
   padding: 1cqw 1cqw;
   margin: 1cqw 2cqw;
   position: relative;
+}
+
+.castle-menu-item-checkbox.is-disabled {
+  opacity: 0.45;
+}
+
+.castle-menu-item-checkbox.is-disabled label {
+  filter: grayscale(0.35);
 }
 
 .castle-menu-item-checkbox input[type='checkbox'] {

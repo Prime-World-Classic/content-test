@@ -859,6 +859,17 @@ export class Window {
 
   static async settings() {
     let soundTestId = 'sound_test';
+    const voiceInWindowUnavailableByWindows = NativeAPI.isLegacyWindowsForVoiceWindow?.() === true;
+    const voiceInWindowUnavailableByNwjs = NativeAPI.isLegacyNwjsForVoiceWindow?.() === true;
+    const voiceInWindowUnavailable = voiceInWindowUnavailableByWindows || voiceInWindowUnavailableByNwjs;
+    const voiceInWindowUnavailableTitle = voiceInWindowUnavailableByWindows
+      ? Lang.text('voiceInWindowRequiresWin11')
+      : voiceInWindowUnavailableByNwjs
+        ? Lang.text('voiceInWindowRequiresNwjs')
+        : '';
+    if (voiceInWindowUnavailable) {
+      Settings.settings.voiceInWindow = false;
+    }
 	
 	 setTimeout(() => {
           const sliders = document.querySelectorAll('.castle-menu-slider');
@@ -951,6 +962,36 @@ export class Window {
             { checked: Settings.settings.novoice },
           ),
           DOM({ tag: 'label', for: 'novoice' }, Lang.text('voiceEnabled')),
+        ),
+        DOM(
+          {
+            style: voiceInWindowUnavailable ? ['castle-menu-item-checkbox', 'is-disabled'] : 'castle-menu-item-checkbox',
+            title: voiceInWindowUnavailableTitle,
+          },
+          DOM(
+            {
+              tag: 'input',
+              domaudio: domAudioPresets.defaultSelect,
+              type: 'checkbox',
+              id: 'voice-in-window',
+              checked: !voiceInWindowUnavailable && Settings.settings.voiceInWindow !== false,
+              disabled: voiceInWindowUnavailable,
+              title: voiceInWindowUnavailableTitle,
+              event: [
+                'change',
+                (e) => {
+                  if (voiceInWindowUnavailable) {
+                    Settings.settings.voiceInWindow = false;
+                    e.target.checked = false;
+                    return;
+                  }
+                  Settings.settings.voiceInWindow = e.target.checked;
+                },
+              ],
+            },
+            { checked: !voiceInWindowUnavailable && Settings.settings.voiceInWindow !== false },
+          ),
+          DOM({ tag: 'label', for: 'voice-in-window', title: voiceInWindowUnavailableTitle }, Lang.text('voiceInWindow')),
         ),
         DOM(
           { style: 'castle-menu-item-checkbox' },
