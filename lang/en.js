@@ -18,6 +18,7 @@ export const en = {
     titleAdministration: 'Administrator',
     titleHelper: 'Helper',
     titlePhone: 'Phone',
+    titleSteamClient: 'Steam Client',
     ready: 'Ready!',
     ready2: "Confirm the hero's choice",
     library: 'Library',

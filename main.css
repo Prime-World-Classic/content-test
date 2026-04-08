@@ -6699,6 +6699,15 @@ body:has(#wcastle-call)::before {
   font-size: 1.9cqh;
 }
 
+.chat-source-icon-steam {
+  background-image: url('icons/steam2.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: transparent;
+  box-shadow: none;
+}
+
 @media (max-aspect-ratio: 1/1) {
   .build-sets-section,
   .build-sets {

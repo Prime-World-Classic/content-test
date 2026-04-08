@@ -19,6 +19,7 @@ export const ru = {
     titleAdministration: 'Администратор',
     titleHelper: 'Поддержка',
     titlePhone: 'Телефон',
+    titleSteamClient: 'Steam Клиент',
     ready: 'Готов!',
     ready2: 'Подтвердить выбор героя',
     cancel: 'Отменить',

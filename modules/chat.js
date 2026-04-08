@@ -309,6 +309,9 @@ export class Chat {
   }
 
   static getMessageSourceType(data) {
+    const source = String(data?.source || '').toLowerCase();
+    if (source === 'steam' || source === 'phone' || source === 'telegram') return source;
+    if (Number(data?.client) === 2) return 'steam';
     if (Number(data?.client) === 1) return 'phone';
     if (Number(data?.id) === -2) return 'telegram';
     return null;
@@ -317,6 +320,7 @@ export class Chat {
   static getMessageSourceLabel(data) {
     const source = Chat.getMessageSourceType(data);
     if (source === 'phone') return Lang.text('titlePhone');
+    if (source === 'steam') return Lang.text('titleSteamClient');
     if (source === 'telegram') return Lang.text('titleTelegram');
     return '';
   }
@@ -583,6 +587,7 @@ export class Chat {
     }
     const to = Chat.to;
     const echoId = `${App.storage.data.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const outgoingClient = NativeAPI.isSteamClient ? 2 : 0;
     
     Chat.viewMessage({
       messageId: `local-${echoId}`,
@@ -592,7 +597,8 @@ export class Chat {
       flag: 0,
       message: text,
       pinned: false,
-      client: 0,
+      client: outgoingClient,
+      source: outgoingClient === 2 ? 'steam' : '',
       echoId,
       localEcho: true,
     });
@@ -601,6 +607,7 @@ export class Chat {
       await App.api.request('user', 'chat', {
         message: text,
         to,
+        client: outgoingClient,
         echoId,
       });
     } catch (error) {
