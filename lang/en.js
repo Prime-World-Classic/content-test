@@ -59,45 +59,45 @@ export const en = {
     continue: 'Continue',
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
-	choosingHero: 'Choose a Hero',
-	youSearchFight: 'You are in search of a fight!',
-  addFriend: 'Invite friend',
-	
-	//BackEnd
-	structureError: 'Structure error',
-	accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
-	accountBanned: 'Account is permanently banned. For details, please contact support.',
-	accountBlockedForMinutes: 'Your account is blocked for ${blocked} min.',
-	//accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
-	invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
-	invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
-	//inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
-	nicknameLengthError: 'Login length must be between 2 and 32 characters',
-	nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
-	nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
-	nicknameTaken: 'Nickname is taken',
-	userNotFound: 'User not found',
-	nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
-	accountNotFound: 'Account not found',
-	cannotIdentify1: 'Cannot identify you (1)',
-	cannotIdentify2: 'Cannot identify you (2)',
-	cannotIdentify3: 'Cannot identify you (3)',
-	notYourFriend: 'This is not your friend',
-	invalidAccessKey: 'Invalid access key',
-	notInThisGame: 'You are not in this game',
-	playerNotInGame: 'This player is not in this game',
-	notYourAlly: 'This is not your ally',
-	
-	cannotPurchaseItem: 'Cannot purchase this item',
-	alreadyPurchasedItem: 'You have already purchased this item before',
-	insufficientFunds: 'Insufficient funds',
-	itemNotPurchased: 'You have not purchased this item',
-	
-	updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
-	gameModeNotAvailable: 'This game mode is not available',
-	eventFinished: 'Event ${eventName} has ended!',
-	eventStarted: 'Event ${eventName} has started!',
-	gameModeTimeLimited: 'Game mode ${modeName} has time-limited access. Don\'t miss event announcements in the official VK group.',
+    choosingHero: 'Choose a Hero',
+    youSearchFight: 'You are in search of a fight!',
+    addFriend: 'Invite friend',
+
+    //BackEnd
+    structureError: 'Structure error',
+    accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
+    accountBanned: 'Account is permanently banned. For details, please contact support.',
+    accountBlockedForMinutes: 'Your account is blocked for ${blocked} min.',
+    //accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
+    invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
+    invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
+    //inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
+    nicknameLengthError: 'Login length must be between 2 and 32 characters',
+    nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
+    nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
+    nicknameTaken: 'Nickname is taken',
+    userNotFound: 'User not found',
+    nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
+    accountNotFound: 'Account not found',
+    cannotIdentify1: 'Cannot identify you (1)',
+    cannotIdentify2: 'Cannot identify you (2)',
+    cannotIdentify3: 'Cannot identify you (3)',
+    notYourFriend: 'This is not your friend',
+    invalidAccessKey: 'Invalid access key',
+    notInThisGame: 'You are not in this game',
+    playerNotInGame: 'This player is not in this game',
+    notYourAlly: 'This is not your ally',
+
+    cannotPurchaseItem: 'Cannot purchase this item',
+    alreadyPurchasedItem: 'You have already purchased this item before',
+    insufficientFunds: 'Insufficient funds',
+    itemNotPurchased: 'You have not purchased this item',
+
+    updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
+    gameModeNotAvailable: 'This game mode is not available',
+    eventFinished: 'Event ${eventName} has ended!',
+    eventStarted: 'Event ${eventName} has started!',
+    gameModeTimeLimited: "Game mode ${modeName} has time-limited access. Don't miss event announcements in the official VK group.",
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',
@@ -166,7 +166,8 @@ export const en = {
     rankMarshal: 'Marshal',
     rankGod: 'God',
 
-    accountRatingTooltip: 'Player rating is a numerical indicator of the sum of rating points. It is awarded based on match results (victories and defeats in battles). Your rating value helps in selecting opponents in combat sessions and distributing you into one team or another.',
+    accountRatingTooltip:
+      'Player rating is a numerical indicator of the sum of rating points. It is awarded based on match results (victories and defeats in battles). Your rating value helps in selecting opponents in combat sessions and distributing you into one team or another.',
     accountRating: 'Rating: {rating}',
 
     //pwgame
@@ -304,13 +305,17 @@ export const en = {
     renameBuild: 'Rename',
     native: 'Native',
     enemy: 'Enemy',
-    gradualTalentsTitle: 'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
-    aoeTalentsTitle: 'Accounting for talents that affect "all allies/enemies" temporarily or permanently, actively or passively (e.g., red quality talents "Hymn of Determination", "Inspiring Hymn")',
-    territoryTalentsTitle: 'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
+    gradualTalentsTitle:
+      'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
+    aoeTalentsTitle:
+      'Accounting for talents that affect "all allies/enemies" temporarily or permanently, actively or passively (e.g., red quality talents "Hymn of Determination", "Inspiring Hymn")',
+    territoryTalentsTitle:
+      'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
     makeStatPriorityTitle: 'Make characteristic priority',
     tipTitle: 'Hall of Fame Builds (LMB)',
-	tipBody: 'Builds for this hero from the Hall of Fame top-100 players.\nClick on the icon to view builds.\n\nTo copy a build from the Hall of Fame, leave your build window open on the desired tab.\nThen go to the selected build from the Hall of Fame and click "Steal build".',
-assembly: 'Assembly',
+    tipBody:
+      'Builds for this hero from the Hall of Fame top-100 players.\nClick on the icon to view builds.\n\nTo copy a build from the Hall of Fame, leave your build window open on the desired tab.\nThen go to the selected build from the Hall of Fame and click "Steal build".',
+    assembly: 'Assembly',
     //Друзья
     friends: 'Friends',
     searchForFriends: 'Search for friends',
@@ -497,6 +502,176 @@ assembly: 'Assembly',
       },
     ],
 
+    build_help_content: [
+      {
+        type: 'p',
+        content:
+          '<b>Build(1)</b> — is a combination of skills, attributes, and selected talents that a player chooses for their hero to execute a specific strategy in upcoming battles.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/build/help-1.png',
+      },
+      {
+        type: 'p',
+        content:
+          '<b>Class Talents(2)</b> — abilities of the character available from the start in the build window. They can be active or passive. Skills cannot be transferred between heroes.',
+      },
+      {
+        type: 'p',
+        content:
+          '<b>Non-Class Talents(3)</b> — hero items that improve their attributes. They allow your hero to deal more damage, evade attacks more effectively, and recover health faster. They can be active or passive.',
+      },
+      {
+        type: 'p',
+        content:
+          '<b>Stats(4)</b> <i>(attributes)</i> — characteristics of a character that define their role and affect various gameplay aspects.',
+      },
+      {
+        type: 'p',
+        content:
+          'Our server features a reworked build system. The original 60-point system is not used. To <b>scale into a desired stat(5)</b> for talents with the description <magenta>“Based on highest (...)”</magenta>, you need to select the corresponding stats using the checkboxes on the left.',
+      },
+      { type: 'hr' },
+
+      {
+        type: 'center',
+        content: '<h3>Stat Definitions (Attributes)</h3>',
+      },
+      {
+        type: 'p',
+        content:
+          'Stats <b>(4)</b> are displayed on the left side of the build window. Each stat corresponds to a specific parameter. Below are definitions to clarify their differences.',
+      },
+      {
+        type: 'ul',
+        content: [
+          '<b>Health</b> — basic survivability: the more health you have, the harder it is for enemies to kill you.',
+          '<b>Energy</b> — resource consumed by active talents. Important if your hero frequently uses abilities or they require a lot of MP.',
+          '<b>Speed</b> — determines how fast your character moves.',
+          '<b>Strength</b> — increases <fiz>physical</fiz> damage.',
+          '<b>Mind</b> — increases <mag>magical</mag> damage.',
+          '<b>Agility</b> — increases attack speed and penetration.',
+          '<b>Cunning</b> — increases critical strike chance and penetration.',
+          '<b>Fortitude</b> — reduces <fiz>physical</fiz> damage taken.',
+          '<b>Will</b> — reduces <mag>magical</mag> damage taken.',
+          '<b>Damage</b> — basic attack damage dealt to enemies and creeps.',
+        ],
+      },
+      { type: 'hr' },
+
+      {
+        type: 'center',
+        content: '<h3>Main Information</h3><p>Below are descriptions of key build interface elements.</p>',
+      },
+      {
+        type: 'img',
+        content: 'content/img/build/help-2.png',
+      },
+      {
+        type: 'p',
+        content:
+          'At the center is the build grid containing skills and talents <b>(1)</b>. Talents are placed here from the library and sets panel.',
+      },
+      {
+        type: 'p',
+        content:
+          'It consists of six rows <b>(2)</b>. You can select rows using <carrot>RMB</carrot> (single row) or <carrot>LMB</carrot> (multiple rows). Clicking again resets selection <carrot>(LMB — left mouse button, RMB — right mouse button)</carrot>.',
+      },
+      {
+        type: 'p',
+        content:
+          'On the right side are the <b>talent library</b> and <b>sets</b> <b>(3)</b>. Talents can be filtered by color, rows, or stats using <carrot>LMB</carrot>. To add a talent or skill, click it with <carrot>LMB</carrot>. To remove it, click again.',
+      },
+      {
+        type: 'p',
+        content:
+          'At the bottom is the panel <b>(4)</b> where active skills and talents are placed automatically. Manual rearranging is also available. Smart cast can be toggled here.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/build/help-3.png',
+      },
+
+      {
+        type: 'p',
+        content:
+          '<b>Smart Cast</b> allows abilities to be used without additional targeting clicks. To enable, press <carrot>RMB</carrot> on a skill or talent (green animation appears). Disable by pressing <carrot>RMB</carrot> again.',
+      },
+      { type: 'hr' },
+
+      {
+        type: 'center',
+        content: '<h3>Additional Information</h3>',
+      },
+      {
+        type: 'p',
+        content: 'Additional details to help you manage your hero’s build window.',
+      },
+      {
+        type: 'img',
+        content: 'content/img/build/help-4.png',
+      },
+      {
+        type: 'p',
+        content:
+          'If you are unfamiliar with a hero, use the <b>Hall of Fame</b> by clicking the hero avatar. You will see the top 100 players. Selecting a player opens their build, which you can copy.',
+      },
+      {
+        type: 'p',
+        content:
+          '<b>Skins</b> — alternate hero appearances. Some are free, others are obtained via the <magenta>Market</magenta>. Use the <yellow>“Skins”</yellow> button in the build to select one.',
+      },
+      {
+        type: 'p',
+        content: '<b>Training</b> — a mode where you can enter the map “Borderlands” and test your build against bots.',
+      },
+      {
+        type: 'p',
+        content:
+          '<b>Green Book</b> — a filter showing stat changes depending on territory: <rz>friendly</rz> and <gray>neutral</gray>/<red-d>enemy</red-d>. Some talents provide bonuses only under specific conditions.',
+      },
+      {
+        type: 'p',
+        content: 'Below the book is a <b>highlighted talent counter</b>, useful for tracking stat contributions and set composition.',
+      },
+      {
+        type: 'p',
+        content: '<b>Tabs</b> are located above the build. Use <carrot>RMB</carrot> to rename them. Maximum — <num>6</num> tabs.',
+      },
+      {
+        type: 'p',
+        content: 'Above the tabs are build interaction buttons:',
+      },
+      {
+        type: 'ul',
+        content: [
+          '1) <b>Combat Mode</b> — simulates progression from level 1 to 36.',
+          '2) <b>Create Build</b> — opens a new tab.',
+          '3) <b>Duplicate Build</b> — copies the current build.',
+          '4) <b>Random Build</b> — loads a random player build.',
+          '5) <b>Clear Build</b> — removes all talents except skills.',
+        ],
+      },
+      {
+        type: 'p',
+        content: 'The <b>“A”</b> button filters only active talents.',
+      },
+      {
+        type: 'p',
+        content:
+          '<b>Sets</b> are groups of talents with synergy. Hovering shows their layout. <carrot>LMB</carrot> adds a set, <carrot>RMB</carrot> removes it.',
+      },
+      {
+        type: 'p',
+        content: 'Set settings allow customization of layout and highlighting.',
+      },
+      { type: 'hr' },
+      {
+        type: 'p',
+        content: '<i>If you still have questions, contact support via our social networks. PWClassic Team.</i>',
+      },
+    ],
 
     helpWindow: 'Help window',
     help_btn_close: 'Mark as read',
@@ -547,8 +722,6 @@ assembly: 'Assembly',
     errorKeybindings: 'Error saving keybindings',
     errorKeybindingsLoad: 'Error loading keybindings',
     restoredDefaultKeybindings: 'Restored default keybindings',
-
-
 
     frame_hint: 'The frame will be active when the hero has 25+ wins',
 
@@ -797,13 +970,13 @@ assembly: 'Assembly',
     flag_Rose: 'ARAM Rose',
     flag_Space: 'Your Universe',
     flag_The_brown_cutie: 'Brown Cutie',
-	flag_Yarilosolnce: 'Yarilo the Sun',
+    flag_Yarilosolnce: 'Yarilo the Sun',
     flag_Samovar: 'Samovar and Baranki',
     flag_Pancakes: 'Maslenitsa 2026',
-	flag_Kitty_LO: 'Meow! LO (paired flags)',
-	flag_Kitty_VE: 'Meow! VE (paired flags)',
-	flag_FY_Pair1: 'Strong friendship',
-	flag_FY_Pair2: 'Very strong friendship',
+    flag_Kitty_LO: 'Meow! LO (paired flags)',
+    flag_Kitty_VE: 'Meow! VE (paired flags)',
+    flag_FY_Pair1: 'Strong friendship',
+    flag_FY_Pair2: 'Very strong friendship',
 
     // Переводы
     select_faction: 'Select faction',
@@ -1271,10 +1444,10 @@ assembly: 'Assembly',
     hero_58_skin_2_name: 'Dream',
     hero_59_skin_2_name: 'Bullfinch',
     hero_60_skin_2_name: 'Hologram',
-	hero_61_skin_2_name: 'Indigo',
+    hero_61_skin_2_name: 'Indigo',
     hero_62_skin_2_name: 'Warlock',
     hero_63_skin_2_name: 'Cursed Countess',
-	hero_64_skin_2_name: 'Fakir',
+    hero_64_skin_2_name: 'Fakir',
     hero_65_skin_2_name: 'Explonya',
 
     //Стата талантов
@@ -1384,7 +1557,7 @@ assembly: 'Assembly',
       'With a <num>25%</num> chance, ghosts of the fallen may appear near the hero for <num>30</num> sec. Ghosts additionally gain <num>%s</num> Stamina or Will (based on the higher of Strength or Intellect).<br>Ghosts of enemies killed by the hero always appear.',
     htalent_20_name: 'All for One',
     htalent_20_description:
-      'For each creature under the hero\'s control (up to <num>5</num>), the hero\'s Health and Agility increase by <num>3%</num>.<br>Enemy heroes under Call of the Flute or Charming Melody count as <num>3</num> controlled creatures.',
+      "For each creature under the hero's control (up to <num>5</num>), the hero's Health and Agility increase by <num>3%</num>.<br>Enemy heroes under Call of the Flute or Charming Melody count as <num>3</num> controlled creatures.",
     htalent_21_name: 'Enchanted Arrows',
     htalent_21_description:
       "The hero's attack deals additional <mag>%s</mag> - <mag>%s</mag> damage (based on Strength). Passively provides <num>%s</num> Life Steal (based on Intellect).<br>Class talents simultaneously deal <fiz></fiz> and <mag></mag> damage.",
@@ -3279,7 +3452,7 @@ assembly: 'Assembly',
       "The Clockwork talent additionally deals damage equal to <mag>1.7%</mag> of the attack target's maximum Health and stuns for <num>0.15</num> sec longer.",
     htalent_706_name: 'Sugar riot',
     htalent_706_description:
-      'The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent\'s cooldown by <num>5</num> seconds.',
+      "The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent's cooldown by <num>5</num> seconds.",
     htalent_707_name: 'Terrifying experience',
     htalent_707_description: 'Familiar attack targets panic for <num>0.5</num> sec.',
     htalent_708_name: 'Witch Cover',
@@ -5705,14 +5878,12 @@ assembly: 'Assembly',
     talent_774_description:
       'Fires a harpoon in the chosen direction and stuns the first enemy hit on its path for <num>0.7</num> sec, then pulls your hero toward them.  <br>Increases melee heroes\' attack range by <num>1</num>. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_775_name: 'Boarding Might',
-    talent_775_description:
-      'Increases stun duration by <num>0.7</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
+    talent_775_description: 'Increases stun duration by <num>0.7</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
     talent_776_name: 'Boarding Accuracy',
     talent_776_description:
       'Increases harpoon range and flight speed by <num>50%</num>. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
     talent_777_name: 'Boarding Supremacy',
     talent_777_description:
       'Reduces the Boarding Harpoon talent cooldown by <num>20</num> sec. Stuns not only the main target but all enemies around it within radius <num>5</num>. After the stun, targets are additionally slowed by <num>50%</num> for <num>2</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
-
   },
 };
