@@ -5283,7 +5283,7 @@ export const en = {
       'The enemy attacking the hero takes <mag>%s</mag> damage.<br><br><gray>Set</gray> <orange-d>"Collector\'s habits"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
     talent_575_name: 'Hardened by cruelty<white> <CD>30</CD></white>',
     talent_575_description:
-      'Killing an enemy hero reduces the cooldown of all abilities by <num>12%</num><br><br> <gray>Set</gray> <orange-d>"Collector\'s habits\</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
+      'Killing an enemy hero reduces the cooldown of all abilities by <num>20%</num><br><br> <gray>Set</gray> <orange-d>"Collector\'s habits\</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
     talent_576_name: 'Colossal potential',
     talent_576_description:
       '<gray>Set</gray> <orange-d>"Collector\'s habits\</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',

@@ -4405,7 +4405,7 @@ export const ru = {
     talent_270_description:
       '<num>Защитный</num><br><br>При использовании весь урон, получаемый героем от монстров, снижается на  <num>75%</num>, а от остальных на <num>10%</num> на <num>7</num> сек.',
     talent_271_name: 'Закаленный жестокостью<white> <CD>30</CD></white>',
-    talent_271_description: 'Убийство вражеского героя уменьшает время восстановления всех способностей на <num>20%</num>',
+    talent_271_description: 'Убийство вражеского героя уменьшает время восстановления всех способностей на <num>12%</num>',
     talent_272_name: 'Касание смерти<white> <CD>90</CD></white>',
     talent_272_description:
       '<num>Атакующий</num><br><br>На <num>3</num> сек отнимает <num>%s</num> Здоровья у указанного врага.<br>Талант не может убить противника.',
@@ -5271,7 +5271,7 @@ export const ru = {
       'Враг, атакующий героя, получает <mag>%s</mag> урона. <br> <br> <gray>Сет</gray> <tn>"Привычки коллекционера\</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray> <br> <orange-l>4 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray>',
     talent_575_name: 'Закаленный жестокостью<white> <CD>30</CD></white>',
     talent_575_description:
-      'Убийство вражеского героя уменьшает время восстановления всех способностей на <num>12%</num> <br> <br> <gray>Сет</gray> <tn>"Привычки коллекционера"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray> <br> <orange-l>4 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray>',
+      'Убийство вражеского героя уменьшает время восстановления всех способностей на <num>20%</num> <br> <br> <gray>Сет</gray> <tn>"Привычки коллекционера"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray> <br> <orange-l>4 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray>',
     talent_576_name: 'Коллосальный потенциал',
     talent_576_description:
       '<gray>Сет</gray> <tn>"Привычки коллекционера"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray> <br> <orange-l>4 таланта</orange-l> <br> <num>+2</num> <gray>ко всем характеристикам</gray>',
