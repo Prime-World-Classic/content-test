@@ -59,45 +59,45 @@ export const en = {
     continue: 'Continue',
     fullscreenEnabled: 'Fullscreen enabled',
     fullscreenDisabled: 'Window mode enabled',
-    choosingHero: 'Choose a Hero',
-    youSearchFight: 'You are in search of a fight!',
-    addFriend: 'Invite friend',
-
-    //BackEnd
-    structureError: 'Structure error',
-    accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
-    accountBanned: 'Account is permanently banned. For details, please contact support.',
-    accountBlockedForMinutes: 'Your account is blocked for ${blocked} min.',
-    //accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
-    invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
-    invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
-    //inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
-    nicknameLengthError: 'Login length must be between 2 and 32 characters',
-    nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
-    nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
-    nicknameTaken: 'Nickname is taken',
-    userNotFound: 'User not found',
-    nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
-    accountNotFound: 'Account not found',
-    cannotIdentify1: 'Cannot identify you (1)',
-    cannotIdentify2: 'Cannot identify you (2)',
-    cannotIdentify3: 'Cannot identify you (3)',
-    notYourFriend: 'This is not your friend',
-    invalidAccessKey: 'Invalid access key',
-    notInThisGame: 'You are not in this game',
-    playerNotInGame: 'This player is not in this game',
-    notYourAlly: 'This is not your ally',
-
-    cannotPurchaseItem: 'Cannot purchase this item',
-    alreadyPurchasedItem: 'You have already purchased this item before',
-    insufficientFunds: 'Insufficient funds',
-    itemNotPurchased: 'You have not purchased this item',
-
-    updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
-    gameModeNotAvailable: 'This game mode is not available',
-    eventFinished: 'Event ${eventName} has ended!',
-    eventStarted: 'Event ${eventName} has started!',
-    gameModeTimeLimited: "Game mode ${modeName} has time-limited access. Don't miss event announcements in the official VK group.",
+	choosingHero: 'Choose a Hero',
+	youSearchFight: 'You are in search of a fight!',
+  addFriend: 'Invite friend',
+	
+	//BackEnd
+	structureError: 'Structure error',
+	accountNotFoundOrRecover: 'Account not found, please register or recover via Telegram bot @primeworldclassic_bot',
+	accountBanned: 'Account is permanently banned. For details, please contact support.',
+	accountBlockedForMinutes: 'Your account is blocked for ${blocked} min.',
+	//accountBlocked: 'Account blocked for community rules violation for ${blocked} min.',
+	invalidCredentials: 'Wrong login or password. Account can be recovered via Telegram bot @primeworldclassic_bot',
+	invalidInvite: 'Invite code is invalid. Get invite code via Telegram bot @primeworldclassic_bot',
+	//inviteAlreadyUsed: 'Invite code was already activated by ${invite.login}, please login or recover password via Telegram bot @primeworldclassic_bot',
+	nicknameLengthError: 'Login length must be between 2 and 32 characters',
+	nicknameInvalidCharacters: 'Only Russian or English letters, numbers and regular spaces are allowed in login, try another one',
+	nicknameMixedLanguages: 'Nickname can only consist of Russian or English letters, try to come up with another one',
+	nicknameTaken: 'Nickname is taken',
+	userNotFound: 'User not found',
+	nicknameAlreadyUsed: 'You are already using this nickname or have used it before',
+	accountNotFound: 'Account not found',
+	cannotIdentify1: 'Cannot identify you (1)',
+	cannotIdentify2: 'Cannot identify you (2)',
+	cannotIdentify3: 'Cannot identify you (3)',
+	notYourFriend: 'This is not your friend',
+	invalidAccessKey: 'Invalid access key',
+	notInThisGame: 'You are not in this game',
+	playerNotInGame: 'This player is not in this game',
+	notYourAlly: 'This is not your ally',
+	
+	cannotPurchaseItem: 'Cannot purchase this item',
+	alreadyPurchasedItem: 'You have already purchased this item before',
+	insufficientFunds: 'Insufficient funds',
+	itemNotPurchased: 'You have not purchased this item',
+	
+	updateReleased: 'Update ${version} released, you need to restart Castle and/or Steam client!',
+	gameModeNotAvailable: 'This game mode is not available',
+	eventFinished: 'Event ${eventName} has ended!',
+	eventStarted: 'Event ${eventName} has started!',
+	gameModeTimeLimited: 'Game mode ${modeName} has time-limited access. Don\'t miss event announcements in the official VK group.',
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',
@@ -166,8 +166,7 @@ export const en = {
     rankMarshal: 'Marshal',
     rankGod: 'God',
 
-    accountRatingTooltip:
-      'Player rating is a numerical indicator of the sum of rating points. It is awarded based on match results (victories and defeats in battles). Your rating value helps in selecting opponents in combat sessions and distributing you into one team or another.',
+    accountRatingTooltip: 'Player rating is a numerical indicator of the sum of rating points. It is awarded based on match results (victories and defeats in battles). Your rating value helps in selecting opponents in combat sessions and distributing you into one team or another.',
     accountRating: 'Rating: {rating}',
 
     //pwgame
@@ -305,17 +304,13 @@ export const en = {
     renameBuild: 'Rename',
     native: 'Native',
     enemy: 'Enemy',
-    gradualTalentsTitle:
-      'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
-    aoeTalentsTitle:
-      'Accounting for talents that affect "all allies/enemies" temporarily or permanently, actively or passively (e.g., red quality talents "Hymn of Determination", "Inspiring Hymn")',
-    territoryTalentsTitle:
-      'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
+    gradualTalentsTitle: 'Accounting for talents that provide gradual increases to specific parameters of your characteristics (e.g., orange quality talents "Deadly Logic", "Unstoppable Force")',
+    aoeTalentsTitle: 'Accounting for talents that affect "all allies/enemies" temporarily or permanently, actively or passively (e.g., red quality talents "Hymn of Determination", "Inspiring Hymn")',
+    territoryTalentsTitle: 'Accounting for talents that provide additional buffs based on territory type (land) - native, enemy/neutral (e.g., red quality talents "Life Talisman", "Radiance of Nature")',
     makeStatPriorityTitle: 'Make characteristic priority',
     tipTitle: 'Hall of Fame Builds (LMB)',
-    tipBody:
-      'Builds for this hero from the Hall of Fame top-100 players.\nClick on the icon to view builds.\n\nTo copy a build from the Hall of Fame, leave your build window open on the desired tab.\nThen go to the selected build from the Hall of Fame and click "Steal build".',
-    assembly: 'Assembly',
+	tipBody: 'Builds for this hero from the Hall of Fame top-100 players.\nClick on the icon to view builds.\n\nTo copy a build from the Hall of Fame, leave your build window open on the desired tab.\nThen go to the selected build from the Hall of Fame and click "Steal build".',
+assembly: 'Assembly',
     //Друзья
     friends: 'Friends',
     searchForFriends: 'Search for friends',
@@ -502,176 +497,6 @@ export const en = {
       },
     ],
 
-    build_help_content: [
-      {
-        type: 'p',
-        content:
-          '<b>Build(1)</b> — is a combination of skills, attributes, and selected talents that a player chooses for their hero to execute a specific strategy in upcoming battles.',
-      },
-      {
-        type: 'img',
-        content: 'content/img/build/help-1.png',
-      },
-      {
-        type: 'p',
-        content:
-          '<b>Class Talents(2)</b> — abilities of the character available from the start in the build window. They can be active or passive. Skills cannot be transferred between heroes.',
-      },
-      {
-        type: 'p',
-        content:
-          '<b>Non-Class Talents(3)</b> — hero items that improve their attributes. They allow your hero to deal more damage, evade attacks more effectively, and recover health faster. They can be active or passive.',
-      },
-      {
-        type: 'p',
-        content:
-          '<b>Stats(4)</b> <i>(attributes)</i> — characteristics of a character that define their role and affect various gameplay aspects.',
-      },
-      {
-        type: 'p',
-        content:
-          'Our server features a reworked build system. The original 60-point system is not used. To <b>scale into a desired stat(5)</b> for talents with the description <magenta>“Based on highest (...)”</magenta>, you need to select the corresponding stats using the checkboxes on the left.',
-      },
-      { type: 'hr' },
-
-      {
-        type: 'center',
-        content: '<h3>Stat Definitions (Attributes)</h3>',
-      },
-      {
-        type: 'p',
-        content:
-          'Stats <b>(4)</b> are displayed on the left side of the build window. Each stat corresponds to a specific parameter. Below are definitions to clarify their differences.',
-      },
-      {
-        type: 'ul',
-        content: [
-          '<b>Health</b> — basic survivability: the more health you have, the harder it is for enemies to kill you.',
-          '<b>Energy</b> — resource consumed by active talents. Important if your hero frequently uses abilities or they require a lot of MP.',
-          '<b>Speed</b> — determines how fast your character moves.',
-          '<b>Strength</b> — increases <fiz>physical</fiz> damage.',
-          '<b>Mind</b> — increases <mag>magical</mag> damage.',
-          '<b>Agility</b> — increases attack speed and penetration.',
-          '<b>Cunning</b> — increases critical strike chance and penetration.',
-          '<b>Fortitude</b> — reduces <fiz>physical</fiz> damage taken.',
-          '<b>Will</b> — reduces <mag>magical</mag> damage taken.',
-          '<b>Damage</b> — basic attack damage dealt to enemies and creeps.',
-        ],
-      },
-      { type: 'hr' },
-
-      {
-        type: 'center',
-        content: '<h3>Main Information</h3><p>Below are descriptions of key build interface elements.</p>',
-      },
-      {
-        type: 'img',
-        content: 'content/img/build/help-2.png',
-      },
-      {
-        type: 'p',
-        content:
-          'At the center is the build grid containing skills and talents <b>(1)</b>. Talents are placed here from the library and sets panel.',
-      },
-      {
-        type: 'p',
-        content:
-          'It consists of six rows <b>(2)</b>. You can select rows using <carrot>RMB</carrot> (single row) or <carrot>LMB</carrot> (multiple rows). Clicking again resets selection <carrot>(LMB — left mouse button, RMB — right mouse button)</carrot>.',
-      },
-      {
-        type: 'p',
-        content:
-          'On the right side are the <b>talent library</b> and <b>sets</b> <b>(3)</b>. Talents can be filtered by color, rows, or stats using <carrot>LMB</carrot>. To add a talent or skill, click it with <carrot>LMB</carrot>. To remove it, click again.',
-      },
-      {
-        type: 'p',
-        content:
-          'At the bottom is the panel <b>(4)</b> where active skills and talents are placed automatically. Manual rearranging is also available. Smart cast can be toggled here.',
-      },
-      {
-        type: 'img',
-        content: 'content/img/build/help-3.png',
-      },
-
-      {
-        type: 'p',
-        content:
-          '<b>Smart Cast</b> allows abilities to be used without additional targeting clicks. To enable, press <carrot>RMB</carrot> on a skill or talent (green animation appears). Disable by pressing <carrot>RMB</carrot> again.',
-      },
-      { type: 'hr' },
-
-      {
-        type: 'center',
-        content: '<h3>Additional Information</h3>',
-      },
-      {
-        type: 'p',
-        content: 'Additional details to help you manage your hero’s build window.',
-      },
-      {
-        type: 'img',
-        content: 'content/img/build/help-4.png',
-      },
-      {
-        type: 'p',
-        content:
-          'If you are unfamiliar with a hero, use the <b>Hall of Fame</b> by clicking the hero avatar. You will see the top 100 players. Selecting a player opens their build, which you can copy.',
-      },
-      {
-        type: 'p',
-        content:
-          '<b>Skins</b> — alternate hero appearances. Some are free, others are obtained via the <magenta>Market</magenta>. Use the <yellow>“Skins”</yellow> button in the build to select one.',
-      },
-      {
-        type: 'p',
-        content: '<b>Training</b> — a mode where you can enter the map “Borderlands” and test your build against bots.',
-      },
-      {
-        type: 'p',
-        content:
-          '<b>Green Book</b> — a filter showing stat changes depending on territory: <rz>friendly</rz> and <gray>neutral</gray>/<red-d>enemy</red-d>. Some talents provide bonuses only under specific conditions.',
-      },
-      {
-        type: 'p',
-        content: 'Below the book is a <b>highlighted talent counter</b>, useful for tracking stat contributions and set composition.',
-      },
-      {
-        type: 'p',
-        content: '<b>Tabs</b> are located above the build. Use <carrot>RMB</carrot> to rename them. Maximum — <num>6</num> tabs.',
-      },
-      {
-        type: 'p',
-        content: 'Above the tabs are build interaction buttons:',
-      },
-      {
-        type: 'ul',
-        content: [
-          '1) <b>Combat Mode</b> — simulates progression from level 1 to 36.',
-          '2) <b>Create Build</b> — opens a new tab.',
-          '3) <b>Duplicate Build</b> — copies the current build.',
-          '4) <b>Random Build</b> — loads a random player build.',
-          '5) <b>Clear Build</b> — removes all talents except skills.',
-        ],
-      },
-      {
-        type: 'p',
-        content: 'The <b>“A”</b> button filters only active talents.',
-      },
-      {
-        type: 'p',
-        content:
-          '<b>Sets</b> are groups of talents with synergy. Hovering shows their layout. <carrot>LMB</carrot> adds a set, <carrot>RMB</carrot> removes it.',
-      },
-      {
-        type: 'p',
-        content: 'Set settings allow customization of layout and highlighting.',
-      },
-      { type: 'hr' },
-      {
-        type: 'p',
-        content: '<i>If you still have questions, contact support via our social networks. PWClassic Team.</i>',
-      },
-    ],
 
     helpWindow: 'Help window',
     help_btn_close: 'Mark as read',
@@ -722,6 +547,8 @@ export const en = {
     errorKeybindings: 'Error saving keybindings',
     errorKeybindingsLoad: 'Error loading keybindings',
     restoredDefaultKeybindings: 'Restored default keybindings',
+
+
 
     frame_hint: 'The frame will be active when the hero has 25+ wins',
 
@@ -970,13 +797,13 @@ export const en = {
     flag_Rose: 'ARAM Rose',
     flag_Space: 'Your Universe',
     flag_The_brown_cutie: 'Brown Cutie',
-    flag_Yarilosolnce: 'Yarilo the Sun',
+	flag_Yarilosolnce: 'Yarilo the Sun',
     flag_Samovar: 'Samovar and Baranki',
     flag_Pancakes: 'Maslenitsa 2026',
-    flag_Kitty_LO: 'Meow! LO (paired flags)',
-    flag_Kitty_VE: 'Meow! VE (paired flags)',
-    flag_FY_Pair1: 'Strong friendship',
-    flag_FY_Pair2: 'Very strong friendship',
+	flag_Kitty_LO: 'Meow! LO (paired flags)',
+	flag_Kitty_VE: 'Meow! VE (paired flags)',
+	flag_FY_Pair1: 'Strong friendship',
+	flag_FY_Pair2: 'Very strong friendship',
 
     // Переводы
     select_faction: 'Select faction',
@@ -1444,10 +1271,10 @@ export const en = {
     hero_58_skin_2_name: 'Dream',
     hero_59_skin_2_name: 'Bullfinch',
     hero_60_skin_2_name: 'Hologram',
-    hero_61_skin_2_name: 'Indigo',
+	hero_61_skin_2_name: 'Indigo',
     hero_62_skin_2_name: 'Warlock',
     hero_63_skin_2_name: 'Cursed Countess',
-    hero_64_skin_2_name: 'Fakir',
+	hero_64_skin_2_name: 'Fakir',
     hero_65_skin_2_name: 'Explonya',
 
     //Стата талантов
@@ -1557,7 +1384,7 @@ export const en = {
       'With a <num>25%</num> chance, ghosts of the fallen may appear near the hero for <num>30</num> sec. Ghosts additionally gain <num>%s</num> Stamina or Will (based on the higher of Strength or Intellect).<br>Ghosts of enemies killed by the hero always appear.',
     htalent_20_name: 'All for One',
     htalent_20_description:
-      "For each creature under the hero's control (up to <num>5</num>), the hero's Health and Agility increase by <num>3%</num>.<br>Enemy heroes under Call of the Flute or Charming Melody count as <num>3</num> controlled creatures.",
+      'For each creature under the hero\'s control (up to <num>5</num>), the hero\'s Health and Agility increase by <num>3%</num>.<br>Enemy heroes under Call of the Flute or Charming Melody count as <num>3</num> controlled creatures.',
     htalent_21_name: 'Enchanted Arrows',
     htalent_21_description:
       "The hero's attack deals additional <mag>%s</mag> - <mag>%s</mag> damage (based on Strength). Passively provides <num>%s</num> Life Steal (based on Intellect).<br>Class talents simultaneously deal <fiz></fiz> and <mag></mag> damage.",
@@ -3452,7 +3279,7 @@ export const en = {
       "The Clockwork talent additionally deals damage equal to <mag>1.7%</mag> of the attack target's maximum Health and stuns for <num>0.15</num> sec longer.",
     htalent_706_name: 'Sugar riot',
     htalent_706_description:
-      "The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent's cooldown by <num>5</num> seconds.",
+      'The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent\'s cooldown by <num>5</num> seconds.',
     htalent_707_name: 'Terrifying experience',
     htalent_707_description: 'Familiar attack targets panic for <num>0.5</num> sec.',
     htalent_708_name: 'Witch Cover',
@@ -5026,21 +4853,21 @@ export const en = {
     talent_489_name: 'The Radiance of Inflexibility',
     talent_489_description:
       'Talent <tn>Life-giving radiance</tn> removes all negative effects.<br> <br> <gray>Set</gray> <orange-d>"Life-giving radiance"</orange-d>',
-    talent_490_name: 'The excitement of a bomber<white> <CD>80</CD></white>',
+   talent_490_name: 'The excitement of a bomber<white> <CD>80</CD></white>',
     talent_490_description:
       '<num>The attacker</num><br><br>The selected target becomes Explosive for <num>3</num> sec, and its Speed is reduced by <num>20%</num>. On death or when the effect ends, all enemies around take <fiz>%s</fiz> damage (from the highest of Strength and Intellect). Each learned talent in the set increases the number of explosive targets after the first explosion by <num>1</num>.<br> <br> <gray>Set</gray> <orange-d>"Demolition Man\'s Excitement"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_491_name: 'Explosive persistence',
     talent_491_description:
-      'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber</tn> is also explosive.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
+      'Increases the slow effect of explosive charges by <num>20%</num>.<br> <br> <gray>Set</gray> <tn>"The excitement of a bomber"</tn>',
     talent_492_name: 'Explosive violence',
     talent_492_description:
-      'Talent <tn>The  The excitement of a bomber</tn> causes <fiz>%s</fiz> more damage.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
+      'Allows you to apply the <tn>"The excitement of a bomber"</tn> talent to a building, causing it to explode as many times as the set can generate explosive charges.<br> <br> <gray>Set</gray> <tn>"The excitement of a bomber"</tn>',
     talent_493_name: 'Explosive indefatigability',
     talent_493_description:
-      'Makes <num>2</num> enemies hurt by talent <tn>The excitement of a bomber is also explosive.<br> <br> <gray>Set</gray> <orange-d>"Excitement of the bomber"</orange-d>',
+      'Reduces the cooldown of the <tn>"The excitement of a bomber"</tn> talent by <num>30</num> seconds.<br> <br> <gray>Set</gray> <tn>"The excitement of a bomber"</tn>',
     talent_494_name: 'Explosive Domination',
     talent_494_description:
-      'Talent <tn>The excitement of a bomber</tn> additionally deals damage equal to <num>3%</num> (<num>1.5%</num> against structures) of the target\'s maximum Health. <br> <br> <gray>Set</gray> <orange-d>"Demolition Man\'s Excitement"</orange-d>',
+      'Talent <tn>The excitement of a bomber</tn> additionally deals damage equal to <num>3%</num> (<num>1.5%</num> against structures) of the target\'s maximum Health. <br> <br> <gray>Set</gray> <orange-d>"The excitement of a bomber"</orange-d>',
     talent_495_name: 'Ritual extermination<white> <CD>100</CD></white>',
     talent_495_description:
       '<num>The attacker</num><br><br>Deals <fiz>%s</fiz> damage to the specified enemy.<br> <br> <gray>Set</gray> <orange-d>"Ritual extermination"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
@@ -5310,16 +5137,16 @@ export const en = {
       'Talent <orange-d>Forest symbol</orange-d> additionally deals <mag>%s</mag> damage. The damage is distributed evenly across the set targets affected by the class ability.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_584_name: 'The Order of Victory',
     talent_584_description:
-      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
     talent_585_name: 'Order of Courage',
     talent_585_description:
-      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
     talent_586_name: 'Order of Courage',
     talent_586_description:
-      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
     talent_587_name: 'The Order of Nobility',
     talent_587_description:
-      '<gray>Set</gray> <orange-d>"An experienced warrior"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Hero\'s attack deals enemy soldiers <fiz>15</fiz> additional damage</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>15</num> seconds. the attack deals the enemy Hero or tower <mag>75</mag> damage</gray> <br> <orange-l>3 talents</orange-l> <br> <num>+6</num> <gray> to the highest out of Strength and Intellect</gray>',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
     talent_588_name: 'Stronghold of Life',
     talent_588_description:
       '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
@@ -5427,16 +5254,16 @@ export const en = {
       '<gray>Set</gray> <orange-d>"The Healing Pillar"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Healing Pillar</orange-d></gray>',
     talent_623_name: 'A Moment of Cunning',
     talent_623_description:
-      '<gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
+      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_624_name: 'Desperate moment<white> <CD>240</CD></white>',
     talent_624_description:
-      '<num>Tactical</num><br><br>Instantly restores all class talents except the ultimate ability <br> <br> <gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
+      '<num>Tactical</num><br><br>Instantly restores all class talents except the ultimate ability <br> <br> <gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_625_name: 'A Moment of audacity',
     talent_625_description:
-      '<gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
+      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_626_name: 'A Moment of wit',
     talent_626_description:
-      '<gray>Set</gray> <orange-d>"Desperate moment"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>A desperate moment</orange-d></gray>',
+      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_627_name: 'Champion of Stamina',
     talent_627_description:
       '<gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
@@ -5449,18 +5276,18 @@ export const en = {
     talent_630_name: 'Champion of Freedom',
     talent_630_description:
       '<gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
-    talent_631_name: 'Destructive Agility',
+     talent_631_name: 'Destructive Agility',
     talent_631_description:
-      '<gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
+      '<gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
     talent_632_name: 'The Power of the destroyer<white> <CD>180</CD></white>',
     talent_632_description:
-      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Hero\'s attacks deal additional damage equal to <num>5%</num> of the target\'s max Health (bosses <num>2%</num>) <br> <br> <gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
+      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Hero\'s attacks deal additional damage equal to <num>5%</num> of the target\'s max Health (bosses <num>2%</num>) <br> <br> <gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
     talent_633_name: 'Destructive Knowledge',
     talent_633_description:
-      '<gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
+      '<gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
     talent_634_name: 'Destructive Rage',
     talent_634_description:
-      '<gray>Set</gray> <orange-d>"The Power of the destroyer"</orange-d> <br> <br> <orange-l>2 talents</orange-l><br> <num>+6</num> <gray>to the greatest of Agility and Cunning</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The power of the destroyer</orange-d></gray>',
+      '<gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
     talent_635_name: 'Infantry assault',
     talent_635_description:
       '<gray>Set</gray> <orange-d>"Storming the Fortress"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>Allied towers next to the hero increase damage to heroes, while enemy towers decrease damage by <num>10%</num></gray><br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use the talent <orange-d>Storming the fortress</orange-d></gray>',
@@ -5878,12 +5705,14 @@ export const en = {
     talent_774_description:
       'Fires a harpoon in the chosen direction and stuns the first enemy hit on its path for <num>0.7</num> sec, then pulls your hero toward them.  <br>Increases melee heroes\' attack range by <num>1</num>. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn><br><br><gray>- can be improved by <num>2</num> talents</gray>',
     talent_775_name: 'Boarding Might',
-    talent_775_description: 'Increases stun duration by <num>0.7</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
+    talent_775_description:
+      'Increases stun duration by <num>0.7</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
     talent_776_name: 'Boarding Accuracy',
     talent_776_description:
       'Increases harpoon range and flight speed by <num>50%</num>. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
     talent_777_name: 'Boarding Supremacy',
     talent_777_description:
       'Reduces the Boarding Harpoon talent cooldown by <num>20</num> sec. Stuns not only the main target but all enemies around it within radius <num>5</num>. After the stun, targets are additionally slowed by <num>50%</num> for <num>2</num> sec. <br> <br> <gray>Set</gray> <tn>"Boarding Harpoon"</tn>',
+
   },
 };

@@ -308,6 +308,38 @@ export class Chat {
     Chat.pinnedCollapsed = true;
   }
 
+  static clearPinnedMessages() {
+    Chat.pinnedMessages = [];
+    Chat.pinnedCollapsed = true;
+    Chat.renderPinnedMessages();
+  }
+
+  static syncPinnedMessagesWithBackend() {
+    if (!Array.isArray(Chat.pinnedMessages) || !Chat.pinnedMessages.length) {
+      return;
+    }
+
+    const messages = Chat.pinnedMessages
+      .map((item) => ({
+        messageId: Number(item?.messageId || 0),
+        id: Number(item?.id || 0),
+        nickname: String(item?.nickname || ''),
+        to: Number(item?.to || 0),
+        flag: Number(item?.flag || 0),
+        message: String(item?.message || ''),
+        client: Number(item?.client || 0),
+        source: String(item?.source || ''),
+        pinned: true,
+      }))
+      .filter((item) => Number.isFinite(item.messageId) && item.messageId > 0);
+
+    if (!messages.length) {
+      return;
+    }
+
+    App.api.ghost('user', 'chatPinnedSync', { messages });
+  }
+
   static getMessageSourceType(data) {
     const source = String(data?.source || '').toLowerCase();
     if (source === 'steam' || source === 'phone' || source === 'telegram') return source;

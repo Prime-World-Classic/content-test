@@ -14,6 +14,7 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { Castle } from './castle.js';
 import { Window } from './window.js';
+import { Settings } from './settings.js';
 
 export class Events {
   static Message(data) {
@@ -261,6 +262,14 @@ export class Events {
 
 
   static async VCall(data) {
+    if (Settings.settings?.novoice) {
+      Sound.stop('ui-call');
+      Window.callData = null;
+      if (Window.windows?.main?.id === 'wcastle-call') {
+        Window.close('main');
+      }
+      return;
+    }
     const callKey = String(data?.key || '');
     if (MM.isInBattle && callKey === 'friend') {
       return;

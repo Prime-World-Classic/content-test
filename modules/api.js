@@ -34,6 +34,8 @@ export class Api {
     this.awaiting = new Object();
     
     this.requestSeq = 0;
+    
+    this.hasConnectedOnce = false;
 
     this.events = events ? events : new Object();
   }
@@ -78,6 +80,14 @@ export class Api {
           this.WebSocket.onclose = () => this.connect(this.RECONNECT_TIME);
 
           console.log(`Успешно подключились к ${this.MAIN_HOST}...`);
+          
+          if (this.hasConnectedOnce) {
+            try {
+              App.onApiReconnected?.();
+            } catch {}
+          }
+          
+          this.hasConnectedOnce = true;
 
           App.ShowCurrentView();
 

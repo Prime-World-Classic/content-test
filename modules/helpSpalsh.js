@@ -46,30 +46,8 @@ export function HelpSplash(contentInnerHTML) {
         case 'hr':
           html += '<hr>';
           break;
-        case 'h1':
-          html += `<h1>${sanitizeContent(jsonTag.content)}</h1>`;
-          break;
-        case 'h2':
-          html += `<h2>${sanitizeContent(jsonTag.content)}</h2>`;
-          break;
-        case 'h3':
-          html += `<h3>${sanitizeContent(jsonTag.content)}</h3>`;
-          break;
-        case 'h4':
-          html += `<h4>${sanitizeContent(jsonTag.content)}</h4>`;
-          break;
-        case 'h5':
-          html += `<h5>${sanitizeContent(jsonTag.content)}</h5>`;
-          break;
-        case 'h6':
-          html += `<h6>${sanitizeContent(jsonTag.content)}</h6>`;
-          break;
-        case 'center':
-          html += `<center>${sanitizeContent(jsonTag.content)}</center>`;
-          break;
         default:
           console.warn('Unknown block type', jsonTag.type);
-          break;
       }
     });
     content.innerHTML = html;

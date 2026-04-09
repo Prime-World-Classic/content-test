@@ -62,7 +62,9 @@ const KEYBOARD_LAYOUT_EN_TO_RU = {
   '/': '.',
   '`': 'ё',
 };
-const KEYBOARD_LAYOUT_RU_TO_EN = Object.fromEntries(Object.entries(KEYBOARD_LAYOUT_EN_TO_RU).map(([enChar, ruChar]) => [ruChar, enChar]));
+const KEYBOARD_LAYOUT_RU_TO_EN = Object.fromEntries(
+  Object.entries(KEYBOARD_LAYOUT_EN_TO_RU).map(([enChar, ruChar]) => [ruChar, enChar]),
+);
 
 export class View {
   static mmQueueMap = {};
@@ -128,9 +130,7 @@ export class View {
   }
 
   static getLayoutAwareSearchVariants(value) {
-    const normalized = String(value || '')
-      .trim()
-      .toLowerCase();
+    const normalized = String(value || '').trim().toLowerCase();
     if (!normalized) return [];
     const variants = new Set([normalized]);
     variants.add(View.remapQueryByKeyboardLayout(normalized, KEYBOARD_LAYOUT_EN_TO_RU));
@@ -827,14 +827,14 @@ export class View {
           // request.sort((a, b) => b.rating - a.rating);
 
           MM.hero = request;
-
+          
           let bannedHeroesResponse = new Array();
           try {
             bannedHeroesResponse = await App.api.request(App.CURRENT_MM, 'bannedHeroes', { mode: CastleNAVBAR.mode });
           } catch (error) {
             bannedHeroesResponse = new Array();
           }
-
+          
           const bannedHeroes = new Set(
             (Array.isArray(bannedHeroesResponse) ? bannedHeroesResponse : new Array())
               .map((id) => Number(id))
@@ -849,7 +849,7 @@ export class View {
 
           for (let item2 of request) {
             let hero = DOM({ domaudio: domAudioPresets.smallButton });
-
+            
             const isBannedInMode = item2.id && bannedHeroes.has(Number(item2.id));
             if (isBannedInMode) {
               hero.style.filter = 'grayscale(100%)';
@@ -862,7 +862,7 @@ export class View {
                 App.error(Lang.text('thisHeroIsUnavailableInCurrentGameMode'));
                 return;
               }
-
+              
               try {
                 await App.api.request(App.CURRENT_MM, 'heroParty', {
                   id: MM.partyId,
@@ -1252,26 +1252,22 @@ export class View {
 
     View.castleBottom = DOM({ style: 'castle-bottom-content' });
 
-    View.castleBottom.addEventListener(
-      'wheel',
-      function (event) {
-        if (event.deltaY != 0) {
-          let deltaPx = 0;
-          if (event.deltaMode == event.DOM_DELTA_PIXEL) {
-            deltaPx = event.deltaY * SCROLL_MODIFIER;
-          } else if (event.deltaMode == event.DOM_DELTA_LINE) {
-            deltaPx = event.deltaY * 18 * SCROLL_MODIFIER;
-          } else if (event.deltaMode == event.DOM_DELTA_PAGE) {
-            deltaPx = this.clientWidth;
-          }
-          if (deltaPx !== 0) {
-            event.preventDefault();
-            View.applyCastleBottomScrollDelta(deltaPx);
-          }
+    View.castleBottom.addEventListener('wheel', function (event) {
+      if (event.deltaY != 0) {
+        let deltaPx = 0;
+        if (event.deltaMode == event.DOM_DELTA_PIXEL) {
+          deltaPx = event.deltaY * SCROLL_MODIFIER;
+        } else if (event.deltaMode == event.DOM_DELTA_LINE) {
+          deltaPx = event.deltaY * 18 * SCROLL_MODIFIER;
+        } else if (event.deltaMode == event.DOM_DELTA_PAGE) {
+          deltaPx = this.clientWidth;
         }
-      },
-      { passive: false },
-    );
+        if (deltaPx !== 0) {
+          event.preventDefault();
+          View.applyCastleBottomScrollDelta(deltaPx);
+        }
+      }
+    }, { passive: false });
     View.castleBottom.addEventListener(
       'scroll',
       () => {
@@ -1898,9 +1894,7 @@ export class View {
   static setCastleHeroListName(listId, value) {
     const id = Number(listId) || 0;
     if (id < 1 || id > View.CASTLE_HERO_LISTS_MAX) return;
-    const name = String(value || '')
-      .trim()
-      .slice(0, 32);
+    const name = String(value || '').trim().slice(0, 32);
     if (name) View.castleHeroListNames[id] = name;
     else delete View.castleHeroListNames[id];
     View.persistCastleHeroListNames();
@@ -1956,11 +1950,7 @@ export class View {
 
     const allBtn = DOM(
       {
-        style: [
-          'castle-hero-list-btn',
-          'castle-hero-list-btn-all',
-          View.castleHeroSelectedList === 0 ? 'castle-hero-list-btn-active' : null,
-        ].filter(Boolean),
+        style: ['castle-hero-list-btn', 'castle-hero-list-btn-all', View.castleHeroSelectedList === 0 ? 'castle-hero-list-btn-active' : null].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         title: Lang.text('titleheroes'),
         event: [
@@ -1986,11 +1976,7 @@ export class View {
       const isPhantom = View.castleHeroPhantomList === i;
       const btn = DOM(
         {
-          style: [
-            'castle-hero-list-btn',
-            isActive ? 'castle-hero-list-btn-active' : null,
-            isPhantom ? 'castle-hero-list-btn-phantom' : null,
-          ].filter(Boolean),
+          style: ['castle-hero-list-btn', isActive ? 'castle-hero-list-btn-active' : null, isPhantom ? 'castle-hero-list-btn-phantom' : null].filter(Boolean),
           domaudio: domAudioPresets.defaultButton,
           title: View.getCastleHeroListName(i),
           event: [
@@ -2085,19 +2071,22 @@ export class View {
     );
     searchWrap.append(search, clearSearchBtn);
     bar.append(searchWrap);
+
   }
 
   static buildCastleHeroListEditorCard(listId) {
     const mode = View.castleHeroListEditMode || '';
     const listName = View.getCastleHeroListName(listId);
-    const modeClass =
-      mode === 'add'
-        ? 'castle-hero-list-editor-mode-add'
-        : mode === 'remove'
-          ? 'castle-hero-list-editor-mode-remove'
-          : 'castle-hero-list-editor-mode-idle';
-    const titleText =
-      mode === 'add' ? `Добавить выбранных героев в ${listName}` : mode === 'remove' ? `Удалить выбранных героев из ${listName}` : listName;
+    const modeClass = mode === 'add'
+      ? 'castle-hero-list-editor-mode-add'
+      : mode === 'remove'
+        ? 'castle-hero-list-editor-mode-remove'
+        : 'castle-hero-list-editor-mode-idle';
+    const titleText = mode === 'add'
+      ? `Добавить выбранных героев в ${listName}`
+      : mode === 'remove'
+        ? `Удалить выбранных героев из ${listName}`
+        : listName;
     const totalHeroes = (View.castleHeroAll || []).length;
     let heroesInList = 0;
     for (const hero of View.castleHeroAll || []) {
@@ -2108,11 +2097,7 @@ export class View {
 
     const topPlus = DOM(
       {
-        style: [
-          'castle-hero-list-editor-sign',
-          'castle-hero-list-editor-sign-add',
-          canAddToList ? null : 'castle-hero-list-editor-sign-disabled',
-        ].filter(Boolean),
+        style: ['castle-hero-list-editor-sign', 'castle-hero-list-editor-sign-add', canAddToList ? null : 'castle-hero-list-editor-sign-disabled'].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
@@ -2129,11 +2114,7 @@ export class View {
     );
     const bottomMinus = DOM(
       {
-        style: [
-          'castle-hero-list-editor-sign',
-          'castle-hero-list-editor-sign-remove',
-          canRemoveFromList ? null : 'castle-hero-list-editor-sign-disabled',
-        ].filter(Boolean),
+        style: ['castle-hero-list-editor-sign', 'castle-hero-list-editor-sign-remove', canRemoveFromList ? null : 'castle-hero-list-editor-sign-disabled'].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
@@ -2259,15 +2240,9 @@ export class View {
     for (let item of View.castleHeroAll || []) {
       const localizedNameRaw = String(Lang.heroName(item.id, item.skin) || item.name || `Hero ${item.id}`);
       const localizedName = localizedNameRaw.replace(/<[^>]*>/g, '').trim();
-      const fallbackName = String(item?.name || '')
-        .replace(/<[^>]*>/g, '')
-        .trim();
+      const fallbackName = String(item?.name || '').replace(/<[^>]*>/g, '').trim();
       const customNames = getHeroSearchAliases(item.id)
-        .map((name) =>
-          String(name)
-            .replace(/<[^>]*>/g, '')
-            .trim(),
-        )
+        .map((name) => String(name).replace(/<[^>]*>/g, '').trim())
         .filter(Boolean)
         .join(' ');
       const filterHaystack = `${localizedName} ${fallbackName} ${customNames}`.toLowerCase();
@@ -2400,12 +2375,7 @@ export class View {
 
     const allBtn = DOM(
       {
-        style: [
-          'castle-hero-list-btn',
-          'castle-hero-list-btn-all',
-          'castle-friend-list-btn-all',
-          View.castleFriendSelectedList === 0 ? 'castle-hero-list-btn-active' : null,
-        ].filter(Boolean),
+        style: ['castle-hero-list-btn', 'castle-hero-list-btn-all', 'castle-friend-list-btn-all', View.castleFriendSelectedList === 0 ? 'castle-hero-list-btn-active' : null].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         title: Lang.text('titlefriends'),
         event: [
@@ -2426,11 +2396,7 @@ export class View {
 
     const favBtn = DOM(
       {
-        style: [
-          'castle-hero-list-btn',
-          'castle-friend-list-btn-fav',
-          View.castleFriendSelectedList === 1 ? 'castle-hero-list-btn-active' : null,
-        ].filter(Boolean),
+        style: ['castle-hero-list-btn', 'castle-friend-list-btn-fav', View.castleFriendSelectedList === 1 ? 'castle-hero-list-btn-active' : null].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
@@ -2505,11 +2471,7 @@ export class View {
 
     const topPlus = DOM(
       {
-        style: [
-          'castle-hero-list-editor-sign',
-          'castle-hero-list-editor-sign-add',
-          canAdd ? null : 'castle-hero-list-editor-sign-disabled',
-        ].filter(Boolean),
+        style: ['castle-hero-list-editor-sign', 'castle-hero-list-editor-sign-add', canAdd ? null : 'castle-hero-list-editor-sign-disabled'].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
@@ -2526,11 +2488,7 @@ export class View {
     );
     const bottomMinus = DOM(
       {
-        style: [
-          'castle-hero-list-editor-sign',
-          'castle-hero-list-editor-sign-remove',
-          canRemove ? null : 'castle-hero-list-editor-sign-disabled',
-        ].filter(Boolean),
+        style: ['castle-hero-list-editor-sign', 'castle-hero-list-editor-sign-remove', canRemove ? null : 'castle-hero-list-editor-sign-disabled'].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
@@ -2600,12 +2558,11 @@ export class View {
       View.castleFriendClearConfirm ? Lang.text('confirmAction') : Lang.text('friendListClear'),
     );
 
-    const modeClass =
-      mode === 'add'
-        ? 'castle-hero-list-editor-mode-add'
-        : mode === 'remove'
-          ? 'castle-hero-list-editor-mode-remove'
-          : 'castle-hero-list-editor-mode-idle';
+    const modeClass = mode === 'add'
+      ? 'castle-hero-list-editor-mode-add'
+      : mode === 'remove'
+        ? 'castle-hero-list-editor-mode-remove'
+        : 'castle-hero-list-editor-mode-idle';
     const titleText = mode === 'add' ? 'Добавить друзей в список' : mode === 'remove' ? 'Удалить друзей из списка' : 'Избранные друзья';
 
     return DOM(
@@ -2743,7 +2700,7 @@ export class View {
                 found.nickname,
               );
 
-              if (App.isAdmin() && 'blocked' in found) {
+              if (App.isAdmin() && ('blocked' in found)) {
                 template.addEventListener('contextmenu', (event) => {
                   event.preventDefault();
                   openAdminFoundUserModal();
@@ -2762,16 +2719,10 @@ export class View {
       },
       DOM(
         { style: 'castle-friend-item-middle' },
-        DOM(
-          { style: 'castle-item-hero-name' },
-          DOM({ style: ['castle-hero-name', 'add-to-friend-text'] }, DOM({ tag: 'span' }, Lang.text('addFriend'))),
-        ),
+        DOM({ style: 'castle-item-hero-name' }, DOM({ style: ['castle-hero-name', 'add-to-friend-text'] }, DOM({ tag: 'span' }, Lang.text('addFriend')))),
         DOM({ src: 'content/hero/addFriend.png', style: 'addToFriendIcon', tag: 'img' }),
         DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
-        DOM(
-          { style: 'castle-friend-item-bottom' },
-          DOM({ style: ['castle-friend-add-group', 'add-to-friend-button'] }, Lang.text('inviteToAFriend')),
-        ),
+        DOM({ style: 'castle-friend-item-bottom' }, DOM({ style: ['castle-friend-add-group', 'add-to-friend-button'] }, Lang.text('inviteToAFriend'))),
       ),
     );
     buttonAdd.dataset.url = `content/hero/empty.png`;
@@ -2799,7 +2750,12 @@ export class View {
       if (nickname.length > 10) heroName.firstChild.classList.add('castle-name-autoscroll');
       let heroNameBase = DOM({ style: 'castle-item-hero-name' }, heroName);
       let bottom = DOM({ style: 'castle-friend-item-bottom' });
-      let friend = DOM({ style: 'castle-friend-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), heroNameBase, bottom);
+      let friend = DOM(
+        { style: 'castle-friend-item' },
+        DOM({ style: ['castle-item-ornament', 'hover-brightness'] }),
+        heroNameBase,
+        bottom,
+      );
 
       if (editMode && status === 1) {
         const selected = View.castleFriendEditSelection.has(Number(item.id));
@@ -2863,12 +2819,7 @@ export class View {
               },
               Lang.text('friendCancle'),
             );
-            body.append(
-              modal,
-              DOM({ id: 'friendRemoveText' }, Lang.text('friendRemoveText').replace('{nickname}', item.nickname)),
-              removeButton,
-              cancelButton,
-            );
+            body.append(modal, DOM({ id: 'friendRemoveText' }, Lang.text('friendRemoveText').replace('{nickname}', item.nickname)), removeButton, cancelButton);
             Splash.show(body);
             return false;
           });
@@ -2879,13 +2830,10 @@ export class View {
               {
                 domaudio: domAudioPresets.smallButton,
                 style: 'castle-friend-confirm',
-                event: [
-                  'click',
-                  async () => {
-                    await App.api.request('friend', 'accept', { id: item.id });
-                    View.bodyCastleFriends();
-                  },
-                ],
+                event: ['click', async () => {
+                  await App.api.request('friend', 'accept', { id: item.id });
+                  View.bodyCastleFriends();
+                }],
               },
               Lang.text('friendAccept'),
             ),
@@ -2893,34 +2841,26 @@ export class View {
               {
                 domaudio: domAudioPresets.smallButton,
                 style: 'castle-friend-cancel',
-                event: [
-                  'click',
-                  async () => {
-                    await App.api.request('friend', 'remove', { id: item.id });
-                    View.bodyCastleFriends();
-                  },
-                ],
+                event: ['click', async () => {
+                  await App.api.request('friend', 'remove', { id: item.id });
+                  View.bodyCastleFriends();
+                }],
               },
               Lang.text('friendDecline'),
             ),
           );
         } else if (status == 3) {
-          friend.append(
-            DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('friendAcceptWaiting'))),
-          );
+          friend.append(DOM({ style: 'castle-friend-item-middle' }, DOM({ style: 'castle-friend-request' }, Lang.text('friendAcceptWaiting'))));
           friend.style.filter = 'grayscale(1)';
           bottom.append(
             DOM(
               {
                 domaudio: domAudioPresets.smallButton,
                 style: 'castle-friend-cancel',
-                event: [
-                  'click',
-                  async () => {
-                    await App.api.request('friend', 'remove', { id: item.id });
-                    View.bodyCastleFriends();
-                  },
-                ],
+                event: ['click', async () => {
+                  await App.api.request('friend', 'remove', { id: item.id });
+                  View.bodyCastleFriends();
+                }],
               },
               Lang.text('cancel'),
             ),
@@ -3380,14 +3320,14 @@ export class View {
           let request = await App.api.request('build', 'heroAll');
 
           MM.hero = request;
-
+          
           let bannedHeroesResponse = new Array();
           try {
             bannedHeroesResponse = await App.api.request(App.CURRENT_MM, 'bannedHeroes', { mode: CastleNAVBAR.mode });
           } catch (error) {
             bannedHeroesResponse = new Array();
           }
-
+          
           const bannedHeroes = new Set(
             (Array.isArray(bannedHeroesResponse) ? bannedHeroesResponse : new Array())
               .map((id) => Number(id))
@@ -3402,7 +3342,7 @@ export class View {
 
           for (let item of request) {
             let hero = DOM({ domaudio: domAudioPresets.smallButton });
-
+            
             const isBannedInMode = item.id && bannedHeroes.has(Number(item.id));
             if (isBannedInMode) {
               hero.style.filter = 'grayscale(100%)';
@@ -3415,7 +3355,7 @@ export class View {
                 App.error(Lang.text('thisHeroIsUnavailableInCurrentGameMode'));
                 return;
               }
-
+              
               try {
                 await App.api.request(App.CURRENT_MM, 'heroParty', {
                   id: MM.partyId,
@@ -3599,8 +3539,14 @@ export class View {
       if (rankNum < 1 || rankNum > 3) {
         return [];
       }
-      const src = rankNum === 1 ? 'content/icons/crown_5.png' : rankNum === 2 ? 'content/icons/crown_3.png' : 'content/icons/crown_2.png';
-      const style = variant === 'podium' ? ['wtop-crown', 'wtop-crown--podium'] : ['wtop-crown', 'wtop-crown--row'];
+      const src =
+        rankNum === 1
+          ? 'content/icons/crown_5.png'
+          : rankNum === 2
+            ? 'content/icons/crown_3.png'
+            : 'content/icons/crown_2.png';
+      const style =
+        variant === 'podium' ? ['wtop-crown', 'wtop-crown--podium'] : ['wtop-crown', 'wtop-crown--row'];
       return [
         DOM({
           tag: 'img',
@@ -3650,7 +3596,12 @@ export class View {
       if (rankNum <= 3) {
         heroCellStyle.push('wtop-cell--hero-with-crown');
       }
-      const heroCell = DOM({ style: heroCellStyle }, heroIcon, heroNameEl, ...makeCrownForRank(rankNum, 'row'));
+      const heroCell = DOM(
+        { style: heroCellStyle },
+        heroIcon,
+        heroNameEl,
+        ...makeCrownForRank(rankNum, 'row'),
+      );
       const ratingCell = DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, String(player.rating));
       return DOM(
         {
@@ -3728,7 +3679,10 @@ export class View {
         DOM(
           { style: 'wtop-table-header' },
           DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, Lang.text('topColPlace')),
-          DOM({ style: ['wtop-cell', 'wtop-cell--name'] }, DOM({ tag: 'span', style: 'wtop-cell-name-text' }, Lang.text('topColPlayer'))),
+          DOM(
+            { style: ['wtop-cell', 'wtop-cell--name'] },
+            DOM({ tag: 'span', style: 'wtop-cell-name-text' }, Lang.text('topColPlayer')),
+          ),
           DOM({ style: ['wtop-cell', 'wtop-cell--hero'] }, Lang.text('topColHero')),
           DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, Lang.text('topColRating')),
         ),
@@ -4021,22 +3975,12 @@ export class View {
 
   static async build(heroId, targetId = 0, isWindow = false) {
     const body = DOM({ style: 'build-horizontal' });
+
     requestAnimationFrame(() => Voice.updatePanelPosition());
 
     await Build.init(heroId, targetId, isWindow);
 
     body.append(
-      DOM({
-        id: 'wbuild_help',
-        domaudio: domAudioPresets.defaultButton,
-        style: 'help-button',
-        event: [
-          'click',
-          () => {
-            HelpSplash(Lang.text('build_help_content'));
-          },
-        ],
-      }),
       DOM({ style: 'build-left' }, Build.heroView),
       DOM(
         { style: 'build-center' },
@@ -4044,7 +3988,7 @@ export class View {
         DOM({ style: 'build-field-with-tabs' }, Build.listView, DOM({ style: 'build-field-container' }, Build.levelView, Build.fieldView)),
         DOM(
           { style: 'build-active-bar-container' },
-          Build.activeBarKeybindingsView,
+		  Build.activeBarKeybindingsView,
           Build.activeBarView,
           DOM({ style: 'build-active-bar-hint' }, Lang.text('smartcastDescription')),
         ),
@@ -4078,7 +4022,7 @@ export class View {
             style: 'close-image-style',
           }),
         ),
-      );
+      ); // Замените путь к изображению
     }
 
     return isWindow ? body : DOM({ id: 'viewbuild' }, body);

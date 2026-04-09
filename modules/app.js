@@ -330,6 +330,10 @@ export class App {
     }
   }
 
+  static onApiReconnected() {
+    Chat.syncPinnedMessagesWithBackend?.();
+  }
+
   static async authorization(login, password) {
     if (!login.value) {
       login.setAttribute('style', 'background:rgba(255,0,0,0.3)');

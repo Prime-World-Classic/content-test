@@ -1341,7 +1341,7 @@ export class Build {
       btnName,
     );
 
-    template.append(modal, name, button, close, helpBtn);
+    template.append(modal, name, button, close);
 
     Splash.show(template);
   }
