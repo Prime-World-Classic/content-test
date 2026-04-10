@@ -36,6 +36,12 @@ export class Window {
     template.requestClose = () => {
       Window.close(category);
     };
+    if (category === 'main' && method === 'keybindings') {
+      const previousMethod = typeof value === 'string' ? value : 'settings';
+      template.requestClose = () => {
+        Window.show(category, previousMethod);
+      };
+    }
     let closeButton = DOM(
       {
         domaudio: domAudioPresets.closeButton,
@@ -859,17 +865,6 @@ export class Window {
 
   static async settings() {
     let soundTestId = 'sound_test';
-    const voiceInWindowUnavailableByWindows = NativeAPI.isLegacyWindowsForVoiceWindow?.() === true;
-    const voiceInWindowUnavailableByNwjs = NativeAPI.isLegacyNwjsForVoiceWindow?.() === true;
-    const voiceInWindowUnavailable = voiceInWindowUnavailableByWindows || voiceInWindowUnavailableByNwjs;
-    const voiceInWindowUnavailableTitle = voiceInWindowUnavailableByWindows
-      ? Lang.text('voiceInWindowRequiresWin11')
-      : voiceInWindowUnavailableByNwjs
-        ? Lang.text('voiceInWindowRequiresNwjs')
-        : '';
-    if (voiceInWindowUnavailable) {
-      Settings.settings.voiceInWindow = false;
-    }
 	
 	 setTimeout(() => {
           const sliders = document.querySelectorAll('.castle-menu-slider');
@@ -882,6 +877,231 @@ export class Window {
     return DOM(
       { id: 'wcastle-menu' },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('preferences'))),
+      DOM(
+        { style: 'castle-menu-items' },
+        DOM(
+          { style: 'castle-menu-label' },
+          Lang.text('volume'),
+          DOM({
+            tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
+            type: 'range',
+            value: Settings.settings.globalVolume * 100,
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
+            event: [
+              'input',
+              (e) => {
+                Settings.settings.globalVolume = parseFloat(e.target.value) / 100;
+                Settings.ApplySettings({ render: false, window: false });
+
+                document.getElementById('global-volume-percentage').textContent = `${Math.round(Settings.settings.globalVolume * 100)}%`;
+				Window.updateSliderFill(e.target);
+              },
+            ],
+          }),
+          DOM(
+            {
+              tag: 'span',
+              id: 'global-volume-percentage',
+              style: 'volume-percentage',
+            },
+            `${Math.round(Settings.settings.globalVolume * 100)}%`,
+          ),
+        ),
+        DOM(
+          { style: 'castle-menu-label' },
+          Lang.text('volumeMusic'),
+          DOM({
+            tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
+            type: 'range',
+            value: Settings.settings.musicVolume * 100,
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
+            event: [
+              'input',
+              (e) => {
+                Settings.settings.musicVolume = parseFloat(e.target.value) / 100;
+                Settings.ApplySettings({ render: false, window: false });
+
+                document.getElementById('music-volume-percentage').textContent = `${Math.round(Settings.settings.musicVolume * 100)}%`;
+				Window.updateSliderFill(e.target);
+              },
+            ],
+          }),
+          DOM(
+            {
+              tag: 'span',
+              id: 'music-volume-percentage',
+              style: 'volume-percentage',
+            },
+            `${Math.round(Settings.settings.musicVolume * 100)}%`,
+          ),
+        ),
+        DOM(
+          { style: 'castle-menu-label' },
+          Lang.text('volumeSound'),
+          DOM({
+            tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
+            type: 'range',
+            value: Settings.settings.soundsVolume * 100,
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
+            event: [
+              'input',
+              (e) => {
+                Settings.settings.soundsVolume = parseFloat(e.target.value) / 100;
+                Settings.ApplySettings({ render: false, window: false });
+
+                if (!Castle.testSoundIsPlaying) {
+                  Castle.testSoundIsPlaying = true;
+                  Sound.play(
+                    SOUNDS_LIBRARY.MM_FOUND,
+                    {
+                      id: soundTestId,
+                      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+                    },
+                    () => {
+                      Castle.testSoundIsPlaying = false;
+                    },
+                  );
+                }
+
+                document.getElementById('sounds-volume-percentage').textContent = `${Math.round(Settings.settings.soundsVolume * 100)}%`;
+				Window.updateSliderFill(e.target);
+              },
+            ],
+          }),
+          DOM(
+            {
+              tag: 'span',
+              id: 'sounds-volume-percentage',
+              style: 'volume-percentage',
+            },
+            `${Math.round(Settings.settings.soundsVolume * 100)}%`,
+          ),
+        ),
+        DOM(
+          { style: 'castle-menu-label' },
+          Lang.text('voiceVolume'),
+          DOM({
+            tag: 'input',
+            domaudio: domAudioPresets.defaultButton,
+            type: 'range',
+            value: Math.round((Number(Settings.settings.voiceVolume) || 1) * 100),
+            min: '0',
+            max: '100',
+            step: '1',
+            style: 'castle-menu-slider',
+            event: [
+              'input',
+              (e) => {
+                Settings.settings.voiceVolume = parseFloat(e.target.value) / 100;
+                Voice.setVolumeLevel(Settings.settings.voiceVolume);
+                document.getElementById('voice-volume-percentage').textContent = `${Math.round(Settings.settings.voiceVolume * 100)}%`;
+                Window.updateSliderFill(e.target);
+              },
+            ],
+          }),
+          DOM(
+            {
+              tag: 'span',
+              id: 'voice-volume-percentage',
+              style: 'volume-percentage',
+            },
+            `${Math.round((Number(Settings.settings.voiceVolume) || 1) * 100)}%`,
+          ),
+        ),
+        DOM(
+          {
+            style: 'castle-menu-item-button',
+            domaudio: domAudioPresets.defaultButton,
+            event: [
+              'click',
+              () => {
+                Window.show('main', 'advancedSettings');
+              },
+            ],
+          },
+          Lang.text('advancedSettings'),
+        ),
+        DOM(
+          {
+            style: 'castle-menu-item-button',
+            domaudio: domAudioPresets.defaultButton,
+            event: [
+              'click',
+              async (e) => {
+                const oldLanguage = Lang.target;
+                Lang.toggle();
+                Settings.settings.language = Lang.target;
+                App.error(`${Lang.text('LangTarg')}: ${Lang.list[oldLanguage].name} → ${Lang.list[Lang.target].name}`);
+                await Lang.reinitViews();
+                await Window.show('main', 'settings');
+              },
+            ],
+          },
+          `${Lang.text('language')} (${Lang.target})`,
+        ),
+        // Добавленная кнопка "Клавиши"
+        DOM(
+          {
+            style: 'castle-menu-item-button',
+            event: [
+              'click',
+              () => {
+                Window.show('main', 'keybindings', 'settings');
+              },
+            ],
+          },
+          Lang.text('keys'),
+        ),
+        // Кнопка "Назад"
+        DOM(
+          {
+            domaudio: domAudioPresets.bigButton,
+            style: 'castle-menu-item-button',
+            event: [
+              'click',
+              () => {
+                Window.show('main', 'menu');
+              },
+            ],
+          },
+          Lang.text('back'),
+        ),
+        /*,
+				
+				DOM({ style: 'castle-menu-label-description' }, Lang.text('soundHelp'))
+				*/
+      ),
+    );
+  }
+
+  static async advancedSettings() {
+    const voiceInWindowUnavailableByWindows = NativeAPI.isLegacyWindowsForVoiceWindow?.() === true;
+    const voiceInWindowUnavailableByNwjs = NativeAPI.isLegacyNwjsForVoiceWindow?.() === true;
+    const voiceInWindowUnavailable = voiceInWindowUnavailableByWindows || voiceInWindowUnavailableByNwjs;
+    const voiceInWindowUnavailableTitle = voiceInWindowUnavailableByWindows
+      ? Lang.text('voiceInWindowRequiresWin11')
+      : voiceInWindowUnavailableByNwjs
+        ? Lang.text('voiceInWindowRequiresNwjs')
+        : '';
+    if (voiceInWindowUnavailable) {
+      Settings.settings.voiceInWindow = false;
+    }
+
+    return DOM(
+      { id: 'wcastle-menu' },
+      DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('advancedSettings'))),
       DOM(
         { style: 'castle-menu-items' },
         DOM(
@@ -1014,164 +1234,18 @@ export class Window {
           DOM({ tag: 'label', for: 'voice-radio-mode' }, Lang.text('voiceRadioMode')),
         ),
         DOM(
-          { style: 'castle-menu-label' },
-          Lang.text('volume'),
-          DOM({
-            tag: 'input',
-            domaudio: domAudioPresets.defaultButton,
-            type: 'range',
-            value: Settings.settings.globalVolume * 100,
-            min: '0',
-            max: '100',
-            step: '1',
-            style: 'castle-menu-slider',
-            event: [
-              'input',
-              (e) => {
-                Settings.settings.globalVolume = parseFloat(e.target.value) / 100;
-                Settings.ApplySettings({ render: false, window: false });
-
-                document.getElementById('global-volume-percentage').textContent = `${Math.round(Settings.settings.globalVolume * 100)}%`;
-				Window.updateSliderFill(e.target);
-              },
-            ],
-          }),
-          DOM(
-            {
-              tag: 'span',
-              id: 'global-volume-percentage',
-              style: 'volume-percentage',
-            },
-            `${Math.round(Settings.settings.globalVolume * 100)}%`,
-          ),
-        ),
-        DOM(
-          { style: 'castle-menu-label' },
-          Lang.text('volumeMusic'),
-          DOM({
-            tag: 'input',
-            domaudio: domAudioPresets.defaultButton,
-            type: 'range',
-            value: Settings.settings.musicVolume * 100,
-            min: '0',
-            max: '100',
-            step: '1',
-            style: 'castle-menu-slider',
-            event: [
-              'input',
-              (e) => {
-                Settings.settings.musicVolume = parseFloat(e.target.value) / 100;
-                Settings.ApplySettings({ render: false, window: false });
-
-                document.getElementById('music-volume-percentage').textContent = `${Math.round(Settings.settings.musicVolume * 100)}%`;
-				Window.updateSliderFill(e.target);
-              },
-            ],
-          }),
-          DOM(
-            {
-              tag: 'span',
-              id: 'music-volume-percentage',
-              style: 'volume-percentage',
-            },
-            `${Math.round(Settings.settings.musicVolume * 100)}%`,
-          ),
-        ),
-        DOM(
-          { style: 'castle-menu-label' },
-          Lang.text('volumeSound'),
-          DOM({
-            tag: 'input',
-            domaudio: domAudioPresets.defaultButton,
-            type: 'range',
-            value: Settings.settings.soundsVolume * 100,
-            min: '0',
-            max: '100',
-            step: '1',
-            style: 'castle-menu-slider',
-            event: [
-              'input',
-              (e) => {
-                Settings.settings.soundsVolume = parseFloat(e.target.value) / 100;
-                Settings.ApplySettings({ render: false, window: false });
-
-                if (!Castle.testSoundIsPlaying) {
-                  Castle.testSoundIsPlaying = true;
-                  Sound.play(
-                    SOUNDS_LIBRARY.MM_FOUND,
-                    {
-                      id: soundTestId,
-                      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
-                    },
-                    () => {
-                      Castle.testSoundIsPlaying = false;
-                    },
-                  );
-                }
-
-                document.getElementById('sounds-volume-percentage').textContent = `${Math.round(Settings.settings.soundsVolume * 100)}%`;
-				Window.updateSliderFill(e.target);
-              },
-            ],
-          }),
-          DOM(
-            {
-              tag: 'span',
-              id: 'sounds-volume-percentage',
-              style: 'volume-percentage',
-            },
-            `${Math.round(Settings.settings.soundsVolume * 100)}%`,
-          ),
-        ),
-        DOM(
-          {
-            style: 'castle-menu-item-button',
-            domaudio: domAudioPresets.defaultButton,
-            event: [
-              'click',
-              async (e) => {
-                const oldLanguage = Lang.target;
-                Lang.toggle();
-                Settings.settings.language = Lang.target;
-                App.error(`${Lang.text('LangTarg')}: ${Lang.list[oldLanguage].name} → ${Lang.list[Lang.target].name}`);
-                await Lang.reinitViews();
-                await Window.show('main', 'settings');
-              },
-            ],
-          },
-          `${Lang.text('language')} (${Lang.target})`,
-        ),
-        // Добавленная кнопка "Клавиши"
-        DOM(
-          {
-            style: 'castle-menu-item-button',
-            event: [
-              'click',
-              () => {
-                Window.show('main', 'keybindings');
-              },
-            ],
-          },
-          Lang.text('keys'),
-        ),
-        // Кнопка "Назад"
-        DOM(
           {
             domaudio: domAudioPresets.bigButton,
             style: 'castle-menu-item-button',
             event: [
               'click',
               () => {
-                Window.show('main', 'menu');
+                Window.show('main', 'settings');
               },
             ],
           },
           Lang.text('back'),
         ),
-        /*,
-				
-				DOM({ style: 'castle-menu-label-description' }, Lang.text('soundHelp'))
-				*/
       ),
     );
   }
@@ -1430,10 +1504,96 @@ export class Window {
       ),
     );
   }
+  
+  static async mmSearchSettings() {
+    let mmEnabled = true;
+    let mmtestEnabled = true;
+    
+    try {
+      const [mmState, mmtestState] = await Promise.all([
+        App.api.request('mm', 'getSearchAvailability'),
+        App.api.request('mmtest', 'getSearchAvailability'),
+      ]);
+      mmEnabled = Boolean(mmState?.enabled);
+      mmtestEnabled = Boolean(mmtestState?.enabled);
+    } catch (error) {
+      App.error(error);
+    }
+    
+    const updateFlag = async (target, checked, input) => {
+      try {
+        const response = await App.api.request(target, 'setSearchAvailability', { enabled: checked });
+        input.checked = Boolean(response?.enabled);
+      } catch (error) {
+        input.checked = !checked;
+        App.error(error);
+      }
+    };
+    
+    const mmToggle = DOM({
+      tag: 'input',
+      domaudio: domAudioPresets.defaultSelect,
+      type: 'checkbox',
+      id: 'mm-search-enabled',
+      checked: mmEnabled,
+      event: [
+        'change',
+        (e) => updateFlag('mm', e.target.checked, e.target),
+      ],
+    });
+    
+    const mmtestToggle = DOM({
+      tag: 'input',
+      domaudio: domAudioPresets.defaultSelect,
+      type: 'checkbox',
+      id: 'mmtest-search-enabled',
+      checked: mmtestEnabled,
+      event: [
+        'change',
+        (e) => updateFlag('mmtest', e.target.checked, e.target),
+      ],
+    });
+    
+    return DOM(
+      { id: 'wcastle-menu' },
+      DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, 'Настройка поиска боя')),
+      DOM(
+        { style: 'castle-menu-items' },
+        DOM({ style: 'castle-menu-item-checkbox' }, mmToggle, DOM({ tag: 'label', for: 'mm-search-enabled' }, 'Включить поиск боя (MM)')),
+        DOM(
+          { style: 'castle-menu-item-checkbox' },
+          mmtestToggle,
+          DOM({ tag: 'label', for: 'mmtest-search-enabled' }, 'Включить поиск боя (MMTEST)'),
+        ),
+        DOM(
+          {
+            domaudio: domAudioPresets.bigButton,
+            style: 'castle-menu-item-button',
+            event: ['click', () => Window.show('main', 'adminPanel')],
+          },
+          Lang.text('back'),
+        ),
+      ),
+    );
+  }
+  
   static async adminPanel() {
     return DOM(
       { id: 'wcastle-menu' },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, 'Админ Панель')),
+      DOM(
+        {
+          domaudio: domAudioPresets.bigButton,
+          style: 'castle-menu-item-button',
+          event: [
+            'click',
+            () => {
+              Window.show('main', 'mmSearchSettings');
+            },
+          ],
+        },
+        'Поиск боя',
+      ),
       DOM(
         {
           domaudio: domAudioPresets.bigButton,

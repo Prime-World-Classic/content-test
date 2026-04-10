@@ -11,6 +11,7 @@ export class Settings {
     globalVolume: 0.5,
     musicVolume: 0.5,
     soundsVolume: 0.2,
+    voiceVolume: 1.0,
     radminPriority: false,
     language: 'ru',
     novoice: false,

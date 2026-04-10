@@ -984,9 +984,9 @@ input::placeholder {
 
 .splash-help-img{
   display: block;
-  width: 100%;
+  width: 80%;
   height: auto;
-  
+  margin: 0 auto;
 }
 
 .close-image-style {
@@ -3608,6 +3608,8 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   flex-shrink: 0;
   padding: 0.874cqw 0.624cqw 1.498cqw;
   box-sizing: border-box;
+  position: relative;
+  left: -5.2cqw;
 }
 
 .wtop-mode-tab {
@@ -3618,7 +3620,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   color: rgba(255, 255, 255, 0.88);
   cursor: var(--cursor-pointer);
   font: inherit;
-  font-size: 2.87cqw;
+  font-size: 2.57cqw;
   text-shadow: rgba(0, 0, 0, 0.35) 0 0 9px;
 }
 
@@ -3986,6 +3988,40 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   box-shadow: none;
 }
 
+.wtop-hero-stats-header {
+  display: grid;
+  grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.8cqw;
+  width: 100%;
+  flex-shrink: 0;
+  margin-bottom: 0.7cqw;
+  box-sizing: border-box;
+}
+
+.wtop-hero-stats-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2.5fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.8cqw;
+  align-items: stretch;
+  width: 100%;
+  margin-bottom: 0.7cqw;
+  box-sizing: border-box;
+}
+
+.wtop-sortable-header {
+  font: inherit;
+  cursor: var(--cursor-pointer);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 2.1cqw;
+  font-weight: 600;
+  background: rgba(0, 12, 20, 0.65);
+}
+
+.wtop-sortable-header.is-active {
+  border-color: rgba(255, 200, 120, 0.82);
+  color: rgba(255, 230, 200, 0.95);
+}
+
 .wtop-cell--name {
   justify-content: flex-start;
   text-align: left;
@@ -4006,6 +4042,45 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   justify-content: flex-start;
   gap: 0.9cqw;
   padding-left: 0.8cqw;
+}
+
+.wtop-cell--hero-stats-hero {
+  justify-content: flex-start;
+}
+
+.wtop-hero-title-cell {
+  padding-right: 0.6cqw;
+}
+
+.wtop-hero-title-split {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6cqw;
+}
+
+.wtop-hero-title-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wtop-hero-period-toggle {
+  min-height: 4.5cqw;
+  padding: 0.35cqw 0.9cqw;
+  border-radius: 0.6cqw;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 220, 180, 0.96);
+  font-size: 1.75cqw;
+  line-height: 1;
+  cursor: var(--cursor-pointer);
+  white-space: nowrap;
+}
+
+.wtop-hero-period-toggle:hover {
+  filter: brightness(1.2);
 }
 
 .wtop-cell-hero-icon {
@@ -4033,6 +4108,14 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 .wtop-cell--rating {
   font-weight: 600;
   color: rgba(255, 230, 200, 0.95);
+}
+
+.wtop-cell--hero-stat-number {
+  font-weight: 600;
+}
+
+.wtop-cell--hero-stat-winrate {
+  color: rgba(200, 255, 200, 0.95);
 }
 
 .wtop-empty-hint {

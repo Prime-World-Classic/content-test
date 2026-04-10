@@ -17,6 +17,7 @@ export const be = {
     library: 'Бібліятэка',
     menu: 'Мяню',
     preferences: 'Прылады',
+    advancedSettings: 'Дад. налады',
     windowMode: 'Аконны рэжым',
     radminPriority: 'Прыярытэт RadminVPN',
     threeD: '3D графіка',
@@ -26,6 +27,7 @@ export const be = {
     volume: 'Агульная гучнасць',
     volumeMusic: 'Гучнасць музыкі',
     volumeSound: 'Гучнасць гукаў',
+    voiceVolume: 'Гучнасць голасу',
     back: 'Захаваць',
     soundHelp:
       'Калі збіваюцца налады гуку, то можна адрэгуляваць ў мікшар гучнасці: правы пстрык мышы на значок гуку на панэлі задач -> Мікшар гучнасці -> Значок гульні -> рабіце цішэй',
@@ -57,6 +59,16 @@ export const be = {
     classTalent: 'Класавы',
     language: 'Мова',
     LangTarg: 'Мова зменены',
+    topHeroesTab: 'Героі',
+    topColHero: 'Герой',
+    topColBattles: 'Бояў',
+    topColWins: 'Перамог',
+    topColLosses: 'Паражэнняў',
+    topColWinrate: 'Вінрэйт',
+    topPeriodMonth: 'Месяц',
+    topPeriodAllTime: 'За ўвесь час',
+    topEmpty: 'Няма дадзеных',
+    showStatistics: 'Паказаць статыстыку',
 
 
     gm1_hover: 'Пагранічча\\AКласічны MOBA-рэжым. Бітва на спецыяльнай мапе 5×5. На базе знаходзіцца міні-гульня, у пэўных месцах мапы размешчаны Крышталі. Таксама сустракаюцца міні-босы Кот Баюн і Змей Горыныч, а на рацэ можна атрымаць дадатковы прайм у выглядзе Гліфа.',

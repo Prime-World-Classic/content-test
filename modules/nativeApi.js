@@ -210,27 +210,7 @@ export class NativeAPI {
       NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDestroyShortcut);
     }
 
-    NativeAPI.voiceUpVolume = new nw.Shortcut({
-      key: 'Ctrl+Up',
-      active: () => {
-        Voice.volumeControl(true);
-      },
-      failed: (error) => {
-        console.log(error);
-      },
-    });
-    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceUpVolume);
-
-    NativeAPI.voiceDownVolume = new nw.Shortcut({
-      key: 'Ctrl+Down',
-      active: () => {
-        Voice.volumeControl(false);
-      },
-      failed: (error) => {
-        console.log(error);
-      },
-    });
-    NativeAPI.app.registerGlobalHotKey(NativeAPI.voiceDownVolume);
+    // Voice volume hotkeys are disabled; volume is controlled in settings slider.
   }
   
   static isLegacyWindowsForVoiceWindow() {
