@@ -149,7 +149,17 @@ export class Events {
   }
 
   static PUpdate(data) {
+    if (data && ('mode' in data)) {
+      CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
+    }
     View.show('castle', data);
+  }
+  
+  static PMode(data) {
+    if (!data || !('mode' in data)) {
+      return;
+    }
+    CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
   }
 
   static PHero(data) {

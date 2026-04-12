@@ -115,6 +115,7 @@ export class View {
   static castleModeHeroAutoOpenHandler = null;
   static castleHeroAutoOpenModes = new Set([1, 2, 5]);
   static castleAramMode = 3;
+  static castlePartyHeroRequestInFlight = false;
 
   static getQueue(cssKey) {
     const map = {
@@ -151,6 +152,11 @@ export class View {
       return false;
     }
 
+    if (View.castlePartyHeroRequestInFlight) {
+      return false;
+    }
+
+    View.castlePartyHeroRequestInFlight = true;
     try {
       await App.api.request(App.CURRENT_MM, 'heroParty', {
         id: MM.partyId,
@@ -159,6 +165,8 @@ export class View {
     } catch (error) {
       App.error(error);
       return false;
+    } finally {
+      View.castlePartyHeroRequestInFlight = false;
     }
 
     const numericHeroId = Number(heroId) || 0;
@@ -843,6 +851,10 @@ export class View {
       players = new Array();
 
     MM.partyId = data.id;
+    MM.partyMembersCount = Object.keys(data?.users || {}).length || 1;
+    if (data && ('mode' in data)) {
+      CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
+    }
 
     MM.activeSelectHero = data.users[App.storage.data.id].hero;
 
@@ -3403,6 +3415,10 @@ export class View {
     data = data ? data : await App.api.request(App.CURRENT_MM, 'loadParty');
 
     MM.partyId = data.id;
+    MM.partyMembersCount = Object.keys(data?.users || {}).length || 1;
+    if (data && ('mode' in data)) {
+      CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
+    }
 
     MM.activeSelectHero = data.users[App.storage.data.id].hero;
 

@@ -40,6 +40,8 @@ export class MM {
   static targetPlayerAnimate = false;
 
   static activeSelectHero = 0;
+  
+  static partyMembersCount = 1;
 
   static isInTambur = false;
   
