@@ -1133,7 +1133,7 @@ export class View {
                             
                             body.append(DOM({event:['click', async () => {
                                 
-                                await App.api.request(App.CURRENT_MM,'inviteParty',{id:item.id});
+                                await App.api.request(App.CURRENT_MM,'inviteParty',{id:item.id,mode:CastleNAVBAR.mode});
                                 
                                 App.notify(`Приглашение отправлено игроку ${item.nickname}`,1000);
                                 
@@ -2985,7 +2985,7 @@ export class View {
             call.style.filter = 'grayscale(.8)';
           } else {
             group.onclick = async () => {
-              await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id });
+              await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id, mode: CastleNAVBAR.mode });
               App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
             };
             call.onclick = async () => {
@@ -3673,6 +3673,7 @@ export class View {
                       async () => {
                         await App.api.request(App.CURRENT_MM, 'inviteParty', {
                           id: item.id,
+                          mode: CastleNAVBAR.mode,
                         });
 
                         App.notify(`Приглашение отправлено игроку ${item.nickname}`, 1000);
