@@ -6899,13 +6899,15 @@ export class Build {
       const descriptionKey = `${prefix}${absId}_description`;
 
       let hasSetHover = !!Build._hoveredSetTalentIds;
-      if (!hasSetHover && Build.isBuildSetHoverOnTalentEnabled()) {
-        const wantedId = Math.abs(Number(data.id));
+      const numericTalentId = Number(data.id);
+      const canUseSetHoverForTalent = Number.isFinite(numericTalentId) && numericTalentId > 0;
+      if (!hasSetHover && canUseSetHoverForTalent && Build.isBuildSetHoverOnTalentEnabled()) {
+        const wantedId = numericTalentId;
         if (Number.isFinite(wantedId) && wantedId > 0) {
           for (const set of TalentSets.list()) {
             const ids = TalentSets.getTalentIds(set);
             if (!Array.isArray(ids) || !ids.length) continue;
-            if (!ids.some((id) => Math.abs(Number(id)) === wantedId)) continue;
+            if (!ids.some((id) => Number(id) === wantedId)) continue;
             let installedSetTalentsCount = 0;
             for (const id of ids) {
               if (Build.isTalentInBuild(id)) installedSetTalentsCount++;

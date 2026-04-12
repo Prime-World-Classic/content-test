@@ -112,6 +112,9 @@ export class View {
   static castleFriendListEditMode = '';
   static castleFriendEditSelection = new Set();
   static castleFriendClearConfirm = false;
+  static castleModeHeroAutoOpenHandler = null;
+  static castleHeroAutoOpenModes = new Set([1, 2, 5]);
+  static castleAramMode = 3;
 
   static getQueue(cssKey) {
     const map = {
@@ -137,6 +140,151 @@ export class View {
     }
 
     View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
+  }
+
+  static isCastleModeRequireHeroSelection(mode) {
+    return View.castleHeroAutoOpenModes.has(Number(mode));
+  }
+
+  static async setCastlePartyHero(playerCard, heroId, fallbackRating = 1100) {
+    if (!playerCard || Number(playerCard?.dataset?.id) !== Number(App.storage?.data?.id)) {
+      return false;
+    }
+
+    try {
+      await App.api.request(App.CURRENT_MM, 'heroParty', {
+        id: MM.partyId,
+        hero: heroId,
+      });
+    } catch (error) {
+      App.error(error);
+      return false;
+    }
+
+    const numericHeroId = Number(heroId) || 0;
+    let heroSkin = 1;
+    let heroRating = fallbackRating || 1100;
+
+    if (numericHeroId > 0) {
+      let heroes = MM.hero;
+      if (!Array.isArray(heroes) || !heroes.length) {
+        heroes = await App.api.request('build', 'heroAll');
+        MM.hero = heroes;
+      }
+
+      const selectedHero = Array.isArray(heroes) ? heroes.find((item) => Number(item?.id) === numericHeroId) : null;
+      if (selectedHero) {
+        heroSkin = Number(selectedHero.skin) > 0 ? Number(selectedHero.skin) : 1;
+        heroRating = Number(selectedHero.rating) || heroRating;
+      }
+    }
+
+    const newHeroImg = numericHeroId ? `url(content/hero/${numericHeroId}/${heroSkin}.webp)` : `url(content/hero/empty.webp)`;
+    playerCard.style.backgroundImage = `${newHeroImg}, url(content/hero/background.png)`;
+    playerCard.style.backgroundRepeat = 'no-repeat, no-repeat';
+    playerCard.style.backgroundPosition = 'center, center';
+    playerCard.style.backgroundSize = 'contain, contain';
+
+    const rankContainer = playerCard.querySelector('.rank');
+    Rank.updateRankContainer(rankContainer, parseInt(heroRating, 10));
+
+    MM.activeSelectHero = numericHeroId;
+    return true;
+  }
+
+  static async openCastlePartyHeroPicker(playerCard, fallbackRating = 1100, options = {}) {
+    const { notifyOnActiveSearch = true } = options;
+    if (!playerCard || Number(playerCard?.dataset?.id) !== Number(App.storage?.data?.id)) {
+      return;
+    }
+    if (MM.active) {
+      if (notifyOnActiveSearch) {
+        App.notify(Lang.text('youSearchFight'));
+      }
+      return;
+    }
+
+    let request = await App.api.request('build', 'heroAll');
+    MM.hero = request;
+
+    let bannedHeroesResponse = new Array();
+    try {
+      bannedHeroesResponse = await App.api.request(App.CURRENT_MM, 'bannedHeroes', { mode: CastleNAVBAR.mode });
+    } catch (error) {
+      bannedHeroesResponse = new Array();
+    }
+
+    const bannedHeroes = new Set(
+      (Array.isArray(bannedHeroesResponse) ? bannedHeroesResponse : new Array())
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id > 0),
+    );
+
+    const heroList = [...request, { id: 0 }];
+    let bodyHero = DOM({ style: 'party-hero' });
+    let preload = new PreloadImages(bodyHero);
+
+    for (let heroData of heroList) {
+      let hero = DOM({ domaudio: domAudioPresets.smallButton });
+      const isBannedInMode = heroData.id && bannedHeroes.has(Number(heroData.id));
+      if (isBannedInMode) {
+        hero.style.filter = 'grayscale(100%)';
+        hero.style.opacity = '0.6';
+        hero.title = Lang.text('thisHeroIsUnavailableInCurrentGameMode');
+      }
+
+      hero.addEventListener('click', async () => {
+        if (isBannedInMode) {
+          App.error(Lang.text('thisHeroIsUnavailableInCurrentGameMode'));
+          return;
+        }
+
+        const selected = await View.setCastlePartyHero(playerCard, heroData.id, heroData.rating || fallbackRating || 1100);
+        if (selected) {
+          Splash.hide();
+        }
+      });
+
+      hero.dataset.url = heroData.id ? `content/hero/${heroData.id}/${heroData.skin ? heroData.skin : 1}.webp` : `content/hero/empty.webp`;
+      preload.add(hero);
+    }
+
+    Splash.show(bodyHero, false);
+  }
+
+  static bindCastleModeHeroAutoOpen() {
+    if (View.castleModeHeroAutoOpenHandler) {
+      window.removeEventListener('CastleModeChanged', View.castleModeHeroAutoOpenHandler);
+    }
+
+    View.castleModeHeroAutoOpenHandler = async (event) => {
+      const mode = Number(event?.detail?.mode);
+      const myCard = document.querySelector(`.castle-play-lobby-player[data-id="${App.storage.data.id}"]`);
+      if (!myCard) {
+        return;
+      }
+
+      if (mode === View.castleAramMode) {
+        if (Number(MM.activeSelectHero) !== 0) {
+          const selected = await View.setCastlePartyHero(myCard, 0, 1100);
+          if (selected && Splash.body && Splash.body.style.display == 'flex' && Splash.body.querySelector('.party-hero')) {
+            Splash.hide();
+          }
+        }
+        return;
+      }
+
+      if (!View.isCastleModeRequireHeroSelection(mode) || Number(MM.activeSelectHero) > 0) {
+        return;
+      }
+      if (Splash.body && Splash.body.style.display == 'flex' && Splash.body.querySelector('.party-hero')) {
+        return;
+      }
+
+      await View.openCastlePartyHeroPicker(myCard, 1100, { notifyOnActiveSearch: false });
+    };
+
+    window.addEventListener('CastleModeChanged', View.castleModeHeroAutoOpenHandler);
   }
 
   static remapQueryByKeyboardLayout(value, layoutMap) {
@@ -940,87 +1088,7 @@ export class View {
 
       item.addEventListener('click', async () => {
         if (item.dataset.id == App.storage.data.id) {
-          if (MM.active) {
-            App.notify(Lang.text('youSearchFight'));
-            return;
-          }
-
-          let request = await App.api.request('build', 'heroAll');
-
-          // request.sort((a, b) => b.rating - a.rating);
-
-          MM.hero = request;
-
-          let bannedHeroesResponse = new Array();
-          try {
-            bannedHeroesResponse = await App.api.request(App.CURRENT_MM, 'bannedHeroes', { mode: CastleNAVBAR.mode });
-          } catch (error) {
-            bannedHeroesResponse = new Array();
-          }
-
-          const bannedHeroes = new Set(
-            (Array.isArray(bannedHeroesResponse) ? bannedHeroesResponse : new Array())
-              .map((id) => Number(id))
-              .filter((id) => Number.isFinite(id) && id > 0),
-          );
-
-          request.push({ id: 0 });
-
-          let bodyHero = DOM({ style: 'party-hero' });
-
-          let preload = new PreloadImages(bodyHero);
-
-          for (let item2 of request) {
-            let hero = DOM({ domaudio: domAudioPresets.smallButton });
-
-            const isBannedInMode = item2.id && bannedHeroes.has(Number(item2.id));
-            if (isBannedInMode) {
-              hero.style.filter = 'grayscale(100%)';
-              hero.style.opacity = '0.6';
-              hero.title = Lang.text('thisHeroIsUnavailableInCurrentGameMode');
-            }
-
-            hero.addEventListener('click', async () => {
-              if (isBannedInMode) {
-                App.error(Lang.text('thisHeroIsUnavailableInCurrentGameMode'));
-                return;
-              }
-
-              try {
-                await App.api.request(App.CURRENT_MM, 'heroParty', {
-                  id: MM.partyId,
-                  hero: item2.id,
-                });
-              } catch (error) {
-                return App.error(error);
-              }
-
-              const newHeroImg = item2.id
-                ? `url(content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp)`
-                : `url(content/hero/empty.webp)`;
-              item.style.backgroundImage = `${newHeroImg}, url(content/hero/background.png)`;
-              item.style.backgroundRepeat = 'no-repeat, no-repeat';
-              item.style.backgroundPosition = 'center, center';
-              item.style.backgroundSize = 'contain, contain';
-
-              const rankContainer = item.querySelector('.rank');
-              const heroRating = item2.rating || player.rating || 1100;
-              Rank.updateRankContainer(rankContainer, parseInt(heroRating, 10));
-
-              MM.activeSelectHero = item2.id;
-              Splash.hide();
-            });
-
-            if (item2.id) {
-              hero.dataset.url = `content/hero/${item2.id}/${item2.skin ? item2.skin : 1}.webp`;
-            } else {
-              hero.dataset.url = `content/hero/empty.webp`;
-            }
-
-            preload.add(hero);
-          }
-
-          Splash.show(bodyHero, false);
+          await View.openCastlePartyHeroPicker(item, player.rating);
         }
         /*
                 if( ( (item.dataset.id == 0) && ( (!MM.partyId ) || (MM.partyId == App.storage.data.id) ) ) ){
@@ -1077,6 +1145,7 @@ export class View {
     }
 
     body.append(CastleNAVBAR.body, lobby);
+    View.bindCastleModeHeroAutoOpen();
 
     return body;
   }
