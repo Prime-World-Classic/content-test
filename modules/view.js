@@ -3025,6 +3025,10 @@ export class View {
         }
       }
 
+      if (status == 1 && item.online && Number(item.mobile) == 1) {
+        friend.append(DOM({ style: 'castle-friend-mobile-emoji' }, '📱'));
+      }
+
       friend.dataset.url = `content/hero/friendLogo.png`;
       preload.add(friend);
     }
@@ -3790,8 +3794,63 @@ export class View {
       { key: 'losses', labelKey: 'topColLosses' },
       { key: 'winrate', labelKey: 'topColWinrate' },
     ];
+    const HERO_STATS_COLOR_RANGE = {
+      battles: { min: '#d46a6a', max: '#62d27a' },
+      wins: { min: '#d46a6a', max: '#62d27a' },
+      losses: { min: '#d46a6a', max: '#62d27a' },
+      winrate: { min: '#d46a6a', max: '#62d27a' },
+    };
+    const HERO_STATS_METRIC_KEYS = ['battles', 'wins', 'losses', 'winrate'];
 
-    const makeHeroStatsRow = (item) => {
+    const hexToRgb = (hexColor) => {
+      const hex = String(hexColor || '').replace('#', '');
+      if (hex.length !== 6) return { r: 255, g: 255, b: 255 };
+      return {
+        r: Number.parseInt(hex.slice(0, 2), 16),
+        g: Number.parseInt(hex.slice(2, 4), 16),
+        b: Number.parseInt(hex.slice(4, 6), 16),
+      };
+    };
+
+    const mixColor = (minColor, maxColor, ratio) => {
+      const clamped = Math.max(0, Math.min(1, ratio));
+      const minRgb = hexToRgb(minColor);
+      const maxRgb = hexToRgb(maxColor);
+      const r = Math.round(minRgb.r + (maxRgb.r - minRgb.r) * clamped);
+      const g = Math.round(minRgb.g + (maxRgb.g - minRgb.g) * clamped);
+      const b = Math.round(minRgb.b + (maxRgb.b - minRgb.b) * clamped);
+      return `rgb(${r}, ${g}, ${b})`;
+    };
+
+    const buildMetricRanges = (rows) => {
+      const ranges = {};
+      for (const key of HERO_STATS_METRIC_KEYS) {
+        let min = Infinity;
+        let max = -Infinity;
+        for (const item of rows) {
+          const value = Number(item[key]) || 0;
+          if (value < min) min = value;
+          if (value > max) max = value;
+        }
+        ranges[key] = {
+          min: Number.isFinite(min) ? min : 0,
+          max: Number.isFinite(max) ? max : 0,
+        };
+      }
+      return ranges;
+    };
+
+    const metricValueColor = (metricKey, value, metricRanges) => {
+      const range = metricRanges[metricKey];
+      if (!range) return '';
+      const min = Number(range.min) || 0;
+      const max = Number(range.max) || 0;
+      const ratio = max === min ? 0.5 : (value - min) / (max - min);
+      const palette = HERO_STATS_COLOR_RANGE[metricKey] || HERO_STATS_COLOR_RANGE.battles;
+      return mixColor(palette.min, palette.max, ratio);
+    };
+
+    const makeHeroStatsRow = (item, metricRanges) => {
       const heroIcon = DOM({ style: 'wtop-cell-hero-icon' });
       heroIcon.style.backgroundImage = `url(content/hero/${item.hero}/1.webp)`;
       const heroCell = DOM(
@@ -3803,6 +3862,10 @@ export class View {
       const winsCell = DOM({ style: ['wtop-cell', 'wtop-cell--hero-stat-number'] }, String(item.wins || 0));
       const lossesCell = DOM({ style: ['wtop-cell', 'wtop-cell--hero-stat-number'] }, String(item.losses || 0));
       const winrateCell = DOM({ style: ['wtop-cell', 'wtop-cell--hero-stat-number', 'wtop-cell--hero-stat-winrate'] }, `${Number(item.winrate || 0).toFixed(2)}%`);
+      battlesCell.style.color = metricValueColor('battles', Number(item.battles) || 0, metricRanges);
+      winsCell.style.color = metricValueColor('wins', Number(item.wins) || 0, metricRanges);
+      lossesCell.style.color = metricValueColor('losses', Number(item.losses) || 0, metricRanges);
+      winrateCell.style.color = metricValueColor('winrate', Number(item.winrate) || 0, metricRanges);
       return DOM({ style: 'wtop-hero-stats-row' }, heroCell, battlesCell, winsCell, lossesCell, winrateCell);
     };
 
@@ -3837,8 +3900,9 @@ export class View {
         if (!rows.length) {
           rowsBody.append(DOM({ style: 'wtop-empty-hint', textContent: Lang.text('topEmpty') }));
         } else {
+          const metricRanges = buildMetricRanges(rows);
           for (const item of rows) {
-            rowsBody.append(makeHeroStatsRow(item));
+            rowsBody.append(makeHeroStatsRow(item, metricRanges));
           }
         }
 

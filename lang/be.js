@@ -57,6 +57,17 @@ export const be = {
     steamauth:
       'Націскаючы кнопку Працягнуць, адбудзецца рэгістрацыя новага акаўнта! Калі Вы жадаеце ажыццявіць уваход у свой бягучы акаўнт PW Classic, Вам неабходна спачатку прывязаць свой Steam акаўнт з меню налад.',
     classTalent: 'Класавы',
+    talentAnomalyUnknown: 'Дзеянне з талентам адхілена серверам. Стан білда адноўлены.',
+    TALENT_ANOMALY_INVALID_SLOT: 'Некарэктны слот талента.',
+    TALENT_ANOMALY_INVALID_TALENT: 'Некарэктны талент.',
+    TALENT_ANOMALY_SLOT_OCCUPIED: 'Слот ужо заняты іншым талентам.',
+    TALENT_ANOMALY_WRONG_LEVEL: 'Талент нельга паставіць у гэты рад.',
+    TALENT_ANOMALY_CONFLICT: 'Талент канфліктуе з ужо ўсталяванымі талентамі.',
+    TALENT_ANOMALY_INVALID_ACTIVE_SLOT: 'Некарэктны слот актыўнай панэлі.',
+    TALENT_ANOMALY_INVALID_ACTIVE_POSITION: 'Некарэктная пазіцыя актыўнага талента.',
+    TALENT_ANOMALY_ACTIVE_POINTS_TO_EMPTY: 'Нельга прызначыць у актыўную панэль пусты слот білда.',
+    TALENT_ANOMALY_MISMATCH_CLIENT: 'Гэты талент недаступны для вашага кліента.',
+    TALENT_ANOMALY_UNKNOWN_ACTION: 'Невядомае дзеянне з талентам.',
     language: 'Мова',
     LangTarg: 'Мова зменены',
     topHeroesTab: 'Героі',
@@ -68,6 +79,7 @@ export const be = {
     topPeriodMonth: 'Месяц',
     topPeriodAllTime: 'За ўвесь час',
     topEmpty: 'Няма дадзеных',
+    buildSettingsSetHoverOnTalent: 'Падсветка сета пры навядзенні на талент',
     showStatistics: 'Паказаць статыстыку',
 
 

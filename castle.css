@@ -2192,6 +2192,17 @@ body {
   color: rgba(102, 255, 0, 0.9);
 }
 
+.castle-friend-mobile-emoji {
+  position: absolute;
+  right: 13.4cqh;
+  bottom: 39.4cqh;
+  font-size: 11cqh;
+  line-height: 1;
+  z-index: 3;
+  pointer-events: none;
+  filter: drop-shadow(0 0.35cqh 0.3cqh rgba(0, 0, 0, 0.7));
+}
+
 .castle-friend-request {
   color: rgba(255, 255, 255, 0.8);
   font-size: 11cqw;
@@ -2332,6 +2343,10 @@ body {
 }
 
 #wbuild:hover {
+  z-index: 140;
+}
+
+#wshop:hover {
   z-index: 140;
 }
 
