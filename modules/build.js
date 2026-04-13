@@ -2345,7 +2345,7 @@ export class Build {
     return moved;
   }
 
-  static async enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, direction = 'down') {
+  static async enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, setSize = new Map(), direction = 'down') {
     let moved = 0;
     const levelOrder = direction === 'up' ? [2, 3, 4, 5, 6] : [5, 4, 3, 2, 1];
     const getNeighborLevel = (lvl) => (direction === 'up' ? lvl - 1 : lvl + 1);
@@ -2391,7 +2391,11 @@ export class Build {
             if (!sk || !nk) continue;
             if ((rowCounts.get(sk) || 0) !== 1) continue;
             if ((neighborCounts.get(nk) || 0) !== 1) continue;
-            if (sk === nk) score++;
+            if (sk === nk) {
+              // Sets with many installed talents must dominate column continuity.
+              const sz = Math.max(1, Number(setSize.get(sk)) || 1);
+              score += sz * sz * 10;
+            }
           }
           return score;
         };
@@ -2468,17 +2472,25 @@ export class Build {
 
       const fixedSlots = new Set();
       const initialSetCounters = new Map();
-      for (let slot = 0; slot < Build.installedTalents.length; slot++) {
-        const talent = Build.installedTalents[slot];
-        if (!talent) continue;
-        const talentId = Number(talent.id);
-        if (talentId < 0) {
-          fixedSlots.add(slot);
-          continue;
+      // Priority metric: number of rows where set is present (duplicates in same row are ignored).
+      for (let level = 6; level >= 1; level--) {
+        const rowSlots = Build.getRowSlotIndicesByLevel(level);
+        const seenInRow = new Set();
+        for (const slot of rowSlots) {
+          const talent = Build.installedTalents[slot];
+          if (!talent) continue;
+          const talentId = Number(talent.id);
+          if (talentId < 0) {
+            fixedSlots.add(slot);
+            continue;
+          }
+          const setKey = setTalentToKey.get(Math.abs(talentId));
+          if (!setKey) continue;
+          seenInRow.add(setKey);
         }
-        const setKey = setTalentToKey.get(Math.abs(talentId));
-        if (!setKey) continue;
-        initialSetCounters.set(setKey, (initialSetCounters.get(setKey) || 0) + 1);
+        for (const setKey of seenInRow) {
+          initialSetCounters.set(setKey, (initialSetCounters.get(setKey) || 0) + 1);
+        }
       }
 
       const orderedSetKeys = Array.from(initialSetCounters.entries())
@@ -2531,6 +2543,31 @@ export class Build {
           } else {
             otherEntries.push(entry);
           }
+        }
+
+        // If a row has multiple talents of the same set,
+        // keep only one set-representative for column alignment.
+        // Others are treated as non-set entries for this row.
+        for (const [setKey, entries] of Array.from(setGroups.entries())) {
+          if (!entries || entries.length <= 1) continue;
+          const affinity = setColAffinity.get(setKey) || new Array(6).fill(0);
+          let keep = entries[0];
+          let keepScore = -Infinity;
+          for (const e of entries) {
+            const c = currentColByEntry.get(e);
+            const col = Number.isFinite(c) ? c : 0;
+            const s = (Number(affinity[col]) || 0) * 100 - col;
+            if (s > keepScore) {
+              keepScore = s;
+              keep = e;
+            }
+          }
+          for (const e of entries) {
+            if (e === keep) continue;
+            e.setKey = null;
+            otherEntries.push(e);
+          }
+          setGroups.set(setKey, [keep]);
         }
 
         const remainingCols = movableCols.slice();
@@ -2587,6 +2624,15 @@ export class Build {
           const leftSlot = rowSlots[col];
           const rightSlot = rowSlots[fromCol];
           if (fixedSlots.has(leftSlot) || fixedSlots.has(rightSlot)) continue;
+          const desiredSet = desired?.setKey || null;
+          const occupant = entryAtCol.get(col);
+          const occupantSet = occupant?.setKey || null;
+          if (desiredSet && occupantSet && desiredSet !== occupantSet) {
+            const desiredSize = Number(setSize.get(desiredSet)) || 0;
+            const occupantSize = Number(setSize.get(occupantSet)) || 0;
+            // Lower-size sets must not displace higher-size sets from a column.
+            if (desiredSize < occupantSize) continue;
+          }
           await Build.swapBuildSlotsWithBackend(rightSlot, leftSlot);
           swapCount++;
 
@@ -2674,6 +2720,7 @@ export class Build {
         }
 
         // Update affinities using finalized row.
+        const affinitySetSeen = new Set();
         for (let col = 0; col < 6; col++) {
           const slot = rowSlots[col];
           const t = Build.installedTalents?.[slot];
@@ -2681,13 +2728,15 @@ export class Build {
           if (!(id > 0)) continue;
           const setKey = setTalentToKey.get(Math.abs(id));
           if (!setKey) continue;
+          if (affinitySetSeen.has(setKey)) continue; // only one entry per set per row
+          affinitySetSeen.add(setKey);
           if (!setColAffinity.has(setKey)) setColAffinity.set(setKey, new Array(6).fill(0));
           setColAffinity.get(setKey)[col] += 4;
         }
       }
 
-      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, 'down');
-      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, 'up');
+      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, initialSetCounters, 'down');
+      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, initialSetCounters, 'up');
 
       Build.updateHeroStats();
       Build.renderCombatOrderBadges();
