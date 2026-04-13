@@ -2010,15 +2010,17 @@ export class Build {
       Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
     } catch {}
 
-    await Build.sendBuildMutationOrThrow({
-      optimisticMethod: 'optimisticSwap',
-      legacyMethod: 'swap',
-      data: {
-        buildId: Build.id,
-        i1: slotA,
-        i2: slotB,
-      },
-    });
+    if (!Build._sortDeferBackendSync) {
+      await Build.sendBuildMutationOrThrow({
+        optimisticMethod: 'optimisticSwap',
+        legacyMethod: 'swap',
+        data: {
+          buildId: Build.id,
+          i1: slotA,
+          i2: slotB,
+        },
+      });
+    }
     return true;
   }
 
@@ -2118,6 +2120,316 @@ export class Build {
     return moved;
   }
 
+  static buildSwapPlanFromBodySnapshots(initialBody = [], finalBody = []) {
+    const work = Array.isArray(initialBody) ? initialBody.slice() : [];
+    const target = Array.isArray(finalBody) ? finalBody : [];
+    const swaps = [];
+    const n = Math.min(work.length, target.length);
+    for (let i = 0; i < n; i++) {
+      if (work[i] === target[i]) continue;
+      let j = -1;
+      for (let k = i + 1; k < n; k++) {
+        if (work[k] === target[i]) {
+          j = k;
+          break;
+        }
+      }
+      if (j < 0) continue;
+      const t = work[i];
+      work[i] = work[j];
+      work[j] = t;
+      swaps.push([i, j]);
+    }
+    return swaps;
+  }
+
+  static simulateActiveAfterSwaps(active = [], swaps = []) {
+    const next = Array.isArray(active) ? active.slice(0, 24).map((v) => Number(v) || 0) : new Array(24).fill(0);
+    for (const pair of swaps || []) {
+      const i1 = Number(pair?.[0]);
+      const i2 = Number(pair?.[1]);
+      if (!Number.isFinite(i1) || !Number.isFinite(i2)) continue;
+      for (let i = 0; i < next.length; i++) {
+        const item = Number(next[i]) || 0;
+        if (!item) continue;
+        const sign = item < 0 ? -1 : 1;
+        const pos = Math.abs(item);
+        if (pos === i1 + 1) next[i] = sign * (i2 + 1);
+        else if (pos === i2 + 1) next[i] = sign * (i1 + 1);
+      }
+    }
+    return next;
+  }
+
+  static async syncSortResultToBackend(initialBody, initialActive) {
+    const finalBody = (Build.installedTalents || []).map((t) => Number(t?.id) || 0);
+    const finalActive = (Build.activeBarItems || []).slice(0, 24).map((v) => Number(v) || 0);
+    const swaps = Build.buildSwapPlanFromBodySnapshots(initialBody, finalBody);
+    for (const [i1, i2] of swaps) {
+      await Build.sendBuildMutationOrThrow({
+        optimisticMethod: 'optimisticSwap',
+        legacyMethod: 'swap',
+        data: { buildId: Build.id, i1, i2 },
+      });
+    }
+    const backendActive = Build.simulateActiveAfterSwaps(initialActive, swaps);
+    for (let i = 0; i < 24; i++) {
+      const want = Number(finalActive[i]) || 0;
+      const have = Number(backendActive[i]) || 0;
+      if (want === have) continue;
+      if (want === 0) {
+        await Build.sendBuildMutationOrThrow({
+          optimisticMethod: 'optimisticClearActive',
+          legacyMethod: 'setZeroActive',
+          data: { buildId: Build.id, index: i },
+        });
+      } else {
+        await Build.sendBuildMutationOrThrow({
+          optimisticMethod: 'optimisticSetActive',
+          legacyMethod: 'setActive',
+          data: { buildId: Build.id, index: i, position: want },
+        });
+      }
+    }
+  }
+
+  static async enforceSetColumnContinuity(setTalentToKey, fixedSlots) {
+    let moved = 0;
+    for (let pass = 0; pass < 4; pass++) {
+      let passMoved = 0;
+      for (let level = 5; level >= 1; level--) {
+        const prevSlots = Build.getRowSlotIndicesByLevel(level + 1);
+        const curSlots = Build.getRowSlotIndicesByLevel(level);
+
+        const prevColBySet = new Map();
+        const prevDupSet = new Set();
+        for (let col = 0; col < 6; col++) {
+          const slot = prevSlots[col];
+          const talent = Build.installedTalents?.[slot];
+          const id = Number(talent?.id);
+          if (!(id > 0)) continue;
+          const setKey = setTalentToKey.get(Math.abs(id));
+          if (!setKey) continue;
+          if (prevColBySet.has(setKey)) {
+            prevDupSet.add(setKey);
+          } else {
+            prevColBySet.set(setKey, col);
+          }
+        }
+        for (const k of prevDupSet) prevColBySet.delete(k);
+        if (!prevColBySet.size) continue;
+
+        const curSlotBySet = new Map();
+        for (let col = 0; col < 6; col++) {
+          const slot = curSlots[col];
+          const talent = Build.installedTalents?.[slot];
+          const id = Number(talent?.id);
+          if (!(id > 0)) continue;
+          const setKey = setTalentToKey.get(Math.abs(id));
+          if (!setKey) continue;
+          if (!curSlotBySet.has(setKey)) curSlotBySet.set(setKey, slot);
+        }
+        if (!curSlotBySet.size) continue;
+
+        const desiredColBySet = new Map();
+        for (const [setKey] of curSlotBySet) {
+          const desiredCol = prevColBySet.get(setKey);
+          if (Number.isFinite(desiredCol)) desiredColBySet.set(setKey, desiredCol);
+        }
+        if (!desiredColBySet.size) continue;
+
+        for (const [setKey, sourceSlotRaw] of curSlotBySet) {
+          const desiredCol = desiredColBySet.get(setKey);
+          if (!Number.isFinite(desiredCol)) continue;
+          const sourceSlot = Number(sourceSlotRaw);
+          const targetSlot = curSlots[desiredCol];
+          if (!Number.isFinite(sourceSlot) || !Number.isFinite(targetSlot) || sourceSlot === targetSlot) continue;
+          if (fixedSlots?.has?.(sourceSlot) || fixedSlots?.has?.(targetSlot)) continue;
+
+          const sourceTalent = Build.installedTalents?.[sourceSlot];
+          const targetTalent = Build.installedTalents?.[targetSlot];
+          const sourceId = Number(sourceTalent?.id);
+          const targetId = Number(targetTalent?.id);
+          if (!(sourceId > 0)) continue;
+          if (targetTalent && !(targetId > 0)) continue;
+
+          const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(targetId)) : null;
+          if (targetSetKey === setKey) continue;
+          if (targetSetKey && desiredColBySet.get(targetSetKey) === desiredCol) continue;
+
+          await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
+          moved++;
+          passMoved++;
+          curSlotBySet.set(setKey, targetSlot);
+          if (targetSetKey) curSlotBySet.set(targetSetKey, sourceSlot);
+        }
+      }
+      if (!passMoved) break;
+    }
+    return moved;
+  }
+
+  static getPreferredSetColumns(setTalentToKey) {
+    const counts = new Map();
+    for (let level = 6; level >= 1; level--) {
+      const rowSlots = Build.getRowSlotIndicesByLevel(level);
+      for (let col = 0; col < 6; col++) {
+        const slot = rowSlots[col];
+        const talent = Build.installedTalents?.[slot];
+        const id = Number(talent?.id);
+        if (!(id > 0)) continue;
+        const setKey = setTalentToKey.get(Math.abs(id));
+        if (!setKey) continue;
+        if (!counts.has(setKey)) counts.set(setKey, new Array(6).fill(0));
+        counts.get(setKey)[col] += 1;
+      }
+    }
+    const preferred = new Map();
+    for (const [setKey, arr] of counts.entries()) {
+      let bestCol = 0;
+      let bestVal = -1;
+      for (let col = 0; col < 6; col++) {
+        const v = Number(arr[col]) || 0;
+        if (v > bestVal) {
+          bestVal = v;
+          bestCol = col;
+        }
+      }
+      preferred.set(setKey, bestCol);
+    }
+    return preferred;
+  }
+
+  static async enforceSetPreferredColumns(setTalentToKey, fixedSlots) {
+    let moved = 0;
+    for (let pass = 0; pass < 3; pass++) {
+      let passMoved = 0;
+      const preferred = Build.getPreferredSetColumns(setTalentToKey);
+      for (let level = 6; level >= 1; level--) {
+        const rowSlots = Build.getRowSlotIndicesByLevel(level);
+        const rowSetToSlot = new Map();
+        for (let col = 0; col < 6; col++) {
+          const slot = rowSlots[col];
+          const talent = Build.installedTalents?.[slot];
+          const id = Number(talent?.id);
+          if (!(id > 0)) continue;
+          const setKey = setTalentToKey.get(Math.abs(id));
+          if (!setKey) continue;
+          if (!rowSetToSlot.has(setKey)) rowSetToSlot.set(setKey, slot);
+        }
+        for (const [setKey, sourceSlotRaw] of rowSetToSlot.entries()) {
+          const desiredCol = preferred.get(setKey);
+          if (!Number.isFinite(desiredCol)) continue;
+          const sourceSlot = Number(sourceSlotRaw);
+          const targetSlot = rowSlots[desiredCol];
+          if (!Number.isFinite(sourceSlot) || !Number.isFinite(targetSlot) || sourceSlot === targetSlot) continue;
+          if (fixedSlots?.has?.(sourceSlot) || fixedSlots?.has?.(targetSlot)) continue;
+
+          const sourceTalent = Build.installedTalents?.[sourceSlot];
+          const targetTalent = Build.installedTalents?.[targetSlot];
+          const sourceId = Number(sourceTalent?.id);
+          const targetId = Number(targetTalent?.id);
+          if (!(sourceId > 0)) continue;
+          if (targetTalent && !(targetId > 0)) continue;
+          const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(targetId)) : null;
+          if (targetSetKey === setKey) continue;
+          if (targetSetKey && preferred.get(targetSetKey) === desiredCol) continue;
+
+          await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
+          moved++;
+          passMoved++;
+        }
+      }
+      if (!passMoved) break;
+    }
+    return moved;
+  }
+
+  static async enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, direction = 'down') {
+    let moved = 0;
+    const levelOrder = direction === 'up' ? [2, 3, 4, 5, 6] : [5, 4, 3, 2, 1];
+    const getNeighborLevel = (lvl) => (direction === 'up' ? lvl - 1 : lvl + 1);
+    const countSetsInRow = (rowSlots) => {
+      const m = new Map();
+      for (const slot of rowSlots) {
+        const t = Build.installedTalents?.[slot];
+        const id = Number(t?.id);
+        if (!(id > 0)) continue;
+        const setKey = setTalentToKey.get(Math.abs(id));
+        if (!setKey) continue;
+        m.set(setKey, (m.get(setKey) || 0) + 1);
+      }
+      return m;
+    };
+    const getSetAtSlot = (slot) => {
+      const t = Build.installedTalents?.[slot];
+      const id = Number(t?.id);
+      if (!(id > 0)) return null;
+      return setTalentToKey.get(Math.abs(id)) || null;
+    };
+
+    for (let pass = 0; pass < 4; pass++) {
+      let passMoved = 0;
+      for (const level of levelOrder) {
+        const neighborLevel = getNeighborLevel(level);
+        if (neighborLevel < 1 || neighborLevel > 6) continue;
+        const rowSlots = Build.getRowSlotIndicesByLevel(level);
+        const neighborSlots = Build.getRowSlotIndicesByLevel(neighborLevel);
+        const rowCounts = countSetsInRow(rowSlots);
+        const neighborCounts = countSetsInRow(neighborSlots);
+        const movableCols = [];
+        for (let c = 0; c < 6; c++) {
+          if (!fixedSlots?.has?.(rowSlots[c])) movableCols.push(c);
+        }
+        if (movableCols.length < 2) continue;
+
+        const scoreRow = () => {
+          let score = 0;
+          for (let c = 0; c < 6; c++) {
+            const sk = getSetAtSlot(rowSlots[c]);
+            const nk = getSetAtSlot(neighborSlots[c]);
+            if (!sk || !nk) continue;
+            if ((rowCounts.get(sk) || 0) !== 1) continue;
+            if ((neighborCounts.get(nk) || 0) !== 1) continue;
+            if (sk === nk) score++;
+          }
+          return score;
+        };
+
+        for (let iter = 0; iter < 4; iter++) {
+          const base = scoreRow();
+          let best = null;
+          for (let i = 0; i < movableCols.length; i++) {
+            for (let j = i + 1; j < movableCols.length; j++) {
+              const c1 = movableCols[i];
+              const c2 = movableCols[j];
+              const s1 = rowSlots[c1];
+              const s2 = rowSlots[c2];
+              const t1 = Build.installedTalents?.[s1];
+              const t2 = Build.installedTalents?.[s2];
+              const id1 = Number(t1?.id);
+              const id2 = Number(t2?.id);
+              if (t1 && !(id1 > 0)) continue;
+              if (t2 && !(id2 > 0)) continue;
+              await Build.swapBuildSlotsWithBackend(s1, s2);
+              const sc = scoreRow();
+              await Build.swapBuildSlotsWithBackend(s1, s2);
+              if (sc > base && (!best || sc > best.score)) {
+                best = { c1, c2, score: sc };
+              }
+            }
+          }
+          if (!best) break;
+          await Build.swapBuildSlotsWithBackend(rowSlots[best.c1], rowSlots[best.c2]);
+          moved++;
+          passMoved++;
+        }
+      }
+      if (!passMoved) break;
+    }
+    return moved;
+  }
+
   static async sortSetTalentsIntoColumns(options = {}) {
     if (Build.sortSetsInProgress) return;
     if (Build.combatModeEnabled) {
@@ -2126,8 +2438,11 @@ export class Build {
     }
     if (!Array.isArray(Build.installedTalents) || Build.installedTalents.length < 36) return;
     const classEdgeSort = !!options?.classEdgeSort;
+    const initialBodySnapshot = (Build.installedTalents || []).map((t) => Number(t?.id) || 0);
+    const initialActiveSnapshot = (Build.activeBarItems || []).slice(0, 24).map((v) => Number(v) || 0);
 
     Build.sortSetsInProgress = true;
+    Build._sortDeferBackendSync = true;
     Build.syncSetSortButtonState();
     try {
       if (classEdgeSort) {
@@ -2169,135 +2484,217 @@ export class Build {
       const orderedSetKeys = Array.from(initialSetCounters.entries())
         .sort((a, b) => b[1] - a[1])
         .map(([setKey]) => setKey);
-
-      let swapCount = 0;
-      const priorityLockedSlots = new Set();
-
-      const getSetSlotsOnLevel = (setKey, level) => {
+      const setPriority = new Map();
+      orderedSetKeys.forEach((k, i) => setPriority.set(k, i));
+      const setSize = new Map(initialSetCounters);
+      const setColHistogram = new Map();
+      for (let level = 6; level >= 1; level--) {
         const rowSlots = Build.getRowSlotIndicesByLevel(level);
-        const result = [];
-        for (const slot of rowSlots) {
-          const t = Build.installedTalents[slot];
-          if (!t) continue;
-          const id = Number(t.id);
+        for (let col = 0; col < 6; col++) {
+          const slot = rowSlots[col];
+          const t = Build.installedTalents?.[slot];
+          const id = Number(t?.id);
           if (!(id > 0)) continue;
-          const slotSetKey = setTalentToKey.get(Math.abs(id));
-          if (slotSetKey === setKey) result.push(slot);
-        }
-        return result;
-      };
-
-      for (const setKey of orderedSetKeys) {
-        const rowLevels = new Set();
-        for (let slot = 0; slot < Build.installedTalents.length; slot++) {
-          const t = Build.installedTalents[slot];
-          if (!t) continue;
-          const id = Number(t.id);
-          if (!(id > 0)) continue;
-          const slotSetKey = setTalentToKey.get(Math.abs(id));
-          if (slotSetKey !== setKey) continue;
-          const lvl = Number(t.level);
-          const safeLevel = Number.isFinite(lvl) && lvl > 0 ? lvl : Build.getBuildSlotLevelByIndex(slot);
-          rowLevels.add(safeLevel);
-        }
-
-        if (!rowLevels.size) continue;
-
-        let bestCol = 0;
-        let bestScore = -1;
-        const orderedLevels = Array.from(rowLevels).sort((a, b) => b - a);
-        const columnsToCheck = [0, 1, 2, 3, 4, 5];
-        let bestAlignableRows = -1;
-        let bestSameSetPlaced = -1;
-        let bestPotentialPlaced = -1;
-        let bestPotentialWeight = -1;
-
-        for (const col of columnsToCheck) {
-          let score = 0;
-          let alignableRows = 0;
-          let sameSetPlaced = 0;
-          let potentialPlaced = 0;
-          let potentialWeight = 0;
-          for (const level of orderedLevels) {
-            const targetSlot = Build.getRowSlotIndicesByLevel(level)[col];
-            if (fixedSlots.has(targetSlot) || priorityLockedSlots.has(targetSlot)) continue;
-            alignableRows++;
-            const targetTalent = Build.installedTalents[targetSlot];
-            const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(Number(targetTalent.id))) : null;
-            if (targetSetKey === setKey) sameSetPlaced++;
-            const levelWeight = Math.max(1, Number(level) || 1);
-            score += (targetSetKey === setKey ? 2 : 1) * levelWeight;
-            if (targetSetKey === setKey) {
-              potentialPlaced++;
-              potentialWeight += levelWeight;
-              continue;
-            }
-            const candidateSlots = getSetSlotsOnLevel(setKey, level).filter(
-              (slot) => !fixedSlots.has(slot) && !priorityLockedSlots.has(slot) && slot !== targetSlot,
-            );
-            if (candidateSlots.length) {
-              potentialPlaced++;
-              potentialWeight += levelWeight;
-            }
-          }
-          if (
-            potentialPlaced > bestPotentialPlaced ||
-            (potentialPlaced === bestPotentialPlaced && potentialWeight > bestPotentialWeight) ||
-            (potentialPlaced === bestPotentialPlaced && potentialWeight === bestPotentialWeight && sameSetPlaced > bestSameSetPlaced) ||
-            (potentialPlaced === bestPotentialPlaced &&
-              potentialWeight === bestPotentialWeight &&
-              sameSetPlaced === bestSameSetPlaced &&
-              alignableRows > bestAlignableRows) ||
-            (potentialPlaced === bestPotentialPlaced &&
-              potentialWeight === bestPotentialWeight &&
-              sameSetPlaced === bestSameSetPlaced &&
-              alignableRows === bestAlignableRows &&
-              score > bestScore)
-          ) {
-            bestPotentialPlaced = potentialPlaced;
-            bestPotentialWeight = potentialWeight;
-            bestSameSetPlaced = sameSetPlaced;
-            bestAlignableRows = alignableRows;
-            bestScore = score;
-            bestCol = col;
-          }
-        }
-
-        for (const level of orderedLevels) {
-          const targetSlot = Build.getRowSlotIndicesByLevel(level)[bestCol];
-          if (fixedSlots.has(targetSlot) || priorityLockedSlots.has(targetSlot)) continue;
-
-          const targetTalent = Build.installedTalents[targetSlot];
-          const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(Number(targetTalent.id))) : null;
-          if (targetSetKey === setKey) continue;
-
-          const candidateSlots = getSetSlotsOnLevel(setKey, level).filter(
-            (slot) => !fixedSlots.has(slot) && !priorityLockedSlots.has(slot) && slot !== targetSlot,
-          );
-          if (!candidateSlots.length) continue;
-
-          const sourceSlot = candidateSlots[0];
-          await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
-          swapCount++;
-        }
-
-        for (const level of orderedLevels) {
-          const lockedSlot = Build.getRowSlotIndicesByLevel(level)[bestCol];
-          if (fixedSlots.has(lockedSlot)) continue;
-          const lockedTalent = Build.installedTalents[lockedSlot];
-          if (!lockedTalent) continue;
-          const lockedSetKey = setTalentToKey.get(Math.abs(Number(lockedTalent.id)));
-          if (lockedSetKey === setKey) {
-            priorityLockedSlots.add(lockedSlot);
-          }
+          const setKey = setTalentToKey.get(Math.abs(id));
+          if (!setKey) continue;
+          if (!setColHistogram.has(setKey)) setColHistogram.set(setKey, new Array(6).fill(0));
+          setColHistogram.get(setKey)[col] += 1;
         }
       }
+      const setColAffinity = new Map();
+      for (const [setKey, hist] of setColHistogram.entries()) {
+        setColAffinity.set(setKey, (hist || new Array(6).fill(0)).slice(0, 6));
+      }
+      let swapCount = 0;
+
+      for (let level = 6; level >= 1; level--) {
+        const rowSlots = Build.getRowSlotIndicesByLevel(level);
+        const movableCols = [];
+        const entryAtCol = new Map();
+        const currentColByEntry = new Map();
+        const setGroups = new Map();
+        const otherEntries = [];
+
+        for (let col = 0; col < 6; col++) {
+          const slot = rowSlots[col];
+          if (fixedSlots.has(slot)) continue;
+          movableCols.push(col);
+          const t = Build.installedTalents?.[slot] || null;
+          const id = Number(t?.id);
+          const setKey = id > 0 ? setTalentToKey.get(Math.abs(id)) || null : null;
+          const entry = { slot, id, setKey };
+          entryAtCol.set(col, entry);
+          currentColByEntry.set(entry, col);
+          if (setKey) {
+            if (!setGroups.has(setKey)) setGroups.set(setKey, []);
+            setGroups.get(setKey).push(entry);
+          } else {
+            otherEntries.push(entry);
+          }
+        }
+
+        const remainingCols = movableCols.slice();
+        const desiredAtCol = new Map();
+        const sortedSets = Array.from(setGroups.keys()).sort((a, b) => {
+          const pa = setPriority.has(a) ? setPriority.get(a) : Number.MAX_SAFE_INTEGER;
+          const pb = setPriority.has(b) ? setPriority.get(b) : Number.MAX_SAFE_INTEGER;
+          if (pa !== pb) return pa - pb;
+          return `${a}`.localeCompare(`${b}`);
+        });
+
+        for (const setKey of sortedSets) {
+          const entries = setGroups.get(setKey) || [];
+          if (entries.length !== 1 || !remainingCols.length) continue;
+          const k = Math.min(entries.length, remainingCols.length);
+          const affinity = setColAffinity.get(setKey) || new Array(6).fill(0);
+          const rankedCols = remainingCols
+            .slice()
+            .sort((a, b) => {
+              const da = Number(affinity[a]) || 0;
+              const db = Number(affinity[b]) || 0;
+              if (db !== da) return db - da;
+              return a - b;
+            })
+            .slice(0, k)
+            .sort((a, b) => a - b);
+          for (let i = 0; i < rankedCols.length; i++) {
+            desiredAtCol.set(rankedCols[i], entries[i]);
+          }
+          for (const c of rankedCols) {
+            const idx = remainingCols.indexOf(c);
+            if (idx >= 0) remainingCols.splice(idx, 1);
+          }
+        }
+
+        const restEntries = [...otherEntries];
+        for (const setKey of sortedSets) {
+          const entries = setGroups.get(setKey) || [];
+          for (const e of entries) {
+            if (![...desiredAtCol.values()].includes(e)) restEntries.push(e);
+          }
+        }
+        for (let i = 0; i < remainingCols.length && i < restEntries.length; i++) {
+          desiredAtCol.set(remainingCols[i], restEntries[i]);
+        }
+
+        for (const col of movableCols) {
+          const desired = desiredAtCol.get(col);
+          if (!desired) continue;
+          const current = entryAtCol.get(col);
+          if (current === desired) continue;
+          const fromCol = currentColByEntry.get(desired);
+          if (!Number.isFinite(fromCol)) continue;
+          const leftSlot = rowSlots[col];
+          const rightSlot = rowSlots[fromCol];
+          if (fixedSlots.has(leftSlot) || fixedSlots.has(rightSlot)) continue;
+          await Build.swapBuildSlotsWithBackend(rightSlot, leftSlot);
+          swapCount++;
+
+          const eA = entryAtCol.get(col);
+          const eB = entryAtCol.get(fromCol);
+          entryAtCol.set(col, eB);
+          entryAtCol.set(fromCol, eA);
+          currentColByEntry.set(eA, fromCol);
+          currentColByEntry.set(eB, col);
+        }
+
+        // Polish current row against previous one: maximize vertical set continuity.
+        if (level < 6) {
+          const prevSlots = Build.getRowSlotIndicesByLevel(level + 1);
+          const nextSlots = level > 1 ? Build.getRowSlotIndicesByLevel(level - 1) : null;
+          const getSetAtSlot = (slot) => {
+            const t = Build.installedTalents?.[slot];
+            const id = Number(t?.id);
+            if (!(id > 0)) return null;
+            return setTalentToKey.get(Math.abs(id)) || null;
+          };
+          const prevSetAtCol = prevSlots.map((s) => getSetAtSlot(s));
+          const nextSetAtCol = nextSlots ? nextSlots.map((s) => getSetAtSlot(s)) : null;
+          const curSetCount = new Map();
+          const prevSetCount = new Map();
+          for (let c = 0; c < 6; c++) {
+            const curSet = getSetAtSlot(rowSlots[c]);
+            if (curSet) curSetCount.set(curSet, (curSetCount.get(curSet) || 0) + 1);
+            const pSet = prevSetAtCol[c];
+            if (pSet) prevSetCount.set(pSet, (prevSetCount.get(pSet) || 0) + 1);
+          }
+          const polishLockedCols = new Set();
+          for (const c of movableCols) {
+            const rowSet = getSetAtSlot(rowSlots[c]);
+            if (!rowSet) continue;
+            if ((curSetCount.get(rowSet) || 0) > 1) continue; // ignore duplicated set entries in row
+            const size = Number(setSize.get(rowSet)) || 0;
+            if (size < 3) continue; // protect only long sets
+            const hasPrevContinuation = prevSetAtCol[c] === rowSet;
+            const hasNextContinuation = !!nextSetAtCol && nextSetAtCol[c] === rowSet;
+            // Lock only real "inside column" cells so short sets can still align around them.
+            if (hasPrevContinuation && hasNextContinuation) {
+              polishLockedCols.add(c);
+            }
+          }
+          const scoreRow = () => {
+            let score = 0;
+            for (let c = 0; c < 6; c++) {
+              const sk = getSetAtSlot(rowSlots[c]);
+              if (!sk) continue;
+              if ((curSetCount.get(sk) || 0) > 1) continue; // ignore duplicated set entries in current row
+              if ((prevSetCount.get(sk) || 0) > 1) continue; // ignore duplicated set entries in previous row
+              if (sk === prevSetAtCol[c]) score++;
+            }
+            return score;
+          };
+          for (let iter = 0; iter < 4; iter++) {
+            let best = null;
+            const base = scoreRow();
+            for (let i = 0; i < movableCols.length; i++) {
+              for (let j = i + 1; j < movableCols.length; j++) {
+                const c1 = movableCols[i];
+                const c2 = movableCols[j];
+                if (polishLockedCols.has(c1) || polishLockedCols.has(c2)) continue;
+                const s1 = rowSlots[c1];
+                const s2 = rowSlots[c2];
+                const t1 = Build.installedTalents?.[s1];
+                const t2 = Build.installedTalents?.[s2];
+                const id1 = Number(t1?.id);
+                const id2 = Number(t2?.id);
+                if (t1 && !(id1 > 0)) continue;
+                if (t2 && !(id2 > 0)) continue;
+                await Build.swapBuildSlotsWithBackend(s1, s2);
+                const sc = scoreRow();
+                await Build.swapBuildSlotsWithBackend(s1, s2);
+                if (sc > base && (!best || sc > best.score)) {
+                  best = { c1, c2, score: sc };
+                }
+              }
+            }
+            if (!best) break;
+            await Build.swapBuildSlotsWithBackend(rowSlots[best.c1], rowSlots[best.c2]);
+            swapCount++;
+          }
+        }
+
+        // Update affinities using finalized row.
+        for (let col = 0; col < 6; col++) {
+          const slot = rowSlots[col];
+          const t = Build.installedTalents?.[slot];
+          const id = Number(t?.id);
+          if (!(id > 0)) continue;
+          const setKey = setTalentToKey.get(Math.abs(id));
+          if (!setKey) continue;
+          if (!setColAffinity.has(setKey)) setColAffinity.set(setKey, new Array(6).fill(0));
+          setColAffinity.get(setKey)[col] += 4;
+        }
+      }
+
+      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, 'down');
+      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, 'up');
 
       Build.updateHeroStats();
       Build.renderCombatOrderBadges();
       Build.refreshActiveTalentDescription();
       Build.refreshStatFilterHighlightCountDisplay();
       Build.syncCombatModeButtonState();
+      await Build.syncSortResultToBackend(initialBodySnapshot, initialActiveSnapshot);
 
       if (swapCount > 0) {
         App.notify(Lang.text('sortSetsIntoColumnDone').replace('{count}', String(swapCount)));
@@ -2308,6 +2705,7 @@ export class Build {
       } catch {}
       App.notify(Lang.text('sortSetsIntoColumnFailed'));
     } finally {
+      Build._sortDeferBackendSync = false;
       Build.sortSetsInProgress = false;
       Build.syncSetSortButtonState();
     }
