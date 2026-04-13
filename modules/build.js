@@ -38,6 +38,9 @@ export class Build {
   static statFilterHighlightCountWrapEl = null;
   static combatModeButtonEl = null;
   static combatModeButtonCountEl = null;
+  static setSortButtonEl = null;
+  static sortSetsInProgress = false;
+  static sortSetsClassSide = 'left';
   static combatModeEnabled = false;
   static combatModeLearnOrder = [];
   static combatModeLearnOrderBySlot = new Map();
@@ -1820,11 +1823,51 @@ export class Build {
       Build.buildActionsView.append(resetBuild);
     }
 
+    // Кнопка сортировки сетовых талантов по колонкам
+    {
+      const sortSets = DOM({
+        tag: 'button',
+        domaudio: domAudioPresets.defaultButton,
+        style: ['build-action-item', 'btn-hover', 'color-1'],
+        event: [
+          'click',
+          async () => {
+            if (Build.combatModeEnabled || Build.sortSetsInProgress) {
+              Build.syncSetSortButtonState();
+              return;
+            }
+            await Build.sortSetTalentsIntoColumns();
+          },
+        ],
+      });
+      sortSets.addEventListener('contextmenu', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (Build.combatModeEnabled || Build.sortSetsInProgress) {
+          Build.syncSetSortButtonState();
+          return;
+        }
+        await Build.sortSetTalentsIntoColumns({ classEdgeSort: true });
+      });
+      const sortSetsBg = DOM({
+        style: ['btn-combat-mode', 'build-action-item-background'],
+      });
+      const sortSetsIcon = DOM({ tag: 'span', style: 'btn-sort-sets-icon' });
+      const sortSetsGlass = DOM({ tag: 'span', style: 'btn-combat-mode-glass' });
+      sortSetsBg.append(sortSetsIcon, sortSetsGlass);
+      sortSets.append(sortSetsBg);
+      Build.buildActionsView.append(sortSets);
+      Build.setSortButtonEl = sortSets;
+      Build.syncSetSortButtonState();
+    }
+
   }
 
   static resetCombatModeState() {
     Build.combatModeButtonEl = null;
     Build.combatModeButtonCountEl = null;
+    Build.setSortButtonEl = null;
+    Build.sortSetsInProgress = false;
     Build.combatModeEnabled = false;
     Build.combatModeLearnOrder = [];
     Build.combatModeLearnOrderBySlot = new Map();
@@ -1873,6 +1916,12 @@ export class Build {
     return Lang.text('combatModeName');
   }
 
+  static getSortSetsButtonTooltip() {
+    if (Build.sortSetsInProgress) return Lang.text('sortSetsIntoColumnInProgress');
+    if (Build.combatModeEnabled) return Lang.text('sortSetsIntoColumnDisabledCombat');
+    return `${Lang.text('titleSortSetsIntoColumn')}\n${Lang.text('sortSetsRmbMirrorBuild')}`;
+  }
+
   static syncCombatModeButtonState() {
     const btn = Build.combatModeButtonEl;
     if (!btn) return;
@@ -1887,6 +1936,380 @@ export class Build {
       const isRawMode = !Build.combatModeEnabled;
       Build.combatModeButtonCountEl.classList.toggle('btn-combat-mode-count-raw', isRawMode);
       Build.combatModeButtonCountEl.textContent = isRawMode ? '' : String(Build.getCombatModeHeroLevel());
+    }
+    Build.syncSetSortButtonState();
+  }
+
+  static syncSetSortButtonState() {
+    const btn = Build.setSortButtonEl;
+    if (!btn) return;
+    const isDisabled = Build.combatModeEnabled || Build.sortSetsInProgress;
+    btn.classList.toggle('build-action-item-disabled', isDisabled);
+    btn.disabled = isDisabled;
+    btn.title = Build.getSortSetsButtonTooltip();
+  }
+
+  static getBuildSlotLevelByIndex(slotIndex) {
+    const slot = Number(slotIndex);
+    if (!Number.isFinite(slot)) return 0;
+    return Math.max(1, Math.min(6, 6 - Math.floor(slot / 6)));
+  }
+
+  static getRowSlotIndicesByLevel(level) {
+    const lvl = Math.max(1, Math.min(6, Number(level) || 1));
+    const rowStart = (6 - lvl) * 6;
+    return [rowStart, rowStart + 1, rowStart + 2, rowStart + 3, rowStart + 4, rowStart + 5];
+  }
+
+  static async swapBuildSlotsWithBackend(i1, i2) {
+    const slotA = Number(i1);
+    const slotB = Number(i2);
+    if (!Number.isFinite(slotA) || !Number.isFinite(slotB) || slotA === slotB) return false;
+    if (!Array.isArray(Build.installedTalents)) return false;
+    if (slotA < 0 || slotA >= Build.installedTalents.length) return false;
+    if (slotB < 0 || slotB >= Build.installedTalents.length) return false;
+
+    const talentA = Build.installedTalents[slotA];
+    const talentB = Build.installedTalents[slotB];
+    Build.installedTalents[slotA] = talentB;
+    Build.installedTalents[slotB] = talentA;
+
+    try {
+      const cellA = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${slotA}"]`);
+      const cellB = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${slotB}"]`);
+      if (cellA && cellB) {
+        const nodeA = cellA.firstElementChild;
+        const nodeB = cellB.firstElementChild;
+        if (nodeA) cellB.append(nodeA);
+        if (nodeB) cellA.append(nodeB);
+      }
+    } catch {}
+
+    try {
+      const movedTalent = talentA;
+      const displacedTalent = talentB;
+      if (movedTalent?.active && !displacedTalent?.active) {
+        for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
+          const item = Number(Build.activeBarItems[i]) || 0;
+          if (!item) continue;
+          const sign = item < 0 ? -1 : 1;
+          if (Math.abs(item) === slotA + 1) {
+            Build.activeBarItems[i] = sign * (slotB + 1);
+          }
+        }
+      } else if (!movedTalent?.active && displacedTalent?.active) {
+        for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
+          const item = Number(Build.activeBarItems[i]) || 0;
+          if (!item) continue;
+          const sign = item < 0 ? -1 : 1;
+          if (Math.abs(item) === slotB + 1) {
+            Build.activeBarItems[i] = sign * (slotA + 1);
+          }
+        }
+      }
+      Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+    } catch {}
+
+    await Build.sendBuildMutationOrThrow({
+      optimisticMethod: 'optimisticSwap',
+      legacyMethod: 'swap',
+      data: {
+        buildId: Build.id,
+        i1: slotA,
+        i2: slotB,
+      },
+    });
+    return true;
+  }
+
+  static getClassEdgeColumns(side = 'left') {
+    return side === 'right' ? [5, 4, 3] : [0, 1, 2];
+  }
+
+  static async normalizeClassTalentsToMajorSide() {
+    const leftCols = [0, 1, 2];
+    const rightCols = [3, 4, 5];
+    let globalLeft = 0;
+    let globalRight = 0;
+    for (let slot = 0; slot < (Build.installedTalents || []).length; slot++) {
+      const t = Build.installedTalents?.[slot];
+      if (!t || Number(t.id) >= 0) continue;
+      const col = slot % 6;
+      if (leftCols.includes(col)) globalLeft++;
+      else globalRight++;
+    }
+    if (globalLeft === globalRight) return 0;
+    const majorCols = globalLeft > globalRight ? leftCols : rightCols;
+
+    let moved = 0;
+    for (let level = 6; level >= 1; level--) {
+      const rowSlots = Build.getRowSlotIndicesByLevel(level);
+      const classSlots = rowSlots.filter((slot) => {
+        const t = Build.installedTalents?.[slot];
+        return !!t && Number(t.id) < 0;
+      });
+      if (!classSlots.length) continue;
+
+      const classCols = classSlots.map((slot) => rowSlots.indexOf(slot)).filter((c) => c >= 0);
+      if (classCols.every((c) => majorCols.includes(c))) continue;
+      const minorSlots = classSlots.filter((slot) => !majorCols.includes(rowSlots.indexOf(slot)));
+      if (!minorSlots.length) continue;
+
+      const targetSlots = majorCols
+        .map((col) => rowSlots[col])
+        .filter((slot) => {
+          const t = Build.installedTalents?.[slot];
+          return !(t && Number(t.id) < 0);
+        });
+      if (!targetSlots.length) continue;
+
+      for (const sourceSlot of minorSlots) {
+        const targetSlot = targetSlots.shift();
+        if (!Number.isFinite(targetSlot)) break;
+        const targetTalent = Build.installedTalents?.[targetSlot];
+        if (targetTalent && Number(targetTalent.id) < 0) continue;
+        await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
+        moved++;
+      }
+    }
+    return moved;
+  }
+
+  static async mirrorBuildRightToLeft() {
+    let moved = 0;
+    for (let level = 6; level >= 1; level--) {
+      const rowSlots = Build.getRowSlotIndicesByLevel(level);
+      const pairs = [
+        [rowSlots[0], rowSlots[5]],
+        [rowSlots[1], rowSlots[4]],
+        [rowSlots[2], rowSlots[3]],
+      ];
+      for (const [leftSlot, rightSlot] of pairs) {
+        const leftTalent = Build.installedTalents?.[leftSlot] || null;
+        const rightTalent = Build.installedTalents?.[rightSlot] || null;
+        if (!leftTalent && !rightTalent) continue;
+        const activeRefs = [];
+        try {
+          for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
+            const item = Number(Build.activeBarItems[i]) || 0;
+            if (!item) continue;
+            const absPos = Math.abs(item);
+            if (absPos !== leftSlot + 1 && absPos !== rightSlot + 1) continue;
+            const talentRef = Build.installedTalents?.[absPos - 1] || null;
+            activeRefs.push({ i, sign: item < 0 ? -1 : 1, pos: absPos });
+            activeRefs[activeRefs.length - 1].talentRef = talentRef;
+          }
+        } catch {}
+        await Build.swapBuildSlotsWithBackend(leftSlot, rightSlot);
+        try {
+          for (const ref of activeRefs) {
+            const leftNow = Build.installedTalents?.[leftSlot] || null;
+            const rightNow = Build.installedTalents?.[rightSlot] || null;
+            let nextPos = ref.pos;
+            if (ref.talentRef && leftNow === ref.talentRef) nextPos = leftSlot + 1;
+            else if (ref.talentRef && rightNow === ref.talentRef) nextPos = rightSlot + 1;
+            Build.activeBarItems[ref.i] = ref.sign * nextPos;
+          }
+          Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+        } catch {}
+        moved++;
+      }
+    }
+    return moved;
+  }
+
+  static async sortSetTalentsIntoColumns(options = {}) {
+    if (Build.sortSetsInProgress) return;
+    if (Build.combatModeEnabled) {
+      Build.syncSetSortButtonState();
+      return;
+    }
+    if (!Array.isArray(Build.installedTalents) || Build.installedTalents.length < 36) return;
+    const classEdgeSort = !!options?.classEdgeSort;
+
+    Build.sortSetsInProgress = true;
+    Build.syncSetSortButtonState();
+    try {
+      if (classEdgeSort) {
+        await Build.normalizeClassTalentsToMajorSide();
+        await Build.mirrorBuildRightToLeft();
+      }
+
+      const setTalentToKey = new Map();
+      for (const set of TalentSets.list()) {
+        const setKey = `${set?.key || ''}`;
+        if (!setKey) continue;
+        const setIds = TalentSets.getTalentIds(set)
+          .map((id) => Math.abs(Number(id)))
+          .filter((id) => Number.isFinite(id) && id > 0);
+        for (const tid of setIds) {
+          if (!setTalentToKey.has(tid)) {
+            setTalentToKey.set(tid, setKey);
+          }
+        }
+      }
+
+      if (!setTalentToKey.size) return;
+
+      const fixedSlots = new Set();
+      const initialSetCounters = new Map();
+      for (let slot = 0; slot < Build.installedTalents.length; slot++) {
+        const talent = Build.installedTalents[slot];
+        if (!talent) continue;
+        const talentId = Number(talent.id);
+        if (talentId < 0) {
+          fixedSlots.add(slot);
+          continue;
+        }
+        const setKey = setTalentToKey.get(Math.abs(talentId));
+        if (!setKey) continue;
+        initialSetCounters.set(setKey, (initialSetCounters.get(setKey) || 0) + 1);
+      }
+
+      const orderedSetKeys = Array.from(initialSetCounters.entries())
+        .sort((a, b) => b[1] - a[1])
+        .map(([setKey]) => setKey);
+
+      let swapCount = 0;
+      const priorityLockedSlots = new Set();
+
+      const getSetSlotsOnLevel = (setKey, level) => {
+        const rowSlots = Build.getRowSlotIndicesByLevel(level);
+        const result = [];
+        for (const slot of rowSlots) {
+          const t = Build.installedTalents[slot];
+          if (!t) continue;
+          const id = Number(t.id);
+          if (!(id > 0)) continue;
+          const slotSetKey = setTalentToKey.get(Math.abs(id));
+          if (slotSetKey === setKey) result.push(slot);
+        }
+        return result;
+      };
+
+      for (const setKey of orderedSetKeys) {
+        const rowLevels = new Set();
+        for (let slot = 0; slot < Build.installedTalents.length; slot++) {
+          const t = Build.installedTalents[slot];
+          if (!t) continue;
+          const id = Number(t.id);
+          if (!(id > 0)) continue;
+          const slotSetKey = setTalentToKey.get(Math.abs(id));
+          if (slotSetKey !== setKey) continue;
+          const lvl = Number(t.level);
+          const safeLevel = Number.isFinite(lvl) && lvl > 0 ? lvl : Build.getBuildSlotLevelByIndex(slot);
+          rowLevels.add(safeLevel);
+        }
+
+        if (!rowLevels.size) continue;
+
+        let bestCol = 0;
+        let bestScore = -1;
+        const orderedLevels = Array.from(rowLevels).sort((a, b) => b - a);
+        const columnsToCheck = [0, 1, 2, 3, 4, 5];
+        let bestAlignableRows = -1;
+        let bestSameSetPlaced = -1;
+        let bestPotentialPlaced = -1;
+        let bestPotentialWeight = -1;
+
+        for (const col of columnsToCheck) {
+          let score = 0;
+          let alignableRows = 0;
+          let sameSetPlaced = 0;
+          let potentialPlaced = 0;
+          let potentialWeight = 0;
+          for (const level of orderedLevels) {
+            const targetSlot = Build.getRowSlotIndicesByLevel(level)[col];
+            if (fixedSlots.has(targetSlot) || priorityLockedSlots.has(targetSlot)) continue;
+            alignableRows++;
+            const targetTalent = Build.installedTalents[targetSlot];
+            const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(Number(targetTalent.id))) : null;
+            if (targetSetKey === setKey) sameSetPlaced++;
+            const levelWeight = Math.max(1, Number(level) || 1);
+            score += (targetSetKey === setKey ? 2 : 1) * levelWeight;
+            if (targetSetKey === setKey) {
+              potentialPlaced++;
+              potentialWeight += levelWeight;
+              continue;
+            }
+            const candidateSlots = getSetSlotsOnLevel(setKey, level).filter(
+              (slot) => !fixedSlots.has(slot) && !priorityLockedSlots.has(slot) && slot !== targetSlot,
+            );
+            if (candidateSlots.length) {
+              potentialPlaced++;
+              potentialWeight += levelWeight;
+            }
+          }
+          if (
+            potentialPlaced > bestPotentialPlaced ||
+            (potentialPlaced === bestPotentialPlaced && potentialWeight > bestPotentialWeight) ||
+            (potentialPlaced === bestPotentialPlaced && potentialWeight === bestPotentialWeight && sameSetPlaced > bestSameSetPlaced) ||
+            (potentialPlaced === bestPotentialPlaced &&
+              potentialWeight === bestPotentialWeight &&
+              sameSetPlaced === bestSameSetPlaced &&
+              alignableRows > bestAlignableRows) ||
+            (potentialPlaced === bestPotentialPlaced &&
+              potentialWeight === bestPotentialWeight &&
+              sameSetPlaced === bestSameSetPlaced &&
+              alignableRows === bestAlignableRows &&
+              score > bestScore)
+          ) {
+            bestPotentialPlaced = potentialPlaced;
+            bestPotentialWeight = potentialWeight;
+            bestSameSetPlaced = sameSetPlaced;
+            bestAlignableRows = alignableRows;
+            bestScore = score;
+            bestCol = col;
+          }
+        }
+
+        for (const level of orderedLevels) {
+          const targetSlot = Build.getRowSlotIndicesByLevel(level)[bestCol];
+          if (fixedSlots.has(targetSlot) || priorityLockedSlots.has(targetSlot)) continue;
+
+          const targetTalent = Build.installedTalents[targetSlot];
+          const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(Number(targetTalent.id))) : null;
+          if (targetSetKey === setKey) continue;
+
+          const candidateSlots = getSetSlotsOnLevel(setKey, level).filter(
+            (slot) => !fixedSlots.has(slot) && !priorityLockedSlots.has(slot) && slot !== targetSlot,
+          );
+          if (!candidateSlots.length) continue;
+
+          const sourceSlot = candidateSlots[0];
+          await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
+          swapCount++;
+        }
+
+        for (const level of orderedLevels) {
+          const lockedSlot = Build.getRowSlotIndicesByLevel(level)[bestCol];
+          if (fixedSlots.has(lockedSlot)) continue;
+          const lockedTalent = Build.installedTalents[lockedSlot];
+          if (!lockedTalent) continue;
+          const lockedSetKey = setTalentToKey.get(Math.abs(Number(lockedTalent.id)));
+          if (lockedSetKey === setKey) {
+            priorityLockedSlots.add(lockedSlot);
+          }
+        }
+      }
+
+      Build.updateHeroStats();
+      Build.renderCombatOrderBadges();
+      Build.refreshActiveTalentDescription();
+      Build.refreshStatFilterHighlightCountDisplay();
+      Build.syncCombatModeButtonState();
+
+      if (swapCount > 0) {
+        App.notify(Lang.text('sortSetsIntoColumnDone').replace('{count}', String(swapCount)));
+      }
+    } catch {
+      try {
+        await Build.refreshBuildStateFromServer({ refreshInventory: true });
+      } catch {}
+      App.notify(Lang.text('sortSetsIntoColumnFailed'));
+    } finally {
+      Build.sortSetsInProgress = false;
+      Build.syncSetSortButtonState();
     }
   }
 
@@ -6015,6 +6438,12 @@ export class Build {
       Build.updateHeroStats();
     } catch {}
     try {
+      Build.renderCombatOrderBadges();
+    } catch {}
+    try {
+      Build.syncCombatModeButtonState();
+    } catch {}
+    try {
       Build.rebuildFieldConflictFromInstalledTalents();
       Build.syncFieldSlotsFromInstalledTalents();
       Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
@@ -6919,7 +7348,6 @@ export class Build {
               break;
             }
             Build.highlightSetTalents(ids);
-            Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: `hover_talent_set_${wantedId}` });
             hasSetHover = true;
             break;
           }

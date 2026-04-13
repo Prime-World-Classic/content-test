@@ -1508,14 +1508,17 @@ export class Window {
   static async mmSearchSettings() {
     let mmEnabled = true;
     let mmtestEnabled = true;
+    let mmRatingChangesEnabled = true;
     
     try {
-      const [mmState, mmtestState] = await Promise.all([
+      const [mmState, mmtestState, mmRatingChangesState] = await Promise.all([
         App.api.request('mm', 'getSearchAvailability'),
         App.api.request('mmtest', 'getSearchAvailability'),
+        App.api.request('mm', 'getRatingChangesAvailability'),
       ]);
       mmEnabled = Boolean(mmState?.enabled);
       mmtestEnabled = Boolean(mmtestState?.enabled);
+      mmRatingChangesEnabled = Boolean(mmRatingChangesState?.enabled);
     } catch (error) {
       App.error(error);
     }
@@ -1554,6 +1557,26 @@ export class Window {
       ],
     });
     
+    const mmRatingChangesToggle = DOM({
+      tag: 'input',
+      domaudio: domAudioPresets.defaultSelect,
+      type: 'checkbox',
+      id: 'mm-rating-changes-enabled',
+      checked: mmRatingChangesEnabled,
+      event: [
+        'change',
+        async (e) => {
+          try {
+            const response = await App.api.request('mm', 'setRatingChangesAvailability', { enabled: e.target.checked });
+            e.target.checked = Boolean(response?.enabled);
+          } catch (error) {
+            e.target.checked = !e.target.checked;
+            App.error(error);
+          }
+        },
+      ],
+    });
+    
     return DOM(
       { id: 'wcastle-menu' },
       DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, 'Настройка поиска боя')),
@@ -1564,6 +1587,11 @@ export class Window {
           { style: 'castle-menu-item-checkbox' },
           mmtestToggle,
           DOM({ tag: 'label', for: 'mmtest-search-enabled' }, 'Включить поиск боя (MMTEST)'),
+        ),
+        DOM(
+          { style: 'castle-menu-item-checkbox' },
+          mmRatingChangesToggle,
+          DOM({ tag: 'label', for: 'mm-rating-changes-enabled' }, 'Изменять рейтинг после обычных матчей (MM)'),
         ),
         DOM(
           {

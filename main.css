@@ -1122,6 +1122,18 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   background: url('img/combatModeRaw.png') center/contain no-repeat;
 }
 
+.btn-sort-sets-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 7.2cqh;
+  height: 4.6cqh;
+  transform: translate(-50%, -50%);
+  background: url('img/sortModeRaw.png') center/contain no-repeat;
+  pointer-events: none;
+  z-index: 2;
+}
+
 .btn-combat-mode-glass {
   position: absolute;
   inset: 0;

@@ -76,10 +76,12 @@ export const be = {
     topColWins: 'Перамог',
     topColLosses: 'Паражэнняў',
     topColWinrate: 'Вінрэйт',
+    topPeriodWeek: 'Тыдзень',
     topPeriodMonth: 'Месяц',
     topPeriodAllTime: 'За ўвесь час',
     topEmpty: 'Няма дадзеных',
     buildSettingsSetHoverOnTalent: 'Падсветка сета пры навядзенні на талент',
+    sortSetsRmbMirrorBuild: 'ПКМ - Адлюстраваць білд',
     showStatistics: 'Паказаць статыстыку',
 
 

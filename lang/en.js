@@ -112,6 +112,7 @@ export const en = {
     topColWins: 'Wins',
     topColLosses: 'Losses',
     topColWinrate: 'Winrate',
+    topPeriodWeek: 'Week',
     topPeriodMonth: 'Month',
     topPeriodAllTime: 'All Time',
     topEmpty: 'No data',
@@ -1022,6 +1023,8 @@ export const en = {
     titleDuplicateTheCurrentBuild: 'Duplicate the current build',
     titleGenerateARandomBuild: 'Generate a random build',
     titleResetTalentsInThisBuild: 'Reset talents in this build',
+    titleSortSetsIntoColumn: 'Sort sets into columns',
+    sortSetsRmbMirrorBuild: 'RMB - Mirror build',
     titleActiveTalents: 'Active talents',
     titleTheRed: 'The red',
     titleTheOrange: 'The orange',
@@ -1040,6 +1043,10 @@ export const en = {
     combatModeName: 'Combat Mode',
     combatModeBuildNotComplete: 'Build is not complete',
     combatModeLevelCounterTitle: 'Hero level',
+    sortSetsIntoColumnDisabledCombat: 'Set sorting is unavailable in combat mode',
+    sortSetsIntoColumnInProgress: 'Sorting sets...',
+    sortSetsIntoColumnDone: 'Sets sorted. Moved: {count}',
+    sortSetsIntoColumnFailed: 'Failed to sort sets. Build state has been refreshed.',
     titleClickToViewHeroRating: 'Click here to select a hero and sort hall of fame players',
 
     // Постройки

@@ -114,6 +114,7 @@ export const ru = {
     topColWins: 'Побед',
     topColLosses: 'Поражений',
     topColWinrate: 'Винрейт',
+    topPeriodWeek: 'Неделя',
     topPeriodMonth: 'Месяц',
     topPeriodAllTime: 'За все время',
     topEmpty: 'Нет данных',
@@ -1028,6 +1029,8 @@ export const ru = {
     titleDuplicateTheCurrentBuild: 'Дублировать текущий билд',
     titleGenerateARandomBuild: 'Сгенерировать случайный билд',
     titleResetTalentsInThisBuild: 'Сбросить таланты в этом билде',
+    titleSortSetsIntoColumn: 'ЛКМ - сортировка талантов в билде',
+    sortSetsRmbMirrorBuild: 'ПКМ - Отзераклить билд + сортировка',
     titleActiveTalents: 'Активные таланты',
     titleTheRed: 'Красное',
     titleTheOrange: 'Оранжевое',
@@ -1046,6 +1049,10 @@ export const ru = {
     combatModeName: 'Боевой режим',
     combatModeBuildNotComplete: 'Билд не полный',
     combatModeLevelCounterTitle: 'Уровень героя',
+    sortSetsIntoColumnDisabledCombat: 'Сортировка сетов недоступна в боевом режиме',
+    sortSetsIntoColumnInProgress: 'Сортировка сетов...',
+    sortSetsIntoColumnDone: 'Сеты отсортированы. Перемещено: {count}',
+    sortSetsIntoColumnFailed: 'Не удалось отсортировать сеты. Состояние билда обновлено.',
     titleClickToViewHeroRating: 'Выберите героя, чтобы отсортировать игроков зала славы',
 
     // Постройки

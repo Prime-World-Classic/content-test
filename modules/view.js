@@ -92,11 +92,13 @@ export class View {
   static castleOpenedBuildHeroId = 0;
   static CASTLE_HERO_LISTS_MAX = 8;
   static CASTLE_HERO_LIST_STORAGE_KEY = 'castleHeroSelectedList';
+  static CASTLE_HERO_LAST_ACTIVE_LIST_STORAGE_KEY = 'castleHeroLastActiveList';
   static CASTLE_HERO_LIST_NAMES_STORAGE_KEY = 'castleHeroListNames';
   static CASTLE_FRIEND_LISTS_MAX = 1;
   static CASTLE_FRIEND_LIST_STORAGE_KEY = 'castleFriendSelectedList';
   static castleHeroAll = [];
   static castleHeroSelectedList = 0;
+  static castleHeroLastActiveList = 0;
   static castleHeroSearch = '';
   static castleHeroPhantomList = 0;
   static castleHeroListEditMode = '';
@@ -1975,6 +1977,20 @@ export class View {
     } catch {}
   }
 
+  static persistCastleHeroLastActiveList() {
+    try {
+      localStorage.setItem(View.CASTLE_HERO_LAST_ACTIVE_LIST_STORAGE_KEY, String(View.castleHeroLastActiveList || 0));
+    } catch {}
+  }
+
+  static rememberCastleHeroLastActiveList(listId) {
+    const id = Number(listId) || 0;
+    if (id < 1 || id > View.CASTLE_HERO_LISTS_MAX) return;
+    if (View.castleHeroLastActiveList === id) return;
+    View.castleHeroLastActiveList = id;
+    View.persistCastleHeroLastActiveList();
+  }
+
   static loadCastleHeroSelectedList() {
     try {
       const value = Number(localStorage.getItem(View.CASTLE_HERO_LIST_STORAGE_KEY));
@@ -1982,6 +1998,37 @@ export class View {
         View.castleHeroSelectedList = value;
       }
     } catch {}
+    try {
+      const value = Number(localStorage.getItem(View.CASTLE_HERO_LAST_ACTIVE_LIST_STORAGE_KEY));
+      if (Number.isFinite(value) && value >= 1 && value <= View.CASTLE_HERO_LISTS_MAX) {
+        View.castleHeroLastActiveList = value;
+      } else {
+        View.castleHeroLastActiveList = 0;
+      }
+    } catch {}
+    if (View.castleHeroSelectedList > 0) {
+      View.rememberCastleHeroLastActiveList(View.castleHeroSelectedList);
+    }
+  }
+
+  static getCastleHeroTamburListId(heroes = []) {
+    const selectedListId = Number(View.castleHeroSelectedList) || 0;
+    if (selectedListId >= 1 && selectedListId <= View.CASTLE_HERO_LISTS_MAX) {
+      return selectedListId;
+    }
+
+    const fallbackListId = Number(View.castleHeroLastActiveList) || 0;
+    if (fallbackListId < 1 || fallbackListId > View.CASTLE_HERO_LISTS_MAX) {
+      return 0;
+    }
+
+    if (Array.isArray(heroes) && heroes.length) {
+      const mask = 1 << (fallbackListId - 1);
+      const hasHeroesInList = heroes.some((hero) => (View.getCastleHeroFavouriteMask(hero) & mask) !== 0);
+      if (!hasHeroesInList) return 0;
+    }
+
+    return fallbackListId;
   }
 
   static cleanupCastleHeroPhantomList() {
@@ -2161,6 +2208,7 @@ export class View {
                 View.cleanupCastleHeroPhantomList();
               }
               View.castleHeroSelectedList = i;
+              View.rememberCastleHeroLastActiveList(i);
               if (isPhantom && !View.castleHeroListEditMode) View.castleHeroListEditMode = 'add';
               View.castleHeroEditSelection = new Set();
               View.castleHeroDeleteConfirmListId = 0;
@@ -3786,7 +3834,7 @@ export class View {
     const heroStatsPayload =
       isHeroStatsView && result && typeof result === 'object' && !Array.isArray(result)
         ? result
-        : { month: [], allTime: [] };
+        : { week: [], month: [], allTime: [] };
 
     const heroNameById = (id) => {
       const localizedName = Lang.heroName(Number(id), 1);
@@ -3871,7 +3919,8 @@ export class View {
       key: 'battles',
       direction: 'desc',
     };
-    let heroStatsPeriod = 'month';
+    const HERO_STATS_PERIODS = ['week', 'month', 'allTime'];
+    let heroStatsPeriod = 'week';
 
     const heroStatsColumns = [
       { key: 'hero', labelKey: 'topColHero' },
@@ -3966,8 +4015,8 @@ export class View {
       });
       const headerHeroTitle = DOM({ style: ['wtop-cell', 'wtop-cell--hero', 'wtop-cell--hero-stats-hero', 'wtop-hero-title-cell'] });
       const headerHeroLabel = DOM({ tag: 'span', style: 'wtop-hero-title-label' }, Lang.text('topColHero'));
-      const getCurrentHeroList = () => (heroStatsPeriod === 'allTime' ? heroStatsPayload.allTime || [] : heroStatsPayload.month || []);
-      const hasAnyData = (heroStatsPayload.month || []).length > 0 || (heroStatsPayload.allTime || []).length > 0;
+      const getCurrentHeroList = () => heroStatsPayload[heroStatsPeriod] || [];
+      const hasAnyData = HERO_STATS_PERIODS.some((periodKey) => (heroStatsPayload[periodKey] || []).length > 0);
 
       const sortRows = () => {
         const key = heroStatsSortState.key;
@@ -3998,7 +4047,13 @@ export class View {
           btn.classList.toggle('is-active', heroStatsSortState.key === keyName);
         }
         headerHeroLabel.textContent = Lang.text('topColHero');
-        periodToggle.textContent = heroStatsPeriod === 'month' ? Lang.text('topPeriodMonth') : Lang.text('topPeriodAllTime');
+        if (heroStatsPeriod === 'week') {
+          periodToggle.textContent = Lang.text('topPeriodWeek');
+        } else if (heroStatsPeriod === 'month') {
+          periodToggle.textContent = Lang.text('topPeriodMonth');
+        } else {
+          periodToggle.textContent = Lang.text('topPeriodAllTime');
+        }
       };
 
       if (!hasAnyData) {
@@ -4010,7 +4065,8 @@ export class View {
       for (const col of heroStatsColumns) {
         if (col.key === 'hero') {
           periodToggle.addEventListener('click', () => {
-            heroStatsPeriod = heroStatsPeriod === 'month' ? 'allTime' : 'month';
+            const currentIndex = HERO_STATS_PERIODS.indexOf(heroStatsPeriod);
+            heroStatsPeriod = HERO_STATS_PERIODS[(currentIndex + 1) % HERO_STATS_PERIODS.length];
             sortRows();
           });
           headerHeroTitle.append(DOM({ style: 'wtop-hero-title-split' }, headerHeroLabel, periodToggle));
