@@ -1836,7 +1836,19 @@ export class Build {
               Build.syncSetSortButtonState();
               return;
             }
-            await Build.sortSetTalentsIntoColumns();
+            const initialBodySnapshot = (Build.installedTalents || []).map((t) => Number(t?.id) || 0);
+            const initialActiveSnapshot = (Build.activeBarItems || []).slice(0, 24).map((v) => Number(v) || 0);
+            await Build.sortSetTalentsIntoColumns({
+              skipBackendSync: true,
+              initialBodySnapshot,
+              initialActiveSnapshot,
+            });
+            if (!Build.combatModeEnabled && !Build.sortSetsInProgress) {
+              await Build.sortSetTalentsIntoColumns({
+                initialBodySnapshot,
+                initialActiveSnapshot,
+              });
+            }
           },
         ],
       });
@@ -2442,8 +2454,13 @@ export class Build {
     }
     if (!Array.isArray(Build.installedTalents) || Build.installedTalents.length < 36) return;
     const classEdgeSort = !!options?.classEdgeSort;
-    const initialBodySnapshot = (Build.installedTalents || []).map((t) => Number(t?.id) || 0);
-    const initialActiveSnapshot = (Build.activeBarItems || []).slice(0, 24).map((v) => Number(v) || 0);
+    const skipBackendSync = !!options?.skipBackendSync;
+    const initialBodySnapshot = Array.isArray(options?.initialBodySnapshot)
+      ? options.initialBodySnapshot.slice()
+      : (Build.installedTalents || []).map((t) => Number(t?.id) || 0);
+    const initialActiveSnapshot = Array.isArray(options?.initialActiveSnapshot)
+      ? options.initialActiveSnapshot.slice(0, 24).map((v) => Number(v) || 0)
+      : (Build.activeBarItems || []).slice(0, 24).map((v) => Number(v) || 0);
 
     Build.sortSetsInProgress = true;
     Build._sortDeferBackendSync = true;
@@ -2472,7 +2489,8 @@ export class Build {
 
       const fixedSlots = new Set();
       const initialSetCounters = new Map();
-      // Priority metric: number of rows where set is present (duplicates in same row are ignored).
+      const setRowsMap = new Map();
+      // Priority metric base: rows where set is present (duplicates in same row are ignored).
       for (let level = 6; level >= 1; level--) {
         const rowSlots = Build.getRowSlotIndicesByLevel(level);
         const seenInRow = new Set();
@@ -2490,15 +2508,42 @@ export class Build {
         }
         for (const setKey of seenInRow) {
           initialSetCounters.set(setKey, (initialSetCounters.get(setKey) || 0) + 1);
+          if (!setRowsMap.has(setKey)) setRowsMap.set(setKey, new Set());
+          setRowsMap.get(setKey).add(level);
         }
       }
 
+      const getSetPriorityWeight = (setKey) => {
+        const rows = Array.from(setRowsMap.get(setKey) || []).sort((a, b) => a - b);
+        const count = rows.length;
+        if (count <= 0) return 0;
+        if (count === 1) return 1; // одиночные
+        const min = rows[0];
+        const max = rows[rows.length - 1];
+        const contiguous = max - min + 1 === count; // без пустого слота внутри диапазона
+        if (count === 6) return 10;
+        if (count === 5) return contiguous ? 9 : 8;
+        if (count === 4) return contiguous ? 7 : 6;
+        if (count === 3) return contiguous ? 5 : 4;
+        if (count === 2) return contiguous ? 3 : 2;
+        return 1;
+      };
+
       const orderedSetKeys = Array.from(initialSetCounters.entries())
-        .sort((a, b) => b[1] - a[1])
+        .sort((a, b) => {
+          const wa = getSetPriorityWeight(a[0]);
+          const wb = getSetPriorityWeight(b[0]);
+          if (wb !== wa) return wb - wa;
+          if (b[1] !== a[1]) return b[1] - a[1];
+          return `${a[0]}`.localeCompare(`${b[0]}`);
+        })
         .map(([setKey]) => setKey);
       const setPriority = new Map();
       orderedSetKeys.forEach((k, i) => setPriority.set(k, i));
-      const setSize = new Map(initialSetCounters);
+      const setSize = new Map();
+      for (const k of orderedSetKeys) {
+        setSize.set(k, getSetPriorityWeight(k));
+      }
       const setColHistogram = new Map();
       for (let level = 6; level >= 1; level--) {
         const rowSlots = Build.getRowSlotIndicesByLevel(level);
@@ -2743,9 +2788,11 @@ export class Build {
       Build.refreshActiveTalentDescription();
       Build.refreshStatFilterHighlightCountDisplay();
       Build.syncCombatModeButtonState();
-      await Build.syncSortResultToBackend(initialBodySnapshot, initialActiveSnapshot);
+      if (!skipBackendSync) {
+        await Build.syncSortResultToBackend(initialBodySnapshot, initialActiveSnapshot);
+      }
 
-      if (swapCount > 0) {
+      if (!skipBackendSync && swapCount > 0) {
         App.notify(Lang.text('sortSetsIntoColumnDone').replace('{count}', String(swapCount)));
       }
     } catch {
