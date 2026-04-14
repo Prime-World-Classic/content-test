@@ -142,9 +142,22 @@ export class Chat {
     return App.isAdmin() || App.isHelper();
   }
 
+  static normalizeTelegramTag(value) {
+    return String(value || '').replace(/^@+/, '').trim();
+  }
+
+  static getReplyHandle(data) {
+    const sourceType = Chat.getMessageSourceType(data);
+    if (sourceType === 'telegram') {
+      const tgTag = Chat.normalizeTelegramTag(data?.tgTag);
+      if (tgTag) return `@${tgTag}`;
+    }
+    return `@${String(data?.nickname || '').trim()}`;
+  }
+
   static focusReplyTo(data) {
     Chat.to = data.id;
-    Chat.body.lastChild.firstChild.value = `@${data.nickname}, `;
+    Chat.body.lastChild.firstChild.value = `${Chat.getReplyHandle(data)}, `;
     Chat.input.firstChild.focus();
   }
 

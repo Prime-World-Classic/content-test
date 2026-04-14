@@ -2052,7 +2052,7 @@ export const en = {
       'Creates an area for <num>8</num> sec. where enemies take <mag>%s</mag> damage per sec.<br>\nRat Swarm turns enemy terrain neutral.',
     htalent_190_name: "Flute's Call <mana>180</mana> <CD>15</CD>",
     htalent_190_description:
-      'Forces an enemy hero to follow for <num>2.5</num> sec., or until <num>%s</num> damage is taken (based on Intellect), and enslaves enemy creatures.<br>\nCan control up to <num>4</num> creatures simultaneously.',
+      'Forces an enemy Hero to follow you for <num>2.5</num> seconds, or until <num>%s</num> damage (based on Intellect) is dealt, and forces enemy creatures to serve you.<br>Can control up to <num>4</num> creatures at the same time. Tamed creatures gain <num>%s</num> Agility and Cunning (based on Agility and Cunning).',
     htalent_191_name: 'Rat Disease',
     htalent_191_description:
       'The Rat Swarm talent additionally deals <mag>%s</mag> damage to enemies and reduces their highest of Strength or Intellect by <num>%s</num> (based on Strength) for <num>3</num> sec. Reduces enemy healing by <num>%s%</num> (based on Strength), up to <num>75%</num>.<br>Total damage <mag>%s</mag>',
@@ -2061,15 +2061,15 @@ export const en = {
     htalent_193_name: 'Rat Rogues <mana>220</mana> <CD>120</CD>',
     htalent_193_description:
       "Rats run towards enemy heroes, dealing <mag>%s</mag> damage to them, stealing <prime>11-81</prime> (based on your Hero's level), and reducing their Speed by <num>30%</num> for <num>3</num> sec. Can only be killed by auto-attacks.",
-    htalent_194_name: 'Charming Melody <mana>260</mana> <CD>150</CD>',
+    htalent_194_name: 'Charming Melody <mana>260</mana> <CD>110</CD>',
     htalent_194_description:
-      'The hero becomes immune to control for <num>1.5</num> sec. and forces nearby enemy heroes and their summoned creatures to freeze, while others obey for <num>15</num> sec.',
+      'The hero becomes immune to control for <num>1.5</num> sec. and forces nearby enemy heroes and their summoned creatures to freeze, while others obey for <num>15</num> sec. Deals <mag>%s</mag> damage to enemy Heroes (based on the higher of Strength or Intellect).',
     htalent_195_name: "Flute's Power",
     htalent_195_description:
-      "Creatures charmed by the flute receive Health and Energy regeneration like the hero's and <num>50%</num> of their Health.",
+      "Creatures charmed by the flute receive Health and Energy regeneration like the hero's and <num>%s%</num> of their Health.",
     htalent_196_name: 'Enchanting Music',
     htalent_196_description:
-      'After Charming Melody ends, nearby enemy heroes are slowed by <num>80%</num> and cannot use talents for <num>1.5</num> sec.',
+      'After Charming Melody ends, nearby enemy heroes are slowed by <num>80%</num> and cannot use talents for <num>1.8</num> sec.',
     htalent_197_name: 'Shredding Volley <mana>100</mana> <CD>10</CD>',
     htalent_197_description:
       "The hero draws the bow for <num>0.5</num> sec. and releases arrows in the specified direction, dealing <fiz>%s</fiz> (based on Intellect) and <mag>%s</mag> (based on Intellect) damage that can be <orange-d>Critical</orange-d> to all enemies in the path.<br><rz>When used from native terrain, the talent deals <num>1.3</num> times more damage.</rz><br> The talent's range is increased by <num>%s</num> (based on Intellect).",
@@ -2931,7 +2931,7 @@ export const en = {
       'When colliding with an enemy hero, a Supernova also causes damage to all enemies around - <num>2</num> times less.',
     htalent_504_name: 'An eye for an eye <CD>60</CD>',
     htalent_504_description:
-      'When a hero dies, he deals <mag>%s</mag> damage (from the highest of Strength and Intellect) to the nearest enemy hero (within a radius of 100) with the lowest Health.<br>The damage inflicted on the hero is reduced by <num>5%</num>.',
+      'When a hero dies, he deals <mag>%s</mag> damage (from the highest of Strength and Intellect) to the nearest enemy hero (within a radius of <num>%s</num>) with the lowest Health.<br>The damage inflicted on the hero is reduced by <num>5%</num>.',
     htalent_505_name: 'Revenge',
     htalent_505_description: 'If the enemy was not killed by the Tit-for-Tat talent, the hero is reborn after <num>10</num> seconds.',
     htalent_506_name: 'Destructive Fire',
@@ -3245,7 +3245,7 @@ export const en = {
     htalent_618_description: 'Talent Crossbow shot additionally stuns the target for <num>1</num> sec.',
     htalent_619_name: 'Lightning Reflexes <mana>100</mana> <CD>15</CD>',
     htalent_619_description:
-      'The hero accelerates by <num>60%</num> for <num>4</num> seconds. The recovery time of the Crossbow Shot talent is reduced by <num>50%</num> if the Heavy Crossbow talent is learned (on line 5) - the recovery time of the Crossbow Shot talent is reduced by <num>90%</num>.',
+      'The Hero gains a <num>60%</num> speed boost for <num>4</num> seconds. The cooldown of the Crossbow Shot talent is reduced by <num>50%</num>; if the Heavy Crossbow talent (on row 5) is learned, the cooldown of Crossbow Shot is reduced by <num>%s%</num>.',
     htalent_620_name: 'Disarming technique <mana>200</mana> <CD>60</CD>',
     htalent_620_description: 'For <num>3</num> seconds, disarms all enemies around and slows them down by <num>50%</num>.',
     htalent_621_name: 'Insubordination',
@@ -3296,7 +3296,7 @@ export const en = {
       'The Rat Invasion Talent deals additional <mag>%s</mag> damage to enemies and slows them down by <num>20%</num> For <num>3</num> seconds.',
     htalent_638_name: 'Flute Master',
     htalent_638_description:
-      'Talent The call of the flute at the end of the action stuns the enchanted hero for <num>0.5</num> sec. Flute-enchanted creatures gain <num>25%</num> Health is greater from the hero, and <num>%s</num> to the greatest of Stamina and Will (from the greatest of Stamina and Will of the hero).',
+      'Talent The call of the flute at the end of the action stuns the enchanted hero for <num>0.5</num> sec. Flute-enchanted creatures gain <num>%s%</num> Health is greater from the hero, and <num>%s</num> to the greatest of Stamina and Will (from the greatest of Stamina and Will of the hero).',
     htalent_639_name: 'Static charge',
     htalent_639_description:
       'The hero deals <mag>%s</mag> damage (from the greatest of Strength and Intellect) to the nearest enemy when using class talents that strike enemies with lightning.',
@@ -3336,7 +3336,7 @@ export const en = {
     htalent_651_description:
       'Stealing health from talent A determined attack from non-hero creatures increases by <num>2</num> times, and from heroes by <num>4</num> times.',
     htalent_652_name: 'Heavy Crossbow',
-    htalent_652_description: 'The area of damage to talent Crossbow shot becomes wider by <num>25%</num>.',
+    htalent_652_description: 'The impact area of the Crossbow Shot talent becomes <num>25%</num> wider.<br>The Lightning Reflexes talent reduces the cooldown of Crossbow Shot by <num>%s%</num>.',
     htalent_653_name: 'Rare, but accurate!',
     htalent_653_description:
       'A medium-range weapon with the following characteristics:<br>\n- There are 2 cartridges in the magazine.<br>\n- Attack speed <num>5</num> per second and does not depend on agility.<br>\n-After emptying the store, the hero reloads his weapon. The cooldown time depends on agility.<br>\n- Attacks cannot be critical.',

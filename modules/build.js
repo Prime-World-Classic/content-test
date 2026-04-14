@@ -41,6 +41,9 @@ export class Build {
   static setSortButtonEl = null;
   static sortSetsInProgress = false;
   static sortSetsClassSide = 'left';
+  static sortSetsWasApplied = false;
+  static libraryTalentClickCooldownMs = 50;
+  static _lastLibraryTalentClickAt = 0;
   static combatModeEnabled = false;
   static combatModeLearnOrder = [];
   static combatModeLearnOrderBySlot = new Map();
@@ -337,6 +340,7 @@ export class Build {
 
     Build.descriptionView.style.display = 'none';
     Build._hoveredDescriptionTalentEl = null;
+    Build.sortSetsWasApplied = false;
     Build._libraryHoverSuppressed = false;
     Build._libraryHoverSuppressTimer = 0;
     Build._libraryPointerX = null;
@@ -1859,6 +1863,11 @@ export class Build {
           Build.syncSetSortButtonState();
           return;
         }
+        const hasDetachedClassTalents = Build.hasDetachedClassTalentsFromMajorSide();
+        if (!hasDetachedClassTalents) {
+          await Build.mirrorBuildOnlyWithSingleSync();
+          return;
+        }
         await Build.sortSetTalentsIntoColumns({ classEdgeSort: true });
       });
       const sortSetsBg = DOM({
@@ -1880,6 +1889,7 @@ export class Build {
     Build.combatModeButtonCountEl = null;
     Build.setSortButtonEl = null;
     Build.sortSetsInProgress = false;
+    Build.sortSetsWasApplied = false;
     Build.combatModeEnabled = false;
     Build.combatModeLearnOrder = [];
     Build.combatModeLearnOrderBySlot = new Map();
@@ -2040,6 +2050,35 @@ export class Build {
     return side === 'right' ? [5, 4, 3] : [0, 1, 2];
   }
 
+  static hasDetachedClassTalentsFromMajorSide() {
+    const leftCols = [0, 1, 2];
+    const rightCols = [3, 4, 5];
+    let globalLeft = 0;
+    let globalRight = 0;
+    for (let slot = 0; slot < (Build.installedTalents || []).length; slot++) {
+      const t = Build.installedTalents?.[slot];
+      if (!t || Number(t.id) >= 0) continue;
+      const col = slot % 6;
+      if (leftCols.includes(col)) globalLeft++;
+      else globalRight++;
+    }
+    if (globalLeft === 0 && globalRight === 0) return false;
+    if (globalLeft === globalRight) return false;
+    const majorCols = globalLeft > globalRight ? leftCols : rightCols;
+
+    for (let level = 6; level >= 1; level--) {
+      const rowSlots = Build.getRowSlotIndicesByLevel(level);
+      for (const slot of rowSlots) {
+        const t = Build.installedTalents?.[slot];
+        if (!t || Number(t.id) >= 0) continue;
+        const col = rowSlots.indexOf(slot);
+        if (col < 0) continue;
+        if (!majorCols.includes(col)) return true;
+      }
+    }
+    return false;
+  }
+
   static async normalizeClassTalentsToMajorSide() {
     const leftCols = [0, 1, 2];
     const rightCols = [3, 4, 5];
@@ -2130,6 +2169,36 @@ export class Build {
       }
     }
     return moved;
+  }
+
+  static async mirrorBuildOnlyWithSingleSync() {
+    if (Build.sortSetsInProgress || Build.combatModeEnabled) {
+      Build.syncSetSortButtonState();
+      return;
+    }
+    const initialBodySnapshot = (Build.installedTalents || []).map((t) => Number(t?.id) || 0);
+    const initialActiveSnapshot = (Build.activeBarItems || []).slice(0, 24).map((v) => Number(v) || 0);
+    Build.sortSetsInProgress = true;
+    Build._sortDeferBackendSync = true;
+    Build.syncSetSortButtonState();
+    try {
+      await Build.mirrorBuildRightToLeft();
+      Build.updateHeroStats();
+      Build.renderCombatOrderBadges();
+      Build.refreshActiveTalentDescription();
+      Build.refreshStatFilterHighlightCountDisplay();
+      Build.syncCombatModeButtonState();
+      await Build.syncSortResultToBackend(initialBodySnapshot, initialActiveSnapshot);
+    } catch {
+      try {
+        await Build.refreshBuildStateFromServer({ refreshInventory: true });
+      } catch {}
+      App.notify(Lang.text('sortSetsIntoColumnFailed'));
+    } finally {
+      Build._sortDeferBackendSync = false;
+      Build.sortSetsInProgress = false;
+      Build.syncSetSortButtonState();
+    }
   }
 
   static buildSwapPlanFromBodySnapshots(initialBody = [], finalBody = []) {
@@ -2395,10 +2464,14 @@ export class Build {
         }
         if (movableCols.length < 2) continue;
 
-        const scoreRow = () => {
+        const scoreRow = (swapC1 = -1, swapC2 = -1) => {
           let score = 0;
           for (let c = 0; c < 6; c++) {
-            const sk = getSetAtSlot(rowSlots[c]);
+            const rowSlot =
+              c === swapC1 ? rowSlots[swapC2]
+              : c === swapC2 ? rowSlots[swapC1]
+              : rowSlots[c];
+            const sk = getSetAtSlot(rowSlot);
             const nk = getSetAtSlot(neighborSlots[c]);
             if (!sk || !nk) continue;
             if ((rowCounts.get(sk) || 0) !== 1) continue;
@@ -2427,9 +2500,19 @@ export class Build {
               const id2 = Number(t2?.id);
               if (t1 && !(id1 > 0)) continue;
               if (t2 && !(id2 > 0)) continue;
-              await Build.swapBuildSlotsWithBackend(s1, s2);
-              const sc = scoreRow();
-              await Build.swapBuildSlotsWithBackend(s1, s2);
+              const rs1 = getSetAtSlot(s1);
+              const rs2 = getSetAtSlot(s2);
+              const ns1 = getSetAtSlot(neighborSlots[c1]);
+              const ns2 = getSetAtSlot(neighborSlots[c2]);
+              if (rs1 && rs2 && rs1 !== rs2) {
+                const sz1 = Number(setSize.get(rs1)) || 0;
+                const sz2 = Number(setSize.get(rs2)) || 0;
+                // Do not break existing continuity of a larger set
+                // if swap does not preserve that set in the opposite column.
+                if (ns1 === rs1 && ns2 !== rs1 && sz1 > sz2) continue;
+                if (ns2 === rs2 && ns1 !== rs2 && sz2 > sz1) continue;
+              }
+              const sc = scoreRow(c1, c2);
               if (sc > base && (!best || sc > best.score)) {
                 best = { c1, c2, score: sc };
               }
@@ -2489,8 +2572,11 @@ export class Build {
 
       const fixedSlots = new Set();
       const initialSetCounters = new Map();
+      const setTalentCounters = new Map();
       const setRowsMap = new Map();
-      // Priority metric base: rows where set is present (duplicates in same row are ignored).
+      // Priority metric base:
+      // - total installed talents in build (primary key)
+      // - continuity by occupied rows (secondary key)
       for (let level = 6; level >= 1; level--) {
         const rowSlots = Build.getRowSlotIndicesByLevel(level);
         const seenInRow = new Set();
@@ -2504,6 +2590,7 @@ export class Build {
           }
           const setKey = setTalentToKey.get(Math.abs(talentId));
           if (!setKey) continue;
+          setTalentCounters.set(setKey, (setTalentCounters.get(setKey) || 0) + 1);
           seenInRow.add(setKey);
         }
         for (const setKey of seenInRow) {
@@ -2515,12 +2602,20 @@ export class Build {
 
       const getSetPriorityWeight = (setKey) => {
         const rows = Array.from(setRowsMap.get(setKey) || []).sort((a, b) => a - b);
-        const count = rows.length;
+        const count = Number(setTalentCounters.get(setKey)) || 0;
         if (count <= 0) return 0;
         if (count === 1) return 1; // одиночные
+        if (!rows.length) {
+          if (count >= 6) return 10;
+          if (count === 5) return 8;
+          if (count === 4) return 6;
+          if (count === 3) return 4;
+          if (count === 2) return 2;
+          return 1;
+        }
         const min = rows[0];
         const max = rows[rows.length - 1];
-        const contiguous = max - min + 1 === count; // без пустого слота внутри диапазона
+        const contiguous = max - min + 1 === rows.length; // без пустого слота внутри занятых сетом строк
         if (count === 6) return 10;
         if (count === 5) return contiguous ? 9 : 8;
         if (count === 4) return contiguous ? 7 : 6;
@@ -2723,14 +2818,21 @@ export class Build {
               polishLockedCols.add(c);
             }
           }
-          const scoreRow = () => {
+          const scoreRow = (swapC1 = -1, swapC2 = -1) => {
             let score = 0;
             for (let c = 0; c < 6; c++) {
-              const sk = getSetAtSlot(rowSlots[c]);
+              const rowSlot =
+                c === swapC1 ? rowSlots[swapC2]
+                : c === swapC2 ? rowSlots[swapC1]
+                : rowSlots[c];
+              const sk = getSetAtSlot(rowSlot);
               if (!sk) continue;
               if ((curSetCount.get(sk) || 0) > 1) continue; // ignore duplicated set entries in current row
               if ((prevSetCount.get(sk) || 0) > 1) continue; // ignore duplicated set entries in previous row
-              if (sk === prevSetAtCol[c]) score++;
+              if (sk === prevSetAtCol[c]) {
+                const sz = Math.max(1, Number(setSize.get(sk)) || 1);
+                score += sz * sz * 10;
+              }
             }
             return score;
           };
@@ -2750,9 +2852,18 @@ export class Build {
                 const id2 = Number(t2?.id);
                 if (t1 && !(id1 > 0)) continue;
                 if (t2 && !(id2 > 0)) continue;
-                await Build.swapBuildSlotsWithBackend(s1, s2);
-                const sc = scoreRow();
-                await Build.swapBuildSlotsWithBackend(s1, s2);
+                const rs1 = getSetAtSlot(s1);
+                const rs2 = getSetAtSlot(s2);
+                const ps1 = prevSetAtCol[c1];
+                const ps2 = prevSetAtCol[c2];
+                if (rs1 && rs2 && rs1 !== rs2) {
+                  const sz1 = Number(setSize.get(rs1)) || 0;
+                  const sz2 = Number(setSize.get(rs2)) || 0;
+                  // Do not let a smaller set break an existing larger-set column match.
+                  if (ps1 === rs1 && ps2 !== rs1 && sz1 > sz2) continue;
+                  if (ps2 === rs2 && ps1 !== rs2 && sz2 > sz1) continue;
+                }
+                const sc = scoreRow(c1, c2);
                 if (sc > base && (!best || sc > best.score)) {
                   best = { c1, c2, score: sc };
                 }
@@ -2780,8 +2891,8 @@ export class Build {
         }
       }
 
-      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, initialSetCounters, 'down');
-      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, initialSetCounters, 'up');
+      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, setSize, 'down');
+      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, setSize, 'up');
 
       Build.updateHeroStats();
       Build.renderCombatOrderBadges();
@@ -2790,6 +2901,7 @@ export class Build {
       Build.syncCombatModeButtonState();
       if (!skipBackendSync) {
         await Build.syncSortResultToBackend(initialBodySnapshot, initialActiveSnapshot);
+        Build.sortSetsWasApplied = true;
       }
 
       if (!skipBackendSync && swapCount > 0) {
@@ -7110,6 +7222,12 @@ export class Build {
         event.stopPropagation();
         return;
       }
+      const isInventoryTalent = !fromActiveBar && !!element.closest?.('.build-talents');
+      if (isInventoryTalent && !Build.consumeLibraryTalentClickCooldown()) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
 
       let moveStart = Date.now();
       if (!Build._descriptionPinnedBySet) Build.descriptionView.style.display = 'none';
@@ -7786,6 +7904,15 @@ export class Build {
     Build._hoveredBuildRowEl.style.background = '';
     Build._hoveredBuildRowEl.style.borderRadius = '';
     Build._hoveredBuildRowEl = null;
+  }
+
+  static consumeLibraryTalentClickCooldown() {
+    const now = Date.now();
+    const cooldownMs = Math.max(0, Number(Build.libraryTalentClickCooldownMs) || 0);
+    if (cooldownMs <= 0) return true;
+    if (now - Build._lastLibraryTalentClickAt < cooldownMs) return false;
+    Build._lastLibraryTalentClickAt = now;
+    return true;
   }
 
   static refreshActiveTalentDescription() {
