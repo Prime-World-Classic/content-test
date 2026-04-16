@@ -996,6 +996,7 @@ export class Window {
             tag: 'input',
             domaudio: domAudioPresets.defaultButton,
             type: 'range',
+            id: 'voice-volume-slider',
             value: Math.round((Number(Settings.settings.voiceVolume) || 1) * 100),
             min: '0',
             max: '100',
@@ -1767,7 +1768,7 @@ export class Window {
       return DOM({ id: 'wcastle-call' });
     }
 
-    let displayName = data.name;
+    let displayName = String(data?.name || data?.nickname || `id${Number(data?.id) || '?'}`);
     if (displayName.length > 13) {
       displayName = displayName.substring(0, 11) + '...';
     }

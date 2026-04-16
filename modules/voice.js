@@ -97,6 +97,14 @@ export class Voice {
   static mutedByPeers = new Set();
   
   static panelMeterStops = new Set();
+  
+  static peerSettingsStorageKey = 'voice-peer-settings-v1';
+  
+  static peerSettingsLoaded = false;
+  
+  static peerSettings = {};
+  
+  static playbackContext = null;
 
   static reconnectPlanMs = [2000, 5000, 10000, 15000, 20000];
 
@@ -133,7 +141,111 @@ export class Voice {
     return !!key;
   }
 
+  static ensurePeerSettingsLoaded() {
+    if (Voice.peerSettingsLoaded) return;
+    Voice.peerSettingsLoaded = true;
+    try {
+      const raw = localStorage.getItem(Voice.peerSettingsStorageKey);
+      const parsed = raw ? JSON.parse(raw) : {};
+      Voice.peerSettings = parsed && typeof parsed === 'object' ? parsed : {};
+      for (const idText of Object.keys(Voice.peerSettings)) {
+        const id = Number(idText);
+        if (!Number.isFinite(id) || id <= 0) continue;
+        if (Voice.peerSettings[idText]?.muted === true) {
+          Voice.mutedPeers.add(id);
+        }
+      }
+    } catch {
+      Voice.peerSettings = {};
+    }
+  }
+
+  static savePeerSettings() {
+    try {
+      localStorage.setItem(Voice.peerSettingsStorageKey, JSON.stringify(Voice.peerSettings));
+    } catch {}
+  }
+
+  static getPeerSettings(id) {
+    Voice.ensurePeerSettingsLoaded();
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) return null;
+    const key = String(targetId);
+    if (!Voice.peerSettings[key] || typeof Voice.peerSettings[key] !== 'object') {
+      Voice.peerSettings[key] = {};
+    }
+    return Voice.peerSettings[key];
+  }
+
+  static getPeerVolumePercent(id) {
+    const peerSettings = Voice.getPeerSettings(id);
+    if (!peerSettings) return 50;
+    if (Number.isFinite(Number(peerSettings.volumePercent))) {
+      return Math.max(0, Math.min(100, Math.round(Number(peerSettings.volumePercent))));
+    }
+    return 50;
+  }
+
+  static setPeerVolumePercent(id, percent = 50) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) return;
+    const value = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+    const peerSettings = Voice.getPeerSettings(targetId);
+    if (!peerSettings) return;
+    peerSettings.volumePercent = value;
+    Voice.savePeerSettings();
+    Voice.applyPeerOutputVolume(targetId);
+  }
+
+  static peerPercentToGain(percent = 50) {
+    // 50% is baseline (x1). 100% is boost (x2).
+    return Math.max(0, Math.min(2, Number(percent || 0) / 50));
+  }
+
+  static ensurePlaybackContext() {
+    if (Voice.playbackContext) {
+      if (Voice.playbackContext.state === 'suspended') {
+        Voice.playbackContext.resume().catch(() => {});
+      }
+      return Voice.playbackContext;
+    }
+    try {
+      Voice.playbackContext = new AudioContext();
+      if (Voice.playbackContext.state === 'suspended') {
+        Voice.playbackContext.resume().catch(() => {});
+      }
+    } catch {
+      Voice.playbackContext = null;
+    }
+    return Voice.playbackContext;
+  }
+
+  static applyPeerOutputVolume(id) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) return;
+    const target = Voice.manager?.[targetId];
+    if (!target) return;
+    const peerGain = Voice.peerPercentToGain(Voice.getPeerVolumePercent(targetId));
+    const globalGain = Math.max(0, Math.min(1, Number(Voice.volumeLevel) || 0));
+    const gain = peerGain * globalGain;
+    const effectiveGain = Voice.isPeerMuted(targetId) ? 0 : gain;
+    if (target.playbackGain) {
+      try {
+        target.playbackGain.gain.value = effectiveGain;
+      } catch {}
+    }
+    if (target.controller) {
+      if (target.playbackGain) {
+        target.controller.muted = true;
+      } else {
+        target.controller.muted = Voice.isPeerMuted(targetId);
+        target.controller.volume = Math.max(0, Math.min(1, effectiveGain));
+      }
+    }
+  }
+
   static isPeerMuted(id) {
+    Voice.ensurePeerSettingsLoaded();
     const targetId = Number(id);
     return Number.isFinite(targetId) && targetId > 0 && Voice.mutedPeers.has(targetId);
   }
@@ -148,10 +260,12 @@ export class Voice {
     } else {
       Voice.mutedPeers.delete(targetId);
     }
-    const target = Voice.manager?.[targetId];
-    if (target?.controller) {
-      target.controller.muted = Boolean(muted);
+    const peerSettings = Voice.getPeerSettings(targetId);
+    if (peerSettings) {
+      peerSettings.muted = Boolean(muted);
+      Voice.savePeerSettings();
     }
+    Voice.applyPeerOutputVolume(targetId);
   }
 
   static togglePeerMuted(id) {
@@ -697,12 +811,22 @@ export class Voice {
       };
       const dropKey = formatHotkey(Settings.settings?.voiceDropHotkey, 'Ctrl+K');
       const toggleKey = formatHotkey(Settings.settings?.voiceToggleHotkey, 'Ctrl+Z');
+      const hintDivider = '<span class="voice-info-panel-hint-divider"></span>';
       if (Voice.mic.enabled) {
-        tutorial.innerHTML = `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}`;
+        tutorial.innerHTML =
+          `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}` +
+          hintDivider +
+          Lang.text('hotkeyVolumeControl') +
+          hintDivider +
+          Lang.text('voicePeerVolumeHint');
       } else {
         const micLabel = String(Voice.rawMic?.label || Voice.mic?.label || 'microphone');
         tutorial.innerHTML =
           `<strong>${dropKey}</strong>${Lang.text('hotkeyDropCallsSuffix')}` +
+          hintDivider +
+          Lang.text('hotkeyVolumeControl') +
+          hintDivider +
+          Lang.text('voicePeerVolumeHint') +
           '<br>────────────<br>' +
           `<strong>${toggleKey}</strong>${Lang.text('enableMicSuffix').replace('{Voice.mic.label}', micLabel)}`;
       }
@@ -787,6 +911,13 @@ export class Voice {
     let level = DOM({ style: 'voice-info-panel-body-item-bar-level' });
 
     let bar = DOM({ style: 'voice-info-panel-body-item-bar' }, level);
+    let volumeText = DOM({ style: 'voice-info-panel-body-item-volume' }, '');
+    const updatePeerVolumeView = () => {
+      const percent = Voice.getPeerVolumePercent(Number(id));
+      volumeText.innerText = `${percent}%`;
+      Voice.applyPeerOutputVolume(Number(id));
+    };
+    updatePeerVolumeView();
     let currentStopMeter = null;
 
     let indication = () => {
@@ -828,11 +959,22 @@ export class Voice {
 
     const panelBody = Voice.getInfoPanelBody();
     if (!panelBody) return;
+    const status = DOM({ style: 'voice-info-panel-body-item-status' }, bar, volumeText);
+    status.addEventListener(
+      'wheel',
+      (event) => {
+        event.preventDefault();
+        const step = event.deltaY < 0 ? 1 : -1;
+        Voice.setPeerVolumePercent(Number(id), Voice.getPeerVolumePercent(Number(id)) + step);
+        updatePeerVolumeView();
+      },
+      { passive: false },
+    );
     panelBody.append(
       DOM(
         { style: 'voice-info-panel-body-item' },
         DOM({ style: 'voice-info-panel-body-item-controls' }, mute, mutedByIcon, item),
-        DOM({ style: 'voice-info-panel-body-item-status' }, bar),
+        status,
       ),
     );
   }
@@ -1082,13 +1224,37 @@ export class Voice {
 
   static setVolumeLevel(level = 1.0) {
     const volumeLevel = Math.max(0, Math.min(1, Number(level) || 0));
-    for (let id in Voice.manager) {
-      if (Voice.manager[id]?.controller) {
-        Voice.manager[id].controller.volume = volumeLevel;
-      }
-    }
-
     Voice.volumeLevel = volumeLevel;
+    for (let id in Voice.manager) {
+      Voice.applyPeerOutputVolume(Number(id));
+    }
+  }
+  
+  static volumeControl(increase = false) {
+    const current = Number.isFinite(Number(Settings.settings?.voiceVolume))
+      ? Number(Settings.settings.voiceVolume)
+      : Voice.volumeLevel;
+    const next = Math.max(0, Math.min(1, current + (increase ? 0.01 : -0.01)));
+    if (Math.abs(next - current) < 0.00001) {
+      return;
+    }
+    Settings.settings.voiceVolume = next;
+    Voice.setVolumeLevel(next);
+    const nextPercent = Math.round(next * 100);
+    if (nextPercent % 20 === 0) {
+      App.say(`${nextPercent}%`);
+    }
+    const slider = document.getElementById('voice-volume-slider');
+    if (slider) {
+      slider.value = String(nextPercent);
+      const max = Number(slider.max || 100);
+      const percentage = 2 + (nextPercent / Math.max(1, max)) * 98;
+      slider.style.setProperty('--fill-percentage', `${percentage}%`);
+    }
+    const percent = document.getElementById('voice-volume-percentage');
+    if (percent) {
+      percent.textContent = `${nextPercent}%`;
+    }
   }
 
   static updatePanelPosition() {
@@ -1155,6 +1321,10 @@ export class Voice {
     this.stream = null;
 
     this.controller = null;
+    
+    this.playbackSource = null;
+    
+    this.playbackGain = null;
 
     if (this.id in Voice.manager || Object.keys(Voice.manager).length + 1 > Voice.limit) {
       this.peer = null;
@@ -1179,9 +1349,21 @@ export class Voice {
 
       this.controller.controls = true;
 
-      this.controller.volume = Voice.volumeLevel;
+      const playbackContext = Voice.ensurePlaybackContext();
+      if (playbackContext) {
+        try {
+          this.playbackSource = playbackContext.createMediaStreamSource(this.stream);
+          this.playbackGain = playbackContext.createGain();
+          this.playbackSource.connect(this.playbackGain);
+          this.playbackGain.connect(playbackContext.destination);
+        } catch {
+          this.playbackSource = null;
+          this.playbackGain = null;
+        }
+      }
       
       this.controller.muted = Voice.isPeerMuted(this.id);
+      Voice.applyPeerOutputVolume(this.id);
 
       this.controller.play();
 
@@ -1458,6 +1640,12 @@ export class Voice {
 
     try {
       this.peer?.close?.();
+    } catch {}
+    try {
+      this.playbackSource?.disconnect?.();
+    } catch {}
+    try {
+      this.playbackGain?.disconnect?.();
     } catch {}
 
     delete Voice.manager[this.id];

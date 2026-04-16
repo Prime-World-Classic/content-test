@@ -44,6 +44,13 @@ export class Build {
   static sortSetsWasApplied = false;
   static libraryTalentClickCooldownMs = 50;
   static _lastLibraryTalentClickAt = 0;
+  static inventorySetHoverDelayMs = 30;
+  static _inventorySetHoverTimer = 0;
+  static _inventorySetHoverTalentId = null;
+  static _postMoveRefreshRaf = 0;
+  static _postMoveRefreshNeedSort = false;
+  static animateHeroOnBuildChange = false;
+  static _isDraggingTalent = false;
   static combatModeEnabled = false;
   static combatModeLearnOrder = [];
   static combatModeLearnOrderBySlot = new Map();
@@ -595,6 +602,7 @@ export class Build {
     Build.inventoryView.append(talentsSection, setsSection);
     Build.attachAltResetHintBelowInventory();
     Build.installAltResetHandler();
+    Build.installHeroNavKeyboardHandler();
     Build.buildSettingsButton = Build.createBuildSettingsButton();
     Build.buildSettingsPanel = Build.createBuildSettingsPanel();
     Build.attachBuildSettingsToWbuild();
@@ -2193,7 +2201,6 @@ export class Build {
       try {
         await Build.refreshBuildStateFromServer({ refreshInventory: true });
       } catch {}
-      App.notify(Lang.text('sortSetsIntoColumnFailed'));
     } finally {
       Build._sortDeferBackendSync = false;
       Build.sortSetsInProgress = false;
@@ -2274,261 +2281,6 @@ export class Build {
     }
   }
 
-  static async enforceSetColumnContinuity(setTalentToKey, fixedSlots) {
-    let moved = 0;
-    for (let pass = 0; pass < 4; pass++) {
-      let passMoved = 0;
-      for (let level = 5; level >= 1; level--) {
-        const prevSlots = Build.getRowSlotIndicesByLevel(level + 1);
-        const curSlots = Build.getRowSlotIndicesByLevel(level);
-
-        const prevColBySet = new Map();
-        const prevDupSet = new Set();
-        for (let col = 0; col < 6; col++) {
-          const slot = prevSlots[col];
-          const talent = Build.installedTalents?.[slot];
-          const id = Number(talent?.id);
-          if (!(id > 0)) continue;
-          const setKey = setTalentToKey.get(Math.abs(id));
-          if (!setKey) continue;
-          if (prevColBySet.has(setKey)) {
-            prevDupSet.add(setKey);
-          } else {
-            prevColBySet.set(setKey, col);
-          }
-        }
-        for (const k of prevDupSet) prevColBySet.delete(k);
-        if (!prevColBySet.size) continue;
-
-        const curSlotBySet = new Map();
-        for (let col = 0; col < 6; col++) {
-          const slot = curSlots[col];
-          const talent = Build.installedTalents?.[slot];
-          const id = Number(talent?.id);
-          if (!(id > 0)) continue;
-          const setKey = setTalentToKey.get(Math.abs(id));
-          if (!setKey) continue;
-          if (!curSlotBySet.has(setKey)) curSlotBySet.set(setKey, slot);
-        }
-        if (!curSlotBySet.size) continue;
-
-        const desiredColBySet = new Map();
-        for (const [setKey] of curSlotBySet) {
-          const desiredCol = prevColBySet.get(setKey);
-          if (Number.isFinite(desiredCol)) desiredColBySet.set(setKey, desiredCol);
-        }
-        if (!desiredColBySet.size) continue;
-
-        for (const [setKey, sourceSlotRaw] of curSlotBySet) {
-          const desiredCol = desiredColBySet.get(setKey);
-          if (!Number.isFinite(desiredCol)) continue;
-          const sourceSlot = Number(sourceSlotRaw);
-          const targetSlot = curSlots[desiredCol];
-          if (!Number.isFinite(sourceSlot) || !Number.isFinite(targetSlot) || sourceSlot === targetSlot) continue;
-          if (fixedSlots?.has?.(sourceSlot) || fixedSlots?.has?.(targetSlot)) continue;
-
-          const sourceTalent = Build.installedTalents?.[sourceSlot];
-          const targetTalent = Build.installedTalents?.[targetSlot];
-          const sourceId = Number(sourceTalent?.id);
-          const targetId = Number(targetTalent?.id);
-          if (!(sourceId > 0)) continue;
-          if (targetTalent && !(targetId > 0)) continue;
-
-          const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(targetId)) : null;
-          if (targetSetKey === setKey) continue;
-          if (targetSetKey && desiredColBySet.get(targetSetKey) === desiredCol) continue;
-
-          await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
-          moved++;
-          passMoved++;
-          curSlotBySet.set(setKey, targetSlot);
-          if (targetSetKey) curSlotBySet.set(targetSetKey, sourceSlot);
-        }
-      }
-      if (!passMoved) break;
-    }
-    return moved;
-  }
-
-  static getPreferredSetColumns(setTalentToKey) {
-    const counts = new Map();
-    for (let level = 6; level >= 1; level--) {
-      const rowSlots = Build.getRowSlotIndicesByLevel(level);
-      for (let col = 0; col < 6; col++) {
-        const slot = rowSlots[col];
-        const talent = Build.installedTalents?.[slot];
-        const id = Number(talent?.id);
-        if (!(id > 0)) continue;
-        const setKey = setTalentToKey.get(Math.abs(id));
-        if (!setKey) continue;
-        if (!counts.has(setKey)) counts.set(setKey, new Array(6).fill(0));
-        counts.get(setKey)[col] += 1;
-      }
-    }
-    const preferred = new Map();
-    for (const [setKey, arr] of counts.entries()) {
-      let bestCol = 0;
-      let bestVal = -1;
-      for (let col = 0; col < 6; col++) {
-        const v = Number(arr[col]) || 0;
-        if (v > bestVal) {
-          bestVal = v;
-          bestCol = col;
-        }
-      }
-      preferred.set(setKey, bestCol);
-    }
-    return preferred;
-  }
-
-  static async enforceSetPreferredColumns(setTalentToKey, fixedSlots) {
-    let moved = 0;
-    for (let pass = 0; pass < 3; pass++) {
-      let passMoved = 0;
-      const preferred = Build.getPreferredSetColumns(setTalentToKey);
-      for (let level = 6; level >= 1; level--) {
-        const rowSlots = Build.getRowSlotIndicesByLevel(level);
-        const rowSetToSlot = new Map();
-        for (let col = 0; col < 6; col++) {
-          const slot = rowSlots[col];
-          const talent = Build.installedTalents?.[slot];
-          const id = Number(talent?.id);
-          if (!(id > 0)) continue;
-          const setKey = setTalentToKey.get(Math.abs(id));
-          if (!setKey) continue;
-          if (!rowSetToSlot.has(setKey)) rowSetToSlot.set(setKey, slot);
-        }
-        for (const [setKey, sourceSlotRaw] of rowSetToSlot.entries()) {
-          const desiredCol = preferred.get(setKey);
-          if (!Number.isFinite(desiredCol)) continue;
-          const sourceSlot = Number(sourceSlotRaw);
-          const targetSlot = rowSlots[desiredCol];
-          if (!Number.isFinite(sourceSlot) || !Number.isFinite(targetSlot) || sourceSlot === targetSlot) continue;
-          if (fixedSlots?.has?.(sourceSlot) || fixedSlots?.has?.(targetSlot)) continue;
-
-          const sourceTalent = Build.installedTalents?.[sourceSlot];
-          const targetTalent = Build.installedTalents?.[targetSlot];
-          const sourceId = Number(sourceTalent?.id);
-          const targetId = Number(targetTalent?.id);
-          if (!(sourceId > 0)) continue;
-          if (targetTalent && !(targetId > 0)) continue;
-          const targetSetKey = targetTalent ? setTalentToKey.get(Math.abs(targetId)) : null;
-          if (targetSetKey === setKey) continue;
-          if (targetSetKey && preferred.get(targetSetKey) === desiredCol) continue;
-
-          await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
-          moved++;
-          passMoved++;
-        }
-      }
-      if (!passMoved) break;
-    }
-    return moved;
-  }
-
-  static async enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, setSize = new Map(), direction = 'down') {
-    let moved = 0;
-    const levelOrder = direction === 'up' ? [2, 3, 4, 5, 6] : [5, 4, 3, 2, 1];
-    const getNeighborLevel = (lvl) => (direction === 'up' ? lvl - 1 : lvl + 1);
-    const countSetsInRow = (rowSlots) => {
-      const m = new Map();
-      for (const slot of rowSlots) {
-        const t = Build.installedTalents?.[slot];
-        const id = Number(t?.id);
-        if (!(id > 0)) continue;
-        const setKey = setTalentToKey.get(Math.abs(id));
-        if (!setKey) continue;
-        m.set(setKey, (m.get(setKey) || 0) + 1);
-      }
-      return m;
-    };
-    const getSetAtSlot = (slot) => {
-      const t = Build.installedTalents?.[slot];
-      const id = Number(t?.id);
-      if (!(id > 0)) return null;
-      return setTalentToKey.get(Math.abs(id)) || null;
-    };
-
-    for (let pass = 0; pass < 4; pass++) {
-      let passMoved = 0;
-      for (const level of levelOrder) {
-        const neighborLevel = getNeighborLevel(level);
-        if (neighborLevel < 1 || neighborLevel > 6) continue;
-        const rowSlots = Build.getRowSlotIndicesByLevel(level);
-        const neighborSlots = Build.getRowSlotIndicesByLevel(neighborLevel);
-        const rowCounts = countSetsInRow(rowSlots);
-        const neighborCounts = countSetsInRow(neighborSlots);
-        const movableCols = [];
-        for (let c = 0; c < 6; c++) {
-          if (!fixedSlots?.has?.(rowSlots[c])) movableCols.push(c);
-        }
-        if (movableCols.length < 2) continue;
-
-        const scoreRow = (swapC1 = -1, swapC2 = -1) => {
-          let score = 0;
-          for (let c = 0; c < 6; c++) {
-            const rowSlot =
-              c === swapC1 ? rowSlots[swapC2]
-              : c === swapC2 ? rowSlots[swapC1]
-              : rowSlots[c];
-            const sk = getSetAtSlot(rowSlot);
-            const nk = getSetAtSlot(neighborSlots[c]);
-            if (!sk || !nk) continue;
-            if ((rowCounts.get(sk) || 0) !== 1) continue;
-            if ((neighborCounts.get(nk) || 0) !== 1) continue;
-            if (sk === nk) {
-              // Sets with many installed talents must dominate column continuity.
-              const sz = Math.max(1, Number(setSize.get(sk)) || 1);
-              score += sz * sz * 10;
-            }
-          }
-          return score;
-        };
-
-        for (let iter = 0; iter < 4; iter++) {
-          const base = scoreRow();
-          let best = null;
-          for (let i = 0; i < movableCols.length; i++) {
-            for (let j = i + 1; j < movableCols.length; j++) {
-              const c1 = movableCols[i];
-              const c2 = movableCols[j];
-              const s1 = rowSlots[c1];
-              const s2 = rowSlots[c2];
-              const t1 = Build.installedTalents?.[s1];
-              const t2 = Build.installedTalents?.[s2];
-              const id1 = Number(t1?.id);
-              const id2 = Number(t2?.id);
-              if (t1 && !(id1 > 0)) continue;
-              if (t2 && !(id2 > 0)) continue;
-              const rs1 = getSetAtSlot(s1);
-              const rs2 = getSetAtSlot(s2);
-              const ns1 = getSetAtSlot(neighborSlots[c1]);
-              const ns2 = getSetAtSlot(neighborSlots[c2]);
-              if (rs1 && rs2 && rs1 !== rs2) {
-                const sz1 = Number(setSize.get(rs1)) || 0;
-                const sz2 = Number(setSize.get(rs2)) || 0;
-                // Do not break existing continuity of a larger set
-                // if swap does not preserve that set in the opposite column.
-                if (ns1 === rs1 && ns2 !== rs1 && sz1 > sz2) continue;
-                if (ns2 === rs2 && ns1 !== rs2 && sz2 > sz1) continue;
-              }
-              const sc = scoreRow(c1, c2);
-              if (sc > base && (!best || sc > best.score)) {
-                best = { c1, c2, score: sc };
-              }
-            }
-          }
-          if (!best) break;
-          await Build.swapBuildSlotsWithBackend(rowSlots[best.c1], rowSlots[best.c2]);
-          moved++;
-          passMoved++;
-        }
-      }
-      if (!passMoved) break;
-    }
-    return moved;
-  }
-
   static async sortSetTalentsIntoColumns(options = {}) {
     if (Build.sortSetsInProgress) return;
     if (Build.combatModeEnabled) {
@@ -2571,15 +2323,11 @@ export class Build {
       if (!setTalentToKey.size) return;
 
       const fixedSlots = new Set();
-      const initialSetCounters = new Map();
       const setTalentCounters = new Map();
       const setRowsMap = new Map();
-      // Priority metric base:
-      // - total installed talents in build (primary key)
-      // - continuity by occupied rows (secondary key)
       for (let level = 6; level >= 1; level--) {
         const rowSlots = Build.getRowSlotIndicesByLevel(level);
-        const seenInRow = new Set();
+        const seenRows = new Set();
         for (const slot of rowSlots) {
           const talent = Build.installedTalents[slot];
           if (!talent) continue;
@@ -2591,10 +2339,9 @@ export class Build {
           const setKey = setTalentToKey.get(Math.abs(talentId));
           if (!setKey) continue;
           setTalentCounters.set(setKey, (setTalentCounters.get(setKey) || 0) + 1);
-          seenInRow.add(setKey);
+          seenRows.add(setKey);
         }
-        for (const setKey of seenInRow) {
-          initialSetCounters.set(setKey, (initialSetCounters.get(setKey) || 0) + 1);
+        for (const setKey of seenRows) {
           if (!setRowsMap.has(setKey)) setRowsMap.set(setKey, new Set());
           setRowsMap.get(setKey).add(level);
         }
@@ -2605,17 +2352,10 @@ export class Build {
         const count = Number(setTalentCounters.get(setKey)) || 0;
         if (count <= 0) return 0;
         if (count === 1) return 1; // одиночные
-        if (!rows.length) {
-          if (count >= 6) return 10;
-          if (count === 5) return 8;
-          if (count === 4) return 6;
-          if (count === 3) return 4;
-          if (count === 2) return 2;
-          return 1;
-        }
+        if (!rows.length) return count >= 6 ? 10 : count === 5 ? 8 : count === 4 ? 6 : count === 3 ? 4 : count === 2 ? 2 : 1;
         const min = rows[0];
         const max = rows[rows.length - 1];
-        const contiguous = max - min + 1 === rows.length; // без пустого слота внутри занятых сетом строк
+        const contiguous = max - min + 1 === rows.length;
         if (count === 6) return 10;
         if (count === 5) return contiguous ? 9 : 8;
         if (count === 4) return contiguous ? 7 : 6;
@@ -2624,275 +2364,242 @@ export class Build {
         return 1;
       };
 
-      const orderedSetKeys = Array.from(initialSetCounters.entries())
-        .sort((a, b) => {
-          const wa = getSetPriorityWeight(a[0]);
-          const wb = getSetPriorityWeight(b[0]);
-          if (wb !== wa) return wb - wa;
-          if (b[1] !== a[1]) return b[1] - a[1];
-          return `${a[0]}`.localeCompare(`${b[0]}`);
-        })
-        .map(([setKey]) => setKey);
-      const setPriority = new Map();
-      orderedSetKeys.forEach((k, i) => setPriority.set(k, i));
       const setSize = new Map();
+      const orderedSetKeys = Array.from(setTalentCounters.keys()).sort((a, b) => {
+        const wa = getSetPriorityWeight(a);
+        const wb = getSetPriorityWeight(b);
+        if (wb !== wa) return wb - wa;
+        const ca = Number(setTalentCounters.get(a)) || 0;
+        const cb = Number(setTalentCounters.get(b)) || 0;
+        if (cb !== ca) return cb - ca;
+        return `${a}`.localeCompare(`${b}`);
+      });
       for (const k of orderedSetKeys) {
         setSize.set(k, getSetPriorityWeight(k));
       }
-      const setColHistogram = new Map();
-      for (let level = 6; level >= 1; level--) {
-        const rowSlots = Build.getRowSlotIndicesByLevel(level);
-        for (let col = 0; col < 6; col++) {
-          const slot = rowSlots[col];
-          const t = Build.installedTalents?.[slot];
-          const id = Number(t?.id);
-          if (!(id > 0)) continue;
-          const setKey = setTalentToKey.get(Math.abs(id));
-          if (!setKey) continue;
-          if (!setColHistogram.has(setKey)) setColHistogram.set(setKey, new Array(6).fill(0));
-          setColHistogram.get(setKey)[col] += 1;
+      const getSetAtSlot = (slot) => {
+        const t = Build.installedTalents?.[slot];
+        const id = Number(t?.id);
+        if (!(id > 0)) return null;
+        return setTalentToKey.get(Math.abs(id)) || null;
+      };
+      const getRowSetCount = (rowSlots) => {
+        const m = new Map();
+        for (let c = 0; c < 6; c++) {
+          const sk = getSetAtSlot(rowSlots[c]);
+          if (!sk) continue;
+          m.set(sk, (m.get(sk) || 0) + 1);
         }
-      }
-      const setColAffinity = new Map();
-      for (const [setKey, hist] of setColHistogram.entries()) {
-        setColAffinity.set(setKey, (hist || new Array(6).fill(0)).slice(0, 6));
-      }
-      let swapCount = 0;
-
-      for (let level = 6; level >= 1; level--) {
-        const rowSlots = Build.getRowSlotIndicesByLevel(level);
-        const movableCols = [];
-        const entryAtCol = new Map();
-        const currentColByEntry = new Map();
-        const setGroups = new Map();
-        const otherEntries = [];
-
-        for (let col = 0; col < 6; col++) {
-          const slot = rowSlots[col];
-          if (fixedSlots.has(slot)) continue;
-          movableCols.push(col);
-          const t = Build.installedTalents?.[slot] || null;
-          const id = Number(t?.id);
-          const setKey = id > 0 ? setTalentToKey.get(Math.abs(id)) || null : null;
-          const entry = { slot, id, setKey };
-          entryAtCol.set(col, entry);
-          currentColByEntry.set(entry, col);
-          if (setKey) {
-            if (!setGroups.has(setKey)) setGroups.set(setKey, []);
-            setGroups.get(setKey).push(entry);
-          } else {
-            otherEntries.push(entry);
-          }
-        }
-
-        // If a row has multiple talents of the same set,
-        // keep only one set-representative for column alignment.
-        // Others are treated as non-set entries for this row.
-        for (const [setKey, entries] of Array.from(setGroups.entries())) {
-          if (!entries || entries.length <= 1) continue;
-          const affinity = setColAffinity.get(setKey) || new Array(6).fill(0);
-          let keep = entries[0];
-          let keepScore = -Infinity;
-          for (const e of entries) {
-            const c = currentColByEntry.get(e);
-            const col = Number.isFinite(c) ? c : 0;
-            const s = (Number(affinity[col]) || 0) * 100 - col;
-            if (s > keepScore) {
-              keepScore = s;
-              keep = e;
-            }
-          }
-          for (const e of entries) {
-            if (e === keep) continue;
-            e.setKey = null;
-            otherEntries.push(e);
-          }
-          setGroups.set(setKey, [keep]);
-        }
-
-        const remainingCols = movableCols.slice();
-        const desiredAtCol = new Map();
-        const sortedSets = Array.from(setGroups.keys()).sort((a, b) => {
-          const pa = setPriority.has(a) ? setPriority.get(a) : Number.MAX_SAFE_INTEGER;
-          const pb = setPriority.has(b) ? setPriority.get(b) : Number.MAX_SAFE_INTEGER;
-          if (pa !== pb) return pa - pb;
-          return `${a}`.localeCompare(`${b}`);
-        });
-
-        for (const setKey of sortedSets) {
-          const entries = setGroups.get(setKey) || [];
-          if (entries.length !== 1 || !remainingCols.length) continue;
-          const k = Math.min(entries.length, remainingCols.length);
-          const affinity = setColAffinity.get(setKey) || new Array(6).fill(0);
-          const rankedCols = remainingCols
-            .slice()
-            .sort((a, b) => {
-              const da = Number(affinity[a]) || 0;
-              const db = Number(affinity[b]) || 0;
-              if (db !== da) return db - da;
-              return a - b;
-            })
-            .slice(0, k)
-            .sort((a, b) => a - b);
-          for (let i = 0; i < rankedCols.length; i++) {
-            desiredAtCol.set(rankedCols[i], entries[i]);
-          }
-          for (const c of rankedCols) {
-            const idx = remainingCols.indexOf(c);
-            if (idx >= 0) remainingCols.splice(idx, 1);
-          }
-        }
-
-        const restEntries = [...otherEntries];
-        for (const setKey of sortedSets) {
-          const entries = setGroups.get(setKey) || [];
-          for (const e of entries) {
-            if (![...desiredAtCol.values()].includes(e)) restEntries.push(e);
-          }
-        }
-        for (let i = 0; i < remainingCols.length && i < restEntries.length; i++) {
-          desiredAtCol.set(remainingCols[i], restEntries[i]);
-        }
-
-        for (const col of movableCols) {
-          const desired = desiredAtCol.get(col);
-          if (!desired) continue;
-          const current = entryAtCol.get(col);
-          if (current === desired) continue;
-          const fromCol = currentColByEntry.get(desired);
-          if (!Number.isFinite(fromCol)) continue;
-          const leftSlot = rowSlots[col];
-          const rightSlot = rowSlots[fromCol];
-          if (fixedSlots.has(leftSlot) || fixedSlots.has(rightSlot)) continue;
-          const desiredSet = desired?.setKey || null;
-          const occupant = entryAtCol.get(col);
-          const occupantSet = occupant?.setKey || null;
-          if (desiredSet && occupantSet && desiredSet !== occupantSet) {
-            const desiredSize = Number(setSize.get(desiredSet)) || 0;
-            const occupantSize = Number(setSize.get(occupantSet)) || 0;
-            // Lower-size sets must not displace higher-size sets from a column.
-            if (desiredSize < occupantSize) continue;
-          }
-          await Build.swapBuildSlotsWithBackend(rightSlot, leftSlot);
-          swapCount++;
-
-          const eA = entryAtCol.get(col);
-          const eB = entryAtCol.get(fromCol);
-          entryAtCol.set(col, eB);
-          entryAtCol.set(fromCol, eA);
-          currentColByEntry.set(eA, fromCol);
-          currentColByEntry.set(eB, col);
-        }
-
-        // Polish current row against previous one: maximize vertical set continuity.
-        if (level < 6) {
-          const prevSlots = Build.getRowSlotIndicesByLevel(level + 1);
-          const nextSlots = level > 1 ? Build.getRowSlotIndicesByLevel(level - 1) : null;
-          const getSetAtSlot = (slot) => {
-            const t = Build.installedTalents?.[slot];
-            const id = Number(t?.id);
-            if (!(id > 0)) return null;
-            return setTalentToKey.get(Math.abs(id)) || null;
-          };
-          const prevSetAtCol = prevSlots.map((s) => getSetAtSlot(s));
-          const nextSetAtCol = nextSlots ? nextSlots.map((s) => getSetAtSlot(s)) : null;
-          const curSetCount = new Map();
-          const prevSetCount = new Map();
+        return m;
+      };
+      const getColumnSupport = () => {
+        const support = new Map();
+        for (let level = 6; level >= 1; level--) {
+          const rowSlots = Build.getRowSlotIndicesByLevel(level);
+          const seenByRow = new Map();
           for (let c = 0; c < 6; c++) {
-            const curSet = getSetAtSlot(rowSlots[c]);
-            if (curSet) curSetCount.set(curSet, (curSetCount.get(curSet) || 0) + 1);
-            const pSet = prevSetAtCol[c];
-            if (pSet) prevSetCount.set(pSet, (prevSetCount.get(pSet) || 0) + 1);
+            const sk = getSetAtSlot(rowSlots[c]);
+            if (!sk) continue;
+            if (!seenByRow.has(sk)) seenByRow.set(sk, new Set());
+            seenByRow.get(sk).add(c);
           }
-          const polishLockedCols = new Set();
-          for (const c of movableCols) {
-            const rowSet = getSetAtSlot(rowSlots[c]);
-            if (!rowSet) continue;
-            if ((curSetCount.get(rowSet) || 0) > 1) continue; // ignore duplicated set entries in row
-            const size = Number(setSize.get(rowSet)) || 0;
-            if (size < 3) continue; // protect only long sets
-            const hasPrevContinuation = prevSetAtCol[c] === rowSet;
-            const hasNextContinuation = !!nextSetAtCol && nextSetAtCol[c] === rowSet;
-            // Lock only real "inside column" cells so short sets can still align around them.
-            if (hasPrevContinuation && hasNextContinuation) {
-              polishLockedCols.add(c);
+          for (const [sk, cols] of seenByRow.entries()) {
+            if (!support.has(sk)) support.set(sk, new Array(6).fill(0));
+            for (const c of cols) support.get(sk)[c] += 1;
+          }
+        }
+        return support;
+      };
+      const evaluateBoardScore = () => {
+        let score = 0;
+        const bySet = new Map();
+        for (let level = 6; level >= 1; level--) {
+          const rowSlots = Build.getRowSlotIndicesByLevel(level);
+          const setToCols = new Map();
+          for (let c = 0; c < 6; c++) {
+            const sk = getSetAtSlot(rowSlots[c]);
+            if (!sk) continue;
+            if (!setToCols.has(sk)) setToCols.set(sk, []);
+            setToCols.get(sk).push(c);
+          }
+          for (const [sk, cols] of setToCols.entries()) {
+            if (!bySet.has(sk)) bySet.set(sk, []);
+            bySet.get(sk).push({ level, cols: cols.slice().sort((a, b) => a - b) });
+          }
+        }
+        for (const [sk, rows] of bySet.entries()) {
+          const w = Math.max(1, Number(setSize.get(sk)) || 1);
+          const hist = new Array(6).fill(0);
+          for (const r of rows) {
+            for (const c of r.cols) hist[c] += 1;
+          }
+          let bestCol = 0;
+          for (let c = 1; c < 6; c++) {
+            if (hist[c] > hist[bestCol]) bestCol = c;
+          }
+          const vertical = Number(hist[bestCol]) || 0;
+          score += w * vertical * vertical * 40;
+
+          let streak = 0;
+          let bestStreak = 0;
+          for (let level = 6; level >= 1; level--) {
+            const row = rows.find((r) => r.level === level);
+            const hasBestCol = !!row && row.cols.includes(bestCol);
+            if (hasBestCol) {
+              streak++;
+              if (streak > bestStreak) bestStreak = streak;
+            } else {
+              streak = 0;
             }
           }
-          const scoreRow = (swapC1 = -1, swapC2 = -1) => {
-            let score = 0;
+          score += w * bestStreak * bestStreak * 20;
+
+          for (const r of rows) {
+            const cols = r.cols;
+            if (cols.length >= 2) {
+              for (let i = 0; i < cols.length - 1; i++) {
+                if (cols[i + 1] - cols[i] === 1) score += w * 12;
+              }
+              const spread = cols[cols.length - 1] - cols[0];
+              const ideal = cols.length - 1;
+              if (spread > ideal) score -= (spread - ideal) * w * 8;
+            }
+          }
+        }
+        return score;
+      };
+      const getProtectedColsForRow = (level, rowSlots, rowSetCount, colSupport) => {
+        const prevSlots = level < 6 ? Build.getRowSlotIndicesByLevel(level + 1) : null;
+        const nextSlots = level > 1 ? Build.getRowSlotIndicesByLevel(level - 1) : null;
+        const protectedCols = new Set();
+        for (let c = 0; c < 6; c++) {
+          const slot = rowSlots[c];
+          if (fixedSlots.has(slot)) {
+            protectedCols.add(c);
+            continue;
+          }
+          const sk = getSetAtSlot(slot);
+          if (!sk) continue;
+          const cnt = rowSetCount.get(sk) || 0;
+          if (cnt !== 1) continue;
+          const prevSet = prevSlots ? getSetAtSlot(prevSlots[c]) : null;
+          const nextSet = nextSlots ? getSetAtSlot(nextSlots[c]) : null;
+          const support = Number(colSupport.get(sk)?.[c]) || 0;
+          const hasRowMates = (rowSetCount.get(sk) || 0) > 1;
+          if (hasRowMates && support <= 1) continue;
+          if (prevSet === sk || nextSet === sk || support > 1) protectedCols.add(c);
+        }
+        return protectedCols;
+      };
+
+      let swapCount = 0;
+      let improved = true;
+      let pass = 0;
+      while (improved && pass < 10) {
+        improved = false;
+        pass++;
+        const colSupport = getColumnSupport();
+        const preferredColBySet = new Map();
+        for (const setKey of orderedSetKeys) {
+          const hist = colSupport.get(setKey) || new Array(6).fill(0);
+          let targetCol = 0;
+          for (let c = 1; c < 6; c++) {
+            if (hist[c] > hist[targetCol]) targetCol = c;
+          }
+          preferredColBySet.set(setKey, targetCol);
+        }
+
+        // Directed column-alignment pass (bottom -> top):
+        // helps escape local-score plateaus and guarantees visible column building.
+        for (const setKey of orderedSetKeys) {
+          const targetCol = preferredColBySet.get(setKey);
+          if (!Number.isFinite(targetCol)) continue;
+          const curW = Number(setSize.get(setKey)) || 0;
+          if (curW <= 0) continue;
+          for (let level = 1; level <= 6; level++) {
+            const rowSlots = Build.getRowSlotIndicesByLevel(level);
+            const setCols = [];
             for (let c = 0; c < 6; c++) {
-              const rowSlot =
-                c === swapC1 ? rowSlots[swapC2]
-                : c === swapC2 ? rowSlots[swapC1]
-                : rowSlots[c];
-              const sk = getSetAtSlot(rowSlot);
-              if (!sk) continue;
-              if ((curSetCount.get(sk) || 0) > 1) continue; // ignore duplicated set entries in current row
-              if ((prevSetCount.get(sk) || 0) > 1) continue; // ignore duplicated set entries in previous row
-              if (sk === prevSetAtCol[c]) {
-                const sz = Math.max(1, Number(setSize.get(sk)) || 1);
-                score += sz * sz * 10;
-              }
+              if (getSetAtSlot(rowSlots[c]) === setKey) setCols.push(c);
             }
-            return score;
-          };
-          for (let iter = 0; iter < 4; iter++) {
-            let best = null;
-            const base = scoreRow();
-            for (let i = 0; i < movableCols.length; i++) {
-              for (let j = i + 1; j < movableCols.length; j++) {
-                const c1 = movableCols[i];
-                const c2 = movableCols[j];
-                if (polishLockedCols.has(c1) || polishLockedCols.has(c2)) continue;
-                const s1 = rowSlots[c1];
-                const s2 = rowSlots[c2];
-                const t1 = Build.installedTalents?.[s1];
-                const t2 = Build.installedTalents?.[s2];
-                const id1 = Number(t1?.id);
-                const id2 = Number(t2?.id);
-                if (t1 && !(id1 > 0)) continue;
-                if (t2 && !(id2 > 0)) continue;
-                const rs1 = getSetAtSlot(s1);
-                const rs2 = getSetAtSlot(s2);
-                const ps1 = prevSetAtCol[c1];
-                const ps2 = prevSetAtCol[c2];
-                if (rs1 && rs2 && rs1 !== rs2) {
-                  const sz1 = Number(setSize.get(rs1)) || 0;
-                  const sz2 = Number(setSize.get(rs2)) || 0;
-                  // Do not let a smaller set break an existing larger-set column match.
-                  if (ps1 === rs1 && ps2 !== rs1 && sz1 > sz2) continue;
-                  if (ps2 === rs2 && ps1 !== rs2 && sz2 > sz1) continue;
-                }
-                const sc = scoreRow(c1, c2);
-                if (sc > base && (!best || sc > best.score)) {
-                  best = { c1, c2, score: sc };
-                }
-              }
+            if (!setCols.length) continue;
+            const sourceCol = setCols.slice().sort((a, b) => Math.abs(a - targetCol) - Math.abs(b - targetCol))[0];
+            if (!Number.isFinite(sourceCol) || sourceCol === targetCol) continue;
+
+            const sourceSlot = rowSlots[sourceCol];
+            const targetSlot = rowSlots[targetCol];
+            if (fixedSlots.has(sourceSlot) || fixedSlots.has(targetSlot)) continue;
+            const targetSet = getSetAtSlot(targetSlot);
+            if (targetSet && targetSet !== setKey) {
+              const targetW = Number(setSize.get(targetSet)) || 0;
+              if (targetW > curW) continue;
             }
-            if (!best) break;
-            await Build.swapBuildSlotsWithBackend(rowSlots[best.c1], rowSlots[best.c2]);
+            await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
             swapCount++;
+            improved = true;
           }
         }
 
-        // Update affinities using finalized row.
-        const affinitySetSeen = new Set();
-        for (let col = 0; col < 6; col++) {
-          const slot = rowSlots[col];
-          const t = Build.installedTalents?.[slot];
-          const id = Number(t?.id);
-          if (!(id > 0)) continue;
-          const setKey = setTalentToKey.get(Math.abs(id));
-          if (!setKey) continue;
-          if (affinitySetSeen.has(setKey)) continue; // only one entry per set per row
-          affinitySetSeen.add(setKey);
-          if (!setColAffinity.has(setKey)) setColAffinity.set(setKey, new Array(6).fill(0));
-          setColAffinity.get(setKey)[col] += 4;
+        for (let level = 1; level <= 6; level++) {
+          const rowSlots = Build.getRowSlotIndicesByLevel(level);
+          const rowSetCount = getRowSetCount(rowSlots);
+          const protectedCols = getProtectedColsForRow(level, rowSlots, rowSetCount, colSupport);
+          const movableCols = [];
+          for (let c = 0; c < 6; c++) {
+            if (protectedCols.has(c)) continue;
+            if (fixedSlots.has(rowSlots[c])) continue;
+            movableCols.push(c);
+          }
+          if (movableCols.length < 2) continue;
+
+          const base = evaluateBoardScore();
+          let best = null;
+          for (let i = 0; i < movableCols.length; i++) {
+            for (let j = i + 1; j < movableCols.length; j++) {
+              const c1 = movableCols[i];
+              const c2 = movableCols[j];
+              const s1 = rowSlots[c1];
+              const s2 = rowSlots[c2];
+              const t1 = Build.installedTalents?.[s1];
+              const t2 = Build.installedTalents?.[s2];
+              const id1 = Number(t1?.id);
+              const id2 = Number(t2?.id);
+              if (t1 && id1 < 0) continue;
+              if (t2 && id2 < 0) continue;
+
+              const sk1 = getSetAtSlot(s1);
+              const sk2 = getSetAtSlot(s2);
+              if (sk1 && sk2 && sk1 !== sk2) {
+                const w1 = Number(setSize.get(sk1)) || 0;
+                const w2 = Number(setSize.get(sk2)) || 0;
+                if (w1 !== w2) {
+                  const strong = w1 > w2 ? sk1 : sk2;
+                  const strongCol = w1 > w2 ? c1 : c2;
+                  const strongSupport = Number(colSupport.get(strong)?.[strongCol]) || 0;
+                  // Bigger sets keep priority: do not let weaker sets displace
+                  // already-supported strong entries.
+                  if (strongSupport > 1) continue;
+                }
+              }
+
+              const a = Build.installedTalents[s1];
+              const b = Build.installedTalents[s2];
+              Build.installedTalents[s1] = b;
+              Build.installedTalents[s2] = a;
+              const sc = evaluateBoardScore();
+              Build.installedTalents[s1] = a;
+              Build.installedTalents[s2] = b;
+              if (sc > base + 0.001 && (!best || sc > best.score)) {
+                best = { c1, c2, score: sc };
+              }
+            }
+          }
+          if (!best) continue;
+          await Build.swapBuildSlotsWithBackend(rowSlots[best.c1], rowSlots[best.c2]);
+          swapCount++;
+          improved = true;
         }
       }
-
-      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, setSize, 'down');
-      swapCount += await Build.enforceSingleSetNeighborContinuity(setTalentToKey, fixedSlots, setSize, 'up');
 
       Build.updateHeroStats();
       Build.renderCombatOrderBadges();
@@ -2904,14 +2611,10 @@ export class Build {
         Build.sortSetsWasApplied = true;
       }
 
-      if (!skipBackendSync && swapCount > 0) {
-        App.notify(Lang.text('sortSetsIntoColumnDone').replace('{count}', String(swapCount)));
-      }
     } catch {
       try {
         await Build.refreshBuildStateFromServer({ refreshInventory: true });
       } catch {}
-      App.notify(Lang.text('sortSetsIntoColumnFailed'));
     } finally {
       Build._sortDeferBackendSync = false;
       Build.sortSetsInProgress = false;
@@ -4031,11 +3734,13 @@ export class Build {
     return ids;
   }
 
-  static async switchHeroFromCastleBottomList(direction = 1) {
+  static async switchHeroFromCastleBottomList(direction = 1, waitForBuildWindowRender = true) {
     const ids = Build.getHeroIdsFromCastleBottomList();
     if (!ids.length) return;
     const dir = Number(direction) < 0 ? -1 : 1;
-    const currentHeroId = Number(Build.heroId);
+    const highlightedHeroId = Number(View.castleOpenedBuildHeroId);
+    const buildHeroId = Number(Build.heroId);
+    const currentHeroId = Number.isFinite(highlightedHeroId) && highlightedHeroId > 0 ? highlightedHeroId : buildHeroId;
     let index = ids.indexOf(currentHeroId);
     if (index < 0) index = 0;
     const nextHeroId = ids[(index + dir + ids.length) % ids.length];
@@ -4048,7 +3753,12 @@ export class Build {
 
     const isWindowBuild = Window.windows?.main?.id === 'wbuild';
     if (isWindowBuild) {
-      await Window.show('main', 'build', nextHeroId, 0, true);
+      const showPromise = Window.show('main', 'build', nextHeroId, 0, true);
+      if (waitForBuildWindowRender) {
+        await showPromise;
+      } else {
+        showPromise.catch(() => {});
+      }
       try {
         View.scrollCastleBottomToHero?.(nextHeroId);
       } catch {}
@@ -4569,6 +4279,8 @@ export class Build {
     let speedBaseCandidate = -Infinity;
     let speedDeltaCandidate = 0;
     let speedNeedsAnimation = false;
+    const statKeysToAnimate = new Set();
+    const shouldAnimateHero = Build.animateHeroOnBuildChange === true;
 
     // Apply animation and change stats in Build.calculationStats
     for (let key2 in add) {
@@ -4599,12 +4311,7 @@ export class Build {
       }
 
       if (animation) {
-        Build.dataStats[animationKey].animate(
-          { transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] },
-          { duration: 250, fill: 'both', easing: 'ease-out' },
-        );
-
-        Build.heroImg.animate({ transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] }, { duration: 250, fill: 'both', easing: 'ease-out' });
+        statKeysToAnimate.add(animationKey);
       }
     }
 
@@ -4614,10 +4321,20 @@ export class Build {
       calcualteSpecialStats('speed', base + addSpeed);
 
       if (animation && speedNeedsAnimation && Build.dataStats['speed']) {
-        Build.dataStats['speed'].animate(
+        statKeysToAnimate.add('speed');
+      }
+    }
+
+    if (animation && statKeysToAnimate.size > 0) {
+      for (const statKey of statKeysToAnimate) {
+        const el = Build.dataStats?.[statKey];
+        if (!el?.animate) continue;
+        el.animate(
           { transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] },
           { duration: 250, fill: 'both', easing: 'ease-out' },
         );
+      }
+      if (shouldAnimateHero && Build.heroImg?.animate) {
         Build.heroImg.animate({ transform: ['scale(1)', 'scale(1.5)', 'scale(1)'] }, { duration: 250, fill: 'both', easing: 'ease-out' });
       }
     }
@@ -7193,6 +6910,148 @@ export class Build {
     } catch {}
   }
 
+  static installHeroNavKeyboardHandler() {
+    try {
+      if (Build._heroNavKeyboardHandler) {
+        window.removeEventListener('keydown', Build._heroNavKeyboardHandler, true);
+      }
+      if (Build._heroNavKeyboardUpHandler) {
+        window.removeEventListener('keyup', Build._heroNavKeyboardUpHandler, true);
+      }
+      if (Build._heroNavKeyboardBlurHandler) {
+        window.removeEventListener('blur', Build._heroNavKeyboardBlurHandler, true);
+      }
+    } catch {}
+
+    const HOLD_DELAY_MS = 800;
+    const REPEAT_INTERVAL_MS = 50;
+    const sleep = (ms) =>
+      new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    const syncStoppedHeroAfterRepeat = async () => {
+      const syncToken = (Number(Build._heroNavStopSyncToken) || 0) + 1;
+      Build._heroNavStopSyncToken = syncToken;
+      if (Window.windows?.main?.id !== 'wbuild') return;
+
+      // Non-awaited Window.show calls from hold-repeat can finish out of order.
+      // Re-assert the final highlighted hero a few times after key release.
+      await sleep(120);
+      for (let attempt = 0; attempt < 3; attempt++) {
+        if (Build._heroNavStopSyncToken !== syncToken) return;
+        if (Window.windows?.main?.id !== 'wbuild') return;
+        const wantedHeroId = Number(View.castleOpenedBuildHeroId);
+        if (!Number.isFinite(wantedHeroId) || wantedHeroId <= 0) return;
+
+        try {
+          await Window.show('main', 'build', wantedHeroId, 0, true);
+        } catch {}
+        if (Build._heroNavStopSyncToken !== syncToken) return;
+
+        if (Number(Build.heroId) === wantedHeroId) {
+          await sleep(140);
+          if (Build._heroNavStopSyncToken !== syncToken) return;
+          if (Number(Build.heroId) === wantedHeroId) return;
+        } else {
+          await sleep(120);
+        }
+      }
+    };
+    const stopHeroNavRepeat = (syncAfterStop = false) => {
+      const hadRepeat = !!Build._heroNavKeyboardRepeatTimer;
+      try {
+        if (Build._heroNavKeyboardHoldTimer) clearTimeout(Build._heroNavKeyboardHoldTimer);
+      } catch {}
+      try {
+        if (Build._heroNavKeyboardRepeatTimer) clearInterval(Build._heroNavKeyboardRepeatTimer);
+      } catch {}
+      Build._heroNavKeyboardHoldTimer = 0;
+      Build._heroNavKeyboardRepeatTimer = 0;
+      Build._heroNavHeldCode = '';
+      if (syncAfterStop && hadRepeat) {
+        void syncStoppedHeroAfterRepeat();
+      }
+    };
+    const getHeroNavCode = (e) => {
+      const code = String(e?.code || '');
+      if (code === 'KeyA' || code === 'KeyD') return code;
+      const key = String(e?.key || '').toLowerCase();
+      if (key === 'a') return 'KeyA';
+      if (key === 'd') return 'KeyD';
+      return '';
+    };
+    const canUseHeroNavHotkey = (e) => {
+      if (Window.windows?.main?.id !== 'wbuild') return false;
+      if (e?.ctrlKey || e?.metaKey || e?.altKey || e?.shiftKey) return false;
+      const activeEl = document.activeElement;
+      const activeTag = String(activeEl?.tagName || '').toUpperCase();
+      const isTypingTarget =
+        activeEl?.isContentEditable ||
+        activeTag === 'INPUT' ||
+        activeTag === 'TEXTAREA' ||
+        activeTag === 'SELECT';
+      if (isTypingTarget) return false;
+      return true;
+    };
+    const switchHeroSafe = async (dir, waitForRender = true) => {
+      if (waitForRender && Build._heroNavKeyboardBusy) return;
+      if (Window.windows?.main?.id !== 'wbuild') {
+        stopHeroNavRepeat(false);
+        return;
+      }
+      if (waitForRender) Build._heroNavKeyboardBusy = true;
+      try {
+        await Build.switchHeroFromCastleBottomList(dir, waitForRender);
+      } finally {
+        if (waitForRender) Build._heroNavKeyboardBusy = false;
+      }
+    };
+
+    Build._heroNavKeyboardHandler = async (e) => {
+      const navCode = getHeroNavCode(e);
+      if (!navCode || e?.repeat) return;
+      if (!canUseHeroNavHotkey(e)) {
+        stopHeroNavRepeat();
+        return;
+      }
+
+      const dir = navCode === 'KeyA' ? -1 : 1;
+      if (Build._heroNavHeldCode === navCode) {
+        e.preventDefault?.();
+        return;
+      }
+
+      stopHeroNavRepeat(false);
+      Build._heroNavHeldCode = navCode;
+      e.preventDefault?.();
+      await switchHeroSafe(dir);
+
+      Build._heroNavKeyboardHoldTimer = setTimeout(() => {
+        if (Build._heroNavHeldCode !== navCode) return;
+        Build._heroNavKeyboardRepeatTimer = setInterval(() => {
+          if (Build._heroNavHeldCode !== navCode) return;
+          void switchHeroSafe(dir, false);
+        }, REPEAT_INTERVAL_MS);
+      }, HOLD_DELAY_MS);
+    };
+    Build._heroNavKeyboardUpHandler = (e) => {
+      const navCode = getHeroNavCode(e);
+      if (!navCode) return;
+      if (Build._heroNavHeldCode === navCode) {
+        stopHeroNavRepeat(true);
+      }
+    };
+    Build._heroNavKeyboardBlurHandler = () => {
+      stopHeroNavRepeat(true);
+    };
+
+    try {
+      window.addEventListener('keydown', Build._heroNavKeyboardHandler, true);
+      window.addEventListener('keyup', Build._heroNavKeyboardUpHandler, true);
+      window.addEventListener('blur', Build._heroNavKeyboardBlurHandler, true);
+    } catch {}
+  }
+
   static cancelSortInventory() {
     Build.ruleSortInventory = new Object();
 
@@ -7230,7 +7089,17 @@ export class Build {
       }
 
       let moveStart = Date.now();
-      if (!Build._descriptionPinnedBySet) Build.descriptionView.style.display = 'none';
+      // Drag start should always dismiss talent/set description overlays.
+      // Fast cursor moves can skip mouseout and leave expensive hover-refresh logic active.
+      Build._isDraggingTalent = true;
+      Build._hoveredDescriptionTalentEl = null;
+      Build._descriptionPinnedBySet = false;
+      Build._hoveredSetTalentIds = null;
+      Build._hoveredSetAnchorEl = null;
+      if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+      Build.clearBuildRowHoverHighlight();
+      Build.clearSetHighlights();
+      Build.clearEmptySlotPreviews();
 
       if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
       try {
@@ -7280,6 +7149,19 @@ export class Build {
       };
 
       element.onmouseup = async (event) => {
+        Build._isDraggingTalent = false;
+        const finishDragVisualState = () => {
+          fieldRow.style.background = '';
+          element.style.position = 'static';
+          element.style.zIndex = 'auto';
+          element.style.left = '';
+          element.style.top = '';
+          element.style.transition = '';
+          element.style.willChange = '';
+          element.style.transformOrigin = '';
+          element.style.removeProperty('transform');
+        };
+
         // Возвращаем исходный размер
         element.style.setProperty('transform', 'scale(1)', 'important');
 
@@ -7335,6 +7217,31 @@ export class Build {
           Build.previewSetTalentsInEmptySlots({ _manualOrder: Build._hoveredSetTalentIds, key: 'hover_preview_move' });
         }
         else Build.clearSetHighlights();
+
+        // No-op case: talent was dragged inside library and released in library.
+        // Snap it back immediately, without waiting for heavy post-drop logic.
+        if (!fromActiveBar && element.dataset.state == 1 && isInventoryTarget) {
+          Build.schedulePostMoveUiRefresh({ needSort: false });
+          finishDragVisualState();
+          try {
+            const hovered = document.elementFromPoint(event.clientX, event.clientY);
+            const hoveredTalent = hovered?.closest?.('.build-talent-item');
+            if (hoveredTalent) {
+              requestAnimationFrame(() => {
+                try {
+                  hoveredTalent.dispatchEvent(
+                    new MouseEvent('mouseover', {
+                      bubbles: true,
+                      clientX: event.clientX,
+                      clientY: event.clientY,
+                    }),
+                  );
+                } catch {}
+              });
+            }
+          } catch {}
+          return;
+        }
 
         let removeFromActive = async (position, skipActiveId) => {
           for (let i = 0; i < Build.activeBarItems.length; i++) {
@@ -7853,35 +7760,28 @@ export class Build {
           await removeFromActive(element.dataset.position);
         }
 
-        try {
-          // Всегда пересчитать видимость (в т.ч. скрыть дубликаты «в билде + в библиотеке» без режима сета).
-          Build.sortInventory();
-        } catch {}
+        Build.schedulePostMoveUiRefresh({ needSort: true });
 
-        Build.updateHeroStats();
-        Build.syncCombatModeButtonState();
-
-        fieldRow.style.background = '';
-
-        element.style.position = 'static';
-
-        element.style.zIndex = 'auto';
+        finishDragVisualState();
 
         // If cursor stays over a talent after click/drag-end,
         // restore tooltip/row-highlight without requiring mouse movement.
-        try {
-          const hovered = document.elementFromPoint(event.clientX, event.clientY);
-          const hoveredTalent = hovered?.closest?.('.build-talent-item');
-          if (hoveredTalent) {
-            hoveredTalent.dispatchEvent(
-              new MouseEvent('mouseover', {
-                bubbles: true,
-                clientX: event.clientX,
-                clientY: event.clientY,
-              }),
-            );
-          }
-        } catch {}
+        // Avoid expensive forced tooltip redraw on very frequent library clicks.
+        if (!(isInventoryTalent && isClick)) {
+          try {
+            const hovered = document.elementFromPoint(event.clientX, event.clientY);
+            const hoveredTalent = hovered?.closest?.('.build-talent-item');
+            if (hoveredTalent) {
+              hoveredTalent.dispatchEvent(
+                new MouseEvent('mouseover', {
+                  bubbles: true,
+                  clientX: event.clientX,
+                  clientY: event.clientY,
+                }),
+              );
+            }
+          } catch {}
+        }
       };
     };
 
@@ -7915,6 +7815,99 @@ export class Build {
     return true;
   }
 
+  static schedulePostMoveUiRefresh({ needSort = true } = {}) {
+    if (needSort) Build._postMoveRefreshNeedSort = true;
+    if (Build._postMoveRefreshRaf) return;
+
+    Build._postMoveRefreshRaf = requestAnimationFrame(() => {
+      Build._postMoveRefreshRaf = 0;
+      const shouldSort = Build._postMoveRefreshNeedSort;
+      Build._postMoveRefreshNeedSort = false;
+      try {
+        if (shouldSort) Build.sortInventory();
+      } catch {}
+      try {
+        Build.updateHeroStats();
+      } catch {}
+      try {
+        Build.syncCombatModeButtonState();
+      } catch {}
+    });
+  }
+
+  static scheduleLibraryDescriptionRender(renderFn) {
+    if (typeof renderFn !== 'function') return;
+    requestAnimationFrame(() => {
+      try {
+        renderFn();
+      } catch {}
+    });
+  }
+
+  static cancelPendingInventorySetHover() {
+    try {
+      if (Build._inventorySetHoverTimer) clearTimeout(Build._inventorySetHoverTimer);
+    } catch {}
+    Build._inventorySetHoverTimer = 0;
+    Build._inventorySetHoverTalentId = null;
+  }
+
+  static applySetHoverForLibraryTalent(talentData) {
+    let hasSetHover = !!Build._hoveredSetTalentIds;
+    const numericTalentId = Number(talentData?.id);
+    const canUseSetHoverForTalent = Number.isFinite(numericTalentId) && numericTalentId > 0;
+    if (!hasSetHover && canUseSetHoverForTalent && Build.isBuildSetHoverOnTalentEnabled()) {
+      const wantedId = numericTalentId;
+      for (const set of TalentSets.list()) {
+        const ids = TalentSets.getTalentIds(set);
+        if (!Array.isArray(ids) || !ids.length) continue;
+        if (!ids.some((id) => Number(id) === wantedId)) continue;
+        let installedSetTalentsCount = 0;
+        for (const id of ids) {
+          if (Build.isTalentInBuild(id)) installedSetTalentsCount++;
+        }
+        const hoveredTalentInstalledInBuild = Build.isTalentInBuild(talentData.id);
+        if (installedSetTalentsCount <= 1 && hoveredTalentInstalledInBuild) {
+          Build.highlightSetTalentsInLibraryOnly(ids);
+          hasSetHover = true;
+          break;
+        }
+        Build.highlightSetTalents(ids);
+        hasSetHover = true;
+        break;
+      }
+    }
+    return hasSetHover;
+  }
+
+  static scheduleInventorySetHoverEnhance(talentElement, talentData) {
+    Build.cancelPendingInventorySetHover();
+    const talentId = Number(talentData?.id);
+    Build._inventorySetHoverTalentId = Number.isFinite(talentId) ? talentId : null;
+    const waitMs = Math.max(0, Number(Build.inventorySetHoverDelayMs) || 0);
+    Build._inventorySetHoverTimer = setTimeout(() => {
+      Build._inventorySetHoverTimer = 0;
+      if (Build._isDraggingTalent) return;
+      if (Build._hoveredDescriptionTalentEl !== talentElement) return;
+      if (!talentElement?.isConnected) return;
+      if (Build._libraryHoverSuppressed) return;
+      const currentHoveredId = Number(Build._hoveredDescriptionTalentEl?.dataset?.id);
+      if (Number.isFinite(Build._inventorySetHoverTalentId) && currentHoveredId !== Build._inventorySetHoverTalentId) return;
+      const hasSetHover = Build.applySetHoverForLibraryTalent(talentData);
+      if (Build.isBuildRowHoverHighlightEnabled() && Number(talentData?.level) > 0) {
+        Build.highlightBuildRowByLevel(talentData.level);
+      }
+      if (!hasSetHover) {
+        Build.previewSetTalentsInEmptySlots(
+          { _manualOrder: [talentData.id], key: `single_${talentData.id}` },
+          'left',
+          { previewClass: 'build-talent-empty-slot-preview' },
+        );
+      }
+      Build._inventorySetHoverTalentId = null;
+    }, waitMs);
+  }
+
   static refreshActiveTalentDescription() {
     if (!Build.descriptionView) return;
     if (Build.descriptionView.style.display === 'none') return;
@@ -7929,6 +7922,10 @@ export class Build {
 
   static description(element) {
     let descEvent = () => {
+      if (Build._isDraggingTalent) {
+        if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+        return;
+      }
       let positionElement = element.getBoundingClientRect();
       let data = Build.talents[element.dataset.id];
       const isInventoryTalent = !!element.closest?.('.build-talents');
@@ -7949,30 +7946,12 @@ export class Build {
       const descriptionKey = `${prefix}${absId}_description`;
 
       let hasSetHover = !!Build._hoveredSetTalentIds;
-      const numericTalentId = Number(data.id);
-      const canUseSetHoverForTalent = Number.isFinite(numericTalentId) && numericTalentId > 0;
-      if (!hasSetHover && canUseSetHoverForTalent && Build.isBuildSetHoverOnTalentEnabled()) {
-        const wantedId = numericTalentId;
-        if (Number.isFinite(wantedId) && wantedId > 0) {
-          for (const set of TalentSets.list()) {
-            const ids = TalentSets.getTalentIds(set);
-            if (!Array.isArray(ids) || !ids.length) continue;
-            if (!ids.some((id) => Number(id) === wantedId)) continue;
-            let installedSetTalentsCount = 0;
-            for (const id of ids) {
-              if (Build.isTalentInBuild(id)) installedSetTalentsCount++;
-            }
-            const hoveredTalentInstalledInBuild = Build.isTalentInBuild(data.id);
-            if (installedSetTalentsCount <= 1 && hoveredTalentInstalledInBuild) {
-              Build.highlightSetTalentsInLibraryOnly(ids);
-              hasSetHover = true;
-              break;
-            }
-            Build.highlightSetTalents(ids);
-            hasSetHover = true;
-            break;
-          }
-        }
+      if (isInventoryTalent) {
+        // Library hover gets an extra delayed pass for expensive set highlighting.
+        // This avoids spikes during rapid cursor movement.
+        Build.scheduleInventorySetHoverEnhance(element, data);
+      } else {
+        hasSetHover = Build.applySetHoverForLibraryTalent(data);
       }
 
       // Получаем переводы из системы Lang
@@ -8087,21 +8066,14 @@ export class Build {
 
       // Preview: where this library talent would land in the build.
       if (isInventoryTalent) {
-        if (Build.isBuildRowHoverHighlightEnabled() && data.level > 0) {
-          Build.highlightBuildRowByLevel(data.level);
-        }
-        if (!hasSetHover) {
-          // Single talent preview in library should pick the left-most empty slot.
-          Build.previewSetTalentsInEmptySlots(
-            { _manualOrder: [data.id], key: `single_${data.id}` },
-            'left',
-            { previewClass: 'build-talent-empty-slot-preview' },
-          );
-        }
+        // Expensive library hover effects are delayed in scheduleInventorySetHoverEnhance().
+        // This keeps fast cursor movement smooth (same feel as hovering talents in build grid).
+        return;
       }
     };
 
     let descEventEnd = () => {
+      Build.cancelPendingInventorySetHover();
       Build.descriptionView.style.display = 'none';
       Build.clearBuildRowHoverHighlight();
       if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
@@ -8115,6 +8087,11 @@ export class Build {
 
     element.onmouseover = () => {
       Build._hoveredDescriptionTalentEl = element;
+      const isInventoryTalent = !!element.closest?.('.build-talents');
+      if (isInventoryTalent) {
+        Build.scheduleLibraryDescriptionRender(descEvent);
+        return;
+      }
       descEvent();
     };
     element.onmouseout = () => {
@@ -8127,12 +8104,14 @@ export class Build {
     };
   }
   static cleanup() {
+    Build._isDraggingTalent = false;
     Build._hoveredDescriptionTalentEl = null;
     Build._libraryHoverSuppressed = false;
     try {
       if (Build._libraryHoverSuppressTimer) clearTimeout(Build._libraryHoverSuppressTimer);
     } catch {}
     Build._libraryHoverSuppressTimer = 0;
+    Build.cancelPendingInventorySetHover();
     Build._libraryPointerX = null;
     Build._libraryPointerY = null;
     Build.clearBuildRowHoverHighlight();
@@ -8141,6 +8120,29 @@ export class Build {
       if (Build._altResetHandler) window.removeEventListener('keydown', Build._altResetHandler, true);
     } catch {}
     Build._altResetHandler = null;
+    try {
+      if (Build._heroNavKeyboardHandler) window.removeEventListener('keydown', Build._heroNavKeyboardHandler, true);
+    } catch {}
+    try {
+      if (Build._heroNavKeyboardUpHandler) window.removeEventListener('keyup', Build._heroNavKeyboardUpHandler, true);
+    } catch {}
+    try {
+      if (Build._heroNavKeyboardBlurHandler) window.removeEventListener('blur', Build._heroNavKeyboardBlurHandler, true);
+    } catch {}
+    try {
+      if (Build._heroNavKeyboardHoldTimer) clearTimeout(Build._heroNavKeyboardHoldTimer);
+    } catch {}
+    try {
+      if (Build._heroNavKeyboardRepeatTimer) clearInterval(Build._heroNavKeyboardRepeatTimer);
+    } catch {}
+    Build._heroNavKeyboardHandler = null;
+    Build._heroNavKeyboardUpHandler = null;
+    Build._heroNavKeyboardBlurHandler = null;
+    Build._heroNavKeyboardHoldTimer = 0;
+    Build._heroNavKeyboardRepeatTimer = 0;
+    Build._heroNavHeldCode = '';
+    Build._heroNavStopSyncToken = (Number(Build._heroNavStopSyncToken) || 0) + 1;
+    Build._heroNavKeyboardBusy = false;
     try {
       Build.altResetHintView?.parentNode?.removeChild?.(Build.altResetHintView);
     } catch {}

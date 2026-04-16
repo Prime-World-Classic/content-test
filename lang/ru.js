@@ -382,6 +382,7 @@ export const ru = {
     hotkeyDropCalls: '<strong>Ctrl+K</strong> - сбросить все звонки кроме друзей',
     hotkeyDropCallsSuffix: ' - сбросить все звонки кроме друзей',
     hotkeyVolumeControl: '<strong>Ctrl+↑/↓</strong> - повысить/понизить громкость',
+    voicePeerVolumeHint: 'Наведи на % и крути колёсико — громкость игрока',
 
     // Квесты
     qDays: 'д.',
@@ -1051,8 +1052,6 @@ export const ru = {
     combatModeLevelCounterTitle: 'Уровень героя',
     sortSetsIntoColumnDisabledCombat: 'Сортировка сетов недоступна в боевом режиме',
     sortSetsIntoColumnInProgress: 'Сортировка сетов...',
-    sortSetsIntoColumnDone: 'Сеты отсортированы. Перемещено: {count}',
-    sortSetsIntoColumnFailed: 'Не удалось отсортировать сеты. Состояние билда обновлено.',
     titleClickToViewHeroRating: 'Выберите героя, чтобы отсортировать игроков зала славы',
 
     // Постройки
