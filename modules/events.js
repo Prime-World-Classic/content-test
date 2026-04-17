@@ -149,6 +149,8 @@ export class Events {
   }
 
   static PUpdate(data) {
+    MM.partyId = Number(data?.id || MM.partyId || 0);
+    MM.partyMembersCount = Object.keys(data?.users || {}).length || 1;
     if (data && ('mode' in data)) {
       CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
     }
@@ -263,11 +265,20 @@ export class Events {
   static UFriendIncoming(data) {
     View.setFriendIncomingStatus(data && Number(data.hasIncoming) == 1);
     if (View.castleActiveTab === 'friends') {
-      View.bodyCastleFriends();
-      View.castleBottom.scrollLeft = 0;
-      View.updateArrows();
-      Castle.buildMode = false;
+      App.api.silent(
+        (result) => {
+          if (View.castleActiveTab !== 'friends') return;
+          View.castleFriendAll = Array.isArray(result) ? result : [];
+          View.renderCastleFriendsFromCache();
+        },
+        'friend',
+        'list',
+      );
     }
+  }
+  
+  static UFriendPresence(data) {
+    View.applyFriendPresenceUpdate(data || {});
   }
 
 

@@ -84,6 +84,13 @@ export const be = {
     buildSettingsSetHoverOnTalent: 'Падсветка сета пры навядзенні на талент',
     sortSetsRmbMirrorBuild: 'ПКМ - Адлюстраваць білд',
     showStatistics: 'Паказаць статыстыку',
+    friendInGroup: 'У групе',
+    friendStatusOnline: 'У сетцы',
+    friendStatusBattle: 'У баі',
+    friendStatusQueue: 'Шукае бой',
+    friendStatusTambour: 'У тамбуры',
+    friendStatusAway: 'Адышоў',
+    friendStatusOffline: 'Не ў сетцы',
 
 
     gm1_hover: 'Пагранічча\\AКласічны MOBA-рэжым. Бітва на спецыяльнай мапе 5×5. На базе знаходзіцца міні-гульня, у пэўных месцах мапы размешчаны Крышталі. Таксама сустракаюцца міні-босы Кот Баюн і Змей Горыныч, а на рацэ можна атрымаць дадатковы прайм у выглядзе Гліфа.',

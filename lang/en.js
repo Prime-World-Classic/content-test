@@ -344,12 +344,19 @@ export const en = {
     callAFriend: 'Call',
     inviteToAGroup: 'Party',
     friendIsOffline: 'Offline',
+    friendStatusOnline: 'Online',
+    friendStatusBattle: 'In battle',
+    friendStatusQueue: 'Searching',
+    friendStatusTambour: 'In tambour',
+    friendStatusAway: 'Away',
+    friendStatusOffline: 'Offline',
     friendAccept: 'Accept',
     friendDecline: 'Decline',
     friendRemove: 'Remove',
     friendCancle: 'Cancle',
     friendRemoveText: 'Friend - {nickname}',
     friendAcceptText: 'Invitation sent to {nickname}',
+    friendInGroup: 'In party',
     friendNicknamePlaceholder: 'Nickname',
     friendAcceptWaiting: 'Waiting',
     friendListClear: 'Clear list',
@@ -5004,7 +5011,7 @@ export const en = {
       'The cooldown of <tn>Pernicious Power</tn> is reduced by <num>30</num> sec. If the hero has no energy, increases health regeneration. <br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn>',
     talent_473_name: 'Pernicious Power<white> <CD>90</CD></white>',
     talent_473_description:
-      '<num>Attacking</num><br><br>Deals a total of <fiz>%s</fiz> damage (from the highest of Strength and Intellect) to the specified enemy hero.<br>Each kill made with this talent increases its damage by <fiz>%s</fiz> (from the highest of Strength and Intellect).<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn><br><br><gray>- can be improved by <num>3</num> talents</gray>',
+      '<num>Attacking</num><br><br>Deals a total of <fiz>%s</fiz> damage (from the highest of Strength and Intellect) to the specified enemy hero.<br>Each kill made with this talent (no more than <num>10</num>) increases its damage by <fiz>%s</fiz> (from the highest of Strength and Intellect).<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_474_name: 'A Pernicious Ploy',
     talent_474_description:
       'Increases talent penetration by <num>0.8%</num> for each kill made with <tn>Pernicious Power</tn>.<br> <br> <gray>Set</gray> <tn>"Pernicious passion"</tn>',
@@ -5337,16 +5344,16 @@ export const en = {
       'Talent <orange-d>Forest symbol</orange-d> additionally deals <mag>%s</mag> damage. The damage is distributed evenly across the set targets affected by the class ability.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_584_name: 'The Order of Victory',
     talent_584_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
     talent_585_name: 'Order of Courage',
     talent_585_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
     talent_586_name: 'Order of Courage',
     talent_586_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
     talent_587_name: 'The Order of Nobility',
     talent_587_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.7</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
     talent_588_name: 'Stronghold of Life',
     talent_588_description:
       '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
@@ -5883,9 +5890,9 @@ export const en = {
     talent_767_name: 'Energy Spinner',
     talent_767_description:
       'the Hero\'s energy increases every minute by <yellow>11.1</yellow>. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
-    talent_768_name: 'Sea Symbol<white> <CD>7</CD></white>',
+    talent_768_name: 'Sea Symbol<white> <CD>10</CD></white>',
     talent_768_description:
-      'An ally who received a buff from the class ability for <num>3</num> sec will gain <num>%s</num> Health per second from the highest of your hero\'s Strength and Intellect. Triggers on each hero no more than once every <num>7</num> sec.  <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn><br><br><gray>- can be improved by <num>3</num> talents</gray>',
+      'An ally who received a buff from the class ability for <num>3</num> sec will gain <num>%s</num> Health per second from the highest of your hero\'s Strength and Intellect. Triggers on each hero no more than once every <num>10</num> sec. Each learned talent from the set increases the base healing by <num>%s%</num> <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_769_name: 'Sea Aspiration',
     talent_769_description:
       'The hero\'s Base Speed increases by <num>%s</num>. Of passive speed increases, the highest applies. Vision radius increases by <num>4.2</num>.<br> While the Sea Symbol effect is active, the target\'s speed increases by <num>%s</num> (from the highest of Strength and Intellect of the set owner).  <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn>',

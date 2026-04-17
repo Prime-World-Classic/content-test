@@ -136,6 +136,206 @@ export class View {
     View.hasFriendIncomingRequest = Boolean(value);
     View.updateFriendsMenuIncomingState();
   }
+  
+  static normalizeFriendPresenceState(item) {
+    const state = String(item?.presenceState || '').toLowerCase();
+    if (state === 'online' || state === 'queue' || state === 'tambour' || state === 'battle' || state === 'away' || state === 'offline') {
+      return state;
+    }
+    return Number(item?.online) === 1 ? 'online' : 'offline';
+  }
+  
+  static getFriendPresenceLabel(state) {
+    switch (String(state || 'offline')) {
+      case 'battle':
+        return Lang.text('friendStatusBattle');
+      case 'tambour':
+        return Lang.text('friendStatusTambour');
+      case 'queue':
+        return Lang.text('friendStatusQueue');
+      case 'away':
+        return Lang.text('friendStatusAway');
+      case 'online':
+        return Lang.text('friendStatusOnline');
+      default:
+        return Lang.text('friendStatusOffline');
+    }
+  }
+  
+  static isFriendGroupInviteEnabled(item) {
+    return View.normalizeFriendPresenceState(item) === 'online';
+  }
+  
+  static isFriendCallEnabled(item) {
+    const state = View.normalizeFriendPresenceState(item);
+    return state === 'online' || state === 'queue';
+  }
+  
+  static getFriendPresenceFilter(state) {
+    switch (String(state || 'offline')) {
+      case 'battle':
+        return 'sepia(1) hue-rotate(-40deg) saturate(1.45) brightness(0.95)';
+      case 'tambour':
+        return 'sepia(1) hue-rotate(-715deg) saturate(3.35) brightness(1.02)';
+      case 'queue':
+        return 'brightness(1.28)';
+      case 'away':
+        return 'sepia(1) hue-rotate(352deg) saturate(1.1) brightness(0.92)';
+      case 'offline':
+        return 'grayscale(0.8)';
+      default:
+        return '';
+    }
+  }
+  
+  static getFriendStatusSortWeight(item) {
+    const relationStatus = Number(item?.status || 0);
+    if (relationStatus === 2) {
+      return 0; // incoming requests
+    }
+    if (relationStatus === 3) {
+      return 8; // outgoing requests
+    }
+    if (relationStatus !== 1) {
+      return 9;
+    }
+    const presenceState = View.normalizeFriendPresenceState(item);
+    if (presenceState === 'online') {
+      return Number(item?.inParty) === 1 ? 2 : 1;
+    }
+    switch (presenceState) {
+      case 'queue':
+        return 3;
+      case 'tambour':
+        return 4;
+      case 'battle':
+        return 5;
+      case 'away':
+        return 6;
+      default:
+        return 7; // offline/unknown
+    }
+  }
+  
+  static getSortedCastleFriends() {
+    const source = Array.isArray(View.castleFriendAll) ? View.castleFriendAll : [];
+    return source
+      .map((item, index) => ({ item, index }))
+      .sort((a, b) => {
+        const weightDiff = View.getFriendStatusSortWeight(a.item) - View.getFriendStatusSortWeight(b.item);
+        if (weightDiff !== 0) {
+          return weightDiff;
+        }
+        return a.index - b.index;
+      })
+      .map((entry) => entry.item);
+  }
+  
+  static applyFriendPresenceUpdate(data) {
+    const friendId = Number(data?.id || 0);
+    if (!friendId) return;
+    let changed = false;
+    let changedItem = null;
+    for (const item of View.castleFriendAll || []) {
+      if (Number(item?.id) !== friendId) continue;
+      item.presenceState = String(data?.state || item?.presenceState || '');
+      if ('online' in (data || {})) item.online = Number(data.online) === 1 ? 1 : 0;
+      if ('mobile' in (data || {})) item.mobile = Number(data.mobile) === 1 ? 1 : 0;
+      if ('inParty' in (data || {})) item.inParty = Number(data.inParty) === 1 ? 1 : 0;
+      changed = true;
+      changedItem = item;
+      break;
+    }
+    if (changed && changedItem && View.castleActiveTab === 'friends') {
+      View.patchVisibleFriendCard(changedItem);
+      View.reorderVisibleFriendCards();
+    }
+  }
+  
+  static createFriendGroupAction(item) {
+    return async () => {
+      await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id, mode: CastleNAVBAR.mode });
+      App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
+    };
+  }
+  
+  static createFriendCallAction(item) {
+    return async () => {
+      try {
+        let voice = new Voice(item.id, 'friend', item.nickname, true);
+        await voice.call();
+      } catch (error) {
+        App.error(error);
+      }
+    };
+  }
+  
+  static patchVisibleFriendCard(item) {
+    if (!View.castleBottom) return;
+    const card = View.castleBottom.querySelector(`.castle-friend-item[data-friend-id="${Number(item?.id || 0)}"]`);
+    if (!card) return;
+    const status = Number(item?.status || 0);
+    if (status !== 1) return;
+    const bottom = card.querySelector('.castle-friend-item-bottom');
+    if (!bottom) return;
+    const buttons = bottom.querySelectorAll('.castle-friend-add-group');
+    if (buttons.length < 2) return;
+    const call = buttons[0];
+    const group = buttons[1];
+    const presenceState = View.normalizeFriendPresenceState(item);
+    const friendInParty = presenceState === 'online' && Number(item?.inParty) === 1;
+    const groupEnabled = View.isFriendGroupInviteEnabled(item);
+    const callEnabled = View.isFriendCallEnabled(item);
+    const groupText = friendInParty
+      ? Lang.text('friendInGroup')
+      : groupEnabled
+        ? Lang.text('inviteToAGroup')
+        : View.getFriendPresenceLabel(presenceState);
+    group.textContent = groupText;
+    const presenceFilter = View.getFriendPresenceFilter(presenceState);
+    group.style.filter = (!groupEnabled || friendInParty) ? (presenceFilter || 'grayscale(0.8)') : '';
+    call.style.filter = !callEnabled ? 'grayscale(0.8)' : '';
+    group.onclick = null;
+    call.onclick = null;
+    if (groupEnabled && !friendInParty) {
+      group.onclick = View.createFriendGroupAction(item);
+    }
+    if (callEnabled) {
+      call.onclick = View.createFriendCallAction(item);
+    }
+    const mobileEmoji = card.querySelector('.castle-friend-mobile-emoji');
+    const showMobile = status === 1 && View.normalizeFriendPresenceState(item) !== 'offline' && Number(item?.mobile) === 1;
+    if (showMobile && !mobileEmoji) {
+      card.append(DOM({ style: 'castle-friend-mobile-emoji' }, '📱'));
+    } else if (!showMobile && mobileEmoji) {
+      mobileEmoji.remove();
+    }
+  }
+  
+  static reorderVisibleFriendCards() {
+    if (!View.castleBottom) return;
+    const cards = Array.from(View.castleBottom.querySelectorAll('.castle-friend-item[data-friend-id]'));
+    if (cards.length < 2) return;
+    const orderIndex = new Map();
+    const all = Array.isArray(View.castleFriendAll) ? View.castleFriendAll : [];
+    for (let i = 0; i < all.length; i++) {
+      orderIndex.set(Number(all[i]?.id || 0), i);
+    }
+    cards.sort((a, b) => {
+      const aId = Number(a.dataset.friendId || 0);
+      const bId = Number(b.dataset.friendId || 0);
+      const aItem = all.find((x) => Number(x?.id || 0) === aId);
+      const bItem = all.find((x) => Number(x?.id || 0) === bId);
+      const weightDiff = View.getFriendStatusSortWeight(aItem) - View.getFriendStatusSortWeight(bItem);
+      if (weightDiff !== 0) {
+        return weightDiff;
+      }
+      return (orderIndex.get(aId) ?? 0) - (orderIndex.get(bId) ?? 0);
+    });
+    for (const card of cards) {
+      View.castleBottom.append(card);
+    }
+  }
 
   static updateFriendsMenuIncomingState() {
     if (!View.friendsMenuItem) {
@@ -2988,7 +3188,8 @@ export class View {
     preload.add(buttonAdd);
     View.castleBottom.append(buttonAdd);
 
-    for (let item of View.castleFriendAll || []) {
+    const sortedFriends = View.getSortedCastleFriends();
+    for (let item of sortedFriends) {
       const status = Number(item?.status);
       const nickname = String(item?.nickname || '');
       const nicknameLower = nickname.toLowerCase();
@@ -3011,6 +3212,7 @@ export class View {
       let heroNameBase = DOM({ style: 'castle-item-hero-name' }, heroName);
       let bottom = DOM({ style: 'castle-friend-item-bottom' });
       let friend = DOM({ style: 'castle-friend-item' }, DOM({ style: ['castle-item-ornament', 'hover-brightness'] }), heroNameBase, bottom);
+      friend.dataset.friendId = String(Number(item?.id || 0));
 
       if (editMode && status === 1) {
         const selected = View.castleFriendEditSelection.has(Number(item.id));
@@ -3026,24 +3228,29 @@ export class View {
       } else {
         // Keep existing friend actions in non-edit mode (copied minimal core behavior).
         if (status == 1) {
-          let group = DOM({ style: 'castle-friend-add-group' }, item.online ? Lang.text('inviteToAGroup') : Lang.text('friendIsOffline'));
+          const presenceState = View.normalizeFriendPresenceState(item);
+          const friendInParty = presenceState === 'online' && Number(item?.inParty) === 1;
+          const groupEnabled = View.isFriendGroupInviteEnabled(item);
+          const callEnabled = View.isFriendCallEnabled(item);
+          const groupText = friendInParty
+            ? Lang.text('friendInGroup')
+            : groupEnabled
+              ? Lang.text('inviteToAGroup')
+              : View.getFriendPresenceLabel(presenceState);
+          let group = DOM({ style: 'castle-friend-add-group' }, groupText);
           let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
-          if (!item.online) {
-            group.style.filter = 'grayscale(0.8)';
-            call.style.filter = 'grayscale(.8)';
-          } else {
-            group.onclick = async () => {
-              await App.api.request(App.CURRENT_MM, 'inviteParty', { id: item.id, mode: CastleNAVBAR.mode });
-              App.notify(Lang.text('friendAcceptText').replace('{nickname}', item.nickname));
-            };
-            call.onclick = async () => {
-              try {
-                let voice = new Voice(item.id, 'friend', item.nickname, true);
-                await voice.call();
-              } catch (error) {
-                App.error(error);
-              }
-            };
+          const presenceFilter = View.getFriendPresenceFilter(presenceState);
+          if (!groupEnabled || friendInParty) {
+            group.style.filter = presenceFilter || 'grayscale(0.8)';
+          }
+          if (!callEnabled) {
+            call.style.filter = 'grayscale(0.8)';
+          }
+          if (groupEnabled && !friendInParty) {
+            group.onclick = View.createFriendGroupAction(item);
+          }
+          if (callEnabled) {
+            call.onclick = View.createFriendCallAction(item);
           }
           friend.addEventListener('contextmenu', (event) => {
             event.preventDefault();
@@ -3154,7 +3361,7 @@ export class View {
         }
       }
 
-      if (status == 1 && item.online && Number(item.mobile) == 1) {
+      if (status == 1 && View.normalizeFriendPresenceState(item) !== 'offline' && Number(item.mobile) == 1) {
         friend.append(DOM({ style: 'castle-friend-mobile-emoji' }, '📱'));
       }
 
