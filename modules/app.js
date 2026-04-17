@@ -21,7 +21,7 @@ import { SessionPulse } from './sessionPulse.js';
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.15.0';
+  static PW_VERSION = '2.15.1';
 
   static CURRENT_MM = 'mmtest';
 
