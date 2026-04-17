@@ -1554,7 +1554,7 @@ export class Build {
       btnName,
     );
 
-    template.append(modal, name, button, close, helpBtn);
+    template.append(modal, name, button, close);
 
     Splash.show(template);
   }
@@ -2352,7 +2352,9 @@ export class Build {
         const count = Number(setTalentCounters.get(setKey)) || 0;
         if (count <= 0) return 0;
         if (count === 1) return 1; // одиночные
-        if (!rows.length) return count >= 6 ? 10 : count === 5 ? 8 : count === 4 ? 6 : count === 3 ? 4 : count === 2 ? 2 : 1;
+        // User rule: if all set talents are located within a single row,
+        // they are treated as "singletons" priority-wise.
+        if (rows.length <= 1) return 1;
         const min = rows[0];
         const max = rows[rows.length - 1];
         const contiguous = max - min + 1 === rows.length;
@@ -2377,11 +2379,19 @@ export class Build {
       for (const k of orderedSetKeys) {
         setSize.set(k, getSetPriorityWeight(k));
       }
+      const makeColsArray = () => new Array(6).fill(0);
       const getSetAtSlot = (slot) => {
         const t = Build.installedTalents?.[slot];
         const id = Number(t?.id);
         if (!(id > 0)) return null;
         return setTalentToKey.get(Math.abs(id)) || null;
+      };
+      const getSetColsInRow = (rowSlots, setKey) => {
+        const cols = [];
+        for (let c = 0; c < 6; c++) {
+          if (getSetAtSlot(rowSlots[c]) === setKey) cols.push(c);
+        }
+        return cols;
       };
       const getRowSetCount = (rowSlots) => {
         const m = new Map();
@@ -2404,7 +2414,7 @@ export class Build {
             seenByRow.get(sk).add(c);
           }
           for (const [sk, cols] of seenByRow.entries()) {
-            if (!support.has(sk)) support.set(sk, new Array(6).fill(0));
+            if (!support.has(sk)) support.set(sk, makeColsArray());
             for (const c of cols) support.get(sk)[c] += 1;
           }
         }
@@ -2429,9 +2439,12 @@ export class Build {
         }
         for (const [sk, rows] of bySet.entries()) {
           const w = Math.max(1, Number(setSize.get(sk)) || 1);
-          const hist = new Array(6).fill(0);
+          const totalCount = Number(setTalentCounters.get(sk)) || 0;
+          const hist = makeColsArray();
+          const rowColsByLevel = new Map();
           for (const r of rows) {
             for (const c of r.cols) hist[c] += 1;
+            rowColsByLevel.set(Number(r.level), new Set(r.cols));
           }
           let bestCol = 0;
           for (let c = 1; c < 6; c++) {
@@ -2454,6 +2467,18 @@ export class Build {
           }
           score += w * bestStreak * bestStreak * 20;
 
+          // For medium/large sets treat two-column shape as a single coherent structure.
+          if (totalCount >= 4) {
+            let secondCol = bestCol === 0 ? 1 : 0;
+            for (let c = 0; c < 6; c++) {
+              if (c === bestCol) continue;
+              if (hist[c] > hist[secondCol]) secondCol = c;
+            }
+            const secondSupport = Number(hist[secondCol]) || 0;
+            score += w * secondSupport * secondSupport * 22;
+            if (Math.abs(secondCol - bestCol) === 1) score += w * 35;
+          }
+
           for (const r of rows) {
             const cols = r.cols;
             if (cols.length >= 2) {
@@ -2463,6 +2488,21 @@ export class Build {
               const spread = cols[cols.length - 1] - cols[0];
               const ideal = cols.length - 1;
               if (spread > ideal) score -= (spread - ideal) * w * 8;
+            }
+          }
+
+          // Multi-column continuity between adjacent rows:
+          // reward when a set keeps the same column-shape (not only one best column).
+          for (let level = 1; level <= 5; level++) {
+            const lower = rowColsByLevel.get(level);
+            const upper = rowColsByLevel.get(level + 1);
+            if (!lower || !upper) continue;
+            let overlap = 0;
+            for (const c of lower) {
+              if (upper.has(c)) overlap++;
+            }
+            if (overlap > 0) {
+              score += w * overlap * overlap * 18;
             }
           }
         }
@@ -2492,7 +2532,6 @@ export class Build {
         return protectedCols;
       };
 
-      let swapCount = 0;
       let improved = true;
       let pass = 0;
       while (improved && pass < 10) {
@@ -2501,12 +2540,43 @@ export class Build {
         const colSupport = getColumnSupport();
         const preferredColBySet = new Map();
         for (const setKey of orderedSetKeys) {
-          const hist = colSupport.get(setKey) || new Array(6).fill(0);
-          let targetCol = 0;
-          for (let c = 1; c < 6; c++) {
-            if (hist[c] > hist[targetCol]) targetCol = c;
+          // Bottom-up dominance: lower levels (1,2,3) must have stronger impact
+          // on preferred column selection than upper rows.
+          // Also count only one set entry per row.
+          const weightedHist = makeColsArray();
+          for (let level = 1; level <= 6; level++) {
+            const rowSlots = Build.getRowSlotIndicesByLevel(level);
+            const cols = getSetColsInRow(rowSlots, setKey);
+            if (!cols.length) continue;
+            const rowWeight = (7 - level) * (7 - level);
+            const chosenCol = cols.slice().sort((a, b) => a - b)[0];
+            weightedHist[chosenCol] += rowWeight;
+            // For multi-column sets we must account row support on EACH occupied column,
+            // otherwise leftmost-only voting may lock wrong shape (e.g. 112/112/з11).
+            const uniqueCols = Array.from(new Set(cols)).sort((a, b) => a - b);
+            for (const col of uniqueCols) {
+              weightedHist[col] += rowWeight;
+            }
           }
-          preferredColBySet.set(setKey, targetCol);
+          const hist = colSupport.get(setKey) || makeColsArray();
+          const targetColsCount = 1;
+          const rankedCols = [0, 1, 2, 3, 4, 5].sort((a, b) => {
+            if (weightedHist[b] !== weightedHist[a]) return weightedHist[b] - weightedHist[a];
+            if ((hist[b] || 0) !== (hist[a] || 0)) return (hist[b] || 0) - (hist[a] || 0);
+            return a - b;
+          });
+          // Strict bottom-up anchor:
+          // use the lowest row (level 1 -> 6) where set exists as primary column source.
+          let anchorCol = null;
+          for (let level = 1; level <= 6; level++) {
+            const rowSlots = Build.getRowSlotIndicesByLevel(level);
+            const cols = getSetColsInRow(rowSlots, setKey);
+            if (!cols.length) continue;
+            anchorCol = cols.slice().sort((a, b) => a - b)[0];
+            break;
+          }
+          const targetCols = rankedCols.slice(0, targetColsCount).sort((a, b) => a - b);
+          preferredColBySet.set(setKey, Number.isFinite(anchorCol) ? anchorCol : targetCols[0]);
         }
 
         // Directed column-alignment pass (bottom -> top):
@@ -2518,10 +2588,7 @@ export class Build {
           if (curW <= 0) continue;
           for (let level = 1; level <= 6; level++) {
             const rowSlots = Build.getRowSlotIndicesByLevel(level);
-            const setCols = [];
-            for (let c = 0; c < 6; c++) {
-              if (getSetAtSlot(rowSlots[c]) === setKey) setCols.push(c);
-            }
+            const setCols = getSetColsInRow(rowSlots, setKey);
             if (!setCols.length) continue;
             const sourceCol = setCols.slice().sort((a, b) => Math.abs(a - targetCol) - Math.abs(b - targetCol))[0];
             if (!Number.isFinite(sourceCol) || sourceCol === targetCol) continue;
@@ -2535,7 +2602,6 @@ export class Build {
               if (targetW > curW) continue;
             }
             await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
-            swapCount++;
             improved = true;
           }
         }
@@ -2575,10 +2641,47 @@ export class Build {
                 if (w1 !== w2) {
                   const strong = w1 > w2 ? sk1 : sk2;
                   const strongCol = w1 > w2 ? c1 : c2;
+                  const strongTargetCol = w1 > w2 ? c2 : c1;
                   const strongSupport = Number(colSupport.get(strong)?.[strongCol]) || 0;
+                  const strongTargetSupport = Number(colSupport.get(strong)?.[strongTargetCol]) || 0;
                   // Bigger sets keep priority: do not let weaker sets displace
-                  // already-supported strong entries.
-                  if (strongSupport > 1) continue;
+                  // already-supported strong entries into totally foreign columns.
+                  if (strongSupport > 1 && strongTargetSupport <= 0) continue;
+
+                  // Strict protection by priority:
+                  // reject swap if it makes stronger set column position worse
+                  // while weaker set gets same or better position.
+                  const strongFromCol = w1 > w2 ? c1 : c2;
+                  const strongToCol = w1 > w2 ? c2 : c1;
+                  const weak = w1 > w2 ? sk2 : sk1;
+                  const weakFromCol = w1 > w2 ? c2 : c1;
+                  const weakToCol = w1 > w2 ? c1 : c2;
+                  const strongHist = colSupport.get(strong) || makeColsArray();
+                  const weakHist = colSupport.get(weak) || makeColsArray();
+                  const strongFromScore = Number(strongHist[strongFromCol]) || 0;
+                  const strongToScore = Number(strongHist[strongToCol]) || 0;
+                  const weakFromScore = Number(weakHist[weakFromCol]) || 0;
+                  const weakToScore = Number(weakHist[weakToCol]) || 0;
+                  const strongerLoses = strongToScore < strongFromScore;
+                  const weakerGains = weakToScore >= weakFromScore;
+                  if (strongerLoses && weakerGains) continue;
+
+                  // Do not break strong set's two-column core shape (for 4+ talents).
+                  const strongCount = Number(setTalentCounters.get(strong)) || 0;
+                  if (strongCount >= 4) {
+                    const sHist = colSupport.get(strong) || makeColsArray();
+                    let top1 = 0;
+                    for (let c = 1; c < 6; c++) {
+                      if ((sHist[c] || 0) > (sHist[top1] || 0)) top1 = c;
+                    }
+                    let top2 = top1 === 0 ? 1 : 0;
+                    for (let c = 0; c < 6; c++) {
+                      if (c === top1) continue;
+                      if ((sHist[c] || 0) > (sHist[top2] || 0)) top2 = c;
+                    }
+                    const coreCols = new Set([top1, top2]);
+                    if (coreCols.has(strongCol) && !coreCols.has(strongTargetCol)) continue;
+                  }
                 }
               }
 
@@ -2596,7 +2699,6 @@ export class Build {
           }
           if (!best) continue;
           await Build.swapBuildSlotsWithBackend(rowSlots[best.c1], rowSlots[best.c2]);
-          swapCount++;
           improved = true;
         }
       }
