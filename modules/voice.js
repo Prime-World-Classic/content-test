@@ -7,6 +7,7 @@ import { Lang } from './lang.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { normalizeKey } from './keybindings/keybindings.input.js';
+import { MM } from './mm.js';
 
 export class Voice {
   static peerConnectionConfig = {
@@ -181,7 +182,7 @@ export class Voice {
     const peerSettings = Voice.getPeerSettings(id);
     if (!peerSettings) return 50;
     if (Number.isFinite(Number(peerSettings.volumePercent))) {
-      return Math.max(0, Math.min(100, Math.round(Number(peerSettings.volumePercent))));
+      return Math.max(10, Math.min(100, Math.round(Number(peerSettings.volumePercent))));
     }
     return 50;
   }
@@ -189,7 +190,7 @@ export class Voice {
   static setPeerVolumePercent(id, percent = 50) {
     const targetId = Number(id);
     if (!Number.isFinite(targetId) || targetId <= 0) return;
-    const value = Math.max(0, Math.min(100, Math.round(Number(percent) || 0)));
+    const value = Math.max(10, Math.min(100, Math.round(Number(percent) || 0)));
     const peerSettings = Voice.getPeerSettings(targetId);
     if (!peerSettings) return;
     peerSettings.volumePercent = value;
@@ -870,7 +871,11 @@ export class Voice {
         event: [
           'click',
           () => {
-            if (Voice.infoPanel?.classList?.contains('voice-window-mode')) {
+            if (
+              Voice.infoPanel?.classList?.contains('voice-window-mode') ||
+              MM.isInTambur ||
+              MM.isInBattle
+            ) {
               return;
             }
             Voice.drop(Number(id));

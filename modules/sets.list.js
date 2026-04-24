@@ -3,6 +3,16 @@
  * - `talents`: массив id талантов, где первый id — основной талант (main).
  * - в описании сета используется описание и название основного таланта.
  * - setId_1 отображается последним в списке сетов, то-есть новые сеты, добавленные в конец списка, всегда отображаются первыми.
+ * - `cdMods`: необязательное правило изменения КД отдельных талантов сета.
+ *   Формат:
+ *   cdMods: {
+ *     [targetTalentId]: {
+ *       [sourceTalentId]: [deltaSeconds], // отрицательное значение уменьшает КД
+ *       bySetCount: {                      // по количеству талантов сета (включая targetTalentId)
+ *         [needCount]: [deltaSeconds],
+ *       },
+ *     },
+ *   }
  */
 
 export const TALENT_SETS = {
@@ -24,15 +34,24 @@ export const TALENT_SETS = {
   },
   setId_6: {
     talents: [306, 293, 297, 303, 308],
+	cdMods: {
+	  306: {303: [-30]}
+	},
   },
   setId_7: {
     talents: [314, 318, 326],
+	cdMods: {
+	  314: {326: [-40]}
+	},
   },
   setId_8: {
     talents: [319, 320, 323, 334],
   },
   setId_9: {
     talents: [321, 317, 335],
+	cdMods: {
+	  321: {317: [-40]}
+	},
   },
   setId_10: {
     talents: [322, 316, 328],
@@ -42,12 +61,18 @@ export const TALENT_SETS = {
   },
   setId_12: {
     talents: [327, 305, 315],
+	cdMods: {
+	  327: {305: [-40]}
+	},
   },
   setId_13: {
     talents: [330, 333, 336],
   },
   setId_14: {
     talents: [332, 324, 331, 337],
+	cdMods: {
+	  332: {331: [-80]}
+	},
   },
   setId_15: {
     talents: [338, 343, 344, 345, 346],
@@ -85,6 +110,9 @@ export const TALENT_SETS = {
   },
   setId_24: {
     talents: [461, 459, 460, 462, 463],
+	cdMods: {
+	  461: {459: [-30]}
+	},
   },
   setId_25: {
     talents: [464, 465, 466, 467],
@@ -94,9 +122,15 @@ export const TALENT_SETS = {
   },
   setId_26: {
     talents: [470, 468, 469, 471],
+	cdMods: {
+	  470: {469: [-30]}
+	},
   },
   setId_27: {
     talents: [473, 472, 474, 475, 476],
+	cdMods: {
+	  473: {472: [-30]}
+	},
   },
   setId_28: {
     talents: [479, 477, 478, 732],
@@ -112,21 +146,33 @@ export const TALENT_SETS = {
   },
   setId_31: {
     talents: [490, 491, 492, 493, 494],
+	cdMods: {
+	  490: {493: [-30]}
+	},
   },
   setId_32: {
     talents: [495, 496, 497, 498, 499, 500],
   },
   setId_33: {
     talents: [501, 502, 503, 504, 505],
+	cdMods: {
+	  501: {504: [-30]}
+	},
   },
   setId_34: {
     talents: [506, 507, 508, 509, 510, 511],
   },
   setId_35: {
     talents: [512, 513, 514, 515, 516],
+	cdMods: {
+	  512: {514: [-60]}
+	},
   },
   setId_36: {
     talents: [517, 518, 519, 520, 521, 544],
+	cdMods: {
+	  517: {521: [-60]}
+	},
   },
   setId_37: {
     talents: [522, 523, 524, 525, 526, 527, 545],
@@ -142,6 +188,9 @@ export const TALENT_SETS = {
   },
   setId_41: {
     talents: [549, 550, 551, 552, 553, 579],
+	cdMods: {
+	  549: {553: [-45]}
+	},
   },
   setId_42: {
     talents: [554, 555, 556, 557, 558, 580],
@@ -209,6 +258,9 @@ export const TALENT_SETS = {
   },
   setId_54: {
     talents: [614, 615, 616, 617, 618],
+	cdMods: {
+	  614: {615: [-15]}
+	},
   },
   setId_55: {
     talents: [619, 620, 621, 622],
@@ -217,6 +269,13 @@ export const TALENT_SETS = {
     talents: [624, 623, 625, 626],
 	addStats: {
       2: { speedtal: 6 },
+	},
+	cdMods: {
+	  624: {
+	  	bySetCount: {
+	  	  3:[-80],
+	  	},
+	  },
 	},
   },
   setId_57: {
@@ -230,6 +289,13 @@ export const TALENT_SETS = {
 	addStats: {
       2: { ph: 6 },
 	},
+	cdMods: {
+	  632: {
+	  	bySetCount: {
+	  	  2:[-45],
+	  	},
+	  },
+	},	
   },
   setId_59: {
     talents: [638, 635, 636, 637],
@@ -329,6 +395,9 @@ export const TALENT_SETS = {
   },
   setId_79: {
     talents: [741, 742, 743, 744, 745, 746, 747, 748],
+	cdMods: {
+	  741: {746: [-20], 747: [-20]}
+	},
   },
   setId_80: {
     talents: [752, 750, 751, 753, 754, 755, 756],
@@ -341,6 +410,9 @@ export const TALENT_SETS = {
   },
   setId_81: {
     talents: [757, 758, 759, 760, 761],
+	cdMods: {
+	  757: {758: [-20]}
+	},
   },
   setId_82: {
     talents: [764, 442, 443, 444, 445, 446],
@@ -368,6 +440,9 @@ export const TALENT_SETS = {
   },
   setId_86: {
     talents: [774, 775, 776, 777],
+	cdMods: {
+	  774: {777: [-20]}
+	},
   },
 };
 

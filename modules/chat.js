@@ -66,8 +66,8 @@ export class Chat {
       const role = el.getAttribute('data-tooltip-role');
       if (!source && !role) return;
       const lines = [];
-      if (source) lines.push(source);
-      if (role) lines.push(role);
+      if (source) lines.push(...String(source).split('\n'));
+      if (role) lines.push(...String(role).split('\n'));
       Chat.roleTooltip.innerHTML = '';
       lines.forEach((line) => {
         Chat.roleTooltip.append(DOM({ tag: 'div' }, line));
@@ -278,10 +278,11 @@ export class Chat {
   }
 
   static updateExistingMessageItem(existingItem, data, messageKey) {
-    const { flag, sourceIcon, nickname, message, time } = Chat.buildMessageContent(data);
+    const { flag, sourceIcon, starBadge, nickname, message, time } = Chat.buildMessageContent(data);
     const parts = [];
     if (flag) parts.push(flag);
     if (sourceIcon) parts.push(sourceIcon);
+    if (starBadge) parts.push(starBadge);
     parts.push(nickname, message, time);
     const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
     const oldContentWrap = existingItem.querySelector('.chat-body-item-content');
@@ -339,6 +340,7 @@ export class Chat {
         nickname: String(item?.nickname || ''),
         to: Number(item?.to || 0),
         flag: Number(item?.flag || 0),
+        star: Number(item?.star || 0),
         message: String(item?.message || ''),
         client: Number(item?.client || 0),
         source: String(item?.source || ''),
@@ -443,6 +445,29 @@ export class Chat {
       sourceIcon.dataset.tooltipSource = sourceLabel;
       sourceIcon.textContent = sourceType === 'phone' ? '📱' : '';
     }
+    
+    const starValue = Number(data?.star || 0);
+    let starBadge = null;
+    if (starValue > 0) {
+      const starTooltip = Lang.text('titleStarsGlory');
+      const starCount = DOM({ tag: 'span' }, `${starValue}`);
+      starCount.style.color = '#ffd06a';
+      starCount.style.fontWeight = 600;
+      starCount.dataset.tooltipSource = starTooltip;
+      
+      const starIcon = DOM({ tag: 'img', src: 'content/icons/starOrange.webp' });
+      starIcon.classList.add('chat-flag');
+      starIcon.style.objectFit = 'contain';
+      starIcon.style.marginLeft = '-0.2cqh';
+      starIcon.style.position = 'relative';
+      starIcon.style.top = '-0.2cqh';
+      starIcon.dataset.tooltipSource = starTooltip;
+      
+      starBadge = DOM({ tag: 'span' }, starCount, starIcon);
+      starBadge.style.display = 'inline-flex';
+      starBadge.style.alignItems = 'center';
+      starBadge.style.marginRight = '2px';
+    }
 
     const nickname = DOM({ tag: 'div' }, data.nickname + ': ');
     nickname.style.color = 'rgb(250, 229, 108)';
@@ -465,6 +490,11 @@ export class Chat {
       nickname.style.fontWeight = 600;
       nickname.classList.add('helper-text');
       nickname.dataset.tooltipRole = Lang.text('titleHelper');
+    }
+    if (starValue > 0) {
+      nickname.classList.remove('owner-text', 'administration-text', 'helper-text');
+      nickname.style.color = '#ffd06a';
+      nickname.style.fontWeight = 600;
     }
 
     const message = DOM({ tag: 'div' });
@@ -495,7 +525,7 @@ export class Chat {
 
     const time = DOM({ tag: 'span', style: 'chat-body-item-time' }, `${Chat.formatMessageTime(data)}`);
 
-    return { flag, sourceIcon, nickname, message, time };
+    return { flag, sourceIcon, starBadge, nickname, message, time };
   }
 
   static viewMessage(data, fromHistory = false) {
@@ -549,10 +579,11 @@ export class Chat {
       return;
     }
 
-    const { flag, sourceIcon, nickname, message, time } = Chat.buildMessageContent(data);
+    const { flag, sourceIcon, starBadge, nickname, message, time } = Chat.buildMessageContent(data);
     const parts = [];
     if (flag) parts.push(flag);
     if (sourceIcon) parts.push(sourceIcon);
+    if (starBadge) parts.push(starBadge);
     parts.push(nickname, message, time);
     const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
     const item = DOM(
@@ -752,10 +783,11 @@ export class Chat {
     while (list.firstChild) list.firstChild.remove();
 
     Chat.pinnedMessages.forEach((msg) => {
-      const { flag, sourceIcon, nickname, message, time } = Chat.buildMessageContent(msg);
+      const { flag, sourceIcon, starBadge, nickname, message, time } = Chat.buildMessageContent(msg);
       const parts = [];
       if (flag) parts.push(flag);
       if (sourceIcon) parts.push(sourceIcon);
+      if (starBadge) parts.push(starBadge);
       parts.push(nickname, message, time);
       const contentWrap = DOM({ style: 'chat-body-item-content' }, ...parts);
       const row = DOM(

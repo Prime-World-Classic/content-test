@@ -13,6 +13,8 @@ export const be = {
     docts: 'Імперыя Доктаў',
     fight: 'У бой!',
     enterTextAndPressEnter: 'Увядзіце тэкст і націсніце Enter',
+    titleStarsGlory:
+      '«Зоркі Славы» — 1 зорка = MVP 100%\n(каштоўны/лепшы гулец з 10 гульцоў за матч)\nбез адзінай смерці.',
     ready: 'Гатоў',
     library: 'Бібліятэка',
     menu: 'Мяню',

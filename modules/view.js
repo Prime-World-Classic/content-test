@@ -242,6 +242,7 @@ export class View {
       if ('online' in (data || {})) item.online = Number(data.online) === 1 ? 1 : 0;
       if ('mobile' in (data || {})) item.mobile = Number(data.mobile) === 1 ? 1 : 0;
       if ('inParty' in (data || {})) item.inParty = Number(data.inParty) === 1 ? 1 : 0;
+      if ('mode' in (data || {})) item.mode = Number(data.mode);
       changed = true;
       changedItem = item;
       break;
@@ -291,10 +292,20 @@ export class View {
       : groupEnabled
         ? Lang.text('inviteToAGroup')
         : View.getFriendPresenceLabel(presenceState);
+    const modeId = Number(item?.mode);
+    const canShowModeOnHover =
+      !groupEnabled &&
+      !friendInParty &&
+      Number.isFinite(modeId) &&
+      modeId >= 0 &&
+      (presenceState === 'battle' || presenceState === 'queue' || presenceState === 'tambour');
+    const modeText = canShowModeOnHover ? Lang.text(`gm${modeId + 1}`) : '';
     group.textContent = groupText;
     const presenceFilter = View.getFriendPresenceFilter(presenceState);
     group.style.filter = (!groupEnabled || friendInParty) ? (presenceFilter || 'grayscale(0.8)') : '';
     call.style.filter = !callEnabled ? 'grayscale(0.8)' : '';
+    group.onmouseenter = null;
+    group.onmouseleave = null;
     group.onclick = null;
     call.onclick = null;
     if (groupEnabled && !friendInParty) {
@@ -302,6 +313,14 @@ export class View {
     }
     if (callEnabled) {
       call.onclick = View.createFriendCallAction(item);
+    }
+    if (canShowModeOnHover) {
+      group.onmouseenter = () => {
+        group.textContent = modeText;
+      };
+      group.onmouseleave = () => {
+        group.textContent = groupText;
+      };
     }
     const mobileEmoji = card.querySelector('.castle-friend-mobile-emoji');
     const showMobile = status === 1 && View.normalizeFriendPresenceState(item) !== 'offline' && Number(item?.mobile) === 1;
@@ -956,7 +975,7 @@ export class View {
     return body;
   }
 
-  static async castle() {
+  static async castle(castleArg = null) {
     document.body.classList.add('noselect');
 
     Shop.retrieveLastUpdate();
@@ -989,8 +1008,18 @@ export class View {
       App.error(error);
     }
 
+    let partyData = null;
+    let castleOptions = {};
+    if (castleArg && typeof castleArg === 'object') {
+      if ('users' in castleArg || 'mode' in castleArg || 'id' in castleArg) {
+        partyData = castleArg;
+      } else {
+        castleOptions = castleArg;
+      }
+    }
+
     try {
-      let castlePlay = await View.castlePlay();
+      let castlePlay = await View.castlePlay(partyData, castleOptions);
 
       body.append(castlePlay);
     } catch (error) {
@@ -1029,7 +1058,20 @@ export class View {
     return body;
   }
 
-  static async castlePlay() {
+  static async refreshCastlePlayOnly(partyData = null) {
+    const castleBody = document.getElementById('castle-body');
+    const activeCastleView = castleBody && View.active === castleBody;
+    const currentCastlePlay = activeCastleView ? castleBody.querySelector('.castle-play') : null;
+    if (!currentCastlePlay) {
+      await View.show('castle', partyData);
+      return;
+    }
+
+    const updatedCastlePlay = await View.castlePlay(partyData);
+    currentCastlePlay.replaceWith(updatedCastlePlay);
+  }
+
+  static async castlePlay(partyData = null, options = {}) {
     const DEMO_PARTY_SIZE = 0;
     let body = DOM({ style: 'castle-play' });
 
@@ -1049,12 +1091,12 @@ export class View {
         */
     let lobby = DOM({ style: 'castle-play-lobby' });
 
-    let data = await App.api.request(App.CURRENT_MM, 'loadParty'),
+    let data = partyData || (await App.api.request(App.CURRENT_MM, 'loadParty')),
       players = new Array();
 
     MM.partyId = data.id;
     MM.partyMembersCount = Object.keys(data?.users || {}).length || 1;
-    if (data && ('mode' in data)) {
+    if (data && ('mode' in data) && !options?.preserveMode) {
       CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
     }
 
@@ -1136,7 +1178,7 @@ export class View {
     }
 
     const partySize = Math.max(1, players.length);
-    const maxInRow = partySize <= 4 ? partySize : Math.max(1, Math.ceil(partySize / 2));
+    const maxInRow = partySize <= 5 ? partySize : 5;
     lobby.style.setProperty('--castle-play-lobby-max-in-row', String(maxInRow));
     const rowCount = Math.max(1, Math.ceil(partySize / maxInRow));
     lobby.dataset.rows = String(rowCount);
@@ -1290,7 +1332,7 @@ export class View {
             id: MM.partyId,
           });
 
-          View.show('castle');
+          await View.refreshCastlePlayOnly();
         });
 
         if (player.nickname.length > 15) {
@@ -3237,6 +3279,14 @@ export class View {
             : groupEnabled
               ? Lang.text('inviteToAGroup')
               : View.getFriendPresenceLabel(presenceState);
+          const modeId = Number(item?.mode);
+          const canShowModeOnHover =
+            !groupEnabled &&
+            !friendInParty &&
+            Number.isFinite(modeId) &&
+            modeId >= 0 &&
+            (presenceState === 'battle' || presenceState === 'queue' || presenceState === 'tambour');
+          const modeText = canShowModeOnHover ? Lang.text(`gm${modeId + 1}`) : '';
           let group = DOM({ style: 'castle-friend-add-group' }, groupText);
           let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
           const presenceFilter = View.getFriendPresenceFilter(presenceState);
@@ -3251,6 +3301,14 @@ export class View {
           }
           if (callEnabled) {
             call.onclick = View.createFriendCallAction(item);
+          }
+          if (canShowModeOnHover) {
+            group.onmouseenter = () => {
+              group.textContent = modeText;
+            };
+            group.onmouseleave = () => {
+              group.textContent = groupText;
+            };
           }
           friend.addEventListener('contextmenu', (event) => {
             event.preventDefault();
@@ -3803,7 +3861,7 @@ export class View {
                     id: MM.partyId,
                   });
 
-                  View.show('castle');
+                  await View.refreshCastlePlayOnly();
                 },
               ],
             },

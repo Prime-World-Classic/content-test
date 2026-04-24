@@ -2923,10 +2923,46 @@ export class Build {
 
   /** ПКМ по изученному таланту: снять только его, номера следующих −1; затем проверка строк по уровню. */
   static handleCombatTalentContextMenu(talentEl, event) {
-    if (!Build.combatModeEnabled) return false;
     if (Number(talentEl?.dataset?.state) !== 2) return false;
     const slot = Number(talentEl?.parentElement?.dataset?.position);
     if (!Number.isFinite(slot)) return false;
+
+    if (!Build.combatModeEnabled) {
+      if (Number(talentEl?.dataset?.active) !== 1) return false;
+      if (Build.isFieldIndexAlreadyInActiveBar(slot)) return false;
+
+      const freeIndex = Build.findFirstFreeActiveBarIndex();
+      if (freeIndex < 0) return false;
+
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+
+      const position = slot + 1;
+      Build.assignActiveSlotLocal(freeIndex, position);
+
+      const targetContainer = Build.activeBarView?.childNodes?.[freeIndex];
+      if (targetContainer) {
+        const clone = talentEl.cloneNode(true);
+        clone.dataset.position = `${slot}`;
+        clone.dataset.state = 3;
+        clone.style.opacity = 1;
+        clone.style.zIndex = 1;
+        clone.style.position = 'static';
+        Build.move(clone, true);
+        targetContainer.append(clone);
+      }
+
+      Build.sendBuildMutation({
+        optimisticMethod: 'optimisticSetActive',
+        legacyMethod: 'setActive',
+        data: {
+          buildId: Build.id,
+          index: freeIndex,
+          position: position,
+        },
+      });
+      return true;
+    }
     
     const mainSlot = Build.getCombatMainTalentSlotIndex();
     if (slot === mainSlot) return false;
@@ -3987,6 +4023,111 @@ export class Build {
 
     normalized.sort((a, b) => a.need - b.need);
     return normalized;
+  }
+
+  static normalizeSetTalentCooldownRules(rawRules) {
+    const normalized = [];
+    if (!rawRules || typeof rawRules !== 'object' || Array.isArray(rawRules)) return normalized;
+
+    const normalizeDeltaValue = (deltaRaw) => {
+      let deltaSeconds = NaN;
+      if (Array.isArray(deltaRaw) && deltaRaw.length > 0) {
+        deltaSeconds = Number(deltaRaw[0]);
+      } else {
+        deltaSeconds = Number(deltaRaw);
+      }
+      if (!Number.isFinite(deltaSeconds) || deltaSeconds === 0) return null;
+      return deltaSeconds;
+    };
+    const parseSetCountRules = (rulesRaw) => {
+      const setCountRules = [];
+      if (!rulesRaw || typeof rulesRaw !== 'object' || Array.isArray(rulesRaw)) return setCountRules;
+      for (const [needRaw, deltaRaw] of Object.entries(rulesRaw)) {
+        const need = Number(needRaw);
+        if (!Number.isFinite(need) || need <= 0) continue;
+        const deltaSeconds = normalizeDeltaValue(deltaRaw);
+        if (deltaSeconds == null) continue;
+        setCountRules.push({ need, deltaSeconds });
+      }
+      setCountRules.sort((a, b) => a.need - b.need);
+      return setCountRules;
+    };
+
+    for (const [targetRaw, sourceMapRaw] of Object.entries(rawRules)) {
+      const targetTalentId = Math.abs(Number(targetRaw));
+      if (!Number.isFinite(targetTalentId) || targetTalentId <= 0) continue;
+      if (!sourceMapRaw || typeof sourceMapRaw !== 'object' || Array.isArray(sourceMapRaw)) continue;
+
+      const sourceRules = [];
+      let setCountRules = [];
+      for (const [sourceRaw, deltaRaw] of Object.entries(sourceMapRaw)) {
+        // Optional rule by total installed set talents count (including target talent):
+        // cdMods: { [targetId]: { bySetCount: { 2: [-1], 4: [-2] } } }
+        if (
+          sourceRaw === 'bySetCount' ||
+          sourceRaw === 'setCount' ||
+          sourceRaw === 'count' ||
+          sourceRaw === 'need'
+        ) {
+          setCountRules = parseSetCountRules(deltaRaw);
+          continue;
+        }
+
+        const sourceTalentId = Math.abs(Number(sourceRaw));
+        if (!Number.isFinite(sourceTalentId) || sourceTalentId <= 0) continue;
+        const deltaSeconds = normalizeDeltaValue(deltaRaw);
+        if (deltaSeconds == null) continue;
+        sourceRules.push({ sourceTalentId, deltaSeconds });
+      }
+      if (sourceRules.length || setCountRules.length) normalized.push({ targetTalentId, sourceRules, setCountRules });
+    }
+
+    return normalized;
+  }
+
+  static getSetTalentCooldownDeltaSeconds(targetTalentId, installedTalents = Build.getEffectiveInstalledTalents()) {
+    const target = Math.abs(Number(targetTalentId));
+    if (!Number.isFinite(target) || target <= 0) return 0;
+
+    const installedIds = new Set();
+    for (const talent of installedTalents || []) {
+      const tid = Math.abs(Number(talent?.id));
+      if (Number.isFinite(tid) && tid > 0) installedIds.add(tid);
+    }
+    if (!installedIds.size) return 0;
+
+    let deltaTotal = 0;
+    const sets = TalentSets.list();
+    for (const set of sets) {
+      const setIds = TalentSets.getTalentIds(set)
+        .map((id) => Math.abs(Number(id)))
+        .filter((id) => Number.isFinite(id) && id > 0);
+      if (!setIds.length) continue;
+
+      let count = 0;
+      for (const id of setIds) {
+        if (installedIds.has(id)) count++;
+      }
+      if (count <= 0) continue;
+
+      const requiredMain = Math.abs(Number(set?.mainNeed));
+      if (Number.isFinite(requiredMain) && requiredMain > 0 && !installedIds.has(requiredMain)) continue;
+
+      const rules = Build.normalizeSetTalentCooldownRules(set?.cdMods);
+      for (const rule of rules) {
+        if (rule.targetTalentId !== target) continue;
+        const setCountRules = Array.isArray(rule.setCountRules) ? rule.setCountRules : [];
+        for (const countRule of setCountRules) {
+          if (count >= countRule.need) deltaTotal += countRule.deltaSeconds;
+        }
+        for (const sourceRule of rule.sourceRules) {
+          if (!installedIds.has(sourceRule.sourceTalentId)) continue;
+          deltaTotal += sourceRule.deltaSeconds;
+        }
+      }
+    }
+
+    return deltaTotal;
   }
 
   static resolveCompositeStatAlias(statKey) {
@@ -5512,14 +5653,16 @@ export class Build {
     return String(rounded).replace(/\.0$/, '');
   }
 
-  static applyCooldownReductionToDescriptionMarkup() {
+  static applyCooldownReductionToDescriptionMarkup(talentDataForParams = null) {
     if (!Build.descriptionView) return;
     const cdNodes = Build.descriptionView.querySelectorAll('cd');
     if (!cdNodes.length) return;
 
+    const talentId = Number(talentDataForParams?.id);
+    const cdDeltaSec = Number.isFinite(talentId) ? Build.getSetTalentCooldownDeltaSeconds(talentId) : 0;
     const rawPct = Number(Build.totalStat('speedtal'));
     const cdPct = Number.isFinite(rawPct) ? Math.max(0, Math.min(Build.TALENT_COOLDOWN_PCT_MAX, rawPct)) : 0;
-    if (cdPct <= 0) return;
+    if (cdPct <= 0 && cdDeltaSec === 0) return;
 
     for (const cdNode of cdNodes) {
       const source = String(cdNode.textContent || '').trim();
@@ -5545,18 +5688,21 @@ export class Build {
 
       if (!Number.isFinite(base) || base <= 0) continue;
 
-      const reduced = base * (1 - cdPct / 100);
-      const reducedText = Build.formatCooldownValue(reduced);
+      const shiftedBase = Math.max(0, base + cdDeltaSec);
+      const cdWithoutMods = base * (1 - cdPct / 100);
+      const cdWithMods = shiftedBase * (1 - cdPct / 100);
       const baseText = Build.formatCooldownValue(base);
-      if (!reducedText || !baseText) continue;
+      const textWithoutMods = Build.formatCooldownValue(cdWithoutMods);
+      const textWithMods = Build.formatCooldownValue(cdWithMods);
+      if (!baseText || !textWithoutMods || !textWithMods) continue;
 
-      const leftCd = document.createElement('cd');
-      leftCd.textContent = baseText;
-      const rightCd = document.createElement('cd');
-      rightCd.textContent = reducedText;
-      const fragment = document.createDocumentFragment();
-      fragment.append(leftCd, document.createTextNode(' -> '), rightCd);
-      cdNode.replaceWith(fragment);
+      // Compare formatted values to avoid showing redundant brackets.
+      // Brackets are shown only when cdMods visibly changes result AND bracket value
+      // differs from the "standard" left value (base).
+      const hasCdModsEffect = textWithMods !== textWithoutMods;
+      const showBracketValue = hasCdModsEffect && textWithoutMods !== baseText;
+      const rightPart = showBracketValue ? `${textWithMods}(${textWithoutMods})` : textWithMods;
+      cdNode.textContent = `${baseText} -> ${rightPart}`;
     }
   }
 
@@ -5568,7 +5714,7 @@ export class Build {
     if (talentDataForParams) {
       Build.applyTalentParamsToDescription(talentDataForParams);
     }
-    Build.applyCooldownReductionToDescriptionMarkup();
+    Build.applyCooldownReductionToDescriptionMarkup(talentDataForParams);
 
     const rect = anchorRect || anchorEl?.getBoundingClientRect?.();
     if (rect) Build.scheduleDescriptionReposition(rect);
@@ -7354,7 +7500,7 @@ export class Build {
           }
         };
 
-        let addToActive = async (index, position, datasetPosition, targetElem, clone, smartCast) => {
+        let addToActive = async (index, position, datasetPosition, targetElem, clone, smartCast, deferRequest = false) => {
           Build.assignActiveSlotLocal(index, position);
           targetElem.append(clone);
           clone.style.position = 'static';
@@ -7374,29 +7520,31 @@ export class Build {
             } catch {}
           }
 
-          try {
-            await Build.sendBuildMutationOrThrow({
-              optimisticMethod: 'optimisticSetActive',
-              legacyMethod: 'setActive',
-              data: {
-                buildId: Build.id,
-                index: index,
-                position: position,
-              },
-            });
-            if (smartCast) {
+          if (!deferRequest) {
+            try {
+              await Build.sendBuildMutationOrThrow({
+                optimisticMethod: 'optimisticSetActive',
+                legacyMethod: 'setActive',
+                data: {
+                  buildId: Build.id,
+                  index: index,
+                  position: position,
+                },
+              });
+              if (smartCast) {
+                try {
+                  await Build.requestSmartcast(targetElem);
+                } catch {}
+              }
+            } catch {
               try {
-                await Build.requestSmartcast(targetElem);
+                await Build.refreshBuildStateFromServer({ refreshInventory: true });
               } catch {}
             }
-          } catch {
-            try {
-              await Build.refreshBuildStateFromServer({ refreshInventory: true });
-            } catch {}
           }
         };
 
-        let editActive = async (position, newPosition, clone, skipActiveId) => {
+        let editActive = async (position, newPosition, clone, skipActiveId, deferRequest = false) => {
           if (position == newPosition) {
             clone.remove();
             return null;
@@ -7425,9 +7573,9 @@ export class Build {
 
           await removeFromActive(position, skipActiveId);
 
-          await addToActive(activeBarPosition, activePosition, newPosition, container, clone, isSmartCast);
+          await addToActive(activeBarPosition, activePosition, newPosition, container, clone, isSmartCast, deferRequest);
 
-          return activeBarPosition;
+          return { index: Number(activeBarPosition), smartCast: Number(isSmartCast) };
         };
 
         if (isFieldTarget && !fromActiveBar) {
@@ -7513,12 +7661,14 @@ export class Build {
                 }
 
                 try {
-                  let activeBarPosition = null;
+                  let activeBarMove = null;
                   if (!performSwap && data.active && swapParentNode?.dataset?.position !== undefined) {
-                    activeBarPosition = await editActive(
+                    activeBarMove = await editActive(
                       swapParentNode.dataset.position,
                       elemBelow.dataset.position,
                       element.cloneNode(true),
+                      undefined,
+                      true,
                     );
                   }
                   if (performSwap) {
@@ -7586,6 +7736,27 @@ export class Build {
                         index: elemBelow.dataset.position,
                       },
                     });
+
+                    if (activeBarMove && Number.isFinite(activeBarMove.index) && activeBarMove.index >= 0) {
+                      const nextPosition = Number(elemBelow.dataset.position) + 1;
+                      await Build.sendBuildMutationOrThrow({
+                        optimisticMethod: 'optimisticSetActive',
+                        legacyMethod: 'setActive',
+                        data: {
+                          buildId: Build.id,
+                          index: activeBarMove.index,
+                          position: nextPosition,
+                        },
+                      });
+                      if (Number(activeBarMove.smartCast)) {
+                        const targetContainer = Build.activeBarView?.childNodes?.[activeBarMove.index];
+                        if (targetContainer) {
+                          try {
+                            await Build.requestSmartcast(targetContainer);
+                          } catch {}
+                        }
+                      }
+                    }
                   }
 
                   if (data.active && prevState != element.dataset.state) {

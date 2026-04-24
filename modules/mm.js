@@ -82,7 +82,7 @@ export class MM {
       }
     }
 
-    View.show('castle');
+    View.show('castle', { preserveMode: true });
 
     Voice.restoreSuspendedBattlePeers();
   }

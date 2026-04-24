@@ -154,7 +154,7 @@ export class Events {
     if (data && ('mode' in data)) {
       CastleNAVBAR.setMode(Number(data.mode) + 1, { syncParty: false });
     }
-    View.show('castle', data);
+    View.refreshCastlePlayOnly(data).catch((error) => App.error(error));
   }
   
   static PMode(data) {
@@ -183,7 +183,7 @@ export class Events {
   }
 
   static PExit() {
-    View.show('castle');
+    View.refreshCastlePlayOnly().catch((error) => App.error(error));
   }
 
   static PReady(data) {
