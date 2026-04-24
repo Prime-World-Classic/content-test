@@ -1040,7 +1040,7 @@ export const ru = {
     titleGenerateARandomBuild: 'Сгенерировать случайный билд',
     titleResetTalentsInThisBuild: 'Сбросить таланты в этом билде',
     titleSortSetsIntoColumn: 'ЛКМ - сортировка талантов в билде',
-    sortSetsRmbMirrorBuild: 'ПКМ - Отзераклить билд + сортировка',
+    sortSetsRmbMirrorBuild: 'ПКМ - Отзеркалить билд + сортировка',
     titleActiveTalents: 'Активные таланты',
     titleTheRed: 'Красное',
     titleTheOrange: 'Оранжевое',

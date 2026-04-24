@@ -747,14 +747,16 @@ input::placeholder {
   pointer-events: auto;
 }
 
-.build-hero-stats-highlight-count[data-tooltip]:hover::after {
+.build-hero-stats-highlight-count[data-tooltip]:hover::after,
+.build-hero-stats-settings [data-tooltip]:hover::after,
+.build-list-settings[data-tooltip]:hover::after {
   content: attr(data-tooltip);
   position: absolute;
   bottom: calc(100% + 1.2cqh);
   left: 50%;
   transform: translateX(-50%);
   white-space: nowrap;
-  padding: 0.85cqh 1cqw;
+  padding: 1cqh 1cqh;
   border-radius: 1.5cqh;
   background: rgba(0, 0, 0, 0.72);
   border: 0.01cqh solid rgba(104, 158, 154, 0.4);
@@ -764,6 +766,44 @@ input::placeholder {
   z-index: 10001;
   pointer-events: none;
   text-shadow: 0 0 0.1cqh rgba(0, 0, 0, 0.8);
+}
+
+.build-hero-stats-settings [data-tooltip] {
+  position: relative;
+}
+
+.build-list-settings[data-tooltip] {
+  position: absolute;
+}
+
+.build-actions-view .build-action-item[data-tooltip] {
+  position: relative;
+}
+
+.build-actions-view .build-action-item[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 1.2cqh);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 1cqh 1cqh;
+  border-radius: 1.5cqh;
+  background: rgba(0, 0, 0, 0.72);
+  border: 0.01cqh solid rgba(104, 158, 154, 0.4);
+  color: rgba(232, 248, 248, 0.95);
+  font-weight: 600;
+  font-size: calc(min(12cqh, 24cqw));
+  z-index: 10001;
+  pointer-events: none;
+  text-shadow: 0 0 0.1cqh rgba(0, 0, 0, 0.8);
+}
+
+.build-actions-view .build-action-item.build-action-item-multiline-tooltip[data-tooltip]:hover::after {
+  white-space: pre;
+  text-align: center;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .build-hero-stats-setting-land-type {
@@ -917,7 +957,6 @@ input::placeholder {
   transform-origin: center;
   transform: translate(50%, -40%);
   transition: all 0.2s ease;
-  z-index: 9999;
 }
 
 .help-button:hover {

@@ -1005,7 +1005,7 @@ export class Build {
     });
     button.type = 'button';
     button.textContent = '';
-    button.title = Lang.text('buildSettingsTitle');
+    Build.setUiTooltip(button, Lang.text('buildSettingsTitle'));
     return button;
   }
 
@@ -1559,6 +1559,14 @@ export class Build {
     Splash.show(template);
   }
 
+  static setUiTooltip(element, text) {
+    if (!element) return;
+    const tooltip = String(text ?? '').trim();
+    if (tooltip) element.dataset.tooltip = tooltip;
+    else delete element.dataset.tooltip;
+    element.removeAttribute('title');
+  }
+
   static buildActions(builds, isWindow) {
     // Переключаемый боевой режим (симуляция прокачки талантов в текущем билде)
     {
@@ -1591,9 +1599,9 @@ export class Build {
         tag: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['build-action-item', 'btn-hover', 'color-1'],
-        title: Lang.text('titleCreateANewBuildTab'),
         event: ['click', () => Build.buildSelectName('create', Lang.text('createBuild'), { heroId: Build.heroId }, isWindow)],
       });
+      Build.setUiTooltip(create, Lang.text('titleCreateANewBuildTab'));
 
       let createBg = DOM({
         style: ['btn-create', 'build-action-item-background'],
@@ -1609,7 +1617,6 @@ export class Build {
       tag: 'button',
       domaudio: domAudioPresets.defaultButton,
       style: ['build-action-item', 'btn-hover', 'color-1'],
-      title: Lang.text('titleDuplicateTheCurrentBuild'),
       event: [
         'click',
         async () => {
@@ -1738,6 +1745,7 @@ export class Build {
         },
       ],
     });
+    Build.setUiTooltip(duplicate, Lang.text('titleDuplicateTheCurrentBuild'));
 
     let duplicateBg = DOM({ style: ['btn-duplicate'] });
     duplicateBg.style.backgroundImage = `url('content/img/copy.png')`;
@@ -1750,7 +1758,6 @@ export class Build {
         tag: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['build-action-item', 'btn-hover', 'color-1'],
-        title: Lang.text('titleGenerateARandomBuild'),
         event: [
           'click',
           async () => {
@@ -1759,6 +1766,7 @@ export class Build {
           },
         ],
       });
+      Build.setUiTooltip(random, Lang.text('titleGenerateARandomBuild'));
 
       let randomBg = DOM({
         style: ['btn-random', 'build-action-item-background'],
@@ -1774,7 +1782,6 @@ export class Build {
         tag: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['build-action-item', 'btn-hover', 'color-1'],
-        title: Lang.text('titleResetTalentsInThisBuild'),
         event: [
           'click',
           async () => {
@@ -1826,6 +1833,7 @@ export class Build {
           },
         ],
       });
+      Build.setUiTooltip(resetBuild, Lang.text('titleResetTalentsInThisBuild'));
 
       let resetBg = DOM({
         style: ['btn-trash', 'build-action-item-background'],
@@ -1840,7 +1848,7 @@ export class Build {
       const sortSets = DOM({
         tag: 'button',
         domaudio: domAudioPresets.defaultButton,
-        style: ['build-action-item', 'btn-hover', 'color-1'],
+        style: ['build-action-item', 'btn-hover', 'color-1', 'build-action-item-multiline-tooltip'],
         event: [
           'click',
           async () => {
@@ -1961,7 +1969,7 @@ export class Build {
     }
     btn.classList.toggle('build-action-item-active', Build.combatModeEnabled);
     btn.classList.toggle('build-action-item-disabled', !canEnable);
-    btn.title = Build.getCombatModeTooltip();
+    Build.setUiTooltip(btn, Build.getCombatModeTooltip());
     if (Build.combatModeButtonCountEl) {
       const isRawMode = !Build.combatModeEnabled;
       Build.combatModeButtonCountEl.classList.toggle('btn-combat-mode-count-raw', isRawMode);
@@ -1976,7 +1984,7 @@ export class Build {
     const isDisabled = Build.combatModeEnabled || Build.sortSetsInProgress;
     btn.classList.toggle('build-action-item-disabled', isDisabled);
     btn.disabled = isDisabled;
-    btn.title = Build.getSortSetsButtonTooltip();
+    Build.setUiTooltip(btn, Build.getSortSetsButtonTooltip());
   }
 
   static getBuildSlotLevelByIndex(slotIndex) {
@@ -3641,7 +3649,6 @@ export class Build {
     let landTypeSetting = DOM({
       domaudio: domAudioPresets.defaultButton,
       style: ['build-hero-stats-setting-land-type', 'button-outline', 'build-hero-stats-setting-land-type-rz'],
-      title: Lang.text('titleLandTipeRZ'),
       event: [
         'click',
         async () => {
@@ -3650,14 +3657,15 @@ export class Build {
           Build.updateHeroStats();
           if (Build.applyRz) {
             landTypeSetting.classList.replace('build-hero-stats-setting-land-type-vz', 'build-hero-stats-setting-land-type-rz');
-            landTypeSetting.title = Lang.text('titleLandTipeRZ');
+            Build.setUiTooltip(landTypeSetting, Lang.text('titleLandTipeRZ'));
           } else {
             landTypeSetting.classList.replace('build-hero-stats-setting-land-type-rz', 'build-hero-stats-setting-land-type-vz');
-            landTypeSetting.title = Lang.text('titleLandTipeVZ');
+            Build.setUiTooltip(landTypeSetting, Lang.text('titleLandTipeVZ'));
           }
         },
       ],
     });
+    Build.setUiTooltip(landTypeSetting, Lang.text('titleLandTipeRZ'));
 
     stats.append(DOM({ style: 'build-hero-stats-settings' }, landTypeSetting));
 
