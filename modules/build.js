@@ -55,6 +55,8 @@ export class Build {
   static combatModeLearnOrder = [];
   static combatModeLearnOrderBySlot = new Map();
   static combatModeLearnedSlots = new Set();
+  static setPopularityMap = new Map();
+  static setPopularityLoadPromise = null;
 
   static language = {
     sr: 'Сила/Разум',
@@ -608,6 +610,7 @@ export class Build {
     Build.attachBuildSettingsToWbuild();
     Build.applyBuildHighlightVariablesFromSettings();
 
+    await Build.loadSetPopularityCacheFromBackend(true);
     Build.renderTalentSetsList();
 
     // ================================================
@@ -854,6 +857,12 @@ export class Build {
     if (Settings.settings.buildSetLmbMode < 1 || Settings.settings.buildSetLmbMode > 3) {
       Settings.settings.buildSetLmbMode = 1;
     }
+    if (!Number.isFinite(Number(Settings.settings.buildSetSortMode))) {
+      Settings.settings.buildSetSortMode = 0;
+    }
+    if (Settings.settings.buildSetSortMode !== 0 && Settings.settings.buildSetSortMode !== 1) {
+      Settings.settings.buildSetSortMode = 0;
+    }
     if (typeof Settings.settings.buildRowHoverHighlight !== 'boolean') {
       Settings.settings.buildRowHoverHighlight = true;
     }
@@ -941,6 +950,12 @@ export class Build {
   static getSetLmbMode() {
     const mode = Number(Settings.settings?.buildSetLmbMode);
     if (!Number.isFinite(mode) || mode < 1 || mode > 3) return 1;
+    return mode;
+  }
+
+  static getSetSortMode() {
+    const mode = Number(Settings.settings?.buildSetSortMode);
+    if (!Number.isFinite(mode) || mode < 0 || mode > 1) return 0;
     return mode;
   }
 
@@ -1105,6 +1120,34 @@ export class Build {
         event: ['click', async () => applyLayoutValue(i)],
       });
       layoutDots.append(dot);
+    }
+
+    const setSortLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsSetSortMode'));
+    const setSortValue = DOM({ tag: 'span', style: 'build-settings-row-value' });
+    const setSortDots = DOM({ style: 'build-settings-mode-dots' });
+    const applySetSortValue = async (next) => {
+      Settings.settings.buildSetSortMode = next;
+      setSortValue.textContent = Build.getSetSortModeLabel(next);
+      const items = setSortDots.querySelectorAll('.build-settings-mode-dot');
+      items.forEach((dot, idx) => dot.classList.toggle('build-settings-mode-dot-active', idx === next));
+      Build.renderTalentSetsList();
+      try {
+        await Settings.WriteSettings();
+      } catch {}
+    };
+    const setSortModeNow = Build.getSetSortMode();
+    setSortValue.textContent = Build.getSetSortModeLabel(setSortModeNow);
+    for (let i = 0; i < 2; i++) {
+      const dotStyle = ['build-settings-mode-dot'];
+      if (setSortModeNow === i) dotStyle.push('build-settings-mode-dot-active');
+      const dot = DOM({
+        tag: 'button',
+        type: 'button',
+        style: dotStyle,
+        title: i === 1 ? Lang.text('buildSettingsSetSortModePopular') : Lang.text('buildSettingsSetSortModeDefault'),
+        event: ['click', async () => applySetSortValue(i)],
+      });
+      setSortDots.append(dot);
     }
 
     const matchLabel = DOM({ style: 'build-settings-row-label' }, Lang.text('buildSettingsSetMatchOnly'));
@@ -1347,6 +1390,9 @@ export class Build {
       layoutLabel,
       layoutDots,
       layoutValue,
+      setSortLabel,
+      setSortDots,
+      setSortValue,
       matchLabel,
       matchDots,
       matchValue,
@@ -1366,6 +1412,86 @@ export class Build {
     if (mode === 2) return Lang.text('buildSettingsLmbMode2');
     if (mode === 3) return Lang.text('buildSettingsLmbMode3');
     return Lang.text('buildSettingsLmbMode1');
+  }
+
+  static getSetSortModeLabel(mode) {
+    if (Number(mode) === 1) return Lang.text('buildSettingsSetSortModePopular');
+    return Lang.text('buildSettingsSetSortModeDefault');
+  }
+
+  static getNumericSetId(set) {
+    const key = String(set?.key || '');
+    const match = key.match(/^setId_(\d+)$/i);
+    return match ? Number(match[1]) : NaN;
+  }
+
+  static getSetPopularityValue(set) {
+    const setId = Build.getNumericSetId(set);
+    if (!Number.isFinite(setId) || setId <= 0) return 0;
+    return Number(Build.setPopularityMap.get(setId)) || 0;
+  }
+
+  static async loadSetPopularityCacheFromBackend(force = false) {
+    if (!force && Build.setPopularityLoadPromise) {
+      await Build.setPopularityLoadPromise;
+      return Build.setPopularityMap;
+    }
+
+    Build.setPopularityLoadPromise = (async () => {
+      try {
+        const raw = await App.api.request('build', 'setsPopularity', {});
+        const map = new Map();
+        if (raw && typeof raw === 'object') {
+          for (const [idRaw, valueRaw] of Object.entries(raw)) {
+            const id = Number(idRaw);
+            const value = Number(valueRaw);
+            if (!Number.isFinite(id) || id <= 0) continue;
+            map.set(id, Number.isFinite(value) ? value : 0);
+          }
+        }
+        Build.setPopularityMap = map;
+      } catch {}
+      return Build.setPopularityMap;
+    })();
+
+    await Build.setPopularityLoadPromise;
+    return Build.setPopularityMap;
+  }
+
+  static getSortedSetsForRender() {
+    const sets = TalentSets.list();
+    if (Build.getSetSortMode() !== 1) return sets;
+
+    return sets
+      .map((set, index) => ({ set, index, popularity: Build.getSetPopularityValue(set) }))
+      .sort((a, b) => {
+        if (b.popularity !== a.popularity) return b.popularity - a.popularity;
+        return a.index - b.index;
+      })
+      .map((x) => x.set);
+  }
+
+  static registerSetPopularityClick(set) {
+    const setId = Build.getNumericSetId(set);
+    if (!Number.isFinite(setId) || setId <= 0) return;
+    App.api
+      .request('build', 'addSetPopularity', { id: setId })
+      .catch(() => {});
+  }
+
+  static countInstalledTalentsFromSet(set, installedTalents = Build.installedTalents) {
+    const ids = new Set(
+      TalentSets.getTalentIds(set)
+        .map((id) => Number(id))
+        .filter((id) => Number.isFinite(id) && id !== 0),
+    );
+    if (!ids.size) return 0;
+    let count = 0;
+    for (const talent of installedTalents || []) {
+      const tid = Number(talent?.id);
+      if (Number.isFinite(tid) && ids.has(tid)) count++;
+    }
+    return count;
   }
 
   static getBuildStatFilterHighlightModeLabel(mode) {
@@ -6430,7 +6556,7 @@ export class Build {
       );
     }
 
-    const sets = TalentSets.list();
+    const sets = Build.getSortedSetsForRender();
     for (const set of sets) {
       const mainId = TalentSets.chooseMainTalentId(set);
       if (mainId == null) continue;
@@ -6470,6 +6596,7 @@ export class Build {
           try {
             Build.setSelectedSetItem(item);
             const mode = Build.getSetLmbMode();
+            const installedBefore = Build.countInstalledTalentsFromSet(set);
             Build._descriptionPinnedBySet = true;
             Build._hoveredSetTalentIds = ids;
             Build._forceShowTalentIds = mode === 1 ? new Set(ids.map(String)) : null;
@@ -6487,6 +6614,12 @@ export class Build {
               Build.applySetInventoryOrder(set);
             } else {
               Build.applySetInventoryOrder(set);
+            }
+            if (mode !== 3) {
+              const installedAfter = Build.countInstalledTalentsFromSet(set);
+              if (installedAfter >= 2 && installedAfter > installedBefore) {
+                Build.registerSetPopularityClick(set);
+              }
             }
             Build.refreshSetHoverState(set, item, ids, true);
           } finally {
@@ -7009,6 +7142,93 @@ export class Build {
     Build.refreshForcedSetOnlyTalentIds();
     for (let itemContainer of Build.inventoryView.querySelectorAll('.build-talent-item-container')) {
       Build.applySorting(itemContainer);
+    }
+    Build.groupInventoryTalentsBySets();
+  }
+
+  /** Группировать видимые таланты одного сета в библиотеке (в порядке sets.list.js). */
+  static groupInventoryTalentsBySets() {
+    const list = Build.inventoryView?.querySelector('.build-talents');
+    if (!list) return;
+
+    const containers = Array.from(list.querySelectorAll('.build-talent-item-container'));
+    if (containers.length < 2) return;
+
+    // TalentSets.list() возвращает reverse() для UI списка; для группировки берём порядок как в sets.list.js.
+    const sets = TalentSets.list().slice().reverse();
+    const setMetaByTalentId = new Map();
+    for (const set of sets) {
+      const setKey = `${set?.key || ''}`;
+      const ids = TalentSets.getTalentIds(set);
+      for (let index = 0; index < ids.length; index++) {
+        const key = `${Number(ids[index])}`;
+        if (!Number.isFinite(Number(key))) continue;
+        if (setMetaByTalentId.has(key)) continue;
+        setMetaByTalentId.set(key, { setKey, orderInSet: index });
+      }
+    }
+
+    const visibleContainersBySet = new Map();
+    const getTalentIdKey = (container) => {
+      const idRaw = container?.querySelector?.('.build-talent-item')?.dataset?.id;
+      const idNum = Number(idRaw);
+      if (!Number.isFinite(idNum)) return null;
+      return `${idNum}`;
+    };
+
+    for (const container of containers) {
+      if (container?.style?.display === 'none') continue;
+      const idKey = getTalentIdKey(container);
+      if (!idKey) continue;
+      const meta = setMetaByTalentId.get(idKey);
+      if (!meta) continue;
+      if (!visibleContainersBySet.has(meta.setKey)) {
+        visibleContainersBySet.set(meta.setKey, new Map());
+      }
+      const byOrder = visibleContainersBySet.get(meta.setKey);
+      if (!byOrder.has(meta.orderInSet)) {
+        byOrder.set(meta.orderInSet, []);
+      }
+      byOrder.get(meta.orderInSet).push(container);
+    }
+
+    const consumed = new Set();
+    const ordered = [];
+    for (const container of containers) {
+      if (consumed.has(container)) continue;
+
+      const idKey = getTalentIdKey(container);
+      const meta = idKey ? setMetaByTalentId.get(idKey) : null;
+      const visible = container?.style?.display !== 'none';
+      const groupMap = visible && meta ? visibleContainersBySet.get(meta.setKey) : null;
+
+      if (!groupMap || groupMap.size <= 1) {
+        ordered.push(container);
+        consumed.add(container);
+        continue;
+      }
+
+      const groupOrders = Array.from(groupMap.keys()).sort((a, b) => a - b);
+      for (const order of groupOrders) {
+        const groupContainers = groupMap.get(order) || [];
+        for (const groupedContainer of groupContainers) {
+          if (consumed.has(groupedContainer)) continue;
+          ordered.push(groupedContainer);
+          consumed.add(groupedContainer);
+        }
+      }
+    }
+
+    for (const container of containers) {
+      if (consumed.has(container)) continue;
+      ordered.push(container);
+      consumed.add(container);
+    }
+
+    for (const container of ordered) {
+      try {
+        list.appendChild(container);
+      } catch {}
     }
   }
 

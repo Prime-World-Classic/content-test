@@ -2233,7 +2233,7 @@ body {
   border-radius: 3.5cqh;
  text-shadow: rgba(0, 0, 0, 1) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh -0.1cqh 0.1cqh;
   color: rgb(252, 229, 188);
-  font: 9cqh / 1.4 'DejaVuSans', sans-serif;
+  font: 9cqh / 1.5 'DejaVuSans', sans-serif;
   white-space: nowrap;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   transition:

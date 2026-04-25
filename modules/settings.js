@@ -21,6 +21,7 @@ export class Settings {
     voiceToggleHotkey: ['CTRL', 'Z'],
     voiceDropHotkey: ['CTRL', 'K'],
     buildSetLmbMode: 1,
+    buildSetSortMode: 0,
     buildRowHoverHighlight: true,
     buildTalentViewLayout: 0,
     buildSetOnlyMatchingStats: false,
