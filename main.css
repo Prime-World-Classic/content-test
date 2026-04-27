@@ -4730,6 +4730,10 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   color: rgb(254 255 235 / 60%);
 }
 
+.chat-edit-indicator {
+  margin-right: 0.7cqh;
+}
+
 .chat-pinned-message {
   background: rgba(255, 215, 0, 0.06);
   border-left: 0.2cqh solid rgba(255, 215, 0, 0.7);

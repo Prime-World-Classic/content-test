@@ -22,6 +22,8 @@ export class Build {
   static loading = false;
   static useOptimisticTalentApi = true;
   static mutationQueue = Promise.resolve();
+  static _activeBarRenderScheduled = false;
+  static _activeBarRenderData = null;
 
   /** HSL hue для подсветки сетов (как rgba(80,190,255)); толщина рамки в мм (макс. 1.5). */
   static BUILD_HIGHLIGHT_HUE_DEFAULT = 199;
@@ -49,6 +51,7 @@ export class Build {
   static _inventorySetHoverTalentId = null;
   static _postMoveRefreshRaf = 0;
   static _postMoveRefreshNeedSort = false;
+  static _regroupInventoryBySetsOnNextSort = false;
   static animateHeroOnBuildChange = false;
   static _isDraggingTalent = false;
   static combatModeEnabled = false;
@@ -778,7 +781,7 @@ export class Build {
     Build.activeBarItems = rollback.active.slice(0, 24).map((item) => Number(item) || 0);
     Build.rebuildFieldConflictFromInstalledTalents();
     Build.syncFieldSlotsFromInstalledTalents();
-    Build.activeBar(Build.activeBarItems);
+    Build.scheduleActiveBarRender(Build.activeBarItems);
     Build.sortInventory();
     Build.updateHeroStats();
     Build.syncCombatModeButtonState();
@@ -847,6 +850,18 @@ export class Build {
       throw new Error('Talent action rejected by backend');
     }
     return true;
+  }
+  
+  static scheduleActiveBarRender(data = null) {
+    const source = Array.isArray(data) ? data : Build.activeBarItems;
+    Build._activeBarRenderData = Array.isArray(source) ? source.slice(0, 24).map((item) => Number(item) || 0) : new Array(24).fill(0);
+    if (Build._activeBarRenderScheduled) return;
+    Build._activeBarRenderScheduled = true;
+    requestAnimationFrame(() => {
+      Build._activeBarRenderScheduled = false;
+      const nextData = Array.isArray(Build._activeBarRenderData) ? Build._activeBarRenderData : new Array(24).fill(0);
+      Build.activeBar(nextData);
+    });
   }
 
   static ensureBuildSettingsDefaults() {
@@ -2171,7 +2186,7 @@ export class Build {
           }
         }
       }
-      Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+      Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
     } catch {}
 
     if (!Build._sortDeferBackendSync) {
@@ -2305,7 +2320,7 @@ export class Build {
             else if (ref.talentRef && rightNow === ref.talentRef) nextPos = rightSlot + 1;
             Build.activeBarItems[ref.i] = ref.sign * nextPos;
           }
-          Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+          Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
         } catch {}
         moved++;
       }
@@ -4926,6 +4941,7 @@ export class Build {
       container.replaceChildren();
     }
     Build._inventoryDefaultOrder = new Map();
+    Build._regroupInventoryBySetsOnNextSort = true;
 
     const requestedBuildId = Build.id;
     Build.loading = true;
@@ -6898,6 +6914,10 @@ export class Build {
       if (element.dataset.active == 1) {
         position = -position;
       }
+      const activeIndex = Number(element.dataset.index);
+      if (Number.isFinite(activeIndex) && Array.isArray(Build.activeBarItems) && activeIndex >= 0 && activeIndex < Build.activeBarItems.length) {
+        Build.activeBarItems[activeIndex] = position;
+      }
 
       await Build.sendBuildMutationOrThrow({
         optimisticMethod: 'optimisticSetActive',
@@ -6931,8 +6951,6 @@ export class Build {
 
   static activeBar(data) {
     Build.activeBarItems = data;
-
-    console.log('activeBar', data);
 
     try {
       Build.activeBarView?.replaceChildren();
@@ -7143,7 +7161,10 @@ export class Build {
     for (let itemContainer of Build.inventoryView.querySelectorAll('.build-talent-item-container')) {
       Build.applySorting(itemContainer);
     }
-    Build.groupInventoryTalentsBySets();
+    if (Build._regroupInventoryBySetsOnNextSort) {
+      Build.groupInventoryTalentsBySets();
+      Build._regroupInventoryBySetsOnNextSort = false;
+    }
   }
 
   /** Группировать видимые таланты одного сета в библиотеке (в порядке sets.list.js). */
@@ -7245,7 +7266,7 @@ export class Build {
     try {
       Build.rebuildFieldConflictFromInstalledTalents();
       Build.syncFieldSlotsFromInstalledTalents();
-      Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+      Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
       Build.ensureTalentIdsPresentInInventory(ids);
       Build.sortInventory();
       if (set) Build.applySetInventoryOrder(set);
@@ -7363,8 +7384,8 @@ export class Build {
       if (Build.descriptionView) Build.descriptionView.style.display = 'none';
     } catch {}
     try {
+      Build._regroupInventoryBySetsOnNextSort = true;
       Build.sortInventory();
-      Build.reorderInventoryByDefaultOrder();
     } catch {}
   }
 
@@ -7688,6 +7709,8 @@ export class Build {
           }
         }
 
+        let postMoveNeedSort = true;
+
         if (Build._hoveredSetTalentIds) {
           Build.highlightSetTalents(Build._hoveredSetTalentIds);
           Build.previewSetTalentsInEmptySlots({ _manualOrder: Build._hoveredSetTalentIds, key: 'hover_preview_move' });
@@ -7862,7 +7885,7 @@ export class Build {
                   swapParentNode.append(elemBelow.firstChild);
                   elemBelow.append(element);
                   // Active bar keeps clones, so force immediate redraw after field swap.
-                  Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+                  Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
                 } else {
                   if (performSwapFromLibrary) {
                     swappingTal = Build.installedTalents[parseInt(elemBelow.dataset.position)];
@@ -7913,7 +7936,7 @@ export class Build {
                           Build.activeBarItems[i] = sign * (newPos + 1);
                         }
                       }
-                      Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+                      Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
                     } else if (!movedTalent?.active && displacedTalent?.active) {
                       for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
                         const item = Number(Build.activeBarItems[i]) || 0;
@@ -7923,7 +7946,7 @@ export class Build {
                           Build.activeBarItems[i] = sign * (oldPos + 1);
                         }
                       }
-                      Build.activeBar(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+                      Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
                     }
                     await Build.sendBuildMutationOrThrow({
                       optimisticMethod: 'optimisticSwap',
@@ -8079,9 +8102,9 @@ export class Build {
             let containedTalent = DOM({ style: 'build-talent-item-container' }, element);
             Build.attachDefaultOrderDatasetToInventoryContainer(containedTalent);
 
-            Build.applySorting(containedTalent);
-
             targetElement.prepend(containedTalent);
+            // Возврат из билда в библиотеку должен оставаться "в первый слот" до следующей явной сортировки.
+            postMoveNeedSort = false;
 
             try {
               if (data.active && oldParentNode?.dataset?.position !== undefined) {
@@ -8098,6 +8121,7 @@ export class Build {
               });
 
               Build.installedTalents[parseInt(oldParentNode.dataset.position)] = null;
+              Build.applySorting(containedTalent);
 
               Build.setStat(data, true);
 
@@ -8261,7 +8285,7 @@ export class Build {
           await removeFromActive(element.dataset.position);
         }
 
-        Build.schedulePostMoveUiRefresh({ needSort: true });
+        Build.schedulePostMoveUiRefresh({ needSort: postMoveNeedSort });
 
         finishDragVisualState();
 
@@ -8280,6 +8304,12 @@ export class Build {
                   clientY: event.clientY,
                 }),
               );
+            } else {
+              if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+              Build._hoveredDescriptionTalentEl = null;
+              Build.clearBuildRowHoverHighlight();
+              Build.clearEmptySlotPreviews();
+              if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
             }
           } catch {}
         }

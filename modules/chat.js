@@ -26,6 +26,14 @@ export class Chat {
   static pinnedCollapsed = true;
 
   static pinnedContainer;
+  
+  static editIndicator;
+  
+  static editMessageId = 0;
+  
+  static editCursor = -1;
+  
+  static editDraftBeforeCursor = '';
 
   static initView() {
     let scrollBtn = DOM(
@@ -49,8 +57,11 @@ export class Chat {
       style: 'chat-input',
       placeholder: Lang.text('enterTextAndPressEnter'),
     });
+    
+    Chat.editIndicator = DOM({ tag: 'span', style: ['chat-body-item-time', 'chat-edit-indicator'] }, Lang.text('chatEditedShort'));
+    Chat.editIndicator.style.display = 'none';
 
-    Chat.input = DOM({ style: 'chat-input-container' }, input, scrollBtn);
+    Chat.input = DOM({ style: 'chat-input-container' }, input, Chat.editIndicator, scrollBtn);
 
     Chat.pinnedContainer = DOM({ style: 'chat-pinned-container' });
 
@@ -93,14 +104,17 @@ export class Chat {
 
     Chat.body.addEventListener('mouseleave', () => Chat.collapsePinnedList());
 
-    const handleSend = async (event) => {
+    const handleInputKeys = async (event) => {
+      if (Chat.handleInputArrowNavigation(event)) {
+        return;
+      }
       if (!App.isEnterKey(event)) return;
-
+      
       event.preventDefault();
       await Chat.sendMessage();
     };
 
-    input.addEventListener('keydown', handleSend);
+    input.addEventListener('keydown', handleInputKeys);
 
     input.addEventListener('input', () => {
       if (!Chat.input.firstChild.value) {
@@ -156,9 +170,125 @@ export class Chat {
   }
 
   static focusReplyTo(data) {
+    Chat.resetEditCursor(false);
     Chat.to = data.id;
     Chat.body.lastChild.firstChild.value = `${Chat.getReplyHandle(data)}, `;
     Chat.input.firstChild.focus();
+  }
+  
+  static resetEditCursor(restoreDraft = false) {
+    const input = Chat.input?.firstChild;
+    if (restoreDraft && input) {
+      input.value = Chat.editDraftBeforeCursor || '';
+    }
+    Chat.editMessageId = 0;
+    Chat.editCursor = -1;
+    Chat.editDraftBeforeCursor = '';
+    Chat.updateEditIndicator();
+  }
+  
+  static collectEditableOwnMessages() {
+    const myId = Number(App?.storage?.data?.id || 0);
+    const canEditTelegramMessages = App.isAdmin() || App.isHelper();
+    if (!(myId > 0) || !Array.isArray(Chat.messages)) {
+      return [];
+    }
+    const list = [];
+    const byMessageId = new Map();
+    const pushEditable = (item, appendIfNew = true) => {
+      if (!item) return;
+      if (Number(item.id || 0) !== myId) return;
+      if (item.localEcho) return;
+      if (String(item.source || '').toLowerCase() === 'telegram' && !canEditTelegramMessages) return;
+      const messageId = Number(item.messageId || 0);
+      if (!(messageId > 0)) return;
+      if (byMessageId.has(messageId)) {
+        const index = byMessageId.get(messageId);
+        list[index] = item;
+        return;
+      }
+      if (!appendIfNew) {
+        return;
+      }
+      byMessageId.set(messageId, list.length);
+      list.push(item);
+    };
+    for (const item of Chat.messages) {
+      pushEditable(item);
+    }
+    if (Array.isArray(Chat.pinnedMessages)) {
+      for (const item of Chat.pinnedMessages) {
+        // Keep original order from chat history; only refresh existing entries.
+        pushEditable(item, false);
+      }
+    }
+    return list;
+  }
+  
+  static applyEditCursor(messages, index) {
+    if (!Array.isArray(messages) || !messages.length) {
+      return false;
+    }
+    const clampedIndex = Math.max(0, Math.min(index, messages.length - 1));
+    const target = messages[clampedIndex];
+    if (!target) {
+      return false;
+    }
+    const input = Chat.input?.firstChild;
+    if (!input) {
+      return false;
+    }
+    Chat.editCursor = clampedIndex;
+    Chat.editMessageId = Number(target.messageId || 0);
+    Chat.updateEditIndicator();
+    input.value = String(target.message || '');
+    input.focus();
+    const cursorPos = input.value.length;
+    input.setSelectionRange(cursorPos, cursorPos);
+    return true;
+  }
+  
+  static updateEditIndicator() {
+    if (!Chat.editIndicator) {
+      return;
+    }
+    Chat.editIndicator.style.display = Number(Chat.editMessageId || 0) > 0 ? 'inline-block' : 'none';
+  }
+  
+  static handleInputArrowNavigation(event) {
+    if (!event || (event.key !== 'ArrowUp' && event.key !== 'ArrowDown')) {
+      return false;
+    }
+    if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) {
+      return false;
+    }
+    const input = Chat.input?.firstChild;
+    if (!input || document.activeElement !== input) {
+      return false;
+    }
+    const messages = Chat.collectEditableOwnMessages();
+    if (!messages.length) {
+      return false;
+    }
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      if (Chat.editCursor < 0) {
+        Chat.editDraftBeforeCursor = input.value;
+      }
+      const targetIndex = (Chat.editCursor < 0) ? 0 : Math.min(Chat.editCursor + 1, messages.length - 1);
+      Chat.applyEditCursor(messages, targetIndex);
+      return true;
+    }
+    if (Chat.editCursor < 0) {
+      return false;
+    }
+    event.preventDefault();
+    if (Chat.editCursor <= 0) {
+      Chat.resetEditCursor(true);
+      return true;
+    }
+    Chat.applyEditCursor(messages, Chat.editCursor - 1);
+    return true;
   }
 
   static createPinButton(data, label = '📌') {
@@ -342,6 +472,7 @@ export class Chat {
         flag: Number(item?.flag || 0),
         star: Number(item?.star || 0),
         message: String(item?.message || ''),
+        edited: Boolean(item?.edited),
         client: Number(item?.client || 0),
         source: String(item?.source || ''),
         pinned: true,
@@ -523,7 +654,8 @@ export class Chat {
       message.style.color = 'rgba(51,255,0,0.9)';
     }
 
-    const time = DOM({ tag: 'span', style: 'chat-body-item-time' }, `${Chat.formatMessageTime(data)}`);
+    const editedSuffix = Boolean(data?.edited) ? ` ${Lang.text('chatEditedShort')}` : '';
+    const time = DOM({ tag: 'span', style: 'chat-body-item-time' }, `${Chat.formatMessageTime(data)}${editedSuffix}`);
 
     return { flag, sourceIcon, starBadge, nickname, message, time };
   }
@@ -685,6 +817,21 @@ export class Chat {
       Chat.to = 0;
       return;
     }
+    const editMessageId = Number(Chat.editMessageId || 0);
+    if (editMessageId > 0) {
+      try {
+        await App.api.request('user', 'chatEdit', {
+          messageId: editMessageId,
+          message: text,
+        });
+        Chat.input.firstChild.value = '';
+        Chat.resetEditCursor(false);
+      } catch (error) {
+        throw error;
+      }
+      return;
+    }
+    
     const to = Chat.to;
     const echoId = `${App.storage.data.id}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     const outgoingClient = NativeAPI.isSteamClient ? 2 : 0;
@@ -696,6 +843,7 @@ export class Chat {
       to,
       flag: 0,
       message: text,
+      edited: false,
       pinned: false,
       client: outgoingClient,
       source: outgoingClient === 2 ? 'steam' : '',
@@ -718,6 +866,7 @@ export class Chat {
     Chat.to = 0;
 
     Chat.input.firstChild.value = '';
+    Chat.resetEditCursor(false);
   }
 
   static scroll(forceScroll = false) {
