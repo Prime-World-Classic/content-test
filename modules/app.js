@@ -816,7 +816,20 @@ export class App {
   }
 
   static isEnterKey(e) {
-    return e.key === 'Enter' || e.keyCode === 13 || e.code === 'Enter' || e.code === 'NumpadEnter';
+    const key = String(e?.key || '');
+    const code = String(e?.code || '');
+    const keyCode = Number(e?.keyCode || 0);
+    return (
+      key === 'Enter' ||
+      key === 'NumpadEnter' ||
+      key === 'Go' ||
+      key === 'Send' ||
+      key === 'Done' ||
+      keyCode === 13 ||
+      keyCode === 10 ||
+      code === 'Enter' ||
+      code === 'NumpadEnter'
+    );
   }
 
   static href(url) {

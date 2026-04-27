@@ -11,6 +11,8 @@ export class Chat {
   static hide = false;
 
   static to = 0;
+  
+  static replyHandle = '';
 
   static STORAGE_KEY = 'castle_chat_messages_v1';
 
@@ -34,6 +36,12 @@ export class Chat {
   static editCursor = -1;
   
   static editDraftBeforeCursor = '';
+  
+  static arrowNavLastKey = '';
+  
+  static arrowNavLastAt = 0;
+  
+  static lastEnterSendAt = 0;
 
   static initView() {
     let scrollBtn = DOM(
@@ -105,20 +113,32 @@ export class Chat {
     Chat.body.addEventListener('mouseleave', () => Chat.collapsePinnedList());
 
     const handleInputKeys = async (event) => {
+      if (Chat.handleReplyPrefixErase(event, input)) {
+        return;
+      }
       if (Chat.handleInputArrowNavigation(event)) {
         return;
       }
       if (!App.isEnterKey(event)) return;
       
       event.preventDefault();
+      event.stopPropagation();
+      const now = Date.now();
+      if (now - Number(Chat.lastEnterSendAt || 0) < 150) {
+        return;
+      }
+      Chat.lastEnterSendAt = now;
       await Chat.sendMessage();
     };
 
     input.addEventListener('keydown', handleInputKeys);
+    input.addEventListener('keyup', handleInputKeys);
 
     input.addEventListener('input', () => {
       if (!Chat.input.firstChild.value) {
         Chat.to = 0;
+        Chat.replyHandle = '';
+        Chat.updateEditIndicator();
       }
     });
   }
@@ -172,8 +192,53 @@ export class Chat {
   static focusReplyTo(data) {
     Chat.resetEditCursor(false);
     Chat.to = data.id;
-    Chat.body.lastChild.firstChild.value = `${Chat.getReplyHandle(data)}, `;
+    Chat.replyHandle = Chat.getReplyHandle(data);
+    const replyPrefix = Chat.getReplyPrefix();
+    const currentValue = String(Chat.body.lastChild.firstChild.value || '');
+    Chat.body.lastChild.firstChild.value = currentValue.startsWith(replyPrefix) ? currentValue : `${replyPrefix}${currentValue}`;
+    Chat.updateEditIndicator();
     Chat.input.firstChild.focus();
+  }
+  
+  static getReplyPrefix() {
+    const handle = String(Chat.replyHandle || '').trim();
+    if (!handle) {
+      return '';
+    }
+    return `${handle}, `;
+  }
+  
+  static handleReplyPrefixErase(event, input) {
+    if (!event || !input || (event.key !== 'Backspace' && event.key !== 'Delete')) {
+      return false;
+    }
+    const replyPrefix = Chat.getReplyPrefix();
+    if (!replyPrefix) {
+      return false;
+    }
+    const value = String(input.value || '');
+    if (!value.startsWith(replyPrefix)) {
+      return false;
+    }
+    const start = Number(input.selectionStart ?? 0);
+    const end = Number(input.selectionEnd ?? 0);
+    const hasSelection = start !== end;
+    if (hasSelection) {
+      return false;
+    }
+    const shouldClearByBackspace = event.key === 'Backspace' && start <= replyPrefix.length;
+    const shouldClearByDelete = event.key === 'Delete' && start < replyPrefix.length;
+    if (!shouldClearByBackspace && !shouldClearByDelete) {
+      return false;
+    }
+    event.preventDefault();
+    input.value = value.slice(replyPrefix.length);
+    Chat.to = 0;
+    Chat.replyHandle = '';
+    Chat.updateEditIndicator();
+    const cursorPos = Math.max(0, start - replyPrefix.length);
+    input.setSelectionRange(cursorPos, cursorPos);
+    return true;
   }
   
   static resetEditCursor(restoreDraft = false) {
@@ -241,7 +306,9 @@ export class Chat {
     Chat.editCursor = clampedIndex;
     Chat.editMessageId = Number(target.messageId || 0);
     Chat.updateEditIndicator();
-    input.value = String(target.message || '');
+    const replyPrefix = Chat.getReplyPrefix();
+    const messageText = String(target.message || '');
+    input.value = replyPrefix ? `${replyPrefix}${messageText}` : messageText;
     input.focus();
     const cursorPos = input.value.length;
     input.setSelectionRange(cursorPos, cursorPos);
@@ -252,13 +319,32 @@ export class Chat {
     if (!Chat.editIndicator) {
       return;
     }
-    Chat.editIndicator.style.display = Number(Chat.editMessageId || 0) > 0 ? 'inline-block' : 'none';
+    if (Number(Chat.editMessageId || 0) > 0) {
+      Chat.editIndicator.textContent = Lang.text('chatEditedShort');
+      Chat.editIndicator.style.display = 'inline-block';
+      return;
+    }
+    if (Number(Chat.to || 0) > 0) {
+      Chat.editIndicator.textContent = Lang.text('chatReplyShort');
+      Chat.editIndicator.style.display = 'inline-block';
+      return;
+    }
+    Chat.editIndicator.style.display = 'none';
   }
   
   static handleInputArrowNavigation(event) {
     if (!event || (event.key !== 'ArrowUp' && event.key !== 'ArrowDown')) {
       return false;
     }
+    const now = Date.now();
+    if (Chat.arrowNavLastKey === event.key && (now - Chat.arrowNavLastAt) < 120) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation?.();
+      return true;
+    }
+    Chat.arrowNavLastKey = event.key;
+    Chat.arrowNavLastAt = now;
     if (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) {
       return false;
     }
@@ -271,7 +357,12 @@ export class Chat {
       return false;
     }
     if (event.key === 'ArrowUp') {
+      if (Number(Chat.to || 0) > 0 && Chat.editCursor < 0) {
+        return false;
+      }
       event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation?.();
       if (Chat.editCursor < 0) {
         Chat.editDraftBeforeCursor = input.value;
       }
@@ -280,9 +371,25 @@ export class Chat {
       return true;
     }
     if (Chat.editCursor < 0) {
+      if (Number(Chat.to || 0) > 0) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation?.();
+        const inputValue = String(input.value || '');
+        const replyPrefix = Chat.getReplyPrefix();
+        if (replyPrefix && inputValue.startsWith(replyPrefix)) {
+          input.value = inputValue.slice(replyPrefix.length);
+        }
+        Chat.to = 0;
+        Chat.replyHandle = '';
+        Chat.updateEditIndicator();
+        return true;
+      }
       return false;
     }
     event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
     if (Chat.editCursor <= 0) {
       Chat.resetEditCursor(true);
       return true;
@@ -815,6 +922,7 @@ export class Chat {
     if (!text.length) {
       Chat.input.firstChild.value = '';
       Chat.to = 0;
+      Chat.replyHandle = '';
       return;
     }
     const editMessageId = Number(Chat.editMessageId || 0);
@@ -864,6 +972,7 @@ export class Chat {
     }
 
     Chat.to = 0;
+    Chat.replyHandle = '';
 
     Chat.input.firstChild.value = '';
     Chat.resetEditCursor(false);
@@ -889,9 +998,21 @@ export class Chat {
       }
       const messageKey = Chat.getMessageIdentityKey(clone);
       if (messageKey) {
-        Chat.messages = Chat.messages.filter((msg) => Chat.getMessageIdentityKey(msg) !== messageKey);
+        const existingIndex = Chat.messages.findIndex((msg) => Chat.getMessageIdentityKey(msg) === messageKey);
+        if (existingIndex >= 0) {
+          const previous = Chat.messages[existingIndex] || {};
+          // Keep original position in history, update payload in place.
+          Chat.messages[existingIndex] = {
+            ...previous,
+            ...clone,
+            _ts: previous?._ts ?? clone._ts,
+          };
+        } else {
+          Chat.messages.unshift(clone);
+        }
+      } else {
+        Chat.messages.unshift(clone);
       }
-      Chat.messages.unshift(clone);
       if (Chat.messages.length > Chat.MAX_HISTORY) {
         Chat.messages.length = Chat.MAX_HISTORY;
       }

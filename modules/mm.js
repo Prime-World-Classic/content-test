@@ -790,8 +790,14 @@ export class MM {
       placeholder: Lang.text('enterTextAndPressEnter'),
     });
 
-    chatInput.addEventListener('keyup', async (event) => {
+    let lastEnterSendAt = 0;
+    const handleChatSubmitKey = async (event) => {
       if (!App.isEnterKey(event)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const now = Date.now();
+      if (now - lastEnterSendAt < 150) return;
+      lastEnterSendAt = now;
 
       if (chatInput.value.length < 2) {
         throw 'Количество символов < 2';
@@ -807,7 +813,9 @@ export class MM {
       });
 
       chatInput.value = '';
-    });
+    };
+    chatInput.addEventListener('keydown', handleChatSubmitKey);
+    chatInput.addEventListener('keyup', handleChatSubmitKey);
 
     let body = DOM(
       { style: 'mm-lobby' },

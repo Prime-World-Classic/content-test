@@ -20,6 +20,7 @@ export const en = {
     titlePhone: 'Phone',
     titleSteamClient: 'Steam Client',
     chatEditedShort: 'edited.',
+    chatReplyShort: 'reply',
     titleStarsGlory:
       '"Stars of Glory" — 1 star = MVP 100%\n(best/most valuable player among 10 players in a match)\nwith zero deaths.',
     ready: 'Ready!',
