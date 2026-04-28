@@ -109,6 +109,7 @@ export class View {
   static castleHeroListsBar = null;
   static castleHeroPinnedEditor = null;
   static castleFriendAll = [];
+  static castleOnlinePlayersAll = [];
   static castleFriendSelectedList = 0;
   static castleFriendSearch = '';
   static castleFriendListEditMode = '';
@@ -229,6 +230,41 @@ export class View {
         return a.index - b.index;
       })
       .map((entry) => entry.item);
+  }
+
+  static getSortedOnlinePlayers(relationById = null) {
+    const source = Array.isArray(View.castleOnlinePlayersAll) ? View.castleOnlinePlayersAll : [];
+    const relationMap = relationById instanceof Map ? relationById : null;
+    return source
+      .map((item, index) => ({ item, index }))
+      .sort((a, b) => {
+        const aRelation = relationMap?.get(Number(a.item?.id || 0));
+        const bRelation = relationMap?.get(Number(b.item?.id || 0));
+        const aSortItem = aRelation
+          ? {
+              ...a.item,
+              status: Number(aRelation?.status || 0),
+              favourite: Number(aRelation?.favourite || 0),
+            }
+          : a.item;
+        const bSortItem = bRelation
+          ? {
+              ...b.item,
+              status: Number(bRelation?.status || 0),
+              favourite: Number(bRelation?.favourite || 0),
+            }
+          : b.item;
+        const weightDiff = View.getFriendStatusSortWeight(aSortItem) - View.getFriendStatusSortWeight(bSortItem);
+        if (weightDiff !== 0) {
+          return weightDiff;
+        }
+        return a.index - b.index;
+      })
+      .map((entry) => entry.item);
+  }
+
+  static getCastleFriendListsMax() {
+    return App.isAdmin() ? 2 : View.CASTLE_FRIEND_LISTS_MAX;
   }
   
   static applyFriendPresenceUpdate(data) {
@@ -2799,7 +2835,7 @@ export class View {
   static loadCastleFriendSelectedList() {
     try {
       const value = Number(localStorage.getItem(View.CASTLE_FRIEND_LIST_STORAGE_KEY));
-      if (Number.isFinite(value) && value >= 0 && value <= View.CASTLE_FRIEND_LISTS_MAX) {
+      if (Number.isFinite(value) && value >= 0 && value <= View.getCastleFriendListsMax()) {
         View.castleFriendSelectedList = value;
       }
     } catch {}
@@ -2898,6 +2934,33 @@ export class View {
       '',
     );
     bar.append(favBtn);
+
+    if (App.isAdmin()) {
+      const onlineBtn = DOM(
+        {
+          style: [
+            'castle-hero-list-btn',
+            'castle-friend-list-btn-online',
+            View.castleFriendSelectedList === 2 ? 'castle-hero-list-btn-active' : null,
+          ].filter(Boolean),
+          domaudio: domAudioPresets.defaultButton,
+          title: 'Онлайн игроки',
+          event: [
+            'click',
+            () => {
+              View.castleFriendSelectedList = 2;
+              View.castleFriendListEditMode = '';
+              View.castleFriendEditSelection = new Set();
+              View.castleFriendClearConfirm = false;
+              View.persistCastleFriendSelectedList();
+              View.renderCastleFriendsFromCache();
+            },
+          ],
+        },
+        'ON',
+      );
+      bar.append(onlineBtn);
+    }
 
     const searchWrap = DOM({
       style: ['castle-hero-list-search-wrap', View.castleFriendSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
@@ -3077,7 +3140,9 @@ export class View {
     }
 
     const selectedList = Number(View.castleFriendSelectedList) || 0;
-    const editMode = selectedList > 0 ? View.castleFriendListEditMode : '';
+    const favListSelected = selectedList === 1;
+    const onlineListSelected = selectedList === 2;
+    const editMode = favListSelected ? View.castleFriendListEditMode : '';
     const searchVariants = View.getLayoutAwareSearchVariants(View.castleFriendSearch);
     const hasSearch = searchVariants.length > 0;
     const pinnedEditorRoot = View.castleHeroPinnedEditor;
@@ -3085,8 +3150,8 @@ export class View {
 
     View.castleBottom.replaceChildren();
     pinnedEditorRoot?.replaceChildren?.();
-    View.castleBottom.classList.toggle('castle-bottom-content-with-editor', selectedList > 0);
-    if (selectedList > 0) {
+    View.castleBottom.classList.toggle('castle-bottom-content-with-editor', favListSelected);
+    if (favListSelected) {
       pinnedEditorRoot?.append(View.buildCastleFriendListEditorCard());
     }
 
@@ -3226,19 +3291,31 @@ export class View {
         ),
       ),
     );
-    buttonAdd.dataset.url = `content/hero/empty.png`;
-    preload.add(buttonAdd);
-    View.castleBottom.append(buttonAdd);
+    if (!onlineListSelected) {
+      buttonAdd.dataset.url = `content/hero/empty.png`;
+      preload.add(buttonAdd);
+      View.castleBottom.append(buttonAdd);
+    }
 
-    const sortedFriends = View.getSortedCastleFriends();
+    const friendRelationById = onlineListSelected
+      ? new Map((View.castleFriendAll || []).map((friendItem) => [Number(friendItem?.id || 0), friendItem]))
+      : null;
+    const sortedFriends = onlineListSelected ? View.getSortedOnlinePlayers(friendRelationById) : View.getSortedCastleFriends();
     for (let item of sortedFriends) {
+      const relationItem = friendRelationById?.get(Number(item?.id || 0));
+      if (relationItem) {
+        item = {
+          ...item,
+          status: Number(relationItem?.status || 0),
+          favourite: Number(relationItem?.favourite || 0),
+        };
+      }
       const status = Number(item?.status);
       const nickname = String(item?.nickname || '');
       const nicknameLower = nickname.toLowerCase();
       const nicknameWords = View.splitSearchWords(nicknameLower);
       if (hasSearch && !searchVariants.some((variant) => View.isFuzzySearchVariantMatch(nicknameLower, nicknameWords, variant))) continue;
-      const inList = status === 1 && View.isCastleFriendInList(item, 1);
-      if (selectedList > 0) {
+      if (favListSelected) {
         const inFavList = View.isCastleFriendInList(item, 1);
         if (editMode) {
           if (status !== 1) continue;
@@ -3416,6 +3493,24 @@ export class View {
               Lang.text('cancel'),
             ),
           );
+        } else if (status == 0 && onlineListSelected) {
+          bottom.append(
+            DOM(
+              {
+                domaudio: domAudioPresets.smallButton,
+                style: 'castle-friend-add-group',
+                event: [
+                  'click',
+                  async () => {
+                    await App.api.request('friend', 'request', { id: item.id, fromFav: 0 });
+                    App.notify(`Заявка в друзья ${item.nickname} отправлена`, 800);
+                    View.bodyCastleFriends();
+                  },
+                ],
+              },
+              Lang.text('inviteToAFriend'),
+            ),
+          );
         }
       }
 
@@ -3467,6 +3562,12 @@ export class View {
     View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
     View.castleHeroPinnedEditor?.replaceChildren?.();
     View.loadCastleFriendSelectedList();
+    View.castleOnlinePlayersAll = [];
+    const maxList = View.getCastleFriendListsMax();
+    if (View.castleFriendSelectedList > maxList) {
+      View.castleFriendSelectedList = 0;
+      View.persistCastleFriendSelectedList();
+    }
     View.renderCastleFriendsFromCache();
 
     App.api.silent(
@@ -3479,6 +3580,20 @@ export class View {
       'friend',
       'list',
     );
+
+    if (App.isAdmin()) {
+      App.api.silent(
+        (result) => {
+          if (View.castleActiveTab !== 'friends') return;
+          View.castleOnlinePlayersAll = Array.isArray(result) ? result : [];
+          if (View.castleFriendSelectedList === 2) {
+            View.renderCastleFriendsFromCache();
+          }
+        },
+        'friend',
+        'onlineAll',
+      );
+    }
   }
 
   static exitOrLogout() {

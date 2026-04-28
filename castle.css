@@ -1691,7 +1691,7 @@ body {
   filter: brightness(1.2);
 }
 
-.castle-hero-list-btn-active:not(.castle-hero-list-btn-all):not(.castle-hero-list-btn-add):not(.castle-friend-list-btn-fav)::after {
+.castle-hero-list-btn-active:not(.castle-hero-list-btn-all):not(.castle-hero-list-btn-add):not(.castle-friend-list-btn-fav):not(.castle-friend-list-btn-online)::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -1742,6 +1742,12 @@ body {
   background-size: contain;
   background-position: center;
   filter: brightness(1.15);
+}
+
+.castle-friend-list-btn-online {
+  min-width: 6.2cqh;
+  font-size: 1.15cqh;
+  letter-spacing: 0.04em;
 }
 
 .castle-hero-list-btn-add {

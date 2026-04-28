@@ -14,6 +14,7 @@ export const be = {
     fight: 'У бой!',
     enterTextAndPressEnter: 'Увядзіце тэкст і націсніце Enter',
     chatEditedShort: 'рэд.',
+    chatReplyShort: 'адказ',
     titleStarsGlory:
       '«Зоркі Славы» — 1 зорка = MVP 100%\n(каштоўны/лепшы гулец з 10 гульцоў за матч)\nбез адзінай смерці.',
     ready: 'Гатоў',

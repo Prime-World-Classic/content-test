@@ -4068,14 +4068,23 @@ export class Build {
     for (let key in Build.calculationStats) {
       Build.calculationStats[key] = 0.0;
     }
-
-    for (let i = 35; i >= 0; i--) {
-      let talent = effectiveInstalledTalents[i];
-      if (talent) {
-        if (!Build.combatModeEnabled) {
-          Build.calcStatsFromPower(i, effectiveInstalledTalents);
-        }
+    if (Build.combatModeEnabled) {
+      // В боевом режиме важен порядок изучения: таланты вида "к наибольшему"
+      // должны опираться на текущие статы на момент изучения.
+      for (const slot of Build.combatModeLearnOrder || []) {
+        const idx = Number(slot);
+        if (!Number.isFinite(idx) || idx < 0 || idx >= 36) continue;
+        const talent = effectiveInstalledTalents[idx];
+        if (!talent) continue;
         Build.setStat(talent, true, false);
+      }
+    } else {
+      for (let i = 35; i >= 0; i--) {
+        let talent = effectiveInstalledTalents[i];
+        if (talent) {
+          Build.calcStatsFromPower(i, effectiveInstalledTalents);
+          Build.setStat(talent, true, false);
+        }
       }
     }
 
