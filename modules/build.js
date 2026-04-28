@@ -7718,6 +7718,12 @@ export class Build {
           }
         }
 
+        const sourceState = Number(element.dataset.state);
+        const sourceIsInventory = !fromActiveBar && sourceState === 1;
+        const sourceIsBuild = !fromActiveBar && sourceState === 2;
+        const isClickTransferBetweenBuildAndLibrary =
+          isClick && ((sourceIsInventory && isFieldTarget) || (sourceIsBuild && isInventoryTarget));
+
         let postMoveNeedSort = true;
 
         if (Build._hoveredSetTalentIds) {
@@ -8298,16 +8304,21 @@ export class Build {
 
         finishDragVisualState();
 
-        // If cursor stays over a talent after drag-end,
-        // restore tooltip/row-highlight without requiring mouse movement.
-        // For click-to-move we hide description to avoid sticky tooltip.
-        if (isClick) {
+        if (isClickTransferBetweenBuildAndLibrary) {
+          Build.beginLibraryHoverSuppression(120);
+          Build.cancelPendingInventorySetHover();
           if (Build.descriptionView) Build.descriptionView.style.display = 'none';
           Build._hoveredDescriptionTalentEl = null;
           Build.clearBuildRowHoverHighlight();
           Build.clearEmptySlotPreviews();
           if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
-        } else {
+          return;
+        }
+
+        // If cursor stays over a talent after click/drag-end,
+        // restore tooltip/row-highlight without requiring mouse movement.
+        // Avoid expensive forced tooltip redraw on very frequent library clicks.
+        if (!(isInventoryTalent && isClick)) {
           try {
             const hovered = document.elementFromPoint(event.clientX, event.clientY);
             const hoveredTalent = hovered?.closest?.('.build-talent-item');
