@@ -52,6 +52,7 @@ export class Build {
   static _postMoveRefreshRaf = 0;
   static _postMoveRefreshNeedSort = false;
   static _regroupInventoryBySetsOnNextSort = false;
+  static _talentDescriptionSuppressedUntil = 0;
   static animateHeroOnBuildChange = false;
   static _isDraggingTalent = false;
   static combatModeEnabled = false;
@@ -8304,7 +8305,12 @@ export class Build {
 
         finishDragVisualState();
 
-        if (isClickTransferBetweenBuildAndLibrary) {
+        const destinationState = Number(element.dataset.state);
+        const didTransferBetweenBuildAndLibrary =
+          !fromActiveBar && ((sourceState === 1 && destinationState === 2) || (sourceState === 2 && destinationState === 1));
+
+        if (isClickTransferBetweenBuildAndLibrary || didTransferBetweenBuildAndLibrary) {
+          Build._talentDescriptionSuppressedUntil = Date.now() + 220;
           Build.beginLibraryHoverSuppression(120);
           Build.cancelPendingInventorySetHover();
           if (Build.descriptionView) Build.descriptionView.style.display = 'none';
@@ -8479,6 +8485,10 @@ export class Build {
 
   static description(element) {
     let descEvent = () => {
+      if (Date.now() < Number(Build._talentDescriptionSuppressedUntil || 0)) {
+        if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+        return;
+      }
       if (Build._isDraggingTalent) {
         if (Build.descriptionView) Build.descriptionView.style.display = 'none';
         return;
@@ -8663,6 +8673,7 @@ export class Build {
   static cleanup() {
     Build._isDraggingTalent = false;
     Build._hoveredDescriptionTalentEl = null;
+    Build._talentDescriptionSuppressedUntil = 0;
     Build._libraryHoverSuppressed = false;
     try {
       if (Build._libraryHoverSuppressTimer) clearTimeout(Build._libraryHoverSuppressTimer);
