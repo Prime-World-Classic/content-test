@@ -8298,10 +8298,16 @@ export class Build {
 
         finishDragVisualState();
 
-        // If cursor stays over a talent after click/drag-end,
+        // If cursor stays over a talent after drag-end,
         // restore tooltip/row-highlight without requiring mouse movement.
-        // Avoid expensive forced tooltip redraw on very frequent library clicks.
-        if (!(isInventoryTalent && isClick)) {
+        // For click-to-move we hide description to avoid sticky tooltip.
+        if (isClick) {
+          if (Build.descriptionView) Build.descriptionView.style.display = 'none';
+          Build._hoveredDescriptionTalentEl = null;
+          Build.clearBuildRowHoverHighlight();
+          Build.clearEmptySlotPreviews();
+          if (!Build._hoveredSetTalentIds) Build.clearSetHighlights();
+        } else {
           try {
             const hovered = document.elementFromPoint(event.clientX, event.clientY);
             const hoveredTalent = hovered?.closest?.('.build-talent-item');
