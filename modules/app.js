@@ -21,7 +21,7 @@ import { SessionPulse } from './sessionPulse.js';
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.15.1';
+  static PW_VERSION = '2.15.2';
 
   static CURRENT_MM = 'mmtest';
 
@@ -200,6 +200,8 @@ export class App {
     try {
       await App.api.init();
     } catch (error) {}
+    
+    Chat.loadHistory().catch((error) => console.error('Failed to load chat history after API init', error));
 
     //App.ShowCurrentView();
 
@@ -332,6 +334,7 @@ export class App {
 
   static onApiReconnected() {
     Chat.syncPinnedMessagesWithBackend?.();
+    Chat.syncRecentMessagesWithBackend?.();
   }
 
   static async authorization(login, password) {
@@ -816,20 +819,7 @@ export class App {
   }
 
   static isEnterKey(e) {
-    const key = String(e?.key || '');
-    const code = String(e?.code || '');
-    const keyCode = Number(e?.keyCode || 0);
-    return (
-      key === 'Enter' ||
-      key === 'NumpadEnter' ||
-      key === 'Go' ||
-      key === 'Send' ||
-      key === 'Done' ||
-      keyCode === 13 ||
-      keyCode === 10 ||
-      code === 'Enter' ||
-      code === 'NumpadEnter'
-    );
+    return e.key === 'Enter' || e.keyCode === 13 || e.code === 'Enter' || e.code === 'NumpadEnter';
   }
 
   static href(url) {

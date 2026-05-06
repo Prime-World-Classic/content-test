@@ -4861,7 +4861,10 @@ export class View {
     const body = DOM({ style: 'build-horizontal' });
     requestAnimationFrame(() => Voice.updatePanelPosition());
 
-    await Build.init(heroId, targetId, isWindow);
+    const initialized = await Build.init(heroId, targetId, isWindow);
+    if (!initialized) {
+      return null;
+    }
 
     body.append(
       DOM({

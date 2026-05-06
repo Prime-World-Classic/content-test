@@ -4546,7 +4546,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   position: relative;
   width: 80%;
   height: 13cqh;
-  padding: 5%;
+  padding: 3%;
   transition: all 0.3s ease-out;
   opacity: 80%;
   border: 0.2cqh groove rgb(158, 155, 104);
@@ -4688,6 +4688,18 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   padding: 0.7cqh;
 }
 
+.chat-body-item-own {
+  background: linear-gradient(90deg, rgba(80, 140, 255, 0.22), rgba(80, 140, 255, 0.1));
+  border-left: 0.2cqh solid rgba(140, 205, 255, 0.95);
+  border-radius: 0.4cqh;
+}
+
+.chat-body-item-other {
+  background: linear-gradient(90deg, rgba(255, 205, 80, 0.11), rgba(255, 205, 80, 0.05));
+  border-left: 0.2cqh solid rgba(255, 225, 120, 0.48);
+  border-radius: 0.4cqh;
+}
+
 .chat-body-item-content {
   flex: 1;
   min-width: 0;
@@ -4695,7 +4707,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .chat-body-item div {
   display: inline;
-  font: 2cqh / 1 'DejaVuSans', sans-serif;
+  font: 1.6cqh / 1 'DejaVuSans', sans-serif;
   text-shadow: rgba(0, 0, 0, 0.3) 0 0 0.2cqw;
   transition: all 0.3s ease-out;
   color: rgba(240, 240, 230, 0.9);

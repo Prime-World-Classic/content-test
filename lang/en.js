@@ -2025,7 +2025,7 @@ export const en = {
       'The bleeding effect stacks up to <num>3</num> times on targets with reduced Health regeneration. <br>The Enchanted Arrow talent, upon reaching maximum distance or hitting an enemy, explodes and deals <mag>%s</mag> damage to enemies around.',
     htalent_176_name: "Hunt's fervor <mana>90</mana> <CD>18</CD>",
     htalent_176_description:
-      'Increases the Speed of the specified allied target by <num>50%</num> for <num>6</num> sec. </br>\n<rz>On native terrain, Speed is additionally increased by <num>20%</num>.</rz>',
+      'Increases the Speed of the specified allied target by <num>50%</num> for <num>6</num> sec. </br><rz>On native terrain, Speed is additionally increased by <num>20%</num>, healing is additionally increased by <num>50%</num> .</rz>',
     htalent_177_name: 'Devastating Shot <mana>215</mana> <CD>70</CD>',
     htalent_177_description:
       'The hero draws the bow for <num>1.6</num> sec. and releases an arrow in the specified direction, dealing up to <mag>%s</mag> damage to all enemies in its path. The longer the shot is charged, the more damage it deals.',

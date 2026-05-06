@@ -33,6 +33,9 @@ export class Window {
       } catch {}
     }
     let template = await Window[method](value, value2, value3);
+    if (!template) {
+      return;
+    }
     template.requestClose = () => {
       Window.close(category);
     };

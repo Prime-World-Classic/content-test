@@ -331,6 +331,9 @@ export class Build {
   }
 
   static async init(heroId, targetId, isWindow) {
+    const initToken = (Number(Build._initToken) || 0) + 1;
+    Build._initToken = initToken;
+
     Build.ensureBuildSettingsDefaults();
     Build.applyBuildHighlightVariablesFromSettings();
 
@@ -630,6 +633,10 @@ export class Build {
       target: targetId,
     });
 
+    if (Build._initToken !== initToken) {
+      return false;
+    }
+
     Build.dataRequest = request;
 
     Build.id = request.id;
@@ -697,6 +704,7 @@ export class Build {
 
     Build.ruleSortInventory = new Object();
     Build.scheduleAttachBuildSettings();
+    return true;
   }
 
   static async refreshBuildStateFromServer({ refreshInventory = true } = {}) {
@@ -4022,7 +4030,8 @@ export class Build {
     return ids;
   }
 
-  static async switchHeroFromCastleBottomList(direction = 1, waitForBuildWindowRender = true) {
+  static async switchHeroFromCastleBottomList(direction = 1, waitForBuildWindowRender = true, cancelOnSplashOpen = false) {
+    if (Splash.body && getComputedStyle(Splash.body).display !== 'none') return;
     const ids = Build.getHeroIdsFromCastleBottomList();
     if (!ids.length) return;
     const dir = Number(direction) < 0 ? -1 : 1;
@@ -4046,6 +4055,19 @@ export class Build {
         await showPromise;
       } else {
         showPromise.catch(() => {});
+      }
+      if (cancelOnSplashOpen && Splash.body && getComputedStyle(Splash.body).display !== 'none') {
+        try {
+          View.setCastleOpenedBuildHero?.(currentHeroId);
+          View.scrollCastleBottomToHero?.(currentHeroId);
+        } catch {}
+        const rollbackPromise = Window.show('main', 'build', currentHeroId, 0, true);
+        if (waitForBuildWindowRender) {
+          await rollbackPromise;
+        } else {
+          rollbackPromise.catch(() => {});
+        }
+        return;
       }
       try {
         View.scrollCastleBottomToHero?.(nextHeroId);
@@ -5023,22 +5045,39 @@ export class Build {
 
   static isTalentConflictState(talentData, installedTalents) {
     try {
-      if (!talentData || !Array.isArray(installedTalents)) return false;
-      if (!('conflict' in talentData) || !Array.isArray(talentData.conflict)) return false;
-
-      for (const conflictId of talentData.conflict) {
-        for (const installedTalent of installedTalents) {
-          if (!installedTalent) continue;
-          if (Math.abs(installedTalent.id) == conflictId) {
-            const isCurrentOrdinary = talentData.id > 0;
-            const isInstalledOrdinary = installedTalent.id > 0;
-            if (isCurrentOrdinary === isInstalledOrdinary) return true;
-          }
-        }
-      }
-      return false;
+      return Build.getTalentConflictMatches(talentData, installedTalents).length > 0;
     } catch {
       return false;
+    }
+  }
+
+  static getTalentConflictMatches(talentData, installedTalents) {
+    try {
+      if (!talentData || !Array.isArray(installedTalents)) return [];
+      if (!('conflict' in talentData) || !Array.isArray(talentData.conflict)) return [];
+
+      const matches = [];
+      for (let index = 0; index < installedTalents.length; index++) {
+        const installedTalent = installedTalents[index];
+        if (!installedTalent) continue;
+
+        for (const conflictId of talentData.conflict) {
+          if (Math.abs(installedTalent.id) != conflictId) continue;
+
+          const isCurrentOrdinary = talentData.id > 0;
+          const isInstalledOrdinary = installedTalent.id > 0;
+          if (isCurrentOrdinary !== isInstalledOrdinary) continue;
+
+          matches.push({
+            index,
+            id: Number(installedTalent.id),
+          });
+          break;
+        }
+      }
+      return matches;
+    } catch {
+      return [];
     }
   }
 
@@ -6572,7 +6611,7 @@ export class Build {
           const below = document.elementFromPoint(e.clientX, e.clientY);
           const hoveredSet = below?.closest?.('.build-set-item');
           if (hoveredSet === anchor) return;
-          Build.descriptionView.style.display = 'none';
+          if (Build.descriptionView) Build.descriptionView.style.display = 'none';
           Build._descriptionPinnedBySet = false;
           Build._hoveredSetTalentIds = null;
           Build._hoveredSetAnchorEl = null;
@@ -6605,7 +6644,7 @@ export class Build {
         // After set click, transient mouseleave can happen during fast rerender.
         // Keep current hover visuals pinned; global mousemove monitor will clear on real leave.
         if (Build._descriptionPinnedBySet && Build._hoveredSetAnchorEl === item) return;
-        Build.descriptionView.style.display = 'none';
+        if (Build.descriptionView) Build.descriptionView.style.display = 'none';
         Build._descriptionPinnedBySet = false;
         Build._hoveredSetTalentIds = null;
         Build._hoveredSetAnchorEl = null;
@@ -7487,8 +7526,10 @@ export class Build {
       if (key === 'd') return 'KeyD';
       return '';
     };
+    const isSplashOpened = () => Splash.body && getComputedStyle(Splash.body).display !== 'none';
     const canUseHeroNavHotkey = (e) => {
       if (Window.windows?.main?.id !== 'wbuild') return false;
+      if (isSplashOpened()) return false;
       if (e?.ctrlKey || e?.metaKey || e?.altKey || e?.shiftKey) return false;
       const activeEl = document.activeElement;
       const activeTag = String(activeEl?.tagName || '').toUpperCase();
@@ -7502,13 +7543,17 @@ export class Build {
     };
     const switchHeroSafe = async (dir, waitForRender = true) => {
       if (waitForRender && Build._heroNavKeyboardBusy) return;
+      if (isSplashOpened()) {
+        stopHeroNavRepeat(false);
+        return;
+      }
       if (Window.windows?.main?.id !== 'wbuild') {
         stopHeroNavRepeat(false);
         return;
       }
       if (waitForRender) Build._heroNavKeyboardBusy = true;
       try {
-        await Build.switchHeroFromCastleBottomList(dir, waitForRender);
+        await Build.switchHeroFromCastleBottomList(dir, waitForRender, true);
       } finally {
         if (waitForRender) Build._heroNavKeyboardBusy = false;
       }
@@ -7532,11 +7577,23 @@ export class Build {
       Build._heroNavHeldCode = navCode;
       e.preventDefault?.();
       await switchHeroSafe(dir);
+      if (isSplashOpened()) {
+        stopHeroNavRepeat(false);
+        return;
+      }
 
       Build._heroNavKeyboardHoldTimer = setTimeout(() => {
         if (Build._heroNavHeldCode !== navCode) return;
+        if (isSplashOpened()) {
+          stopHeroNavRepeat(false);
+          return;
+        }
         Build._heroNavKeyboardRepeatTimer = setInterval(() => {
           if (Build._heroNavHeldCode !== navCode) return;
+          if (isSplashOpened()) {
+            stopHeroNavRepeat(false);
+            return;
+          }
           void switchHeroSafe(dir, false);
         }, REPEAT_INTERVAL_MS);
       }, HOLD_DELAY_MS);
@@ -7879,7 +7936,14 @@ export class Build {
 
           if (elemBelow && elemBelow.className == 'build-hero-grid-item') {
             if (data.level && elemBelow.parentNode.dataset.level == data.level) {
-              let conflictState = Build.isTalentConflictState(data, Build.installedTalents);
+              const targetPosition = Number(elemBelow.dataset.position);
+              const conflictMatches = Build.getTalentConflictMatches(data, Build.installedTalents);
+              const allowConflictReplacement =
+                performSwapFromLibrary &&
+                Number.isFinite(targetPosition) &&
+                conflictMatches.length === 1 &&
+                conflictMatches[0].index === targetPosition;
+              let conflictState = conflictMatches.length > 0 && !allowConflictReplacement;
               if (conflictState) Build.notifyTalentConflict();
 
               if (!conflictState) {
@@ -8671,6 +8735,7 @@ export class Build {
     };
   }
   static cleanup() {
+    Build._initToken = (Number(Build._initToken) || 0) + 1;
     Build._isDraggingTalent = false;
     Build._hoveredDescriptionTalentEl = null;
     Build._talentDescriptionSuppressedUntil = 0;
@@ -8711,6 +8776,9 @@ export class Build {
     Build._heroNavHeldCode = '';
     Build._heroNavStopSyncToken = (Number(Build._heroNavStopSyncToken) || 0) + 1;
     Build._heroNavKeyboardBusy = false;
+    Build._descriptionPinnedBySet = false;
+    Build._hoveredSetTalentIds = null;
+    Build._hoveredSetAnchorEl = null;
     try {
       Build.altResetHintView?.parentNode?.removeChild?.(Build.altResetHintView);
     } catch {}
