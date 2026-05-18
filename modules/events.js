@@ -17,6 +17,13 @@ import { Window } from './window.js';
 import { Settings } from './settings.js';
 
 export class Events {
+  static closeMainFarmAndInventoryWindows() {
+    const mainWindowId = Window.windows?.main?.id;
+    if (mainWindowId === 'wgame' || mainWindowId === 'winventory') {
+      Window.close('main');
+    }
+  }
+
   static Message(data) {
     let body = document.createDocumentFragment();
 
@@ -33,6 +40,7 @@ export class Events {
     }
 
     // NativeAPI.attention();
+    Events.closeMainFarmAndInventoryWindows();
 
     MM.ready(data);
   }
@@ -55,6 +63,7 @@ export class Events {
     }
 
     // NativeAPI.attention();
+    Events.closeMainFarmAndInventoryWindows();
 
     MM.lobby(data);
   }

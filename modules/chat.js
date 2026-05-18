@@ -634,17 +634,21 @@ export class Chat {
   }
 
   static normalizeForumMessage(item) {
+    const edited = item?.edited || null;
+    const editedIsTimestamp = typeof edited === 'number' && edited > 0;
+    const nicknameBanned = Boolean(item?.banNickname || 0);
+    const nickname = nicknameBanned ? `[${item?.userId}]` : String(item?.nickname || '');
     return {
+      ...item,
       dbMessageId: Number(item?.id || 0),
       id: Number(item?.userId || 0),
-      nickname: String(item?.nickname || ''),
+      nickname,
       to: Number(item?.replyId || 0),
       flag: String(item?.flag || ''),
       star: Number(item?.star || 0),
       message: String(item?.message || ''),
-      edited: item?.edited || null,
-      editedAt: item?.edited || null,
-      date: item?.date,
+      edited,
+      editedAt: editedIsTimestamp ? edited : null,
       fromCastle: true,
     };
   }
@@ -868,7 +872,7 @@ export class Chat {
   }
 
   static extractMessageTimestamp(data) {
-    const candidates = [data?._ts, data?.timestamp, data?.time, data?.date, data?.createdAt];
+    const candidates = [data?._ts, data?.timestamp, data?.time, data?.date, data?.createdAt, data?.created_at];
     for (const value of candidates) {
       if (value === undefined || value === null || value === '') continue;
       let ts = NaN;
@@ -898,8 +902,12 @@ export class Chat {
   }
 
   static formatMessageTime(data) {
-    const editedTs = Chat.extractMessageTimestamp({ date: data?.editedAt || data?.edited });
-    const sourceTs = Number.isFinite(editedTs) && editedTs > 0 ? editedTs : Chat.extractMessageTimestamp(data);
+    const editedValue = data?.editedAt ?? data?.edited;
+    const editedIsTimestamp = typeof editedValue === 'number'
+      ? Number.isFinite(editedValue) && editedValue > 0
+      : typeof editedValue === 'string' && editedValue.trim().length > 0;
+    const editedTs = editedIsTimestamp ? Chat.extractMessageTimestamp({ date: editedValue }) : 0;
+    const sourceTs = editedTs > 0 ? editedTs : Chat.extractMessageTimestamp(data);
     const date = new Date(sourceTs);
     const hh = String(date.getHours()).padStart(2, '0');
     const mm = String(date.getMinutes()).padStart(2, '0');
@@ -1295,7 +1303,10 @@ export class Chat {
   }
 
   static addMessageToHistory(data) {
-    const clone = { ...data, _ts: Date.now() };
+    const clone = { ...data };
+    if (!Number.isFinite(Number(clone._ts))) {
+      clone._ts = Chat.extractMessageTimestamp(clone);
+    }
     if (!Array.isArray(Chat.messages)) {
       Chat.messages = [];
     }
