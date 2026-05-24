@@ -366,7 +366,7 @@ export class App {
   static notificationsTabs = {};
   static notificationsSelectedId = 0;
   static notificationsFilter = 'all';
-  static notificationsActiveTab = 'notifications';
+  static notificationsActiveTab = 'news';
   static notificationsHelpVisible = false;
   static notificationsToastRoot = null;
   static notificationsAuditToken = '';
@@ -416,7 +416,7 @@ export class App {
     App.ensureNotificationsToastRoot();
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && App.notificationsNewsReaderNode?.isConnected) {
-        App.closeNotificationNewsReader();
+        App.closeNotificationNewsReader({ reopenNewsPanel: true });
         event.preventDefault();
         event.stopImmediatePropagation();
         return;
@@ -1218,8 +1218,8 @@ export class App {
 
     const tabs = DOM(
       { style: 'launcher-notifications-tabs' },
-      App.createNotificationsTab('notifications', 'Уведомления'),
       App.createNotificationsTab('news', 'Новости'),
+      App.createNotificationsTab('notifications', 'Уведомления'),
       DOM(
         { style: 'launcher-notifications-tab-separator' },
         DOM({ style: 'shop_separator_left' }),
@@ -1249,7 +1249,7 @@ export class App {
               style: 'launcher-notifications-action',
               data: { variant: 'wide' },
               title: 'Прочитать все',
-              event: ['click', () => App.markAllNotificationsRead()],
+              event: ['click', () => App.markAllActiveNotificationsRead()],
             },
             'Прочитать всё',
           ),
@@ -1257,6 +1257,7 @@ export class App {
             {
               domaudio: domAudioPresets.defaultButton,
               style: 'launcher-notifications-action',
+              data: { variant: 'help' },
               title: 'Справка',
               event: [
                 'click',
@@ -1297,6 +1298,7 @@ export class App {
           () => {
             if (App.notificationsActiveTab === tab) return;
             App.notificationsActiveTab = tab;
+            App.notificationsHelpVisible = false;
             App.renderNotificationsPanel();
             if (tab === 'news') App.loadNotificationNews();
             else if (App.ensureNotificationsAuditLogin()) App.refreshNotifications({ showToasts: false });
@@ -1316,6 +1318,15 @@ export class App {
     }
 
     App.refreshNotifications({ showToasts: false });
+  }
+
+  static markAllActiveNotificationsRead() {
+    if (App.notificationsActiveTab === 'news') {
+      App.markAllNotificationNewsRead();
+      return;
+    }
+
+    App.markAllNotificationsRead();
   }
 
   static renderNotifications() {
@@ -1609,7 +1620,12 @@ export class App {
 
   static showNewNotificationNewsToasts() {
     const pending = App.notificationsNews.filter(
-      (item) => item.id > 0 && !item.is_read && !App.notificationsNewsToastIds.has(item.id) && !App.isNotificationNewsLocallyMarked('toast', item.id),
+      (item) =>
+        item.id > 0 &&
+        !item.is_read &&
+        App.isNotificationNewsToastFresh(item) &&
+        !App.notificationsNewsToastIds.has(item.id) &&
+        !App.isNotificationNewsLocallyMarked('toast', item.id),
     );
     if (!pending.length) return;
 
@@ -1619,6 +1635,13 @@ export class App {
       App.rememberNotificationNewsLocalId('toast', item.id);
       setTimeout(() => App.showNotificationNewsToast(item), index * 650);
     });
+  }
+
+  static isNotificationNewsToastFresh(item) {
+    const date = new Date(String(item?.created_at || item?.publish_at || item?.scheduled_at || '').replace(' ', 'T'));
+    if (!Number.isFinite(date.getTime())) return true;
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    return Date.now() - date.getTime() <= sevenDaysMs;
   }
 
   static normalizeNotificationNews(item) {
@@ -1967,11 +1990,40 @@ export class App {
     }
   }
 
+  static async markAllNotificationNewsRead() {
+    if (App.notificationsActionLocked) return;
+
+    const unread = App.notificationsNews.filter((item) => !item.is_read);
+    if (!unread.length) return;
+
+    App.notificationsActionLocked = true;
+    unread.forEach((item) => {
+      item.is_read = true;
+      App.rememberNotificationNewsLocalId('read', item.id);
+    });
+    App.notificationsNewsUnreadCount = 0;
+    App.notificationsNewsStatus = App.notificationsNews.length ? 'Непрочитанных новостей: 0' : 'Новостей нет';
+    App.renderNotifications();
+
+    try {
+      const remoteIds = unread.filter((item) => !item.is_external && item.source !== 'steam' && item.id > 0).map((item) => item.id);
+      await Promise.all(remoteIds.map((id) => App.notificationsRequestNewsAction('news_read', { news_id: id })));
+    } catch (error) {
+      console.warn('Remote news read all status failed', error);
+    } finally {
+      App.notificationsActionLocked = false;
+      App.renderNotifications();
+    }
+  }
+
   static openNotificationNewsReader(item) {
     if (!item) return;
+    App.notificationsActiveTab = 'news';
+    App.notificationsNewsSelectedId = item.id;
+    App.notificationsHelpVisible = false;
     App.markNotificationNewsRead(item.id);
     App.closeNotificationNewsReader();
-    App.closeNotificationsPanel();
+    App.openNotificationsPanel();
 
     const banner = DOM(
       { style: 'launcher-news-reader-banner' },
@@ -1991,7 +2043,7 @@ export class App {
       DOM(
         {
           style: 'launcher-news-reader-backdrop',
-          event: ['click', () => App.closeNotificationNewsReader()],
+          event: ['click', () => App.closeNotificationNewsReader({ reopenNewsPanel: true })],
         },
       ),
       DOM(
@@ -2000,7 +2052,7 @@ export class App {
           {
             domaudio: domAudioPresets.closeButton,
             style: 'launcher-news-reader-close',
-            event: ['click', () => App.closeNotificationNewsReader()],
+            event: ['click', () => App.closeNotificationNewsReader({ reopenNewsPanel: true })],
           },
           '×',
         ),
@@ -2019,14 +2071,24 @@ export class App {
     setTimeout(() => App.notificationsNewsReaderNode?.classList.add('is-open'), 0);
   }
 
-  static closeNotificationNewsReader() {
+  static closeNotificationNewsReader({ reopenNewsPanel = false } = {}) {
     const reader = App.notificationsNewsReaderNode;
-    if (!reader) return;
+    if (!reader) {
+      if (reopenNewsPanel) {
+        App.notificationsActiveTab = 'news';
+        App.openNotificationsPanel();
+      }
+      return;
+    }
 
     reader.classList.remove('is-open');
     setTimeout(() => {
       if (reader.isConnected) reader.remove();
       if (App.notificationsNewsReaderNode === reader) App.notificationsNewsReaderNode = null;
+      if (reopenNewsPanel) {
+        App.notificationsActiveTab = 'news';
+        App.openNotificationsPanel();
+      }
     }, 180);
   }
 
