@@ -3097,6 +3097,11 @@ body {
   animation: launcher-notification-pulse 1.2s ease-in-out infinite;
 }
 
+.launcher-notifications-quick-tab.has-unread .launcher-notifications-quick-icon,
+.launcher-notifications-menu-item.has-unread .launcher-notifications-icon {
+  animation: launcher-notification-pulse 1.2s ease-in-out infinite;
+}
+
 .launcher-notifications-panel {
   position: fixed;
   left: 50%;
@@ -3371,6 +3376,18 @@ body {
   min-height: 10.5cqh;
 }
 
+.launcher-notification-toast.is-report {
+  border-color: rgba(255, 165, 114, 0.95);
+  background:
+    linear-gradient(180deg, rgba(119, 24, 24, 0.96), rgba(48, 7, 19, 0.98)),
+    url('icons/svg/mainscreen.png') center / cover no-repeat;
+  box-shadow:
+    inset 0 0 0 0.08cqh rgba(255, 220, 150, 0.28),
+    inset 0 0 1.8cqh rgba(255, 84, 42, 0.1),
+    0 1.3cqh 2.4cqh rgba(0, 0, 0, 0.68),
+    0 0 1.35cqh rgba(255, 81, 47, 0.34);
+}
+
 .launcher-news-toast .launcher-news-thumb {
   width: 5.2cqh;
   height: 5.2cqh;
@@ -3392,6 +3409,10 @@ body {
 
 .launcher-notification-toast-icon.is-report {
   --notification-toast-icon: url('icons/svg/audit_report.svg');
+  background:
+    var(--notification-toast-icon, none) center / 62% 62% no-repeat,
+    radial-gradient(circle at 38% 28%, rgba(255, 234, 195, 0.28), transparent 24%),
+    radial-gradient(circle, rgba(156, 49, 35, 0.98), rgba(73, 13, 22, 0.98) 67%, rgba(27, 2, 9, 1));
 }
 
 .launcher-notification-toast-icon.is-praise {
@@ -3627,8 +3648,8 @@ body {
 
 .launcher-notifications-action[data-variant='help'] {
   position: absolute;
-  right: 3.25cqh;
-  top: -9.8cqh;
+  right: 1.2cqh;
+  top: -12.95cqh;
   width: 3.7cqh;
   min-width: 3.7cqh;
   height: 3.7cqh;
@@ -3637,6 +3658,7 @@ body {
   background: url('icons/svg/Btnhelp.svg') center / contain no-repeat;
   border: 0;
   box-shadow: none;
+  z-index: 5;
 }
 
 .launcher-notifications-action[data-variant='help']::before {
@@ -3826,6 +3848,10 @@ body {
 
 .launcher-notification-type-icon.is-report {
   --notification-icon-url: url('icons/svg/audit_report.svg');
+  background:
+    var(--notification-icon-url, none) center / 62% 62% no-repeat,
+    radial-gradient(circle at 38% 28%, rgba(255, 234, 195, 0.3), transparent 24%),
+    radial-gradient(circle, rgba(154, 48, 35, 0.98), rgba(74, 14, 22, 0.98) 67%, rgba(27, 2, 9, 1));
 }
 
 .launcher-notification-type-icon.is-praise {
@@ -3842,6 +3868,42 @@ body {
 
 .launcher-notification-type-icon.is-news {
   --notification-icon-url: url('icons/svg/audit_system.svg');
+}
+
+.launcher-notification-item.is-report {
+  border-color: rgba(221, 121, 85, 0.68);
+  background:
+    linear-gradient(90deg, rgba(130, 37, 31, 0.58), rgba(46, 12, 21, 0.84)),
+    rgba(44, 12, 18, 0.9);
+  box-shadow:
+    inset 0 0 1.25cqh rgba(0, 0, 0, 0.32),
+    0 0 0.75cqh rgba(184, 48, 32, 0.2);
+}
+
+.launcher-notification-item.is-report.is-unread {
+  border-color: rgba(255, 165, 114, 0.92);
+  background:
+    linear-gradient(90deg, rgba(173, 48, 36, 0.76), rgba(68, 13, 22, 0.9)),
+    rgba(52, 10, 18, 0.94);
+  box-shadow:
+    inset 0 0 1.3cqh rgba(0, 0, 0, 0.28),
+    0 0 1.2cqh rgba(255, 85, 50, 0.34);
+}
+
+.launcher-notification-item.is-report:hover,
+.launcher-notification-item.is-report.is-selected {
+  border-color: rgba(255, 209, 128, 0.95);
+  box-shadow:
+    inset 0 0 1.3cqh rgba(255, 154, 88, 0.18),
+    0 0 1.15cqh rgba(255, 116, 68, 0.42);
+}
+
+.launcher-notification-item.is-report .launcher-notification-title {
+  color: #ffe2c0;
+}
+
+.launcher-notification-item.is-report .launcher-notification-message {
+  color: rgba(255, 232, 216, 0.94);
 }
 
 .launcher-notifications-panel.is-news-tab .launcher-notifications-toolbar {
@@ -4488,6 +4550,23 @@ body {
   padding: 0;
 }
 
+.launcher-notification-detail-card.is-report {
+  background:
+    linear-gradient(180deg, rgba(117, 28, 28, 0.52), rgba(42, 8, 18, 0.72)),
+    rgba(2, 37, 41, 0.22);
+}
+
+.launcher-notification-detail-card.is-report.is-unread {
+  background:
+    linear-gradient(180deg, rgba(151, 39, 31, 0.64), rgba(53, 9, 18, 0.78)),
+    rgba(2, 37, 41, 0.22);
+  box-shadow: inset 0 0 2.2cqh rgba(255, 82, 45, 0.12);
+}
+
+.launcher-notification-detail-card.is-report .launcher-notification-detail-title {
+  color: #ffd4b2;
+}
+
 .launcher-notification-banner {
   min-height: 20cqh;
   margin: -3.2cqh -3.4cqh 2.2cqh;
@@ -4643,6 +4722,11 @@ body {
     right: 1.7cqh;
     top: 12.7cqh;
     gap: 0.45cqh;
+  }
+
+  .launcher-notifications-action[data-variant='help'] {
+    right: 1.8cqh;
+    top: -14.2cqh;
   }
 
   .launcher-notifications-action[data-variant='wide'] {

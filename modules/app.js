@@ -1024,7 +1024,7 @@ export class App {
 
     const toast = DOM(
       {
-        style: ['launcher-notification-toast', item.is_global ? 'is-global' : 'is-personal'],
+        style: ['launcher-notification-toast', `is-${type}`, item.is_global ? 'is-global' : 'is-personal'],
         event: [
           'click',
           () => {
@@ -1079,7 +1079,11 @@ export class App {
       ),
     );
     if (item.banner_url) {
-      toast.style.backgroundImage = `linear-gradient(90deg, rgba(1, 24, 30, 0.92), rgba(1, 24, 30, 0.68)), url("${item.banner_url}")`;
+      const toastOverlay =
+        type === 'report'
+          ? 'linear-gradient(90deg, rgba(77, 8, 18, 0.92), rgba(100, 24, 22, 0.66))'
+          : 'linear-gradient(90deg, rgba(1, 24, 30, 0.92), rgba(1, 24, 30, 0.68))';
+      toast.style.backgroundImage = `${toastOverlay}, url("${item.banner_url}")`;
     }
     App.notificationsToastRoot.append(toast);
     setTimeout(() => toast.classList.add('is-visible'), 20);
@@ -2096,6 +2100,7 @@ export class App {
     const type = App.getNotificationVisualType(item);
     const classes = [
       'launcher-notification-item',
+      `is-${type}`,
       item.is_read ? 'is-read' : 'is-unread',
       item.is_global ? 'is-global' : 'is-personal',
       App.notificationsSelectedId === item.id ? 'is-selected' : '',
@@ -2147,7 +2152,7 @@ export class App {
         );
 
     return DOM(
-      { style: ['launcher-notification-detail-card', item.is_read ? 'is-read' : 'is-unread', App.notificationsReadAnimationIds.has(item.id) ? 'is-just-read' : ''].filter(Boolean) },
+      { style: ['launcher-notification-detail-card', `is-${type}`, item.is_read ? 'is-read' : 'is-unread', App.notificationsReadAnimationIds.has(item.id) ? 'is-just-read' : ''].filter(Boolean) },
       banner,
       DOM(
         { style: 'launcher-notification-detail-head' },
