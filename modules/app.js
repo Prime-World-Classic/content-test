@@ -814,11 +814,12 @@ export class App {
 
     App.notifications = data.notifications
       .map((item) => App.normalizeNotification(item))
+      .filter((item) => !App.isNotificationNewsAnnouncement(item))
       .sort((a, b) => {
         const dateDiff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
         return Number.isFinite(dateDiff) && dateDiff !== 0 ? dateDiff : b.id - a.id;
       });
-    App.notificationsUnreadCount = Number(data.unread_count ?? App.notifications.filter((item) => !item.is_read).length);
+    App.notificationsUnreadCount = App.notifications.filter((item) => !item.is_read).length;
     if (!App.notifications.some((item) => item.id === App.notificationsSelectedId)) {
       App.notificationsSelectedId = App.notifications[0]?.id || 0;
     }
@@ -845,6 +846,15 @@ export class App {
       is_local: Boolean(item?.is_local),
       target_type: String(item?.target_type || ''),
     };
+  }
+
+  static isNotificationNewsAnnouncement(item) {
+    const type = String(item?.type || '').trim().toLowerCase();
+    if (['news', 'launcher_news', 'new_news', 'news_publish', 'news_post'].includes(type)) return true;
+
+    const title = String(item?.title || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (title === 'новая новость' || title === 'новость' || title === 'new news') return true;
+    return /^новая новость\b/.test(title) || /^новость опубликована\b/.test(title) || /^new news\b/.test(title);
   }
 
   static normalizeAuditAssetUrl(value) {
@@ -1260,8 +1270,7 @@ export class App {
           DOM(
             {
               domaudio: domAudioPresets.defaultButton,
-              style: 'launcher-notifications-action',
-              data: { variant: 'help' },
+              style: ['help-button', 'launcher-notifications-help-button'],
               title: 'Справка',
               event: [
                 'click',
@@ -1271,7 +1280,6 @@ export class App {
                 },
               ],
             },
-            '?',
           ),
         ),
         DOM(
@@ -1338,6 +1346,15 @@ export class App {
     App.renderNotificationsPanel();
   }
 
+  static setNotificationsPanelStatus(text = '') {
+    if (!App.notificationsStatusNode) return;
+
+    const value = String(text || '');
+    App.notificationsStatusNode.textContent = value;
+    App.notificationsStatusNode.classList.toggle('is-empty', !value);
+    App.notificationsStatusNode.parentElement?.classList.toggle('is-status-empty', !value);
+  }
+
   static renderNotificationsPanel() {
     if (!App.notificationsPanel || !App.notificationsListNode || !App.notificationsDetailNode || !App.notificationsStatusNode) return;
 
@@ -1353,13 +1370,11 @@ export class App {
     }
 
     if (App.notificationsLoading) {
-      App.notificationsStatusNode.textContent = 'Проверяем уведомления...';
+      App.setNotificationsPanelStatus('Проверяем уведомления...');
     } else if (App.notificationsLastError) {
-      App.notificationsStatusNode.textContent = App.notificationsLastError;
-    } else if (App.notificationsStatus) {
-      App.notificationsStatusNode.textContent = App.notificationsStatus;
+      App.setNotificationsPanelStatus(App.notificationsLastError);
     } else {
-      App.notificationsStatusNode.textContent = `Непрочитанных: ${App.notificationsUnreadCount}`;
+      App.setNotificationsPanelStatus();
     }
 
     App.notificationsListNode.replaceChildren();
@@ -1687,7 +1702,7 @@ export class App {
     App.notificationsDetailNode.replaceChildren();
     if (App.notificationsFilterNode) App.notificationsFilterNode.value = 'all';
     if (App.notificationsHelpNode) App.notificationsHelpNode.classList.toggle('is-open', App.notificationsHelpVisible);
-    App.notificationsStatusNode.textContent = App.notificationsNewsLoading ? 'Загружаем новости...' : App.notificationsNewsStatus || 'Новости';
+    App.setNotificationsPanelStatus(App.notificationsNewsLoading ? 'Загружаем новости...' : '');
 
     if (App.notificationsNewsLoading && !App.notificationsNews.length) {
       App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Загружаем новости...'));

@@ -3064,8 +3064,8 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 6.4cqh;
-  height: 6.4cqh;
+  width: 6.05cqh;
+  height: 6.05cqh;
   transform: translate(-50%, -50%);
   background: url('icons/svg/buttonNotic.webp') center / contain no-repeat;
   filter: drop-shadow(0 0.35cqh 0.45cqh rgba(0, 0, 0, 0.52));
@@ -3073,8 +3073,8 @@ body {
 
 .launcher-notifications-quick-badge {
   position: absolute;
-  right: -0.15cqh;
-  top: -0.15cqh;
+  right: -0.05cqh;
+  bottom: -0.1cqh;
   min-width: 3.05cqh;
   height: 3.05cqh;
   padding: 0 0.42cqh;
@@ -3646,23 +3646,18 @@ body {
   display: none;
 }
 
-.launcher-notifications-action[data-variant='help'] {
-  position: absolute;
+.launcher-notifications-help-button {
   right: 1.2cqh;
   top: -12.95cqh;
   width: 3.7cqh;
   min-width: 3.7cqh;
   height: 3.7cqh;
-  padding: 0;
-  font-size: 0;
-  background: url('icons/svg/Btnhelp.svg') center / contain no-repeat;
-  border: 0;
-  box-shadow: none;
   z-index: 5;
+  transform: none;
 }
 
-.launcher-notifications-action[data-variant='help']::before {
-  display: none;
+.launcher-notifications-help-button:hover {
+  transform: scale(1.1);
 }
 
 .launcher-notifications-action[title='Закрыть'] {
@@ -3749,6 +3744,19 @@ body {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
+}
+
+.launcher-notifications-status.is-empty {
+  display: none;
+}
+
+.launcher-notifications-panel.is-news-tab .launcher-notifications-toolbar.is-status-empty {
+  flex-basis: 0;
+  height: 0;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  overflow: hidden;
 }
 
 .launcher-notifications-body {
@@ -4724,7 +4732,7 @@ body {
     gap: 0.45cqh;
   }
 
-  .launcher-notifications-action[data-variant='help'] {
+  .launcher-notifications-help-button {
     right: 1.8cqh;
     top: -14.2cqh;
   }

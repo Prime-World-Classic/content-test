@@ -1736,7 +1736,6 @@ export class Window {
     const publishAt = DOM({ tag: 'input', domaudio: domAudioPresets.defaultInput, style: 'admin-news-input', type: 'datetime-local' });
     const existingNews = DOM({ tag: 'select', domaudio: domAudioPresets.defaultSelect, style: 'admin-news-input' }, DOM({ tag: 'option', value: '' }, 'Новая новость'));
     const message = DOM({ tag: 'textarea', domaudio: domAudioPresets.defaultInput, style: 'admin-news-textarea', placeholder: 'Описание новости. Картинка в тексте: ![описание](https://site/image.webp)' });
-    const details = DOM({ tag: 'textarea', domaudio: domAudioPresets.defaultInput, style: 'admin-news-textarea', placeholder: 'Дополнительный текст, условия, ссылки. Можно вставлять картинки через ![текст](url)' });
     const status = DOM({ style: 'admin-news-status' }, 'Черновик готов к оформлению');
     const previewLabel = DOM({ style: 'admin-news-preview-label' }, 'Предпросмотр');
     const previewTitle = DOM({ style: 'admin-news-preview-title' }, 'Заголовок новости');
@@ -1769,7 +1768,7 @@ export class Window {
       return {
         title: title.value.trim() || 'Новость',
         message: message.value.trim() || 'Новость пока без описания',
-        details: details.value.trim(),
+        details: '',
         lifetime: lifetime.value,
         expires_at,
         publish_at: publishAt.value ? new Date(publishAt.value).toISOString() : '',
@@ -1907,7 +1906,6 @@ export class Window {
       existingNews.value = '';
       title.value = '';
       message.value = '';
-      details.value = '';
       publishAt.value = '';
       expiresAt.value = '';
       lifetime.value = 'week';
@@ -1923,7 +1921,6 @@ export class Window {
       editingNewsId = Number(item?.id || 0);
       title.value = item?.title || '';
       message.value = item?.message || '';
-      details.value = item?.details || '';
       publishAt.value = item?.publish_at || item?.scheduled_at ? new Date(item.publish_at || item.scheduled_at).toISOString().slice(0, 16) : '';
       expiresAt.value = item?.expires_at ? new Date(item.expires_at).toISOString().slice(0, 10) : '';
       lifetime.value = item?.expires_at ? 'custom' : 'permanent';
@@ -1951,8 +1948,7 @@ export class Window {
     });
 
     message.addEventListener('paste', handleImagePaste);
-    details.addEventListener('paste', handleImagePaste);
-    [title, message, details, expiresAt, publishAt].forEach((node) => node.addEventListener('input', renderPreview));
+    [title, message, expiresAt, publishAt].forEach((node) => node.addEventListener('input', renderPreview));
     lifetime.addEventListener('change', updateLifetimeControl);
     updateLifetimeControl();
     renderPreview();
@@ -2027,8 +2023,7 @@ export class Window {
             DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Дата окончания'), expiresAt),
           ),
           DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Описание'), message),
-          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Детали'), details),
-          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Опубликовать после'), publishAt),
+          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Дата публикации'), publishAt),
           status,
           DOM(
             { style: 'admin-news-actions' },
