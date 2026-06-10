@@ -1797,7 +1797,6 @@ export class View {
       ],
       title: Lang.text('titlechat'),
     });
-    let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
       domaudio: domAudioPresets.bigButton,
       style: 'heroes-menu-item',
@@ -1873,7 +1872,6 @@ export class View {
         flagMenuItem,
         accountRatingItem,
         settingsMenuItem,
-        notificationsMenuItem,
         heroesMenuItem,
         friendsMenuItem,
         buildingsMenuItem,
@@ -2086,13 +2084,16 @@ export class View {
     }
 
     for (let item of request.quests) {
+      const timerMs = Number(item.timer ?? item.timeLeft ?? item.remainingMs ?? item.remaining ?? 0) || 0;
+      const isActiveQuest = Number(item.status) === 1 || timerMs > 0;
       let hero = DOM({ style: 'quest-item-hero' }, DOM({ style: 'quest-item-portrait-glass' }));
       hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
 
       let timer = DOM({ style: 'quest-item-timer' });
+      item.timer = Math.max(0, timerMs);
       const tick = () => {
-        item.timer = item.timer - 1000;
-        timer.textContent = Timer.getFormattedTimer(item.timer);
+        item.timer = Math.max(0, item.timer - 1000);
+        timer.textContent = Timer.getFormattedTimer(item.timer) || '00:00';
       };
       tick();
       setInterval(tick, 1000);
@@ -2100,7 +2101,7 @@ export class View {
       let quest = DOM(
         {
           domaudio: domAudioPresets.defaultButton,
-          style: 'quest-item',
+          style: ['quest-item', isActiveQuest ? 'quest-item--active' : null].filter(Boolean),
           domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
@@ -2114,13 +2115,13 @@ export class View {
         DOM(
           { style: 'quest-item-portrait-background' },
           hero,
-          item.status == 1
+          isActiveQuest
             ? ''
             : DOM({
                 style: item.status == 0 ? 'quest-item-exclamation' : 'quest-item-completed',
               }),
         ),
-        item.status == 1 ? timer : '',
+        isActiveQuest ? timer : '',
       );
 
       items.push(quest);
