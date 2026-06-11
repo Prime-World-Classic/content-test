@@ -2684,7 +2684,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   z-index: 9000;
   backdrop-filter: blur(1vmax);
   -webkit-backdrop-filter: blur(1vmax);
-  background: rgba(0, 0, 0, 0.6);
+  background: transparent;
 }
 
 .progress {
