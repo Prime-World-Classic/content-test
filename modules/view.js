@@ -1797,6 +1797,7 @@ export class View {
       ],
       title: Lang.text('titlechat'),
     });
+    let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
       domaudio: domAudioPresets.bigButton,
       style: 'heroes-menu-item',
@@ -1872,6 +1873,7 @@ export class View {
         flagMenuItem,
         accountRatingItem,
         settingsMenuItem,
+        notificationsMenuItem,
         heroesMenuItem,
         friendsMenuItem,
         buildingsMenuItem,

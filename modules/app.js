@@ -1,5 +1,4 @@
 import { DOM } from './dom.js';
-import { News } from './news.js';
 import { Store } from './store.js';
 import { Api } from './api.js';
 import { View } from './view.js';
@@ -25,6 +24,7 @@ export class App {
 
   static CURRENT_MM = 'mmtest';
 
+  
   static RIGA = 'wss://pwclassic.isgood.host:443';
   static MOSCOW = 'wss://api2.26rus-game.ru:8443';
   static CLOUDFLARE = 'wss://api.kot04ka.com:8443';
@@ -109,15 +109,16 @@ export class App {
     // wss://api.26rus-game.ru:8443 - США (прокси)
     App.api = new Api(this.hostList, this.bestHost, Events);
 
-    await News.init();
-
     await Store.init();
 
     await App.initSounds();
 
     App.storage = new Store('u3');
 
-    await App.storage.init({ id: 0, token: '', login: '' });
+    await App.storage.init({ id: 0, token: '', login: '', launcherToken: '', auditToken: '' });
+
+    App.notificationsInit();
+    App.autoLoginFromStoredGameAccount();
 
     await MM.init();
     // tambur test
@@ -337,6 +338,1906 @@ export class App {
     Chat.syncRecentMessagesWithBackend?.();
   }
 
+  static notificationsListUrl = 'https://pw2.26rus-game.ru/stats/api/launcher/notifications.php?action=list';
+  static notificationsPostUrl = 'https://pw2.26rus-game.ru/stats/api/launcher/notifications.php';
+  static notificationsNewsListUrl = 'https://pw2.26rus-game.ru/stats/api/launcher/notifications.php?action=news_list';
+  static notificationsSteamAppId = 3684820;
+  static notificationsSteamNewsCacheMs = 600000;
+  static notificationsRefreshMs = 60000;
+  static notifications = [];
+  static notificationsUnreadCount = 0;
+  static notificationsStatus = 'Войдите в игровой аккаунт, чтобы получить уведомления';
+  static notificationsLastError = '';
+  static notificationsLoading = false;
+  static notificationsActionLocked = false;
+  static notificationsTimer = 0;
+  static notificationsInitialized = false;
+  static notificationsToastIds = new Set();
+  static notificationsReadAnimationIds = new Set();
+  static notificationsLocalId = 0;
+  static notificationsButton = null;
+  static notificationsQuickButton = null;
+  static notificationsPanel = null;
+  static notificationsListNode = null;
+  static notificationsDetailNode = null;
+  static notificationsStatusNode = null;
+  static notificationsFilterNode = null;
+  static notificationsHelpNode = null;
+  static notificationsTabs = {};
+  static notificationsSelectedId = 0;
+  static notificationsFilter = 'all';
+  static notificationsActiveTab = 'news';
+  static notificationsHelpVisible = false;
+  static notificationsToastRoot = null;
+  static notificationsAuditToken = '';
+  static notificationsAuditPlayerId = 0;
+  static notificationsNews = [];
+  static notificationsNewsSelectedId = 0;
+  static notificationsNewsLoading = false;
+  static notificationsNewsUnreadCount = 0;
+  static notificationsNewsStatus = '';
+  static notificationsNewsToastIds = new Set();
+  static notificationsNewsReaderNode = null;
+
+  static getNotificationNewsStorageKey(kind) {
+    const playerId = Number(App.notificationsAuditPlayerId || App.storage?.data?.id || 0) || 'guest';
+    return `pwclassic_launcher_news_${kind}_${playerId}`;
+  }
+
+  static getNotificationNewsLocalIds(kind) {
+    try {
+      const raw = window.localStorage?.getItem(App.getNotificationNewsStorageKey(kind));
+      const ids = JSON.parse(raw || '[]');
+      return new Set(Array.isArray(ids) ? ids.map((id) => String(id || '').trim()).filter(Boolean) : []);
+    } catch (error) {
+      return new Set();
+    }
+  }
+
+  static rememberNotificationNewsLocalId(kind, id) {
+    id = String(id || '').trim();
+    if (!id) return;
+
+    const ids = App.getNotificationNewsLocalIds(kind);
+    ids.add(id);
+    try {
+      window.localStorage?.setItem(App.getNotificationNewsStorageKey(kind), JSON.stringify([...ids].slice(-500)));
+    } catch (error) {}
+  }
+
+  static isNotificationNewsLocallyMarked(kind, id) {
+    id = String(id || '').trim();
+    return Boolean(id) && App.getNotificationNewsLocalIds(kind).has(id);
+  }
+  static notificationsInit() {
+    if (App.notificationsInitialized) return;
+
+    App.notificationsInitialized = true;
+    App.ensureNotificationsToastRoot();
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && App.notificationsNewsReaderNode?.isConnected) {
+        App.closeNotificationNewsReader({ reopenNewsPanel: true });
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (event.key === 'Escape' && App.notificationsPanel?.isConnected) {
+        App.closeNotificationsPanel();
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    });
+    App.notificationsTimer = setInterval(() => {
+      App.refreshNotifications({ showToasts: true });
+      App.loadNotificationNews({ showToasts: true, render: false });
+    }, App.notificationsRefreshMs);
+  }
+
+  static getAuditPlayerId() {
+    return Number(App?.storage?.data?.id || 0);
+  }
+
+  static hasGameAccountSession() {
+    return App.getAuditPlayerId() > 0;
+  }
+
+  static getCurrentGameAccountForNotifications() {
+    const data = App?.storage?.data || {};
+    const playerId = Number(data.id || 0);
+    if (playerId <= 0) return null;
+
+    return {
+      id: playerId,
+      login: `${data.login || ''}`.trim(),
+      launcherToken: `${data.launcherToken || ''}`.trim(),
+      auditToken: `${data.auditToken || ''}`.trim(),
+    };
+  }
+
+  static ensureNotificationsAuditLogin() {
+    const account = App.getCurrentGameAccountForNotifications();
+    if (!account) {
+      App.notificationsAuditToken = '';
+      App.notificationsAuditPlayerId = 0;
+      App.notifications = [];
+      App.notificationsUnreadCount = 0;
+      App.notificationsNews = [];
+      App.notificationsNewsUnreadCount = 0;
+      App.notificationsLastError = '';
+      App.notificationsStatus = 'Войдите в игровой аккаунт, чтобы получить уведомления';
+      App.renderNotifications();
+      return false;
+    }
+
+    if (App.notificationsAuditToken && App.notificationsAuditPlayerId === account.id) return true;
+
+    App.notificationsAuditPlayerId = account.id;
+    App.notificationsAuditToken = account.launcherToken || account.auditToken || `launcher_dev_${account.id}`;
+    App.notificationsStatus = '';
+    App.notificationsLastError = '';
+    App.renderNotificationsButton();
+    return true;
+  }
+
+  static autoLoginFromStoredGameAccount() {
+    if (!App.ensureNotificationsAuditLogin()) return false;
+
+    App.refreshNotifications({ showToasts: true });
+    App.loadNotificationNews({ showToasts: true, render: false });
+    return true;
+  }
+
+  static notificationsAuthChanged() {
+    App.notifications = [];
+    App.notificationsNews = [];
+    App.notificationsUnreadCount = 0;
+    App.notificationsLastError = '';
+    App.notificationsToastIds.clear();
+    App.notificationsReadAnimationIds.clear();
+    App.notificationsNewsToastIds.clear();
+    App.notificationsNewsUnreadCount = 0;
+    App.notificationsAuditToken = '';
+    App.notificationsAuditPlayerId = 0;
+    App.renderNotifications();
+    App.autoLoginFromStoredGameAccount();
+  }
+
+  static getNotificationsToken() {
+    if (!App.ensureNotificationsAuditLogin()) return '';
+    return App.notificationsAuditToken;
+  }
+
+  static async notificationsRequestList() {
+    const token = App.getNotificationsToken();
+    if (!token) throw new Error('Для уведомлений войдите в аккаунт');
+
+    return await App.notificationsHttpRequest(App.notificationsListUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    });
+  }
+
+  static async notificationsRequestAction(action, fields = {}) {
+    const token = App.getNotificationsToken();
+    if (!token) throw new Error('Для уведомлений войдите в аккаунт');
+
+    const body = new URLSearchParams();
+    body.set('action', action);
+    for (const key in fields) {
+      const value = fields[key];
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => body.set(`${key}[${index}]`, String(item)));
+      } else {
+        body.set(key, String(value));
+      }
+    }
+
+    return await App.notificationsHttpRequest(App.notificationsPostUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body,
+    });
+  }
+
+  static async notificationsRequestNewsList() {
+    const token = App.getNotificationsToken();
+    if (!token) throw new Error('Для новостей войдите в аккаунт');
+
+    return await App.notificationsHttpRequest(App.notificationsNewsListUrl, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    });
+  }
+
+  static async notificationsRequestNewsUpdate(newsId, fields = {}, bannerFile = null) {
+    const payload = { ...fields, news_id: newsId, id: newsId };
+    return await App.notificationsRequestNewsActionWithFallback(['news_update', 'update_news', 'news_edit', 'edit_news'], payload, bannerFile);
+  }
+
+  static async notificationsRequestNewsDelete(newsId) {
+    return await App.notificationsRequestNewsActionWithFallback(['news_delete', 'delete_news', 'news_remove', 'remove_news'], { news_id: newsId, id: newsId });
+  }
+
+  static async notificationsRequestNewsCreate(fields = {}, bannerFile = null) {
+    return await App.notificationsRequestNewsActionWithFallback(['news_create', 'create_news', 'news_add', 'add_news'], fields, bannerFile);
+  }
+
+  static async notificationsRequestNewsActionWithFallback(actions, fields = {}, bannerFile = null) {
+    let lastError = null;
+
+    for (const action of actions) {
+      try {
+        if (bannerFile) return await App.notificationsRequestNewsMultipartAction(action, fields, bannerFile);
+        return await App.notificationsRequestNewsAction(action, fields);
+      } catch (error) {
+        lastError = error;
+        const message = String(error?.message || error || '').toLowerCase();
+        if (!message.includes('unknown_action')) throw error;
+      }
+    }
+
+    throw lastError || new Error('news_action failed');
+  }
+
+  static async notificationsRequestNewsAction(action, fields = {}) {
+    const token = App.getNotificationsToken();
+    if (!token) throw new Error('Для новостей войдите в аккаунт');
+
+    const body = new URLSearchParams();
+    body.set('action', action);
+    for (const key in fields) {
+      const value = fields[key];
+      if (Array.isArray(value)) {
+        value.forEach((item, index) => body.set(`${key}[${index}]`, String(item)));
+      } else if (value !== undefined && value !== null) {
+        body.set(key, String(value));
+      }
+    }
+
+    return await App.notificationsHttpRequest(App.notificationsPostUrl, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body,
+    });
+  }
+
+  static async notificationsRequestNewsMultipartAction(action, fields = {}, bannerFile = null) {
+    const token = App.getNotificationsToken();
+    if (!token) throw new Error('Для новостей войдите в аккаунт');
+
+    const form = new FormData();
+    form.set('action', action);
+    for (const key in fields) {
+      const value = fields[key];
+      if (value !== undefined && value !== null) form.set(key, String(value));
+    }
+    if (bannerFile) form.set('banner', bannerFile, bannerFile.name || 'news-banner');
+
+    return await App.notificationsMultipartRequest(App.notificationsPostUrl, form, token);
+  }
+
+  static async notificationsMultipartRequest(url, form, token) {
+    if (NativeAPI.status && NativeAPI.https && /^https?:\/\//i.test(String(url || ''))) {
+      const { body, contentType } = await App.encodeMultipartFormData(form);
+      return await App.notificationsNativeRequest(url, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+          'Content-Type': contentType,
+        },
+        body,
+      });
+    }
+
+    return await App.notificationsHttpRequest(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+      body: form,
+    });
+  }
+
+  static async encodeMultipartFormData(form) {
+    const boundary = `----pwLauncher${Date.now().toString(36)}${Math.random().toString(36).slice(2)}`;
+    const chunks = [];
+    const pushText = (value) => chunks.push(Buffer.from(value, 'utf8'));
+
+    for (const [key, value] of form.entries()) {
+      pushText(`--${boundary}\r\n`);
+
+      if (value instanceof File) {
+        const filename = String(value.name || 'upload.bin').replace(/"/g, '');
+        const type = String(value.type || 'application/octet-stream');
+        pushText(`Content-Disposition: form-data; name="${key}"; filename="${filename}"\r\n`);
+        pushText(`Content-Type: ${type}\r\n\r\n`);
+        chunks.push(Buffer.from(await value.arrayBuffer()));
+        pushText('\r\n');
+      } else {
+        pushText(`Content-Disposition: form-data; name="${key}"\r\n\r\n${String(value)}\r\n`);
+      }
+    }
+
+    pushText(`--${boundary}--\r\n`);
+
+    return {
+      body: Buffer.concat(chunks),
+      contentType: `multipart/form-data; boundary=${boundary}`,
+    };
+  }
+
+  static async parseNotificationsResponse(response) {
+    const responseText = App.cleanAuditJsonText(await response.text());
+    let json = null;
+    try {
+      json = JSON.parse(responseText || '{}');
+    } catch (error) {
+      if (!response.ok) throw new Error(`Audit HTTP ${response.status}`);
+      throw new Error('Audit вернул некорректный ответ');
+    }
+
+    if (!response.ok || !json?.ok) {
+      throw App.createAuditApiError(json, `Audit недоступен (${response.status})`, {
+        statusCode: response.status,
+        responseText,
+      });
+    }
+
+    return json;
+  }
+
+  static createAuditApiError(json, fallback, meta = {}) {
+    const parts = [json?.error, json?.message, json?.detail, json?.details, json?.sql_error, json?.exception]
+      .map((value) => String(value || '').trim())
+      .filter(Boolean);
+    const message = parts.length ? [...new Set(parts)].join(': ') : fallback;
+    const error = new Error(message);
+    error.audit = json || null;
+    error.meta = meta;
+    return error;
+  }
+
+  static async notificationsHttpRequest(url, options = {}) {
+    if (NativeAPI.status && NativeAPI.https && /^https?:\/\//i.test(String(url || ''))) {
+      return await App.notificationsNativeRequest(url, options);
+    }
+
+    if (App.isLocalhostOrigin()) {
+      throw new Error('CORS: Audit должен разрешить localhost или нужно запускать NW.js лаунчер');
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      return await App.parseNotificationsResponse(response);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  static async notificationsNativeRequest(url, options = {}) {
+    return await new Promise((resolve, reject) => {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(url);
+      } catch (error) {
+        reject(new Error('Audit URL error'));
+        return;
+      }
+
+      const isBufferBody = typeof Buffer !== 'undefined' && Buffer.isBuffer?.(options.body);
+      const bodyData = isBufferBody ? options.body : options.body ? String(options.body) : '';
+      const headers = { ...(options.headers || {}) };
+      if (bodyData) headers['Content-Length'] = isBufferBody ? bodyData.length : Buffer.byteLength(bodyData);
+
+      const request = NativeAPI.https.request(
+        {
+          method: options.method || 'GET',
+          hostname: parsedUrl.hostname,
+          port: parsedUrl.port || 443,
+          path: `${parsedUrl.pathname}${parsedUrl.search}`,
+          headers,
+          timeout: 10000,
+        },
+        (response) => {
+          let responseText = '';
+          response.setEncoding('utf8');
+          response.on('data', (chunk) => {
+            responseText += chunk;
+          });
+          response.on('end', () => {
+            let json = null;
+            responseText = App.cleanAuditJsonText(responseText);
+            try {
+              json = JSON.parse(responseText || '{}');
+            } catch (error) {
+              reject(new Error(`Audit HTTP ${response.statusCode}: ${parsedUrl.pathname}${parsedUrl.search}`));
+              return;
+            }
+
+            if (Number(response.statusCode || 0) < 200 || Number(response.statusCode || 0) >= 300 || !json?.ok) {
+              reject(
+                App.createAuditApiError(json, `Audit HTTP ${response.statusCode}`, {
+                  statusCode: response.statusCode,
+                  path: `${parsedUrl.pathname}${parsedUrl.search}`,
+                  responseText,
+                }),
+              );
+              return;
+            }
+
+            resolve(json);
+          });
+        },
+      );
+
+      request.on('timeout', () => {
+        request.destroy(new Error('Audit request timeout'));
+      });
+      request.on('error', (error) => {
+        reject(new Error(error?.message || 'Audit network error'));
+      });
+
+      if (bodyData) request.write(bodyData);
+      request.end();
+    });
+  }
+
+  static cleanAuditJsonText(value) {
+    return String(value || '').replace(/^\uFEFF/, '').trim();
+  }
+
+  static isLocalhostOrigin() {
+    const host = String(window.location?.hostname || '').toLowerCase();
+    return host === 'localhost' || host === '127.0.0.1' || host === '::1';
+  }
+
+  static applyNotificationsState(data) {
+    if (!data || !Array.isArray(data.notifications)) return false;
+
+    App.notifications = data.notifications
+      .map((item) => App.normalizeNotification(item))
+      .filter((item) => !App.isNotificationNewsAnnouncement(item))
+      .sort((a, b) => {
+        const dateDiff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return Number.isFinite(dateDiff) && dateDiff !== 0 ? dateDiff : b.id - a.id;
+      });
+    App.notificationsUnreadCount = App.notifications.filter((item) => !item.is_read).length;
+    if (!App.notifications.some((item) => item.id === App.notificationsSelectedId)) {
+      App.notificationsSelectedId = App.notifications[0]?.id || 0;
+    }
+    App.notificationsStatus = App.notifications.length ? '' : 'Уведомлений нет';
+    App.notificationsLastError = '';
+    App.renderNotifications();
+    return true;
+  }
+
+  static normalizeNotification(item) {
+    return {
+      id: Number(item?.id || 0),
+      type: String(item?.type || 'system'),
+      title: String(item?.title || 'Уведомление'),
+      message: String(item?.message || ''),
+      details: String(item?.details || ''),
+      banner_url: App.normalizeAuditAssetUrl(item?.banner_url || item?.image_url || ''),
+      action_url: String(item?.action_url || item?.url || ''),
+      created_at: String(item?.created_at || ''),
+      read_at: String(item?.read_at || ''),
+      toast_shown_at: String(item?.toast_shown_at || ''),
+      is_read: Boolean(item?.is_read) || Boolean(item?.read_at),
+      is_global: Boolean(item?.is_global),
+      is_local: Boolean(item?.is_local),
+      target_type: String(item?.target_type || ''),
+    };
+  }
+
+  static isNotificationNewsAnnouncement(item) {
+    const type = String(item?.type || '').trim().toLowerCase();
+    if (['news', 'launcher_news', 'new_news', 'news_publish', 'news_post'].includes(type)) return true;
+
+    const title = String(item?.title || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (title === 'новая новость' || title === 'новость' || title === 'new news') return true;
+    return /^новая новость\b/.test(title) || /^новость опубликована\b/.test(title) || /^new news\b/.test(title);
+  }
+
+  static normalizeAuditAssetUrl(value) {
+    const url = String(value || '').trim();
+    if (!url) return '';
+    if (/^data:image\/(?:png|jpe?g|webp|gif);base64,/i.test(url)) return url;
+    if (/^data:/i.test(url)) return '';
+    if (/^\/\//.test(url)) return `https:${url}`;
+    if (/^(https?:\/\/|content\/|\/)/i.test(url)) return url;
+    return '';
+  }
+
+  static async refreshNotifications({ showToasts = false } = {}) {
+    if (App.notificationsLoading) {
+      App.renderNotificationsPanel();
+      return;
+    }
+
+    if (!App.ensureNotificationsAuditLogin()) return;
+
+    App.notificationsLoading = true;
+    App.renderNotifications();
+
+    try {
+      const data = await App.notificationsRequestList();
+      App.applyNotificationsState(data);
+      if (showToasts) App.showNewNotificationToasts();
+    } catch (error) {
+      App.notifications = [];
+      App.notificationsUnreadCount = 0;
+      App.notificationsStatus = 'Audit не вернул уведомления';
+      App.notificationsLastError = String(error?.message || error || 'Ошибка Audit API');
+      App.renderNotifications();
+      console.warn('Audit notifications failed', error);
+    } finally {
+      App.notificationsLoading = false;
+      App.renderNotifications();
+    }
+  }
+
+  static async markNotificationRead(id) {
+    id = Number(id || 0);
+    if (!id || App.notificationsActionLocked) return;
+
+    App.notificationsActionLocked = true;
+    const item = App.notifications.find((notification) => notification.id === id);
+    const wasUnread = item && !item.is_read;
+    if (item) {
+      item.is_read = true;
+      item.read_at = item.read_at || new Date().toISOString();
+      App.notificationsReadAnimationIds.add(id);
+      if (wasUnread) App.notificationsUnreadCount = Math.max(0, App.notificationsUnreadCount - 1);
+      App.renderNotifications();
+      setTimeout(() => {
+        App.notificationsReadAnimationIds.delete(id);
+        App.renderNotificationsPanel();
+      }, 1700);
+    }
+
+    try {
+      if (item?.is_local || id < 0) {
+        App.renderNotifications();
+        return;
+      }
+
+      const data = await App.notificationsRequestAction('mark_read', { notification_id: id });
+      if (!App.applyNotificationsState(data)) await App.refreshNotifications();
+    } catch (error) {
+      App.notificationsLastError = String(error?.message || error || 'Ошибка отметки уведомления');
+      App.renderNotifications();
+    } finally {
+      App.notificationsActionLocked = false;
+    }
+  }
+
+  static async markAllNotificationsRead() {
+    if (App.notificationsActionLocked) return;
+
+    App.notificationsActionLocked = true;
+    App.notifications.forEach((item) => {
+      item.is_read = true;
+      item.read_at = item.read_at || new Date().toISOString();
+    });
+    App.notificationsUnreadCount = 0;
+    App.renderNotifications();
+
+    try {
+      const hasRemoteNotifications = App.notifications.some((item) => !item.is_local && item.id > 0);
+      if (hasRemoteNotifications) {
+        const data = await App.notificationsRequestAction('mark_all_read');
+        if (!App.applyNotificationsState(data)) await App.refreshNotifications();
+      } else {
+        App.renderNotifications();
+      }
+    } catch (error) {
+      App.notificationsLastError = String(error?.message || error || 'Ошибка отметки уведомлений');
+      App.renderNotifications();
+    } finally {
+      App.notificationsActionLocked = false;
+    }
+  }
+
+  static async markNotificationToastsShown(ids) {
+    const cleanIds = [...new Set((ids || []).map((id) => Number(id)).filter((id) => id > 0))];
+    if (!cleanIds.length) return;
+
+    try {
+      const data = await App.notificationsRequestAction('mark_toasts_shown', { ids: cleanIds });
+      if (!App.applyNotificationsState(data)) await App.refreshNotifications();
+    } catch (error) {
+      console.warn('Audit mark_toasts_shown failed', error);
+    }
+  }
+
+  static sendLauncherNotification(notification, options = {}) {
+    const source = typeof notification === 'string' ? { message: notification } : { ...(notification || {}) };
+    const item = App.normalizeNotification({
+      id: source.id || --App.notificationsLocalId,
+      type: source.type || 'system',
+      title: source.title || 'Уведомление',
+      message: source.message || source.text || '',
+      details: source.details || '',
+      created_at: source.created_at || new Date().toISOString(),
+      read_at: source.read_at || '',
+      toast_shown_at: source.toast_shown_at || '',
+      is_read: Boolean(source.is_read),
+      is_global: Boolean(source.is_global),
+      target_type: source.target_type || 'local',
+      is_local: true,
+    });
+
+    App.notifications = [item, ...App.notifications.filter((current) => current.id !== item.id)];
+    App.notificationsUnreadCount = App.notifications.filter((current) => !current.is_read).length;
+    App.notificationsSelectedId = item.id;
+    App.notificationsStatus = '';
+    App.notificationsLastError = '';
+    App.renderNotifications();
+
+    if (options.showToast !== false && !item.is_read) {
+      App.notificationsToastIds.add(item.id);
+      App.playNotificationSound();
+      App.showNotificationToast(item);
+    }
+
+    return item;
+  }
+
+  static showNewNotificationToasts() {
+    const pending = App.notifications.filter((item) => item.id > 0 && !item.toast_shown_at && !App.notificationsToastIds.has(item.id));
+    if (!pending.length) return;
+
+    App.playNotificationSound();
+
+    const ids = [];
+    pending.forEach((item, index) => {
+      App.notificationsToastIds.add(item.id);
+      ids.push(item.id);
+      setTimeout(() => App.showNotificationToast(item), index * 600);
+    });
+    App.markNotificationToastsShown(ids);
+  }
+
+  static playNotificationSound() {
+    try {
+      Sound.play(SOUNDS_LIBRARY.GROUP_INVITE || SOUNDS_LIBRARY.CALL || SOUNDS_LIBRARY.CHAT, {
+        id: 'launcher_notifications_sound',
+        volume: 0.65,
+      });
+    } catch (error) {
+      console.warn('Notification sound failed', error);
+    }
+  }
+
+  static showNotificationToast(item) {
+    App.ensureNotificationsToastRoot();
+    const type = App.getNotificationVisualType(item);
+
+    const toast = DOM(
+      {
+        style: ['launcher-notification-toast', `is-${type}`, item.is_global ? 'is-global' : 'is-personal'],
+        event: [
+          'click',
+          () => {
+            App.openNotificationsPanel();
+            App.markNotificationRead(item.id);
+            toast.remove();
+          },
+        ],
+      },
+      DOM({ style: ['launcher-notification-toast-icon', `is-${type}`] }),
+      DOM(
+        { style: 'launcher-notification-toast-body' },
+        DOM({ style: 'launcher-notification-toast-kind' }, App.getNotificationScopeLabel(item)),
+        DOM({ style: 'launcher-notification-toast-title' }, item.title),
+        DOM({ style: 'launcher-notification-toast-message' }, item.message),
+      ),
+    );
+    if (item.banner_url) {
+      toast.classList.add('has-banner');
+      toast.style.backgroundImage = `linear-gradient(90deg, rgba(1, 24, 30, 0.92), rgba(1, 24, 30, 0.68)), url("${item.banner_url}")`;
+    }
+    App.notificationsToastRoot.append(toast);
+    setTimeout(() => toast.classList.add('is-visible'), 20);
+    setTimeout(() => {
+      toast.classList.remove('is-visible');
+      setTimeout(() => toast.remove(), 250);
+    }, 6500);
+  }
+
+  static showNotificationNewsToast(item) {
+    App.ensureNotificationsToastRoot();
+    const toast = DOM(
+      {
+        style: ['launcher-notification-toast', 'launcher-news-toast', item.banner_url ? 'has-banner' : ''].filter(Boolean),
+        event: [
+          'click',
+          async () => {
+            App.notificationsActiveTab = 'news';
+            App.notificationsNewsSelectedId = item.id;
+            await App.markNotificationNewsRead(item.id);
+            App.openNotificationNewsReader(item);
+            toast.remove();
+          },
+        ],
+      },
+      App.createNotificationNewsThumb(item),
+      DOM(
+        { style: 'launcher-notification-toast-body' },
+        DOM({ style: 'launcher-notification-toast-kind' }, 'Новость'),
+        DOM({ style: 'launcher-notification-toast-title' }, item.title),
+        DOM({ style: 'launcher-notification-toast-message' }, item.message),
+      ),
+    );
+    if (item.banner_url) {
+      const toastOverlay =
+        type === 'report'
+          ? 'linear-gradient(90deg, rgba(77, 8, 18, 0.92), rgba(100, 24, 22, 0.66))'
+          : 'linear-gradient(90deg, rgba(1, 24, 30, 0.92), rgba(1, 24, 30, 0.68))';
+      toast.style.backgroundImage = `${toastOverlay}, url("${item.banner_url}")`;
+    }
+    App.notificationsToastRoot.append(toast);
+    setTimeout(() => toast.classList.add('is-visible'), 20);
+    setTimeout(() => {
+      toast.classList.remove('is-visible');
+      setTimeout(() => toast.remove(), 250);
+    }, 7500);
+  }
+
+  static createNotificationsButton() {
+    const badge = DOM({ style: 'launcher-notifications-badge' });
+    const button = DOM(
+      {
+        domaudio: domAudioPresets.defaultButton,
+        style: 'launcher-notifications-menu-item',
+        title: 'Уведомления',
+        event: ['click', () => App.toggleNotificationsPanel()],
+      },
+      DOM({ style: 'launcher-notifications-icon' }),
+      badge,
+    );
+
+    button.badge = badge;
+    App.notificationsButton = button;
+    App.ensureNotificationsQuickTab();
+    App.renderNotificationsButton();
+    return button;
+  }
+
+  static renderNotificationsButton() {
+    const totalUnread = App.getTotalLauncherUnreadCount();
+    if (App.notificationsButton) {
+      App.notificationsButton.classList.toggle('has-unread', totalUnread > 0);
+      App.notificationsButton.classList.toggle('no-unread', totalUnread <= 0);
+      App.notificationsButton.classList.toggle('is-loading', App.notificationsLoading);
+      App.notificationsButton.title = App.notificationsLastError || App.notificationsStatus || 'Уведомления';
+      App.notificationsButton.badge.textContent = totalUnread > 99 ? '99+' : String(totalUnread);
+      App.notificationsButton.badge.style.display = 'flex';
+    }
+    App.renderNotificationsQuickTab();
+  }
+
+  static ensureNotificationsQuickTab() {
+    if (App.notificationsQuickButton?.isConnected) return;
+
+    const badge = DOM({ style: 'launcher-notifications-quick-badge' });
+    App.notificationsQuickButton = DOM(
+      {
+        domaudio: domAudioPresets.defaultButton,
+        style: 'launcher-notifications-quick-tab',
+        title: 'Мини-уведомления',
+        event: ['click', () => App.openNotificationsPanel()],
+      },
+      DOM({ style: 'launcher-notifications-quick-icon' }),
+      badge,
+    );
+    App.notificationsQuickButton.badge = badge;
+    document.body.append(App.notificationsQuickButton);
+    App.renderNotificationsQuickTab();
+  }
+
+  static renderNotificationsQuickTab() {
+    if (!App.notificationsQuickButton) return;
+
+    const totalUnread = App.getTotalLauncherUnreadCount();
+    App.notificationsQuickButton.classList.toggle('has-unread', totalUnread > 0);
+    App.notificationsQuickButton.classList.toggle('no-unread', totalUnread <= 0);
+    App.notificationsQuickButton.title = App.notificationsLastError || App.notificationsStatus || 'Мини-уведомления';
+    App.notificationsQuickButton.badge.textContent = totalUnread > 99 ? '99+' : String(totalUnread);
+  }
+
+  static getTotalLauncherUnreadCount() {
+    return Math.max(0, Number(App.notificationsUnreadCount || 0) + Number(App.notificationsNewsUnreadCount || 0));
+  }
+
+  static toggleNotificationsPanel() {
+    if (App.notificationsPanel?.isConnected) App.closeNotificationsPanel();
+    else App.openNotificationsPanel();
+  }
+
+  static openNotificationsPanel() {
+    if (!App.notificationsPanel) App.notificationsPanel = App.createNotificationsPanel();
+    if (!App.notificationsPanel.isConnected) document.body.append(App.notificationsPanel);
+
+    App.notificationsPanel.classList.add('is-open');
+    App.renderNotificationsPanel();
+
+    if (App.notificationsActiveTab === 'news') {
+      App.loadNotificationNews();
+      return;
+    }
+
+    if (!App.ensureNotificationsAuditLogin()) return;
+    App.refreshNotifications({ showToasts: false });
+  }
+
+  static closeNotificationsPanel() {
+    if (!App.notificationsPanel) return;
+
+    App.notificationsPanel.classList.remove('is-open');
+    setTimeout(() => {
+      if (App.notificationsPanel && !App.notificationsPanel.classList.contains('is-open')) {
+        App.notificationsPanel.remove();
+      }
+    }, 180);
+  }
+
+  static createNotificationsPanel() {
+    App.notificationsStatusNode = DOM({ style: 'launcher-notifications-status' });
+    App.notificationsListNode = DOM({ style: 'launcher-notifications-list' });
+    App.notificationsDetailNode = DOM({ style: 'launcher-notifications-detail' });
+    App.notificationsTabs = {};
+    App.notificationsHelpNode = DOM(
+      { style: 'launcher-notifications-help' },
+      DOM({ tag: 'b' }, 'Справка по уведомлениям'),
+      DOM({}, 'Здесь отображаются ваши уведомления: новые сообщения, оценки, достижения и другие важные события. Непрочитанные уведомления выделяются в списке и отмечаются счетчиком.'),
+    );
+    App.notificationsFilterNode = DOM(
+      {
+        tag: 'select',
+        domaudio: domAudioPresets.defaultButton,
+        style: 'launcher-notifications-filter',
+        title: 'Фильтр',
+        event: [
+          'change',
+          (event) => {
+            App.notificationsFilter = event.target.value || 'all';
+            App.renderNotificationsPanel();
+          },
+        ],
+      },
+      DOM({ tag: 'option', value: 'all' }, 'Все'),
+      DOM({ tag: 'option', value: 'unread' }, 'Непрочитанные'),
+      DOM({ tag: 'option', value: 'read' }, 'Прочитанные'),
+    );
+
+    const tabs = DOM(
+      { style: 'launcher-notifications-tabs' },
+      App.createNotificationsTab('news', 'Новости'),
+      App.createNotificationsTab('notifications', 'Уведомления'),
+      DOM(
+        { style: 'launcher-notifications-tab-separator' },
+        DOM({ style: 'shop_separator_left' }),
+        DOM({ style: 'shop_separator_right' }),
+        DOM({ style: 'shop_separator_center' }),
+      ),
+    );
+
+    return DOM(
+      { style: 'launcher-notifications-panel' },
+      DOM(
+        { style: 'launcher-notifications-header' },
+        DOM(
+          { style: 'launcher-notifications-actions' },
+          DOM(
+            {
+              domaudio: domAudioPresets.defaultButton,
+              style: 'launcher-notifications-action',
+              title: 'Обновить',
+              event: ['click', () => App.refreshActiveNotificationsTab()],
+            },
+            '⟳',
+          ),
+          DOM(
+            {
+              domaudio: domAudioPresets.defaultButton,
+              style: 'launcher-notifications-action',
+              data: { variant: 'wide' },
+              title: 'Прочитать все',
+              event: ['click', () => App.markAllActiveNotificationsRead()],
+            },
+            'Прочитать всё',
+          ),
+          DOM(
+            {
+              domaudio: domAudioPresets.defaultButton,
+              style: ['help-button', 'launcher-notifications-help-button'],
+              title: 'Справка',
+              event: [
+                'click',
+                () => {
+                  App.notificationsHelpVisible = !App.notificationsHelpVisible;
+                  App.renderNotificationsPanel();
+                },
+              ],
+            },
+          ),
+        ),
+        DOM(
+          {
+            domaudio: domAudioPresets.closeButton,
+            style: 'launcher-notifications-action',
+            data: { variant: 'close' },
+            title: 'Закрыть',
+            event: ['click', () => App.closeNotificationsPanel()],
+          },
+          '×',
+        ),
+      ),
+      tabs,
+      DOM({ style: 'launcher-notifications-toolbar' }, App.notificationsFilterNode, App.notificationsStatusNode),
+      App.notificationsHelpNode,
+      DOM({ style: 'launcher-notifications-body' }, App.notificationsListNode, App.notificationsDetailNode),
+    );
+  }
+
+  static createNotificationsTab(tab, text) {
+    const node = DOM(
+      {
+        domaudio: domAudioPresets.bigButton,
+        style: 'launcher-notifications-tab',
+        event: [
+          'click',
+          () => {
+            if (App.notificationsActiveTab === tab) return;
+            App.notificationsActiveTab = tab;
+            App.notificationsHelpVisible = false;
+            App.renderNotificationsPanel();
+            if (tab === 'news') App.loadNotificationNews();
+            else if (App.ensureNotificationsAuditLogin()) App.refreshNotifications({ showToasts: false });
+          },
+        ],
+      },
+      text,
+    );
+    App.notificationsTabs[tab] = node;
+    return node;
+  }
+
+  static refreshActiveNotificationsTab() {
+    if (App.notificationsActiveTab === 'news') {
+      App.loadNotificationNews({ forceUpdate: true });
+      return;
+    }
+
+    App.refreshNotifications({ showToasts: false });
+  }
+
+  static markAllActiveNotificationsRead() {
+    if (App.notificationsActiveTab === 'news') {
+      App.markAllNotificationNewsRead();
+      return;
+    }
+
+    App.markAllNotificationsRead();
+  }
+
+  static renderNotifications() {
+    App.renderNotificationsButton();
+    App.renderNotificationsPanel();
+  }
+
+  static setNotificationsPanelStatus(text = '') {
+    if (!App.notificationsStatusNode) return;
+
+    const value = String(text || '');
+    App.notificationsStatusNode.textContent = value;
+    App.notificationsStatusNode.classList.toggle('is-empty', !value);
+    App.notificationsStatusNode.parentElement?.classList.toggle('is-status-empty', !value);
+  }
+
+  static renderNotificationsPanel() {
+    if (!App.notificationsPanel || !App.notificationsListNode || !App.notificationsDetailNode || !App.notificationsStatusNode) return;
+
+    App.notificationsPanel.classList.toggle('is-news-tab', App.notificationsActiveTab === 'news');
+    App.notificationsPanel.classList.toggle('is-notifications-tab', App.notificationsActiveTab !== 'news');
+    for (const tab in App.notificationsTabs) {
+      App.notificationsTabs[tab].classList.toggle('is-active', tab === App.notificationsActiveTab);
+    }
+
+    if (App.notificationsActiveTab === 'news') {
+      App.renderNotificationNewsPanel();
+      return;
+    }
+
+    if (App.notificationsLoading) {
+      App.setNotificationsPanelStatus('Проверяем уведомления...');
+    } else if (App.notificationsLastError) {
+      App.setNotificationsPanelStatus(App.notificationsLastError);
+    } else {
+      App.setNotificationsPanelStatus();
+    }
+
+    App.notificationsListNode.replaceChildren();
+    App.notificationsDetailNode.replaceChildren();
+    if (App.notificationsFilterNode) App.notificationsFilterNode.value = App.notificationsFilter;
+    if (App.notificationsHelpNode) App.notificationsHelpNode.classList.toggle('is-open', App.notificationsHelpVisible);
+
+    if (!App.notifications.length) {
+      const shouldOfferLogin = !App.hasGameAccountSession();
+      if (shouldOfferLogin && !App.notificationsLoading) {
+        App.notificationsListNode.append(
+          DOM(
+            { style: 'launcher-notifications-empty' },
+            DOM({ tag: 'div' }, App.notificationsLastError ? `Audit: ${App.notificationsLastError}` : 'Войдите в игровой аккаунт, чтобы получить уведомления'),
+            DOM(
+              {
+                domaudio: domAudioPresets.defaultButton,
+                style: 'launcher-notifications-login-button',
+                event: [
+                  'click',
+                  async () => {
+                    App.closeNotificationsPanel();
+                    await App.exit();
+                  },
+                ],
+              },
+              'Войти в аккаунт',
+            ),
+          ),
+        );
+        App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Уведомление появится здесь после входа'));
+        return;
+      }
+
+      const emptyText = App.notificationsLoading
+        ? 'Проверяем уведомления...'
+        : App.notificationsLastError
+          ? `Audit: ${App.notificationsLastError}`
+          : App.notificationsStatus || 'Уведомлений нет';
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, emptyText));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, emptyText));
+      return;
+    }
+
+    const filtered = App.getFilteredNotifications();
+    if (!filtered.some((item) => item.id === App.notificationsSelectedId)) {
+      App.notificationsSelectedId = filtered[0]?.id || App.notifications[0]?.id || 0;
+    }
+
+    if (!filtered.length) {
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, 'В этой категории пусто'));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Выберите другой фильтр'));
+      return;
+    }
+
+    for (const item of filtered) {
+      App.notificationsListNode.append(App.createNotificationItem(item));
+    }
+
+    const selected = App.notifications.find((item) => item.id === App.notificationsSelectedId) || filtered[0];
+    App.notificationsDetailNode.append(App.createNotificationDetail(selected));
+  }
+
+  static async loadNotificationNews({ forceUpdate = false, showToasts = false, render = true } = {}) {
+    if (App.notificationsNewsLoading) return;
+
+    App.notificationsNewsLoading = true;
+    if (render) App.renderNotificationsPanel();
+
+    try {
+      const [auditResult, steamResult] = await Promise.allSettled([App.notificationsRequestNewsList(), App.loadSteamNotificationNews({ forceUpdate })]);
+      const auditData = auditResult.status === 'fulfilled' ? auditResult.value : null;
+      const auditList = Array.isArray(auditData?.list) ? auditData.list : [];
+      const steamList = steamResult.status === 'fulfilled' && Array.isArray(steamResult.value) ? steamResult.value : [];
+      const list = [...auditList, ...steamList];
+
+      if (auditResult.status === 'rejected' && !steamList.length) throw auditResult.reason;
+      if (steamResult.status === 'rejected') console.warn('Steam news failed', steamResult.reason);
+
+      App.notificationsNews = list
+        .map((item) => App.normalizeNotificationNews(item))
+        .sort((a, b) => {
+          const dateDiff = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+          return Number.isFinite(dateDiff) && dateDiff !== 0 ? dateDiff : Math.abs(Number(b.id) || 0) - Math.abs(Number(a.id) || 0);
+        });
+      const unreadCount = App.notificationsNews.filter((item) => !item.is_read).length;
+      App.notificationsNewsUnreadCount = unreadCount;
+      App.notificationsNewsStatus = App.notificationsNews.length ? `Непрочитанных новостей: ${unreadCount}` : 'Новостей нет';
+      if (!App.notificationsNews.some((item) => item.id === App.notificationsNewsSelectedId)) {
+        App.notificationsNewsSelectedId = App.notificationsNews[0]?.id || 0;
+      }
+      if (showToasts) App.showNewNotificationNewsToasts();
+      App.renderNotificationsButton();
+    } catch (error) {
+      App.notificationsNews = [];
+      App.notificationsNewsUnreadCount = 0;
+      App.notificationsNewsStatus = String(error?.message || error || 'Не удалось загрузить новости');
+    } finally {
+      App.notificationsNewsLoading = false;
+      if (render) App.renderNotificationsPanel();
+      App.renderNotificationsButton();
+    }
+  }
+
+  static async loadSteamNotificationNews({ forceUpdate = false } = {}) {
+    const cacheKey = `pwclassic_steam_news_${App.notificationsSteamAppId}`;
+    const cached = App.readSteamNewsCache(cacheKey);
+    if (!forceUpdate && cached && Date.now() - Number(cached.updatedAt || 0) < App.notificationsSteamNewsCacheMs) {
+      return cached.news;
+    }
+
+    try {
+      const rssUrl = `https://store.steampowered.com/feeds/news/app/${App.notificationsSteamAppId}/?l=russian&cc=RU`;
+      const rssText = await App.fetchTextResource(rssUrl, {
+        Accept: 'application/rss+xml, application/xml, text/xml;q=0.9, */*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+      });
+      const news = App.parseSteamNewsRss(rssText).slice(0, 5);
+      App.writeSteamNewsCache(cacheKey, news);
+      return news;
+    } catch (error) {
+      if (cached?.news?.length) return cached.news;
+      throw error;
+    }
+  }
+
+  static readSteamNewsCache(cacheKey) {
+    try {
+      const cached = JSON.parse(window.localStorage?.getItem(cacheKey) || 'null');
+      return cached && Array.isArray(cached.news) ? cached : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  static writeSteamNewsCache(cacheKey, news) {
+    try {
+      window.localStorage?.setItem(cacheKey, JSON.stringify({ updatedAt: Date.now(), news }));
+    } catch (error) {}
+  }
+
+  static async fetchTextResource(url, headers = {}) {
+    if (NativeAPI.status && NativeAPI.https && /^https?:\/\//i.test(String(url || ''))) {
+      return await App.nativeTextRequest(url, { headers });
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    try {
+      const browserHeaders = { ...headers };
+      delete browserHeaders['User-Agent'];
+      const response = await fetch(url, { headers: browserHeaders, signal: controller.signal });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return await response.text();
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  static async nativeTextRequest(url, options = {}) {
+    return await new Promise((resolve, reject) => {
+      let parsedUrl;
+      try {
+        parsedUrl = new URL(url);
+      } catch (error) {
+        reject(new Error('URL error'));
+        return;
+      }
+
+      const request = NativeAPI.https.request(
+        {
+          method: options.method || 'GET',
+          hostname: parsedUrl.hostname,
+          port: parsedUrl.port || 443,
+          path: `${parsedUrl.pathname}${parsedUrl.search}`,
+          headers: options.headers || {},
+          timeout: 10000,
+        },
+        (response) => {
+          let responseText = '';
+          response.setEncoding('utf8');
+          response.on('data', (chunk) => {
+            responseText += chunk;
+          });
+          response.on('end', () => {
+            if (Number(response.statusCode || 0) < 200 || Number(response.statusCode || 0) >= 300) {
+              reject(new Error(`HTTP ${response.statusCode}`));
+              return;
+            }
+            resolve(responseText);
+          });
+        },
+      );
+
+      request.on('timeout', () => request.destroy(new Error('Request timeout')));
+      request.on('error', (error) => reject(new Error(error?.message || 'Network error')));
+      request.end();
+    });
+  }
+
+  static parseSteamNewsRss(rssText) {
+    const xml = new DOMParser().parseFromString(String(rssText || ''), 'text/xml');
+    const items = [...xml.querySelectorAll('channel > item')];
+
+    return items.map((item) => {
+      const title = App.getXmlNodeText(item, 'title') || 'Steam';
+      const rawDescription = App.getXmlNodeText(item, 'description');
+      const link = App.getXmlNodeText(item, 'link');
+      const pubDate = App.getXmlNodeText(item, 'pubDate');
+      const image = App.extractFirstSteamImage(rawDescription);
+      const message = App.htmlToPlainText(rawDescription) || 'Новость Steam пока без описания';
+      const id = App.stablePositiveHash(`steam:${link || title}:${pubDate}`);
+
+      return {
+        id,
+        title,
+        message,
+        details: '',
+        content_html: App.processSteamNewsMarkup(rawDescription),
+        type: 'steam',
+        source: 'steam',
+        banner_url: App.normalizeAuditAssetUrl(image || ''),
+        action_url: link,
+        created_at: pubDate ? new Date(pubDate).toISOString() : new Date().toISOString(),
+        is_external: true,
+      };
+    });
+  }
+
+  static getXmlNodeText(parent, selector) {
+    return String(parent.querySelector(selector)?.textContent || '').trim();
+  }
+
+  static extractFirstSteamImage(content) {
+    const doc = new DOMParser().parseFromString(String(content || ''), 'text/html');
+    return String(doc.querySelector('img')?.getAttribute('src') || '').trim();
+  }
+
+  static processSteamNewsMarkup(content) {
+    return App.sanitizeNewsHtml(String(content || ''));
+  }
+
+  static htmlToPlainText(content) {
+    const doc = new DOMParser().parseFromString(String(content || ''), 'text/html');
+    doc.querySelectorAll('script, style').forEach((node) => node.remove());
+    doc.querySelectorAll('br').forEach((node) => node.replaceWith('\n'));
+    doc.querySelectorAll('p, div, li, h1, h2, h3').forEach((node) => node.append('\n'));
+    return String(doc.body?.textContent || '')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  static stablePositiveHash(value) {
+    let hash = 2166136261;
+    const text = String(value || '');
+    for (let i = 0; i < text.length; i++) {
+      hash ^= text.charCodeAt(i);
+      hash = Math.imul(hash, 16777619);
+    }
+    return Math.abs(hash >>> 0);
+  }
+
+  static showNewNotificationNewsToasts() {
+    const pending = App.notificationsNews.filter(
+      (item) =>
+        item.id > 0 &&
+        !item.is_read &&
+        App.isNotificationNewsToastFresh(item) &&
+        !App.notificationsNewsToastIds.has(item.id) &&
+        !App.isNotificationNewsLocallyMarked('toast', item.id),
+    );
+    if (!pending.length) return;
+
+    App.playNotificationSound();
+    pending.forEach((item, index) => {
+      App.notificationsNewsToastIds.add(item.id);
+      App.rememberNotificationNewsLocalId('toast', item.id);
+      setTimeout(() => App.showNotificationNewsToast(item), index * 650);
+    });
+  }
+
+  static isNotificationNewsToastFresh(item) {
+    const date = new Date(String(item?.created_at || item?.publish_at || item?.scheduled_at || '').replace(' ', 'T'));
+    if (!Number.isFinite(date.getTime())) return true;
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    return Date.now() - date.getTime() <= sevenDaysMs;
+  }
+
+  static normalizeNotificationNews(item) {
+    const id = Number(item?.id || 0);
+    const text = String(item?.text || item?.title || '');
+    const lines = text
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    const title = String(item?.title || lines[0] || 'Новость');
+    const message = String(item?.message || (lines.length > 1 ? lines.slice(1).join('\n') : text || 'Новость пока без описания'));
+    const type = String(item?.type || 'news');
+
+    return {
+      id,
+      title,
+      message,
+      details: String(item?.details || ''),
+      content_html: App.sanitizeNewsHtml(item?.content_html || item?.contents_html || item?.html || ''),
+      type,
+      source: String(item?.source || ''),
+      banner_url: App.normalizeAuditAssetUrl(item?.banner_url || item?.image_url || ''),
+      action_url: String(item?.action_url || item?.url || ''),
+      created_at: String(item?.created_at || item?.date || ''),
+      expires_at: String(item?.expires_at || ''),
+      publish_at: String(item?.publish_at || ''),
+      scheduled_at: String(item?.scheduled_at || ''),
+      is_external: Boolean(item?.is_external),
+      is_read:
+        Boolean(item?.is_read) ||
+        Boolean(item?.read_at) ||
+        Boolean(item?.status) ||
+        App.isNotificationNewsLocallyMarked('read', id),
+    };
+  }
+
+  static renderNotificationNewsPanel() {
+    App.notificationsListNode.replaceChildren();
+    App.notificationsDetailNode.replaceChildren();
+    if (App.notificationsFilterNode) App.notificationsFilterNode.value = 'all';
+    if (App.notificationsHelpNode) App.notificationsHelpNode.classList.toggle('is-open', App.notificationsHelpVisible);
+    App.setNotificationsPanelStatus(App.notificationsNewsLoading ? 'Загружаем новости...' : '');
+
+    if (App.notificationsNewsLoading && !App.notificationsNews.length) {
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Загружаем новости...'));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Новость появится здесь'));
+      return;
+    }
+
+    if (!App.notificationsNews.length) {
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, App.notificationsNewsStatus || 'Новостей нет'));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Свежие новости появятся здесь'));
+      return;
+    }
+
+    for (const item of App.notificationsNews) {
+      App.notificationsListNode.append(App.createNotificationNewsItem(item));
+    }
+
+    const selected = App.notificationsNews.find((item) => item.id === App.notificationsNewsSelectedId) || App.notificationsNews[0];
+    App.notificationsDetailNode.append(App.createNotificationNewsDetail(selected));
+  }
+
+  static openAdminNewsEditor(item) {
+    if (!item || item.source === 'steam' || item.is_external || !Window.canManageNews?.()) return;
+    Window.pendingNewsEdit = item;
+    App.closeNotificationsPanel();
+    Window.show('main', 'adminNewsPanel');
+  }
+
+  static createNotificationNewsItem(item) {
+    const classes = [
+      'launcher-notification-item',
+      'launcher-news-item',
+      item.is_read ? 'is-read' : 'is-unread',
+      App.notificationsNewsSelectedId === item.id ? 'is-selected' : '',
+    ].filter(Boolean);
+    const canEdit = Window.canManageNews?.() && item.source !== 'steam' && !item.is_external;
+    const editButton = canEdit
+      ? DOM(
+          {
+            tag: 'button',
+            type: 'button',
+            domaudio: domAudioPresets.defaultButton,
+            style: 'launcher-news-edit-button',
+            title: 'Редактировать новость',
+            event: [
+              'click',
+              (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                App.openAdminNewsEditor(item);
+              },
+            ],
+          },
+        )
+      : DOM();
+
+    return DOM(
+      {
+        style: classes,
+        event: [
+          'click',
+          () => {
+            App.notificationsNewsSelectedId = item.id;
+            App.renderNotificationsPanel();
+          },
+        ],
+      },
+      DOM({ style: ['launcher-notification-unread-dot', item.is_read ? 'is-hidden' : ''].filter(Boolean) }),
+      App.createNotificationNewsThumb(item),
+      DOM(
+        { style: 'launcher-notification-summary' },
+        DOM(
+          { style: 'launcher-notification-meta' },
+          DOM({ style: 'launcher-notification-title' }, item.title),
+          DOM({ style: 'launcher-notification-date' }, item.created_at ? App.formatNotificationShortDate(item.created_at) : 'Новости'),
+        ),
+        DOM({ style: 'launcher-notification-message' }, item.message),
+      ),
+      editButton,
+    );
+  }
+
+  static createNotificationNewsThumb(item) {
+    const thumb = DOM({ style: 'launcher-news-thumb' });
+    if (item?.banner_url) thumb.style.backgroundImage = `url("${item.banner_url}")`;
+    return thumb;
+  }
+
+  static createNotificationNewsBody(item, style, { full = false } = {}) {
+    const body = DOM({ style: ['launcher-news-rich-content', style].filter(Boolean) });
+    const fragment = document.createDocumentFragment();
+
+    if (item?.content_html) {
+      fragment.append(App.newsHtmlToFragment(item.content_html, { skipFirstImageSrc: item.banner_url }));
+    } else {
+      fragment.append(App.newsTextToFragment(item?.message || '', { skipFirstImageSrc: item.banner_url }));
+      if (full && item?.details) {
+        const separator = DOM({ style: 'launcher-news-rich-separator' });
+        fragment.append(separator, App.newsTextToFragment(item.details));
+      }
+    }
+
+    if (!fragment.childNodes.length) fragment.append(String(item?.message || ''));
+    body.append(fragment);
+    return body;
+  }
+
+  static newsTextToFragment(text, options = {}) {
+    const fragment = document.createDocumentFragment();
+    const source = String(text || '');
+    const imagePattern = /!\[([^\]]*)\]\(([^)\s]+)\)|\[img(?::|=)([^\]\s|]+)(?:\|([^\]]+))?\]/gi;
+    const lines = source.split(/\r?\n/);
+    const skipFirstImageSrc = App.normalizeComparableUrl(options.skipFirstImageSrc || '');
+    let skippedFirstImage = false;
+
+    lines.forEach((line, lineIndex) => {
+      let cursor = 0;
+      let match;
+      imagePattern.lastIndex = 0;
+      while ((match = imagePattern.exec(line))) {
+        if (match.index > cursor) fragment.append(line.slice(cursor, match.index));
+        const alt = String(match[1] || match[4] || 'Новость Prime World Classic').trim();
+        const src = App.normalizeAuditAssetUrl(match[2] || match[3] || '');
+        if (src && (!skipFirstImageSrc || skippedFirstImage || App.normalizeComparableUrl(src) !== skipFirstImageSrc)) {
+          fragment.append(App.createNewsInlineImage(src, alt));
+        } else if (src) {
+          skippedFirstImage = true;
+        }
+        cursor = imagePattern.lastIndex;
+      }
+      if (cursor < line.length) fragment.append(line.slice(cursor));
+      if (lineIndex < lines.length - 1) fragment.append(DOM({ tag: 'br' }));
+    });
+
+    return fragment;
+  }
+
+  static newsHtmlToFragment(html, options = {}) {
+    const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
+    const fragment = document.createDocumentFragment();
+    const state = {
+      skipFirstImageSrc: App.normalizeComparableUrl(options.skipFirstImageSrc || ''),
+      skippedFirstImage: false,
+    };
+    [...doc.body.childNodes].forEach((node) => {
+      const cleanNode = App.cloneAllowedNewsNode(node, state);
+      if (cleanNode) fragment.append(cleanNode);
+    });
+    return fragment;
+  }
+
+  static cloneAllowedNewsNode(node, state = {}) {
+    if (node.nodeType === Node.TEXT_NODE) return document.createTextNode(node.textContent || '');
+    if (node.nodeType !== Node.ELEMENT_NODE) return null;
+
+    const tag = node.tagName.toLowerCase();
+    if (tag === 'script' || tag === 'style') return null;
+    if (tag === 'img') {
+      const src = App.normalizeAuditAssetUrl(node.getAttribute('src') || '');
+      if (!src) return null;
+      if (!state.skippedFirstImage && state.skipFirstImageSrc && App.normalizeComparableUrl(src) === state.skipFirstImageSrc) {
+        state.skippedFirstImage = true;
+        return null;
+      }
+      return App.createNewsInlineImage(src, node.getAttribute('alt') || 'Новость Prime World Classic');
+    }
+
+    if (tag === 'a') {
+      const href = App.normalizeExternalUrl(node.getAttribute('href') || '');
+      const link = document.createElement(href ? 'a' : 'span');
+      if (href) {
+        link.href = href;
+        link.className = 'launcher-news-link';
+        link.addEventListener('click', (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          App.OpenExternalLink(href);
+        });
+      }
+      [...node.childNodes].forEach((child) => {
+        const cleanChild = App.cloneAllowedNewsNode(child, state);
+        if (cleanChild) link.append(cleanChild);
+      });
+      return link;
+    }
+
+    const allowedTags = new Set(['p', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'ul', 'ol', 'li', 'br']);
+    const element = document.createElement(allowedTags.has(tag) ? tag : 'span');
+    [...node.childNodes].forEach((child) => {
+      const cleanChild = App.cloneAllowedNewsNode(child, state);
+      if (cleanChild) element.append(cleanChild);
+    });
+    return element;
+  }
+
+  static normalizeComparableUrl(value) {
+    return App.normalizeAuditAssetUrl(value)
+      .replace(/^https?:\/\//i, '//')
+      .replace(/[?#].*$/, '')
+      .replace(/\/+$/, '')
+      .toLowerCase();
+  }
+
+  static normalizeExternalUrl(value) {
+    const url = String(value || '').trim();
+    if (/^\/\//.test(url)) return `https:${url}`;
+    if (/^https?:\/\//i.test(url)) return url;
+    return '';
+  }
+
+  static createNewsInlineImage(src, alt = '') {
+    const image = DOM({
+      tag: 'img',
+      style: 'launcher-news-inline-image',
+      src,
+      alt: String(alt || 'Новость Prime World Classic'),
+      loading: 'lazy',
+    });
+    return image;
+  }
+
+  static sanitizeNewsHtml(html) {
+    const clean = App.newsHtmlToFragment(html);
+    const wrapper = document.createElement('div');
+    wrapper.append(clean);
+    return wrapper.innerHTML;
+  }
+
+  static createNotificationNewsDetail(item) {
+    if (!item) return DOM({ style: 'launcher-notifications-empty' }, 'Новостей нет');
+
+    const banner = DOM(
+      { style: 'launcher-news-banner' },
+      DOM({ style: 'launcher-news-banner-shine' }),
+      DOM(
+        { style: 'launcher-news-banner-content' },
+        DOM(
+          { style: 'launcher-news-banner-badges' },
+          DOM({ style: 'launcher-news-label' }, App.getNotificationNewsLifetimeLabel(item)),
+          DOM({ style: ['launcher-news-state-badge', item.is_read ? 'is-read' : 'is-unread'] }, item.is_read ? 'Прочитано' : 'Новая'),
+        ),
+        DOM({ style: 'launcher-news-banner-title' }, item.title),
+      ),
+    );
+    if (item.banner_url) {
+      banner.style.backgroundImage = `linear-gradient(90deg, rgba(0, 25, 32, 0.22), rgba(0, 25, 32, 0.74)), url("${item.banner_url}")`;
+    }
+
+    return DOM(
+      { style: ['launcher-notification-detail-card', 'launcher-news-detail-card', item.is_read ? 'is-read' : 'is-unread'].filter(Boolean) },
+      banner,
+      DOM(
+        { style: 'launcher-news-content' },
+        DOM(
+          { style: 'launcher-news-preview-frame' },
+          App.createNotificationNewsBody(item, 'launcher-news-description'),
+          DOM({ style: 'launcher-news-preview-fade' }),
+        ),
+        DOM(
+            {
+              tag: 'button',
+              domaudio: domAudioPresets.defaultButton,
+              style: 'launcher-news-read-button',
+              event: [
+                'click',
+                (event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  App.openNotificationNewsReader(item);
+                },
+              ],
+            },
+            'Продолжить читать',
+          ),
+        ),
+    );
+  }
+
+  static getNotificationNewsLifetimeLabel(item) {
+    if (item?.source === 'steam') return 'Steam';
+    if (item?.expires_at) return `До ${App.formatNotificationShortDate(item.expires_at)}`;
+    return item?.created_at ? App.formatNotificationShortDate(item.created_at) : 'Постоянно';
+  }
+
+  static async markNotificationNewsRead(id) {
+    id = Number(id || 0);
+    if (!id) return;
+
+    const item = App.notificationsNews.find((current) => current.id === id);
+    const wasUnread = item && !item.is_read;
+    if (item && !item.is_read) {
+      item.is_read = true;
+      App.notificationsNewsUnreadCount = Math.max(0, App.notificationsNewsUnreadCount - 1);
+      App.notificationsNewsStatus = App.notificationsNews.length ? `Непрочитанных новостей: ${App.notificationsNewsUnreadCount}` : 'Новостей нет';
+      App.rememberNotificationNewsLocalId('read', id);
+      App.renderNotificationsButton();
+    }
+    if (item && (!wasUnread || item.is_external || item.source === 'steam')) return;
+
+    try {
+      await App.notificationsRequestNewsAction('news_read', { news_id: id });
+    } catch (error) {
+      console.warn('Remote news read status failed', error);
+    }
+  }
+
+  static async markAllNotificationNewsRead() {
+    if (App.notificationsActionLocked) return;
+
+    const unread = App.notificationsNews.filter((item) => !item.is_read);
+    if (!unread.length) return;
+
+    App.notificationsActionLocked = true;
+    unread.forEach((item) => {
+      item.is_read = true;
+      App.rememberNotificationNewsLocalId('read', item.id);
+    });
+    App.notificationsNewsUnreadCount = 0;
+    App.notificationsNewsStatus = App.notificationsNews.length ? 'Непрочитанных новостей: 0' : 'Новостей нет';
+    App.renderNotifications();
+
+    try {
+      const remoteIds = unread.filter((item) => !item.is_external && item.source !== 'steam' && item.id > 0).map((item) => item.id);
+      await Promise.all(remoteIds.map((id) => App.notificationsRequestNewsAction('news_read', { news_id: id })));
+    } catch (error) {
+      console.warn('Remote news read all status failed', error);
+    } finally {
+      App.notificationsActionLocked = false;
+      App.renderNotifications();
+    }
+  }
+
+  static openNotificationNewsReader(item) {
+    if (!item) return;
+    App.notificationsActiveTab = 'news';
+    App.notificationsNewsSelectedId = item.id;
+    App.notificationsHelpVisible = false;
+    App.markNotificationNewsRead(item.id);
+    App.closeNotificationNewsReader();
+    App.openNotificationsPanel();
+
+    const banner = DOM(
+      { style: 'launcher-news-reader-banner' },
+      DOM(
+        { style: 'launcher-news-banner-badges' },
+        DOM({ style: 'launcher-news-label' }, App.getNotificationNewsLifetimeLabel(item)),
+        DOM({ style: ['launcher-news-state-badge', 'is-read'] }, 'Прочитано'),
+      ),
+      DOM({ style: 'launcher-news-reader-title' }, item.title),
+    );
+    if (item.banner_url) {
+      banner.style.backgroundImage = `linear-gradient(90deg, rgba(0, 25, 32, 0.2), rgba(0, 25, 32, 0.78)), url("${item.banner_url}")`;
+    }
+
+    App.notificationsNewsReaderNode = DOM(
+      { style: 'launcher-news-reader-overlay' },
+      DOM(
+        {
+          style: 'launcher-news-reader-backdrop',
+          event: ['click', () => App.closeNotificationNewsReader({ reopenNewsPanel: true })],
+        },
+      ),
+      DOM(
+        { style: 'launcher-news-reader' },
+        DOM(
+          {
+            domaudio: domAudioPresets.closeButton,
+            style: 'launcher-news-reader-close',
+            event: ['click', () => App.closeNotificationNewsReader({ reopenNewsPanel: true })],
+          },
+          '×',
+        ),
+        banner,
+        DOM(
+          { style: 'launcher-news-reader-scroll' },
+          DOM(
+            { style: 'launcher-news-reader-body' },
+            App.createNotificationNewsBody(item, 'launcher-news-reader-message', { full: true }),
+          ),
+        ),
+      ),
+    );
+
+    document.body.appendChild(App.notificationsNewsReaderNode);
+    setTimeout(() => App.notificationsNewsReaderNode?.classList.add('is-open'), 0);
+  }
+
+  static closeNotificationNewsReader({ reopenNewsPanel = false } = {}) {
+    const reader = App.notificationsNewsReaderNode;
+    if (!reader) {
+      if (reopenNewsPanel) {
+        App.notificationsActiveTab = 'news';
+        App.openNotificationsPanel();
+      }
+      return;
+    }
+
+    reader.classList.remove('is-open');
+    setTimeout(() => {
+      if (reader.isConnected) reader.remove();
+      if (App.notificationsNewsReaderNode === reader) App.notificationsNewsReaderNode = null;
+      if (reopenNewsPanel) {
+        App.notificationsActiveTab = 'news';
+        App.openNotificationsPanel();
+      }
+    }, 180);
+  }
+
+  static createNotificationItem(item) {
+    const type = App.getNotificationVisualType(item);
+    const classes = [
+      'launcher-notification-item',
+      `is-${type}`,
+      item.is_read ? 'is-read' : 'is-unread',
+      item.is_global ? 'is-global' : 'is-personal',
+      App.notificationsSelectedId === item.id ? 'is-selected' : '',
+      App.notificationsReadAnimationIds.has(item.id) ? 'is-just-read' : '',
+    ].filter(Boolean);
+
+    return DOM(
+      {
+        style: classes,
+        event: [
+          'click',
+          () => {
+            App.notificationsSelectedId = item.id;
+            App.renderNotificationsPanel();
+          },
+        ],
+      },
+      DOM({ style: ['launcher-notification-unread-dot', item.is_read ? 'is-hidden' : ''].filter(Boolean) }),
+      DOM({ style: ['launcher-notification-type-icon', `is-${type}`] }),
+      DOM(
+        { style: 'launcher-notification-summary' },
+        DOM(
+          { style: 'launcher-notification-meta' },
+          DOM({ style: 'launcher-notification-title' }, item.title),
+          DOM({ style: 'launcher-notification-date' }, App.formatNotificationShortDate(item.created_at)),
+        ),
+        DOM({ style: 'launcher-notification-message' }, item.message),
+      ),
+    );
+  }
+
+  static createNotificationDetail(item) {
+    if (!item) return DOM({ style: 'launcher-notifications-empty' }, 'Уведомлений нет');
+
+    const type = App.getNotificationVisualType(item);
+    const banner = item.banner_url ? DOM({ style: 'launcher-notification-banner' }) : DOM();
+    if (item.banner_url) {
+      banner.style.backgroundImage = `linear-gradient(90deg, rgba(1, 24, 30, 0.22), rgba(1, 24, 30, 0.74)), url("${item.banner_url}")`;
+    }
+    const readButton = item.is_read
+      ? DOM()
+      : DOM(
+          {
+            domaudio: domAudioPresets.defaultButton,
+            style: 'launcher-notification-read-button',
+            event: ['click', () => App.markNotificationRead(item.id)],
+          },
+          'Прочитать',
+        );
+
+    return DOM(
+      { style: ['launcher-notification-detail-card', `is-${type}`, item.is_read ? 'is-read' : 'is-unread', App.notificationsReadAnimationIds.has(item.id) ? 'is-just-read' : ''].filter(Boolean) },
+      banner,
+      DOM(
+        { style: 'launcher-notification-detail-head' },
+        DOM({ style: ['launcher-notification-type-icon', 'is-large', `is-${type}`] }),
+        DOM({ style: 'launcher-notification-detail-title' }, item.title),
+        DOM({ style: 'launcher-notification-detail-date' }, App.formatNotificationDate(item.created_at)),
+      ),
+      DOM({ style: 'launcher-notification-detail-separator' }),
+      DOM({ style: 'launcher-notification-detail-message' }, item.message),
+      item.details ? DOM({ style: 'launcher-notification-details' }, item.details) : DOM(),
+      DOM(
+        { style: 'launcher-notification-detail-status' },
+        DOM({ style: 'launcher-notification-detail-check' }, '✓'),
+        DOM({}, `Статус: ${item.is_read ? 'прочитано' : 'непрочитано'}`),
+      ),
+      DOM({ style: 'launcher-notification-footer' }, readButton),
+    );
+  }
+
+  static getFilteredNotifications() {
+    if (App.notificationsFilter === 'unread') return App.notifications.filter((item) => !item.is_read);
+    if (App.notificationsFilter === 'read') return App.notifications.filter((item) => item.is_read);
+    return App.notifications;
+  }
+
+  static getNotificationVisualType(item) {
+    const source = `${item?.type || ''} ${item?.title || ''} ${item?.message || ''}`.toLowerCase();
+    if (source.includes('report') || source.includes('репорт') || source.includes('жалоб')) return 'report';
+    if (source.includes('commend') || source.includes('praise') || source.includes('похвал') || source.includes('лайк')) return 'praise';
+    if (source.includes('achievement') || source.includes('достижен')) return 'achievement';
+    return 'system';
+  }
+
+  static getNotificationScopeLabel(item) {
+    return item.is_global || item.target_type === 'all' ? 'Общее' : 'Личное';
+  }
+
+  static formatNotificationDate(value) {
+    const date = new Date(String(value || '').replace(' ', 'T'));
+    if (!Number.isFinite(date.getTime())) return String(value || '');
+
+    return date.toLocaleString('ru-RU', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  static formatNotificationShortDate(value) {
+    const date = new Date(String(value || '').replace(' ', 'T'));
+    if (!Number.isFinite(date.getTime())) return String(value || '');
+
+    const now = new Date();
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    const time = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    if (date.toDateString() === now.toDateString()) return time;
+    if (date.toDateString() === yesterday.toDateString()) return `Вчера, ${time}`;
+    return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  }
+
+  static ensureNotificationsToastRoot() {
+    if (App.notificationsToastRoot?.isConnected) return;
+
+    App.notificationsToastRoot = DOM({ style: 'launcher-notifications-toast-root' });
+    document.body.append(App.notificationsToastRoot);
+  }
+
   static async authorization(login, password) {
     if (!login.value) {
       login.setAttribute('style', 'background:rgba(255,0,0,0.3)');
@@ -387,7 +2288,11 @@ export class App {
       token: request.token,
       login: login.value,
       fraction: request.fraction,
+      launcherToken: request.launcherToken || '',
+      auditToken: request.auditToken || '',
     });
+
+    App.notificationsAuthChanged();
 
     View.show('castle');
   }
@@ -698,13 +2603,19 @@ export class App {
       token: request.token,
       login: login.value,
       fraction: fraction.value,
+      launcherToken: request.launcherToken || '',
+      auditToken: request.auditToken || '',
     });
+
+    App.notificationsAuthChanged();
 
     View.show('castle');
   }
 
   static async exit() {
-    await App.storage.set({ id: 0, token: '', login: '' });
+    await App.storage.set({ id: 0, token: '', login: '', launcherToken: '', auditToken: '' });
+
+    App.notificationsAuthChanged();
 
     View.show('authorization');
   }
@@ -839,7 +2750,12 @@ export class App {
   }
 
   static isAdmin(id = 0) {
-    return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(Number(id ? id : App.storage.data.id));
+    const adminIds = [1, 2, 24, 134, 865, 2220, 292, 1853, 12781];
+    const adminLogins = ['kot04ka'];
+    const targetId = Number(id ? id : App.storage.data.id);
+    const login = String(App?.storage?.data?.login || '').trim().toLowerCase();
+
+    return adminIds.includes(targetId) || (!id && adminLogins.includes(login));
   }
   
   static isHelper(id = 0){
