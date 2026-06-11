@@ -5901,7 +5901,7 @@ export class Build {
       const hasCdModsEffect = textWithMods !== textWithoutMods;
       const showBracketValue = hasCdModsEffect && textWithoutMods !== baseText;
       const rightPart = showBracketValue ? `${textWithMods}(${textWithoutMods})` : textWithMods;
-      cdNode.textContent = `${baseText} -> ${rightPart}`;
+      cdNode.textContent = `${baseText} ➤ ${rightPart}`;
     }
   }
 
