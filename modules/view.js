@@ -1007,6 +1007,7 @@ export class View {
     let body = DOM({ style: 'progress' }, DOM({ style: 'animation1' }), DOM());
 
     Splash.show(body, false);
+    Splash.body.classList.add('splash--blur');
 
     return body;
   }

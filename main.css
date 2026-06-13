@@ -2633,6 +2633,12 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   z-index: 9999;
 }
 
+.splash.splash--blur {
+  backdrop-filter: blur(.5vmax);
+  -webkit-backdrop-filter: blur(.5vmax);
+  background: rgba(0, 0, 0, 0.6);
+}
+
 .frame {
   position: fixed;
   display: flex;
@@ -2682,9 +2688,9 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .mm {
   z-index: 9000;
-  backdrop-filter: blur(1vmax);
-  -webkit-backdrop-filter: blur(1vmax);
-  background: rgba(0, 0, 0, 0.26);
+  backdrop-filter: blur(.5vmax);
+  -webkit-backdrop-filter: blur(.5vmax);
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .progress {
