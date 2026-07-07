@@ -366,6 +366,7 @@ export class Window {
                   Splash.show(
                     DOM(
                       {},
+                      DOM({ style: 'splash-modal-scope-shop-action' }),
                       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('buyModalText'))),
                       DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode()),
                       DOM(
@@ -439,15 +440,19 @@ export class Window {
                   Splash.show(
                     DOM(
                       {},
+                      DOM({ style: 'splash-modal-scope-shop-action' }),
                       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('equipment'))),
                       DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode()),
-                      isFrame && !showQuadFrame ? Lang.text('windowShopUnequipItem') : Lang.text('windowShopEquipItem'),
                       DOM(
-                        { style: 'splash-shop-item-name' },
-                        isFrame && !showQuadFrame ? Lang.text('windowShopCurrentFrame') : `${translatedName}`,
+                        { style: 'splash-item-text' },
+                        isFrame && !showQuadFrame ? Lang.text('windowShopUnequipItem') : Lang.text('windowShopEquipItem'),
+                        DOM(
+                          { style: 'splash-shop-item-name' },
+                          isFrame && !showQuadFrame ? Lang.text('windowShopCurrentFrame') : `${translatedName}`,
+                        ),
+                        '?',
+                        DOM({}, additionalMessage),
                       ),
-                      '?',
-                      DOM({}, additionalMessage),
                       DOM(
                         {
                           domaudio: domAudioPresets.bigButton,

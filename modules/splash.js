@@ -45,6 +45,12 @@ export class Splash {
       let body = document.createElement('div');
       body.classList.add('splash-content');
       body.append(element);
+      if (body.querySelector('.title-modal')) {
+        body.classList.add('splash-content--titled');
+      }
+      if (body.querySelector('.splash-help')) {
+        body.classList.add('splash-content--help-titled');
+      }
       Splash.body.append(body);
     } else {
       Splash.body.append(element);

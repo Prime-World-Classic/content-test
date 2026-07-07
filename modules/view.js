@@ -718,7 +718,9 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    let css = DOM({ tag: 'link', rel: 'stylesheet', href: name });
+    const cssVersion = '20260701-faction-apply-button-size';
+    const separator = name.includes('?') ? '&' : '?';
+    let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
     document.head.appendChild(css);
   }
@@ -1637,14 +1639,14 @@ export class View {
     let builds = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-builds', 'button-outline'],
-      title: 'Рейтинг',
+      data: { tooltip: 'Рейтинг' },
       event: ['click', () => View.show('top')],
     });
 
     let settings = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-settings-btn', 'button-outline'],
-      title: 'Вкл/Выкл графики замка',
+      data: { tooltip: 'Вкл/Выкл графики замка' },
       event: [
         'click',
         () => {
@@ -1657,14 +1659,14 @@ export class View {
     let clan = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-clans', 'button-outline'],
-      title: 'Кланы',
+      data: { tooltip: 'Кланы' },
       event: ['click', () => Frame.open('clan')],
     });
 
     let farm = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-farm', 'button-outline'],
-      title: 'Фарм',
+      data: { tooltip: 'Фарм' },
       event: ['click', () => Window.show('main', 'farm')],
     });
 
@@ -1737,7 +1739,7 @@ export class View {
             App.setNickname();
           },
         ],
-        title: Lang.text('titleNicknameСhange'),
+        data: { tooltip: Lang.text('titleNicknameСhange') },
       },
       DOM({}, nicknameValue),
     );
@@ -1754,7 +1756,7 @@ export class View {
           App.setFraction();
         },
       ],
-      title: Lang.text('titleflag'),
+      data: { tooltip: Lang.text('titleflag') },
     });
 
     const partyData = await App.api.request(App.CURRENT_MM, 'loadParty', {});
@@ -1774,7 +1776,16 @@ export class View {
       Lang.text('accountRating').replace('{rating}', playerRatingVisual),
     );
 
-    accountRatingItem.style.setProperty('--filter-text-hover', `'${Lang.text('accountRatingTooltip')}'`);
+    const accountRatingTooltipText = Lang.text('accountRatingTooltip');
+    const accountRatingTooltipMatch = accountRatingTooltipText.match(/^(\S+\s+\S+)\s*-\s*(.*)$/);
+    const accountRatingTooltipTitle = accountRatingTooltipMatch ? accountRatingTooltipMatch[1] : '';
+    const accountRatingTooltipBody = accountRatingTooltipMatch ? `- ${accountRatingTooltipMatch[2]}` : accountRatingTooltipText;
+    const accountRatingTooltip = DOM({ style: 'account-rating-tooltip' });
+    if (accountRatingTooltipTitle) {
+      accountRatingTooltip.append(DOM({ style: 'account-rating-tooltip-title' }, accountRatingTooltipTitle));
+    }
+    accountRatingTooltip.append(DOM({ style: 'account-rating-tooltip-body' }, accountRatingTooltipBody));
+    accountRatingItem.append(accountRatingTooltip);
 
     let settingsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1785,7 +1796,7 @@ export class View {
           Window.show('main', 'menu');
         },
       ],
-      title: Lang.text('titlesettings'),
+      data: { tooltip: Lang.text('titlesettings') },
     });
     let chatMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1796,7 +1807,7 @@ export class View {
           Chat.changeChatVisibility();
         },
       ],
-      title: Lang.text('titlechat'),
+      data: { tooltip: Lang.text('titlechat') },
     });
     let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
@@ -1810,7 +1821,7 @@ export class View {
           Castle.buildMode = false;
         },
       ],
-      title: Lang.text('titleheroes'),
+      data: { tooltip: Lang.text('titleheroes') },
     });
     let friendsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1823,7 +1834,7 @@ export class View {
           Castle.buildMode = false;
         },
       ],
-      title: Lang.text('titlefriends'),
+      data: { tooltip: Lang.text('titlefriends') },
     });
     View.friendsMenuItem = friendsMenuItem;
     View.updateFriendsMenuIncomingState();
@@ -1838,7 +1849,7 @@ export class View {
           Castle.buildMode = true;
         },
       ],
-      title: Lang.text('titleconstruction'),
+      data: { tooltip: Lang.text('titleconstruction') },
     });
 
     flagMenuItem.style.backgroundImage =
@@ -3297,6 +3308,7 @@ export class View {
         ),
       ),
     );
+    buttonAdd.dataset.tooltip = Lang.text('addFriend');
     if (!onlineListSelected) {
       buttonAdd.dataset.url = `content/hero/empty.png`;
       preload.add(buttonAdd);

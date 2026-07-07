@@ -558,18 +558,17 @@ export class Build {
         tag: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['btn-skins', 'btn-hover', 'color-3'],
-        title: Lang.text('titleSkinsForTheHero'),
         event: ['click', async () => Build.skinChange()],
       },
       Lang.text('skins'),
     );
+    Build.setUiTooltip(Build.skinView, Lang.text('titleSkinsForTheHero'));
 
     Build.training = DOM(
       {
         tag: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['btn-skins', 'btn-hover', 'color-3'],
-        title: Lang.text('titletraining'),
         event: [
           'click',
           async () => {
@@ -598,6 +597,7 @@ export class Build {
       },
       Lang.text('training'),
     );
+    Build.setUiTooltip(Build.training, Lang.text('titletraining'));
 
     const talentsSection = DOM({ tag: 'fieldset', style: ['build-inventory-fieldset', 'build-talents-section'] });
     const talentsHeader = DOM({ tag: 'legend', style: 'build-inventory-legend' }, Lang.text('library'));
@@ -1704,7 +1704,7 @@ export class Build {
       btnName,
     );
 
-    template.append(modal, name, button, close);
+    template.append(DOM({ style: 'splash-modal-scope-build-action' }), modal, name, button, close);
 
     Splash.show(template);
   }
@@ -1778,7 +1778,7 @@ export class Build {
             { style: 'splash-text', id: 'duplicateBuildModal'},
             builds.length >= 6 ? Lang.text('buildLimitReached') : Lang.text('selectBuildToReplace'),
           );
-          fragment.append(title);
+          fragment.append(DOM({ style: 'splash-modal-scope-build-action' }), title);
 
           // Показываем все билды кроме текущего
           builds
@@ -1869,7 +1869,7 @@ export class Build {
                       Lang.text('createAndDuplicate'),
                     );
                     
-                    template.append(name, button, close);
+                    template.append(DOM({ style: 'splash-modal-scope-build-action' }), name, button, close);
                     Splash.show(template);
                   },
                 ],
@@ -1938,14 +1938,14 @@ export class Build {
             const fragment = document.createDocumentFragment();
             const modal = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('assembly')));
             const title = DOM({ style: 'splash-text', id: 'resetBuildText' }, Lang.text('resetTalentsTitle'));
-            fragment.append(title);
+            fragment.append(DOM({ style: 'splash-modal-scope-build-action' }), title);
 
             // Красная кнопка сброса
             const reset = DOM(
               {
                 tag: 'button',
                 domaudio: domAudioPresets.bigButton,
-                style: ['build-replace-btn', 'btn-hover'],
+                style: ['build-replace-btn', 'build-replace-btn--red', 'build-replace-btn--compact', 'btn-hover'],
                 event: [
                   'click',
                   async () => {
@@ -1957,17 +1957,6 @@ export class Build {
               },
               Lang.text('reset'),
             );
-
-            // Явно задаём красный цвет
-            reset.style.backgroundColor = '#7b001c';
-            reset.style.color = 'white';
-            reset.style.borderColor = '#ff3333';
-            reset.addEventListener('mouseover', () => {
-              reset.style.backgroundColor = '#ff3333';
-            });
-            reset.addEventListener('mouseout', () => {
-              reset.style.backgroundColor = '#7b001c';
-            });
 
             fragment.append(modal, reset);
 
@@ -3646,13 +3635,23 @@ export class Build {
       }
 
       if (key === 'considerStacks') {
-        item.title = Lang.text('gradualTalentsTitle');
+        Build.setUiTooltip(item, Lang.text('gradualTalentsTitle'));
       }
       if (key === 'considerBuff') {
-        item.title = Lang.text('aoeTalentsTitle');
+        Build.setUiTooltip(item, Lang.text('aoeTalentsTitle'));
       }
       if (key === 'groundType') {
-        item.title = Lang.text('territoryTalentsTitle');
+        Build.setUiTooltip(item, Lang.text('territoryTalentsTitle'));
+      }
+
+      if (item.dataset.tooltip) {
+        const syncStatsTooltipPosition = () => {
+          const rect = item.getBoundingClientRect();
+          item.style.setProperty('--build-stats-tip-left', `${Math.round(rect.right + 12)}px`);
+          item.style.setProperty('--build-stats-tip-top', `${Math.round(rect.top + rect.height / 2 - window.innerHeight * 0.045)}px`);
+        };
+        item.addEventListener('mouseenter', syncStatsTooltipPosition);
+        item.addEventListener('focus', syncStatsTooltipPosition);
       }
 
       if (key === 'considerStacks' || key === 'considerBuff') {
@@ -3796,6 +3795,7 @@ export class Build {
       i++;
     }
 
+    let landTypeSettingWrap = null;
     let landTypeSetting = DOM({
       domaudio: domAudioPresets.defaultButton,
       style: ['build-hero-stats-setting-land-type', 'button-outline', 'build-hero-stats-setting-land-type-rz'],
@@ -3807,17 +3807,26 @@ export class Build {
           Build.updateHeroStats();
           if (Build.applyRz) {
             landTypeSetting.classList.replace('build-hero-stats-setting-land-type-vz', 'build-hero-stats-setting-land-type-rz');
-            Build.setUiTooltip(landTypeSetting, Lang.text('titleLandTipeRZ'));
+            Build.setUiTooltip(landTypeSettingWrap, Lang.text('titleLandTipeRZ'));
           } else {
             landTypeSetting.classList.replace('build-hero-stats-setting-land-type-rz', 'build-hero-stats-setting-land-type-vz');
-            Build.setUiTooltip(landTypeSetting, Lang.text('titleLandTipeVZ'));
+            Build.setUiTooltip(landTypeSettingWrap, Lang.text('titleLandTipeVZ'));
           }
         },
       ],
     });
-    Build.setUiTooltip(landTypeSetting, Lang.text('titleLandTipeRZ'));
+    landTypeSetting.removeAttribute('title');
 
-    stats.append(DOM({ style: 'build-hero-stats-settings' }, landTypeSetting));
+    landTypeSettingWrap = DOM({ style: 'build-hero-stats-settings' }, landTypeSetting);
+    Build.setUiTooltip(landTypeSettingWrap, Lang.text('titleLandTipeRZ'));
+    const syncLandTypeTooltipPosition = () => {
+      const rect = landTypeSettingWrap.getBoundingClientRect();
+      landTypeSettingWrap.style.setProperty('--build-land-tip-left', `${Math.round(rect.left + rect.width / 2)}px`);
+      landTypeSettingWrap.style.setProperty('--build-land-tip-top', `${Math.round(rect.top - 12)}px`);
+    };
+    landTypeSettingWrap.addEventListener('mouseenter', syncLandTypeTooltipPosition);
+    landTypeSettingWrap.addEventListener('focus', syncLandTypeTooltipPosition);
+    stats.append(landTypeSettingWrap);
 
     const statFilterHighlightCountValue = DOM({
       tag: 'span',

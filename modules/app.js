@@ -24,11 +24,10 @@ export class App {
 
   static CURRENT_MM = 'mmtest';
 
-  
-  static RVPN = 'ws://26.133.141.83';
+  static RIGA = 'wss://pwclassic.isgood.host';
   static MOSCOW = 'wss://api2.26rus-game.ru';
   static CLOUDFLARE = 'wss://api.26rus-game.ru';
-  static hostList = [this.RVPN, this.MOSCOW, this.CLOUDFLARE];
+  static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE];
   static bestHost = -1;
 
   static async findBestHostAndInit() {
@@ -358,6 +357,7 @@ export class App {
   static notificationsButton = null;
   static notificationsQuickButton = null;
   static notificationsPanel = null;
+  static notificationsPanelBackdrop = null;
   static notificationsListNode = null;
   static notificationsDetailNode = null;
   static notificationsStatusNode = null;
@@ -1109,7 +1109,7 @@ export class App {
       {
         domaudio: domAudioPresets.defaultButton,
         style: 'launcher-notifications-menu-item',
-        title: 'Уведомления',
+        data: { tooltip: 'Уведомления' },
         event: ['click', () => App.toggleNotificationsPanel()],
       },
       DOM({ style: 'launcher-notifications-icon' }),
@@ -1129,7 +1129,7 @@ export class App {
       App.notificationsButton.classList.toggle('has-unread', totalUnread > 0);
       App.notificationsButton.classList.toggle('no-unread', totalUnread <= 0);
       App.notificationsButton.classList.toggle('is-loading', App.notificationsLoading);
-      App.notificationsButton.title = App.notificationsLastError || App.notificationsStatus || 'Уведомления';
+      App.notificationsButton.dataset.tooltip = App.notificationsLastError || App.notificationsStatus || 'Уведомления';
       App.notificationsButton.badge.textContent = totalUnread > 99 ? '99+' : String(totalUnread);
       App.notificationsButton.badge.style.display = 'flex';
     }
@@ -1176,8 +1176,16 @@ export class App {
 
   static openNotificationsPanel() {
     if (!App.notificationsPanel) App.notificationsPanel = App.createNotificationsPanel();
+    if (!App.notificationsPanelBackdrop) {
+      App.notificationsPanelBackdrop = DOM({
+        style: 'launcher-notifications-panel-backdrop',
+        event: ['click', () => App.closeNotificationsPanel()],
+      });
+    }
+    if (!App.notificationsPanelBackdrop.isConnected) document.body.append(App.notificationsPanelBackdrop);
     if (!App.notificationsPanel.isConnected) document.body.append(App.notificationsPanel);
 
+    requestAnimationFrame(() => App.notificationsPanelBackdrop?.classList.add('is-open'));
     App.notificationsPanel.classList.add('is-open');
     App.renderNotificationsPanel();
 
@@ -1193,8 +1201,12 @@ export class App {
   static closeNotificationsPanel() {
     if (!App.notificationsPanel) return;
 
+    App.notificationsPanelBackdrop?.classList.remove('is-open');
     App.notificationsPanel.classList.remove('is-open');
     setTimeout(() => {
+      if (App.notificationsPanelBackdrop && !App.notificationsPanelBackdrop.classList.contains('is-open')) {
+        App.notificationsPanelBackdrop.remove();
+      }
       if (App.notificationsPanel && !App.notificationsPanel.classList.contains('is-open')) {
         App.notificationsPanel.remove();
       }
@@ -2405,7 +2417,7 @@ export class App {
       Lang.text('apply'),
     );
 
-    template.append(modal, title,name, button, close);
+    template.append(DOM({ style: 'splash-modal-scope-account-action' }), modal, title,name, button, close);
 
     App.showAccountSplash(template);
   }
@@ -2500,10 +2512,10 @@ export class App {
       const nameLabel = DOM({ tag: 'div', style: 'faction-name' }, faction.name);
       Object.assign(nameLabel.style, {
         textAlign: 'center',
-        color: '#fff',
-        marginTop: '10px',
-        textShadow: '0 0 3px #000',
-        fontSize: '16px',
+        color: 'rgb(252, 229, 188)',
+        marginTop: '1.1cqh',
+        textShadow: '0 0.18cqh 0.18cqh rgba(0, 0, 0, 0.72)',
+        font: "1.72cqh / 1.18 'DejaVuSans', sans-serif",
       });
 
       const wrapper = DOM({ tag: 'div', style: 'faction-wrapper' });
@@ -2562,7 +2574,7 @@ export class App {
       window.removeEventListener('resize', resizeHandler);
     });
 
-    template.append(title, factionsContainer, button, close);
+    template.append(DOM({ style: 'splash-modal-scope-account-action' }), title, factionsContainer, button, close);
     App.showAccountSplash(template);
   }
 

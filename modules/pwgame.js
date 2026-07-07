@@ -121,9 +121,9 @@ export class PWGame {
   }
 
   static gameServerIps = [
-    'http://api.26rus-game.ru:27302/api',
-    'http://26.133.141.83:27302/api', // test connection to Radmin IP
     'http://api2.26rus-game.ru:27302/api',
+    'http://pwclassic.isgood.host:27302/api', // test connection to Radmin IP
+    'http://api.26rus-game.ru:27302/api',
   ];
   static MAIN_GAME_SERVER_IP = 0;
   static RADMIN_GAME_SERVER_IP = 1;
