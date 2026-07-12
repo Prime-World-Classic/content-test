@@ -24,10 +24,10 @@ export class App {
 
   static CURRENT_MM = 'mmtest';
 
-  static RIGA = 'wss://pwclassic.isgood.host';
+  static RVPN = 'ws://26.133.141.83';
   static MOSCOW = 'wss://api2.26rus-game.ru';
   static CLOUDFLARE = 'wss://api.26rus-game.ru';
-  static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE];
+  static hostList = [this.RVPN, this.MOSCOW, this.CLOUDFLARE];
   static bestHost = -1;
 
   static async findBestHostAndInit() {
