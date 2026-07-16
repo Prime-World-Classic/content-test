@@ -17,7 +17,6 @@ export class Splash {
 
     Splash.body.innerHTML = '';
     Splash.body.style.background = '';
-    Splash.body.classList.remove('splash--blur');
 
     const menu = DOM(
       { id: 'wcastle-menu' },
@@ -33,7 +32,6 @@ export class Splash {
     if (!Splash.body) Splash.init();
 
     Splash.body.style.background = '';
-    Splash.body.classList.remove('splash--blur');
 
     if (Splash.body.firstChild) {
       while (Splash.body.firstChild) {
@@ -63,7 +61,6 @@ export class Splash {
     if (Splash.body) {
       Splash.body.style.display = 'none';
       Splash.body.style.background = '';
-      Splash.body.classList.remove('splash--blur');
     }
   }
 }
