@@ -1497,7 +1497,6 @@ export const ru = {
     hero_63_skin_2_name: 'Проклятая Графиня',
     hero_64_skin_2_name: 'Факир',
     hero_65_skin_2_name: 'Детоняша',
-	hero_65_skin_3_name: 'Плазма',
 
     //Стата талантов
     sr: 'Сила/Разум',

@@ -1491,7 +1491,6 @@ export const en = {
     hero_63_skin_2_name: 'Cursed Countess',
     hero_64_skin_2_name: 'Fakir',
     hero_65_skin_2_name: 'Explonya',
-	hero_65_skin_3_name: 'Plasm',
 
     //Стата талантов
     sr: 'Strength/Intellect',
