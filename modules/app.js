@@ -2642,7 +2642,7 @@ export class App {
     };
     document.addEventListener('keydown', onEsc, { once: true });
 
-    const BASE = 'https://pw2.26rus-game.ru/stats/';
+    const BASE = 'http://26.133.141.83:81/stats/';
     const targetId = Number(id) || 0;
     const targetLogin = String(login || '').trim();
     const ownId = Number(App?.storage?.data?.id) || 0;
