@@ -189,7 +189,7 @@ export class Window {
               'click',
               () => {
                 ParentEvent.children = window.open(
-                  'https://api2.26rus-game.ru:2087',
+                  'http://26.133.141.83:2087',
                   'SteamAuth',
                   'width=1280, height=720, top=' +
                     (screen.height - 720) / 2 +
@@ -1765,7 +1765,7 @@ export class Window {
             'click',
             () => {
               ParentEvent.children = window.open(
-                `https://api2.26rus-game.ru:2087/connect/${App.storage.data.token}`,
+                `http://26.133.141.83:2087/connect/${App.storage.data.token}`,
                 `SteamAuth`,
                 'width=1280, height=720, top=' +
                   (screen.height - 720) / 2 +
