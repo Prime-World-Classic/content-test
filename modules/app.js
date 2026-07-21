@@ -24,7 +24,7 @@ export class App {
 
   static CURRENT_MM = 'mmtest';
 
-  static RVPN = 'ws://26.133.141.83';
+  static RVPN = 'ws://26.133.141.83:81';
   static MOSCOW = 'wss://api2.26rus-game.ru';
   static CLOUDFLARE = 'wss://api.26rus-game.ru';
   static hostList = [this.RVPN, this.MOSCOW, this.CLOUDFLARE];
@@ -2642,7 +2642,7 @@ export class App {
     };
     document.addEventListener('keydown', onEsc, { once: true });
 
-    const BASE = 'http://26.133.141.83:81/stats/';
+    const BASE = 'http://26.133.141.83/stats/';
     const targetId = Number(id) || 0;
     const targetLogin = String(login || '').trim();
     const ownId = Number(App?.storage?.data?.id) || 0;
