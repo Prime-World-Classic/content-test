@@ -1215,12 +1215,27 @@ input::placeholder {
   align-items: center;
   justify-content: center;
   gap: 1cqh;
-  margin-top: 0.25cqh;
-  padding-top: 1.35cqh;
-  border-top: 0.12cqh solid rgba(70, 207, 214, 0.65);
+  margin-bottom: 0.25cqh;
+  padding-bottom: 1.35cqh;
+  border-bottom: 0.12cqh solid rgba(70, 207, 214, 0.65);
   color: #f5e9ad;
   font-size: 1.65cqh;
   line-height: 1.2;
+  text-align: center;
+}
+
+.radmin-guide__status-text {
+  min-width: 0;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.radmin-guide__status--error {
+  color: #ffcab5;
+}
+
+.radmin-guide__status--error .radmin-guide__spinner {
+  display: none;
 }
 
 .radmin-guide__support {
@@ -1299,6 +1314,7 @@ input::placeholder {
 }
 
 .radmin-guide__spinner {
+  flex-shrink: 0;
   width: 1.9cqh;
   height: 1.9cqh;
   box-sizing: border-box;

@@ -6,7 +6,6 @@ import { PWGame } from './pwgame.js';
 import { NativeAPI } from './nativeApi.js';
 import { Settings } from './settings.js';
 import { Splash } from './splash.js';
-import { RadminGuide } from './radminGuide.js?v=20260803-radmin-auto';
 
 window.addEventListener('message', (event) => {
   if (event.data == '') {
@@ -50,7 +49,6 @@ Lang.init().then(async () => {
     }
   };
 
-  await RadminGuide.waitForConnection(App.hostList);
   testMainConnection();
 
   Settings.init().then(() => {

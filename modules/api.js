@@ -1,5 +1,6 @@
 import { App } from './app.js';
 import { Lang } from './lang.js';
+import { RadminGuide } from './radminGuide.js';
 
 export class Api {
   constructor(host, bestHost, events) {
@@ -19,7 +20,7 @@ export class Api {
 
     this.host = host;
 
-    this.MAIN_HOST = this.host[bestHost];
+    this.MAIN_HOST = this.host[bestHost] || this.host[0];
 
     this.DISCONNECT_LAST_DATE_LIMIT_MS = 30000; // плюсуем неудачное соединение в указанном диапазоне времени
 
@@ -44,7 +45,29 @@ export class Api {
     await this.connect();
   }
 
+  async connectInitial() {
+    const { socket, index } = await RadminGuide.waitForConnection(
+      this.host.map((host) => `${host}/${App.storage.data.token}`),
+    );
+    this.MAIN_HOST = this.host[index];
+    App.bestHost = index;
+    this.WebSocket = socket;
+    socket.onmessage = (event) => this.message(event.data);
+    socket.onerror = () => App.error(Lang.text('connectionLostError').replace('{count}', this.DISCONNECT_TOTAL));
+    socket.onclose = () => this.connect(this.RECONNECT_TIME).catch(() => {});
+    this.hasConnectedOnce = true;
+    RadminGuide.hide();
+    App.ShowCurrentView();
+  }
+
   async connect(delay = 0) {
+    if (!this.hasConnectedOnce) {
+      this.initialConnection ??= this.connectInitial().finally(() => {
+        this.initialConnection = null;
+      });
+      return this.initialConnection;
+    }
+
     return new Promise((resolve, reject) => {
       setTimeout(async () => {
         console.log(`Попытка соединения ${this.MAIN_HOST} (${this.DISCONNECT_TOTAL})...`);

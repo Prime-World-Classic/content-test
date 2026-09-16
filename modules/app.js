@@ -26,51 +26,13 @@ export class App {
 
   static RIGA = 'wss://pwclassic.isgood.host';
   static MOSCOW = 'wss://api2.26rus-game.ru';
-  static CLOUDFLARE = 'wss://api.26rus-game.ru';
+  static CLOUDFLARE = 'wss://api.zone-play.com';
   static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE];
   static bestHost = -1;
 
   static async findBestHostAndInit() {
-    const sockets = [];
-    let resolved = false;
-
-    const handleOpen = (index) => {
-      return () => {
-        if (!resolved) {
-          resolved = true;
-          this.bestHost = index;
-
-          sockets.forEach((socket, i) => {
-            //if (i !== index && socket) {
-            socket.close();
-            //}
-          });
-
-          this.init();
-        }
-      };
-    };
-
-    for (let i = 0; i < this.hostList.length; i++) {
-      try {
-        const socket = new WebSocket(this.hostList[i]);
-        sockets[i] = socket;
-
-        socket.onopen = handleOpen(i);
-
-        socket.onerror = () => {
-          socket.close();
-        };
-      } catch (error) {
-        App.error(`Error creating WebSocket for ${this.hostList[i]}:`, error);
-      }
-    }
-
-    setTimeout(() => {
-      if (this.bestHost == -1) {
-        App.error(Lang.text('apiConnectionError'));
-      }
-    }, 30000);
+    // Api keeps the first successful connection instead of probing and reopening it.
+    await this.init();
   }
 
   /**
