@@ -42,7 +42,11 @@ export class ParentEvent {
       token: body.token,
       login: body.login,
       fraction: body.fraction,
+      launcherToken: body.launcherToken || '',
+      auditToken: body.auditToken || '',
     });
+
+    App.notificationsAuthChanged();
 
     if (ParentEvent.children) {
       ParentEvent.children.close();

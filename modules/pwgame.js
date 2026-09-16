@@ -121,31 +121,93 @@ export class PWGame {
   }
 
   static gameServerIps = [
-    'http://api.26rus-game.ru:27302/api',
-    'http://26.133.141.83:27302/api', // test connection to Radmin IP
     'http://api2.26rus-game.ru:27302/api',
+    'http://pwclassic.isgood.host:27302/api', // test connection to Radmin IP
+    'http://api.26rus-game.ru:27302/api',
   ];
   static MAIN_GAME_SERVER_IP = 0;
   static RADMIN_GAME_SERVER_IP = 1;
   static PROXY_GAME_SERVER_IP = 2;
 
-  static async testServerConnection(serverIp) {
+  static async testServerConnection(serverIp, timeoutMs = 5000) {
     const data = {
       method: 'checkConnection',
     };
+
+    if (NativeAPI.status && NativeAPI.http && NativeAPI.https) {
+      return await new Promise((resolve) => {
+        let settled = false;
+        const finish = (value) => {
+          if (settled) return;
+          settled = true;
+          resolve(value);
+        };
+
+        try {
+          const url = new URL(serverIp);
+          const client = url.protocol === 'https:' ? NativeAPI.https : NativeAPI.http;
+          const body = JSON.stringify(data);
+          const request = client.request(
+            {
+              protocol: url.protocol,
+              hostname: url.hostname,
+              port: url.port || undefined,
+              path: `${url.pathname}${url.search}`,
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Content-Length': Buffer.byteLength(body),
+              },
+            },
+            (response) => {
+              response.resume();
+              finish(response.statusCode >= 200 && response.statusCode < 500);
+            },
+          );
+
+          request.setTimeout(timeoutMs, () => request.destroy(new Error('Connection timeout')));
+          request.on('error', () => finish(false));
+          request.end(body);
+        } catch (error) {
+          finish(false);
+        }
+      });
+    }
+
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timeout = setTimeout(() => controller?.abort(), timeoutMs);
     try {
       let response = await fetch(serverIp, {
         method: 'POST',
         body: JSON.stringify(data),
+        signal: controller?.signal,
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
       });
-      return true;
+      return response.ok;
     } catch (e) {
       // No connection
+    } finally {
+      clearTimeout(timeout);
     }
     return false;
+  }
+
+  static async testRadminConnection() {
+    const hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
+    PWGame.radminHasConnection = hasConnection;
+    return hasConnection;
+  }
+
+  static async testAnyGameServerConnection() {
+    const results = await Promise.all(PWGame.gameServerIps.map((serverIp) => PWGame.testServerConnection(serverIp)));
+
+    PWGame.mainServerHasConnection = results[PWGame.MAIN_GAME_SERVER_IP] === true;
+    PWGame.radminHasConnection = results[PWGame.RADMIN_GAME_SERVER_IP] === true;
+    PWGame.gameServerHasConnection = results.some(Boolean);
+
+    return PWGame.gameServerHasConnection;
   }
 
   static async testGameServerConnection() {

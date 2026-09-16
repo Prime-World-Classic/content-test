@@ -6,6 +6,7 @@ import { PWGame } from './pwgame.js';
 import { NativeAPI } from './nativeApi.js';
 import { Settings } from './settings.js';
 import { Splash } from './splash.js';
+import { RadminGuide } from './radminGuide.js?v=20260803-radmin-auto';
 
 window.addEventListener('message', (event) => {
   if (event.data == '') {
@@ -23,7 +24,7 @@ window.addEventListener('message', (event) => {
   console.log('event.data', event.data);
 });
 
-Lang.init().then(() => {
+Lang.init().then(async () => {
   Splash.init();
 
   NativeAPI.init();
@@ -42,22 +43,15 @@ Lang.init().then(() => {
     }
   });
 
-  let testRadminConnection = async () => {
-    let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
-    if (hasConnection) {
-      PWGame.radminHasConnection = true;
-    }
-  };
   let testMainConnection = async () => {
     let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.MAIN_GAME_SERVER_IP]);
     if (hasConnection) {
       PWGame.mainServerHasConnection = true;
     }
   };
-  setTimeout((_) => {
-    testRadminConnection();
-    testMainConnection();
-  }, 3000);
+
+  await RadminGuide.waitForConnection(App.hostList);
+  testMainConnection();
 
   Settings.init().then(() => {
     App.findBestHostAndInit();

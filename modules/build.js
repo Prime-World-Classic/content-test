@@ -1682,7 +1682,11 @@ export class Build {
 
     let button = DOM(
       {
-        style: 'splash-content-button-modal',
+        style: [
+          'splash-content-button-modal',
+          method === 'rename' ? 'splash-nickname-sized-button' : null,
+          method === 'rename' ? 'build-rename-button' : null,
+        ].filter(Boolean),
         domaudio: domAudioPresets.bigButton,
         event: [
           'click',
@@ -1774,9 +1778,10 @@ export class Build {
           const currentBuildId = Build.id;
 
           const fragment = document.createDocumentFragment();
+          const duplicateBuildText = (builds.length >= 6 ? Lang.text('buildLimitReached') : Lang.text('selectBuildToReplace')).replace(/:\s*$/, '');
           const title = DOM(
             { style: 'splash-text', id: 'duplicateBuildModal'},
-            builds.length >= 6 ? Lang.text('buildLimitReached') : Lang.text('selectBuildToReplace'),
+            duplicateBuildText,
           );
           fragment.append(DOM({ style: 'splash-modal-scope-build-action' }), title);
 
@@ -5910,7 +5915,7 @@ export class Build {
       const hasCdModsEffect = textWithMods !== textWithoutMods;
       const showBracketValue = hasCdModsEffect && textWithoutMods !== baseText;
       const rightPart = showBracketValue ? `${textWithMods}(${textWithoutMods})` : textWithMods;
-      cdNode.textContent = `${baseText} -> ${rightPart}`;
+      cdNode.textContent = `${baseText} ➤ ${rightPart}`;
     }
   }
 

@@ -183,7 +183,7 @@ export class View {
       case 'away':
         return 'sepia(1) hue-rotate(352deg) saturate(1.1) brightness(0.92)';
       case 'offline':
-        return 'grayscale(0.8)';
+        return '';
       default:
         return '';
     }
@@ -323,6 +323,8 @@ export class View {
     const friendInParty = presenceState === 'online' && Number(item?.inParty) === 1;
     const groupEnabled = View.isFriendGroupInviteEnabled(item);
     const callEnabled = View.isFriendCallEnabled(item);
+    const isOffline = presenceState === 'offline';
+    const isTambour = presenceState === 'tambour';
     const groupText = friendInParty
       ? Lang.text('friendInGroup')
       : groupEnabled
@@ -337,9 +339,12 @@ export class View {
       (presenceState === 'battle' || presenceState === 'queue' || presenceState === 'tambour');
     const modeText = canShowModeOnHover ? Lang.text(`gm${modeId + 1}`) : '';
     group.textContent = groupText;
+    group.classList.toggle('castle-friend-add-group-offline', isOffline);
+    call.classList.toggle('castle-friend-add-group-offline', isOffline);
+    group.classList.toggle('castle-friend-add-group-tambour', isTambour);
     const presenceFilter = View.getFriendPresenceFilter(presenceState);
-    group.style.filter = (!groupEnabled || friendInParty) ? (presenceFilter || 'grayscale(0.8)') : '';
-    call.style.filter = !callEnabled ? 'grayscale(0.8)' : '';
+    group.style.filter = (!groupEnabled || friendInParty) ? (isOffline || isTambour ? '' : (presenceFilter || 'grayscale(0.8)')) : '';
+    call.style.filter = !callEnabled ? (isOffline ? '' : 'grayscale(0.8)') : '';
     group.onmouseenter = null;
     group.onmouseleave = null;
     group.onclick = null;
@@ -398,6 +403,32 @@ export class View {
     }
 
     View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
+  }
+
+  static updateFriendsMenuOnlineCount() {
+    if (!View.friendsMenuItem) {
+      return;
+    }
+
+    const onlineCount = (View.castleFriendAll || []).filter(
+      (item) => Number(item?.status) === 1 && View.normalizeFriendPresenceState(item) !== 'offline',
+    ).length;
+    View.friendsMenuOnlineCount?.remove();
+    View.friendsMenuOnlineCount = null;
+    if (onlineCount > 0) {
+      View.friendsMenuOnlineCount = DOM({ style: 'friends-menu-online-count' }, String(onlineCount));
+      View.friendsMenuItem.append(View.friendsMenuOnlineCount);
+    }
+  }
+
+  static updateCastlePanelMenuActiveState(tab = View.castleActiveTab) {
+    for (const [item, itemTab] of [
+      [View.heroesMenuItem, 'heroes'],
+      [View.friendsMenuItem, 'friends'],
+      [View.buildingsMenuItem, 'buildings'],
+    ]) {
+      item?.classList?.toggle('castle-panel-menu-item-active', tab === itemTab);
+    }
   }
 
   static isCastleModeRequireHeroSelection(mode) {
@@ -718,7 +749,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20260701-faction-apply-button-size';
+    const cssVersion = '20260717-castle-menu-tooltips';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1009,6 +1040,7 @@ export class View {
     let body = DOM({ style: 'progress' }, DOM({ style: 'animation1' }), DOM());
 
     Splash.show(body, false);
+    Splash.body.classList.add('splash--blur');
 
     return body;
   }
@@ -1806,10 +1838,11 @@ export class View {
           Chat.changeChatVisibility();
         },
       ],
-      data: { tooltip: Lang.text('titlechat') },
+      data: { tooltip: 'Вкл/выкл. чат' },
     });
+    let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
-      domaudio: domAudioPresets.bigButton,
+      domaudio: domAudioPresets.defaultButton,
       style: 'heroes-menu-item',
       event: [
         'click',
@@ -1849,6 +1882,21 @@ export class View {
       ],
       data: { tooltip: Lang.text('titleconstruction') },
     });
+    for (const menuItem of [heroesMenuItem, friendsMenuItem, buildingsMenuItem]) {
+      menuItem.append(DOM({ style: 'castle-panel-menu-active-frame' }));
+    }
+    View.heroesMenuItem = heroesMenuItem;
+    View.friendsMenuItem = friendsMenuItem;
+    View.buildingsMenuItem = buildingsMenuItem;
+    App.api.silent(
+      (result) => {
+        View.castleFriendAll = Array.isArray(result) ? result : [];
+        View.setFriendIncomingStatus(View.castleFriendAll.some((item) => Number(item?.status) === 2));
+        View.updateFriendsMenuOnlineCount();
+      },
+      'friend',
+      'list',
+    );
 
     flagMenuItem.style.backgroundImage =
       Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`;
@@ -1883,6 +1931,7 @@ export class View {
         flagMenuItem,
         accountRatingItem,
         settingsMenuItem,
+        notificationsMenuItem,
         heroesMenuItem,
         friendsMenuItem,
         buildingsMenuItem,
@@ -2174,6 +2223,7 @@ export class View {
 
   static bodyCastleBuildings() {
     View.castleActiveTab = 'buildings';
+    View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
@@ -2196,7 +2246,11 @@ export class View {
       return;
     }
 
-    let preload = new PreloadImages(View.castleBottom);
+    let preload = new PreloadImages(View.castleBottom, (element) => {
+      const imageUrl = String(element?.dataset?.url || '');
+      if (!imageUrl) return;
+      element.style.backgroundImage = `url("${imageUrl}"), radial-gradient(ellipse at 50% 43%, rgba(45, 209, 189, 0.48) 0%, rgba(45, 209, 189, 0.41) 12%, rgba(45, 209, 189, 0.32) 23%, rgba(45, 209, 189, 0.23) 35%, rgba(45, 209, 189, 0.15) 46%, rgba(45, 209, 189, 0.075) 57%, rgba(45, 209, 189, 0.035) 70%, rgba(45, 209, 189, 0.012) 88%, rgba(45, 209, 189, 0) 100%)`;
+    });
 
     for (let i = 1; i < Castle.buildings.length; ++i) {
       let item = Castle.buildings[i];
@@ -2542,7 +2596,11 @@ export class View {
     }
 
     const searchWrap = DOM({
-      style: ['castle-hero-list-search-wrap', View.castleHeroSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
+      style: [
+        'castle-hero-list-search-wrap',
+        'castle-roster-list-search-wrap',
+        View.castleHeroSearch ? 'castle-hero-list-search-wrap-has-value' : null,
+      ].filter(Boolean),
     });
 
     const search = DOM({
@@ -2599,6 +2657,14 @@ export class View {
           : 'castle-hero-list-editor-mode-idle';
     const titleText =
       mode === 'add' ? `Добавить выбранных героев в ${listName}` : mode === 'remove' ? `Удалить выбранных героев из ${listName}` : listName;
+    const titleContent =
+      mode === 'add'
+        ? DOM(
+            { style: ['castle-hero-list-editor-title', 'castle-hero-list-editor-title-add'] },
+            DOM({ tag: 'span' }, 'Добавить выбранных героев в'),
+            DOM({ tag: 'span' }, listName),
+          )
+        : DOM({ style: 'castle-hero-list-editor-title' }, titleText);
     const totalHeroes = (View.castleHeroAll || []).length;
     let heroesInList = 0;
     for (const hero of View.castleHeroAll || []) {
@@ -2712,7 +2778,7 @@ export class View {
           },
         ],
       },
-      DOM({}, titleText),
+      titleContent,
     );
     middle.addEventListener('contextmenu', (event) => {
       event.preventDefault();
@@ -2909,7 +2975,7 @@ export class View {
           View.castleFriendSelectedList === 0 ? 'castle-hero-list-btn-active' : null,
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        title: Lang.text('titlefriends'),
+        data: { tooltip: 'Список друзей' },
         event: [
           'click',
           () => {
@@ -2934,6 +3000,7 @@ export class View {
           View.castleFriendSelectedList === 1 ? 'castle-hero-list-btn-active' : null,
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
+        data: { tooltip: 'Фавориты' },
         event: [
           'click',
           () => {
@@ -2977,7 +3044,11 @@ export class View {
     }
 
     const searchWrap = DOM({
-      style: ['castle-hero-list-search-wrap', View.castleFriendSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
+      style: [
+        'castle-hero-list-search-wrap',
+        'castle-roster-list-search-wrap',
+        View.castleFriendSearch ? 'castle-hero-list-search-wrap-has-value' : null,
+      ].filter(Boolean),
     });
 
     const search = DOM({
@@ -3172,7 +3243,7 @@ export class View {
     const modal = DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('searchForFriends')));
     const buttonAdd = DOM(
       {
-        style: 'castle-friend-item',
+        style: ['castle-friend-item', 'castle-friend-add-card'],
         onclick: () => {
           let input = DOM({
             tag: 'input',
@@ -3366,6 +3437,8 @@ export class View {
           const friendInParty = presenceState === 'online' && Number(item?.inParty) === 1;
           const groupEnabled = View.isFriendGroupInviteEnabled(item);
           const callEnabled = View.isFriendCallEnabled(item);
+          const isOffline = presenceState === 'offline';
+          const isTambour = presenceState === 'tambour';
           const groupText = friendInParty
             ? Lang.text('friendInGroup')
             : groupEnabled
@@ -3379,14 +3452,26 @@ export class View {
             modeId >= 0 &&
             (presenceState === 'battle' || presenceState === 'queue' || presenceState === 'tambour');
           const modeText = canShowModeOnHover ? Lang.text(`gm${modeId + 1}`) : '';
-          let group = DOM({ style: 'castle-friend-add-group' }, groupText);
-          let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
+          let group = DOM(
+            {
+              style: [
+                'castle-friend-add-group',
+                isOffline ? 'castle-friend-add-group-offline' : null,
+                isTambour ? 'castle-friend-add-group-tambour' : null,
+              ].filter(Boolean),
+            },
+            groupText,
+          );
+          let call = DOM(
+            { style: ['castle-friend-add-group', isOffline ? 'castle-friend-add-group-offline' : null].filter(Boolean) },
+            Lang.text('callAFriend'),
+          );
           const presenceFilter = View.getFriendPresenceFilter(presenceState);
           if (!groupEnabled || friendInParty) {
-            group.style.filter = presenceFilter || 'grayscale(0.8)';
+            group.style.filter = isOffline || isTambour ? '' : (presenceFilter || 'grayscale(0.8)');
           }
           if (!callEnabled) {
-            call.style.filter = 'grayscale(0.8)';
+            call.style.filter = isOffline ? '' : 'grayscale(0.8)';
           }
           if (groupEnabled && !friendInParty) {
             group.onclick = View.createFriendGroupAction(item);
@@ -3409,7 +3494,7 @@ export class View {
             let removeButton = DOM(
               {
                 domaudio: domAudioPresets.smallButton,
-                style: 'splash-content-button',
+                style: ['splash-content-button', 'splash-nickname-sized-button', 'friend-action-button'],
                 event: [
                   'click',
                   async () => {
@@ -3421,12 +3506,12 @@ export class View {
                   },
                 ],
               },
-              Lang.text('friendRemove'),
+              Lang.text('friendRemovePlayer'),
             );
             let profileButton = DOM(
               {
                 domaudio: domAudioPresets.smallButton,
-                style: 'splash-content-button',
+                style: ['splash-content-button', 'splash-nickname-sized-button', 'friend-action-button'],
                 event: [
                   'click',
                   () => {
@@ -3440,12 +3525,13 @@ export class View {
             let cancelButton = DOM(
               {
                 domaudio: domAudioPresets.closeButton,
-                style: 'splash-content-button',
+                style: ['splash-content-button', 'splash-content-button-red', 'splash-nickname-sized-button', 'friend-action-button'],
                 event: ['click', () => Splash.hide()],
               },
-              Lang.text('friendCancle'),
+              Lang.text('friendClose'),
             );
             body.append(
+              DOM({ style: 'splash-modal-scope-friend-action' }),
               modal,
               DOM({ id: 'friendRemoveText' }, String(item.nickname || '')),
               profileButton,
@@ -3542,6 +3628,7 @@ export class View {
 
   static bodyCastleHeroes() {
     View.castleActiveTab = 'heroes';
+    View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
@@ -3571,6 +3658,7 @@ export class View {
 
   static bodyCastleFriends() {
     View.castleActiveTab = 'friends';
+    View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
@@ -3590,6 +3678,7 @@ export class View {
         if (View.castleActiveTab !== 'friends') return;
         View.setFriendIncomingStatus(Array.isArray(result) && result.some((item) => Number(item?.status) == 2));
         View.castleFriendAll = Array.isArray(result) ? result : [];
+        View.updateFriendsMenuOnlineCount();
         View.renderCastleFriendsFromCache();
       },
       'friend',

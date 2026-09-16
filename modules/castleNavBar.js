@@ -54,6 +54,7 @@ export class CastleNAVBAR {
     CastleNAVBAR.body.children[4].onclick = () => {};
 
     CastleNAVBAR.body.children[5].innerText = App.CURRENT_MM == 'mmtest' ? Lang.text('fight') + ' test' : Lang.text('fight');
+    CastleNAVBAR.body.children[5].dataset.tooltip = 'Выбрать героя для боя';
     /*
         CastleNAVBAR.body.children[5].onclick = () => {
             

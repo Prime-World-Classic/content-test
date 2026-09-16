@@ -20,14 +20,14 @@ import { SessionPulse } from './sessionPulse.js';
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.15.3';
+  static PW_VERSION = '2.15.2';
 
   static CURRENT_MM = 'mmtest';
 
-  static RVPN = 'ws://26.133.141.83:81';
+  static RIGA = 'wss://pwclassic.isgood.host';
   static MOSCOW = 'wss://api2.26rus-game.ru';
   static CLOUDFLARE = 'wss://api.26rus-game.ru';
-  static hostList = [this.RVPN, this.MOSCOW, this.CLOUDFLARE];
+  static hostList = [this.RIGA, this.MOSCOW, this.CLOUDFLARE];
   static bestHost = -1;
 
   static async findBestHostAndInit() {
@@ -2384,7 +2384,7 @@ export class App {
     let button = DOM(
       {
         domaudio: domAudioPresets.bigButton,
-        style: 'splash-content-button-modal',
+        style: ['splash-content-button-modal', 'splash-nickname-sized-button'],
         event: [
           'click',
           async () => {
@@ -2472,20 +2472,15 @@ export class App {
       const factionElement = DOM({
         tag: 'div',
         domaudio: domAudioPresets.defaultButton,
-        style: 'faction-item',
+        style: ['faction-item', ...(selectedFaction === faction.id ? ['faction-item-selected'] : [])],
         event: [
           'click',
           () => {
             selectedFaction = faction.id;
 
             factionsContainer.querySelectorAll('.faction-item').forEach((item) => {
-              item.style.transform = 'scale(1)';
-              item.style.filter = 'brightness(0.7)';
-              item.style.boxShadow = 'none';
+              item.classList.toggle('faction-item-selected', item === factionElement);
             });
-
-            factionElement.style.transform = 'scale(1.05)';
-            factionElement.style.filter = 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))';
           },
         ],
       });
@@ -2503,9 +2498,6 @@ export class App {
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
         cursor: 'url(content/img/cursor_button32x32.png) 0 0, pointer',
-        transition: 'all 0.3s ease',
-        transform: selectedFaction === faction.id ? 'scale(1.05)' : 'scale(1)',
-        filter: selectedFaction === faction.id ? 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))' : 'brightness(0.7)',
         borderRadius: '10px',
       });
 
@@ -2642,7 +2634,7 @@ export class App {
     };
     document.addEventListener('keydown', onEsc, { once: true });
 
-    const BASE = 'http://26.133.141.83/stats/';
+    const BASE = 'https://pw2.26rus-game.ru/stats/';
     const targetId = Number(id) || 0;
     const targetLogin = String(login || '').trim();
     const ownId = Number(App?.storage?.data?.id) || 0;

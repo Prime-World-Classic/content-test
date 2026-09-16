@@ -8,7 +8,7 @@ body {
 :root {
   --castle-play-lobby-item-scale: 1;
   --castle-hero-lists-bar-overlap: 45%;
-  --castle-hero-lists-bar-gap: 0.35cqh;
+  --castle-hero-lists-bar-gap: 0.2cqh;
   --castle-hero-lists-btn-height: 7.45cqh;
   --castle-hero-lists-controls-lift: 0.78cqh;
   --castle-hero-lists-content-lift: 3.54cqh;
@@ -959,6 +959,7 @@ body {
   width: 4vh; /* Изменено с vw на vh */
   aspect-ratio: 1/1;
   border-radius: 50%;
+  transition: filter 0.18s ease;
 }
 
 .castle-button-play-3 {
@@ -1043,6 +1044,10 @@ body {
   transform: scale(1);
   aspect-ratio: 1/1;
   border-radius: 50%;
+}
+
+.castle-button-play:has(.castle-button-play-8:hover) .castle-button-play-2 {
+  filter: brightness(1.24) saturate(1.08);
 }
 
 .castle-button-play-queue {
@@ -1603,6 +1608,8 @@ body {
 }
 
 .castle-settings-container [data-tooltip]::after,
+.castle-bottom-menu [data-tooltip]::after,
+.castle-hero-lists-bar [data-tooltip]::after,
 .castle-bottom-content [data-tooltip]::after,
 .castle-button-play [data-tooltip]::after {
   display: none;
@@ -1633,6 +1640,8 @@ body {
 }
 
 .castle-settings-container [data-tooltip]:hover::after,
+.castle-bottom-menu [data-tooltip]:hover::after,
+.castle-hero-lists-bar [data-tooltip]:hover::after,
 .castle-bottom-content [data-tooltip]:hover::after,
 .castle-button-play [data-tooltip]:hover::after {
   display: flex;
@@ -1642,6 +1651,36 @@ body {
 
 .castle-button-play [data-tooltip]::after {
   bottom: calc(100% + 0.8vh);
+}
+
+.castle-button-play-3[data-tooltip]::after {
+  top: calc(100% + 0.35vh);
+  bottom: auto;
+  min-width: 7.2vh;
+  padding: 0.43vh 0.5vh;
+  border-width: 0.08vh;
+  border-radius: 0.42vh;
+  font-size: 0.7vh;
+}
+
+.settings-menu-item[data-tooltip]::after {
+  left: calc(50% + 3vh);
+  min-width: 13.4vh;
+  padding: 0.78vh 0.9vh;
+  border-width: 0.13vh;
+  border-radius: 0.74vh;
+  font-size: 1.28vh;
+}
+
+.buildings-menu-item[data-tooltip]::after,
+.heroes-menu-item[data-tooltip]::after,
+.friends-menu-item[data-tooltip]::after,
+.chat-menu-item[data-tooltip]::after {
+  min-width: 10.7vh;
+  padding: 0.63vh 0.73vh;
+  border-width: 0.11vh;
+  border-radius: 0.6vh;
+  font-size: 1.03vh;
 }
 
 .settings-menu-item {
@@ -1669,24 +1708,75 @@ body {
   background-image: url('icons/friends.png');
 }
 
-.friends-menu-item.friends-menu-item-incoming {
-  animation: friendsIncomingPulse 1.1s ease-in-out infinite;
+.castle-panel-menu-active-frame {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20cqh;
+  height: 20cqh;
+  z-index: 2;
+  border-radius: 50%;
+  transform: translate(-50%, calc(-50% + 0.4cqh));
+  background:
+    radial-gradient(ellipse 58% 28% at 50% 76%, rgba(48, 213, 200, 0.5) 0%, rgba(48, 213, 200, 0.2) 48%, rgba(48, 213, 200, 0) 100%),
+    url('img/menu-active-frame.png') center / contain no-repeat;
+  pointer-events: none;
 }
 
-@keyframes friendsIncomingPulse {
-  0% {
+.heroes-menu-item.castle-panel-menu-item-active > .castle-panel-menu-active-frame,
+.friends-menu-item.castle-panel-menu-item-active > .castle-panel-menu-active-frame,
+.buildings-menu-item.castle-panel-menu-item-active > .castle-panel-menu-active-frame {
+  display: block;
+}
+
+.friends-menu-online-count {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 3;
+  min-width: 11cqh;
+  height: 11cqh;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.55cqh;
+  border: 0.42cqh solid #9d9763;
+  border-radius: 50%;
+  background: #0c4c5a;
+  box-shadow:
+    inset 0 0 0 0.36cqh #4f4a23,
+    0 0.48cqh 1cqh rgba(0, 0, 0, 0.48);
+  color: #f4e3a0;
+  font: 400 5.7cqh / 1 'DejaVuSans', sans-serif;
+  text-shadow: 0 0.27cqh 0.36cqh rgba(0, 0, 0, 0.85);
+  transform: translate(-14%, 28%);
+  pointer-events: none;
+}
+
+.friends-menu-item.friends-menu-item-incoming {
+  animation: friendsIncomingDoublePulse 1.9s ease-out infinite;
+}
+
+@keyframes friendsIncomingDoublePulse {
+  0%, 24%, 58%, 100% {
     filter: brightness(1);
     box-shadow: none;
   }
 
-  50% {
-    filter: brightness(1.85);
-    box-shadow: 0 0 4.7cqh rgba(255, 232, 123, 0.95);
+  12% {
+    filter: brightness(1.28);
+    box-shadow:
+      0 0 0 0.35cqh rgba(255, 232, 123, 0.72),
+      0 0 1.8cqh rgba(45, 209, 189, 0.55);
   }
 
-  100% {
-    filter: brightness(1);
-    box-shadow: none;
+  42% {
+    filter: brightness(1.58);
+    box-shadow:
+      0 0 0 0.75cqh rgba(255, 232, 123, 0.82),
+      0 0 4.2cqh rgba(45, 209, 189, 0.72);
   }
 }
 
@@ -1814,7 +1904,7 @@ body {
   left: 2cqh;
   right: 0;
   bottom: 100%;
-  transform: translateY(var(--castle-hero-lists-bar-overlap));
+  transform: translateY(calc(var(--castle-hero-lists-bar-overlap) + 0.35cqh));
   display: flex;
   align-items: center;
   gap: var(--castle-hero-lists-bar-gap);
@@ -1888,8 +1978,102 @@ body {
   filter: brightness(1.15);
 }
 
+.castle-hero-lists-bar:not(.castle-friend-lists-bar) {
+  left: 0.2cqh;
+}
+
+.castle-hero-lists-bar:not(.castle-friend-lists-bar) .castle-hero-list-btn {
+  width: 5cqh;
+  min-width: 5cqh;
+  padding-left: 0;
+  padding-right: 0;
+  border: 1px solid rgb(217, 193, 111);
+  background: rgb(2, 79, 117);
+  box-shadow:
+    inset 0 0 0 1px rgb(70, 50, 30),
+    0 0.25cqh 0.6cqh rgba(0, 0, 0, 0.55);
+  filter: none;
+  text-shadow: #000 0 0 0.5cqh;
+}
+
+.castle-hero-lists-bar:not(.castle-friend-lists-bar) .castle-hero-list-btn-all {
+  margin-right: 0;
+}
+
+.castle-hero-lists-bar:not(.castle-friend-lists-bar) .castle-hero-list-btn:hover,
+.castle-hero-lists-bar:not(.castle-friend-lists-bar) .castle-hero-list-btn-active {
+  background: rgb(7, 153, 248);
+  filter: none;
+}
+
+.castle-hero-lists-bar:not(.castle-friend-lists-bar) .castle-hero-list-btn-active {
+  transform: translateY(-0.68cqh);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 34, 55, 0.28) 0%,
+      rgba(0, 34, 55, 0.06) 38%,
+      rgba(0, 34, 55, 0.06) 62%,
+      rgba(0, 34, 55, 0.28) 100%
+    ),
+    rgb(7, 153, 248);
+}
+
 .castle-friend-lists-bar .castle-hero-list-btn-all::before {
   background-image: url('icons/allFriend.png');
+}
+
+.castle-friend-lists-bar {
+  left: 0.2cqh;
+}
+
+.castle-friend-lists-bar .castle-hero-list-btn-all,
+.castle-friend-lists-bar .castle-friend-list-btn-fav {
+  width: 5cqh;
+  min-width: 5cqh;
+  padding-left: 0;
+  padding-right: 0;
+  border: 1px solid rgb(217, 193, 111);
+  background: rgb(2, 79, 117);
+  box-shadow:
+    inset 0 0 0 1px rgb(70, 50, 30),
+    0 0.25cqh 0.6cqh rgba(0, 0, 0, 0.55);
+  filter: none;
+}
+
+.castle-friend-lists-bar .castle-hero-list-btn-all {
+  margin-right: 0;
+}
+
+.castle-friend-lists-bar .castle-hero-list-btn-all::before {
+  left: 50%;
+  width: 4.15cqh;
+  height: 4.15cqh;
+}
+
+.castle-friend-lists-bar .castle-hero-list-btn-all:hover,
+.castle-friend-lists-bar .castle-friend-list-btn-fav:hover,
+.castle-friend-lists-bar .castle-hero-list-btn-all.castle-hero-list-btn-active,
+.castle-friend-lists-bar .castle-friend-list-btn-fav.castle-hero-list-btn-active {
+  background: rgb(7, 153, 248);
+  filter: none;
+}
+
+.castle-friend-lists-bar .castle-hero-list-btn-all.castle-hero-list-btn-active,
+.castle-friend-lists-bar .castle-friend-list-btn-fav.castle-hero-list-btn-active {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 34, 55, 0.28) 0%,
+      rgba(0, 34, 55, 0.06) 38%,
+      rgba(0, 34, 55, 0.06) 62%,
+      rgba(0, 34, 55, 0.28) 100%
+    ),
+    rgb(7, 153, 248);
+}
+
+.castle-friend-lists-bar .castle-hero-list-btn-active {
+  transform: translateY(-0.68cqh);
 }
 
 .castle-friend-list-btn-fav::before {
@@ -1908,9 +2092,24 @@ body {
 }
 
 .castle-friend-list-btn-online {
-  min-width: 6.2cqh;
+  width: 5cqh;
+  min-width: 5cqh;
+  padding-right: 0;
+  padding-left: 0;
+  border: 1px solid rgb(217, 193, 111);
+  background: rgb(2, 79, 117);
+  box-shadow:
+    inset 0 0 0 1px rgb(70, 50, 30),
+    0 0.25cqh 0.6cqh rgba(0, 0, 0, 0.55);
   font-size: 1.15cqh;
   letter-spacing: 0.04em;
+  filter: none;
+}
+
+.castle-friend-lists-bar .castle-friend-list-btn-online.castle-hero-list-btn-active {
+  transform: translateY(-0.16cqh);
+  background: rgb(2, 79, 117);
+  filter: none;
 }
 
 .castle-hero-list-btn-add {
@@ -1922,6 +2121,7 @@ body {
   width: 1.5cqh;
   height: 1.5cqh;
   background: url('icons/add.png') center/contain no-repeat;
+  filter: drop-shadow(0 0 0.45cqh rgba(0, 0, 0, 0.82));
 }
 
 .castle-hero-list-btn-clear {
@@ -1942,7 +2142,7 @@ body {
   border: 0.18cqh groove rgb(158, 155, 104);
   outline: none;
   color: rgb(229 212 79 / 95%);
-  font: 1.35cqh / 1 'DejaVuSans', sans-serif;
+  font: 1.35cqh / calc(var(--castle-hero-lists-btn-height) - var(--castle-hero-lists-content-lift) - 0.36cqh) 'DejaVuSans', sans-serif;
   padding: 0 2.75cqh var(--castle-hero-lists-content-lift) 0.95cqh;
   background-image: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
   position: relative;
@@ -1961,7 +2161,7 @@ body {
 
 .castle-hero-list-search-clear {
   position: absolute;
-  right: 0cqh;
+  right: 0.35cqh;
   width: 2.6cqh;
   height: 100%;
   box-sizing: border-box;
@@ -1991,6 +2191,43 @@ body {
   color: rgba(195, 205, 215, 0.78);
 }
 
+.castle-roster-list-search-wrap {
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid rgb(217, 193, 111);
+  border-radius: 1cqh 1cqh 0.55cqh 0.55cqh;
+  background: rgb(2, 79, 117);
+}
+
+.castle-roster-list-search-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0.55cqh;
+  right: 0.55cqh;
+  bottom: calc(var(--castle-hero-lists-content-lift) + 0.55cqh);
+  left: 0.55cqh;
+  border: 1px solid rgba(217, 193, 111, 0.72);
+  border-radius: 999px;
+  background:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.46), rgba(0, 0, 0, 0) 58%),
+    rgb(3, 48, 61);
+  pointer-events: none;
+}
+
+.castle-roster-list-search-wrap .castle-hero-list-search {
+  z-index: 1;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  padding-left: 1.4cqh;
+  padding-bottom: calc(var(--castle-hero-lists-content-lift) + 0.15cqh);
+  text-shadow: #000 0 0 0.5cqh;
+}
+
+.castle-roster-list-search-wrap .castle-hero-list-search-clear {
+  z-index: 2;
+}
+
 .castle-bottom-content {
   position: relative;
   z-index: 10;
@@ -2000,7 +2237,7 @@ body {
   overflow-x: scroll;
   border: 0.1vh solid rgba(142, 150, 96, 1);
   border-bottom: 0;
-  background-image: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
+  background-image: linear-gradient(0deg, rgba(12, 92, 107, 0.9), rgba(6, 41, 56, 0.9));
   scroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
@@ -2042,8 +2279,31 @@ body {
   overflow: hidden;
 }
 
+.castle-building-item {
+  background-position: center 43%;
+  background-size: 80%, 100% 100%;
+}
+
 .castle-hero-item {
   background-size: 0%;
+}
+
+.castle-friend-item {
+  background-size: 72%;
+}
+
+.castle-friend-add-card {
+  transition: background-color 0.16s ease;
+}
+
+.castle-friend-add-card:hover {
+  background-color: rgba(238, 238, 17, 0.6);
+}
+
+.castle-friend-add-card .add-to-friend-text span {
+  text-shadow:
+    0 0.2cqh 0.25cqh rgba(0, 0, 0, 0.85),
+    0 0 0.45cqh rgba(0, 0, 0, 0.65);
 }
 
 .castle-hero-list-editor-item {
@@ -2088,6 +2348,22 @@ body {
   overflow-wrap: anywhere;
 }
 
+.castle-hero-list-editor-title {
+  text-shadow:
+    #000 0 0 0.5cqh,
+    rgba(0, 0, 0, 0.85) 0 0.12cqh 0.22cqh;
+}
+
+.castle-hero-list-editor-title-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.castle-hero-list-editor-title-add span:last-child {
+  white-space: nowrap;
+}
+
 .castle-hero-list-editor-item .castle-item-background {
   position: absolute;
   inset: 0;
@@ -2117,6 +2393,7 @@ body {
   justify-content: center;
   align-items: center;
   background: url('icons/enableButton.png') center/100% 100% no-repeat;
+  position: relative;
 }
 
 .castle-hero-list-editor-sign::before {
@@ -2126,6 +2403,10 @@ body {
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .castle-hero-list-editor-sign-add::before {
@@ -2134,6 +2415,7 @@ body {
 
 .castle-hero-list-editor-sign-remove::before {
   background-image: url('icons/remove.png');
+  transform: translate(-50%, -46%);
 }
 
 .castle-hero-list-editor-sign-active {
@@ -2188,11 +2470,13 @@ body {
   width: max-content;
   min-width: 34cqh;
   max-width: 64.9cqh;
-  padding-left: 3.2cqh;
-  padding-right: 3.2cqh;
+  padding: 0 3.2cqh;
   background-size: 100% 100%;
+  font-size: 7.2cqh;
+  line-height: 1.15;
   position: relative;
   left: -0.8cqh;
+  transform: translateY(-2.2cqh);
 }
 
 .castle-hero-list-editor-item.castle-hero-list-editor-mode-add .castle-hero-list-editor-confirm-action,
@@ -2242,7 +2526,7 @@ body {
 .castle-item-background {
   width: 100%;
   height: 100%;
-  background-image: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
+  background-image: none;
   background-size: 100%;
 }
 .selectedBuild{
@@ -2272,7 +2556,33 @@ body {
 }
 
 .castle-hero-rank-icon {
-  transform: scale(0.8);
+  width: 33cqw;
+  height: 33cqw;
+  transform: none;
+  background-position: center;
+}
+
+.castle-hero-rank-icon-wrapper {
+  width: 39cqw;
+  height: 39cqw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background-position: center;
+}
+
+.castle-hero-rank-lvl {
+  position: relative;
+  left: -1cqw;
+  top: 1cqw;
+  height: 15cqw;
+  padding: 6cqw 10cqw;
+  color: #c3c5b7;
+  font-size: 15cqw;
+  text-shadow:
+    0 0.8cqw 1.2cqw rgba(0, 0, 0, 0.95),
+    0 0 1.8cqw rgba(0, 0, 0, 0.72);
 }
 
 .castle-hero-item-bg {
@@ -2348,7 +2658,16 @@ body {
   padding: 2cqh;
 }
 .buildingIcon:hover{
-  filter: drop-shadow(.2cqh .2cqh 1.5cqh rgb(0, 0, 0)) brightness(1.15);
+  animation: buildingIconBlink 1.65s ease-in-out infinite;
+}
+
+@keyframes buildingIconBlink {
+  0%, 100% {
+    filter: drop-shadow(.2cqh .2cqh 1.5cqh rgb(0, 0, 0)) brightness(1.18);
+  }
+  50% {
+    filter: drop-shadow(.2cqh .2cqh 1.7cqh rgb(0, 0, 0)) brightness(1.42);
+  }
 }
 .addToFriendIcon{
   border-radius: 2cqh;
@@ -2376,7 +2695,8 @@ body {
   color: rgba(255, 255, 255, 0.8);
   font-size: 11cqw;
   text-align: center;
-  font-weight: 800;
+  font-weight: 400;
+  text-shadow: #000 0 0 0.5cqh;
   margin-top: 45cqh;
 }
 
@@ -2392,7 +2712,8 @@ body {
 }
 
 .castle-friend-add-group {
-  overflow: scroll;
+  overflow: hidden;
+  box-sizing: border-box;
   height: 15cqh;
   width: 85%;
   /* background: linear-gradient( #3b6d61 0%, #09211f 25%, #053B3F 75%, #2c554c 100%); */
@@ -2400,14 +2721,19 @@ body {
   background: url('/content/hero/button.png') center center no-repeat;
   background-size: contain;
   border-radius: 3.5cqh;
- text-shadow: rgba(0, 0, 0, 1) 0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) 0.1cqh -0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh 0.1cqh 0.1cqh, rgba(0, 0, 0, 1) -0.1cqh -0.1cqh 0.1cqh;
+  text-shadow: #000 0 0 0.5cqh;
   color: rgb(252, 229, 188);
   font: 9cqh / 1.5 'DejaVuSans', sans-serif;
+  line-height: 1;
   white-space: nowrap;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   transition:
     background 0.3s,
     transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
   text-align: center;
   padding: 0;
 }
@@ -2419,7 +2745,28 @@ body {
   background: url('/content/hero/button.png') center center no-repeat;
   background-size: contain;
   margin-bottom: 5cqh;
-  padding: 1cqh 1cqh;
+  padding: 0 1cqh;
+  box-sizing: border-box;
+  font: 9cqh / 1 'DejaVuSans', sans-serif;
+}
+
+.castle-friend-add-group-offline {
+  width: 73%;
+  height: 15cqh;
+  border-radius: 2.1cqh;
+  border: 0.75px solid #99a694;
+  background: linear-gradient(to bottom, #646464 0%, #494949 28%, #262626 47%, #262626 53%, #494949 72%, #646464 100%);
+  color: rgba(252, 229, 188, 0.58);
+  filter: none !important;
+}
+
+.castle-friend-add-group-tambour {
+  width: 73%;
+  height: 15cqh;
+  border: 0.75px solid #99a694;
+  border-radius: 2.1cqh;
+  background: linear-gradient(to bottom, #91864b 0%, #695f31 50%, #91864b 100%);
+  filter: none !important;
 }
 
 .castle-friend-confirm {
@@ -2486,6 +2833,12 @@ body {
 .castle-item-hero-name span{
   font-size: 10cqh;
   color: #fff;
+}
+
+.castle-friend-item .castle-item-hero-name span {
+  text-shadow:
+    0 0.2cqh 0.25cqh rgba(0, 0, 0, 0.85),
+    0 0 0.45cqh rgba(0, 0, 0, 0.65);
 }
 .add-to-friend-text{
   height: 15cqh;
@@ -2580,11 +2933,11 @@ body {
 .quest-item-exclamation {
   background-image: url('img/quest/3.png');
   animation: questanim 1s linear infinite;
-  width: 80cqw;
-  height: 80cqw;
+  width: 86cqw;
+  height: 86cqw;
   position: absolute;
-  right: -30cqw;
-  bottom: -20cqw;
+  right: -33cqw;
+  bottom: -8cqw;
 }
 
 .quest-item-completed {
@@ -3854,7 +4207,8 @@ body {
 }
 
 .launcher-notifications-help-button:hover {
-  transform: scale(1.1);
+  transform: none;
+  filter: brightness(1.18);
 }
 
 .launcher-notifications-action[title='Закрыть'] {
