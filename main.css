@@ -127,12 +127,31 @@ select {
 
 .telegram-bot {
   background-image: url('icons/tg.svg');
+  background-position: center;
   background-repeat: no-repeat;
-  position: relative;
-  width: 4.8cqh;
-  margin-left: -0.5cqh;
-  bottom: 0.5cqh;
-  height: 6cqh;
+  background-size: contain;
+  position: absolute;
+  top: 50%;
+  right: 0.65vh;
+  width: 3.4vh;
+  height: 3.4vh;
+  margin: 0;
+  transform: translateY(-50%);
+  animation: registration-telegram-pulse 2.8s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes registration-telegram-pulse {
+  0%,
+  100% {
+    transform: translateY(-50%) scale(1);
+    filter: brightness(1);
+  }
+
+  50% {
+    transform: translateY(-50%) scale(1.08);
+    filter: brightness(1.18) drop-shadow(0 0 0.35vh rgba(44, 190, 229, 0.42));
+  }
 }
 
 .steamauth:before {
@@ -150,6 +169,8 @@ select {
 .invite-input {
   display: flex;
   align-items: center;
+  position: relative;
+  margin: 0 4% 2vh;
 }
 
 rz {
@@ -438,22 +459,82 @@ select option {
   width: 100%;
 }
 
+.login-box-forma-right .login-box-forma-brand,
+.login-box-forma-right .login-box-forma-qr {
+  align-self: center;
+}
+
+.login-box-forma-right .login-box-forma-brand {
+  width: min(15cqw, 22vh);
+}
+
+.login-box-forma-right .login-box-forma-qr {
+  width: min(12.5cqw, 18vh);
+}
+
 .login-box-form-invite-text {
-  font: 0.9vw / 1 'DejaVuSans', sans-serif;
-  color: rgba(255, 255, 255, 0.8);
-  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  isolation: isolate;
+  min-width: min(19cqw, 28vh);
+  padding: 0.65vh 2.4vh;
+  font: clamp(0.72rem, 1.65vh, 1rem) / 1.18 'DejaVuSans', sans-serif;
+  color: rgba(255, 255, 255, 0.88);
+  font-style: normal;
+  margin-top: 0.35vh;
   margin-bottom: 1vh;
   text-align: center;
+  text-shadow: 0 0.08vh 0.14vh rgba(0, 0, 0, 0.78);
+}
+
+.login-box-form-invite-text::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 0;
+  background: rgba(5, 57, 68, 0.62) url('img/main.png') center / 100% 100% no-repeat;
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, rgba(0, 0, 0, 0.88) 54%, transparent 100%);
+  mask-image: radial-gradient(ellipse at center, #000 30%, rgba(0, 0, 0, 0.88) 54%, transparent 100%);
 }
 
 .login-box-forma-inputs {
+  --auth-field-font-size: clamp(1.05rem, 2.3vh, 1.28rem);
   display: flex;
   flex-direction: column;
   background-image: url(img/main.png);
   background-size: 100% 100%;
   background-repeat: no-repeat;
   padding-top: 8vh;
+  position: relative;
   /*width:20cqw;*/
+}
+
+.auth-window-title {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 6.8vh;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.login-box-forma-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  color: rgba(252, 229, 188, 0.96);
+  font: clamp(1rem, 2.25vh, 1.55rem) / 1 'DejaVuSans', sans-serif;
+  text-shadow:
+    rgba(0, 0, 0, 0.72) 0.1vh 0.1vh 0.14vh,
+    rgba(0, 0, 0, 0.54) -0.1vh 0.1vh 0.14vh,
+    rgba(0, 0, 0, 0.42) 0 -0.08vh 0.12vh;
+  pointer-events: none;
 }
 
 input::placeholder {
@@ -461,35 +542,85 @@ input::placeholder {
 }
 
 .login-box-forma-inputs select {
-  background-image: url(img/button.png);
-  background-size: 98% 98%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  padding: 1.5vmin 0;
-  color: #fff;
+  padding: 1.15vh 1.2vh;
 }
 
 .login-box-forma-inputs input {
-  background: rgba(255, 255, 255, 0.5);
-  color: rgba(0, 0, 0, 0.9);
+  padding: 1.15vh 1.2vh;
 }
 
 .login-box-forma-inputs input,
-.login-box-forma-inputs select {
-  transition: all 0.3s ease-out;
+.login-box-forma-inputs select,
+.login-box-forma-inputs .registration-fraction-trigger {
+  box-sizing: border-box;
+  min-height: 5vh;
+  transition: filter 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
   width: auto;
-  /*padding: 1vmin 0;*/
   margin-left: 4%;
   margin-right: 4%;
   margin-bottom: 2vh;
-  font: 1.5rem / 1 'DejaVuSans', sans-serif;
-  border: none;
-  border-radius: 5vh;
+  font: var(--auth-field-font-size) / 1 'DejaVuSans', sans-serif;
+  border: 0.18vh groove rgb(158, 155, 104);
+  border-radius: 1vh;
   text-align: center;
+  color: rgba(255, 255, 255, 0.96);
+  background: linear-gradient(0deg, rgb(12, 92, 107), rgb(6, 41, 56));
+  box-shadow:
+    inset 0 0.15vh 0.25vh rgba(134, 223, 222, 0.12),
+    inset 0 -0.22vh 0.4vh rgba(0, 0, 0, 0.32);
 }
 
-.login-box-forma-inputs input:hover {
-  background: rgba(255, 255, 255, 0.8);
+.login-box-forma-inputs .registration-fraction-trigger {
+  appearance: none;
+  cursor: var(--cursor-pointer);
+  color: rgba(210, 220, 225, 0.78);
+}
+
+.login-box-forma-inputs .registration-fraction-trigger--selected {
+  color: rgba(255, 255, 255, 0.96);
+}
+
+.login-box-forma--registration .login-box-forma-inputs input::placeholder {
+  color: rgba(210, 220, 225, 0.78);
+  opacity: 1;
+}
+
+.login-box-forma-inputs input:-webkit-autofill,
+.login-box-forma-inputs input:-webkit-autofill:hover,
+.login-box-forma-inputs input:-webkit-autofill:focus {
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.96);
+  caret-color: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    inset 0 0 0 1000px rgb(7, 49, 63),
+    inset 0 0.15vh 0.25vh rgba(134, 223, 222, 0.12),
+    inset 0 -0.22vh 0.4vh rgba(0, 0, 0, 0.32);
+  transition: background-color 9999s ease-out;
+}
+
+.invite-input input {
+  width: 100%;
+  margin: 0;
+  padding-left: 5vh;
+  padding-right: 5vh;
+}
+
+.login-box-forma-inputs input::placeholder {
+  color: rgba(210, 220, 225, 0.78);
+  font: inherit;
+}
+
+.login-box-forma-inputs input:hover,
+.login-box-forma-inputs input:focus,
+.login-box-forma-inputs select:hover,
+.login-box-forma-inputs select:focus,
+.login-box-forma-inputs .registration-fraction-trigger:hover,
+.login-box-forma-inputs .registration-fraction-trigger:focus {
+  border-color: rgba(196, 181, 101, 0.98);
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 0.18vh 0.28vh rgba(170, 255, 236, 0.18),
+    inset 0 -0.2vh 0.38vh rgba(0, 0, 0, 0.28),
+    0 0 0.45vh rgba(125, 237, 211, 0.14);
 }
 
 .login-box-forma-buttons {
@@ -510,27 +641,103 @@ input::placeholder {
 
 .login-box-forma-button {
   flex-grow: 1;
-  transition: all 0.3s ease-out;
-  background-image: url(img/button.png);
-  background-size: 98% 98%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  padding: 2vmin 2vmin;
-  /*border-radius:50px;*/
-  font: 1.3rem / 0.5 'DejaVuSans', sans-serif;
+  box-sizing: border-box;
+  min-height: 5.2vh;
+  position: relative;
+  overflow: hidden;
+  transition: filter 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+  background: linear-gradient(180deg, #ffd53d 0%, #eca900 24%, #a96800 66%, #e3a000 100%);
+  padding: 1vh 1.6vh;
+  border: 0.18vh solid rgba(207, 172, 53, 0.98);
+  border-radius: 1.1vh;
+  box-shadow:
+    inset 0 0.18vh 0.25vh rgba(255, 247, 170, 0.45),
+    inset 0 -0.28vh 0.45vh rgba(68, 38, 0, 0.42),
+    0 0 0 0.14vh rgba(75, 51, 5, 0.88);
+  font: 1.3rem / 1 'DejaVuSans', sans-serif;
   text-align: center;
-  /*background:rgba(255,255,255,0.2);*/
-  color: #fff;
+  color: rgba(255, 250, 232, 0.96);
+  text-shadow:
+    rgba(0, 0, 0, 0.72) 0.08vh 0.08vh 0.12vh,
+    rgba(0, 0, 0, 0.54) -0.08vh 0.08vh 0.12vh;
+  cursor: var(--cursor-pointer);
+}
+
+.login-box-forma-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0.5vh;
+  right: 0.5vh;
+  height: 58%;
+  border-radius: 50%;
+  transform: translateY(-42%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.06));
+  pointer-events: none;
+}
+
+.login-box-forma-button--steam {
+  border-color: rgba(168, 110, 67, 0.98);
+  background: linear-gradient(180deg, rgba(101, 52, 31, 0.99), rgba(78, 20, 7, 0.99) 34%, rgba(49, 8, 2, 1));
+  color: rgba(252, 229, 188, 0.96);
+  box-shadow:
+    inset 0 0.18vh 0.25vh rgba(235, 169, 111, 0.25),
+    inset 0 -0.28vh 0.45vh rgba(0, 0, 0, 0.5),
+    0 0 0 0.14vh rgba(78, 36, 14, 0.95);
 }
 
 .login-box-forma-button:hover,
 .login-box-forma-inputs select:hover {
-  /*background:rgba(255,255,255,0.5);*/
-  background-image: url(img/button1.png);
-  background-size: 98% 98%;
-  background-repeat: no-repeat;
-  background-color: transparent;
-  transform: scale(1.02);
+  border-color: rgba(231, 205, 93, 0.98);
+  filter: brightness(1.1);
+}
+
+@media (max-aspect-ratio: 1/1) {
+  .login-box-forma {
+    width: 100vw;
+    height: auto;
+    min-height: 78vh;
+  }
+
+  .login-box-forma--authorization .login-box-forma-logo-panel {
+    display: none;
+  }
+
+  .login-box-forma--registration {
+    flex-direction: column;
+    gap: 1.2vh;
+  }
+
+  .login-box-forma-inputs {
+    width: min(92vw, 46vh);
+  }
+
+  .login-box-forma-right {
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 1.2vh;
+    margin: 0;
+  }
+
+  .login-box-forma-right .login-box-forma-brand {
+    display: none;
+  }
+
+  .login-box-forma-right .login-box-form-invite-text {
+    width: min(34vw, 16vh);
+    margin: 0;
+    font-size: clamp(0.65rem, 2.8vw, 0.9rem);
+  }
+
+  .login-box-forma-right .login-box-forma-qr {
+    width: min(30vw, 15vh);
+  }
+
+  .login-box-forma-button {
+    font-size: clamp(0.92rem, 4.3vw, 1.2rem);
+  }
+
 }
 
 .language-select-container {
@@ -7922,24 +8129,229 @@ body:has(#wcastle-call)::before {
   left: 0;
   right: 0;
   text-align: center;
-  width: calc(min(60cqh, 40cqw));
+  width: calc(min(68cqh, 52cqw));
   /*height: 59cqh;*/
   /*background-color: #8d8b8b;*/
   border-radius: 2cqh;
-  border: 0.1cqh solid rgb(158, 155, 104);
-  background-image: linear-gradient(
-    to bottom,
-    rgba(4, 32, 42, 1),
-    rgba(18, 69, 73, 1),
-    rgba(21, 51, 59, 1),
-    rgba(18, 69, 73, 1),
-    rgba(4, 32, 42, 1)
-  );
+  border: 1px solid rgb(213, 181, 81);
+  outline: 1px solid rgba(57, 139, 144, 0.92);
+  outline-offset: 1px;
+  background: rgb(5, 57, 68) url('img/main.png') center / 100% 100% no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(91, 48, 25, 0.96),
+    0 0.55cqh 1.6cqh rgba(0, 0, 0, 0.42),
+    0 0 1cqh rgba(52, 178, 177, 0.2);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1cqh 1cqh;
+  padding: 0 1cqh 1cqh;
+  z-index: 100;
+}
+
+#wsteamauth > .close-button,
+#wsteamauth > .close-button .close-image-style {
+  width: 5.7vh !important;
+  height: 5.7vh !important;
+}
+
+#wsteamauth .steam-auth-title {
+  flex: 0 0 6.8vh;
+  width: 100%;
+  margin: 0;
+  color: rgba(252, 229, 188, 0.96);
+  font: clamp(1rem, 2.25vh, 1.55rem) / 1 'DejaVuSans', sans-serif;
+  text-shadow:
+    rgba(0, 0, 0, 0.72) 0.1vh 0.1vh 0.14vh,
+    rgba(0, 0, 0, 0.54) -0.1vh 0.1vh 0.14vh,
+    rgba(0, 0, 0, 0.42) 0 -0.08vh 0.12vh;
+}
+
+#wsteamauth .steam-auth-text {
+  width: 80cqw;
+  color: rgba(255, 255, 255, 0.96);
+  margin: 4.2cqw 1cqw 2.8cqw;
+  padding: 0;
+  font-size: 3.75cqw;
+  line-height: 1.22;
+  white-space: pre-line;
+  text-shadow:
+    rgba(0, 0, 0, 0.9) 0.11cqw 0.11cqw 0.14cqw,
+    rgba(0, 0, 0, 0.72) -0.11cqw 0.11cqw 0.14cqw,
+    rgba(0, 0, 0, 0.62) 0 -0.1cqw 0.12cqw;
+}
+
+#wsteamauth .steam-auth-continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 43.5cqw;
+  min-height: 6cqw;
+  height: auto;
+  margin: 1.8cqw 1cqw 3cqw;
+  padding: 0.825cqw 1.5cqw;
+  font-size: 3cqw;
+  line-height: 1;
+  border-color: rgba(213, 181, 81, 0.98);
+  background: linear-gradient(180deg, #ffd53d 0%, #eca900 24%, #a96800 66%, #e3a000 100%);
+  color: rgba(255, 250, 232, 0.98);
+  box-shadow:
+    inset 0 0.18cqw 0.25cqw rgba(255, 247, 170, 0.45),
+    inset 0 -0.28cqw 0.45cqw rgba(68, 38, 0, 0.42),
+    0 0 0 0.14cqw rgba(75, 51, 5, 0.88);
+  text-align: center;
+  text-shadow:
+    rgba(0, 0, 0, 0.72) 0.16cqw 0.16cqw 0.22cqw,
+    rgba(0, 0, 0, 0.54) -0.16cqw 0.16cqw 0.22cqw;
+}
+
+#wregistration-fraction {
+  container-type: inline-size;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(88cqh, 70cqw);
+  min-height: 52cqh;
+  box-sizing: border-box;
+  padding: 0 1cqh 3cqh;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgb(213, 181, 81);
+  border-radius: 2cqh;
+  outline: 1px solid rgba(57, 139, 144, 0.92);
+  outline-offset: 1px;
+  background: rgb(5, 57, 68) url('img/main.png') center / 100% 100% no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(91, 48, 25, 0.96),
+    0 0.55cqh 1.6cqh rgba(0, 0, 0, 0.42);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 100;
+}
+
+#wregistration-fraction .registration-faction-title {
+  flex: 0 0 6.8vh;
+  width: 100%;
+  margin: 0;
+  color: rgba(252, 229, 188, 0.96);
+  font: clamp(1rem, 2.25vh, 1.55rem) / 1 'DejaVuSans', sans-serif;
+  text-shadow:
+    rgba(0, 0, 0, 0.72) 0.1vh 0.1vh 0.14vh,
+    rgba(0, 0, 0, 0.54) -0.1vh 0.1vh 0.14vh,
+    rgba(0, 0, 0, 0.42) 0 -0.08vh 0.12vh;
+}
+
+.registration-faction-items {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: stretch;
+  justify-content: center;
+  gap: 5cqw;
+  width: 92cqw;
+  margin: 4cqw auto 1cqw;
+}
+
+.registration-faction-option {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 2.2cqw 1.2cqw;
+  border: 0.3cqw solid transparent;
+  border-radius: 2cqw;
+  background: rgba(2, 35, 45, 0.28);
+  color: rgba(252, 229, 188, 0.96);
+  cursor: var(--cursor-pointer);
+  transition: filter 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.registration-faction-option:hover,
+.registration-faction-option:focus,
+.registration-faction-option--selected {
+  border-color: rgba(210, 179, 96, 0.72);
+  background-color: rgba(16, 100, 105, 0.42);
+  filter: brightness(1.12);
+}
+
+.registration-faction-label {
+  min-height: 2.4em;
+  font: clamp(1rem, min(2.8vh, 5cqw), 1.4rem) / 1.15 'DejaVuSans', sans-serif;
+  color: rgba(252, 229, 188, 0.96);
+  text-shadow:
+    rgba(0, 0, 0, 0.82) 0.12cqw 0.12cqw 0.16cqw,
+    rgba(0, 0, 0, 0.6) -0.12cqw 0.12cqw 0.16cqw;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.registration-faction-option:hover .registration-faction-label,
+.registration-faction-option:focus-visible .registration-faction-label,
+.registration-faction-option--selected .registration-faction-label {
+  color: #fff;
+  font-weight: 700;
+  text-shadow:
+    0 0 0.2cqw rgba(255, 255, 255, 0.9),
+    0 0 0.75cqw rgba(112, 234, 224, 0.58),
+    rgba(0, 0, 0, 0.86) 0.12cqw 0.12cqw 0.16cqw;
+}
+
+.registration-faction-icon {
+  width: min(34cqw, 24cqh);
+  height: min(34cqw, 24cqh);
+  object-fit: contain;
+  filter: drop-shadow(0 0.7cqw 0.7cqw rgba(0, 0, 0, 0.38));
+  transition: filter 0.28s ease, transform 0.28s ease;
+}
+
+.registration-faction-option:hover .registration-faction-icon,
+.registration-faction-option:focus-visible .registration-faction-icon {
+  animation: registration-faction-glow 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes registration-faction-glow {
+  from {
+    transform: scale(1);
+    filter:
+      brightness(1.04)
+      drop-shadow(0 0.7cqw 0.7cqw rgba(0, 0, 0, 0.38))
+      drop-shadow(0 0 0.35cqw rgba(111, 232, 220, 0.28));
+  }
+
+  to {
+    transform: scale(1.025);
+    filter:
+      brightness(1.12)
+      drop-shadow(0 0.7cqw 0.7cqw rgba(0, 0, 0, 0.34))
+      drop-shadow(0 0 1.15cqw rgba(124, 246, 229, 0.58));
+  }
+}
+
+#wsteamauth .steam-auth-continue:hover {
+  border-color: rgba(231, 205, 93, 0.98);
+  filter: brightness(1.1);
+}
+
+@media (max-aspect-ratio: 1/1) {
+  body #wsteamauth {
+    width: min(92vw, 68vh);
+  }
+
+  body #wregistration-fraction {
+    width: min(92vw, 68vh);
+  }
+
+  body #wsteamauth > .close-button,
+  body #wregistration-fraction > .close-button {
+    right: 1.2vh;
+    transform: translate(35%, -40%);
+  }
+
+  body #wsteamauth > .close-button:hover,
+  body #wregistration-fraction > .close-button:hover {
+    transform: translate(35%, -40%);
+  }
 }
 
 .castle-menu-title {

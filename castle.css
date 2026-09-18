@@ -310,6 +310,47 @@ body {
   height: 9vh;
   container-type: size;
 }
+
+.crystal-container[data-tooltip]::after,
+.launcher-notifications-quick-tab[data-tooltip]::after {
+  display: none;
+  position: absolute;
+  z-index: 13001;
+  content: attr(data-tooltip);
+  background: rgba(14, 31, 33, 0.85);
+  border: 0.11vh solid rgba(90, 133, 130, 0.62);
+  color: rgba(255, 255, 255, 0.88);
+  padding: 0.63vh 0.73vh;
+  border-radius: 0.6vh;
+  font: 1.03vh / 1.28 'DejaVuSans', sans-serif;
+  width: max-content;
+  min-width: 10.7vh;
+  white-space: pre-line;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 0 0.1vh rgba(0, 0, 0, 0.8);
+  box-shadow:
+    inset 0 0 0.42vh rgba(138, 194, 188, 0.15),
+    0 0.42vh 1.15vh rgba(0, 0, 0, 0.48);
+}
+
+.crystal-container[data-tooltip]::after {
+  top: calc(100% + 0.35vh);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.launcher-notifications-quick-tab[data-tooltip]::after {
+  top: calc(100% + 0.35vh);
+  right: 0;
+}
+
+.crystal-container[data-tooltip]:hover::after,
+.launcher-notifications-quick-tab[data-tooltip]:hover::after {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .crystal-container-anim {
   animation:
     questionPulse 0.45s ease-in-out alternate infinite,
@@ -726,7 +767,7 @@ body {
   display: block;
   position: absolute;
   z-index: 13003;
-  top: 5.92vh;
+  top: 4.45vh;
   left: 50%;
   width: 35cqh;
   transform: translateX(-50%);
@@ -1499,6 +1540,10 @@ body {
   z-index: 1;
 }
 
+.castle-bottom-menu > [data-tooltip]:hover {
+  z-index: 13000;
+}
+
 .settings-menu-item,
 .heroes-menu-item,
 .friends-menu-item,
@@ -1516,7 +1561,7 @@ body {
 
 .nickname-menu-item {
   font-size: 7cqh;
-  overflow: hidden;
+  overflow: visible;
   position: absolute;
   left: 13cqw;
   width: 55cqw;
@@ -1528,6 +1573,11 @@ body {
     rgba(0, 0, 0, 1) -0.5cqh -0.5cqh 0.5cqh;
   bottom: calc(10cqh + 55cqw / 1.186);
   color: wheat;
+}
+
+.nickname-menu-item > :first-child {
+  width: 100%;
+  overflow: hidden;
 }
 
 .flag-menu-item {
@@ -1610,6 +1660,7 @@ body {
 .castle-settings-container [data-tooltip]::after,
 .castle-bottom-menu [data-tooltip]::after,
 .castle-hero-lists-bar [data-tooltip]::after,
+.castle-hero-pinned-editor [data-tooltip]::after,
 .castle-bottom-content [data-tooltip]::after,
 .castle-button-play [data-tooltip]::after {
   display: none;
@@ -1642,6 +1693,7 @@ body {
 .castle-settings-container [data-tooltip]:hover::after,
 .castle-bottom-menu [data-tooltip]:hover::after,
 .castle-hero-lists-bar [data-tooltip]:hover::after,
+.castle-hero-pinned-editor [data-tooltip]:hover::after,
 .castle-bottom-content [data-tooltip]:hover::after,
 .castle-button-play [data-tooltip]:hover::after {
   display: flex;
@@ -1665,17 +1717,18 @@ body {
 
 .settings-menu-item[data-tooltip]::after {
   left: calc(50% + 3vh);
-  min-width: 13.4vh;
-  padding: 0.78vh 0.9vh;
-  border-width: 0.13vh;
-  border-radius: 0.74vh;
-  font-size: 1.28vh;
 }
 
+.nickname-menu-item[data-tooltip]::after,
+.flag-menu-item[data-tooltip]::after,
+.settings-menu-item[data-tooltip]::after,
 .buildings-menu-item[data-tooltip]::after,
 .heroes-menu-item[data-tooltip]::after,
 .friends-menu-item[data-tooltip]::after,
-.chat-menu-item[data-tooltip]::after {
+.chat-menu-item[data-tooltip]::after,
+.castle-hero-lists-bar [data-tooltip]::after,
+.castle-hero-pinned-editor [data-tooltip]::after,
+.buildingIconBox[data-tooltip]::after {
   min-width: 10.7vh;
   padding: 0.63vh 0.73vh;
   border-width: 0.11vh;
@@ -1706,6 +1759,19 @@ body {
   right: 10cqw;
   bottom: 21.5cqh;
   background-image: url('icons/friends.png');
+}
+
+.castle-menu-icon-frame {
+  position: absolute;
+  inset: -0.28cqh;
+  z-index: 1;
+  border-radius: 50%;
+  background: url('img/menu-icon-frame.png') center / contain no-repeat;
+  pointer-events: none;
+}
+
+.flag-menu-item > .castle-menu-icon-frame {
+  inset: 0.6cqw;
 }
 
 .castle-panel-menu-active-frame {
@@ -2312,6 +2378,7 @@ body {
   gap: 0.3cqh;
   padding: 0;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .castle-hero-list-editor-top,
@@ -2396,6 +2463,12 @@ body {
   position: relative;
 }
 
+.castle-hero-list-editor-sign[data-tooltip]::after {
+  top: calc(100% + 0.35vh);
+  bottom: auto;
+  background: rgba(14, 31, 33, 0.95);
+}
+
 .castle-hero-list-editor-sign::before {
   content: '';
   width: 11cqh;
@@ -2430,7 +2503,7 @@ body {
 .castle-hero-list-editor-sign-disabled {
   background-image: url('icons/disableButton.png');
   cursor: not-allowed;
-  pointer-events: none;
+  pointer-events: auto;
   opacity: 0.65;
 }
 
@@ -2646,6 +2719,11 @@ body {
   justify-content: center;
   align-items: end;
   padding-bottom: 2cqh;
+  position: relative;
+}
+
+.buildingIconBox[data-tooltip]::after {
+  bottom: 53%;
 }
 .buildingIcon{
   z-index: 1;

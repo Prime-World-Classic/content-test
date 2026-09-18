@@ -23,7 +23,7 @@ import { keybindings } from './keybindings/keybindings.window.js';
 export class Window {
   static windows = {};
   static windowOrder = [];
-  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop']);
+  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wsteamauth', 'wregistration-fraction']);
   static overlayWindowMethods = new Set(['menu', 'settings', 'advancedSettings', 'keybindings', 'accountPanel', 'support']);
   static async show(category, method, value, value2, value3) {
     if (!(method in Window)) {
@@ -177,14 +177,14 @@ export class Window {
   static async steamauth() {
     return DOM(
       { id: 'wsteamauth' },
-      DOM({ style: 'castle-menu-title' }, Lang.text('steamauthTitle')),
+      DOM({ style: ['castle-menu-title', 'steam-auth-title', 'auth-window-title'] }, Lang.text('steamauthTitle')),
       DOM(
-        { style: 'castle-menu-items' },
-        DOM({ style: 'castle-menu-text' }, Lang.text('steamauth')),
+        { style: ['castle-menu-items', 'steam-auth-items'] },
+        DOM({ style: ['castle-menu-text', 'steam-auth-text'] }, Lang.text('steamauth')),
         DOM(
           {
             domaudio: domAudioPresets.defaultButton,
-            style: 'castle-menu-item-button',
+            style: ['castle-menu-item-button', 'steam-auth-continue'],
             event: [
               'click',
               () => {
@@ -203,6 +203,43 @@ export class Window {
           Lang.text('continue'),
         ),
       ),
+    );
+  }
+  static async registrationFraction(fractionButton) {
+    const factions = [
+      { value: '2', label: Lang.text('docts'), icon: 'content/icons/Human_logo_over2.webp' },
+      { value: '1', label: Lang.text('adornia'), icon: 'content/icons/Elf_logo_over.webp' },
+    ];
+
+    const items = factions.map((fraction) =>
+      DOM(
+        {
+          tag: 'button',
+          type: 'button',
+          domaudio: domAudioPresets.defaultButton,
+          style: [
+            'registration-faction-option',
+            ...(fractionButton.value === fraction.value ? ['registration-faction-option--selected'] : []),
+          ],
+          event: [
+            'click',
+            () => {
+              fractionButton.value = fraction.value;
+              fractionButton.textContent = fraction.label;
+              fractionButton.classList.add('registration-fraction-trigger--selected');
+              Window.close('main');
+            },
+          ],
+        },
+        DOM({ style: 'registration-faction-label' }, fraction.label),
+        DOM({ tag: 'img', style: 'registration-faction-icon', src: fraction.icon, alt: fraction.label }),
+      ),
+    );
+
+    return DOM(
+      { id: 'wregistration-fraction' },
+      DOM({ style: ['castle-menu-title', 'registration-faction-title', 'auth-window-title'] }, Lang.text('fraction')),
+      DOM({ style: 'registration-faction-items' }, ...items),
     );
   }
   static async build(heroId, targetId = 0, isWindow = false) {

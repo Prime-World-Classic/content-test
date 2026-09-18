@@ -1106,7 +1106,7 @@ export class App {
       {
         domaudio: domAudioPresets.defaultButton,
         style: 'launcher-notifications-quick-tab',
-        title: 'Мини-уведомления',
+        data: { tooltip: 'Новости' },
         event: ['click', () => App.openNotificationsPanel()],
       },
       DOM({ style: 'launcher-notifications-quick-icon' }),
@@ -1123,7 +1123,8 @@ export class App {
     const totalUnread = App.getTotalLauncherUnreadCount();
     App.notificationsQuickButton.classList.toggle('has-unread', totalUnread > 0);
     App.notificationsQuickButton.classList.toggle('no-unread', totalUnread <= 0);
-    App.notificationsQuickButton.title = App.notificationsLastError || App.notificationsStatus || 'Мини-уведомления';
+    App.notificationsQuickButton.dataset.tooltip = 'Новости';
+    App.notificationsQuickButton.removeAttribute('title');
     App.notificationsQuickButton.badge.textContent = totalUnread > 99 ? '99+' : String(totalUnread);
   }
 

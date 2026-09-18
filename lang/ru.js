@@ -3,11 +3,12 @@ export const ru = {
   name: 'Русский',
   word: {
     // Замок
-    nickname: 'Логин/Никнейм',
+    nickname: 'Никнейм',
     code: 'Инвайт-код',
     password: 'Пароль',
-    passwordAgain: 'Еще раз пароль',
+    passwordAgain: 'Повторите пароль',
     login: 'Войти',
+    authorizationTitle: 'Вход',
     registration: 'Регистрация',
     registration1: 'Зарегистрироваться',
     fraction: 'Выберите фракцию',
@@ -77,7 +78,7 @@ export const ru = {
     authorizationSteam: 'Вход через Steam',
     steamauthTitle: 'Вход через Steam',
     steamauth:
-      'Нажимая кнопку Продолжить, произойдёт регистрация нового аккаунта! Если Вы хотите осуществить вход в свой текущий аккаунт PW Classic, Вам необхоидмо сначала привязать свой Steam аккаунт из меню настроек.',
+      'Нажимая продолжить будет создан новый аккаунт привязанный к вашему аккаунту в Steam.\n\nЕсли вы хотите зайти или привязать существующий аккаунт, то вернитесь на страницу входа. Привязать аккаунт к Steam можно через настройки.',
     language: 'Язык',
     LangTarg: 'Язык изменен',
     confirm: 'Подтвердить',
@@ -1047,7 +1048,7 @@ export const ru = {
     // Подсказки
     titletraining: 'Тренировка',
     training: 'Тренировка',
-    titleflag: 'Выбор стороны',
+    titleflag: 'Выбор фракции',
     titlesettings: 'Настройки',
     titlechat: 'Отображение чата',
     titleheroes: 'Герои',
@@ -1074,7 +1075,7 @@ export const ru = {
     titleSmartcastIsEnabled: 'Смарткаст включен',
     titleSmartcastIsDisabled: 'Смарткаст выключен',
     titleClose: 'Закрыть',
-    titleNicknameСhange: 'Смена никнейма',
+    titleNicknameСhange: 'Имя лорда',
     titleLandTipeRZ: 'Тип земли - с учетом родной земли',
     titleLandTipeVZ: 'Тип земли - с учетом нейтральной/вражеской земли.',
     titleafk: 'Я готов играть',

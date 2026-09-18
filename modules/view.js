@@ -873,12 +873,12 @@ export class View {
     let authorizationForm = DOM(
       { style: 'login_box' },
       DOM(
-        { style: 'login-box-forma' },
+        { style: ['login-box-forma', 'login-box-forma--authorization'] },
         DOM(
-          { tag: 'div' },
+          { tag: 'div', style: 'login-box-forma-logo-panel' },
           DOM({
             tag: 'img',
-            style: 'login-box-forma-logo',
+            style: ['login-box-forma-logo', 'login-box-forma-brand'],
             src: 'content/img/logo_classic.webp',
           }),
         ),
@@ -886,6 +886,7 @@ export class View {
         DOM({ style: 'language-select-container' }, languageSelect),
         DOM(
           { style: 'login-box-forma-inputs' },
+          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('authorizationTitle')),
           login,
           password,
           DOM(
@@ -912,7 +913,7 @@ export class View {
             DOM(
               {
                 domaudio: domAudioPresets.bigButton,
-                style: ['login-box-forma-button', 'steamauth'],
+                style: ['login-box-forma-button', 'login-box-forma-button--steam', 'steamauth'],
                 event: ['click', () => Window.show('main', 'steamauth')],
               },
               Lang.text('authorizationSteam'),
@@ -936,10 +937,15 @@ export class View {
     ];
 
     let fraction = DOM(
-      { domaudio: domAudioPresets.defaultSelect, tag: 'select' },
-      DOM({ tag: 'option', value: 0, disabled: true, selected: true }, Lang.text('fraction')),
-      DOM({ tag: 'option', value: 1 }, Lang.text('adornia')),
-      DOM({ tag: 'option', value: 2 }, Lang.text('docts')),
+      {
+        tag: 'button',
+        type: 'button',
+        value: '',
+        domaudio: domAudioPresets.defaultSelect,
+        style: 'registration-fraction-trigger',
+        event: ['click', () => Window.show('main', 'registrationFraction', fraction)],
+      },
+      Lang.text('fraction'),
     );
 
     let tgBotUrl = 'https://t.me/primeworldclassic_bot';
@@ -950,6 +956,8 @@ export class View {
       tag: 'a',
       target: '_blank',
       href: tgBotUrl,
+      title: 'Получить инвайт в Telegram',
+      'aria-label': 'Получить инвайт в Telegram',
       event: ['click', (e) => NativeAPI.linkHandler(e)],
     });
 
@@ -988,10 +996,11 @@ export class View {
     return DOM(
       { style: 'login_box' },
       DOM(
-        { style: 'login-box-forma' },
+        { style: ['login-box-forma', 'login-box-forma--registration'] },
 
         DOM(
           { style: 'login-box-forma-inputs' },
+          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('registration')),
           fraction,
           inviteContainer,
           login,
@@ -1021,15 +1030,19 @@ export class View {
           { style: 'login-box-forma-right' },
           DOM({
             tag: 'img',
-            style: 'login-box-forma-logo',
+            style: ['login-box-forma-logo', 'login-box-forma-brand'],
             src: 'content/img/logo_classic.webp',
           }),
-          DOM({ style: 'login-box-form-invite-text' }, `Получить инвайт-код через QR-код`),
           DOM({
             tag: 'img',
-            style: 'login-box-forma-logo',
+            style: ['login-box-forma-logo', 'login-box-forma-qr'],
             src: 'content/img/pwclassicbot.png',
           }),
+          DOM(
+            { style: 'login-box-form-invite-text' },
+            DOM({ tag: 'span' }, 'Получить инвайт-код'),
+            DOM({ tag: 'span' }, 'через QR-код'),
+          ),
         ),
       ),
       DOM({ style: 'author' }, `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`),
@@ -1651,6 +1664,7 @@ export class View {
       {
         domaudio: domAudioPresets.bigButton,
         style: ['crystal-container', Shop.requireAnimation ? 'crystal-container-anim' : '_dummy_'],
+        data: { tooltip: 'Кристаллы' },
         event: [
           'click',
           () => {
@@ -1882,6 +1896,10 @@ export class View {
       ],
       data: { tooltip: Lang.text('titleconstruction') },
     });
+    const framedMenuItems = [buildingsMenuItem, heroesMenuItem, friendsMenuItem, chatMenuItem];
+    for (const menuItem of framedMenuItems) {
+      menuItem.append(DOM({ style: 'castle-menu-icon-frame' }));
+    }
     for (const menuItem of [heroesMenuItem, friendsMenuItem, buildingsMenuItem]) {
       menuItem.append(DOM({ style: 'castle-panel-menu-active-frame' }));
     }
@@ -2264,7 +2282,7 @@ export class View {
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
       let buildingIcon = DOM({ style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img' });
-      let buildingIconBox = DOM({ style: 'buildingIconBox' }, buildingIcon);
+      let buildingIconBox = DOM({ style: 'buildingIconBox', data: { tooltip: 'Построить' } }, buildingIcon);
 
       let building = DOM(
         { style: 'castle-building-item' },
@@ -2573,6 +2591,7 @@ export class View {
         {
           style: ['castle-hero-list-btn', 'castle-hero-list-btn-add'],
           domaudio: domAudioPresets.defaultButton,
+          data: { tooltip: 'Создать список' },
           event: [
             'click',
             () => {
@@ -2681,6 +2700,7 @@ export class View {
           canAddToList ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
+        data: { tooltip: 'Добавить' },
         event: [
           'click',
           () => {
@@ -2702,6 +2722,7 @@ export class View {
           canRemoveFromList ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
+        data: { tooltip: 'Убрать' },
         event: [
           'click',
           () => {
@@ -3111,6 +3132,7 @@ export class View {
           canAdd ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
+        data: { tooltip: 'Добавить' },
         event: [
           'click',
           () => {
@@ -3132,6 +3154,7 @@ export class View {
           canRemove ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
+        data: { tooltip: 'Убрать' },
         event: [
           'click',
           () => {
