@@ -168,16 +168,11 @@ export class RadminGuide {
             } catch {}
           }
         };
-        const fail = (message) => {
+        const fail = () => {
           if (settled || finished) return;
           finished = true;
           cleanup();
-          // Never display the URL path: it can contain a session token.
-          let server = '';
-          try {
-            server = new URL(host).host;
-          } catch {}
-          failures[index] = server ? `${server}: ${message}` : message;
+          failures[index] = Lang.text('radminGuideApiUnavailable').replace('{number}', index + 1);
           pending -= 1;
           if (pending === 0) {
             settled = true;

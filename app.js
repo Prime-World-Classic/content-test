@@ -16,5 +16,5 @@ function loadScript(src) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  await loadScript('content/modules/_modules.js?v=20260916-connection-state').catch(console.error);
+  await loadScript('content/modules/_modules.js?v=20260918-auth-crystal-tooltips').catch(console.error);
 });

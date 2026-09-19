@@ -50,6 +50,7 @@ export const en = {
     radminGuideTimeout: 'The server did not respond in time',
     radminGuideClosed: 'Connection closed (code {code})',
     radminGuideNoHosts: 'No server address configured',
+    radminGuideApiUnavailable: 'API {number} is unavailable',
     radminGuideRetrying: 'Retrying in 4 seconds…',
     radminGuideSupport: 'Need help? Contact our support chats:',
     radminGuideVk: 'VK',

@@ -52,6 +52,7 @@ export const ru = {
     radminGuideTimeout: 'Сервер не ответил вовремя',
     radminGuideClosed: 'Соединение закрыто (код {code})',
     radminGuideNoHosts: 'Не указан адрес сервера',
+    radminGuideApiUnavailable: 'API {number} недоступен',
     radminGuideRetrying: 'Повторная попытка через 4 секунды…',
     radminGuideSupport: 'Нужна помощь? Обратитесь в чаты поддержки:',
     radminGuideVk: 'ВКонтакте',

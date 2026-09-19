@@ -311,7 +311,7 @@ body {
   container-type: size;
 }
 
-.crystal-container[data-tooltip]::after,
+.castle-settings-container .crystal-container[data-tooltip]::after,
 .launcher-notifications-quick-tab[data-tooltip]::after {
   display: none;
   position: absolute;
@@ -334,9 +334,11 @@ body {
     0 0.42vh 1.15vh rgba(0, 0, 0, 0.48);
 }
 
-.crystal-container[data-tooltip]::after {
+.castle-settings-container .crystal-container[data-tooltip]::after {
   top: calc(100% + 0.35vh);
+  bottom: auto;
   left: 50%;
+  max-width: none;
   transform: translateX(-50%);
 }
 
@@ -767,7 +769,7 @@ body {
   display: block;
   position: absolute;
   z-index: 13003;
-  top: 4.45vh;
+  top: 5.9vh;
   left: 50%;
   width: 35cqh;
   transform: translateX(-50%);
@@ -929,8 +931,10 @@ body {
 .castle-button-play-m4:after,
 .castle-button-play-m5:after,
 .castle-button-play-m6:after {
-  top: 4.78vh;
+  top: 4.62vh;
+  left: 50%;
   width: 4.8vh;
+  transform: translateX(-50%);
   font-size: 0.78vh;
   line-height: 1.05;
 }
@@ -2464,8 +2468,8 @@ body {
 }
 
 .castle-hero-list-editor-sign[data-tooltip]::after {
-  top: calc(100% + 0.35vh);
-  bottom: auto;
+  top: auto;
+  bottom: calc(100% + 0.35vh);
   background: rgba(14, 31, 33, 0.95);
 }
 

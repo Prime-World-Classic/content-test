@@ -517,7 +517,7 @@ select option {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 6.8vh;
+  height: 4.5vh;
   margin: 0;
   padding: 0;
   text-align: center;
@@ -8190,8 +8190,7 @@ body:has(#wcastle-call)::before {
   height: auto;
   margin: 1.8cqw 1cqw 3cqw;
   padding: 0.825cqw 1.5cqw;
-  font-size: 3cqw;
-  line-height: 1;
+  font: 1.3rem / 1 'DejaVuSans', sans-serif;
   border-color: rgba(213, 181, 81, 0.98);
   background: linear-gradient(180deg, #ffd53d 0%, #eca900 24%, #a96800 66%, #e3a000 100%);
   color: rgba(255, 250, 232, 0.98);
