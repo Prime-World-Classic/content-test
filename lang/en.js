@@ -127,6 +127,10 @@ export const en = {
 
     //castleNavBar
     clickToViewHeroRating: 'Click to view rating by individual heroes',
+    topHeroFilterTooltip: 'Filter by hero',
+    topWindowTitle: 'Hall of Fame',
+    topModesHeading: 'Modes',
+    topOtherHeading: 'Other',
     topHeroesTab: 'Heroes',
     topColPlace: '#',
     topColPlayer: 'Nickname',
@@ -139,6 +143,8 @@ export const en = {
     topPeriodWeek: 'Week',
     topPeriodMonth: 'Month',
     topPeriodAllTime: 'All Time',
+    topPeriodTooltip: 'Time range',
+    topSortTooltip: 'Sort from highest to lowest or lowest to highest',
     topEmpty: 'No data',
     gm1: 'Borderlands',
     gm2: 'Outpost',
@@ -529,13 +535,12 @@ export const en = {
     top_help_content: [
       {
         type: 'p',
-        content:
-          'The Hall of Fame is a table of the best players on the server based on hero ratings. There are only top 100 server players in one Hall of Fame.',
+        content: 'The Hall of Fame is a table of the top 100 players and popular heroes.',
       },
       {
         type: 'p',
         content:
-          'Each hall of fame has its own “medal” under the search queue. Clicking on one of the medals takes you to the top players in one of the modes.',
+          'The table is divided into mode tabs and a Heroes tab. Mode tabs show the top 100 players in each mode. The Heroes tab shows hero popularity by battles, wins, losses, and win rate.',
       },
       {
         type: 'img',
@@ -544,20 +549,24 @@ export const en = {
       {
         type: 'p',
         content:
-          'The Hall of Fame is divided into modes: Frontier, Outpost, Dragonwald, ARAM. Each mode has its own list of players and hero ratings. When playing in a certain mode, you get a rating for the hero you participated in the battle on. Often playing in a certain mode, there is an opportunity to get into the top players of the selected mode.',
+          'In mode tabs, you can filter the table by a specific hero. Click the helmet button in the bottom-left corner and select a hero.',
       },
       {
-        type: 'img',
-        content: 'content/img/winrate/help-2.png',
+        type: 'p',
+        content: 'Click a player in the table to view that player’s build for the selected hero.',
       },
       {
         type: 'p',
         content:
-          'To view the top for specific heroes, click the medal icon to the right of the top 3 and select the hero you want from the list. The table will show the top 100 server players for that hero.',
+          'In the Heroes tab, you can filter by time range using the button in the Hero cell and sort each metric from highest to lowest or lowest to highest.',
       },
       {
         type: 'img',
-        content: 'content/img/winrate/help-3.png',
+        content: 'content/img/winrate/help-3-20260920.jpg',
+      },
+      {
+        type: 'p',
+        content: 'The Hall of Fame is updated once a day.',
       },
     ],
 
@@ -796,6 +805,7 @@ export const en = {
     frame_36: 'Interseason frame',
 
     frame_no_frame: 'No frame',
+    flag_no_flag: 'No flag',
     frame_req_1: '25 wins',
     frame_req_2: '50 wins',
     frame_req_3: '75 wins',

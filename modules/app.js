@@ -318,6 +318,7 @@ export class App {
   static notificationsLocalId = 0;
   static notificationsButton = null;
   static notificationsQuickButton = null;
+  static hallOfFameQuickButton = null;
   static notificationsPanel = null;
   static notificationsPanelBackdrop = null;
   static notificationsListNode = null;
@@ -1081,6 +1082,7 @@ export class App {
     button.badge = badge;
     App.notificationsButton = button;
     App.ensureNotificationsQuickTab();
+    App.ensureHallOfFameQuickTab();
     App.renderNotificationsButton();
     return button;
   }
@@ -1115,6 +1117,30 @@ export class App {
     App.notificationsQuickButton.badge = badge;
     document.body.append(App.notificationsQuickButton);
     App.renderNotificationsQuickTab();
+  }
+
+  static removeNotificationsQuickTab() {
+    App.closeNotificationsPanel();
+    App.notificationsQuickButton?.remove();
+    App.notificationsQuickButton = null;
+    App.hallOfFameQuickButton?.remove();
+    App.hallOfFameQuickButton = null;
+  }
+
+  static ensureHallOfFameQuickTab() {
+    if (App.hallOfFameQuickButton?.isConnected) return;
+
+    const title = Lang.text('topWindowTitle');
+    App.hallOfFameQuickButton = DOM({
+      domaudio: domAudioPresets.defaultButton,
+      tag: 'button',
+      type: 'button',
+      style: 'launcher-hall-of-fame-quick-tab',
+      data: { tooltip: title },
+      event: ['click', () => Window.show('main', 'top', 0, 0)],
+    });
+    App.hallOfFameQuickButton.setAttribute('aria-label', title);
+    document.body.append(App.hallOfFameQuickButton);
   }
 
   static renderNotificationsQuickTab() {
@@ -2418,8 +2444,8 @@ export class App {
     });
 
     const factions = [
-      { id: 1, name: Lang.text('adorians'), icon: 'Elf_logo_over.webp' },
-      { id: 2, name: Lang.text('dokts'), icon: 'Human_logo_over2.webp' },
+      { id: 1, name: Lang.text('adorians'), icon: 'Elf_logo_over.webp?v=20260920-faction-icons' },
+      { id: 2, name: Lang.text('dokts'), icon: 'Human_logo_over2.webp?v=20260920-faction-icons' },
     ];
 
     const calculateIconSize = () => {
@@ -2583,6 +2609,7 @@ export class App {
     await App.storage.set({ id: 0, token: '', login: '', launcherToken: '', auditToken: '' });
 
     App.notificationsAuthChanged();
+    App.removeNotificationsQuickTab();
 
     View.show('authorization');
   }

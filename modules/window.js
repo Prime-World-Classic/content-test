@@ -357,7 +357,16 @@ export class Window {
           ? DOM(
               { style: 'shop_item' },
               DOM({ style: 'shop_item_img_container' }, shopItemBackground, item),
-              DOM({ style: 'shop_item_name' }, isSkin ? translatedName : isFrame ? Lang.text('frame_req_1') : ''),
+              DOM(
+                { style: 'shop_item_name' },
+                isSkin
+                  ? translatedName
+                  : isFrame
+                    ? Lang.text('frame_req_1')
+                    : isFlag && isDefault
+                      ? Lang.text('flag_no_flag')
+                      : '',
+              ),
             )
           : DOM(),
         isFrame

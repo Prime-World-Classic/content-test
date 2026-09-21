@@ -749,7 +749,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20260918-auth-crystal-tooltips';
+    const cssVersion = '20260921-hall-icon-size';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1528,16 +1528,6 @@ export class View {
       'pve-ep2-red': 5,
     };
 
-    // тип медалей (Испытание / Дуэль — без зала славы в лаунчере)
-    const medalMap = {
-      pvp: 'gold',
-      anderkrug: 'gold',
-      cte: 'gold',
-      m4: 'gold',
-      'pve-ep2-red': 'silver',
-      'custom-battle': 'silver',
-    };
-
     const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
       cssKey,
       label: () => (typeof View?.getQueue === 'function' ? View.getQueue(cssKey) : 0),
@@ -1586,35 +1576,6 @@ export class View {
         }
       }, 500);
 
-      // медаль/кнопка
-      const type = medalMap[item.cssKey] || 'gold';
-      const disabled = type === 'silver';
-
-      const medal = DOM({
-        domaudio: domAudioPresets.bigButton,
-        tag: 'span',
-        style: ['banner-medal', `banner-medal--${type}`, disabled ? 'is-disabled' : null].filter(Boolean),
-      });
-
-      if (disabled) {
-        medal.title = Lang.text('titlestatisticmodeUnavailable');
-      } else {
-        medal.title = Lang.text('titlestatisticmode');
-        medal.setAttribute('role', 'button');
-        medal.tabIndex = 0;
-        const openStats = () => {
-          Window.show('main', 'top', 0, idx);
-        };
-        medal.addEventListener('click', openStats);
-        medal.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openStats();
-          }
-        });
-      }
-
-      wrap.append(medal);
       banner.append(wrap);
 
       if (idx < bannerItems.length - 1) {
@@ -4396,18 +4357,19 @@ export class View {
     const makeTableRow = (player, rankNum) => {
       const hName = heroNameById(player.hero);
       const placeCell = DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, String(rankNum));
+      const nameCellStyle = ['wtop-cell', 'wtop-cell--name'];
+      if (rankNum <= 3) {
+        nameCellStyle.push('wtop-cell--name-with-crown');
+      }
       const nameCell = DOM(
-        { style: ['wtop-cell', 'wtop-cell--name'] },
+        { style: nameCellStyle },
         DOM({ tag: 'span', style: 'wtop-cell-name-text' }, player.nickname || '—'),
+        ...makeCrownForRank(rankNum, 'row'),
       );
       const heroIcon = DOM({ style: 'wtop-cell-hero-icon' });
       heroIcon.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
       const heroNameEl = DOM({ style: 'wtop-cell-hero-name' }, hName || '—');
-      const heroCellStyle = ['wtop-cell', 'wtop-cell--hero'];
-      if (rankNum <= 3) {
-        heroCellStyle.push('wtop-cell--hero-with-crown');
-      }
-      const heroCell = DOM({ style: heroCellStyle }, heroIcon, heroNameEl, ...makeCrownForRank(rankNum, 'row'));
+      const heroCell = DOM({ style: ['wtop-cell', 'wtop-cell--hero'] }, heroIcon, heroNameEl);
       const ratingCell = DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, String(player.rating));
       return DOM(
         {
@@ -4519,7 +4481,9 @@ export class View {
         type: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['wtop-cell', 'wtop-hero-period-toggle'],
+        data: { tooltip: Lang.text('topPeriodTooltip') },
       });
+      periodToggle.setAttribute('aria-label', Lang.text('topPeriodTooltip'));
       const headerHeroTitle = DOM({ style: ['wtop-cell', 'wtop-cell--hero', 'wtop-cell--hero-stats-hero', 'wtop-hero-title-cell'] });
       const headerHeroLabel = DOM({ tag: 'span', style: 'wtop-hero-title-label' }, Lang.text('topColHero'));
       const getCurrentHeroList = () => heroStatsPayload[heroStatsPeriod] || [];
@@ -4585,6 +4549,7 @@ export class View {
           type: 'button',
           style: ['wtop-cell', 'wtop-sortable-header'],
           domaudio: domAudioPresets.defaultButton,
+          data: { tooltip: Lang.text('topSortTooltip') },
           event: [
             'click',
             () => {
@@ -4598,6 +4563,7 @@ export class View {
             },
           ],
         });
+        btn.setAttribute('aria-label', Lang.text('topSortTooltip'));
         headerButtons.set(col.key, btn);
         header.append(btn);
       }
@@ -4633,26 +4599,7 @@ export class View {
 
     const scrollClass = isSplah ? 'wtop-scroll' : 'top-scroll';
     const modeBar = DOM({ style: 'wtop-mode-bar' });
-    modeBar.append(
-      DOM({
-        domaudio: domAudioPresets.defaultButton,
-        style: ['wtop-mode-tab', isHeroStatsView ? 'is-active' : null].filter(Boolean),
-        tag: 'button',
-        type: 'button',
-        textContent: Lang.text('topHeroesTab'),
-        event: [
-          'click',
-          () => {
-            if (isHeroStatsView) return;
-            if (isSplah) {
-              Window.show('main', 'top', heroId, HERO_STATS_TAB_ID);
-            } else {
-              View.show('top', heroId, false, HERO_STATS_TAB_ID);
-            }
-          },
-        ],
-      }),
-    );
+    modeBar.append(DOM({ style: 'wtop-mode-section-title' }, Lang.text('topModesHeading')));
     for (const tab of TOP_MODE_TABS) {
       const isActive = tab.id === activeMode;
       const btn = DOM({
@@ -4675,11 +4622,27 @@ export class View {
       });
       modeBar.append(btn);
     }
-
-    const podium = DOM({ style: 'wtop-podium' });
-    for (let i = 0; i < 3 && i < list.length; i++) {
-      podium.append(makePodiumCard(list[i], i + 1));
-    }
+    modeBar.append(DOM({ style: ['wtop-mode-section-title', 'wtop-mode-section-title--other'] }, Lang.text('topOtherHeading')));
+    modeBar.append(
+      DOM({
+        domaudio: domAudioPresets.defaultButton,
+        style: ['wtop-mode-tab', isHeroStatsView ? 'is-active' : null].filter(Boolean),
+        tag: 'button',
+        type: 'button',
+        textContent: Lang.text('topHeroesTab'),
+        event: [
+          'click',
+          () => {
+            if (isHeroStatsView) return;
+            if (isSplah) {
+              Window.show('main', 'top', heroId, HERO_STATS_TAB_ID);
+            } else {
+              View.show('top', heroId, false, HERO_STATS_TAB_ID);
+            }
+          },
+        ],
+      }),
+    );
 
     const listScroll = DOM({ style: 'wtop-list-scroll' });
     if (!isHeroStatsView && list.length === 0) {
@@ -4714,20 +4677,26 @@ export class View {
         tag: 'button',
         type: 'button',
         style: 'wtop-hero-filter',
-        title: Lang.text('clickToViewHeroRating'),
+        data: { tooltip: Lang.text('topHeroFilterTooltip') },
         event: ['click', openHeroPicker],
       },
       heroFilterImg,
     );
-    heroFilterBtn.setAttribute('aria-label', Lang.text('clickToViewHeroRating'));
+    heroFilterBtn.setAttribute('aria-label', Lang.text('topHeroFilterTooltip'));
+    if (!isHeroStatsView) {
+      modeBar.append(DOM({ style: 'wtop-hero-filter-slot' }, heroFilterBtn));
+    }
 
     const listRow = DOM({ style: 'wtop-list-row' }, listScroll);
-    const topChildren = [modeBar];
-    if (!isHeroStatsView) {
-      topChildren.push(DOM({ style: 'wtop-podium-row' }, podium, heroFilterBtn));
-    }
-    topChildren.push(listRow);
-    const top = DOM({ style: [scrollClass, 'top-layout'] }, ...topChildren);
+    const top = DOM(
+      { style: [scrollClass, 'top-layout'] },
+      DOM({ style: 'wtop-window-title' }, Lang.text('topWindowTitle')),
+      DOM(
+        { style: 'wtop-window-body' },
+        modeBar,
+        DOM({ style: 'wtop-window-content' }, listRow),
+      ),
+    );
 
     const helpBtn = DOM({
       id: 'wtop_help',
