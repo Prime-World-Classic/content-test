@@ -256,6 +256,39 @@ body {
     0 0.42vh 1.15vh rgba(0, 0, 0, 0.48);
 }
 
+.banner-stat-tooltip {
+  display: none;
+  position: absolute;
+  z-index: 13001;
+  top: 50%;
+  right: calc(50% + 2.15cqh);
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 10.7vh;
+  padding: 0.63vh 0.73vh;
+  border: 0.11vh solid rgba(90, 133, 130, 0.62);
+  border-radius: 0.6vh;
+  background: rgba(14, 31, 33, 0.85);
+  color: rgba(255, 255, 255, 0.88);
+  font: calc(1.03vh + 2px) / 1.28 'DejaVuSans', sans-serif;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 0 0.1vh rgba(0, 0, 0, 0.8);
+  box-shadow:
+    inset 0 0 0.42vh rgba(138, 194, 188, 0.15),
+    0 0.42vh 1.15vh rgba(0, 0, 0, 0.48);
+}
+
+.banner-icon--stat:hover + .banner-stat-tooltip,
+.banner-icon--stat:focus-visible + .banner-stat-tooltip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .castle-settings-container .crystal-container[data-tooltip]::after {
   top: calc(100% + 0.35vh);
   bottom: auto;
@@ -1668,7 +1701,15 @@ body {
   padding: 0.63vh 0.73vh;
   border-width: 0.11vh;
   border-radius: 0.6vh;
-  font-size: 1.03vh;
+  font-size: calc(1.03vh + 2px);
+  letter-spacing: 0.04em;
+}
+
+.castle-settings-container .crystal-container[data-tooltip]::after,
+.launcher-notifications-quick-tab[data-tooltip]::after,
+.launcher-hall-of-fame-quick-tab[data-tooltip]::after {
+  font-size: calc(1.03vh + 2px);
+  letter-spacing: 0.04em;
 }
 
 .settings-menu-item {

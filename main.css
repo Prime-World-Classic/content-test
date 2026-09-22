@@ -4935,6 +4935,21 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   filter: brightness(1.04);
 }
 
+.wtop-list-scroll.is-wheel-scrolling .wtop-table-row,
+.wtop-list-scroll.is-wheel-scrolling .wtop-table-row .wtop-cell {
+  pointer-events: none;
+  transition: none;
+}
+
+.wtop-list-scroll.is-wheel-scrolling .wtop-table-row:hover {
+  filter: none;
+}
+
+.wtop-list-scroll.is-wheel-scrolling .wtop-table-row:hover .wtop-cell {
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow: none;
+}
+
 .wtop-table-row:hover .wtop-cell {
   border-color: rgba(195, 181, 101, 0.98);
   box-shadow:

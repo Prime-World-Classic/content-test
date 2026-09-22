@@ -749,7 +749,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20260921-hall-icon-size';
+    const cssVersion = '20260922-stat-tooltip-layer-fix';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1591,7 +1591,6 @@ export class View {
     const statsBtn = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['banner-icon', 'banner-icon--stat', 'button-outline'],
-      title: Lang.text('titlestatistic'),
       event: [
         'click',
         () => {
@@ -1599,6 +1598,8 @@ export class View {
         },
       ],
     });
+    statsBtn.setAttribute('aria-label', 'Статистика');
+    const statsTooltip = DOM({ style: 'banner-stat-tooltip', textContent: 'Статистика' });
 
     // бейдж дивизии под кнопкой Stat
     const divId = getDivisionId();
@@ -1610,7 +1611,7 @@ export class View {
     divisionBadgeUnderStat.style.backgroundImage = `url(content/ranks/${divInfo.icon}.webp)`;
     divisionBadgeUnderStat.title = Lang.text('titlehint2');
 
-    statCircle.append(statsBtn, divisionBadgeUnderStat);
+    statCircle.append(statsBtn, statsTooltip, divisionBadgeUnderStat);
     statWrapper.append(statRect, statCircle);
 
     // подсказка слева
@@ -4645,6 +4646,18 @@ export class View {
     );
 
     const listScroll = DOM({ style: 'wtop-list-scroll' });
+    let wheelScrollEndTimer = 0;
+    listScroll.addEventListener(
+      'wheel',
+      () => {
+        listScroll.classList.add('is-wheel-scrolling');
+        clearTimeout(wheelScrollEndTimer);
+        wheelScrollEndTimer = setTimeout(() => {
+          listScroll.classList.remove('is-wheel-scrolling');
+        }, 120);
+      },
+      { passive: true },
+    );
     if (!isHeroStatsView && list.length === 0) {
       listScroll.append(DOM({ style: 'wtop-empty-hint', textContent: Lang.text('topEmpty') }));
     } else if (!isHeroStatsView) {
