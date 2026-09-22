@@ -1331,6 +1331,7 @@ export const ru = {
     hero_9_skin_3_name: 'Готье',
     hero_9_skin_4_name: 'Тинта',
     hero_9_skin_5_name: 'Акварель',
+	hero_9_skin_6_name: 'Акрил Лавин',
     hero_10_skin_2_name: 'Мастер войны',
     hero_10_skin_3_name: 'Тёмный владыка',
     hero_10_skin_4_name: 'Воительница',
