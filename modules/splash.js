@@ -16,8 +16,6 @@ export class Splash {
     if (!Splash.body) Splash.init();
 
     Splash.body.innerHTML = '';
-    Splash.body.style.background = '';
-    Splash.body.classList.remove('splash--blur');
 
     const menu = DOM(
       { id: 'wcastle-menu' },
@@ -32,9 +30,6 @@ export class Splash {
   static show(element, content = true) {
     if (!Splash.body) Splash.init();
 
-    Splash.body.style.background = '';
-    Splash.body.classList.remove('splash--blur');
-
     if (Splash.body.firstChild) {
       while (Splash.body.firstChild) {
         Splash.body.firstChild.remove();
@@ -45,12 +40,6 @@ export class Splash {
       let body = document.createElement('div');
       body.classList.add('splash-content');
       body.append(element);
-      if (body.querySelector('.title-modal')) {
-        body.classList.add('splash-content--titled');
-      }
-      if (body.querySelector('.splash-help')) {
-        body.classList.add('splash-content--help-titled');
-      }
       Splash.body.append(body);
     } else {
       Splash.body.append(element);
@@ -62,8 +51,6 @@ export class Splash {
   static hide() {
     if (Splash.body) {
       Splash.body.style.display = 'none';
-      Splash.body.style.background = '';
-      Splash.body.classList.remove('splash--blur');
     }
   }
 }

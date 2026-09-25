@@ -27,7 +27,7 @@ export class NativeAPI {
     crypto: 'crypto',
     net: 'net',
     http: 'http',
-    https: 'https',
+    dgram: 'dgram',
   };
 
   static setDefaultWindow() {

@@ -1,6 +1,5 @@
 import { App } from './app.js';
 import { NativeAPI } from './nativeApi.js';
-import { Settings } from './settings.js';
 
 export class PWGame {
   static PATH = '../Game/Bin/PW_Game.exe';
@@ -17,14 +16,6 @@ export class PWGame {
   
   static PATH_LUA_BRIDGE = '../Game/Bin/bridge';
 
-  static gameServerHasConnection = false;
-
-  static mainServerHasConnection = false;
-
-  static radminHasConnection = false;
-
-  static proxyHasConnection = false;
-
   static gameConnectionTestIsActive = false;
 
   static isUpToDate = false;
@@ -35,10 +26,9 @@ export class PWGame {
 
   static isTestHashesFailed = false;
 
-  static gameServerConnectionCheckTimeout = 1000 * 60 * 100; // 100 minutes
-
-  static currentPlayPwProtocol =
-    'pwclassic://runGame/Tester00Tester00Tester00Tester004c8fa55b5ee54d6ddbaab2373f8a6a74d7f9c5d739bdd79da12f3beda73c7115/2.0.0/0';
+  // Протокол текущего запуска. Формируется в start() из токена сессии бэкенда;
+  // до запуска игры протокола нет (дебажной сессии с фиксированным токеном больше нет).
+  static currentPlayPwProtocol = '';
 
   static protocolServer;
 
@@ -68,18 +58,143 @@ export class PWGame {
     }
   }
 
-  static GetPlayPwProtocol(id) {
-    let chosenServer = PWGame.mainServerHasConnection ? 0 : 2;
-    if (Settings.settings.radminPriority && PWGame.radminHasConnection) {
-      chosenServer = 1;
+  static GetPlayPwProtocol(id, ips, port) {
+    // 5th token is the legacy mirror index. Mirror selection is gone: the
+    // pool block is pre-sorted by the launcher (fastest reachable first),
+    // so the client always starts from index 0.
+    let protocol = `pwclassic://runGame/${id}/${App.PW_VERSION}/0`;
+    if (ips) {
+      protocol = `${protocol}/${ips}`;
+      // Base port of the target server (6th token). Without it the client
+      // falls back to its standard ports (server_ip.h).
+      if (port) {
+        protocol = `${protocol}/${port}`;
+      }
     }
-    return `pwclassic://runGame/${id}/${App.PW_VERSION}/${chosenServer}`;
+    return protocol;
   }
 
-  static async start(id, callback) {
+  // UDP login port of the game server (newlogin): the health-check probe
+  // sends an RDP INIT here and waits for INIT_ACK/REFUSED.
+  static GAME_SERVER_LOGIN_PORT = 27301;
+
+  static decodeIps(hex) {
+    if (!hex || typeof hex !== 'string' || hex.length % 8 !== 0) {
+      return [];
+    }
+
+    let ips = [];
+
+    for (let i = 0; i < hex.length; i += 8) {
+      let octets = [];
+      for (let j = 0; j < 4; ++j) {
+        let octet = parseInt(hex.substr(i + j * 2, 2), 16);
+        if (Number.isNaN(octet)) {
+          return [];
+        }
+        octets.push(octet);
+      }
+      ips.push(octets.join('.'));
+    }
+
+    return ips;
+  }
+
+  static encodeIps(ips) {
+    return ips
+      .map((ip) => ip.split('.').map((o) => Number(o).toString(16).padStart(2, '0'))
+      .join(''))
+      .join('');
+  }
+
+  // UDP health probe of the game server: 8-byte RDP INIT to the newlogin
+  // login port; INIT_ACK(1) or REFUSED(3) in the answer means the login
+  // path (the one the client uses) is alive. Replaces the old HTTP
+  // `checkConnection` check to the synchronizer (port 27302).
+  // Resolves the response time in ms (fractional, performance.now);
+  // null on timeout / ICMP port-unreachable / any other answer.
+  static udpGameProbe(ip, port, timeoutMs = 2000) {
+    return new Promise((resolve) => {
+      const dgram = NativeAPI.dgram;
+      if (!dgram) {
+        resolve(null);
+        return;
+      }
+      let socket;
+      try {
+        socket = dgram.createSocket('udp4');
+      } catch (e) {
+        resolve(null);
+        return;
+      }
+      let done = false;
+      const finish = (rtt) => {
+        if (done) {
+          return;
+        }
+        done = true;
+        clearTimeout(timer);
+        try {
+          socket.close();
+        } catch (e) {}
+        resolve(rtt);
+      };
+      // 8-byte RDP INIT: type=0, seqIdx=0, pad=0, srcMux=32768 (ephemeral), destMux=10 (login)
+      const pkt = Buffer.from([0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x0A, 0x00]);
+      const timer = setTimeout(() => finish(null), timeoutMs);
+      socket.once('message', (msg) => {
+        if (msg.length >= 1 && (msg[0] === 1 || msg[0] === 3)) {
+          finish(performance.now() - t0);
+        } else {
+          finish(null);
+        }
+      });
+      socket.once('error', () => finish(null)); // ICMP port-unreachable -> fast fail
+      const t0 = performance.now();
+      socket.send(pkt, port, ip);
+    });
+  }
+
+  // Orders the pool block for the client: reachable IPs first, sorted by
+  // response time (fastest first); unreachable ones appended at the end in
+  // their original order. The launcher never drops an address from the
+  // block — a false-negative probe (or a broken local UDP path) must not
+  // prevent the client from walking the pool itself; a total failure shows
+  // up as an in-game error.
+  static async orderServerIps(ipsHex, port) {
+    let ips = PWGame.decodeIps(ipsHex);
+    if (!ips.length) {
+      return '';
+    }
+
+    // The login port of the pool is the target base port + 1 (all pool
+    // servers run the same offsets); without a port — the legacy 27301.
+    let loginPort = port ? port + 1 : PWGame.GAME_SERVER_LOGIN_PORT;
+    let rtts = await Promise.all(ips.map((ip) => PWGame.udpGameProbe(ip, loginPort)));
+    let reachable = [];
+    let unreachable = [];
+    for (let i = 0; i < ips.length; ++i) {
+      if (typeof rtts[i] === 'number') {
+        reachable.push({ ip: ips[i], rtt: rtts[i] });
+      } else {
+        unreachable.push(ips[i]);
+      }
+    }
+    reachable.sort((a, b) => a.rtt - b.rtt);
+
+    return PWGame.encodeIps(reachable.map((r) => r.ip).concat(unreachable));
+  }
+
+  static async start(id, callback, ips, port) {
     await PWGame.check();
 
-    PWGame.currentPlayPwProtocol = PWGame.GetPlayPwProtocol(id);
+    if (ips) {
+      // The whole block always goes to the client, reordered by the probes:
+      // fastest reachable first, unreachable at the end.
+      ips = await PWGame.orderServerIps(ips, port);
+    }
+
+    PWGame.currentPlayPwProtocol = PWGame.GetPlayPwProtocol(id, ips, port);
 
     PWGame.openProtocolSocket();
 
@@ -93,8 +208,8 @@ export class PWGame {
     }
   }
 
-  static async reconnect(id, callback) {
-    this.start(id, callback);
+  static async reconnect(id, callback, ips, port) {
+    this.start(id, callback, ips, port);
   }
 
   static async check() {
@@ -120,114 +235,4 @@ export class PWGame {
     }
   }
 
-  static gameServerIps = [
-    'http://api2.26rus-game.ru:27302/api',
-    'http://pwclassic.isgood.host:27302/api', // test connection to Radmin IP
-    'http://api.26rus-game.ru:27302/api',
-  ];
-  static MAIN_GAME_SERVER_IP = 0;
-  static RADMIN_GAME_SERVER_IP = 1;
-  static PROXY_GAME_SERVER_IP = 2;
-
-  static async testServerConnection(serverIp, timeoutMs = 5000) {
-    const data = {
-      method: 'checkConnection',
-    };
-
-    if (NativeAPI.status && NativeAPI.http && NativeAPI.https) {
-      return await new Promise((resolve) => {
-        let settled = false;
-        const finish = (value) => {
-          if (settled) return;
-          settled = true;
-          resolve(value);
-        };
-
-        try {
-          const url = new URL(serverIp);
-          const client = url.protocol === 'https:' ? NativeAPI.https : NativeAPI.http;
-          const body = JSON.stringify(data);
-          const request = client.request(
-            {
-              protocol: url.protocol,
-              hostname: url.hostname,
-              port: url.port || undefined,
-              path: `${url.pathname}${url.search}`,
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-                'Content-Length': Buffer.byteLength(body),
-              },
-            },
-            (response) => {
-              response.resume();
-              finish(response.statusCode >= 200 && response.statusCode < 500);
-            },
-          );
-
-          request.setTimeout(timeoutMs, () => request.destroy(new Error('Connection timeout')));
-          request.on('error', () => finish(false));
-          request.end(body);
-        } catch (error) {
-          finish(false);
-        }
-      });
-    }
-
-    const controller = typeof AbortController === 'function' ? new AbortController() : null;
-    const timeout = setTimeout(() => controller?.abort(), timeoutMs);
-    try {
-      let response = await fetch(serverIp, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        signal: controller?.signal,
-        headers: {
-          'Content-type': 'application/json; charset=UTF-8',
-        },
-      });
-      return response.ok;
-    } catch (e) {
-      // No connection
-    } finally {
-      clearTimeout(timeout);
-    }
-    return false;
-  }
-
-  static async testRadminConnection() {
-    const hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.RADMIN_GAME_SERVER_IP]);
-    PWGame.radminHasConnection = hasConnection;
-    return hasConnection;
-  }
-
-  static async testAnyGameServerConnection() {
-    const results = await Promise.all(PWGame.gameServerIps.map((serverIp) => PWGame.testServerConnection(serverIp)));
-
-    PWGame.mainServerHasConnection = results[PWGame.MAIN_GAME_SERVER_IP] === true;
-    PWGame.radminHasConnection = results[PWGame.RADMIN_GAME_SERVER_IP] === true;
-    PWGame.gameServerHasConnection = results.some(Boolean);
-
-    return PWGame.gameServerHasConnection;
-  }
-
-  static async testGameServerConnection() {
-    if (PWGame.gameServerHasConnection) {
-      return;
-    }
-
-    for (let ip of PWGame.gameServerIps) {
-      if (PWGame.testServerConnection(ip)) {
-        PWGame.gameServerHasConnection = true;
-
-        setTimeout((_) => {
-          PWGame.gameServerHasConnection = false;
-        }, PWGame.gameServerConnectionCheckTimeout);
-
-        break;
-      }
-    }
-    if (!PWGame.gameServerHasConnection) {
-      throw 'Игровой сервер недоступен!';
-    }
-  }
 }

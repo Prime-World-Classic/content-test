@@ -151,6 +151,26 @@ export class Events {
     MM.finish(data);
   }
 
+  // Бэкенд отменил матч: ни один игровой сервер не принял сессию.
+  // Ищем выход из UI «ожидание боя» (лончер выходит оттуда только по
+  // MMEnd), возвращаем игрока в замок; поиск можно запустить заново.
+  static MMCancel(data) {
+    if (!NativeAPI.status) {
+      return;
+    }
+
+    MM.close();
+    MM.searchActive(false);
+
+    let body = document.createDocumentFragment();
+
+    body.append(DOM(Lang.text('mmMatchCancelled')));
+
+    Splash.show(body);
+
+    setTimeout(() => Splash.hide(), 4000);
+  }
+
   static PInvite(data) {
     Window.inviteData = data;
     
@@ -251,18 +271,13 @@ export class Events {
     let button = DOM(
       {
         domaudio: domAudioPresets.bigButton,
-        style: 'splash-content-button-modal',
+        style: 'splash-content-button',
         event: ['click', async () => Splash.hide()],
       },
       Lang.text('titleafk'),
     );
 
-    body.append(
-      DOM({ style: 'splash-modal-scope-afk-action' }),
-      DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('titleafkWindow'))),
-      DOM({ style: ['castle-menu-text', 'afk-splash-text'] }, `${data.party ? Lang.text('titleafk1') : Lang.text('titleafk2')}`),
-      button,
-    );
+    body.append(DOM(`${data.party ? Lang.text('titleafk1') : Lang.text('titleafk2')}`), button);
 
     Splash.show(body);
   }

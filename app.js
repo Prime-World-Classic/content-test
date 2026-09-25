@@ -16,5 +16,5 @@ function loadScript(src) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  await loadScript('content/modules/_modules.js?v=20260921-hall-shortcut-tooltips').catch(console.error);
+  await loadScript('content/modules/_modules.js').catch(console.error);
 });

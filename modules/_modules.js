@@ -2,7 +2,6 @@ import { Lang } from './lang.js';
 import { ParentEvent } from './parentEvent.js';
 import { View } from './view.js';
 import { App } from './app.js';
-import { PWGame } from './pwgame.js';
 import { NativeAPI } from './nativeApi.js';
 import { Settings } from './settings.js';
 import { Splash } from './splash.js';
@@ -23,7 +22,7 @@ window.addEventListener('message', (event) => {
   console.log('event.data', event.data);
 });
 
-Lang.init().then(async () => {
+Lang.init().then(() => {
   Splash.init();
 
   NativeAPI.init();
@@ -41,15 +40,6 @@ Lang.init().then(async () => {
       View.updateProgress.lastChild.innerText = `${data.title} ${data.total}%...`;
     }
   });
-
-  let testMainConnection = async () => {
-    let hasConnection = await PWGame.testServerConnection(PWGame.gameServerIps[PWGame.MAIN_GAME_SERVER_IP]);
-    if (hasConnection) {
-      PWGame.mainServerHasConnection = true;
-    }
-  };
-
-  testMainConnection();
 
   Settings.init().then(() => {
     App.findBestHostAndInit();

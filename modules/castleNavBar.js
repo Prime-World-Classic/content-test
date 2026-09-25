@@ -12,14 +12,6 @@ export class CastleNAVBAR {
 
   static stateDefaultMode = 0;
 
-  static setModeTooltip(element, titleKey, hoverKey) {
-    const title = Lang.text(titleKey);
-    const hoverText = Lang.text(hoverKey).replace(/^.*?\\A/, '');
-    element.style.setProperty('--filter-text', `'${title}'`);
-    element.style.setProperty('--filter-text-title', `'${title}'`);
-    element.style.setProperty('--filter-text-hover', `'${hoverText}'`);
-  }
-
   static init() {
     let items = [
       'castle-button-play-l1',
@@ -54,7 +46,6 @@ export class CastleNAVBAR {
     CastleNAVBAR.body.children[4].onclick = () => {};
 
     CastleNAVBAR.body.children[5].innerText = App.CURRENT_MM == 'mmtest' ? Lang.text('fight') + ' test' : Lang.text('fight');
-    CastleNAVBAR.body.children[5].dataset.tooltip = 'Выбрать героя для боя';
     /*
         CastleNAVBAR.body.children[5].onclick = () => {
             
@@ -78,47 +69,53 @@ export class CastleNAVBAR {
     CastleNAVBAR.body.children[9].append(
       DOM({
         style: 'castle-button-play-queue',
-        data: { tooltip: 'Очередь игроков матчмейкинга на данный режим игры' },
+        title: 'Очередь игроков матчмейкинга на данный режим игры',
       }),
     );
 
-	  CastleNAVBAR.setModeTooltip(CastleNAVBAR.body.children[11], 'gm1', 'gm1_hover');
+	  CastleNAVBAR.body.children[11].style.setProperty('--filter-text', `'${Lang.text('gm1')}'`);
+	  CastleNAVBAR.body.children[11].style.setProperty('--filter-text-hover', `'${Lang.text('gm1_hover')}'`);
 	  CastleNAVBAR.body.children[11].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[11].onclick = () => {
 		CastleNAVBAR.setMode(1);
 	  };
 
-	  CastleNAVBAR.setModeTooltip(CastleNAVBAR.body.children[12], 'gm2', 'gm2_hover');
+	  CastleNAVBAR.body.children[12].style.setProperty('--filter-text', `'${Lang.text('gm2')}'`);
+	  CastleNAVBAR.body.children[12].style.setProperty('--filter-text-hover', `'${Lang.text('gm2_hover')}'`);
 	  CastleNAVBAR.body.children[12].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[12].onclick = () => {
 		CastleNAVBAR.setMode(2);
 	  };
 
-	  CastleNAVBAR.setModeTooltip(CastleNAVBAR.body.children[13], 'gm3', 'gm3_hover');
+	  CastleNAVBAR.body.children[13].style.setProperty('--filter-text', `'${Lang.text('gm3')}'`);
+	  CastleNAVBAR.body.children[13].style.setProperty('--filter-text-hover', `'${Lang.text('gm3_hover')}'`);
 	  CastleNAVBAR.body.children[13].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[13].onclick = () => {
 		CastleNAVBAR.setMode(3);
 	  };
 
-	  CastleNAVBAR.setModeTooltip(CastleNAVBAR.body.children[14], 'gm4', 'gm4_hover');
+	  CastleNAVBAR.body.children[14].style.setProperty('--filter-text', `'${Lang.text('gm4')}'`);
+	  CastleNAVBAR.body.children[14].style.setProperty('--filter-text-hover', `'${Lang.text('gm4_hover')}'`);
 	  CastleNAVBAR.body.children[14].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[14].onclick = () => {
 		CastleNAVBAR.setMode(4);
 	  };
 
-	  CastleNAVBAR.setModeTooltip(CastleNAVBAR.body.children[15], 'gm5', 'gm5_hover');
+	  CastleNAVBAR.body.children[15].style.setProperty('--filter-text', `'${Lang.text('gm5')}'`);
+	  CastleNAVBAR.body.children[15].style.setProperty('--filter-text-hover', `'${Lang.text('gm5_hover')}'`);
 	  CastleNAVBAR.body.children[15].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[15].onclick = () => {
 		CastleNAVBAR.setMode(5);
 	  };
 
-	  CastleNAVBAR.setModeTooltip(CastleNAVBAR.body.children[16], 'gm6', 'gm6_hover');
+	  CastleNAVBAR.body.children[16].style.setProperty('--filter-text', `'${Lang.text('gm6')}'`);
+	  CastleNAVBAR.body.children[16].style.setProperty('--filter-text-hover', `'${Lang.text('gm6_hover')}'`);
 	  CastleNAVBAR.body.children[16].append(DOM({ style: 'castle-button-play-queue-mode' }));
 	  CastleNAVBAR.body.children[16].onclick = () => {
 		CastleNAVBAR.setMode(6);
 	  };
 
-    CastleNAVBAR.body.children[18].dataset.tooltip = Lang.text('titleСhildren18_1') + '\n'+ Lang.text('titleСhildren18_2');
+    CastleNAVBAR.body.children[18].title = Lang.text('titleСhildren18_1') + '\n'+ Lang.text('titleСhildren18_2');
     CastleNAVBAR.body.children[18].style.pointerEvents = 'auto';
     CastleNAVBAR.body.children[18].style.zIndex = '4';
     CastleNAVBAR.body.children[18].append(DOM({ tag: 'div' }));
@@ -184,7 +181,7 @@ export class CastleNAVBAR {
       el.style.display = 'flex';
       el.firstChild.innerText = `>${karma}`;
 
-      el.dataset.tooltip = Lang.text('titleСhildren18_1') + '\n'+ Lang.text('titleСhildren18_2') + '\n' + Lang.text('titleСhildren18_3').replace('{karma}', `> ${karma}`);
+      el.title = Lang.text('titleСhildren18_1') + '\n'+ Lang.text('titleСhildren18_2') + '\n' + Lang.text('titleСhildren18_3').replace('{karma}', `> ${karma}`);
     }
   }
 
@@ -193,7 +190,7 @@ export class CastleNAVBAR {
 
     CastleNAVBAR.body.children[17].style.backgroundImage = `url(content/ranks/${division.icon}.webp)`;
 
-    CastleNAVBAR.body.children[17].dataset.tooltip = Lang.text('titleСhildren17_1');
+    CastleNAVBAR.body.children[17].title = Lang.text('titleСhildren17_1');
 
     CastleNAVBAR.body.children[17].style.display = 'block';
   }

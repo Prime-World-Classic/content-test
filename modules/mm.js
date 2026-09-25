@@ -105,12 +105,6 @@ export class MM {
   static async init() {
     MM.initView();
 
-    // Linux test
-    //let testRun = DOM({style:'castle-button-play-test'}, "Test");
-    //CastleNAVBAR.body.append(testRun);
-
-    //testRun.onclick = () => PWGame.start("Tester00Tester00Tester00Tester004c8fa55b5ee54d6ddbaab2373f8a6a74d7f9c5d739bdd79da12f3beda73c7115", MM.gameStopEvent);
-
     Timer.init();
 
     window.addEventListener('beforeunload', () => {
@@ -208,7 +202,7 @@ export class MM {
       return;
     }
 
-    if (!PWGame.gameServerHasConnection || !PWGame.isUpToDate || !PWGame.isValidated) {
+    if (!PWGame.isUpToDate || !PWGame.isValidated) {
       MM.button.firstChild.innerText = Lang.text('mmCheck');
     }
 
@@ -218,8 +212,6 @@ export class MM {
 
         await PWGame.check();
 
-        await PWGame.testGameServerConnection();
-
         await PWGame.checkUpdates();
 
         PWGame.gameConnectionTestIsActive = false;
@@ -227,7 +219,7 @@ export class MM {
     } catch (error) {
       PWGame.gameConnectionTestIsActive = false;
 
-      if (!PWGame.gameServerHasConnection || !PWGame.isUpToDate || !PWGame.isValidated) {
+      if (!PWGame.isUpToDate || !PWGame.isValidated) {
         // Неудача
 
         MM.button.firstChild.innerText = Lang.text('fight');
@@ -320,7 +312,7 @@ export class MM {
 
           MM.gameRunEvent();
 
-          PWGame.reconnect(request.id, MM.gameStopEvent);
+          PWGame.reconnect(request.id, MM.gameStopEvent, request.ips, request.port);
 
           return;
         }
@@ -1117,17 +1109,17 @@ export class MM {
         if (data.mode == 3) {
             ARAM.briefing(data.hero, data.role, () => {
                 MM.gameRunEvent();
-                PWGame.start(data.key, MM.gameStopEvent);
+                PWGame.start(data.key, MM.gameStopEvent, data.ips);
             });
         } else {
             MM.gameRunEvent();
-            PWGame.start(data.key, MM.gameStopEvent);
+            PWGame.start(data.key, MM.gameStopEvent, data.ips);
         }
         */
 
     MM.gameRunEvent();
 
-    PWGame.start(data.key, MM.gameStopEvent);
+    PWGame.start(data.key, MM.gameStopEvent, data.ips, data.port);
   }
 
   static eventChangeHero(data) {

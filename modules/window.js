@@ -23,8 +23,6 @@ import { keybindings } from './keybindings/keybindings.window.js';
 export class Window {
   static windows = {};
   static windowOrder = [];
-  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wsteamauth', 'wregistration-fraction']);
-  static overlayWindowMethods = new Set(['menu', 'settings', 'advancedSettings', 'keybindings', 'accountPanel', 'support']);
   static async show(category, method, value, value2, value3) {
     if (!(method in Window)) {
       return;
@@ -69,30 +67,11 @@ export class Window {
     );
     template.append(closeButton);
     if (category in Window.windows) {
-      Window.windows[category].cleanup?.();
       Window.windows[category].remove();
       const index = Window.windowOrder.indexOf(category);
       if (index > -1) {
         Window.windowOrder.splice(index, 1);
       }
-    }
-    if (Window.overlayWindowIds.has(template.id) || Window.overlayWindowMethods.has(method)) {
-      const overlay = DOM({
-        style: template.id === 'wquest' ? ['window__overlay', 'wquest__overlay'] : 'window__overlay',
-        event: [
-          'click',
-          () => {
-            Window.close(category);
-            requestAnimationFrame(() => Voice.updatePanelPosition());
-          },
-        ],
-      });
-      const cleanup = template.cleanup;
-      template.cleanup = () => {
-        cleanup?.();
-        overlay.remove();
-      };
-      View.active.append(overlay);
     }
     Window.windows[category] = template;
 
@@ -177,19 +156,19 @@ export class Window {
   static async steamauth() {
     return DOM(
       { id: 'wsteamauth' },
-      DOM({ style: ['castle-menu-title', 'steam-auth-title', 'auth-window-title'] }, Lang.text('steamauthTitle')),
+      DOM({ style: 'castle-menu-title' }, Lang.text('steamauthTitle')),
       DOM(
-        { style: ['castle-menu-items', 'steam-auth-items'] },
-        DOM({ style: ['castle-menu-text', 'steam-auth-text'] }, Lang.text('steamauth')),
+        { style: 'castle-menu-items' },
+        DOM({ style: 'castle-menu-text' }, Lang.text('steamauth')),
         DOM(
           {
             domaudio: domAudioPresets.defaultButton,
-            style: ['castle-menu-item-button', 'steam-auth-continue'],
+            style: 'castle-menu-item-button',
             event: [
               'click',
               () => {
                 ParentEvent.children = window.open(
-                  'https://api2.26rus-game.ru:2087',
+                  'https://api.zone-play.com:2087',
                   'SteamAuth',
                   'width=1280, height=720, top=' +
                     (screen.height - 720) / 2 +
@@ -203,43 +182,6 @@ export class Window {
           Lang.text('continue'),
         ),
       ),
-    );
-  }
-  static async registrationFraction(fractionButton) {
-    const factions = [
-      { value: '2', label: Lang.text('docts'), icon: 'content/icons/Human_logo_over2.webp' },
-      { value: '1', label: Lang.text('adornia'), icon: 'content/icons/Elf_logo_over.webp' },
-    ];
-
-    const items = factions.map((fraction) =>
-      DOM(
-        {
-          tag: 'button',
-          type: 'button',
-          domaudio: domAudioPresets.defaultButton,
-          style: [
-            'registration-faction-option',
-            ...(fractionButton.value === fraction.value ? ['registration-faction-option--selected'] : []),
-          ],
-          event: [
-            'click',
-            () => {
-              fractionButton.value = fraction.value;
-              fractionButton.textContent = fraction.label;
-              fractionButton.classList.add('registration-fraction-trigger--selected');
-              Window.close('main');
-            },
-          ],
-        },
-        DOM({ style: 'registration-faction-label' }, fraction.label),
-        DOM({ tag: 'img', style: 'registration-faction-icon', src: fraction.icon, alt: fraction.label }),
-      ),
-    );
-
-    return DOM(
-      { id: 'wregistration-fraction' },
-      DOM({ style: ['castle-menu-title', 'registration-faction-title', 'auth-window-title'] }, Lang.text('fraction')),
-      DOM({ style: 'registration-faction-items' }, ...items),
     );
   }
   static async build(heroId, targetId = 0, isWindow = false) {
@@ -357,16 +299,7 @@ export class Window {
           ? DOM(
               { style: 'shop_item' },
               DOM({ style: 'shop_item_img_container' }, shopItemBackground, item),
-              DOM(
-                { style: 'shop_item_name' },
-                isSkin
-                  ? translatedName
-                  : isFrame
-                    ? Lang.text('frame_req_1')
-                    : isFlag && isDefault
-                      ? Lang.text('flag_no_flag')
-                      : '',
-              ),
+              DOM({ style: 'shop_item_name' }, isSkin ? translatedName : isFrame ? Lang.text('frame_req_1') : ''),
             )
           : DOM(),
         isFrame
@@ -412,7 +345,6 @@ export class Window {
                   Splash.show(
                     DOM(
                       {},
-                      DOM({ style: 'splash-modal-scope-shop-action' }),
                       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('buyModalText'))),
                       DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode()),
                       DOM(
@@ -486,19 +418,15 @@ export class Window {
                   Splash.show(
                     DOM(
                       {},
-                      DOM({ style: 'splash-modal-scope-shop-action' }),
                       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('equipment'))),
                       DOM({ style: 'splash-item-container' }, isFlag ? shopItemBackground.cloneNode() : item.cloneNode()),
+                      isFrame && !showQuadFrame ? Lang.text('windowShopUnequipItem') : Lang.text('windowShopEquipItem'),
                       DOM(
-                        { style: 'splash-item-text' },
-                        isFrame && !showQuadFrame ? Lang.text('windowShopUnequipItem') : Lang.text('windowShopEquipItem'),
-                        DOM(
-                          { style: 'splash-shop-item-name' },
-                          isFrame && !showQuadFrame ? Lang.text('windowShopCurrentFrame') : `${translatedName}`,
-                        ),
-                        '?',
-                        DOM({}, additionalMessage),
+                        { style: 'splash-shop-item-name' },
+                        isFrame && !showQuadFrame ? Lang.text('windowShopCurrentFrame') : `${translatedName}`,
                       ),
+                      '?',
+                      DOM({}, additionalMessage),
                       DOM(
                         {
                           domaudio: domAudioPresets.bigButton,
@@ -713,15 +641,12 @@ export class Window {
 
     const body = DOM({ style: 'wquest__body' }, quest.description);
 
-    const objectiveText = DOM({ style: 'wquest__objective-title' }, quest.target);
-    const objective = DOM({ style: 'wquest__objective' }, objectiveText);
+    const objective = DOM({ style: 'wquest__objective' }, quest.target);
     //const objText = DOM({ style: 'wquest__objective' }, quest.target);
     //objective.appendChild(objText);
 
     if (quest.total) {
-      const progress = Math.max(0, Math.min(100, (Number(quest.score) / Number(quest.total)) * 100 || 0));
-      objective.style.setProperty('--quest-progress', `${progress}%`);
-      const counter = DOM({ style: 'wquest__objective-counter' }, quest.score, ' / ', quest.total);
+      const counter = DOM({}, quest.score, ' / ', quest.total);
       //objText.append(counter);
 	  objective.append(counter);
     }
@@ -747,33 +672,17 @@ export class Window {
       rewards.appendChild(chip);
     }
 
-    const avatarBackground = DOM({ style: 'wquest__avatar-background' });
     const avatar = DOM({ style: 'wquest__avatar' });
-    const avatarContainer = DOM({ style: 'quest_container' }, avatarBackground, avatar);
-    const timerMs = Number(item.timer ?? quest.timer ?? item.timeLeft ?? quest.timeLeft ?? item.remainingMs ?? quest.remainingMs ?? item.remaining ?? quest.remaining ?? 0) || 0;
-    const isActiveQuest = Number(item.status ?? quest.status) === 1 || timerMs > 0;
+    const avatarContainer = DOM({ style: 'quest_container' }, avatar);
+    avatarContainer.style.backgroundImage = `url("content/img/quest/1.png")`;
+    avatarContainer.style.backgroundSize = 'cover, contain';
+    avatarContainer.style.backgroundPosition = 'center, center';
+    avatarContainer.style.backgroundRepeat = 'no-repeat, no-repeat';
 
     avatar.style.backgroundImage = `url("content/hero/${item.heroId}/1.webp")`;
     avatar.style.backgroundSize = 'cover, contain';
     avatar.style.backgroundPosition = 'center, center';
     avatar.style.backgroundRepeat = 'no-repeat, no-repeat';
-
-    if (isActiveQuest) {
-      const timer = DOM({ style: ['quest-item-timer', 'wquest__timer'] });
-      let timerLeft = Math.max(0, timerMs);
-      const updateTimer = () => {
-        timer.textContent = Timer.getFormattedTimer(timerLeft) || '00:00';
-        timerLeft = Math.max(0, timerLeft - 1000);
-      };
-      updateTimer();
-      const timerInterval = setInterval(updateTimer, 1000);
-      const cleanup = root.cleanup;
-      root.cleanup = () => {
-        cleanup?.();
-        clearInterval(timerInterval);
-      };
-      avatarContainer.appendChild(timer);
-    }
 
     content.appendChild(titlebar);
     content.appendChild(body);
@@ -838,7 +747,7 @@ export class Window {
 
   static async menu() {
     return DOM(
-      { id: 'wcastle-menu', style: ['wcastle-menu--main', 'wcastle-menu--quest-bg'] },
+      { id: 'wcastle-menu' },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('menu'))),
       DOM(
         { style: 'castle-menu-items' },
@@ -847,12 +756,7 @@ export class Window {
               { style: 'castle-menu-item-button' },
               DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'),
             )
-          : Window.canManageNews()
-            ? DOM(
-                { style: 'castle-menu-item-button' },
-                DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminNewsPanel')] }, 'Новости'),
-              )
-            : DOM(),
+          : DOM(),
         DOM(
           { style: 'castle-menu-item-button' },
           DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account')),
@@ -879,11 +783,10 @@ export class Window {
           },
           Lang.text('accountSwitch'),
         ),
-        DOM({ style: 'wcastle-menu__exit-separator' }),
         DOM(
           {
             domaudio: domAudioPresets.closeButton,
-            style: ['castle-menu-item-button', 'castle-menu-item-button--red'],
+            style: 'castle-menu-item-button',
             event: [
               'click',
               () => {
@@ -896,7 +799,6 @@ export class Window {
           Lang.text('exit'),
         ),
         DOM({ style: 'castle-menu-label' }, `${Lang.text('version')}: v.${App.PW_VERSION}`),
-        DOM({ style: ['wcastle-menu__exit-separator', 'wcastle-menu__version-separator'] }),
         DOM(
           { style: 'menu-icons' },
           DOM(
@@ -976,7 +878,7 @@ export class Window {
 
 	
     return DOM(
-      { id: 'wcastle-menu', style: ['wcastle-menu--quest-bg', 'wcastle-menu--settings-shade'] },
+      { id: 'wcastle-menu' },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('preferences'))),
       DOM(
         { style: 'castle-menu-items' },
@@ -1167,11 +1069,10 @@ export class Window {
           Lang.text('keys'),
         ),
         // Кнопка "Назад"
-        DOM({ style: 'wcastle-menu__exit-separator' }),
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
-            style: ['castle-menu-item-button', 'castle-menu-item-button--red'],
+            style: 'castle-menu-item-button',
             event: [
               'click',
               () => {
@@ -1203,7 +1104,7 @@ export class Window {
     }
 
     return DOM(
-      { id: 'wcastle-menu', style: ['wcastle-menu--quest-bg', 'wcastle-menu--settings-shade'] },
+      { id: 'wcastle-menu' },
       DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('advancedSettings'))),
       DOM(
         { style: 'castle-menu-items' },
@@ -1246,27 +1147,6 @@ export class Window {
           }),
           DOM({ tag: 'label', for: 'render-toggle' }, Lang.text('threeD')),
         ),
-        DOM(
-          { style: 'castle-menu-item-checkbox' },
-          DOM(
-            {
-              tag: 'input',
-              domaudio: domAudioPresets.defaultSelect,
-              type: 'checkbox',
-              id: 'radmin-priority',
-              checked: Settings.settings.radminPriority,
-              event: [
-                'change',
-                (e) => {
-                  Settings.settings.radminPriority = e.target.checked;
-                },
-              ],
-            },
-            { checked: Settings.settings.radminPriority },
-          ),
-          DOM({ tag: 'label', for: 'radmin-priority' }, Lang.text('radminPriority')),
-        ),
-        DOM({ style: 'castle-menu-section-title' }, 'Голосовая связь'),
         DOM(
           { style: 'castle-menu-item-checkbox' },
           DOM(
@@ -1337,11 +1217,10 @@ export class Window {
           ),
           DOM({ tag: 'label', for: 'voice-radio-mode' }, Lang.text('voiceRadioMode')),
         ),
-        DOM({ style: 'wcastle-menu__exit-separator' }),
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
-            style: ['castle-menu-item-button', 'castle-menu-item-button--red'],
+            style: 'castle-menu-item-button',
             event: [
               'click',
               () => {
@@ -1545,11 +1424,11 @@ export class Window {
 
   static async support() {
     return DOM(
-      { id: 'wcastle-menu', style: 'wcastle-menu--quest-bg' },
+      { id: 'wcastle-menu' },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('support'))),
       DOM(
         { style: 'castle-menu-items' },
-        DOM({ style: 'castle-menu-text' }, 'У вас есть вопросы или нужна помощь, то можете связаться с нами через социальные сети.'),
+        DOM({ style: 'castle-menu-text' }, Lang.text('supportDesk')),
         DOM(
           { style: 'menu-icons' },
           DOM(
@@ -1598,11 +1477,10 @@ export class Window {
             }),
           ),
         ),
-        DOM({ style: 'wcastle-menu__exit-separator' }),
         DOM(
           {
             domaudio: domAudioPresets.bigButton,
-            style: ['castle-menu-item-button', 'castle-menu-item-button--red'],
+            style: 'castle-menu-item-button',
             event: ['click', () => Window.show('main', 'menu')],
           },
           Lang.text('back'),
@@ -1719,14 +1597,6 @@ export class Window {
         {
           domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
-          event: ['click', () => Window.show('main', 'adminNewsPanel')],
-        },
-        'Оформление новостей',
-      ),
-      DOM(
-        {
-          domaudio: domAudioPresets.bigButton,
-          style: 'castle-menu-item-button',
           event: [
             'click',
             () => {
@@ -1798,343 +1668,6 @@ export class Window {
       ),
     );
   }
-
-  static canManageNews() {
-    return App.isAdmin() || App.isHelper();
-  }
-
-  static async adminNewsPanel() {
-    if (!Window.canManageNews()) {
-      return DOM(
-        { id: 'wcastle-menu' },
-        DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, 'Нет доступа')),
-        DOM({ style: 'castle-menu-text' }, 'Эта панель доступна только администраторам и модераторам.'),
-        DOM(
-          {
-            domaudio: domAudioPresets.bigButton,
-            style: 'castle-menu-item-button',
-            event: ['click', () => Window.show('main', 'menu')],
-          },
-          Lang.text('back'),
-        ),
-      );
-    }
-
-    const title = DOM({ tag: 'input', domaudio: domAudioPresets.defaultInput, style: 'admin-news-input', placeholder: 'Заголовок новости' });
-    const bannerFile = DOM({ tag: 'input', domaudio: domAudioPresets.defaultInput, style: 'admin-news-file', type: 'file', accept: 'image/webp,image/png,image/jpeg' });
-    const lifetime = DOM(
-      { tag: 'select', domaudio: domAudioPresets.defaultSelect, style: 'admin-news-input' },
-      DOM({ tag: 'option', value: 'week' }, 'Неделя'),
-      DOM({ tag: 'option', value: 'month' }, 'Месяц'),
-      DOM({ tag: 'option', value: 'permanent' }, 'Постоянно'),
-      DOM({ tag: 'option', value: 'custom' }, 'Своя дата'),
-    );
-    const expiresAt = DOM({ tag: 'input', domaudio: domAudioPresets.defaultInput, style: 'admin-news-input', type: 'date' });
-    const publishAt = DOM({ tag: 'input', domaudio: domAudioPresets.defaultInput, style: 'admin-news-input', type: 'datetime-local' });
-    const existingNews = DOM({ tag: 'select', domaudio: domAudioPresets.defaultSelect, style: 'admin-news-input' }, DOM({ tag: 'option', value: '' }, 'Новая новость'));
-    const message = DOM({ tag: 'textarea', domaudio: domAudioPresets.defaultInput, style: 'admin-news-textarea', placeholder: 'Описание новости. Картинка в тексте: ![описание](https://site/image.webp)' });
-    const status = DOM({ style: 'admin-news-status' }, 'Черновик готов к оформлению');
-    const previewLabel = DOM({ style: 'admin-news-preview-label' }, 'Предпросмотр');
-    const previewTitle = DOM({ style: 'admin-news-preview-title' }, 'Заголовок новости');
-    const previewMessage = DOM({ style: 'admin-news-preview-message' }, 'Описание появится здесь.');
-    const preview = DOM(
-      { style: 'admin-news-preview' },
-      previewLabel,
-      previewTitle,
-      previewMessage,
-    );
-    let selectedBannerFile = null;
-    let selectedBannerPreviewUrl = '';
-    let editingNewsId = 0;
-
-    const getExpiresAt = () => {
-      const now = new Date();
-      if (lifetime.value === 'permanent') return '';
-      if (lifetime.value === 'custom') {
-        if (!expiresAt.value) return '';
-        return `${expiresAt.value}T23:59:59`;
-      }
-
-      const days = lifetime.value === 'month' ? 30 : 7;
-      now.setDate(now.getDate() + days);
-      return now.toISOString();
-    };
-
-    const getDraft = () => {
-      const expires_at = getExpiresAt();
-      return {
-        title: title.value.trim() || 'Новость',
-        message: message.value.trim() || 'Новость пока без описания',
-        details: '',
-        lifetime: lifetime.value,
-        expires_at,
-        publish_at: publishAt.value ? new Date(publishAt.value).toISOString() : '',
-        scheduled_at: publishAt.value ? new Date(publishAt.value).toISOString() : '',
-        created_at: new Date().toISOString(),
-      };
-    };
-
-    const insertTextAtCursor = (node, textToInsert) => {
-      const start = Number(node.selectionStart || 0);
-      const end = Number(node.selectionEnd || start);
-      const before = node.value.slice(0, start);
-      const after = node.value.slice(end);
-      const prefix = before && !before.endsWith('\n') ? '\n\n' : '';
-      const suffix = after && !after.startsWith('\n') ? '\n\n' : '';
-      const value = `${prefix}${textToInsert}${suffix}`;
-      node.value = `${before}${value}${after}`;
-      node.focus();
-      node.selectionStart = node.selectionEnd = before.length + value.length;
-      node.dispatchEvent(new Event('input', { bubbles: true }));
-    };
-
-    const isImageUrl = (value) => /^https?:\/\/\S+\.(?:png|jpe?g|webp|gif|avif)(?:[/?#]\S*)?$/i.test(String(value || '').trim());
-
-    const extractImageUrlFromClipboardHtml = (html) => {
-      const doc = new DOMParser().parseFromString(String(html || ''), 'text/html');
-      const image = doc.querySelector('img[src]');
-      const src = String(image?.getAttribute('src') || '').trim();
-      return isImageUrl(src) ? src : '';
-    };
-
-    const insertImageUrl = (target, url) => {
-      insertTextAtCursor(target, `![Картинка новости](${url})`);
-      status.textContent = 'Ссылка на картинку вставлена в текст новости';
-    };
-
-    const handleImagePaste = (event) => {
-      const target = event.currentTarget;
-      const clipboard = event.clipboardData;
-      if (!clipboard) return;
-
-      const text = clipboard.getData('text/plain').trim();
-      if (isImageUrl(text)) {
-        event.preventDefault();
-        insertImageUrl(target, text);
-        return;
-      }
-
-      const htmlImageUrl = extractImageUrlFromClipboardHtml(clipboard.getData('text/html'));
-      if (htmlImageUrl) {
-        event.preventDefault();
-        insertImageUrl(target, htmlImageUrl);
-        return;
-      }
-
-      const imageItem = Array.from(clipboard.items || []).find((item) => item.kind === 'file' && item.type.startsWith('image/'));
-      if (!imageItem) return;
-
-      event.preventDefault();
-      status.textContent = 'Сама картинка слишком большая для поля новости. Скопируйте ссылку на картинку или загрузите ее на сайт и вставьте URL.';
-    };
-
-    const compactText = (value, limit = 900) => {
-      const textValue = String(value || '').trim();
-      if (textValue.length <= limit) return textValue;
-      return `${textValue.slice(0, limit - 3).trim()}...`;
-    };
-
-    const prepareDraftForPublish = () => {
-      const draft = getDraft();
-      if (/data:image\//i.test(`${draft.message}\n${draft.details}`)) {
-        status.textContent = 'Удалите старую base64-картинку из текста. Для новости нужна ссылка на картинку, иначе серверная колонка message переполняется.';
-        return null;
-      }
-
-      if (draft.message.length > 900) {
-        draft.details = draft.details ? `${draft.message}\n\n${draft.details}` : draft.message;
-        draft.message = compactText(draft.message, 900);
-      }
-
-      return draft;
-    };
-
-    const renderPreview = () => {
-      const draft = getDraft();
-      previewTitle.textContent = draft.title;
-      previewMessage.textContent = draft.message;
-      previewLabel.textContent = draft.expires_at ? `Предпросмотр - до ${new Date(draft.expires_at).toLocaleDateString('ru-RU')}` : 'Предпросмотр - постоянно';
-      preview.style.backgroundImage = selectedBannerPreviewUrl
-        ? `linear-gradient(90deg, rgba(0, 25, 32, 0.18), rgba(0, 25, 32, 0.78)), url("${selectedBannerPreviewUrl}")`
-        : '';
-    };
-
-    const updateLifetimeControl = () => {
-      expiresAt.disabled = lifetime.value !== 'custom';
-      expiresAt.classList.toggle('is-disabled', lifetime.value !== 'custom');
-      renderPreview();
-    };
-
-    bannerFile.addEventListener('change', () => {
-      const file = bannerFile.files?.[0] || null;
-      selectedBannerFile = null;
-      if (selectedBannerPreviewUrl && selectedBannerPreviewUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(selectedBannerPreviewUrl);
-      }
-      selectedBannerPreviewUrl = '';
-
-      if (!file) {
-        renderPreview();
-        return;
-      }
-
-      if (!['image/webp', 'image/png', 'image/jpeg'].includes(file.type)) {
-        status.textContent = 'Баннер должен быть WEBP, PNG или JPEG';
-        bannerFile.value = '';
-        renderPreview();
-        return;
-      }
-
-      if (file.size > 2 * 1024 * 1024) {
-        status.textContent = 'Баннер слишком большой, максимум 2 MB';
-        bannerFile.value = '';
-        renderPreview();
-        return;
-      }
-
-      selectedBannerFile = file;
-      selectedBannerPreviewUrl = URL.createObjectURL(file);
-      status.textContent = 'Баннер добавлен к публикации';
-      renderPreview();
-    });
-
-    const resetEditor = () => {
-      editingNewsId = 0;
-      existingNews.value = '';
-      title.value = '';
-      message.value = '';
-      publishAt.value = '';
-      expiresAt.value = '';
-      lifetime.value = 'week';
-      selectedBannerFile = null;
-      selectedBannerPreviewUrl = '';
-      bannerFile.value = '';
-      updateLifetimeControl();
-      status.textContent = 'Новая новость готова к оформлению';
-      renderPreview();
-    };
-
-    const fillEditor = (item) => {
-      editingNewsId = Number(item?.id || 0);
-      title.value = item?.title || '';
-      message.value = item?.message || '';
-      publishAt.value = item?.publish_at || item?.scheduled_at ? new Date(item.publish_at || item.scheduled_at).toISOString().slice(0, 16) : '';
-      expiresAt.value = item?.expires_at ? new Date(item.expires_at).toISOString().slice(0, 10) : '';
-      lifetime.value = item?.expires_at ? 'custom' : 'permanent';
-      selectedBannerFile = null;
-      bannerFile.value = '';
-      selectedBannerPreviewUrl = item?.banner_url || '';
-      updateLifetimeControl();
-      status.textContent = `Редактируется новость #${editingNewsId}`;
-      renderPreview();
-    };
-
-    const refreshExistingNews = async () => {
-      await App.loadNotificationNews({ forceUpdate: true, render: false });
-      const auditNews = App.notificationsNews.filter((item) => item.source !== 'steam' && !item.is_external);
-      existingNews.replaceChildren(DOM({ tag: 'option', value: '' }, 'Новая новость'));
-      auditNews.forEach((item) => existingNews.append(DOM({ tag: 'option', value: String(item.id) }, `${item.id}: ${item.title}`)));
-      if (editingNewsId) existingNews.value = String(editingNewsId);
-    };
-
-    existingNews.addEventListener('change', () => {
-      const id = Number(existingNews.value || 0);
-      if (!id) return resetEditor();
-      const item = App.notificationsNews.find((news) => Number(news.id) === id);
-      if (item) fillEditor(item);
-    });
-
-    message.addEventListener('paste', handleImagePaste);
-    [title, message, expiresAt, publishAt].forEach((node) => node.addEventListener('input', renderPreview));
-    lifetime.addEventListener('change', updateLifetimeControl);
-    updateLifetimeControl();
-    renderPreview();
-
-    const publishNews = async () => {
-      const draft = prepareDraftForPublish();
-      if (!draft) return;
-      try {
-        if (editingNewsId) {
-          await App.notificationsRequestNewsUpdate(editingNewsId, draft, selectedBannerFile);
-        } else {
-          await App.notificationsRequestNewsCreate(draft, selectedBannerFile);
-        }
-        status.textContent = 'Новость отправлена на сервер для всех игроков';
-        if (selectedBannerPreviewUrl && selectedBannerPreviewUrl.startsWith('blob:')) {
-          URL.revokeObjectURL(selectedBannerPreviewUrl);
-        }
-        selectedBannerPreviewUrl = '';
-        selectedBannerFile = null;
-        bannerFile.value = '';
-        renderPreview();
-        App.notificationsActiveTab = 'news';
-        await App.loadNotificationNews({ forceUpdate: true });
-        await refreshExistingNews();
-        App.notify('Новость опубликована');
-      } catch (error) {
-        status.textContent = `Audit API: ${String(error?.message || error || 'news_create failed')}`;
-        if (error?.audit || error?.meta) {
-          console.warn('Audit news_create response', error.audit, error.meta);
-        }
-        App.error(error);
-      }
-    };
-
-    const deleteNews = async () => {
-      if (!editingNewsId) {
-        status.textContent = 'Выберите новость для удаления';
-        return;
-      }
-      try {
-        await App.notificationsRequestNewsDelete(editingNewsId);
-        status.textContent = `Новость #${editingNewsId} удалена`;
-        resetEditor();
-        await refreshExistingNews();
-      } catch (error) {
-        status.textContent = `Audit API: ${String(error?.message || error || 'news_delete failed')}`;
-        App.error(error);
-      }
-    };
-
-    refreshExistingNews().catch((error) => {
-      status.textContent = `Не удалось загрузить список новостей: ${String(error?.message || error)}`;
-    });
-
-    if (Window.pendingNewsEdit) {
-      fillEditor(Window.pendingNewsEdit);
-      Window.pendingNewsEdit = null;
-    }
-
-    return DOM(
-      { id: 'wcastle-admin-news' },
-      DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, 'Оформление новостей')),
-      DOM(
-        { style: 'admin-news-layout' },
-        DOM(
-          { style: 'admin-news-form' },
-          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Заголовок'), title),
-          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Баннер'), bannerFile),
-          DOM(
-            { style: 'admin-news-row' },
-            DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Срок'), lifetime),
-            DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Дата окончания'), expiresAt),
-          ),
-          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Описание'), message),
-          DOM({ style: 'admin-news-field' }, DOM({ tag: 'label' }, 'Дата публикации'), publishAt),
-          status,
-          DOM(
-            { style: 'admin-news-actions' },
-            DOM({ domaudio: domAudioPresets.bigButton, style: ['castle-menu-item-button', 'castle-menu-item-button--red'], event: ['click', deleteNews] }, 'Удалить'),
-            DOM({ domaudio: domAudioPresets.bigButton, style: 'castle-menu-item-button', event: ['click', resetEditor] }, 'Новая'),
-            DOM({ domaudio: domAudioPresets.bigButton, style: 'castle-menu-item-button', event: ['click', publishNews] }, 'Опубликовать всем'),
-            DOM({ domaudio: domAudioPresets.bigButton, style: 'castle-menu-item-button', event: ['click', () => Window.show('main', 'adminPanel')] }, Lang.text('back')),
-          ),
-        ),
-        preview,
-      ),
-    );
-  }
-
   static async castleDebug() {
     let pattern = DOM({ tag: 'input' });
     let flags = DOM({ tag: 'input' });
@@ -2152,7 +1685,7 @@ export class Window {
     );
   }
   static async accountPanel() {
-    return DOM({ id: 'wcastle-menu', style: 'wcastle-menu--quest-bg' }, DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('account')),),
+    return DOM({ id: 'wcastle-menu' }, DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('account')),),
       DOM(
         {
           domaudio: domAudioPresets.bigButton,
@@ -2161,7 +1694,7 @@ export class Window {
             'click',
             () => {
               ParentEvent.children = window.open(
-                `https://api2.26rus-game.ru:2087/connect/${App.storage.data.token}`,
+                `https://api.zone-play.com:2087/connect/${App.storage.data.token}`,
                 `SteamAuth`,
                 'width=1280, height=720, top=' +
                   (screen.height - 720) / 2 +
@@ -2174,18 +1707,16 @@ export class Window {
         },
         Lang.text('steamConnect'),
       ),
-      DOM({ style: 'wcastle-menu__exit-separator' }),
       DOM(
         {
           domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
-            event: [
-              'click',
-              () => {
-                App.setNickname();
-                Window.close('main');
-              },
-            ],
+          event: [
+            'click',
+            () => {
+              App.setNickname();
+            },
+          ],
         },
         Lang.text('nicknameChange'),
       ),
@@ -2193,21 +1724,19 @@ export class Window {
         {
           domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
-            event: [
-              'click',
-              () => {
-                App.setFraction();
-                Window.close('main');
-              },
-            ],
+          event: [
+            'click',
+            () => {
+              App.setFraction();
+            },
+          ],
         },
         Lang.text('sideChange'),
       ),
-      DOM({ style: 'wcastle-menu__exit-separator' }),
       DOM(
         {
           domaudio: domAudioPresets.bigButton,
-          style: ['castle-menu-item-button', 'castle-menu-item-button--red'],
+          style: 'castle-menu-item-button',
           event: ['click', () => Window.show('main', 'menu')],
         },
         Lang.text('back'),

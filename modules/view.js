@@ -183,7 +183,7 @@ export class View {
       case 'away':
         return 'sepia(1) hue-rotate(352deg) saturate(1.1) brightness(0.92)';
       case 'offline':
-        return '';
+        return 'grayscale(0.8)';
       default:
         return '';
     }
@@ -323,8 +323,6 @@ export class View {
     const friendInParty = presenceState === 'online' && Number(item?.inParty) === 1;
     const groupEnabled = View.isFriendGroupInviteEnabled(item);
     const callEnabled = View.isFriendCallEnabled(item);
-    const isOffline = presenceState === 'offline';
-    const isTambour = presenceState === 'tambour';
     const groupText = friendInParty
       ? Lang.text('friendInGroup')
       : groupEnabled
@@ -339,12 +337,9 @@ export class View {
       (presenceState === 'battle' || presenceState === 'queue' || presenceState === 'tambour');
     const modeText = canShowModeOnHover ? Lang.text(`gm${modeId + 1}`) : '';
     group.textContent = groupText;
-    group.classList.toggle('castle-friend-add-group-offline', isOffline);
-    call.classList.toggle('castle-friend-add-group-offline', isOffline);
-    group.classList.toggle('castle-friend-add-group-tambour', isTambour);
     const presenceFilter = View.getFriendPresenceFilter(presenceState);
-    group.style.filter = (!groupEnabled || friendInParty) ? (isOffline || isTambour ? '' : (presenceFilter || 'grayscale(0.8)')) : '';
-    call.style.filter = !callEnabled ? (isOffline ? '' : 'grayscale(0.8)') : '';
+    group.style.filter = (!groupEnabled || friendInParty) ? (presenceFilter || 'grayscale(0.8)') : '';
+    call.style.filter = !callEnabled ? 'grayscale(0.8)' : '';
     group.onmouseenter = null;
     group.onmouseleave = null;
     group.onclick = null;
@@ -403,32 +398,6 @@ export class View {
     }
 
     View.friendsMenuItem.classList.toggle('friends-menu-item-incoming', View.hasFriendIncomingRequest);
-  }
-
-  static updateFriendsMenuOnlineCount() {
-    if (!View.friendsMenuItem) {
-      return;
-    }
-
-    const onlineCount = (View.castleFriendAll || []).filter(
-      (item) => Number(item?.status) === 1 && View.normalizeFriendPresenceState(item) !== 'offline',
-    ).length;
-    View.friendsMenuOnlineCount?.remove();
-    View.friendsMenuOnlineCount = null;
-    if (onlineCount > 0) {
-      View.friendsMenuOnlineCount = DOM({ style: 'friends-menu-online-count' }, String(onlineCount));
-      View.friendsMenuItem.append(View.friendsMenuOnlineCount);
-    }
-  }
-
-  static updateCastlePanelMenuActiveState(tab = View.castleActiveTab) {
-    for (const [item, itemTab] of [
-      [View.heroesMenuItem, 'heroes'],
-      [View.friendsMenuItem, 'friends'],
-      [View.buildingsMenuItem, 'buildings'],
-    ]) {
-      item?.classList?.toggle('castle-panel-menu-item-active', tab === itemTab);
-    }
   }
 
   static isCastleModeRequireHeroSelection(mode) {
@@ -749,9 +718,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20260922-stat-tooltip-layer-fix';
-    const separator = name.includes('?') ? '&' : '?';
-    let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
+    let css = DOM({ tag: 'link', rel: 'stylesheet', href: name });
 
     document.head.appendChild(css);
   }
@@ -873,12 +840,12 @@ export class View {
     let authorizationForm = DOM(
       { style: 'login_box' },
       DOM(
-        { style: ['login-box-forma', 'login-box-forma--authorization'] },
+        { style: 'login-box-forma' },
         DOM(
-          { tag: 'div', style: 'login-box-forma-logo-panel' },
+          { tag: 'div' },
           DOM({
             tag: 'img',
-            style: ['login-box-forma-logo', 'login-box-forma-brand'],
+            style: 'login-box-forma-logo',
             src: 'content/img/logo_classic.webp',
           }),
         ),
@@ -886,7 +853,6 @@ export class View {
         DOM({ style: 'language-select-container' }, languageSelect),
         DOM(
           { style: 'login-box-forma-inputs' },
-          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('authorizationTitle')),
           login,
           password,
           DOM(
@@ -913,7 +879,7 @@ export class View {
             DOM(
               {
                 domaudio: domAudioPresets.bigButton,
-                style: ['login-box-forma-button', 'login-box-forma-button--steam', 'steamauth'],
+                style: ['login-box-forma-button', 'steamauth'],
                 event: ['click', () => Window.show('main', 'steamauth')],
               },
               Lang.text('authorizationSteam'),
@@ -937,15 +903,10 @@ export class View {
     ];
 
     let fraction = DOM(
-      {
-        tag: 'button',
-        type: 'button',
-        value: '',
-        domaudio: domAudioPresets.defaultSelect,
-        style: 'registration-fraction-trigger',
-        event: ['click', () => Window.show('main', 'registrationFraction', fraction)],
-      },
-      Lang.text('fraction'),
+      { domaudio: domAudioPresets.defaultSelect, tag: 'select' },
+      DOM({ tag: 'option', value: 0, disabled: true, selected: true }, Lang.text('fraction')),
+      DOM({ tag: 'option', value: 1 }, Lang.text('adornia')),
+      DOM({ tag: 'option', value: 2 }, Lang.text('docts')),
     );
 
     let tgBotUrl = 'https://t.me/primeworldclassic_bot';
@@ -956,8 +917,6 @@ export class View {
       tag: 'a',
       target: '_blank',
       href: tgBotUrl,
-      title: 'Получить инвайт в Telegram',
-      'aria-label': 'Получить инвайт в Telegram',
       event: ['click', (e) => NativeAPI.linkHandler(e)],
     });
 
@@ -996,11 +955,10 @@ export class View {
     return DOM(
       { style: 'login_box' },
       DOM(
-        { style: ['login-box-forma', 'login-box-forma--registration'] },
+        { style: 'login-box-forma' },
 
         DOM(
           { style: 'login-box-forma-inputs' },
-          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('registration')),
           fraction,
           inviteContainer,
           login,
@@ -1030,19 +988,15 @@ export class View {
           { style: 'login-box-forma-right' },
           DOM({
             tag: 'img',
-            style: ['login-box-forma-logo', 'login-box-forma-brand'],
+            style: 'login-box-forma-logo',
             src: 'content/img/logo_classic.webp',
           }),
+          DOM({ style: 'login-box-form-invite-text' }, `Получить инвайт-код через QR-код`),
           DOM({
             tag: 'img',
-            style: ['login-box-forma-logo', 'login-box-forma-qr'],
+            style: 'login-box-forma-logo',
             src: 'content/img/pwclassicbot.png',
           }),
-          DOM(
-            { style: 'login-box-form-invite-text' },
-            DOM({ tag: 'span' }, 'Получить инвайт-код'),
-            DOM({ tag: 'span' }, 'через QR-код'),
-          ),
         ),
       ),
       DOM({ style: 'author' }, `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`),
@@ -1053,7 +1007,6 @@ export class View {
     let body = DOM({ style: 'progress' }, DOM({ style: 'animation1' }), DOM());
 
     Splash.show(body, false);
-    Splash.body.classList.add('splash--blur');
 
     return body;
   }
@@ -1323,8 +1276,6 @@ export class View {
               try {
                 await PWGame.check();
 
-                await PWGame.testGameServerConnection();
-
                 await PWGame.checkUpdates();
               } catch (e) {
                 PWGame.gameConnectionTestIsActive = false;
@@ -1528,6 +1479,16 @@ export class View {
       'pve-ep2-red': 5,
     };
 
+    // тип медалей (Испытание / Дуэль — без зала славы в лаунчере)
+    const medalMap = {
+      pvp: 'gold',
+      anderkrug: 'gold',
+      cte: 'gold',
+      m4: 'gold',
+      'pve-ep2-red': 'silver',
+      'custom-battle': 'silver',
+    };
+
     const bannerItems = Object.entries(modeMap).map(([cssKey]) => ({
       cssKey,
       label: () => (typeof View?.getQueue === 'function' ? View.getQueue(cssKey) : 0),
@@ -1576,6 +1537,35 @@ export class View {
         }
       }, 500);
 
+      // медаль/кнопка
+      const type = medalMap[item.cssKey] || 'gold';
+      const disabled = type === 'silver';
+
+      const medal = DOM({
+        domaudio: domAudioPresets.bigButton,
+        tag: 'span',
+        style: ['banner-medal', `banner-medal--${type}`, disabled ? 'is-disabled' : null].filter(Boolean),
+      });
+
+      if (disabled) {
+        medal.title = Lang.text('titlestatisticmodeUnavailable');
+      } else {
+        medal.title = Lang.text('titlestatisticmode');
+        medal.setAttribute('role', 'button');
+        medal.tabIndex = 0;
+        const openStats = () => {
+          Window.show('main', 'top', 0, idx);
+        };
+        medal.addEventListener('click', openStats);
+        medal.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openStats();
+          }
+        });
+      }
+
+      wrap.append(medal);
       banner.append(wrap);
 
       if (idx < bannerItems.length - 1) {
@@ -1591,6 +1581,7 @@ export class View {
     const statsBtn = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['banner-icon', 'banner-icon--stat', 'button-outline'],
+      title: Lang.text('titlestatistic'),
       event: [
         'click',
         () => {
@@ -1598,8 +1589,6 @@ export class View {
         },
       ],
     });
-    statsBtn.setAttribute('aria-label', 'Статистика');
-    const statsTooltip = DOM({ style: 'banner-stat-tooltip', textContent: 'Статистика' });
 
     // бейдж дивизии под кнопкой Stat
     const divId = getDivisionId();
@@ -1611,7 +1600,7 @@ export class View {
     divisionBadgeUnderStat.style.backgroundImage = `url(content/ranks/${divInfo.icon}.webp)`;
     divisionBadgeUnderStat.title = Lang.text('titlehint2');
 
-    statCircle.append(statsBtn, statsTooltip, divisionBadgeUnderStat);
+    statCircle.append(statsBtn, divisionBadgeUnderStat);
     statWrapper.append(statRect, statCircle);
 
     // подсказка слева
@@ -1626,7 +1615,6 @@ export class View {
       {
         domaudio: domAudioPresets.bigButton,
         style: ['crystal-container', Shop.requireAnimation ? 'crystal-container-anim' : '_dummy_'],
-        data: { tooltip: 'Кристаллы' },
         event: [
           'click',
           () => {
@@ -1646,14 +1634,14 @@ export class View {
     let builds = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-builds', 'button-outline'],
-      data: { tooltip: 'Рейтинг' },
+      title: 'Рейтинг',
       event: ['click', () => View.show('top')],
     });
 
     let settings = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-settings-btn', 'button-outline'],
-      data: { tooltip: 'Вкл/Выкл графики замка' },
+      title: 'Вкл/Выкл графики замка',
       event: [
         'click',
         () => {
@@ -1666,14 +1654,14 @@ export class View {
     let clan = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-clans', 'button-outline'],
-      data: { tooltip: 'Кланы' },
+      title: 'Кланы',
       event: ['click', () => Frame.open('clan')],
     });
 
     let farm = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-farm', 'button-outline'],
-      data: { tooltip: 'Фарм' },
+      title: 'Фарм',
       event: ['click', () => Window.show('main', 'farm')],
     });
 
@@ -1746,7 +1734,7 @@ export class View {
             App.setNickname();
           },
         ],
-        data: { tooltip: Lang.text('titleNicknameСhange') },
+        title: Lang.text('titleNicknameСhange'),
       },
       DOM({}, nicknameValue),
     );
@@ -1763,7 +1751,7 @@ export class View {
           App.setFraction();
         },
       ],
-      data: { tooltip: Lang.text('titleflag') },
+      title: Lang.text('titleflag'),
     });
 
     const partyData = await App.api.request(App.CURRENT_MM, 'loadParty', {});
@@ -1783,16 +1771,7 @@ export class View {
       Lang.text('accountRating').replace('{rating}', playerRatingVisual),
     );
 
-    const accountRatingTooltipText = Lang.text('accountRatingTooltip');
-    const accountRatingTooltipMatch = accountRatingTooltipText.match(/^(\S+\s+\S+)\s*-\s*(.*)$/);
-    const accountRatingTooltipTitle = accountRatingTooltipMatch ? accountRatingTooltipMatch[1] : '';
-    const accountRatingTooltipBody = accountRatingTooltipMatch ? `- ${accountRatingTooltipMatch[2]}` : accountRatingTooltipText;
-    const accountRatingTooltip = DOM({ style: 'account-rating-tooltip' });
-    if (accountRatingTooltipTitle) {
-      accountRatingTooltip.append(DOM({ style: 'account-rating-tooltip-title' }, accountRatingTooltipTitle));
-    }
-    accountRatingTooltip.append(DOM({ style: 'account-rating-tooltip-body' }, accountRatingTooltipBody));
-    accountRatingItem.append(accountRatingTooltip);
+    accountRatingItem.style.setProperty('--filter-text-hover', `'${Lang.text('accountRatingTooltip')}'`);
 
     let settingsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1803,7 +1782,7 @@ export class View {
           Window.show('main', 'menu');
         },
       ],
-      data: { tooltip: Lang.text('titlesettings') },
+      title: Lang.text('titlesettings'),
     });
     let chatMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1814,11 +1793,10 @@ export class View {
           Chat.changeChatVisibility();
         },
       ],
-      data: { tooltip: 'Вкл/выкл. чат' },
+      title: Lang.text('titlechat'),
     });
-    let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
-      domaudio: domAudioPresets.defaultButton,
+      domaudio: domAudioPresets.bigButton,
       style: 'heroes-menu-item',
       event: [
         'click',
@@ -1828,7 +1806,7 @@ export class View {
           Castle.buildMode = false;
         },
       ],
-      data: { tooltip: Lang.text('titleheroes') },
+      title: Lang.text('titleheroes'),
     });
     let friendsMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
@@ -1841,7 +1819,7 @@ export class View {
           Castle.buildMode = false;
         },
       ],
-      data: { tooltip: Lang.text('titlefriends') },
+      title: Lang.text('titlefriends'),
     });
     View.friendsMenuItem = friendsMenuItem;
     View.updateFriendsMenuIncomingState();
@@ -1856,27 +1834,8 @@ export class View {
           Castle.buildMode = true;
         },
       ],
-      data: { tooltip: Lang.text('titleconstruction') },
+      title: Lang.text('titleconstruction'),
     });
-    const framedMenuItems = [buildingsMenuItem, heroesMenuItem, friendsMenuItem, chatMenuItem];
-    for (const menuItem of framedMenuItems) {
-      menuItem.append(DOM({ style: 'castle-menu-icon-frame' }));
-    }
-    for (const menuItem of [heroesMenuItem, friendsMenuItem, buildingsMenuItem]) {
-      menuItem.append(DOM({ style: 'castle-panel-menu-active-frame' }));
-    }
-    View.heroesMenuItem = heroesMenuItem;
-    View.friendsMenuItem = friendsMenuItem;
-    View.buildingsMenuItem = buildingsMenuItem;
-    App.api.silent(
-      (result) => {
-        View.castleFriendAll = Array.isArray(result) ? result : [];
-        View.setFriendIncomingStatus(View.castleFriendAll.some((item) => Number(item?.status) === 2));
-        View.updateFriendsMenuOnlineCount();
-      },
-      'friend',
-      'list',
-    );
 
     flagMenuItem.style.backgroundImage =
       Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`;
@@ -1911,7 +1870,6 @@ export class View {
         flagMenuItem,
         accountRatingItem,
         settingsMenuItem,
-        notificationsMenuItem,
         heroesMenuItem,
         friendsMenuItem,
         buildingsMenuItem,
@@ -2124,16 +2082,13 @@ export class View {
     }
 
     for (let item of request.quests) {
-      const timerMs = Number(item.timer ?? item.timeLeft ?? item.remainingMs ?? item.remaining ?? 0) || 0;
-      const isActiveQuest = Number(item.status) === 1 || timerMs > 0;
       let hero = DOM({ style: 'quest-item-hero' }, DOM({ style: 'quest-item-portrait-glass' }));
       hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
 
       let timer = DOM({ style: 'quest-item-timer' });
-      item.timer = Math.max(0, timerMs);
       const tick = () => {
-        item.timer = Math.max(0, item.timer - 1000);
-        timer.textContent = Timer.getFormattedTimer(item.timer) || '00:00';
+        item.timer = item.timer - 1000;
+        timer.textContent = Timer.getFormattedTimer(item.timer);
       };
       tick();
       setInterval(tick, 1000);
@@ -2141,7 +2096,7 @@ export class View {
       let quest = DOM(
         {
           domaudio: domAudioPresets.defaultButton,
-          style: ['quest-item', isActiveQuest ? 'quest-item--active' : null].filter(Boolean),
+          style: 'quest-item',
           domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
@@ -2155,13 +2110,13 @@ export class View {
         DOM(
           { style: 'quest-item-portrait-background' },
           hero,
-          isActiveQuest
+          item.status == 1
             ? ''
             : DOM({
                 style: item.status == 0 ? 'quest-item-exclamation' : 'quest-item-completed',
               }),
         ),
-        isActiveQuest ? timer : '',
+        item.status == 1 ? timer : '',
       );
 
       items.push(quest);
@@ -2203,7 +2158,6 @@ export class View {
 
   static bodyCastleBuildings() {
     View.castleActiveTab = 'buildings';
-    View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
@@ -2226,11 +2180,7 @@ export class View {
       return;
     }
 
-    let preload = new PreloadImages(View.castleBottom, (element) => {
-      const imageUrl = String(element?.dataset?.url || '');
-      if (!imageUrl) return;
-      element.style.backgroundImage = `url("${imageUrl}"), radial-gradient(ellipse at 50% 43%, rgba(45, 209, 189, 0.48) 0%, rgba(45, 209, 189, 0.41) 12%, rgba(45, 209, 189, 0.32) 23%, rgba(45, 209, 189, 0.23) 35%, rgba(45, 209, 189, 0.15) 46%, rgba(45, 209, 189, 0.075) 57%, rgba(45, 209, 189, 0.035) 70%, rgba(45, 209, 189, 0.012) 88%, rgba(45, 209, 189, 0) 100%)`;
-    });
+    let preload = new PreloadImages(View.castleBottom);
 
     for (let i = 1; i < Castle.buildings.length; ++i) {
       let item = Castle.buildings[i];
@@ -2244,7 +2194,7 @@ export class View {
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
       let buildingIcon = DOM({ style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img' });
-      let buildingIconBox = DOM({ style: 'buildingIconBox', data: { tooltip: 'Построить' } }, buildingIcon);
+      let buildingIconBox = DOM({ style: 'buildingIconBox' }, buildingIcon);
 
       let building = DOM(
         { style: 'castle-building-item' },
@@ -2553,7 +2503,6 @@ export class View {
         {
           style: ['castle-hero-list-btn', 'castle-hero-list-btn-add'],
           domaudio: domAudioPresets.defaultButton,
-          data: { tooltip: 'Создать список' },
           event: [
             'click',
             () => {
@@ -2577,11 +2526,7 @@ export class View {
     }
 
     const searchWrap = DOM({
-      style: [
-        'castle-hero-list-search-wrap',
-        'castle-roster-list-search-wrap',
-        View.castleHeroSearch ? 'castle-hero-list-search-wrap-has-value' : null,
-      ].filter(Boolean),
+      style: ['castle-hero-list-search-wrap', View.castleHeroSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
     });
 
     const search = DOM({
@@ -2638,14 +2583,6 @@ export class View {
           : 'castle-hero-list-editor-mode-idle';
     const titleText =
       mode === 'add' ? `Добавить выбранных героев в ${listName}` : mode === 'remove' ? `Удалить выбранных героев из ${listName}` : listName;
-    const titleContent =
-      mode === 'add'
-        ? DOM(
-            { style: ['castle-hero-list-editor-title', 'castle-hero-list-editor-title-add'] },
-            DOM({ tag: 'span' }, 'Добавить выбранных героев в'),
-            DOM({ tag: 'span' }, listName),
-          )
-        : DOM({ style: 'castle-hero-list-editor-title' }, titleText);
     const totalHeroes = (View.castleHeroAll || []).length;
     let heroesInList = 0;
     for (const hero of View.castleHeroAll || []) {
@@ -2662,7 +2599,6 @@ export class View {
           canAddToList ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Добавить' },
         event: [
           'click',
           () => {
@@ -2684,7 +2620,6 @@ export class View {
           canRemoveFromList ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Убрать' },
         event: [
           'click',
           () => {
@@ -2761,7 +2696,7 @@ export class View {
           },
         ],
       },
-      titleContent,
+      DOM({}, titleText),
     );
     middle.addEventListener('contextmenu', (event) => {
       event.preventDefault();
@@ -2958,7 +2893,7 @@ export class View {
           View.castleFriendSelectedList === 0 ? 'castle-hero-list-btn-active' : null,
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Список друзей' },
+        title: Lang.text('titlefriends'),
         event: [
           'click',
           () => {
@@ -2983,7 +2918,6 @@ export class View {
           View.castleFriendSelectedList === 1 ? 'castle-hero-list-btn-active' : null,
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Фавориты' },
         event: [
           'click',
           () => {
@@ -3027,11 +2961,7 @@ export class View {
     }
 
     const searchWrap = DOM({
-      style: [
-        'castle-hero-list-search-wrap',
-        'castle-roster-list-search-wrap',
-        View.castleFriendSearch ? 'castle-hero-list-search-wrap-has-value' : null,
-      ].filter(Boolean),
+      style: ['castle-hero-list-search-wrap', View.castleFriendSearch ? 'castle-hero-list-search-wrap-has-value' : null].filter(Boolean),
     });
 
     const search = DOM({
@@ -3094,7 +3024,6 @@ export class View {
           canAdd ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Добавить' },
         event: [
           'click',
           () => {
@@ -3116,7 +3045,6 @@ export class View {
           canRemove ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Убрать' },
         event: [
           'click',
           () => {
@@ -3228,7 +3156,7 @@ export class View {
     const modal = DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('searchForFriends')));
     const buttonAdd = DOM(
       {
-        style: ['castle-friend-item', 'castle-friend-add-card'],
+        style: 'castle-friend-item',
         onclick: () => {
           let input = DOM({
             tag: 'input',
@@ -3361,7 +3289,6 @@ export class View {
         ),
       ),
     );
-    buttonAdd.dataset.tooltip = Lang.text('addFriend');
     if (!onlineListSelected) {
       buttonAdd.dataset.url = `content/hero/empty.png`;
       preload.add(buttonAdd);
@@ -3422,8 +3349,6 @@ export class View {
           const friendInParty = presenceState === 'online' && Number(item?.inParty) === 1;
           const groupEnabled = View.isFriendGroupInviteEnabled(item);
           const callEnabled = View.isFriendCallEnabled(item);
-          const isOffline = presenceState === 'offline';
-          const isTambour = presenceState === 'tambour';
           const groupText = friendInParty
             ? Lang.text('friendInGroup')
             : groupEnabled
@@ -3437,26 +3362,14 @@ export class View {
             modeId >= 0 &&
             (presenceState === 'battle' || presenceState === 'queue' || presenceState === 'tambour');
           const modeText = canShowModeOnHover ? Lang.text(`gm${modeId + 1}`) : '';
-          let group = DOM(
-            {
-              style: [
-                'castle-friend-add-group',
-                isOffline ? 'castle-friend-add-group-offline' : null,
-                isTambour ? 'castle-friend-add-group-tambour' : null,
-              ].filter(Boolean),
-            },
-            groupText,
-          );
-          let call = DOM(
-            { style: ['castle-friend-add-group', isOffline ? 'castle-friend-add-group-offline' : null].filter(Boolean) },
-            Lang.text('callAFriend'),
-          );
+          let group = DOM({ style: 'castle-friend-add-group' }, groupText);
+          let call = DOM({ style: 'castle-friend-add-group' }, Lang.text('callAFriend'));
           const presenceFilter = View.getFriendPresenceFilter(presenceState);
           if (!groupEnabled || friendInParty) {
-            group.style.filter = isOffline || isTambour ? '' : (presenceFilter || 'grayscale(0.8)');
+            group.style.filter = presenceFilter || 'grayscale(0.8)';
           }
           if (!callEnabled) {
-            call.style.filter = isOffline ? '' : 'grayscale(0.8)';
+            call.style.filter = 'grayscale(0.8)';
           }
           if (groupEnabled && !friendInParty) {
             group.onclick = View.createFriendGroupAction(item);
@@ -3479,7 +3392,7 @@ export class View {
             let removeButton = DOM(
               {
                 domaudio: domAudioPresets.smallButton,
-                style: ['splash-content-button', 'splash-nickname-sized-button', 'friend-action-button'],
+                style: 'splash-content-button',
                 event: [
                   'click',
                   async () => {
@@ -3491,12 +3404,12 @@ export class View {
                   },
                 ],
               },
-              Lang.text('friendRemovePlayer'),
+              Lang.text('friendRemove'),
             );
             let profileButton = DOM(
               {
                 domaudio: domAudioPresets.smallButton,
-                style: ['splash-content-button', 'splash-nickname-sized-button', 'friend-action-button'],
+                style: 'splash-content-button',
                 event: [
                   'click',
                   () => {
@@ -3510,13 +3423,12 @@ export class View {
             let cancelButton = DOM(
               {
                 domaudio: domAudioPresets.closeButton,
-                style: ['splash-content-button', 'splash-content-button-red', 'splash-nickname-sized-button', 'friend-action-button'],
+                style: 'splash-content-button',
                 event: ['click', () => Splash.hide()],
               },
-              Lang.text('friendClose'),
+              Lang.text('friendCancle'),
             );
             body.append(
-              DOM({ style: 'splash-modal-scope-friend-action' }),
               modal,
               DOM({ id: 'friendRemoveText' }, String(item.nickname || '')),
               profileButton,
@@ -3613,7 +3525,6 @@ export class View {
 
   static bodyCastleHeroes() {
     View.castleActiveTab = 'heroes';
-    View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.castleHeroListsBar?.classList?.remove('castle-hero-lists-bar-hidden');
@@ -3643,7 +3554,6 @@ export class View {
 
   static bodyCastleFriends() {
     View.castleActiveTab = 'friends';
-    View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
@@ -3663,7 +3573,6 @@ export class View {
         if (View.castleActiveTab !== 'friends') return;
         View.setFriendIncomingStatus(Array.isArray(result) && result.some((item) => Number(item?.status) == 2));
         View.castleFriendAll = Array.isArray(result) ? result : [];
-        View.updateFriendsMenuOnlineCount();
         View.renderCastleFriendsFromCache();
       },
       'friend',
@@ -3986,8 +3895,6 @@ export class View {
 
               try {
                 await PWGame.check();
-
-                await PWGame.testGameServerConnection();
 
                 await PWGame.checkUpdates();
               } catch (e) {
@@ -4358,19 +4265,18 @@ export class View {
     const makeTableRow = (player, rankNum) => {
       const hName = heroNameById(player.hero);
       const placeCell = DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, String(rankNum));
-      const nameCellStyle = ['wtop-cell', 'wtop-cell--name'];
-      if (rankNum <= 3) {
-        nameCellStyle.push('wtop-cell--name-with-crown');
-      }
       const nameCell = DOM(
-        { style: nameCellStyle },
+        { style: ['wtop-cell', 'wtop-cell--name'] },
         DOM({ tag: 'span', style: 'wtop-cell-name-text' }, player.nickname || '—'),
-        ...makeCrownForRank(rankNum, 'row'),
       );
       const heroIcon = DOM({ style: 'wtop-cell-hero-icon' });
       heroIcon.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
       const heroNameEl = DOM({ style: 'wtop-cell-hero-name' }, hName || '—');
-      const heroCell = DOM({ style: ['wtop-cell', 'wtop-cell--hero'] }, heroIcon, heroNameEl);
+      const heroCellStyle = ['wtop-cell', 'wtop-cell--hero'];
+      if (rankNum <= 3) {
+        heroCellStyle.push('wtop-cell--hero-with-crown');
+      }
+      const heroCell = DOM({ style: heroCellStyle }, heroIcon, heroNameEl, ...makeCrownForRank(rankNum, 'row'));
       const ratingCell = DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, String(player.rating));
       return DOM(
         {
@@ -4482,9 +4388,7 @@ export class View {
         type: 'button',
         domaudio: domAudioPresets.defaultButton,
         style: ['wtop-cell', 'wtop-hero-period-toggle'],
-        data: { tooltip: Lang.text('topPeriodTooltip') },
       });
-      periodToggle.setAttribute('aria-label', Lang.text('topPeriodTooltip'));
       const headerHeroTitle = DOM({ style: ['wtop-cell', 'wtop-cell--hero', 'wtop-cell--hero-stats-hero', 'wtop-hero-title-cell'] });
       const headerHeroLabel = DOM({ tag: 'span', style: 'wtop-hero-title-label' }, Lang.text('topColHero'));
       const getCurrentHeroList = () => heroStatsPayload[heroStatsPeriod] || [];
@@ -4550,7 +4454,6 @@ export class View {
           type: 'button',
           style: ['wtop-cell', 'wtop-sortable-header'],
           domaudio: domAudioPresets.defaultButton,
-          data: { tooltip: Lang.text('topSortTooltip') },
           event: [
             'click',
             () => {
@@ -4564,7 +4467,6 @@ export class View {
             },
           ],
         });
-        btn.setAttribute('aria-label', Lang.text('topSortTooltip'));
         headerButtons.set(col.key, btn);
         header.append(btn);
       }
@@ -4600,7 +4502,26 @@ export class View {
 
     const scrollClass = isSplah ? 'wtop-scroll' : 'top-scroll';
     const modeBar = DOM({ style: 'wtop-mode-bar' });
-    modeBar.append(DOM({ style: 'wtop-mode-section-title' }, Lang.text('topModesHeading')));
+    modeBar.append(
+      DOM({
+        domaudio: domAudioPresets.defaultButton,
+        style: ['wtop-mode-tab', isHeroStatsView ? 'is-active' : null].filter(Boolean),
+        tag: 'button',
+        type: 'button',
+        textContent: Lang.text('topHeroesTab'),
+        event: [
+          'click',
+          () => {
+            if (isHeroStatsView) return;
+            if (isSplah) {
+              Window.show('main', 'top', heroId, HERO_STATS_TAB_ID);
+            } else {
+              View.show('top', heroId, false, HERO_STATS_TAB_ID);
+            }
+          },
+        ],
+      }),
+    );
     for (const tab of TOP_MODE_TABS) {
       const isActive = tab.id === activeMode;
       const btn = DOM({
@@ -4623,41 +4544,13 @@ export class View {
       });
       modeBar.append(btn);
     }
-    modeBar.append(DOM({ style: ['wtop-mode-section-title', 'wtop-mode-section-title--other'] }, Lang.text('topOtherHeading')));
-    modeBar.append(
-      DOM({
-        domaudio: domAudioPresets.defaultButton,
-        style: ['wtop-mode-tab', isHeroStatsView ? 'is-active' : null].filter(Boolean),
-        tag: 'button',
-        type: 'button',
-        textContent: Lang.text('topHeroesTab'),
-        event: [
-          'click',
-          () => {
-            if (isHeroStatsView) return;
-            if (isSplah) {
-              Window.show('main', 'top', heroId, HERO_STATS_TAB_ID);
-            } else {
-              View.show('top', heroId, false, HERO_STATS_TAB_ID);
-            }
-          },
-        ],
-      }),
-    );
+
+    const podium = DOM({ style: 'wtop-podium' });
+    for (let i = 0; i < 3 && i < list.length; i++) {
+      podium.append(makePodiumCard(list[i], i + 1));
+    }
 
     const listScroll = DOM({ style: 'wtop-list-scroll' });
-    let wheelScrollEndTimer = 0;
-    listScroll.addEventListener(
-      'wheel',
-      () => {
-        listScroll.classList.add('is-wheel-scrolling');
-        clearTimeout(wheelScrollEndTimer);
-        wheelScrollEndTimer = setTimeout(() => {
-          listScroll.classList.remove('is-wheel-scrolling');
-        }, 120);
-      },
-      { passive: true },
-    );
     if (!isHeroStatsView && list.length === 0) {
       listScroll.append(DOM({ style: 'wtop-empty-hint', textContent: Lang.text('topEmpty') }));
     } else if (!isHeroStatsView) {
@@ -4690,26 +4583,20 @@ export class View {
         tag: 'button',
         type: 'button',
         style: 'wtop-hero-filter',
-        data: { tooltip: Lang.text('topHeroFilterTooltip') },
+        title: Lang.text('clickToViewHeroRating'),
         event: ['click', openHeroPicker],
       },
       heroFilterImg,
     );
-    heroFilterBtn.setAttribute('aria-label', Lang.text('topHeroFilterTooltip'));
-    if (!isHeroStatsView) {
-      modeBar.append(DOM({ style: 'wtop-hero-filter-slot' }, heroFilterBtn));
-    }
+    heroFilterBtn.setAttribute('aria-label', Lang.text('clickToViewHeroRating'));
 
     const listRow = DOM({ style: 'wtop-list-row' }, listScroll);
-    const top = DOM(
-      { style: [scrollClass, 'top-layout'] },
-      DOM({ style: 'wtop-window-title' }, Lang.text('topWindowTitle')),
-      DOM(
-        { style: 'wtop-window-body' },
-        modeBar,
-        DOM({ style: 'wtop-window-content' }, listRow),
-      ),
-    );
+    const topChildren = [modeBar];
+    if (!isHeroStatsView) {
+      topChildren.push(DOM({ style: 'wtop-podium-row' }, podium, heroFilterBtn));
+    }
+    topChildren.push(listRow);
+    const top = DOM({ style: [scrollClass, 'top-layout'] }, ...topChildren);
 
     const helpBtn = DOM({
       id: 'wtop_help',
