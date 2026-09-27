@@ -23,7 +23,7 @@ export class App {
 
   static PW_VERSION = '2.16.0';
 
-  static CURRENT_MM = 'mmtest';
+  static CURRENT_MM = 'mm';
 
   static RVPN = 'ws://26.187.55.30:3737';
   static VPS = 'wss://pw-classic.ru';
