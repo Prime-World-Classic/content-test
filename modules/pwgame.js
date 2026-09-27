@@ -185,6 +185,25 @@ export class PWGame {
     return PWGame.encodeIps(reachable.map((r) => r.ip).concat(unreachable));
   }
 
+  // tping-отчёт для выбора сервера (PLAN_server_pick_ping.md): параллельные
+  // ПРЯМЫЕ пробы alive-пула (логин-порт base+1, тот же 8-байтный RDP INIT,
+  // что orderServerIps) и отчёт бэкенду. Запускающий блок здесь не
+  // пересортируется — пробы только для cost-модели (tping-члена).
+  static async probePoolForReport(data) {
+    if (!data || !data.seq || !Array.isArray(data.pool) || !data.pool.length) {
+      return;
+    }
+
+    let rtts = await Promise.all(data.pool.map((e) => PWGame.udpGameProbe(e.ip, e.base + 1, 2000)));
+
+    let ips = {};
+    for (let i = 0; i < data.pool.length; ++i) {
+      ips[data.pool[i].ip] = typeof rtts[i] === 'number' ? Math.round(rtts[i] * 100) / 100 : null;
+    }
+
+    App.api.request(App.CURRENT_MM, 'reportPing', { seq: data.seq, ips: ips });
+  }
+
   static async start(id, callback, ips, port) {
     await PWGame.check();
 
