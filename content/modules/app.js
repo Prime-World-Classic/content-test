@@ -1,0 +1,879 @@
+import { DOM } from './dom.js';
+import { News } from './news.js';
+import { Store } from './store.js';
+import { Api } from './api.js';
+import { View } from './view.js';
+import { Events } from './events.js';
+import { Voice } from './voice.js';
+import { Chat } from './chat.js';
+import { NativeAPI } from './nativeApi.js';
+import { MM } from './mm.js';
+import { Splash } from './splash.js';
+import { Window } from './window.js';
+import { Castle } from './castle.js';
+import { Lang } from './lang.js';
+import { Sound } from './sound.js';
+import { loadKeybinds } from './keybindings/keybindings.io.js';
+import { domAudioPresets } from './domAudioPresets.js';
+import { SOUNDS_LIBRARY, generateHeroSoundsNative, generateHeroSoundsFallback } from './soundsLibrary.js';
+import { SessionPulse } from './sessionPulse.js';
+import { HostRacer } from './hostRacer.js';
+
+export class App {
+  static APP_VERSION = '0';
+
+  static PW_VERSION = '2.16.0';
+
+  static CURRENT_MM = 'mm';
+
+  static RVPN = 'ws://26.187.55.30:3737';
+  static VPS = 'wss://pw-classic.ru';
+  // ВАЖНО: прокси CF молча роняет WS-фреймы больше ~23 КБ (замер: 22 КБ
+  // проходит, ≥24 КБ сброшен; после oversized-фрейма деградирует всё
+  // соединение). Поэтому ВСЕ ответы лончеру должны быть < 23 КБ: чат-синк —
+  // чанками, admin-списки талантов — пагинация с бюджетом (backend: лог
+  // LARGE RESPONSE при ответе > 15 КБ), build.sets — локальные данные.
+  // CF (api2.zone-play.com:2096, Cloudflare SaaS WS-прокси) исключён: замерено,
+  // что CF роняет соединения после ~2 средних S→C фреймов (2×5.4 КБ OK, 3-й
+  // не доходит; 17.9 КБ первым — OK, вторым — нет; задержки не помогают).
+  // Прямой DOK:2096 и VPS (pw-classic.ru) — без ограничений. Повторно
+  // включить, только если CF починит WS-прокси.
+  static hostList = [this.RVPN, this.VPS];
+
+  // Бессмертное подключение: таймаут на кандидата растёт по мере провальных
+  // раундов (потолок — конец списка); тупикового «конечного отказа» нет —
+  // цикл идёт, пока не ответит какой-нибудь хост. Сбрасывается при успехе.
+  static CONNECT_TIMEOUT_SCHEDULE = [3500, 5000, 7000, 10000, 15000, 20000, 30000];
+  static CONNECT_ROUND_BACKOFF_MS = 1000;
+
+  static connectTimeoutForRound(round) {
+    const schedule = this.CONNECT_TIMEOUT_SCHEDULE;
+    return schedule[Math.min(round, schedule.length - 1)];
+  }
+
+  /**
+   * Первое подключение: гонка хостов (HostRacer), открытый сокет
+   * передаётся в Api без повторного handshake. Гонка бессмертная:
+   * раунды идут с эскалацией таймаутов, пока не подключимся.
+   */
+  static async connectAndInit() {
+    this.hideConnectingUI();
+
+    let round = 0;
+
+    this.racer = new HostRacer(this.hostList, {
+      onState: (phase, data) => {
+        if (phase === 'candidate') {
+          this.updateConnectingUI(data.host, round);
+        }
+      },
+      getToken: () => {
+        // На первом подключении storage ещё не инициализирован
+        try {
+          return this.storage?.data?.token || '';
+        } catch (error) {
+          return '';
+        }
+      },
+    });
+
+    while (true) {
+      const result = await this.racer.race({ timeoutMs: this.connectTimeoutForRound(round) });
+
+      if (result.ok) {
+        this.hideConnectingUI();
+        return this.init(result.socket, result.host, result.latencyMs);
+      }
+
+      round++;
+      await new Promise((resolve) => setTimeout(resolve, this.CONNECT_ROUND_BACKOFF_MS));
+    }
+  }
+
+  static updateConnectingUI(host = null, round = 0) {
+    let body = document.getElementById('connecting-message');
+
+    if (!body) {
+      body = DOM({ id: 'connecting-message', style: 'connecting-message' });
+      document.body.append(body);
+    }
+
+    body.innerHTML = '';
+
+    const label = host
+      ? `${Lang.text('connectingToServer')} (${host.replace(/^wss?:\/\//, '')}, ${Lang.text('connectingRound')} ${round + 1})`
+      : Lang.text('connectingToServer');
+
+    body.append(DOM({ tag: 'div' }, label));
+  }
+
+  static hideConnectingUI() {
+    const body = document.getElementById('connecting-message');
+
+    if (body) {
+      body.remove();
+    }
+  }
+
+  /**
+   * Preloads all sounds in SOUNDS_LIBRARY
+   * @returns {Promise<void>} A promise that resolves when all sounds are preloaded
+   */
+  static async initSounds() {
+    if (NativeAPI.status) {
+      generateHeroSoundsNative();
+    } else {
+      generateHeroSoundsFallback();
+    }
+    const tasks = [];
+
+    const walk = (obj) => {
+      for (const key in obj) {
+        const value = obj[key];
+
+        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          walk(value);
+        } else {
+          tasks.push(Sound.preload(key, value));
+        }
+      }
+    };
+
+    walk(SOUNDS_LIBRARY);
+
+    await Promise.all(tasks);
+  }
+
+  static async init(socket = null, host = null, latencyMs = 0) {
+    // ws://26.187.55.30:3737 - Radmin VPN relay (DOK)
+    // wss://pw-classic.ru - VPS
+    // wss://api2.zone-play.com:2096/api - Cloudflare edge (DOK)
+    App.api = new Api(this.hostList, Events, { socket: socket, host: host, latencyMs: latencyMs });
+
+    await News.init();
+
+    await Store.init();
+
+    await App.initSounds();
+
+    App.storage = new Store('u3');
+
+    await App.storage.init({ id: 0, token: '', login: '' });
+
+    await MM.init();
+    // tambur test
+
+    //     setTimeout(() => {
+            
+    //         let obj = {id:1, users:{
+    //             10:{nickname:'Nesh',hero:15,ready:1,rating:1300,select:false,team:1,banhero:59},
+    //             1858:{nickname:'DOK',hero:6,ready:1,rating:1100,select:false,team:1,banhero:14},
+    //             2:{nickname:'Коао',hero:12,ready:1,rating:1100,select:false,team:1,banhero:62},
+    //             4:{nickname:'Lantarm',hero:24,ready:1,rating:1100,select:false,team:1,banhero:9},
+    //             5:{nickname:'123',hero:8,ready:1,rating:1100,select:false,team:2,banhero:20},
+    //             6:{nickname:'123',hero:2,ready:1,rating:1100,select:false,team:2,banhero:21},
+    //             7:{nickname:'Farfania',hero:9,ready:1,rating:1100,select:false,team:2,banhero:22},
+    //             8:{nickname:'Rekongstor',hero:25,ready:1,rating:1100,select:false,team:2,banhero:23},
+    //             9:{nickname:'Hatem',hero:0,ready:1,rating:2200,select:false,team:2,banhero:26}
+    //         },target:7,map:[4,2,App.storage.data.id,5,6,7,8,9,10,1858],mode:0};
+
+    //         obj.users[App.storage.data.id] = {winrate:51,nickname:App.storage.data.login,hero:20,ready:0,rating:1284,select:true,team:1,mode:0,commander:true,banhero:16};
+            
+    //         MM.lobby(obj);
+            
+    //     },1000);
+        
+        // setTimeout(() => {
+            
+        //     MM.chat({id:0,message:'тестовое сообщение'});
+        //     MM.chat({id:2,message:'тестовое сообщение'});
+        //     MM.chat({id:7,message:'тестовое сообщение'});
+            
+        // },2000);
+
+
+        // setTimeout(() => {
+            
+        //     ARAM.briefing(6,1,() => alert(1));
+            
+        // },3000);
+
+
+        // setTimeout(() => {
+            
+        //     Splash.show(DOM({style:'iframe-stats'},DOM({style:'iframe-stats-navbar',event:['click',() => Splash.hide()]},'X'),DOM({tag:'iframe',src:'https://stat.26rus-game.ru'})),false);
+            
+        // },3000);
+
+    await loadKeybinds();
+    await App.syncAuthPulse();
+    Chat.init();
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        requestAnimationFrame(() => Voice.updatePanelPosition());
+        e.preventDefault();
+        e.stopPropagation();
+
+        // 1. Сначала закрываем Splash если открыт
+        if (typeof Splash !== 'undefined' && Splash.body && Splash.body.style.display === 'flex') {
+          Splash.hide();
+          Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, { id: 'ui-close', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+          return;
+        }
+
+        // 2. Затем закрываем окна по одному в обратном порядке
+        if (typeof Window !== 'undefined' && Window.anyOpen && Window.anyOpen()) {
+          Window.closeLast(); // Закрываем только последнее окно
+          Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, { id: 'ui-close', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+          return;
+        }
+        // 3. Если окон нет - открываем настройки
+        else {
+          if (typeof Window !== 'undefined' && Window.show) {
+            Window.show('main', 'menu');
+            Sound.play(SOUNDS_LIBRARY.CLICK_OPEN_BIG, { id: 'ui-big-click', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+          }
+        }
+      }
+    });
+
+    try {
+      await App.api.init();
+    } catch (error) {}
+    
+    Chat.loadHistory().catch((error) => console.error('Failed to load chat history after API init', error));
+
+    //App.ShowCurrentView();
+
+    // App.backgroundAnimate = document.body.animate({backgroundSize:['150%','100%','150%']},{duration:30000,iterations:Infinity,easing:'ease-out'});
+
+    if (App.isAdmin()) {
+      document.body.append(DOM({ id: 'ADMStat' }));
+    }
+
+    Voice.init();
+  }
+
+  static say(text) {
+    if (!('speechSynthesis' in window)) {
+      return;
+    }
+
+    if (window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+    }
+
+    let synthesis = new SpeechSynthesisUtterance(text);
+
+    synthesis.rate = 1.0;
+
+    synthesis.pitch = 1.0;
+
+    synthesis.volume = Castle.GetVolume(Castle.AUDIO_SOUNDS);
+
+    synthesis.lang = Lang.text('synthesisLang');
+
+    window.speechSynthesis.speak(synthesis);
+  }
+
+  static ShowCurrentView() {
+    console.log('ShowCurrentView');
+    if (App.storage.data.login && !App.isAuthPulseActiveSync()) {
+      View.show('castle');
+    } else {
+      View.show('authorization');
+    }
+  }
+
+  static async ShowCurrentViewAsync() {
+    await App.syncAuthPulse();
+    if (App.storage.data.login && !App.isAuthPulseActiveSync()) {
+      await View.show('castle');
+    } else {
+      await View.show('authorization');
+    }
+  }
+
+  static parseAuthPulse(raw) {
+    return SessionPulse.parse(raw);
+  }
+
+  static encodeCompactData(text) {
+    return SessionPulse.encodeCompactData(text);
+  }
+
+  static decodeCompactData(text) {
+    return SessionPulse.decodeCompactData(text);
+  }
+
+  static readAuthPulseFromStorage() {
+    return SessionPulse.readFromStorage();
+  }
+
+  static getAuthPulseFilePath() {
+    return SessionPulse.getFilePath(NativeAPI);
+  }
+
+  static async readAuthPulseFromFile() {
+    return SessionPulse.readFromFile(NativeAPI);
+  }
+
+  static async writeAuthPulse(pulse) {
+    await SessionPulse.writeToAll(NativeAPI, pulse);
+  }
+
+  static isAuthPulseActive(pulse) {
+    return SessionPulse.isActive(pulse);
+  }
+
+  static isAuthPulseActiveSync() {
+    return App.isAuthPulseActive(App.readAuthPulseFromStorage());
+  }
+
+  static buildAuthPulseMessage(pulse) {
+    return SessionPulse.buildMessage(pulse, (key) => Lang.text(key));
+  }
+
+  static parseSignalMinutes(text) {
+    return SessionPulse.parseSignalMinutes(text);
+  }
+
+  static isAuthPulseSignal(text) {
+    return SessionPulse.isSignal(text, `${Lang.text('accountBanned') || ''}`);
+  }
+
+  static async syncAuthPulse() {
+    return await SessionPulse.sync(NativeAPI);
+  }
+
+  static async handleAuthPulseSignal(text, context = null) {
+    const pulse = SessionPulse.createFromSignal(
+      text,
+      context,
+      {
+        ownerLogin: `${App.storage?.data?.login || ''}`.trim(),
+        ownerId: Number(App.storage?.data?.id || 0),
+      },
+      `${Lang.text('accountBanned') || ''}`,
+    );
+    if (!pulse) return null;
+    await SessionPulse.writeToAll(NativeAPI, pulse);
+    try {
+      View.show('authorization');
+    } catch {}
+    return pulse;
+  }
+
+  static OpenExternalLink(url) {
+    if (NativeAPI.status) {
+      nw.Shell.openExternal(url);
+    } else {
+      window.open(url, url, 'popup');
+    }
+  }
+
+  static onApiReconnected() {
+    Chat.syncPinnedMessagesWithBackend?.();
+    Chat.syncRecentMessagesWithBackend?.();
+  }
+
+  static async authorization(login, password) {
+    if (!login.value) {
+      login.setAttribute('style', 'background:rgba(255,0,0,0.3)');
+
+      return App.error(Lang.text('loginRequiredError'));
+    }
+
+    if (!password.value) {
+      password.setAttribute('style', 'background:rgba(255,0,0,0.3)');
+
+      return App.error(Lang.text('passwordRequiredError'));
+    }
+
+    let request, analysis;
+
+    try {
+      analysis = NativeAPI.analysis();
+    } catch (e) {}
+
+    if (analysis && App.api) {
+      analysis.api = App.api.connectionInfo();
+    }
+
+    try {
+      request = await App.api.request('user', 'authorization', {
+        login: login.value.trim(),
+        password: password.value.trim(),
+        analysis: analysis,
+      });
+    } catch (error) {
+      await App.handleAuthPulseSignal(error, { ownerLogin: login.value.trim() });
+      return App.error(error);
+    }
+
+    const activePulse = await App.syncAuthPulse();
+    if (App.isAuthPulseActive(activePulse)) {
+      const ownerLogin = `${activePulse?.ownerLogin || ''}`.trim().toLowerCase();
+      const ownerId = Number(activePulse?.ownerId || 0);
+      const hasOwnerMeta = !!ownerLogin || ownerId > 0;
+      const enteredLogin = `${login.value || ''}`.trim().toLowerCase();
+      if (!hasOwnerMeta || (ownerLogin && enteredLogin && ownerLogin === enteredLogin)) {
+        await App.writeAuthPulse(null);
+      } else {
+        return App.error(App.buildAuthPulseMessage(activePulse));
+      }
+    }
+
+    await App.writeAuthPulse(null);
+
+    await App.storage.set({
+      id: request.id,
+      token: request.token,
+      login: login.value,
+      fraction: request.fraction,
+    });
+
+    View.show('castle');
+  }
+
+  static formatNicknameCooldown(ms = 0) {
+    const totalMinutes = Math.max(0, Math.ceil(Number(ms || 0) / 60000));
+    const days = Math.floor(totalMinutes / 1440);
+    const hours = Math.floor((totalMinutes % 1440) / 60);
+    const minutes = totalMinutes % 60;
+    const dayUnit = Lang.text('nicknameTimeDayShort');
+    const hourUnit = Lang.text('nicknameTimeHourShort');
+    const minuteUnit = Lang.text('nicknameTimeMinuteShort');
+    const parts = [];
+    if (days > 0) parts.push(`${days}${dayUnit}`);
+    if (hours > 0 || days > 0) parts.push(`${hours}${hourUnit}`);
+    parts.push(`${minutes}${minuteUnit}`);
+    return parts.join(' ');
+  }
+
+  static async setNickname() {
+    
+    const close = DOM({
+      tag: 'div',
+      domaudio: domAudioPresets.closeButton,
+      style: 'close-button',
+      event: ['click', () => Splash.hide()],
+    });
+
+    close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
+
+    let template = document.createDocumentFragment();
+    let modal = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('nicknamePlaceholder')));
+    let title = DOM({ tag: 'div', style: 'castle-menu-text', id: 'castle-menu-text-change-nickname' }, Lang.text('nicknameChangeCooldown'));
+    try {
+      const cooldown = await App.api.request('user', 'nicknameCooldown', {});
+      const remainingMs = Number(cooldown?.remainingMs || 0);
+      title.textContent = remainingMs > 0
+        ? Lang.text('nicknameChangeRemaining').replace('{time}', App.formatNicknameCooldown(remainingMs))
+        : Lang.text('nicknameChangeReadyNow');
+    } catch {}
+
+    let name = DOM({
+      domaudio: domAudioPresets.defaultInput,
+      tag: 'input',
+      placeholder: Lang.text('nicknamePlaceholder'),
+      value: App.storage.data.login,
+    });
+
+    let button = DOM(
+      {
+        domaudio: domAudioPresets.bigButton,
+        style: 'splash-content-button-modal',
+        event: [
+          'click',
+          async () => {
+            if (!name.value) {
+              Splash.hide();
+
+              return;
+            }
+
+            if (App.storage.data.login == name.value) {
+              Splash.hide();
+
+              return;
+            }
+
+            try {
+              await App.api.request('user', 'set', { nickname: name.value });
+            } catch (error) {
+              return App.error(error);
+            }
+
+            await App.storage.set({ login: name.value });
+
+            View.show('castle');
+
+            Splash.hide();
+          },
+        ],
+      },
+      Lang.text('apply'),
+    );
+
+    template.append(modal, title,name, button, close);
+
+    Splash.show(template);
+  }
+
+  static setFraction() {
+    const close = DOM({
+      tag: 'div',
+      domaudio: domAudioPresets.closeButton,
+      style: 'close-button',
+      event: ['click', () => Splash.hide()],
+    });
+    close.style.backgroundImage = 'url(content/icons/close-cropped.svg)';
+
+    let template = document.createDocumentFragment();
+    const title = DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('select_faction')));  
+    Object.assign(title.style, {
+      textAlign: 'center',
+      color: '#fff',
+      textShadow: '0 0 5px rgba(0,0,0,0.5)',
+      marginBottom: '30px',
+      fontSize: '24px',
+    });
+
+    const factionsContainer = DOM({ tag: 'div', style: 'factions-container' });
+    Object.assign(factionsContainer.style, {
+      display: 'flex',
+      gap: '5%',
+      justifyContent: 'center',
+      marginBottom: '30px',
+      flexWrap: 'wrap',
+      width: '90%',
+      maxWidth: '600px',
+      margin: '0 auto',
+      marginTop: '4 cqh',
+    });
+
+    const factions = [
+      { id: 1, name: Lang.text('adorians'), icon: 'Elf_logo_over.webp' },
+      { id: 2, name: Lang.text('dokts'), icon: 'Human_logo_over2.webp' },
+    ];
+
+    const calculateIconSize = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth < 500) return '20vw';
+      if (windowWidth < 768) return '15vw';
+      return '120px';
+    };
+
+    let selectedFaction = App.storage.data.fraction;
+
+    factions.forEach((faction) => {
+      const factionElement = DOM({
+        tag: 'div',
+        domaudio: domAudioPresets.defaultButton,
+        style: 'faction-item',
+        event: [
+          'click',
+          () => {
+            selectedFaction = faction.id;
+
+            factionsContainer.querySelectorAll('.faction-item').forEach((item) => {
+              item.style.transform = 'scale(1)';
+              item.style.filter = 'brightness(0.7)';
+              item.style.boxShadow = 'none';
+            });
+
+            factionElement.style.transform = 'scale(1.05)';
+            factionElement.style.filter = 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))';
+          },
+        ],
+      });
+
+      const iconSize = calculateIconSize();
+      Object.assign(factionElement.style, {
+        width: iconSize,
+        height: iconSize,
+        minWidth: '80px',
+        minHeight: '80px',
+        maxWidth: '150px',
+        maxHeight: '150px',
+        backgroundImage: `url(content/icons/${faction.icon})`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        cursor: 'url(content/img/cursor_button32x32.png) 0 0, pointer',
+        transition: 'all 0.3s ease',
+        transform: selectedFaction === faction.id ? 'scale(1.05)' : 'scale(1)',
+        filter: selectedFaction === faction.id ? 'brightness(1) drop-shadow(0 0 5px rgba(255,215,0,0.7))' : 'brightness(0.7)',
+        borderRadius: '10px',
+      });
+
+      const nameLabel = DOM({ tag: 'div', style: 'faction-name' }, faction.name);
+      Object.assign(nameLabel.style, {
+        textAlign: 'center',
+        color: '#fff',
+        marginTop: '10px',
+        textShadow: '0 0 3px #000',
+        fontSize: '16px',
+      });
+
+      const wrapper = DOM({ tag: 'div', style: 'faction-wrapper' });
+      Object.assign(wrapper.style, {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        margin: '10px',
+      });
+
+      wrapper.append(factionElement, nameLabel);
+      factionsContainer.append(wrapper);
+    });
+
+    const button = DOM(
+      {
+        style: 'splash-content-button-modal',
+        id: 'splash-content-button-modal-fraction',
+        domaudio: domAudioPresets.bigButton,
+        event: [
+          'click',
+          async () => {
+            if (!selectedFaction) {
+              Splash.hide();
+              return;
+            }
+
+            try {
+              await App.api.request('user', 'set', {
+                fraction: selectedFaction,
+              });
+            } catch (error) {
+              return App.error(error);
+            }
+
+            await App.storage.set({ fraction: selectedFaction });
+            View.show('castle');
+            Splash.hide();
+          },
+        ],
+      },
+      Lang.text('apply'),
+    );
+
+    const resizeHandler = () => {
+      const iconSize = calculateIconSize();
+      factionsContainer.querySelectorAll('.faction-item').forEach((icon) => {
+        icon.style.width = iconSize;
+        icon.style.height = iconSize;
+      });
+    };
+
+    window.addEventListener('resize', resizeHandler);
+
+    close.addEventListener('click', () => {
+      window.removeEventListener('resize', resizeHandler);
+    });
+
+    template.append(title, factionsContainer, button, close);
+    Splash.show(template);
+  }
+
+  static async registration(fraction, invite, login, password, password2) {
+    if (!fraction.value || !invite.value || !login.value || !password.value || !password2.value) {
+      return App.error(Lang.text('missingValuesError'));
+    }
+
+    if (password.value != password2.value) {
+      password.setAttribute('style', 'background:rgba(255,0,0,0.3)');
+
+      password2.setAttribute('style', 'background:rgba(255,0,0,0.3)');
+
+      return App.error(Lang.text('passwordsMismatchError'));
+    }
+
+    let request, analysis;
+
+    try {
+      analysis = NativeAPI.analysis();
+    } catch (e) {}
+
+    if (analysis && App.api) {
+      analysis.api = App.api.connectionInfo();
+    }
+
+    try {
+      request = await App.api.request('user', 'registration', {
+        fraction: fraction.value,
+        invite: invite.value.trim(),
+        login: login.value.trim(),
+        password: password.value.trim(),
+        analysis: analysis,
+        mac: NativeAPI.getMACAdress(),
+      });
+    } catch (error) {
+      return App.error(error);
+    }
+
+    await App.storage.set({
+      id: request.id,
+      token: request.token,
+      login: login.value,
+      fraction: fraction.value,
+    });
+
+    View.show('castle');
+  }
+
+  static async exit() {
+    await App.storage.set({ id: 0, token: '', login: '' });
+
+    View.show('authorization');
+  }
+
+  static openStatsProfile({ id = 0, login = '' } = {}) {
+    const onEsc = (e) => {
+      if (e.key === 'Escape') {
+        Sound.play(SOUNDS_LIBRARY.CLICK_CLOSE, { id: 'ui-close', volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+        Splash.hide();
+        document.removeEventListener('keydown', onEsc);
+      }
+    };
+    document.addEventListener('keydown', onEsc, { once: true });
+
+    const BASE = 'https://pw2.26rus-game.ru/stats/';
+    const targetId = Number(id) || 0;
+    const targetLogin = String(login || '').trim();
+    const ownId = Number(App?.storage?.data?.id) || 0;
+    const ownLogin = String(App?.storage?.data?.login || '').trim();
+
+    const qs = new URLSearchParams();
+    if (targetId > 0) qs.set('user_id', String(targetId));
+    else if (targetLogin) qs.set('login', targetLogin);
+    else if (ownId > 0) qs.set('user_id', String(ownId));
+    else if (ownLogin) qs.set('login', ownLogin);
+    else qs.set('user_id', '0');
+    qs.set('tab', 'info');
+    qs.set('q', '');
+    qs.set('_', Date.now().toString());
+
+    const src = `${BASE}?${qs.toString()}`;
+
+    Splash.show(
+      DOM(
+        {
+          domaudio: domAudioPresets.closeButton,
+          style: 'iframe-stats',
+          event: [
+            'click',
+            (e) => {
+              if (e.target === e.currentTarget) Splash.hide();
+            },
+          ],
+        },
+        DOM({
+          domaudio: domAudioPresets.closeButton,
+          style: 'iframe-stats-navbar',
+          event: ['click', () => Splash.hide()],
+        }),
+        DOM({ tag: 'iframe', src, style: 'iframe-stats-frame' }),
+      ),
+      false,
+    );
+  }
+
+  static input(callback, object = new Object()) {
+    if (!('tag' in object)) {
+      object.tag = 'input';
+    }
+
+    if (!('value' in object)) {
+      object.value = '';
+    }
+
+    let body = DOM(object);
+
+    body.addEventListener('blur', async () => {
+      if (body.value == object.value) {
+        return;
+      }
+
+      if (callback) {
+        try {
+          await callback(body.value);
+        } catch (e) {
+          return;
+        }
+      }
+
+      object.value = body.value;
+    });
+
+    return body;
+  }
+
+  static getRandomInt(min, max) {
+    min = Math.ceil(min);
+
+    max = Math.floor(max);
+
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  static error(message, timeout = 3000) {
+    let previousErrors = document.getElementsByClassName('error-message');
+    let body;
+    if (previousErrors.length == 0) {
+      body = DOM({ style: 'error-message' });
+      document.body.append(body);
+    } else {
+      body = previousErrors[0];
+    }
+
+    let msg = DOM({ tag: 'div' }, `${message}`);
+    Sound.play(SOUNDS_LIBRARY.ERROR, {
+      id: 'ui-error',
+      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 0.25,
+    });
+    setTimeout(() => {
+      msg.remove();
+    }, timeout);
+
+    body.append(msg);
+    console.error(message);
+    console.trace('Current call stack:');
+  }
+
+  static notify(message, delay = 0) {
+    setTimeout(() => {
+      let body = DOM({ style: 'notify-message' }, DOM({ tag: 'div' }, `${message}`));
+
+      setTimeout(() => {
+        body.remove();
+      }, 3000);
+
+      document.body.append(body);
+    }, delay);
+    Sound.play(SOUNDS_LIBRARY.ERROR, {
+      id: 'ui-error',
+      volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) * 0.25,
+    });
+  }
+
+  static isAdmin(id = 0) {
+    return [1, 2, 24, 134, 865, 2220, 292, 1853, 12781].includes(Number(id ? id : App.storage.data.id));
+  }
+  
+  static isHelper(id = 0){
+	return [935, 1033, 6179, 8686].includes(Number(id ? id : App.storage.data.id));
+  }
+
+  static isEnterKey(e) {
+    return e.key === 'Enter' || e.keyCode === 13 || e.code === 'Enter' || e.code === 'NumpadEnter';
+  }
+
+  static href(url) {
+    let a = DOM({ tag: 'a', href: url });
+
+    a.click();
+  }
+}
