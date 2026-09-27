@@ -2,7 +2,7 @@ import { App } from './app.js';
 import { Lang } from './lang.js';
 
 export class Api {
-  constructor(host, bestHost, events) {
+  constructor(host, events, initial = {}) {
     if (!('WebSocket' in window)) {
       throw 'Отсутствует поддержка WebSocket';
     }
@@ -15,133 +15,204 @@ export class Api {
       throw 'Не указан хост';
     }
 
-    this.WebSocket;
-
     this.host = host;
 
-    this.MAIN_HOST = this.host[bestHost];
+    this.events = events ? events : new Object();
 
-    this.DISCONNECT_LAST_DATE_LIMIT_MS = 30000; // плюсуем неудачное соединение в указанном диапазоне времени
+    this.WebSocket = null;
 
-    this.DISCONNECT_LAST_DATE = Date.now(); // метка времени с последнего неудачного соединения
+    this.MAIN_HOST = initial.host || host[0];
 
-    this.DISCONNECT_TOTAL = 0; // количество неудачных соединений
-
-    this.DISCONNECT_LIMIT = 3; // лимит неудачных соединений, чтобы перейти на другой хост (DISCONNECT_LIMIT * RECONNECT_TIME)
-
-    this.RECONNECT_TIME = 1000; // через сколько делаем повторное соединение (1000 = 1 секунда)
+    // Телеметрия подключения (уходит в analysis при авторизации)
+    this.lastLatencyMs = initial.latencyMs || 0;
+    this.lastConnectTs = Date.now();
+    this.totalFailures = 0;
 
     this.awaiting = new Object();
-    
+
     this.requestSeq = 0;
-    
+
     this.hasConnectedOnce = false;
 
-    this.events = events ? events : new Object();
+    // Watchdog: браузер не доносит WS-уровневые ping/pong в app-код,
+    // поэтому половинка TCP (NAT-таймаут, роутер упал без RST) остаётся
+    // "OPEN" вечно. Решаем двумя механизмами:
+    //  - keepalive: при долгой тишине шлём свой пинг (любой ответ = трафик,
+    //    работает со старым бэкендом без systemPing);
+    //  - watchdog: тишина дольше WATCHDOG_SILENCE_MS → принудительный
+    //    close → реаконнект через гонку.
+    // С новым бэкендом гарантированный трафик даёт systemPing (30 с).
+    this.KEEPALIVE_INTERVAL_MS = 25000;
+    this.KEEPALIVE_SILENCE_MS = 45000;
+    this.WATCHDOG_INTERVAL_MS = 10000;
+    this.WATCHDOG_SILENCE_MS = 60000;
+
+    this.RECONNECT_DELAY_MS = 1000;
+
+    this.lastMessageAt = Date.now();
+    this._connecting = false;
+    this._lastReconnectNotifyTs = 0;
+
+    this.keepaliveTimer = null;
+    this.watchdogTimer = null;
+
+    if (initial.socket) {
+      // notifyOpen=false: ShowCurrentView нужен после init App.storage,
+      // а сокет из гонки уже открыт — onopen «промахнулся»
+      this.attach(initial.socket, initial.host, initial.latencyMs, { notifyOpen: false });
+    }
+
+    this.startKeepalive();
   }
 
   async init() {
-    await this.connect();
+    if (!this.WebSocket || this.WebSocket.readyState !== WebSocket.OPEN) {
+      await this.connect();
+    } else {
+      this.onSocketOpen();
+    }
   }
 
-  async connect(delay = 0) {
-    return new Promise((resolve, reject) => {
-      setTimeout(async () => {
-        console.log(`Попытка соединения ${this.MAIN_HOST} (${this.DISCONNECT_TOTAL})...`);
-
-        if (this.WebSocket) {
-          if (this.WebSocket.readyState == 1) {
-            return resolve();
-          }
-
-          await this.disconnect();
-        }
-
-        if (this.DISCONNECT_TOTAL >= this.DISCONNECT_LIMIT) {
-          this.hostChange();
-        }
-
-        this.WebSocket = new WebSocket(`${this.MAIN_HOST}/${App.storage.data.token}`);
-
-        this.WebSocket.onmessage = (event) => this.message(event.data);
-
-        this.WebSocket.onerror = (event) => {
-          console.log(`Разрыв соединения ${this.MAIN_HOST}...`, event);
-          App.error(Lang.text('connectionLostError').replace('{count}', this.DISCONNECT_TOTAL), event);
-        };
-
-        this.WebSocket.onclose = () => {
-          this.connect(this.RECONNECT_TIME);
-
-          reject();
-        };
-
-        this.WebSocket.onopen = () => {
-          this.WebSocket.onclose = () => this.connect(this.RECONNECT_TIME);
-
-          console.log(`Успешно подключились к ${this.MAIN_HOST}...`);
-          
-          if (this.hasConnectedOnce) {
-            try {
-              App.onApiReconnected?.();
-            } catch {}
-          }
-          
-          this.hasConnectedOnce = true;
-
-          App.ShowCurrentView();
-
-          resolve();
-        };
-
-        // this.WebSocket.onerror = reject;
-      }, delay);
-    });
-  }
-
-  async disconnect() {
-    console.log(`Закрываем соединение ${this.MAIN_HOST}...`);
-    App.error(Lang.text('connectionClosedError').replace('{count}', this.DISCONNECT_TOTAL));
-    if (!this.WebSocket) {
+  /**
+   * Подключение/реаконнект через общую гонку хостов (App.racer).
+   * Раунды — те же, что при первом подключении. Если полный цикл
+   * (все раунды) не дал соединения — повтор через 10 секунд, пока не
+   * подключимся.
+   */
+  async connect() {
+    if (this._connecting) {
       return;
     }
 
-    if (Date.now() - this.DISCONNECT_LAST_DATE < this.DISCONNECT_LAST_DATE_LIMIT_MS) {
-      this.DISCONNECT_TOTAL++;
-    }
+    this._connecting = true;
 
-    this.DISCONNECT_LAST_DATE = Date.now();
+    try {
+      if (this.WebSocket) {
+        try {
+          this.WebSocket.close();
+        } catch (error) {}
 
-    return new Promise((resolve, reject) => {
-      if (this.WebSocket.readyState == 3) {
-        return resolve();
+        this.WebSocket = null;
       }
 
-      this.WebSocket.onclose = resolve;
+      while (true) {
+        let connected = false;
 
-      // this.WebSocket.onerror = reject;
+        for (let round = 0; round < App.CONNECT_MAX_ROUNDS && !connected; round++) {
+          const result = await App.racer.race({ timeoutMs: App.CONNECT_ROUND_TIMEOUTS[round] });
 
-      this.WebSocket.close();
-    });
+          if (result.ok) {
+            this.attach(result.socket, result.host, result.latencyMs);
+            connected = true;
+          } else {
+            this.totalFailures++;
+            this.notifyReconnecting();
+
+            if (round < App.CONNECT_MAX_ROUNDS - 1) {
+              await new Promise((resolve) => setTimeout(resolve, 500 * (round + 1)));
+            }
+          }
+        }
+
+        if (connected) {
+          return;
+        }
+
+        // Полный цикл без успеха — следующий цикл через 10 секунд
+        await new Promise((resolve) => setTimeout(resolve, 10000));
+      }
+    } finally {
+      this._connecting = false;
+    }
   }
 
-  hostChange() {
-    this.DISCONNECT_TOTAL = 0;
+  /**
+   * Привязать сокет (из гонки) к Api. Скет может быть уже открытым
+   * (первое подключение/реаконнект) или ещё подключающимся.
+   */
+  attach(socket, host, latencyMs = 0, { notifyOpen = true } = {}) {
+    this.WebSocket = socket;
+    this.MAIN_HOST = host;
+    this.lastLatencyMs = latencyMs;
+    this.lastConnectTs = Date.now();
+    this.lastMessageAt = Date.now();
 
-    if (this.host.length == 1) {
+    this.WebSocket.onmessage = (event) => {
+      this.lastMessageAt = Date.now();
+      this.message(event.data);
+    };
+
+    this.WebSocket.onerror = () => {}; // onclose последует
+
+    this.WebSocket.onclose = () => {
+      this.WebSocket = null;
+
+      setTimeout(() => this.connect(), this.RECONNECT_DELAY_MS);
+    };
+
+    this.WebSocket.onopen = () => this.onSocketOpen();
+
+    if (notifyOpen && socket.readyState === WebSocket.OPEN) {
+      this.onSocketOpen();
+    }
+  }
+
+  onSocketOpen() {
+    console.log(`Успешно подключились к ${this.MAIN_HOST}...`);
+
+    if (this.hasConnectedOnce) {
+      try {
+        App.onApiReconnected?.();
+      } catch {}
+    }
+
+    this.hasConnectedOnce = true;
+
+    App.ShowCurrentView();
+  }
+
+  notifyReconnecting() {
+    // Один notify на сессию обрыва (дроссль 5 с) — вместо тоста на каждую попытку
+    if (Date.now() - this._lastReconnectNotifyTs < 5000) {
       return;
     }
 
-    let currentHost = 0;
-    for (let i = 0; i < this.host.length; ++i) {
-      if (this.MAIN_HOST == this.host[i]) {
-        currentHost = i;
-        break;
-      }
-    }
-    App.error(Lang.text('connectionRestoringError').replace('{host}', currentHost));
+    this._lastReconnectNotifyTs = Date.now();
 
-    this.MAIN_HOST = this.host[(currentHost + 1) % this.host.length];
+    App.notify(Lang.text('reconnectingNotify'));
+  }
+
+  connectionInfo() {
+    return {
+      host: this.MAIN_HOST,
+      latencyMs: this.lastLatencyMs,
+      ts: this.lastConnectTs,
+      failures: this.totalFailures,
+    };
+  }
+
+  startKeepalive() {
+    this.keepaliveTimer = setInterval(() => {
+      if (this.WebSocket && this.WebSocket.readyState === WebSocket.OPEN) {
+        if (Date.now() - this.lastMessageAt > this.KEEPALIVE_SILENCE_MS) {
+          // Тихий пинг: любой ответ (даже ошибка) = трафик.
+          // user.nicknameCooldown существует во всех версиях бэкенда.
+          this.silent(() => {}, 'user', 'nicknameCooldown', {});
+        }
+      }
+    }, this.KEEPALIVE_INTERVAL_MS);
+
+    this.watchdogTimer = setInterval(() => {
+      if (this.WebSocket && this.WebSocket.readyState === WebSocket.OPEN) {
+        if (Date.now() - this.lastMessageAt > this.WATCHDOG_SILENCE_MS) {
+          console.log(`Watchdog: тишина дольше ${this.WATCHDOG_SILENCE_MS} мс, закрываем соединение ${this.MAIN_HOST}`);
+
+          try {
+            this.WebSocket.close(4000);
+          } catch (error) {}
+        }
+      }
+    }, this.WATCHDOG_INTERVAL_MS);
   }
 
   async message(body) {
@@ -295,14 +366,14 @@ export class Api {
 
     return;
   }
-  
+
   nextRequestId() {
     this.requestSeq = (this.requestSeq + 1) % 1000000;
     return `${Date.now()}_${this.requestSeq}`;
   }
 
   async say(request, object, method, data = '', retryCount = 0) {
-    if (this.WebSocket.readyState === this.WebSocket.OPEN) {
+    if (this.WebSocket && this.WebSocket.readyState === this.WebSocket.OPEN) {
       const shouldIgnoreSessionToken =
         object === 'user' &&
         (method === 'authorization' || method === 'registration' || method === 'recover');

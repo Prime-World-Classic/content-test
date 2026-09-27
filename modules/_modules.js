@@ -42,6 +42,6 @@ Lang.init().then(() => {
   });
 
   Settings.init().then(() => {
-    App.findBestHostAndInit();
+    App.connectAndInit();
   });
 });

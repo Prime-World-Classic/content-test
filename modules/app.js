@@ -17,6 +17,7 @@ import { loadKeybinds } from './keybindings/keybindings.io.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY, generateHeroSoundsNative, generateHeroSoundsFallback } from './soundsLibrary.js';
 import { SessionPulse } from './sessionPulse.js';
+import { HostRacer } from './hostRacer.js';
 
 export class App {
   static APP_VERSION = '0';
@@ -29,49 +30,104 @@ export class App {
   static VPS = 'wss://pw-classic.ru';
   static CLOUDFLARE = 'wss://api2.zone-play.com:2096/api';
   static hostList = [this.RVPN, this.VPS, this.CLOUDFLARE];
-  static bestHost = -1;
 
-  static async findBestHostAndInit() {
-    const sockets = [];
-    let resolved = false;
+  // Гонка хостов: таймаут на одного кандидата по раундам + число раундов
+  static CONNECT_ROUND_TIMEOUTS = [3500, 5000, 7000];
+  static CONNECT_MAX_ROUNDS = 3;
 
-    const handleOpen = (index) => {
-      return () => {
-        if (!resolved) {
-          resolved = true;
-          this.bestHost = index;
+  /**
+   * Первое подключение: гонка хостов (HostRacer), открытый сокет
+   * передаётся в Api без повторного handshake. Все раунды без успеха —
+   * ошибка + кнопка «Повторить».
+   */
+  static async connectAndInit() {
+    this.hideConnectingUI();
 
-          sockets.forEach((socket, i) => {
-            //if (i !== index && socket) {
-            socket.close();
-            //}
-          });
-
-          this.init();
+    this.racer = new HostRacer(this.hostList, {
+      onState: (phase, data) => {
+        if (phase === 'candidate') {
+          this.updateConnectingUI(data.host);
         }
-      };
-    };
+      },
+      getToken: () => {
+        // На первом подключении storage ещё не инициализирован
+        try {
+          return this.storage?.data?.token || '';
+        } catch (error) {
+          return '';
+        }
+      },
+    });
 
-    for (let i = 0; i < this.hostList.length; i++) {
-      try {
-        const socket = new WebSocket(this.hostList[i]);
-        sockets[i] = socket;
+    for (let round = 0; round < this.CONNECT_MAX_ROUNDS; round++) {
+      const result = await this.racer.race({ timeoutMs: this.CONNECT_ROUND_TIMEOUTS[round] });
 
-        socket.onopen = handleOpen(i);
+      if (result.ok) {
+        this.hideConnectingUI();
+        return this.init(result.socket, result.host, result.latencyMs);
+      }
 
-        socket.onerror = () => {
-          socket.close();
-        };
-      } catch (error) {
-        App.error(`Error creating WebSocket for ${this.hostList[i]}:`, error);
+      if (round < this.CONNECT_MAX_ROUNDS - 1) {
+        await new Promise((resolve) => setTimeout(resolve, 500 * (round + 1)));
       }
     }
 
-    setTimeout(() => {
-      if (this.bestHost == -1) {
-        App.error(Lang.text('apiConnectionError'));
-      }
-    }, 30000);
+    this.showConnectFailure();
+  }
+
+  static updateConnectingUI(host = null) {
+    let body = document.getElementById('connecting-message');
+
+    if (!body) {
+      body = DOM({ id: 'connecting-message', style: 'connecting-message' });
+      document.body.append(body);
+    }
+
+    body.innerHTML = '';
+
+    const label = host
+      ? `${Lang.text('connectingToServer')} (${host.replace(/^wss?:\/\//, '')})`
+      : Lang.text('connectingToServer');
+
+    body.append(DOM({ tag: 'div' }, label));
+  }
+
+  static showConnectFailure() {
+    let body = document.getElementById('connecting-message');
+
+    if (!body) {
+      body = DOM({ id: 'connecting-message', style: 'connecting-message' });
+      document.body.append(body);
+    }
+
+    body.innerHTML = '';
+
+    body.append(DOM({ tag: 'div' }, Lang.text('apiConnectionError')));
+
+    const button = DOM(
+      {
+        tag: 'div',
+        style: 'connecting-retry',
+        event: [
+          'click',
+          () => {
+            body.remove();
+            this.connectAndInit();
+          },
+        ],
+      },
+      Lang.text('connectionRetryButton'),
+    );
+
+    body.append(button);
+  }
+
+  static hideConnectingUI() {
+    const body = document.getElementById('connecting-message');
+
+    if (body) {
+      body.remove();
+    }
   }
 
   /**
@@ -103,11 +159,11 @@ export class App {
     await Promise.all(tasks);
   }
 
-  static async init() {
+  static async init(socket = null, host = null, latencyMs = 0) {
     // ws://26.187.55.30:3737 - Radmin VPN relay (DOK)
     // wss://pw-classic.ru - VPS
     // wss://api2.zone-play.com:2096/api - Cloudflare edge (DOK)
-    App.api = new Api(this.hostList, this.bestHost, Events);
+    App.api = new Api(this.hostList, Events, { socket: socket, host: host, latencyMs: latencyMs });
 
     await News.init();
 
@@ -355,6 +411,10 @@ export class App {
     try {
       analysis = NativeAPI.analysis();
     } catch (e) {}
+
+    if (analysis && App.api) {
+      analysis.api = App.api.connectionInfo();
+    }
 
     try {
       request = await App.api.request('user', 'authorization', {
@@ -651,6 +711,10 @@ export class App {
     try {
       analysis = NativeAPI.analysis();
     } catch (e) {}
+
+    if (analysis && App.api) {
+      analysis.api = App.api.connectionInfo();
+    }
 
     try {
       request = await App.api.request('user', 'registration', {
