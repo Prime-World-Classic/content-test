@@ -52,6 +52,12 @@ export class Api {
 
     this.RECONNECT_DELAY_MS = 1000;
 
+    // Серия таймаутов запросов на OPEN-сокете — признак «тихо деградировавшего»
+    // соединения (CF роняет oversized-фреймы молча). Лечится сменой хоста
+    // через гонку (retry на том же сокете бесполезен — дроп детерминирован).
+    this.RECONNECT_ON_TIMEOUTS = 2;
+    this._consecutiveTimeouts = 0;
+
     this.lastMessageAt = Date.now();
     this._connecting = false;
     this._lastReconnectNotifyTs = 0;
@@ -126,6 +132,7 @@ export class Api {
     this.lastLatencyMs = latencyMs;
     this.lastConnectTs = Date.now();
     this.lastMessageAt = Date.now();
+    this._consecutiveTimeouts = 0;
 
     this.WebSocket.onmessage = (event) => {
       this.lastMessageAt = Date.now();
@@ -303,6 +310,8 @@ export class Api {
       let rejectTimerId = setTimeout(() => {
         delete this.awaiting[identify];
 
+        this.onRequestTimeout();
+
         reject(Lang.text('requestTimeoutError').replace('{object}', object).replace('{method}', method));
       }, 15000);
 
@@ -311,6 +320,8 @@ export class Api {
         method: method,
         resolve: (data) => {
           clearTimeout(rejectTimerId);
+
+          this._consecutiveTimeouts = 0;
 
           resolve(data);
         },
@@ -321,6 +332,55 @@ export class Api {
         },
       };
     });
+  }
+
+  // Таймаут запроса на OPEN-сокете. Серия (RECONNECT_ON_TIMEOUTS подряд) —
+  // закрываем сокет: onclose → connect() → гонка → смена хоста.
+  onRequestTimeout() {
+    this._consecutiveTimeouts++;
+
+    if (
+      this._consecutiveTimeouts >= this.RECONNECT_ON_TIMEOUTS &&
+      this.WebSocket &&
+      this.WebSocket.readyState === WebSocket.OPEN
+    ) {
+      console.warn(`API: ${this._consecutiveTimeouts} таймаута подряд, переподключение через гонку (хост ${this.MAIN_HOST})`);
+
+      this._consecutiveTimeouts = 0;
+
+      try {
+        this.WebSocket.close();
+      } catch (error) {}
+    }
+  }
+
+  // Пагинированный запрос: сервер отдаёт {items, next, more} (страница тримится
+  // под бюджет размера — фрейм не перерастает лимит WS-прокси CF). Цикл до
+  // набора полного набора; возвращается плоский массив (экраны ждут список).
+  // Совместимость со старым бэкендом: обычный массив = одна страница.
+  async requestPaged(object, method) {
+    let all = [];
+    let page = 0;
+
+    while (true) {
+      const part = await this.request(object, method, { page: page });
+
+      if (Array.isArray(part)) {
+        return all.concat(part);
+      }
+
+      const items = Array.isArray(part?.items) ? part.items : [];
+
+      all = all.concat(items);
+
+      if (part?.more !== true) {
+        break;
+      }
+
+      page = Number(part.next) || all.length;
+    }
+
+    return all;
   }
 
   async silent(callback, object, method, data, infinity = false) {

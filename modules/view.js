@@ -4947,7 +4947,9 @@ export class View {
     header.append(closeBtn, searchInput);
 
     let adm = DOM({ style: 'adm' }, header);
-    let result = await App.api.request('build', 'talentAll');
+    // Пагинация с бюджетом размера (backend): фреймы под лимит CF (~23 КБ),
+    // полный набор 777 строк набирается циклом (~10 запросов).
+    let result = await App.api.requestPaged('build', 'talentAll');
     let talentContainers = [];
     let talentsContainer = DOM({ style: 'talents-container' });
 
@@ -5035,7 +5037,8 @@ export class View {
     header.append(closeBtn, searchInput);
 
     let adm = DOM({ style: 'adm' }, header);
-    let result = await App.api.request('build', 'talentHeroAll');
+    // То же, что talentAll: 831 строка набираются чанками под лимит CF.
+    let result = await App.api.requestPaged('build', 'talentHeroAll');
     let talentContainers = [];
     let talentsContainer = DOM({ style: 'talents-container' });
 
