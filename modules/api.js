@@ -27,6 +27,9 @@ export class Api {
     this.lastLatencyMs = initial.latencyMs || 0;
     this.lastConnectTs = Date.now();
     this.totalFailures = 0;
+    this.reconnects = 0;
+    this.lastCloseCode = null;
+    this.lastCloseTs = 0;
 
     this.awaiting = new Object();
 
@@ -74,10 +77,8 @@ export class Api {
   }
 
   /**
-   * Подключение/реаконнект через общую гонку хостов (App.racer).
-   * Раунды — те же, что при первом подключении. Если полный цикл
-   * (все раунды) не дал соединения — повтор через 10 секунд, пока не
-   * подключимся.
+   * Подключение/реаконнект через общую гонку хостов (App.racer) — та же
+   * бессмертная эскалация, что при первом подключении (App.CONNECT_TIMEOUT_SCHEDULE).
    */
   async connect() {
     if (this._connecting) {
@@ -95,31 +96,20 @@ export class Api {
         this.WebSocket = null;
       }
 
+      let round = 0;
+
       while (true) {
-        let connected = false;
+        const result = await App.racer.race({ timeoutMs: App.connectTimeoutForRound(round) });
 
-        for (let round = 0; round < App.CONNECT_MAX_ROUNDS && !connected; round++) {
-          const result = await App.racer.race({ timeoutMs: App.CONNECT_ROUND_TIMEOUTS[round] });
-
-          if (result.ok) {
-            this.attach(result.socket, result.host, result.latencyMs);
-            connected = true;
-          } else {
-            this.totalFailures++;
-            this.notifyReconnecting();
-
-            if (round < App.CONNECT_MAX_ROUNDS - 1) {
-              await new Promise((resolve) => setTimeout(resolve, 500 * (round + 1)));
-            }
-          }
-        }
-
-        if (connected) {
+        if (result.ok) {
+          this.attach(result.socket, result.host, result.latencyMs);
           return;
         }
 
-        // Полный цикл без успеха — следующий цикл через 10 секунд
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        round++;
+        this.totalFailures++;
+        this.notifyReconnecting();
+        await new Promise((resolve) => setTimeout(resolve, App.CONNECT_ROUND_BACKOFF_MS));
       }
     } finally {
       this._connecting = false;
@@ -144,7 +134,17 @@ export class Api {
 
     this.WebSocket.onerror = () => {}; // onclose последует
 
-    this.WebSocket.onclose = () => {
+    this.WebSocket.onclose = (event) => {
+      // Телеметрия обрыва: 1006 — аномальный (нет close-фрейма: NAT/прокси/
+      // тишина), 1000 — штатный (рестарт сервера), 4000 — свой watchdog.
+      const code = (event && event.code) || 0;
+      const uptimeSec = Math.round((Date.now() - this.lastConnectTs) / 1000);
+
+      console.log(`API close: code=${code} host=${this.MAIN_HOST} uptime=${uptimeSec}s`);
+
+      this.reconnects++;
+      this.lastCloseCode = code;
+      this.lastCloseTs = Date.now();
       this.WebSocket = null;
 
       setTimeout(() => this.connect(), this.RECONNECT_DELAY_MS);
@@ -188,6 +188,9 @@ export class Api {
       latencyMs: this.lastLatencyMs,
       ts: this.lastConnectTs,
       failures: this.totalFailures,
+      reconnects: this.reconnects,
+      lastCloseCode: this.lastCloseCode,
+      lastCloseTs: this.lastCloseTs,
     };
   }
 

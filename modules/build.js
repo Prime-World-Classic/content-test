@@ -1589,10 +1589,11 @@ export class Build {
   }
 
   static async sets() {
-    let sets = await App.api.request('build', 'sets');
-
-    for (let set of sets) {
-      console.log(set);
+    // TODO-экран: данные сетов локальные (modules/sets.list.js + Lang),
+    // DB-запрос build.sets (~35 КБ) не нужен — и не должен уходить в эфир:
+    // фрейм больше лимита (~23 КБ) у части WS-прокси.
+    for (const set of TalentSets.list()) {
+      console.log(set.key, set.set_name);
     }
   }
 

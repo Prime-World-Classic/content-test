@@ -232,6 +232,7 @@ export const ru = {
     connectionClosedError: 'Закрыто соединение... Выполняется переподключение, подождите... [{count}]',
     connectionRestoringError: 'Подождите, подключение восстанавливается [{host}]',
     connectingToServer: 'Подключение к серверу...',
+    connectingRound: 'попытка',
     connectionRetryButton: 'Повторить',
     reconnectingNotify: 'Восстанавливаем соединение с сервером...',
     unknownMessageStructure: 'Неизвестная структура сообщения -> {json}',

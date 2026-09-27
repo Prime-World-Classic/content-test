@@ -817,15 +817,39 @@ export class Chat {
       if (!(lastMessageId > 0)) {
         return;
       }
-      const response = await App.api.request('user', 'loadForumMessage', {
-        category: Chat.HISTORY_CATEGORY,
-        page: -Math.abs(lastMessageId),
-      });
-      if (!Array.isArray(response) || !response.length) {
-        return;
-      }
-      for (let i = response.length - 1; i >= 0; i--) {
-        Chat.viewMessage(Chat.normalizeForumMessage(response[i]));
+      // Сервер отдаёт апдейт-режим чанками по 25 (ASC, без LIMIT-превышения:
+      // один фрейм не может стать неограниченно большим). Крутим цикл по
+      // курсору, пока сервер не отдаст неполный чанк.
+      const CHUNK_SIZE = 25;
+      const MAX_TOTAL = 500; // страховка от бесконечного цикла
+      let cursor = lastMessageId;
+      let total = 0;
+
+      while (total < MAX_TOTAL) {
+        const response = await App.api.request('user', 'loadForumMessage', {
+          category: Chat.HISTORY_CATEGORY,
+          page: -Math.abs(cursor),
+        });
+        const rows = Array.isArray(response) ? response : [];
+
+        if (!rows.length) {
+          break;
+        }
+
+        for (const row of rows) {
+          Chat.viewMessage(Chat.normalizeForumMessage(row));
+          const rowId = Number(row?.id) || 0;
+
+          if (rowId > cursor) {
+            cursor = rowId;
+          }
+        }
+
+        total += rows.length;
+
+        if (rows.length < CHUNK_SIZE) {
+          break;
+        }
       }
     } catch (error) {
       console.error('Failed to sync chat messages after reconnect', error);

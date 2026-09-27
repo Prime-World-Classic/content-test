@@ -28,25 +28,36 @@ export class App {
 
   static RVPN = 'ws://26.187.55.30:3737';
   static VPS = 'wss://pw-classic.ru';
-  static CLOUDFLARE = 'wss://api2.zone-play.com:2096/api';
-  static hostList = [this.RVPN, this.VPS, this.CLOUDFLARE];
+  // CLOUDFLARE (wss://api2.zone-play.com:2096/api) исключён: прокси CF молча
+  // роняет WS-фреймы больше ~23 КБ (наш build.sets = 35 КБ, чат-синк —
+  // неограничен), после oversized-фрейма деградирует всё соединение.
+  static hostList = [this.RVPN, this.VPS];
 
-  // Гонка хостов: таймаут на одного кандидата по раундам + число раундов
-  static CONNECT_ROUND_TIMEOUTS = [3500, 5000, 7000];
-  static CONNECT_MAX_ROUNDS = 3;
+  // Бессмертное подключение: таймаут на кандидата растёт по мере провальных
+  // раундов (потолок — конец списка); тупикового «конечного отказа» нет —
+  // цикл идёт, пока не ответит какой-нибудь хост. Сбрасывается при успехе.
+  static CONNECT_TIMEOUT_SCHEDULE = [3500, 5000, 7000, 10000, 15000, 20000, 30000];
+  static CONNECT_ROUND_BACKOFF_MS = 1000;
+
+  static connectTimeoutForRound(round) {
+    const schedule = this.CONNECT_TIMEOUT_SCHEDULE;
+    return schedule[Math.min(round, schedule.length - 1)];
+  }
 
   /**
    * Первое подключение: гонка хостов (HostRacer), открытый сокет
-   * передаётся в Api без повторного handshake. Все раунды без успеха —
-   * ошибка + кнопка «Повторить».
+   * передаётся в Api без повторного handshake. Гонка бессмертная:
+   * раунды идут с эскалацией таймаутов, пока не подключимся.
    */
   static async connectAndInit() {
     this.hideConnectingUI();
 
+    let round = 0;
+
     this.racer = new HostRacer(this.hostList, {
       onState: (phase, data) => {
         if (phase === 'candidate') {
-          this.updateConnectingUI(data.host);
+          this.updateConnectingUI(data.host, round);
         }
       },
       getToken: () => {
@@ -59,23 +70,20 @@ export class App {
       },
     });
 
-    for (let round = 0; round < this.CONNECT_MAX_ROUNDS; round++) {
-      const result = await this.racer.race({ timeoutMs: this.CONNECT_ROUND_TIMEOUTS[round] });
+    while (true) {
+      const result = await this.racer.race({ timeoutMs: this.connectTimeoutForRound(round) });
 
       if (result.ok) {
         this.hideConnectingUI();
         return this.init(result.socket, result.host, result.latencyMs);
       }
 
-      if (round < this.CONNECT_MAX_ROUNDS - 1) {
-        await new Promise((resolve) => setTimeout(resolve, 500 * (round + 1)));
-      }
+      round++;
+      await new Promise((resolve) => setTimeout(resolve, this.CONNECT_ROUND_BACKOFF_MS));
     }
-
-    this.showConnectFailure();
   }
 
-  static updateConnectingUI(host = null) {
+  static updateConnectingUI(host = null, round = 0) {
     let body = document.getElementById('connecting-message');
 
     if (!body) {
@@ -86,40 +94,10 @@ export class App {
     body.innerHTML = '';
 
     const label = host
-      ? `${Lang.text('connectingToServer')} (${host.replace(/^wss?:\/\//, '')})`
+      ? `${Lang.text('connectingToServer')} (${host.replace(/^wss?:\/\//, '')}, ${Lang.text('connectingRound')} ${round + 1})`
       : Lang.text('connectingToServer');
 
     body.append(DOM({ tag: 'div' }, label));
-  }
-
-  static showConnectFailure() {
-    let body = document.getElementById('connecting-message');
-
-    if (!body) {
-      body = DOM({ id: 'connecting-message', style: 'connecting-message' });
-      document.body.append(body);
-    }
-
-    body.innerHTML = '';
-
-    body.append(DOM({ tag: 'div' }, Lang.text('apiConnectionError')));
-
-    const button = DOM(
-      {
-        tag: 'div',
-        style: 'connecting-retry',
-        event: [
-          'click',
-          () => {
-            body.remove();
-            this.connectAndInit();
-          },
-        ],
-      },
-      Lang.text('connectionRetryButton'),
-    );
-
-    body.append(button);
   }
 
   static hideConnectingUI() {

@@ -229,6 +229,7 @@ export const en = {
     connectionClosedError: 'Connection closed... Reconnecting in progress, please wait... [{count}]',
     connectionRestoringError: 'Please wait, connection is restoring [{host}]',
     connectingToServer: 'Connecting to server...',
+    connectingRound: 'attempt',
     connectionRetryButton: 'Retry',
     reconnectingNotify: 'Restoring server connection...',
     unknownMessageStructure: 'Unknown message structure -> {json}',
