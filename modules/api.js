@@ -358,12 +358,12 @@ export class Api {
   // под бюджет размера — фрейм не перерастает лимит WS-прокси CF). Цикл до
   // набора полного набора; возвращается плоский массив (экраны ждут список).
   // Совместимость со старым бэкендом: обычный массив = одна страница.
-  async requestPaged(object, method) {
+  async requestPaged(object, method, data) {
     let all = [];
     let page = 0;
 
     while (true) {
-      const part = await this.request(object, method, { page: page });
+      const part = await this.request(object, method, { ...(data || {}), page: page });
 
       if (Array.isArray(part)) {
         return all.concat(part);

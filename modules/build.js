@@ -4968,7 +4968,7 @@ export class Build {
     preload.add(talent);
   }
 
-  static inventory() {
+  static async inventory() {
     const container = Build.inventoryView?.querySelector('.build-talents');
     if (container) {
       container.replaceChildren();
@@ -4979,56 +4979,59 @@ export class Build {
     const requestedBuildId = Build.id;
     Build.loading = true;
 
-    App.api.silent(
-      (data) => {
-        if (requestedBuildId !== Build.id) {
-          Build.loading = false;
-          return;
-        }
+    // «Библиотека» отдаётся сервером страницами под бюджет размера
+    // (лимит CF ~23 КБ на фрейм) — накапливаем полный список.
+    let data;
 
-        let orderIndex = 0;
-        for (let item of data) {
-          const key = `${Number(item?.id)}`;
-          Build._inventoryDefaultOrder.set(key, orderIndex);
-          let talentContainer = DOM({ style: 'build-talent-item-container' });
-          talentContainer.dataset.defaultOrder = `${orderIndex}`;
+    try {
+      data = await App.api.requestPaged('build', 'inventory', { buildId: Build.id });
+    } catch {
+      data = new Array();
+    }
 
-          Build.inventoryView.querySelector('.build-talents').append(talentContainer);
+    if (requestedBuildId !== Build.id) {
+      Build.loading = false;
+      return;
+    }
 
-          let preload = new PreloadImages(talentContainer);
+    let orderIndex = 0;
+    for (let item of data) {
+      const key = `${Number(item?.id)}`;
+      Build._inventoryDefaultOrder.set(key, orderIndex);
+      let talentContainer = DOM({ style: 'build-talent-item-container' });
+      talentContainer.dataset.defaultOrder = `${orderIndex}`;
 
-          item.state = 1;
+      Build.inventoryView.querySelector('.build-talents').append(talentContainer);
 
-          preload.add(Build.templateViewTalent(item));
-          orderIndex++;
-        }
+      let preload = new PreloadImages(talentContainer);
 
-        Build.loading = false;
-        try {
-          Build.sortInventory();
-        } catch {}
-        try {
-          const ids = Build._hoveredSetTalentIds;
-          const anchor = Build._hoveredSetAnchorEl;
-          if (ids?.length && anchor?.isConnected) {
-            Build.highlightSetTalents(ids);
-            Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_inventory' });
-            const start = performance.now();
-            const tick = () => {
-              if (Build._hoveredSetAnchorEl !== anchor || Build._hoveredSetTalentIds !== ids) return;
-              Build.highlightSetTalents(ids);
-              Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_inventory_tick' });
-              if (performance.now() - start >= 900) return;
-              setTimeout(tick, 140);
-            };
-            setTimeout(tick, 120);
-          }
-        } catch {}
-      },
-      'build',
-      'inventory',
-      { buildId: Build.id },
-    );
+      item.state = 1;
+
+      preload.add(Build.templateViewTalent(item));
+      orderIndex++;
+    }
+
+    Build.loading = false;
+    try {
+      Build.sortInventory();
+    } catch {}
+    try {
+      const ids = Build._hoveredSetTalentIds;
+      const anchor = Build._hoveredSetAnchorEl;
+      if (ids?.length && anchor?.isConnected) {
+        Build.highlightSetTalents(ids);
+        Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_inventory' });
+        const start = performance.now();
+        const tick = () => {
+          if (Build._hoveredSetAnchorEl !== anchor || Build._hoveredSetTalentIds !== ids) return;
+          Build.highlightSetTalents(ids);
+          Build.previewSetTalentsInEmptySlots({ _manualOrder: ids, key: 'hover_preview_inventory_tick' });
+          if (performance.now() - start >= 900) return;
+          setTimeout(tick, 140);
+        };
+        setTimeout(tick, 120);
+      }
+    } catch {}
   }
 
   static isTalentInBuild(talentId) {
