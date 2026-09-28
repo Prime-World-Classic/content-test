@@ -16,6 +16,12 @@ export class NativeAPI {
   static updated = false;
   static curLabel;
   static lastBranchV = null;
+  static revBefore = null;
+  static restartInProgress = false;
+
+  // Лог-файлы обновления: лимит 10 МБ, при превышении остаётся хвост ~5 МБ
+  static LOG_MAX_BYTES = 10 * 1024 * 1024;
+  static LOG_KEEP_BYTES = 5 * 1024 * 1024;
 
   static testbridgelog = new Array();
 
@@ -508,6 +514,130 @@ export class NativeAPI {
     NativeAPI.window.reload();
   }
 
+  // Append-запись в лог-файл с лимитом размера (лимит → остаётся хвост).
+  // Файлы: update.log (stages) и update-errors.log (исключения целиком).
+  static async cappedAppend(file, line) {
+    const fs = NativeAPI.fileSystem;
+    let size = 0;
+    try {
+      size = (await fs.promises.stat(file)).size;
+    } catch {}
+    if (size >= NativeAPI.LOG_MAX_BYTES) {
+      try {
+        const tail = Buffer.alloc(NativeAPI.LOG_KEEP_BYTES);
+        const fd = await fs.open(file, 'r');
+        try {
+          await fd.read(tail, 0, NativeAPI.LOG_KEEP_BYTES, size - NativeAPI.LOG_KEEP_BYTES);
+        } finally {
+          await fd.close();
+        }
+        await fs.promises.writeFile(file, tail);
+      } catch {
+        try {
+          await fs.promises.writeFile(file, '');
+        } catch {}
+      }
+    }
+    await fs.promises.appendFile(file, line);
+  }
+
+  // Лог обновления (stage), с timestamp, лимит 10 МБ
+  static logUpdate(stage, extra = '') {
+    const line = `[${new Date().toISOString()}] ${stage}${extra ? ` ${extra}` : ''}\n`;
+    NativeAPI.cappedAppend('update.log', line).catch(() => {});
+  }
+
+  // Любое исключение в цепочке обновления: App.error + stack целиком в файл, с timestamp
+  static logUpdateError(error, stage = '') {
+    const msg =
+      error instanceof Error
+        ? error.stack || `${error.name}: ${error.message}`
+        : typeof error === 'string'
+          ? error
+          : JSON.stringify(error);
+    const stamp = new Date().toISOString();
+    NativeAPI.cappedAppend('update-errors.log', `[${stamp}] ${stage ? `${stage}: ` : ''}${msg}\n`).catch(() => {});
+    NativeAPI.logUpdate(`ERROR ${stage}`.trim(), String(msg).split('\n')[0]);
+    try {
+      App.error(String(msg).split('\n')[0]);
+    } catch {}
+  }
+
+  // Ревизия content БЕЗ git (в NW.js git-модуля нет и не будет — только чтение файлов):
+  // content/.git/HEAD → «ref: <path>» → .git/<path>, fallback — packed-refs;
+  // если HEAD сам по себе hash — он и есть ревизия. Не удалось прочитать — null.
+  static async readContentRevision() {
+    const fs = NativeAPI.fileSystem;
+    const join = NativeAPI.path.join;
+    let head = '';
+    try {
+      head = (await fs.promises.readFile(join('content', '.git', 'HEAD'), 'utf-8')).trim();
+    } catch {
+      return null;
+    }
+    if (/^[0-9a-fA-F]{40}$/.test(head)) {
+      return head.toLowerCase();
+    }
+    const m = head.match(/^ref:\s*(.+)$/);
+    if (!m) return null;
+    const ref = m[1].trim();
+    try {
+      return (await fs.promises.readFile(join('content', '.git', ref), 'utf-8')).trim().toLowerCase();
+    } catch {}
+    try {
+      const packed = await fs.promises.readFile(join('content', '.git', 'packed-refs'), 'utf-8');
+      for (const line of packed.split('\n')) {
+        const t = line.trim();
+        if (!t || t.startsWith('#') || t.startsWith('^')) continue;
+        const parts = t.split(/\s+/);
+        if (parts.length >= 2 && parts[1] === ref && /^[0-9a-fA-F]{40}$/.test(parts[0])) {
+          return parts[0].toLowerCase();
+        }
+      }
+    } catch {}
+    return null;
+  }
+
+  static shellEscape(s) {
+    return `'${String(s).replace(/'/g, "'\\''")}'`;
+  }
+
+  // Настоящий перезапуск процесса (вместо window.reload): detached-relauncher
+  // ждёт, пока старый процесс полностью закончится (сброс profile-lock),
+  // и запускает новый инстанс. Новый инстанс прогоняет update-проход;
+  // content актуален → рестарта нет (лупы нет).
+  static restart() {
+    if (NativeAPI.restartInProgress) return;
+    NativeAPI.restartInProgress = true;
+
+    try {
+      const execPath = process.execPath;
+      const appDir = process.cwd();
+      let cmd;
+      let args;
+      if (NativeAPI.platform === 'win32') {
+        // ping не требует консоли (timeout в GUI-процессе может не работать)
+        cmd = process.env.comspec || 'cmd.exe';
+        args = ['/c', `ping -n 6 127.0.0.1 >nul && start "" "${execPath}"`];
+      } else {
+        cmd = 'sh';
+        args = ['-c', `sleep 5 && exec ${NativeAPI.shellEscape(execPath)} ${NativeAPI.shellEscape(appDir)}`];
+      }
+      const relauncher = NativeAPI.childProcess.spawn(cmd, args, {
+        cwd: appDir,
+        detached: true,
+        stdio: 'ignore',
+      });
+      relauncher.on('error', (e) => NativeAPI.logUpdateError(e, 'relauncher'));
+      relauncher.unref();
+      NativeAPI.logUpdate('restart-spawned', `pid=${relauncher.pid}`);
+    } catch (e) {
+      NativeAPI.logUpdateError(e, 'restart');
+    }
+
+    NativeAPI.exit();
+  }
+
   static progress(value = 0.0) {
     if (!NativeAPI.status) {
       return;
@@ -557,123 +687,149 @@ export class NativeAPI {
       PWGame.isValidated = true;
       return; // No hash check for linux
     }
-    NativeAPI.fileSystem.promises.access(PWGame.PATH_TEST_HASHES);
+    (async () => {
+      try {
+        try {
+          await NativeAPI.fileSystem.promises.access(PWGame.PATH_TEST_HASHES);
+        } catch {
+          // Бинарника hash-теста нет — проверку пропускаем (это не ошибка обновления)
+          PWGame.isValidated = true;
+          NativeAPI.logUpdate('hash-test-missing', PWGame.PATH_TEST_HASHES);
+          return;
+        }
 
-    let spawn = NativeAPI.childProcess.spawn(PWGame.PATH_TEST_HASHES);
+        const spawn = NativeAPI.childProcess.spawn(PWGame.PATH_TEST_HASHES);
 
-    spawn.on('close', (code) => {
-      if (code == 0) {
+        spawn.on('error', (e) => {
+          NativeAPI.logUpdateError(e, 'hash-test-spawn');
+          PWGame.isTestHashesFailed = true;
+          App.error(Lang.text('fileCheckFailed') + ' ' + (e.message || e));
+        });
+
+        spawn.on('close', (code) => {
+          if (code == 0) {
+            PWGame.isValidated = true;
+            App.notify(Lang.text('updateCheckComplete'));
+          } else {
+            PWGame.isTestHashesFailed = true;
+            App.error(Lang.text('fileCheckFailed') + code);
+          }
+        });
+      } catch (e) {
+        NativeAPI.logUpdateError(e, 'hash-test');
         PWGame.isValidated = true;
-        App.notify(Lang.text('updateCheckComplete'));
-      } else {
-        PWGame.isTestHashesFailed = true;
-        App.error(Lang.text('fileCheckFailed') + code);
       }
-    });
+    })();
   }
 
-  static updateLinux(data, callback) {
-    let outputs = data.toString().split('\n'); // I have used space, you can use any thing.
-    for (let o of outputs) {
-      if (o == 'Updating game files') {
-        this.title = Lang.text('gameUpdate');
-        this.curLabel = 'game';
-        continue;
-      }
-      if (o == 'Updating launcher') {
-        this.title = Lang.text('launcherUpdate');
-        this.curLabel = 'content';
-        continue;
-      }
+  // Одна СТРОКА вывода Linux-апдейтера (update.sh). Парсим только полные строки:
+  // чанк stdout может резать строку посередине.
+  static parseUpdateLineLinux(line, callback) {
+    const o = line;
+    if (o == 'Updating game files') {
+      this.title = Lang.text('gameUpdate');
+      this.curLabel = 'game';
+      return;
+    }
+    if (o == 'Updating launcher') {
+      this.title = Lang.text('launcherUpdate');
+      this.curLabel = 'content';
+      return;
+    }
 
-      if (o.startsWith('* main')) {
-        if (this.lastBranchV == null) {
-          this.lastBranchV = o;
-        } else {
-          this.updated = this.lastBranchV != o;
-        }
+    if (o.startsWith('* main')) {
+      if (this.lastBranchV == null) {
+        this.lastBranchV = o;
+      } else {
+        this.updated = this.lastBranchV != o;
       }
+      return;
+    }
 
-      if (o.startsWith('Receiving objects:')) {
-        let percent = parseInt(o.substring(19, o.indexOf('%')));
-
+    if (o.startsWith('Receiving objects:')) {
+      const percent = parseInt(o.substring(19, o.indexOf('%')), 10);
+      if (Number.isFinite(percent)) {
         callback({ update: true, title: this.title, total: percent });
-
         NativeAPI.progress(percent / 100);
       }
     }
   }
 
-  static updateWindows(data, callback) {
-    let progressDataElements = data.toString().substring(1).split('#');
+  // Одна СТРОКА протокола Windows-апдейтера (NanoUpdater):
+  // #{"type":"label"|"bar","data":"..."}. Битая/неполная строка — пропускается.
+  static parseUpdateLineWindows(line, callback) {
+    let s = line.trim();
+    if (s.startsWith('#')) s = s.slice(1);
+    if (!s) return;
 
-    for (let progressDataElement of progressDataElements) {
-      let json = JSON.parse(progressDataElement);
+    let json;
+    try {
+      json = JSON.parse(s);
+    } catch {
+      return;
+    }
+    if (!json || !json.type) return;
 
-      if (json.type) {
-        if (json.type == 'bar') {
-          if (this.curLabel == 'content') {
-            this.updated = true;
-          }
+    if (json.type == 'bar') {
+      if (this.curLabel == 'content') {
+        this.updated = true;
+      }
 
-          callback({
-            update: true,
-            title: this.title,
-            total: Number(json.data),
-          });
+      const total = Number(json.data);
+      callback({ update: true, title: this.title, total: Number.isFinite(total) ? total : 0 });
 
-          NativeAPI.progress(Number(json.data) / 100);
-        } else if (json.type == 'label') {
-          switch (json.data) {
-            case 'game':
-              this.title = Lang.text('gameUpdate');
-              this.curLabel = json.data;
-              break;
+      if (Number.isFinite(total)) {
+        NativeAPI.progress(total / 100);
+      }
+    } else if (json.type == 'label') {
+      switch (json.data) {
+        case 'game':
+          this.title = Lang.text('gameUpdate');
+          this.curLabel = json.data;
+          break;
 
-            case 'content':
-              this.title = Lang.text('launcherUpdate');
-              this.curLabel = json.data;
-              break;
+        case 'content':
+          this.title = Lang.text('launcherUpdate');
+          this.curLabel = json.data;
+          break;
 
-            case 'game_data0':
-              this.title = Lang.text('downloadingArchives1');
-              this.curLabel = json.data;
-              break;
-            case 'game_data1':
-              this.title = Lang.text('downloadingArchives2');
-              this.curLabel = json.data;
-              break;
-            case 'game_data2':
-              this.title = Lang.text('downloadingArchives3');
-              this.curLabel = json.data;
-              break;
-            case 'game_data3':
-              this.title = Lang.text('downloadingArchives4');
-              this.curLabel = json.data;
-              break;
-            case 'game_data4':
-              this.title = Lang.text('downloadingArchives5');
-              this.curLabel = json.data;
-              break;
-            case 'game_data5':
-              this.title = Lang.text('downloadingArchives6');
-              this.curLabel = json.data;
-              break;
-            case 'game_data6':
-              this.title = Lang.text('downloadingArchives7');
-              this.curLabel = json.data;
-              break;
-            case 'game_data7':
-              this.title = Lang.text('downloadingArchives8');
-              this.curLabel = json.data;
-              break;
+        case 'game_data0':
+          this.title = Lang.text('downloadingArchives1');
+          this.curLabel = json.data;
+          break;
+        case 'game_data1':
+          this.title = Lang.text('downloadingArchives2');
+          this.curLabel = json.data;
+          break;
+        case 'game_data2':
+          this.title = Lang.text('downloadingArchives3');
+          this.curLabel = json.data;
+          break;
+        case 'game_data3':
+          this.title = Lang.text('downloadingArchives4');
+          this.curLabel = json.data;
+          break;
+        case 'game_data4':
+          this.title = Lang.text('downloadingArchives5');
+          this.curLabel = json.data;
+          break;
+        case 'game_data5':
+          this.title = Lang.text('downloadingArchives6');
+          this.curLabel = json.data;
+          break;
+        case 'game_data6':
+          this.title = Lang.text('downloadingArchives7');
+          this.curLabel = json.data;
+          break;
+        case 'game_data7':
+          this.title = Lang.text('downloadingArchives8');
+          this.curLabel = json.data;
+          break;
 
-            default:
-              this.title = Lang.text('downloadingGameArchives');
-              this.curLabel = json.data;
-              break;
-          }
-        }
+        default:
+          this.title = Lang.text('downloadingGameArchives');
+          this.curLabel = json.data;
+          break;
       }
     }
   }
@@ -683,48 +839,111 @@ export class NativeAPI {
       return false;
     }
 
-    const isLinuxUpdate = NativeAPI.platform == 'linux';
+    try {
+      const isLinux = NativeAPI.platform == 'linux';
+      const updaterPath = isLinux ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
 
-    const updaterPath = isLinuxUpdate ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
-
-    await NativeAPI.fileSystem.promises.access(updaterPath);
-
-    let spawn = NativeAPI.childProcess.spawn(updaterPath);
-
-    spawn.stdout.on('data', (data) => {
-      if (isLinuxUpdate) {
-        this.updateLinux(data, callback);
-      } else {
-        this.updateWindows(data, callback);
-      }
-    });
-
-    spawn.on('close', async (code) => {
-      callback({ update: false, title: '', total: 0 });
-
-      NativeAPI.progress(-1);
-
-      if (code == 0 || code == null) {
+      // Апдейтера нет (Steam-сборка, dev): обновления нет, рестарта быть
+      // не должно, ошибки не показываем — лончер просто стартует.
+      let hasUpdater = false;
+      try {
+        await NativeAPI.fileSystem.promises.access(updaterPath);
+        hasUpdater = true;
+      } catch {}
+      if (!hasUpdater) {
         PWGame.isUpToDate = true;
+        PWGame.isValidated = true;
+        NativeAPI.logUpdate('updater-missing', updaterPath);
+        return true;
+      }
+
+      NativeAPI.updated = false;
+      NativeAPI.curLabel = null;
+      NativeAPI.title = null;
+      NativeAPI.lastBranchV = null;
+      NativeAPI.revBefore = await NativeAPI.readContentRevision();
+      NativeAPI.logUpdate('start', `updater=${updaterPath} rev=${NativeAPI.revBefore || 'n/a'}`);
+
+      const child = NativeAPI.childProcess.spawn(updaterPath);
+
+      let buffer = '';
+      child.stdout.on('data', (data) => {
         try {
-          NativeAPI.testHashes();
+          buffer += data.toString();
+          let idx;
+          // Разбираем только полные строки — чанк может резать строку посередине
+          while ((idx = buffer.indexOf('\n')) >= 0) {
+            const line = buffer.slice(0, idx);
+            buffer = buffer.slice(idx + 1);
+            if (isLinux) {
+              NativeAPI.parseUpdateLineLinux(line, callback);
+            } else {
+              NativeAPI.parseUpdateLineWindows(line, callback);
+            }
+          }
         } catch (e) {
-          App.error(Lang.text('fileCheckCorrupted') + e);
+          NativeAPI.logUpdateError(e, 'stdout');
         }
-      } else {
+      });
+
+      child.on('error', (e) => {
+        NativeAPI.logUpdateError(e, 'updater-spawn');
         PWGame.isUpdateFailed = true;
-        App.error(Lang.text('updateError') + code);
-      }
+        App.error(Lang.text('updateError') + ' ' + (e.message || e));
+      });
 
-      if (this.updated) {
-        NativeAPI.reset();
-      }
-    });
+      child.on('close', async (code) => {
+        try {
+          callback({ update: false, title: '', total: 0 });
 
-    // А уведомление показываем с задержкой
-    setTimeout(() => {
-      App.notify(Lang.text('checkingUpdatesAndFiles'));
-    }, 1000);
+          NativeAPI.progress(-1);
+
+          const ok = code == 0 || code == null;
+
+          if (ok) {
+            PWGame.isUpToDate = true;
+            NativeAPI.testHashes();
+          } else {
+            PWGame.isUpdateFailed = true;
+            App.error(Lang.text('updateError') + code);
+          }
+          NativeAPI.logUpdate('updater-close', `code=${code} bar=${NativeAPI.updated}`);
+
+          // Рестарт только если ревизия content реально изменилась (без git —
+          // чтение .git/HEAD до и после; .git не читается — bar-флаг:
+          // NanoUpdater шлёт bar по content, только если fetch что-то скачал).
+          // При ошибке апдейтера (code != 0) — без рестарта: повторим на следующем старте.
+          const revAfter = await NativeAPI.readContentRevision();
+          NativeAPI.logUpdate('revision', `before=${NativeAPI.revBefore || 'n/a'} after=${revAfter || 'n/a'}`);
+
+          let changed;
+          if (NativeAPI.revBefore !== null && revAfter !== null) {
+            changed = NativeAPI.revBefore !== revAfter;
+          } else if (NativeAPI.revBefore === null && revAfter !== null) {
+            changed = true; // .git появился (свежая инициализация) — content точно обновлён
+          } else if (NativeAPI.revBefore !== null && revAfter === null) {
+            changed = false; // .git пропал — content скорее всего битый, не рестартим
+          } else {
+            changed = NativeAPI.updated; // .git не читается — bar-флаг
+          }
+
+          if (ok && changed) {
+            NativeAPI.restart();
+          }
+        } catch (e) {
+          NativeAPI.logUpdateError(e, 'close');
+        }
+      });
+
+      // А уведомление показываем с задержкой
+      setTimeout(() => {
+        App.notify(Lang.text('checkingUpdatesAndFiles'));
+      }, 1000);
+    } catch (e) {
+      NativeAPI.logUpdateError(e, 'update');
+    }
+
+    return true;
   }
 
   static analysis() {

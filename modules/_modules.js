@@ -39,7 +39,7 @@ Lang.init().then(() => {
 
       View.updateProgress.lastChild.innerText = `${data.title} ${data.total}%...`;
     }
-  });
+  }).catch((e) => NativeAPI.logUpdateError(e, 'update'));
 
   Settings.init().then(() => {
     App.connectAndInit();
