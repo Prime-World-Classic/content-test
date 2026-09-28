@@ -2615,35 +2615,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   background: #008cffcc;
 }
 
-.connecting-message {
-  position: fixed;
-  width: 94%;
-  margin: 20cqh 3%;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1vmin;
-  top: 0;
-  z-index: 9999;
-}
-
-.connecting-message div {
-  padding: 1vmin 2vmin;
-  border-radius: 15px;
-  font: 1rem / 1 'DejaVuSans', sans-serif;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.9);
-  text-align: center;
-  background: #008cffcc;
-}
-
-.connecting-message .connecting-retry {
-  cursor: pointer;
-  background: #2e6cffcc;
-  min-width: 10vmin;
-}
-
 .splash,
 .mm {
   position: fixed;

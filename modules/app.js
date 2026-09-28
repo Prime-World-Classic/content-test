@@ -57,16 +57,9 @@ export class App {
    * раунды идут с эскалацией таймаутов, пока не подключимся.
    */
   static async connectAndInit() {
-    this.hideConnectingUI();
-
     let round = 0;
 
     this.racer = new HostRacer(this.hostList, {
-      onState: (phase, data) => {
-        if (phase === 'candidate') {
-          this.updateConnectingUI(data.host, round);
-        }
-      },
       getToken: () => {
         // На первом подключении storage ещё не инициализирован
         try {
@@ -81,37 +74,11 @@ export class App {
       const result = await this.racer.race({ timeoutMs: this.connectTimeoutForRound(round) });
 
       if (result.ok) {
-        this.hideConnectingUI();
         return this.init(result.socket, result.host, result.latencyMs);
       }
 
       round++;
       await new Promise((resolve) => setTimeout(resolve, this.CONNECT_ROUND_BACKOFF_MS));
-    }
-  }
-
-  static updateConnectingUI(host = null, round = 0) {
-    let body = document.getElementById('connecting-message');
-
-    if (!body) {
-      body = DOM({ id: 'connecting-message', style: 'connecting-message' });
-      document.body.append(body);
-    }
-
-    body.innerHTML = '';
-
-    const label = host
-      ? `${Lang.text('connectingToServer')} (${host.replace(/^wss?:\/\//, '')}, ${Lang.text('connectingRound')} ${round + 1})`
-      : Lang.text('connectingToServer');
-
-    body.append(DOM({ tag: 'div' }, label));
-  }
-
-  static hideConnectingUI() {
-    const body = document.getElementById('connecting-message');
-
-    if (body) {
-      body.remove();
     }
   }
 
