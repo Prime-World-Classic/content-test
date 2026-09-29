@@ -8,6 +8,7 @@ import { Voice } from './voice.js';
 import { Chat } from './chat.js';
 import { NativeAPI } from './nativeApi.js';
 import { MM } from './mm.js';
+import { PWGame } from './pwgame.js';
 import { Splash } from './splash.js';
 import { Sound } from './sound.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
