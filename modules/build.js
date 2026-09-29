@@ -24,6 +24,8 @@ export class Build {
   static mutationQueue = Promise.resolve();
   static _activeBarRenderScheduled = false;
   static _activeBarRenderData = null;
+  static _initDataFetch = null; // фаза main-fetch последнего init (быстрое переключение вкладок)
+  static SET_POPULARITY_TTL_MS = 5 * 60 * 1000; // мин. интервал обновления setsPopularity
 
   /** HSL hue для подсветки сетов (как rgba(80,190,255)); толщина рамки в мм (макс. 1.5). */
   static BUILD_HIGHLIGHT_HUE_DEFAULT = 199;
@@ -617,8 +619,17 @@ export class Build {
     Build.attachBuildSettingsToWbuild();
     Build.applyBuildHighlightVariablesFromSettings();
 
-    await Build.loadSetPopularityCacheFromBackend(true);
     Build.renderTalentSetsList();
+
+    // Популярность сетов НЕ блокирует main-fetch (быстрое переключение вкладок).
+    // Обновляем в фоне (с минимальным интервалом) и перерисовываем список.
+    (async () => {
+      try {
+        const stale = Date.now() - (Number(Build.setPopularityLoadedAt) || 0) > Build.SET_POPULARITY_TTL_MS;
+        await Build.loadSetPopularityCacheFromBackend(stale);
+      } catch {}
+      Build.renderTalentSetsList();
+    })();
 
     // ================================================
 
@@ -628,12 +639,9 @@ export class Build {
 
     Build.activeBarKeybindingsView = DOM({ style: 'build-active-bar' });
 
-    let request = await App.api.request('build', 'data', {
-      heroId: heroId,
-      target: targetId,
-    });
+    let request = await Build.fetchBuildDataLatestWins(initToken, heroId, targetId);
 
-    if (Build._initToken !== initToken) {
+    if (Build._initToken !== initToken || request === null) {
       return false;
     }
 
@@ -707,8 +715,53 @@ export class Build {
     return true;
   }
 
+  // Main-fetch init в семантике «последний клик побеждает».
+  // При быстром переключении вкладок старый запрос 'build/data' ещё висит в
+  // App.api.awaiting, и новый init падал с REQUEST_ALREADY_PENDING; проигравшая
+  // гонка дополнительно ломала экран null-шаблоном. Теперь:
+  //  - сначала дожидаемся фазу fetch предыдущего init;
+  //  - при REQUEST_ALREADY_PENDING (метод держит, например, refresh после
+  //    мутации) дожидаемся освобождения и повторяем запрос один раз;
+  //  - после каждого await повторно проверяем токен — устаревший init даёт null.
+  static fetchBuildDataLatestWins(initToken, heroId, targetId) {
+    const phase = (async () => {
+      const previous = Build._initDataFetch;
+      if (previous) {
+        try {
+          await previous;
+        } catch {}
+      }
+      if (Build._initToken !== initToken) return null;
+
+      const doFetch = () => App.api.request('build', 'data', { heroId: heroId, target: targetId });
+
+      try {
+        return await doFetch();
+      } catch (error) {
+        if (!error || error.code !== 'REQUEST_ALREADY_PENDING') throw error;
+        await Build.waitForApiIdle('build', 5000);
+        if (Build._initToken !== initToken) return null;
+        return await doFetch();
+      }
+    })();
+
+    Build._initDataFetch = phase;
+    return phase;
+  }
+
   static async refreshBuildStateFromServer({ refreshInventory = true } = {}) {
     if (!Build.heroId || Build.targetId === undefined || Build.targetId === null) return;
+
+    // «Последнее действие побеждает»: не перезаписываем билд, который загрузился
+    // во время запроса (быстрое переключение вкладок / мутация + смена вкладки).
+    const refreshToken = Build._initToken;
+    const refreshHeroId = Build.heroId;
+    const refreshTargetId = Build.targetId;
+
+    // Не наступаем на main-fetch конкурентного init (requestAlreadyPending).
+    await Build.waitForApiIdle('build', 3000);
+
+    if (Build._initToken !== refreshToken || Build.heroId !== refreshHeroId || Build.targetId !== refreshTargetId) return;
 
     // Ensure the settings button/panel remain attached after rebuilds.
     Build.scheduleAttachBuildSettings(20);
@@ -723,12 +776,14 @@ export class Build {
     let request = null;
     try {
       request = await App.api.request('build', 'data', {
-        heroId: Build.heroId,
-        target: Build.targetId,
+        heroId: refreshHeroId,
+        target: refreshTargetId,
       });
     } catch {
       return;
     }
+
+    if (Build._initToken !== refreshToken || Build.heroId !== refreshHeroId || Build.targetId !== refreshTargetId) return;
 
     try {
       Build.setCombatMode(false, { force: true });
@@ -1474,6 +1529,7 @@ export class Build {
           }
         }
         Build.setPopularityMap = map;
+        Build.setPopularityLoadedAt = Date.now();
       } catch {}
       return Build.setPopularityMap;
     })();
@@ -3214,6 +3270,8 @@ export class Build {
           event: [
             'click',
             () => {
+              // Последняя вкладка побеждает: каждый клик стартует инициал,
+              // устаревшие гаснет токен-гвардом в Build.init.
               isWindow ? Window.show('main', 'build', Build.heroId, build.id, true) : View.show('build', Build.heroId, build.id);
             },
           ],

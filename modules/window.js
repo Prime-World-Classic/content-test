@@ -32,7 +32,13 @@ export class Window {
         View.setCastleOpenedBuildHero(0);
       } catch {}
     }
-    let template = await Window[method](value, value2, value3);
+    let template;
+    try {
+      template = await Window[method](value, value2, value3);
+    } catch (error) {
+      App.error(error);
+      return;
+    }
     if (!template) {
       return;
     }
@@ -186,6 +192,11 @@ export class Window {
   }
   static async build(heroId, targetId = 0, isWindow = false) {
     let viewBuild = await View.build(heroId, targetId, isWindow);
+    // Пропускаем null наверх: Window.show не подменит текущее окно пустым #wbuild
+    // (быстрое переключение вкладок билдов — устаревший инициал).
+    if (!viewBuild) {
+      return null;
+    }
     requestAnimationFrame(() => Voice.updatePanelPosition());
     return DOM({ id: 'wbuild' }, viewBuild);
   }

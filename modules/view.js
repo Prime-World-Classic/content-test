@@ -740,6 +740,13 @@ export class View {
       return;
     }
 
+    // Устаревший/отменённый рендер (null) — не трогаем текущий экран:
+    // при быстром переключении вкладки проигравшая гонка не должна
+    // убирать уже показанный вью (иначе пустой экран).
+    if (!template) {
+      return;
+    }
+
     // Ensure action bar slots exist in native input_new.cfg once per app session.
     if (method === 'castle' && !View._actionBarCfgEnsured) {
       try {

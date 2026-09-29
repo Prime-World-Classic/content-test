@@ -294,7 +294,13 @@ export class Api {
   async request(object, method, data) {
     for (let key in this.awaiting) {
       if (this.awaiting[key].object == object && this.awaiting[key].method == method) {
-        throw Lang.text('requestAlreadyPending').replace('{method}', method).replace('{object}', object);
+        // Типизированная ошибка: вызов может дождаться освобождения метода
+        // и повторить запрос (code — не зависит от языка текста).
+        const text = Lang.text('requestAlreadyPending').replace('{method}', method).replace('{object}', object);
+        const error = new Error(text);
+        error.code = 'REQUEST_ALREADY_PENDING';
+        error.toString = () => text;
+        throw error;
       }
     }
 
