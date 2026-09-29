@@ -909,9 +909,10 @@ export class NativeAPI {
           }
           NativeAPI.logUpdate('updater-close', `code=${code} bar=${NativeAPI.updated}`);
 
-          // Рестарт только если ревизия content реально изменилась (без git —
-          // чтение .git/HEAD до и после; .git не читается — bar-флаг:
-          // NanoUpdater шлёт bar по content, только если fetch что-то скачал).
+          // Рестарт (reset: clearCache + window.reload, как было до 0f94170)
+          // только если ревизия content реально изменилась (без git — чтение
+          // .git/HEAD до и после; .git не читается — bar-флаг: NanoUpdater
+          // шлёт bar по content, только если fetch что-то скачал).
           // При ошибке апдейтера (code != 0) — без рестарта: повторим на следующем старте.
           const revAfter = await NativeAPI.readContentRevision();
           NativeAPI.logUpdate('revision', `before=${NativeAPI.revBefore || 'n/a'} after=${revAfter || 'n/a'}`);
@@ -928,7 +929,7 @@ export class NativeAPI {
           }
 
           if (ok && changed) {
-            NativeAPI.restart();
+            NativeAPI.reset();
           }
         } catch (e) {
           NativeAPI.logUpdateError(e, 'close');
