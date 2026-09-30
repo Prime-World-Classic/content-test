@@ -1,4 +1,5 @@
 import { Lang } from './lang.js';
+import { TalentData } from './talentData.js';
 import { ParentEvent } from './parentEvent.js';
 import { View } from './view.js';
 import { App } from './app.js';
@@ -22,7 +23,7 @@ window.addEventListener('message', (event) => {
   console.log('event.data', event.data);
 });
 
-Lang.init().then(() => {
+Promise.all([Lang.init(), TalentData.init()]).then(() => {
   Splash.init();
 
   NativeAPI.init();

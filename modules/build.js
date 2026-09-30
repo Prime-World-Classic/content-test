@@ -15,6 +15,7 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { Castle } from './castle.js';
 import { KeybindStore } from './keybindings/keybindings.store.js';
 import { TalentSets } from './talentSets.js';
+import { TalentData } from './talentData.js';
 import { Settings } from './settings.js';
 import { getMainHeroTalentId } from './mainHeroTalent.js';
 
@@ -4919,6 +4920,8 @@ export class Build {
     /*
 
 		*/
+    TalentData.enrich(data);
+
     let y = 0,
       index = 0,
       level = 6,
@@ -5046,6 +5049,8 @@ export class Build {
     } catch {
       data = new Array();
     }
+
+    TalentData.enrich(data);
 
     if (requestedBuildId !== Build.id) {
       Build.loading = false;
