@@ -509,9 +509,7 @@ export class NativeAPI {
       return;
     }
 
-    NativeAPI.app.clearCache();
-
-    NativeAPI.window.reload();
+    nw.Window.get().reloadIgnoringCache();
   }
 
   // Append-запись в лог-файл с лимитом размера (лимит → остаётся хвост).
@@ -909,7 +907,7 @@ export class NativeAPI {
           }
           NativeAPI.logUpdate('updater-close', `code=${code} bar=${NativeAPI.updated}`);
 
-          // Рестарт (reset: clearCache + window.reload, как было до 0f94170)
+          // Рестарт (reset: window.reloadIgnoringCache)
           // только если ревизия content реально изменилась (без git — чтение
           // .git/HEAD до и после; .git не читается — bar-флаг: NanoUpdater
           // шлёт bar по content, только если fetch что-то скачал).
