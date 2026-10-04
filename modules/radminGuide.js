@@ -3,6 +3,8 @@ import { Lang } from './lang.js';
 import { NativeAPI } from './nativeApi.js';
 
 export class RadminGuide {
+  static enabled = false;
+
   static DOWNLOAD_URL = 'https://www.radmin-vpn.com/';
 
   static VK_URL = 'https://vk.com/primeworld';
@@ -62,7 +64,7 @@ export class RadminGuide {
   }
 
   static show() {
-    if (RadminGuide.dismissed || RadminGuide.root?.isConnected) {
+    if (!RadminGuide.enabled || RadminGuide.dismissed || RadminGuide.root?.isConnected) {
       return;
     }
 
@@ -168,11 +170,13 @@ export class RadminGuide {
             } catch {}
           }
         };
-        const fail = () => {
+        const fail = (message) => {
           if (settled || finished) return;
           finished = true;
           cleanup();
-          failures[index] = Lang.text('radminGuideApiUnavailable').replace('{number}', index + 1);
+          // Метка хоста без токена: токен сессии в текст ошибки не попадает.
+          const label = String(host).replace(/^[a-z]+:\/\//i, '').split('/')[0];
+          failures[index] = `${label}: ${message || Lang.text('radminGuideApiUnavailable').replace('{number}', index + 1)}`;
           pending -= 1;
           if (pending === 0) {
             settled = true;

@@ -120,7 +120,7 @@ export class Events {
                   ? `url(content/hero/${findPlayer.dataset.hero}/${findPlayer.dataset.skin}.webp)`
                   : `url(content/hero/empty.webp)`;
 
-              item.style.transform = 'scale(1.5)';
+              item.style.transform = 'scale(1)';
             }
           }
         }
@@ -283,13 +283,18 @@ export class Events {
     let button = DOM(
       {
         domaudio: domAudioPresets.bigButton,
-        style: 'splash-content-button',
+        style: 'splash-content-button-modal',
         event: ['click', async () => Splash.hide()],
       },
       Lang.text('titleafk'),
     );
 
-    body.append(DOM(`${data.party ? Lang.text('titleafk1') : Lang.text('titleafk2')}`), button);
+    body.append(
+      DOM({ style: 'splash-modal-scope-afk-action' }),
+      DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('titleafkWindow'))),
+      DOM({ style: ['castle-menu-text', 'afk-splash-text'] }, `${data.party ? Lang.text('titleafk1') : Lang.text('titleafk2')}`),
+      button,
+    );
 
     Splash.show(body);
   }

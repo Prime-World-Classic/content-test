@@ -44,6 +44,16 @@ export class MM {
   static partyMembersCount = 1;
 
   static isInTambur = false;
+
+  static preview = false;
+
+  static lobbySkinRequestId = 0;
+
+  static lobbyVoiceResizeObserver = null;
+
+  static lobbyVoiceResizeHandler = null;
+
+  static lobbyPositionCooldownMs = 4000;
   
   static isInBattle = false;
   
@@ -141,6 +151,26 @@ export class MM {
   }
 
   static close() {
+    MM.lobbySkinRequestId++;
+    MM.lobbyVoiceResizeObserver?.disconnect();
+    MM.lobbyVoiceResizeObserver = null;
+    if (MM.lobbyVoiceResizeHandler) {
+      window.removeEventListener('resize', MM.lobbyVoiceResizeHandler);
+      MM.lobbyVoiceResizeHandler = null;
+    }
+    clearInterval(MM.lobbyPreviewInterval);
+    MM.lobbyPreviewInterval = null;
+    if (MM.preview) {
+      Timer.stop();
+      MM.id = '';
+      MM.preview = false;
+    }
+    MM.lobbyTabObserver?.disconnect();
+    MM.lobbyTabObserver = null;
+    MM.lobbyNameObserver?.disconnect();
+    MM.lobbyNameObserver = null;
+    MM.lobbyScrollObserver?.disconnect();
+    MM.lobbyScrollObserver = null;
     Sound.stop('tambur');
 
     Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, true);
@@ -390,12 +420,44 @@ export class MM {
   }
 
   static async lobbyBuildView(heroId) {
+    MM.lobbySkinView(heroId);
+    MM.lobbyTabObserver?.disconnect();
+    MM.lobbyTabObserver = null;
     if (MM.lobbyBuildField.firstChild) {
       MM.lobbyBuildField.firstChild.remove();
     }
 
     while (MM.lobbyBuildTab.firstChild) {
       MM.lobbyBuildTab.firstChild.remove();
+    }
+
+    if (MM.preview) {
+      const renderPreviewBuild = (offset) => {
+        const previewBuild = Array.from({ length: 36 }, (_, index) => (index + offset) % 36 + 1);
+        MM.lobbyBuildField.replaceChildren(Build.viewModel(previewBuild, false, false));
+      };
+      renderPreviewBuild(0);
+      const nameKeys = ['mmPreviewBuildMain', 'mmPreviewBuildLong', 'mmPreviewBuildTeam', 'mmPreviewBuildAttack', 'mmRandomBuild'];
+      nameKeys.forEach((key, index) => {
+        const isRandom = key === 'mmRandomBuild';
+        const tab = DOM({
+          tag: 'button',
+          type: 'button',
+          style: isRandom ? 'lobby-build-tab-random' : 'lobby-build-tab-choice',
+          ariaPressed: index === 0 ? 'true' : 'false',
+          event: ['click', () => {
+            for (const child of MM.lobbyBuildTab.children) {
+              child.classList.toggle('lobby-build-tab--active', child === tab);
+              child.setAttribute('aria-pressed', child === tab ? 'true' : 'false');
+            }
+            renderPreviewBuild(isRandom ? Math.floor(Math.random() * 36) : index * 3);
+          }],
+        }, DOM({ tag: 'span' }, Lang.text(key)));
+        tab.classList.toggle('lobby-build-tab--active', index === 0);
+        MM.lobbyBuildTab.append(tab);
+      });
+      MM.watchLobbyBuildTabs();
+      return;
     }
 
     let builds = await App.api.request('build', 'my', { hero: heroId });
@@ -427,8 +489,9 @@ export class MM {
             },
           ],
         },
-        build.name,
+        DOM({ tag: 'span' }, build.name),
       );
+      tab.title = build.name;
 
       if (build.target) {
         target = build.id;
@@ -445,23 +508,26 @@ export class MM {
       MM.lobbyBuildTab.append(tab);
     }
 
+    const randomLabel = DOM({ tag: 'span' }, Lang.text('mmRandomBuild'));
     let notify = true,
       random = DOM(
         {
-          style: 'ready-button',
+          tag: 'button',
+          type: 'button',
+          style: 'lobby-build-tab-random',
           domaudio: domAudioPresets.defaultButton,
           event: [
             'click',
             async () => {
               if (notify) {
-                random.innerText = Lang.text('mmOverwriteBuild');
+                randomLabel.textContent = Lang.text('mmOverwriteBuild');
 
                 notify = false;
 
                 return;
               }
 
-              random.innerText = Lang.text('mmGenerating');
+              randomLabel.textContent = Lang.text('mmGenerating');
 
               let build = await App.api.request('build', 'rebuild', {
                 id: target,
@@ -481,32 +547,257 @@ export class MM {
                 }
               }
 
-              random.innerText = Lang.text('mmRandomBuild');
+              randomLabel.textContent = Lang.text('mmRandomBuild');
             },
           ],
         },
-        Lang.text('mmRandomBuild'),
+        randomLabel,
       );
-
-    random.style.width = 'auto';
-
     MM.lobbyBuildTab.append(random);
+    MM.watchLobbyBuildTabs();
   }
 
-  static async lobby(data) {
+  static setLobbySkinAvatar(heroId, skinId) {
+    const player = document.getElementById(`PLAYER${MM.lobbyUserId}`);
+    if (!player || (!MM.preview && Number(player.dataset.hero) !== Number(heroId))) return;
+    player.dataset.hero = heroId;
+    player.dataset.skin = skinId;
+    player.firstChild.style.backgroundImage = `url(content/hero/${heroId}/${skinId}.webp)`;
+    player.querySelector('.mm-lobby-hero-tooltip').textContent = Lang.heroName(heroId, skinId);
+    if (MM.preview) {
+      MM.lobbyUsers[MM.lobbyUserId].hero = heroId;
+      for (const point of MM.renderBody?.children || []) {
+        if (Number(point.dataset.player) === MM.lobbyUserId) {
+          point.style.backgroundImage = player.firstChild.style.backgroundImage;
+        }
+      }
+    }
+  }
+
+  static showLobbyChoiceTooltip(tooltip, choice, scroller, name) {
+    tooltip.textContent = name;
+    tooltip.hidden = false;
+    const bounds = scroller.getBoundingClientRect();
+    const rect = choice.getBoundingClientRect();
+    const column = tooltip.parentElement.getBoundingClientRect();
+    const width = tooltip.getBoundingClientRect().width;
+    const center = Math.max(bounds.left + width / 2 + 2,
+      Math.min(rect.left + rect.width / 2, bounds.right - width / 2 - 2));
+    tooltip.style.left = `${center - column.left}px`;
+    tooltip.style.top = `${Math.min(rect.bottom, bounds.bottom) - column.top + 4}px`;
+  }
+
+  static async lobbySkinView(heroId) {
+    const body = MM.lobbySkinBody;
+    if (!body) return;
+    const tooltip = MM.lobbySkinTooltip;
+    tooltip.hidden = true;
+    const requestId = ++MM.lobbySkinRequestId;
+    const isCurrent = () => requestId === MM.lobbySkinRequestId && MM.lobbySkinBody === body &&
+      Number(MM.targetHeroId) === Number(heroId) && MM.isInTambur;
+    const status = DOM({ style: 'mm-lobby-skin-status', role: 'status' }, Lang.text('mmSkinsLoading'));
+    body.replaceChildren(status);
+    body.setAttribute('aria-busy', 'true');
+    try {
+      const hero = MM.lobbyHeroesData.find((item) => Number(item.id) === Number(heroId));
+      const skin = MM.preview ? { list: hero?.previewSkins || [1], target: hero?.skin || 1 } :
+        (await App.api.request('build', 'data', { heroId, target: 0 })).hero.skin;
+      if (!isCurrent()) return;
+      const skins = [...new Set(skin.list.map(Number).filter((id) => Number.isInteger(id) && id > 0))];
+      body.replaceChildren();
+      body.setAttribute('aria-busy', 'false');
+      if (!skins.length) {
+        body.append(DOM({ style: 'mm-lobby-skin-status', role: 'status' }, Lang.text('mmSkinsEmpty')));
+        return;
+      }
+      let selectedSkin = skins.includes(Number(skin.target)) ? Number(skin.target) : skins[0];
+      const renderSelection = () => {
+        for (const button of body.querySelectorAll('.mm-lobby-skin-choice')) {
+          button.setAttribute('aria-pressed', Number(button.dataset.skin) === selectedSkin ? 'true' : 'false');
+        }
+      };
+      for (const skinId of skins) {
+        const name = Lang.heroName(heroId, skinId);
+        const button = DOM({
+          tag: 'button', type: 'button', style: 'mm-lobby-skin-choice',
+          data: { skin: skinId }, ariaLabel: name,
+          domaudio: domAudioPresets.smallButton,
+          event: ['click', async () => {
+            if (skinId === selectedSkin) return;
+            const buttons = [...body.querySelectorAll('.mm-lobby-skin-choice')];
+            for (const item of buttons) item.disabled = true;
+            body.setAttribute('aria-busy', 'true');
+            try {
+              if (MM.preview) hero.skin = skinId;
+              else await Build.changeSkinForHero(heroId, skinId);
+              if (!isCurrent()) return;
+              selectedSkin = skinId;
+              renderSelection();
+              MM.setLobbySkinAvatar(heroId, skinId);
+              status.remove();
+            } catch (error) {
+              if (!isCurrent()) return;
+              status.textContent = Lang.text('mmSkinSaveError');
+              body.append(status);
+              App.error(error);
+            } finally {
+              if (isCurrent()) {
+                for (const item of buttons) item.disabled = false;
+                body.setAttribute('aria-busy', 'false');
+                MM.updateLobbyScrollbars();
+              }
+            }
+          }],
+        });
+        button.setAttribute('aria-describedby', tooltip.id);
+        const showTooltip = () => MM.showLobbyChoiceTooltip(tooltip, button, body, name);
+        button.addEventListener('mouseenter', showTooltip);
+        button.addEventListener('focus', showTooltip);
+        button.addEventListener('mouseleave', () => { tooltip.hidden = true; });
+        button.addEventListener('blur', () => { tooltip.hidden = true; });
+        button.style.backgroundImage = `url(content/hero/${heroId}/${skinId}.webp)`;
+        body.append(button);
+      }
+      renderSelection();
+      MM.setLobbySkinAvatar(heroId, selectedSkin);
+      MM.updateLobbyScrollbars();
+    } catch (error) {
+      if (!isCurrent()) return;
+      body.setAttribute('aria-busy', 'false');
+      status.textContent = Lang.text('mmSkinsLoadError');
+      body.append(DOM({
+        tag: 'button', type: 'button', style: 'mm-lobby-skin-retry',
+        event: ['click', () => MM.lobbySkinView(heroId)],
+      }, Lang.text('mmSkinsRetry')));
+      MM.updateLobbyScrollbars();
+      App.error(error);
+    }
+  }
+
+  static filterLobbyHeroes(query) {
+    const variants = View.getLayoutAwareSearchVariants(query);
+    let groupVisible = false;
+    let visibleCount = 0;
+    // Walk backwards so each heading follows the visibility of its own hero group.
+    for (const child of [...MM.lobbyHeroes.children].reverse()) {
+      if (child.classList.contains('mm-lobby-middle-hero-item')) {
+        const name = child.dataset.searchName;
+        const words = View.splitSearchWords(name);
+        child.hidden = variants.length > 0 && !variants.some((variant) => View.isFuzzySearchVariantMatch(name, words, variant));
+        if (!child.hidden) {
+          groupVisible = true;
+          visibleCount++;
+        }
+      } else if (child.classList.contains('mm-lobby-middle-hero-line')) {
+        child.hidden = !groupVisible;
+        groupVisible = false;
+      }
+    }
+    MM.lobbyHeroes.querySelector('.mm-lobby-hero-empty').hidden = visibleCount > 0;
+    MM.updateLobbyScrollbars();
+  }
+
+  static updateLobbyScrollbars() {
+    for (const body of [MM.chatBody, MM.lobbySkinBody, MM.lobbyHeroScroll]) {
+      if (body?.clientHeight) {
+        body.classList.toggle('mm-lobby-scroll--fits', body.scrollHeight <= body.clientHeight + 1);
+      }
+    }
+  }
+
+  static setLobbyHeroAvailability(hero, ownerId = 0, banned = false) {
+    const taken = Number(ownerId) > 0 || banned;
+    const unavailable = banned || (taken && Number(ownerId) !== Number(MM.lobbyUserId));
+    hero.dataset.ban = ownerId;
+    hero.classList.toggle('mm-lobby-middle-hero-item--taken', taken);
+    hero.classList.toggle('mm-lobby-middle-hero-item--unavailable', unavailable);
+    hero.setAttribute('aria-disabled', String(unavailable));
+  }
+
+  static watchLobbyBuildTabs() {
+    const update = (tab) => {
+      const label = tab.querySelector('span');
+      if (!label) return;
+      const style = getComputedStyle(tab);
+      const available = tab.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const overflow = Math.max(0, label.scrollWidth - available);
+      tab.style.setProperty('--tab-scroll-distance', `${overflow}px`);
+      tab.classList.toggle('lobby-build-tab--overflowing', overflow > 1);
+      tab.title = label.textContent;
+    };
+    for (const tab of MM.lobbyBuildTab.children) {
+      update(tab);
+      if (typeof ResizeObserver !== 'undefined') {
+        MM.lobbyTabObserver ??= new ResizeObserver((entries) => {
+          for (const entry of entries) update(entry.target);
+        });
+        MM.lobbyTabObserver.observe(tab);
+      }
+    }
+  }
+
+  static watchLobbyNames() {
+    MM.lobbyNameObserver?.disconnect();
+    const update = (name) => {
+      const label = name.firstElementChild;
+      if (!label) return;
+      const overflow = Math.max(0, label.scrollWidth - name.clientWidth);
+      name.style.setProperty('--nickname-scroll-distance', `${overflow}px`);
+      name.classList.toggle('mm-lobby-header-team-player-name--overflowing', overflow > 1);
+    };
+    const names = MM.view.querySelectorAll('.mm-lobby-header-team-player-name');
+    for (const name of names) update(name);
+    if (typeof ResizeObserver !== 'undefined') {
+      MM.lobbyNameObserver = new ResizeObserver((entries) => {
+        for (const entry of entries) update(entry.target);
+      });
+      for (const name of names) MM.lobbyNameObserver.observe(name);
+    }
+  }
+
+  static setLobbySelection(target) {
+    MM.view.querySelectorAll('.mm-lobby-header-team-player--active').forEach((player) =>
+      player.classList.remove('mm-lobby-header-team-player--active'));
+    document.getElementById(`PLAYER${target}`)?.classList.add('mm-lobby-header-team-player--active');
+    MM.lobbyConfirm.disabled = App.storage.data.id != target;
+  }
+
+  static async lobby(data, { preview = false } = {}) {
+    MM.lobbyVoiceResizeObserver?.disconnect();
+    MM.lobbyVoiceResizeObserver = null;
+    if (MM.lobbyVoiceResizeHandler) {
+      window.removeEventListener('resize', MM.lobbyVoiceResizeHandler);
+      MM.lobbyVoiceResizeHandler = null;
+    }
+    clearInterval(MM.lobbyPreviewInterval);
+    MM.lobbyPreviewInterval = null;
+    MM.preview = preview;
+    MM.lobbyLaneNoticeNextAt = 0;
+    MM.renderBody = false;
     MM.isInTambur = true;
+    Rank._names = null;
 
     MM.targetBanHeroId = 0;
 
-    if (!MM.hero) {
+    if (!preview && !MM.hero) {
       MM.hero = await App.api.request('build', 'heroAll');
     }
+
+    const heroes = preview ? data.previewHeroes : MM.hero;
+    const currentUserId = preview ? data.previewUserId : App.storage.data.id;
+    MM.lobbyUserId = currentUserId;
+    MM.lobbyHeroesData = heroes;
+
+    // Enemy identities must not reach the lobby DOM or its retained user state.
+    const ownTeam = data.users[currentUserId].team;
+    data = { ...data, users: Object.fromEntries(Object.entries(data.users).map(([id, user]) =>
+      [id, user.team == ownTeam ? user : { ...user, nickname: '' }])) };
 
     if (!MM.id) {
       MM.id = data.id;
     }
 
-    MM.searchActive(false);
+    if (!preview) MM.searchActive(false);
 
     Voice.infoPanel.classList.remove('left-offset-with-shift');
     Voice.infoPanel.classList.add('left-offset-no-shift');
@@ -516,27 +807,28 @@ export class MM {
 
     MM.lobbyUsers = data.users;
 
-    MM.targetHeroId = data.users[App.storage.data.id].hero;
+    MM.targetHeroId = data.users[currentUserId].hero;
 
     let lobbyBuild = DOM({ style: 'mm-lobby-middle-build' });
 
-    MM.lobbyBuildField = DOM();
-
-    MM.lobbyBuildField.style.margin = '0.5cqw 0';
-
-    MM.lobbyBuildField.style.width = '28cqw';
-
-    MM.lobbyBuildField.style.height = '28cqw';
+    MM.lobbyBuildField = DOM({ style: 'mm-lobby-build-field' });
 
     MM.lobbyBuildTab = DOM({ style: 'lobby-build-tab' });
+    MM.lobbySkinBody = DOM({ style: ['mm-lobby-skins', 'mm-lobby-scroll'], role: 'group', ariaLabel: Lang.text('mmSelectSkin') });
+    const skinTooltip = DOM({ id: 'mm-lobby-skin-tooltip', style: 'mm-lobby-choice-tooltip', role: 'tooltip', hidden: true });
+    MM.lobbySkinTooltip = skinTooltip;
+    MM.lobbySkinBody.addEventListener('scroll', () => { skinTooltip.hidden = true; });
 
     MM.lobbyConfirm = DOM(
       {
-        style: 'mm-ready-button',
+        tag: 'button',
+        type: 'button',
+        style: 'mm-lobby-confirm',
         domaudio: domAudioPresets.defaultButton,
         event: [
           'click',
           async () => {
+            if (MM.preview) return;
             try {
               await App.api.request(App.CURRENT_MM, 'hero', {
                 id: data.id,
@@ -547,25 +839,25 @@ export class MM {
               MM.lobbyConfirm.innerText = error;
 
               setTimeout(() => {
-                MM.lobbyConfirm.innerText = Lang.text('mmConfirm');
+                MM.lobbyConfirm.innerText = Lang.text('mmConfirmChoice');
               }, 1500);
             }
           },
         ],
       },
-      Lang.text('ready2'),
+      Lang.text('mmConfirmChoice'),
     );
 
-    MM.lobbyConfirm.style.opacity = 0;
+    MM.lobbyConfirm.disabled = currentUserId != data.target;
 
-    MM.lobbyConfirm.style.width = '60%';
-
-    MM.lobbyConfirm.animate(
-      { transform: ['scale(1)', 'scale(0.98)', 'scale(1.02)', 'scale(1)'] },
-      { duration: 2000, iterations: Infinity, easing: 'ease-in-out' },
+    lobbyBuild.append(
+      DOM({ style: 'mm-lobby-skin-title' }, Lang.text('mmSelectSkin')),
+      MM.lobbySkinBody,
+      DOM({ style: 'mm-lobby-section-title' }, Lang.text('mmHeroBuild')),
+      MM.lobbyBuildField,
+      MM.lobbyBuildTab,
+      skinTooltip,
     );
-
-    lobbyBuild.append(MM.lobbyConfirm, MM.lobbyBuildField, MM.lobbyBuildTab);
 
     if (MM.targetHeroId) {
       MM.lobbyBuildView(MM.targetHeroId);
@@ -587,19 +879,24 @@ export class MM {
 
       let hero = DOM({ style: 'mm-lobby-header-team-player-hero' });
 
-      let name = DOM({ style: 'mm-lobby-header-team-player-name' }, `${data.users[key].nickname}`);
+      const isAlly = data.users[key].team == ownTeam;
+      let name = isAlly
+        ? DOM({ style: 'mm-lobby-header-team-player-name', title: data.users[key].nickname },
+          DOM({ tag: 'span' }, `${data.users[key].nickname}`))
+        : DOM({ style: 'mm-lobby-header-team-player-name', ariaHidden: 'true' });
 
       let rank = Rank.createRankNode(data.users[key].rating);
 
       hero.append(rank, DOM({ style: 'mm-frame' }));
-
-      if ('commander' in data.users[key]) {
-        name.setAttribute('style', 'color:rgba(255,215,0,0.9)');
-      }
+      hero.append(
+        DOM({ style: 'mm-lobby-selection-comet' }),
+        DOM({ tag: 'span', style: 'mm-lobby-hero-tooltip' },
+          data.users[key].hero ? Lang.heroName(data.users[key].hero, 1) : ''),
+      );
 
       let banhero = DOM({ style: 'mm-player-ban' });
 
-      if (data.users[key].banhero) {
+      if (data.banhero && data.users[key].banhero) {
         banhero.style.backgroundImage = `url(content/hero/${data.users[key].banhero}/1.webp)`;
 
         banhero.style.display = 'block';
@@ -614,25 +911,19 @@ export class MM {
       player.append(hero, name);
 
       if (key == data.target) {
-        MM.lobbyPlayerAnimate = player.animate(
-          { transform: ['scale(1)', 'scale(0.8)', 'scale(1.1)', 'scale(1)'] },
-          { duration: 2000, iterations: Infinity, easing: 'ease-in-out' },
-        );
+        player.classList.add('mm-lobby-header-team-player--active');
       }
 
-      if (data.users[App.storage.data.id].team == data.users[key].team) {
+      if (isAlly) {
         leftTeam.append(player);
 
         player.onclick = () => {
+          if (MM.preview) return;
           if (player.dataset.hero) {
             Build.view(key, player.dataset.hero, data.users[key].nickname, false);
           }
         };
       } else {
-        name.innerText = 'ifst';
-
-        name.style.opacity = 0;
-
         rank.firstChild.innerText = 1100;
 
         rank.firstChild.style.opacity = 0;
@@ -642,6 +933,27 @@ export class MM {
     }
 
     MM.lobbyHeroes = DOM({ style: 'mm-lobby-middle-hero' });
+    MM.lobbyHeroScroll = DOM({ style: ['mm-lobby-hero-scroll', 'mm-lobby-scroll'] }, MM.lobbyHeroes);
+    const heroTooltip = DOM({ id: 'mm-lobby-choice-tooltip', style: 'mm-lobby-choice-tooltip', role: 'tooltip', hidden: true });
+    MM.lobbyHeroScroll.addEventListener('scroll', () => { heroTooltip.hidden = true; });
+    const heroSearch = DOM({
+      tag: 'input',
+      type: 'search',
+      style: 'mm-lobby-hero-search',
+      placeholder: Lang.text('mmHeroSearch'),
+      ariaLabel: Lang.text('mmHeroSearch'),
+      event: ['input', () => {
+        heroTooltip.hidden = true;
+        MM.filterLobbyHeroes(heroSearch.value);
+      }],
+    });
+    heroSearch.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && heroSearch.value) {
+        event.stopPropagation();
+        heroSearch.value = '';
+        MM.filterLobbyHeroes('');
+      }
+    });
 
     if (data.banhero) {
       MM.lobbyHeroes.append(DOM({ style: 'mm-lobby-middle-hero-prompt' }, Lang.text('mmMouseControls')));
@@ -651,34 +963,52 @@ export class MM {
     
     View.loadCastleHeroSelectedList();
     View.loadCastleHeroListNames();
-    const selectedHeroListId = View.getCastleHeroTamburListId(MM.hero);
+    const selectedHeroListId = preview ? data.previewHeroList.id : View.getCastleHeroTamburListId(heroes);
     const selectedHeroListMask = selectedHeroListId > 0 ? 1 << (selectedHeroListId - 1) : 0;
 
     let filteredHeroes = [];
-    for (let item of MM.hero) {
+    const allowedHeroes = Array.isArray(data.hero) && data.hero.length ? new Set(data.hero.map(String)) : null;
+    for (let item of heroes) {
       if (!item.id) {
         continue;
       }
 
-      if ('hero' in data && data.hero.length) {
-        if (!data.hero.includes(`${item.id}`)) {
-          continue;
-        }
-      }
+      if (allowedHeroes && !allowedHeroes.has(String(item.id))) continue;
       filteredHeroes.push(item);
     }
+    filteredHeroes.sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
     
     const appendHeroCard = (item) => {
+      const heroName = Lang.heroName(item.id);
       let hero = DOM({
         id: `HERO${item.id}`,
-        data: { ban: 0 },
+        data: { ban: 0, searchName: `${heroName} ${item.name || ''}`.toLowerCase() },
         style: 'mm-lobby-middle-hero-item',
+        role: 'button',
+        tabIndex: 0,
+        ariaLabel: heroName,
       });
 
       hero.style.backgroundImage = `url("content/hero/${item.id}/1.webp")`; // ${( item.skin ? item.skin : 1)}
 
       hero.onclick = async () => {
+        if (hero.classList.contains('mm-lobby-middle-hero-item--unavailable')) return;
+        if (MM.preview) {
+          const previousHero = MM.lobbyHeroes.querySelector('.mm-lobby-middle-hero-item--selected');
+          if (previousHero && Number(previousHero.dataset.ban) === Number(MM.lobbyUserId)) {
+            MM.setLobbyHeroAvailability(previousHero);
+          }
+          MM.setLobbyHeroAvailability(hero, MM.lobbyUserId);
+        }
         MM.targetHeroId = item.id;
+        MM.lobbyHeroes.querySelector('.mm-lobby-middle-hero-item--selected')?.classList.remove('mm-lobby-middle-hero-item--selected');
+        hero.classList.add('mm-lobby-middle-hero-item--selected');
+
+        if (MM.preview) {
+          MM.setLobbySkinAvatar(item.id, item.skin || 1);
+          MM.lobbyBuildView(item.id);
+          return;
+        }
 
         await App.api.request(App.CURRENT_MM, 'eventChangeHero', {
           id: MM.id,
@@ -689,6 +1019,7 @@ export class MM {
       };
 
       hero.oncontextmenu = async () => {
+        if (MM.preview || !data.banhero || hero.classList.contains('mm-lobby-middle-hero-item--unavailable')) return;
         await App.api.request(App.CURRENT_MM, 'eventBanHero', {
           id: MM.id,
           heroId: item.id,
@@ -700,6 +1031,21 @@ export class MM {
       let rank = Rank.createRankNode(item.rating, { withIcon: false });
 
       hero.append(rank);
+      hero.setAttribute('aria-describedby', heroTooltip.id);
+      const positionTooltip = () => {
+        MM.showLobbyChoiceTooltip(heroTooltip, hero, MM.lobbyHeroScroll, heroName);
+      };
+      hero.addEventListener('mouseenter', positionTooltip);
+      hero.addEventListener('focus', positionTooltip);
+      hero.addEventListener('mouseleave', () => { heroTooltip.hidden = true; });
+      hero.addEventListener('blur', () => { heroTooltip.hidden = true; });
+      hero.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          hero.click();
+        }
+      });
+      hero.classList.toggle('mm-lobby-middle-hero-item--selected', item.id === MM.targetHeroId);
 
       MM.lobbyHeroes.append(hero);
 
@@ -717,17 +1063,17 @@ export class MM {
       otherHeroes = filteredHeroes.filter((item) => (Number(item?.favourite || 0) & selectedHeroListMask) === 0);
 
       if (favouriteHeroes.length) {
-        const emptyIconLeft = DOM({ style: 'mm-lobby-middle-hero-line-icon' });
+        const emptyIconLeft = DOM({ style: ['mm-lobby-middle-hero-line-icon', 'mm-lobby-middle-hero-line-icon--list'] });
         emptyIconLeft.style.backgroundImage = 'url(content/icons/favouriteHero.png)';
         emptyIconLeft.style.opacity = 1;
-        const emptyIconRight = DOM({ style: 'mm-lobby-middle-hero-line-icon' });
+        const emptyIconRight = DOM({ style: ['mm-lobby-middle-hero-line-icon', 'mm-lobby-middle-hero-line-icon--list'] });
         emptyIconRight.style.backgroundImage = 'url(content/icons/favouriteHero.png)';
         emptyIconRight.style.opacity = 1;
         MM.lobbyHeroes.append(
           DOM(
             { style: 'mm-lobby-middle-hero-line' },
             emptyIconLeft,
-            DOM({ style: 'mm-lobby-middle-hero-line-name' }, View.getCastleHeroListName(selectedHeroListId)),
+            DOM({ style: 'mm-lobby-middle-hero-line-name' }, preview ? data.previewHeroList.name : View.getCastleHeroListName(selectedHeroListId)),
             emptyIconRight,
           ),
         );
@@ -757,33 +1103,69 @@ export class MM {
 
       appendHeroCard(item);
     }
-
-    if (App.storage.data.id == data.target) {
-      MM.lobbyConfirm.style.opacity = 1;
-    }
+    MM.lobbyHeroes.append(DOM({ style: 'mm-lobby-hero-empty', hidden: true }, Lang.text('mmHeroNoResults')));
+    MM.filterLobbyHeroes('');
 
     let info = DOM({ style: 'lobby-timer' });
 
-    await Timer.start(data.id, '', () => {
-      MM.close();
+    if (preview) {
+      Timer.stop();
+      let seconds = 30;
+      Timer.message = '';
+      Timer.sfxOptions.play = currentUserId == data.target;
+      Timer.render(seconds);
+      MM.lobbyPreviewInterval = setInterval(() => {
+        seconds = seconds > 0 ? seconds - 1 : 30;
+        if (seconds === 30) Timer.sfxOptions.lastSecond = -1;
+        Timer.render(seconds);
+        Timer.sfx(seconds);
+      }, 1000);
+    } else {
+      await Timer.start(data.id, '', () => {
+        MM.close();
+        MM.searchActive(true);
+      });
+      Timer.sfxOptions.play = currentUserId == data.target;
+    }
 
-      MM.searchActive(true);
-    });
+    info.append(
+      DOM({ style: 'mm-lobby-timer-ornament', ariaHidden: 'true' },
+        DOM({ style: 'mm-lobby-timer-ornament-wing' }),
+        DOM({ style: 'mm-lobby-timer-ornament-wing' })),
+      Timer.body, MM.lobbyConfirm,
+    );
 
-    Timer.sfxOptions.play = App.storage.data.id == data.target;
+    MM.chatBody = DOM({ style: ['mm-lobby-middle-chat-body', 'mm-lobby-scroll'] });
 
-    info.append(Timer.body);
-
-    MM.chatBody = DOM({ style: 'mm-lobby-middle-chat-body' });
+    const factionOutline = (side) => {
+      const label = Lang.text(side === 'docts' ? 'mmSideDocts' : 'mmSideAdornia');
+      return DOM({
+        style: ['mm-lobby-faction-outline', `mm-lobby-faction-outline--${side}`],
+        tabIndex: 0,
+        ariaLabel: label,
+      },
+      DOM({ style: 'mm-lobby-faction-detail', ariaHidden: 'true' },
+        ...Array.from({ length: side === 'docts' ? 8 : 5 }, (_, index) => {
+          const detail = DOM({ style: 'mm-lobby-faction-petal' });
+          detail.style.setProperty('--petal-index', index);
+          return detail;
+        })),
+      DOM({ style: 'mm-lobby-map-tooltip' }, label));
+    };
 
     let chatInput = DOM({
       tag: 'input',
       style: 'mm-lobby-middle-chat-button',
-      placeholder: Lang.text('enterTextAndPressEnter'),
+      placeholder: Lang.text('mmChatPlaceholder'),
     });
 
     chatInput.addEventListener('keyup', async (event) => {
       if (!App.isEnterKey(event)) return;
+
+      if (MM.preview) {
+        chatInput.value = '';
+        return;
+      }
 
       if (chatInput.value.length < 2) {
         throw 'Количество символов < 2';
@@ -808,56 +1190,123 @@ export class MM {
         { style: 'mm-lobby-middle' },
         DOM(
           { style: 'mm-lobby-middle-chat' },
-          DOM({ style: 'mm-lobby-middle-chat-map' }, data.mode == 0 ? MM.renderMap(data.users[App.storage.data.id].team) : DOM()),
+          DOM({ style: 'mm-lobby-section-title' }, Lang.text(data.mode == 0 ? 'mmSelectPositions' : 'mmLobbyChat')),
+          DOM({ style: 'mm-lobby-middle-chat-map' },
+            ...(data.mode == 0 ? [
+              factionOutline('docts'),
+              MM.renderMap(data.users[currentUserId].team),
+              factionOutline('adornia'),
+            ] : [])),
+          ...(data.mode == 0 ? [DOM({ style: 'mm-lobby-map-caption' }, Lang.text('mmMapPositionHint'))] : []),
           MM.chatBody,
           chatInput,
         ),
         lobbyBuild,
-        MM.lobbyHeroes,
+        DOM({ style: 'mm-lobby-middle-hero-column' },
+          DOM({ style: ['mm-lobby-section-title', 'mm-lobby-hero-toolbar'] },
+            DOM({ tag: 'span' }, Lang.text('mmSelectHero')),
+            DOM({ style: 'mm-lobby-hero-search-wrap' }, heroSearch)),
+          MM.lobbyHeroScroll,
+          heroTooltip),
       ),
     );
+    body.classList.toggle('mm-lobby--bans-hidden', !data.banhero);
+    body.classList.toggle('mm-lobby--aram', Number(data.mode) === 3);
 
-    Sound.play(SOUNDS_LIBRARY.TAMBUR, {
-      id: 'tambur',
-      volume: Castle.GetVolume(Castle.AUDIO_MUSIC),
-      loop: true,
-    });
+    if (preview) {
+      // A visual fixture only: never create peers or request microphone access.
+      const voiceBody = DOM({ style: 'voice-info-panel-body' });
+      for (const key of data.map.filter((key) => data.users[key].team === ownTeam)) {
+        voiceBody.append(DOM({ style: 'voice-info-panel-body-item' },
+          DOM({ style: 'voice-info-panel-body-item-name' }, data.users[key].nickname),
+          DOM({ style: 'voice-info-panel-body-item-status' },
+            DOM({ style: 'voice-info-panel-body-item-bar' },
+              DOM({ style: 'voice-info-panel-body-item-bar-level' }))),
+        ));
+      }
+      const voicePanel = DOM({ style: ['voice-info-panel', 'mm-lobby-voice-preview'] }, voiceBody);
+      voicePanel.append(DOM({
+        tag: 'button', type: 'button',
+        style: ['close-button', 'voice-info-panel-close'],
+        ariaLabel: Lang.text('titleClose'),
+        title: Lang.text('titleClose'),
+        event: ['click', () => { voicePanel.hidden = true; }],
+      }));
+      body.querySelector('.mm-lobby-middle-chat-map').append(voicePanel);
+    }
 
-    Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, false);
+    if (!preview) {
+      Sound.play(SOUNDS_LIBRARY.TAMBUR, {
+        id: 'tambur',
+        volume: Castle.GetVolume(Castle.AUDIO_MUSIC),
+        loop: true,
+      });
+      Castle.toggleMusic(Castle.MUSIC_LAYER_TAMBUR, false);
+    }
 
     MM.show(body);
+    if (Number(data.mode) === 3) {
+      const chatMap = body.querySelector('.mm-lobby-middle-chat-map');
+      const voicePanel = preview ? body.querySelector('.mm-lobby-voice-preview') : Voice.infoPanel;
+      const fitChatToVoice = () => {
+        if (!chatMap.isConnected || !voicePanel?.isConnected) return;
+        const voiceVisible = getComputedStyle(voicePanel).display !== 'none';
+        const gap = Math.max(4, body.getBoundingClientRect().height * 0.005);
+        const height = voiceVisible
+          ? Math.max(0, voicePanel.getBoundingClientRect().bottom - chatMap.getBoundingClientRect().top + gap)
+          : 0;
+        chatMap.style.flexBasis = `${Math.ceil(height)}px`;
+      };
+      MM.lobbyVoiceResizeHandler = fitChatToVoice;
+      window.addEventListener('resize', fitChatToVoice);
+      if (typeof ResizeObserver !== 'undefined' && voicePanel) {
+        MM.lobbyVoiceResizeObserver = new ResizeObserver(fitChatToVoice);
+        MM.lobbyVoiceResizeObserver.observe(voicePanel);
+      }
+      requestAnimationFrame(fitChatToVoice);
+    }
+    const selectedSkin = MM.lobbySkinBody.querySelector('[aria-pressed="true"]');
+    if (selectedSkin) MM.setLobbySkinAvatar(MM.targetHeroId, selectedSkin.dataset.skin);
+    MM.lobbyScrollObserver?.disconnect();
+    if (typeof ResizeObserver !== 'undefined') {
+      MM.lobbyScrollObserver = new ResizeObserver(() => MM.updateLobbyScrollbars());
+      for (const body of [MM.chatBody, MM.lobbySkinBody, MM.lobbyHeroScroll, MM.lobbyHeroes]) {
+        MM.lobbyScrollObserver.observe(body);
+      }
+    }
+    MM.updateLobbyScrollbars();
+    MM.watchLobbyNames();
+
+    if (preview) {
+      MM.chat({ id: 0, message: Lang.text('mmPreviewMatchInfo') });
+      MM.chat({ id: 0, message: Lang.text(data.mode == 0 ? 'mmPreviewSelectionInfo' : 'mmPreviewAramSelectionInfo') });
+      MM.chat({ id: 0, type: 'quest', message: Lang.text('mmPreviewQuestInfo') });
+      MM.chat({ id: currentUserId, message: Lang.text('mmPreviewPlayerMessage') });
+    }
     
-    MM.flushPendingHeroEvents(data.id);
-    
-    setTimeout(() => MM.flushPendingHeroEvents(data.id), 300);
-    
-    setTimeout(() => MM.flushPendingHeroEvents(data.id), 1200);
+    if (!preview) {
+      MM.flushPendingHeroEvents(data.id);
+      setTimeout(() => MM.flushPendingHeroEvents(data.id), 300);
+      setTimeout(() => MM.flushPendingHeroEvents(data.id), 1200);
+    }
 
     for (let key in data.users) {
-      if (!data.users[key].hero) {
-        continue;
-      }
-
       let findHero = document.getElementById(`HERO${data.users[key].hero}`);
 
       if (findHero) {
-        findHero.style.filter = 'grayscale(100%)';
-
-        findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-
-        findHero.dataset.ban = key;
+        MM.setLobbyHeroAvailability(findHero, key);
       }
 
-      if (data.users[key].banhero) {
+      if (data.banhero && data.users[key].banhero) {
         let findHero = document.getElementById(`HERO${data.users[key].banhero}`);
 
         if (findHero) {
-          findHero.style.filter = 'grayscale(100%)';
-
-          findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+          MM.setLobbyHeroAvailability(findHero, 0, true);
         }
       }
     }
+
+    if (preview) return;
 
     try {
       const myId = Number(App.storage?.data?.id || 0);
@@ -886,27 +1335,71 @@ export class MM {
 
   static renderMap(team) {
     MM.renderBody = DOM({ style: team == 1 ? 'map' : 'map-reverse' });
+    const map = MM.renderBody;
+    let nextPositionAt = 0;
+    let positionPending = false;
 
-    let container = DOM({ tag: 'div' }, MM.renderBody);
+    let container = DOM({ style: 'mm-lobby-map-frame' }, MM.renderBody);
 
-    container.setAttribute('style', 'width:37cqh;height:37cqh');
-
+    const positionKeys = ['mmPositionTop', 'mmPositionMiddle', 'mmPositionBottom', 'mmPositionJungle', 'mmPositionJungle', 'mmPositionSupport'];
     for (let number of [1, 2, 3, 4, 5, 6]) {
+      const label = Lang.text(positionKeys[number - 1]);
       let item = DOM({
         domaudio: domAudioPresets.smallButton,
         style: `map-item-${number}`,
         data: { player: 0, position: number },
+        role: 'button',
+        tabIndex: 0,
+        ariaLabel: label,
         event: [
           'click',
           async () => {
-            await App.api.request(App.CURRENT_MM, 'position', {
-              id: MM.id,
-              position: item.dataset.player == App.storage.data.id ? 0 : item.dataset.position,
-            });
+            if (positionPending || Date.now() < nextPositionAt) return;
+            nextPositionAt = Date.now() + MM.lobbyPositionCooldownMs;
+            if (MM.preview) {
+              const player = document.getElementById(`PLAYER${MM.lobbyUserId}`);
+              if (!player) return;
+              const selected = Number(item.dataset.player) === MM.lobbyUserId;
+              for (const point of map.children) {
+                if (Number(point.dataset.player) !== MM.lobbyUserId) continue;
+                point.dataset.player = 0;
+                point.style.backgroundImage = 'none';
+                point.style.transform = 'scale(1)';
+                point.setAttribute('aria-pressed', 'false');
+              }
+              if (!selected) {
+                item.dataset.player = MM.lobbyUserId;
+                item.style.backgroundImage = player.firstChild.style.backgroundImage;
+                item.style.transform = 'scale(1)';
+                item.setAttribute('aria-pressed', 'true');
+              }
+              return;
+            }
+            positionPending = true;
+            map.setAttribute('aria-busy', 'true');
+            try {
+              await App.api.request(App.CURRENT_MM, 'position', {
+                id: MM.id,
+                position: item.dataset.player == App.storage.data.id ? 0 : item.dataset.position,
+              });
+            } catch (error) {
+              nextPositionAt = 0;
+              App.error(error);
+            } finally {
+              positionPending = false;
+              map.setAttribute('aria-busy', 'false');
+            }
           },
         ],
       });
 
+      item.append(DOM({ style: 'mm-lobby-map-tooltip' }, label));
+      item.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          item.click();
+        }
+      });
       MM.renderBody.append(item);
     }
 
@@ -930,9 +1423,9 @@ export class MM {
       });
     }
 
-    if (!data.noAnimate && MM.lobbyPlayerAnimate) {
-      MM.lobbyPlayerAnimate.cancel();
-    }
+    MM.lobbyPlayerAnimate?.cancel();
+    MM.lobbyPlayerAnimate = null;
+    MM.setLobbySelection(data.target);
 
     if (!data.noTimer) {
       await Timer.start(data.id, '', () => {
@@ -960,6 +1453,7 @@ export class MM {
       }
 
       findOldPlayer.firstChild.style.backgroundImage = `url(content/hero/${data.heroId}/${skinId}.webp)`;
+      findOldPlayer.querySelector('.mm-lobby-hero-tooltip').textContent = Lang.heroName(data.heroId, skinId) || '';
 
       const rankContainer = findOldPlayer.firstChild.querySelector('.rank');
       Rank.setRankReady(rankContainer);
@@ -973,24 +1467,9 @@ export class MM {
       }
     }
 
-    if (!data.noAnimate && data.target != 0) {
-      let findPlayer = document.getElementById(`PLAYER${data.target}`);
-
-      if (findPlayer) {
-        MM.lobbyPlayerAnimate = findPlayer.animate(
-          { transform: ['scale(1)', 'scale(0.8)', 'scale(1.2)', 'scale(1)'] },
-          { duration: 500, iterations: Infinity, easing: 'ease-in-out' },
-        );
-      }
-    }
-
     for (let child of MM.lobbyHeroes.children) {
       if (child.dataset.ban == data.userId) {
-        child.dataset.ban = 0;
-
-        child.style.filter = 'none';
-
-        child.style.backgroundColor = 'rgba(255, 255, 255, 0)';
+        MM.setLobbyHeroAvailability(child);
 
         break;
       }
@@ -999,9 +1478,7 @@ export class MM {
     let findHero = document.getElementById(`HERO${data.heroId}`);
 
     if (findHero) {
-      findHero.style.filter = 'grayscale(100%)';
-
-      findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+      MM.setLobbyHeroAvailability(findHero, data.userId);
 
       findHero.onclick = false;
 
@@ -1012,20 +1489,12 @@ export class MM {
       let findHero = document.getElementById(`HERO${data.banHeroId}`);
 
       if (findHero) {
-        findHero.style.filter = 'grayscale(100%)';
-
-        findHero.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
+        MM.setLobbyHeroAvailability(findHero, 0, true);
 
         findHero.onclick = false;
 
         findHero.oncontextmenu = false;
       }
-    }
-
-    if (App.storage.data.id == data.target) {
-      MM.lobbyConfirm.style.opacity = 1;
-    } else {
-      MM.lobbyConfirm.style.opacity = 0;
     }
   }
   
@@ -1060,11 +1529,7 @@ export class MM {
       });
     }
     
-    if (App.storage.data.id == data.target) {
-      MM.lobbyConfirm.style.opacity = 1;
-    } else {
-      MM.lobbyConfirm.style.opacity = 0;
-    }
+    MM.setLobbySelection(data.target);
   }
   
   static flushPendingHeroEvents(lobbyId = MM.id) {
@@ -1142,6 +1607,7 @@ export class MM {
       findPlayer.dataset.skin = skinId;
 
       findPlayer.firstChild.style.backgroundImage = url;
+      findPlayer.querySelector('.mm-lobby-hero-tooltip').textContent = Lang.heroName(data.heroId, skinId) || '';
 
       const rankContainer = findPlayer.firstChild.querySelector('.rank');
       Rank.updateRankContainer(rankContainer, data.rating);
@@ -1168,24 +1634,46 @@ export class MM {
     }
   }
 
-  static chat(data) {
-    let message = DOM(`${data.message}`);
+  static getLobbyMessageKind(data) {
+    if (Number(data.id)) return 'player';
+    if (data.type === 'yieldLane' || /(?:уступ(?:и(?:те)?|ить)\s+(?:линию|позицию)|yield\s+(?:the\s+)?(?:lane|position))/iu.test(data.message)) return 'yieldLane';
+    if (data.type === 'quest' || /(?:квест|задани|убей|убить|цель|quest|kill|target)/iu.test(data.message)) return 'quest';
+    return 'system';
+  }
 
-    if (App.isAdmin(data.id)) {
-      message.style.color = 'rgba(255, 103, 90, 0.9)';
-    } else if (data.id && 'commander' in MM.lobbyUsers[data.id]) {
-      message.style.color = 'rgba(255,215,0,0.9)';
+  static chat(data) {
+    const kind = MM.getLobbyMessageKind(data);
+    const isSystem = kind !== 'player';
+    if (kind === 'yieldLane') {
+      const now = Date.now();
+      if (now < MM.lobbyLaneNoticeNextAt) return;
+      MM.lobbyLaneNoticeNextAt = now + MM.lobbyPositionCooldownMs;
     }
+    let text = `${data.message}`;
+    if (isSystem) {
+      text = text.replace(/^Матч найден\.\s*Подготовьтесь к бою\.$/u, Lang.text('mmPreviewMatchInfo'));
+      text = text.replace(/^Уступи(?:те)? линию[.!]?$/u, Lang.text('mmYieldLane'));
+    }
+    if (kind === 'quest') {
+      text = text.replace(/^\s*(?:Квест|Задание|Quest|Task|Заданне)\s*:\s*/iu, '');
+      text = text.replace(/\p{L}/u, (letter) => letter.toLocaleUpperCase());
+    }
+    let message = DOM(text);
 
     let item = DOM({ style: 'mm-lobby-middle-chat-body-item' });
+    item.classList.toggle('mm-lobby-chat-message--system', isSystem);
+    item.classList.toggle('mm-lobby-chat-message--quest', kind === 'quest');
 
-    if (data.id) {
+    if (isSystem) {
+      item.append(DOM({ tag: 'div' }, `${Lang.text(kind === 'quest' ? 'mmChatQuest' : 'mmChatSystem')}:`));
+    } else if (MM.lobbyUsers[data.id]?.nickname) {
       item.append(DOM({ tag: 'div' }, `${MM.lobbyUsers[data.id].nickname}:`));
     }
 
     item.append(message);
 
     MM.chatBody.append(item);
+    MM.updateLobbyScrollbars();
 
     item.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }

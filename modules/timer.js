@@ -11,7 +11,7 @@ export class Timer {
   {
     play: false, // whether to play the sound or not, set to true when the timer is started for the current user
     lastSecond: -1, // the last second when the sound was played
-    playFromSecond: 7, // from which second to play the sound (inclusive) 
+    playFromSecond: 8, // from which second to play the sound (inclusive)
     sound: SOUNDS_LIBRARY.SINGLE_TIMER, // sound to play
     volumeModifier: 1, // volume modifier
   }
@@ -52,9 +52,14 @@ export class Timer {
 
     let seconds = Math.round(Math.abs(Date.now() - Timer.timeFinish) / 1000);
 
-    Timer.sb.innerText = `${Timer.message} 00:${seconds < 10 ? '0' : ''}${seconds}`;
+    Timer.render(seconds);
 
     Timer.sfx(seconds);
+  }
+
+  static render(seconds) {
+    Timer.sb.innerText = `${Timer.message || ''} 00:${seconds < 10 ? '0' : ''}${seconds}`;
+    Timer.body.classList.toggle('mm-timer--urgent', seconds > 0 && seconds <= 8);
   }
 
   static end() {
@@ -70,6 +75,10 @@ export class Timer {
   }
 
   static stop() {
+    Timer.body?.classList.remove('mm-timer--urgent');
+    Sound.stop('timer');
+    Timer.sfxOptions.play = false;
+    Timer.sfxOptions.lastSecond = -1;
     if (Timer.intervalId) {
       clearInterval(Timer.intervalId);
 
@@ -95,6 +104,11 @@ export class Timer {
   static oneMinute = this.oneSecond * 60;
   static oneHour = this.oneMinute * 60;
   static oneDay = this.oneHour * 24;
+
+  static getNextMoscowMidnight(now = Date.now()) {
+    const offset = 3 * this.oneHour;
+    return (Math.floor((now + offset) / this.oneDay) + 1) * this.oneDay - offset;
+  }
 
   static getFormattedTimeDays(timer) {
     return Math.floor(timer / this.oneDay);
