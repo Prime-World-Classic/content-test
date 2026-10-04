@@ -22,7 +22,7 @@ import { HostRacer } from './hostRacer.js';
 export class App {
   static APP_VERSION = '0';
 
-  static PW_VERSION = '2.15.4';
+  static PW_VERSION = '2.16.0';
 
   static CURRENT_MM = 'mmtest';
 
