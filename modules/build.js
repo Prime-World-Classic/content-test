@@ -2201,6 +2201,36 @@ export class Build {
     return [rowStart, rowStart + 1, rowStart + 2, rowStart + 3, rowStart + 4, rowStart + 5];
   }
 
+  /**
+   * Панель активных после обмена слотов i1/i2 — как на сервере (pw-api build.optimisticSwap):
+   * если на панели есть только один из двух слотов, ссылка переезжает за талантом;
+   * если оба (или ни одного) — панель не меняется (слоты панели меняются содержимым).
+   * Раньше решение принималось по флагу talent.active: при двух активных талантах,
+   * из которых на панели только один, он подменялся другим.
+   */
+  static remapActiveBarAfterSwap(i1, i2) {
+    const items = Build.activeBarItems;
+    if (!Array.isArray(items)) return false;
+    const pos1 = Number(i1) + 1;
+    const pos2 = Number(i2) + 1;
+    if (!Number.isFinite(pos1) || !Number.isFinite(pos2) || pos1 === pos2) return false;
+    let has1 = false;
+    let has2 = false;
+    for (const v of items) {
+      const abs = Math.abs(Number(v) || 0);
+      if (abs === pos1) has1 = true;
+      else if (abs === pos2) has2 = true;
+    }
+    if (has1 === has2) return false;
+    const from = has1 ? pos1 : pos2;
+    const to = has1 ? pos2 : pos1;
+    for (let i = 0; i < items.length; i++) {
+      const item = Number(items[i]) || 0;
+      if (item && Math.abs(item) === from) items[i] = item < 0 ? -to : to;
+    }
+    return true;
+  }
+
   static async swapBuildSlotsWithBackend(i1, i2) {
     const slotA = Number(i1);
     const slotB = Number(i2);
@@ -2227,27 +2257,7 @@ export class Build {
     } catch {}
 
     try {
-      const movedTalent = talentA;
-      const displacedTalent = talentB;
-      if (movedTalent?.active && !displacedTalent?.active) {
-        for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
-          const item = Number(Build.activeBarItems[i]) || 0;
-          if (!item) continue;
-          const sign = item < 0 ? -1 : 1;
-          if (Math.abs(item) === slotA + 1) {
-            Build.activeBarItems[i] = sign * (slotB + 1);
-          }
-        }
-      } else if (!movedTalent?.active && displacedTalent?.active) {
-        for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
-          const item = Number(Build.activeBarItems[i]) || 0;
-          if (!item) continue;
-          const sign = item < 0 ? -1 : 1;
-          if (Math.abs(item) === slotB + 1) {
-            Build.activeBarItems[i] = sign * (slotA + 1);
-          }
-        }
-      }
+      Build.remapActiveBarAfterSwap(slotA, slotB);
       if (!Build._sortDomBatch) Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
     } catch {}
 
@@ -8496,27 +8506,7 @@ export class Build {
                   if (performSwap) {
                     const oldPos = Number(swapParentNode.dataset.position);
                     const newPos = Number(elemBelow.dataset.position);
-                    const movedTalent = swappingTal;
-                    const displacedTalent = Build.installedTalents[oldPos];
-                    if (movedTalent?.active && !displacedTalent?.active) {
-                      for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
-                        const item = Number(Build.activeBarItems[i]) || 0;
-                        if (!item) continue;
-                        const sign = item < 0 ? -1 : 1;
-                        if (Math.abs(item) === oldPos + 1) {
-                          Build.activeBarItems[i] = sign * (newPos + 1);
-                        }
-                      }
-                      Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
-                    } else if (!movedTalent?.active && displacedTalent?.active) {
-                      for (let i = 0; i < (Build.activeBarItems || []).length; i++) {
-                        const item = Number(Build.activeBarItems[i]) || 0;
-                        if (!item) continue;
-                        const sign = item < 0 ? -1 : 1;
-                        if (Math.abs(item) === newPos + 1) {
-                          Build.activeBarItems[i] = sign * (oldPos + 1);
-                        }
-                      }
+                    if (Build.remapActiveBarAfterSwap(oldPos, newPos)) {
                       Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
                     }
                     await Build.sendBuildMutationOrThrow({
