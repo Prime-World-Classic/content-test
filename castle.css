@@ -1620,6 +1620,22 @@ body {
   display: flex;
 }
 
+:is(.castle-button-play-6, .castle-button-play-7):hover {
+  z-index: 13002;
+}
+
+:is(.castle-button-play-6, .castle-button-play-7):hover .castle-training-tooltip {
+  display: flex;
+}
+
+.castle-training-tooltip {
+  top: calc(100% + 7vh);
+  left: 50%;
+  /* Cancel the navbar's 1.9 scale and the helmet's 0.5 scale. */
+  transform: translateX(-50%) scale(1.0526);
+  transform-origin: center top;
+}
+
 .castle-button-play-karma:hover .karma-tooltip {
   display: flex;
 }
@@ -3692,7 +3708,7 @@ body {
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: url('icons/hall-of-fame.png') center / 5.2cqh 5.2cqh no-repeat;
+  background: url('icons/hall-of-fame.png') center / 6.05cqh 6.05cqh no-repeat;
   opacity: 0.8;
   cursor: var(--cursor-pointer);
   transition: opacity 160ms ease, filter 160ms ease;

@@ -347,6 +347,8 @@ export const en = {
     statStealEnergy: 'Energy steal',
     statTalentCooldownPct: 'Talent cooldown',
     skins: 'Skins',
+    trainingBotsTooltipTitle: 'Training with bots',
+    trainingBotsTooltipBody: 'Training with dummies and bots is available through the Training button in the hero build. Additional build testing options include resetting skill cooldowns, adding Prime to your hero and adding Prime to bots when the button is pressed on Native Land.',
     classTalent: 'Class Talent',
     talentConflict: 'The selected talent conflicts with another talent in the build!!',
     talentAnomalyUnknown: 'Talent action was rejected by backend. Build state has been restored.',

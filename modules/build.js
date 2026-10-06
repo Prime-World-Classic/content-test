@@ -604,7 +604,7 @@ export class Build {
 
     const talentsSection = DOM({ tag: 'fieldset', style: ['build-inventory-fieldset', 'build-talents-section'] });
     const talentsHeader = DOM({ tag: 'legend', style: 'build-inventory-legend' }, Lang.text('library'));
-    talentsSection.append(talentsHeader, buildTalents);
+    talentsSection.append(talentsHeader, buildTalents, Build.createLibrarySearchInput());
 
     const setsSection = DOM({ tag: 'fieldset', style: ['build-inventory-fieldset', 'build-sets-section'] });
     const setsHeader = DOM({ tag: 'legend', style: 'build-inventory-legend' }, Lang.text('sets'));
@@ -2214,7 +2214,8 @@ export class Build {
     Build.installedTalents[slotA] = talentB;
     Build.installedTalents[slotB] = talentA;
 
-    try {
+    // Во время сортировки DOM двигается одним проходом в endSortDomBatch().
+    if (!Build._sortDomBatch) try {
       const cellA = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${slotA}"]`);
       const cellB = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${slotB}"]`);
       if (cellA && cellB) {
@@ -2247,7 +2248,7 @@ export class Build {
           }
         }
       }
-      Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+      if (!Build._sortDomBatch) Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
     } catch {}
 
     if (!Build._sortDeferBackendSync) {
@@ -2381,12 +2382,146 @@ export class Build {
             else if (ref.talentRef && rightNow === ref.talentRef) nextPos = rightSlot + 1;
             Build.activeBarItems[ref.i] = ref.sign * nextPos;
           }
-          Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+          if (!Build._sortDomBatch) Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
         } catch {}
         moved++;
       }
     }
     return moved;
+  }
+
+  /** Начало пакетной сортировки: запоминаем DOM-узел каждого таланта, DOM не трогаем до конца. */
+  static beginSortDomBatch() {
+    const nodes = new Map();
+    try {
+      const cells = Build.fieldView?.querySelectorAll?.('.build-hero-grid-item[data-position]') || [];
+      for (const cell of cells) {
+        const talent = Build.installedTalents?.[Number(cell.dataset.position)];
+        const node = cell.firstElementChild;
+        if (talent && node) nodes.set(talent, node);
+      }
+    } catch {}
+    Build._sortDomBatch = { nodes };
+  }
+
+  /** Конец пакетной сортировки: расставляем узлы по итоговым слотам и один раз рисуем панель активных. */
+  static endSortDomBatch(apply = true) {
+    const batch = Build._sortDomBatch;
+    Build._sortDomBatch = null;
+    if (!batch || !apply) return;
+    try {
+      const cells = Build.fieldView?.querySelectorAll?.('.build-hero-grid-item[data-position]') || [];
+      const moves = [];
+      for (const cell of cells) {
+        const talent = Build.installedTalents?.[Number(cell.dataset.position)];
+        const node = talent ? batch.nodes.get(talent) : null;
+        if (node && node.parentNode !== cell) moves.push({ node, cell });
+      }
+      // FLIP: запоминаем старые позиции, переставляем, затем плавно «доезжаем» на новое место.
+      const animate = Build.shouldAnimateSortMoves() && moves.length > 0;
+      if (animate) {
+        for (const m of moves) m.from = m.node.getBoundingClientRect();
+      }
+      for (const m of moves) m.cell.append(m.node);
+      if (animate) Build.playSortMoveAnimation(moves);
+    } catch {}
+    Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
+  }
+
+  static SORT_MOVE_ANIMATION_MS = 220;
+
+  static shouldAnimateSortMoves() {
+    try {
+      if (typeof Element === 'undefined' || typeof Element.prototype.animate !== 'function') return false;
+      if (window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches) return false;
+    } catch {
+      return false;
+    }
+    return true;
+  }
+
+  /** Анимация перестановки талантов после сортировки/зеркалирования. */
+  static playSortMoveAnimation(moves) {
+    for (const m of moves) Build.animateTalentMove(m.node, m.from);
+  }
+
+  /**
+   * Плавно «перевозит» талант из fromRect на его текущее место.
+   * Ячейки поля имеют overflow: hidden, поэтому анимируется не сам узел, а его копия
+   * в фиксированном слое поверх окна (с теми же размерами ячейки — для cq-единиц);
+   * оригинал скрыт до конца анимации. Двигается только transform.
+   */
+  static ensureTalentMoveAnimStyle() {
+    if (Build._talentMoveAnimStyleEl?.isConnected) return;
+    const style = document.createElement('style');
+    style.textContent = '[data-talent-move-anim] > * { visibility: hidden !important; }';
+    document.head.append(style);
+    Build._talentMoveAnimStyleEl = style;
+  }
+
+  static animateTalentMove(node, fromRect, duration = Build.SORT_MOVE_ANIMATION_MS) {
+    try {
+      if (!node || !fromRect || !node.isConnected || !Build.shouldAnimateSortMoves()) return;
+      const parent = node.parentElement;
+      if (!parent) return;
+      const toRect = node.getBoundingClientRect();
+      if (!toRect.width || !toRect.height || !fromRect.width || !fromRect.height) return;
+      const dx = fromRect.left - toRect.left;
+      const dy = fromRect.top - toRect.top;
+      if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+
+      if (!Build._talentMoveGhosts) Build._talentMoveGhosts = new WeakMap();
+      Build._talentMoveGhosts.get(node)?.();
+
+      const parentRect = parent.getBoundingClientRect();
+      const ghost = document.createElement('div');
+      ghost.className = parent.className;
+      ghost.setAttribute('aria-hidden', 'true');
+      Object.assign(ghost.style, {
+        position: 'fixed',
+        left: `${parentRect.left}px`,
+        top: `${parentRect.top}px`,
+        width: `${parentRect.width}px`,
+        height: `${parentRect.height}px`,
+        margin: '0',
+        overflow: 'visible',
+        pointerEvents: 'none',
+        zIndex: '10000',
+        willChange: 'transform',
+      });
+      const clone = node.cloneNode(true);
+      clone.style.position = 'static';
+      clone.style.left = '';
+      clone.style.top = '';
+      clone.style.translate = '';
+      clone.style.removeProperty('transform');
+      ghost.append(clone);
+      document.body.append(ghost);
+
+      // Оригинал прячем через атрибут на ЯЧЕЙКЕ, а не inline-стилем на самом таланте:
+      // панель активных клонирует таланты с поля (cloneNode), и inline visibility:hidden
+      // попадал в клоны — слоты выглядели пустыми/затемнёнными.
+      Build.ensureTalentMoveAnimStyle();
+      parent.dataset.talentMoveAnim = `${(Number(parent.dataset.talentMoveAnim) || 0) + 1}`;
+      let finished = false;
+      const done = () => {
+        if (finished) return;
+        finished = true;
+        ghost.remove();
+        const left = (Number(parent.dataset.talentMoveAnim) || 1) - 1;
+        if (left > 0) parent.dataset.talentMoveAnim = `${left}`;
+        else delete parent.dataset.talentMoveAnim;
+        Build._talentMoveGhosts.delete(node);
+      };
+      Build._talentMoveGhosts.set(node, done);
+      const anim = ghost.animate(
+        [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0, 0)' }],
+        { duration, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)' },
+      );
+      anim.onfinish = done;
+      anim.oncancel = done;
+      setTimeout(done, duration + 300);
+    } catch {}
   }
 
   static async mirrorBuildOnlyWithSingleSync() {
@@ -2400,7 +2535,9 @@ export class Build {
     Build._sortDeferBackendSync = true;
     Build.syncSetSortButtonState();
     try {
+      Build.beginSortDomBatch();
       await Build.mirrorBuildRightToLeft();
+      Build.endSortDomBatch();
       Build.updateHeroStats();
       Build.renderCombatOrderBadges();
       Build.refreshActiveTalentDescription();
@@ -2408,10 +2545,12 @@ export class Build {
       Build.syncCombatModeButtonState();
       await Build.syncSortResultToBackend(initialBodySnapshot, initialActiveSnapshot);
     } catch {
+      Build.endSortDomBatch(false);
       try {
         await Build.refreshBuildStateFromServer({ refreshInventory: true });
       } catch {}
     } finally {
+      if (Build._sortDomBatch) Build.endSortDomBatch();
       Build._sortDeferBackendSync = false;
       Build.sortSetsInProgress = false;
       Build.syncSetSortButtonState();
@@ -2441,19 +2580,32 @@ export class Build {
     return swaps;
   }
 
+  /**
+   * Повторяет серверную логику build.optimisticSwap (pw-api, build.model.js):
+   * ссылка панели активных переносится, только если в панели есть ровно одна из двух позиций.
+   * Раньше симуляция переносила обе — и синхронизация слала лишние setActive.
+   */
   static simulateActiveAfterSwaps(active = [], swaps = []) {
     const next = Array.isArray(active) ? active.slice(0, 24).map((v) => Number(v) || 0) : new Array(24).fill(0);
     for (const pair of swaps || []) {
       const i1 = Number(pair?.[0]);
       const i2 = Number(pair?.[1]);
-      if (!Number.isFinite(i1) || !Number.isFinite(i2)) continue;
+      if (!Number.isFinite(i1) || !Number.isFinite(i2) || i1 === i2) continue;
+      const pos1 = i1 + 1;
+      const pos2 = i2 + 1;
+      let has1 = false;
+      let has2 = false;
       for (let i = 0; i < next.length; i++) {
-        const item = Number(next[i]) || 0;
-        if (!item) continue;
-        const sign = item < 0 ? -1 : 1;
-        const pos = Math.abs(item);
-        if (pos === i1 + 1) next[i] = sign * (i2 + 1);
-        else if (pos === i2 + 1) next[i] = sign * (i1 + 1);
+        const abs = Math.abs(next[i]);
+        if (abs === pos1) has1 = true;
+        else if (abs === pos2) has2 = true;
+      }
+      if (has1 === has2) continue;
+      const from = has1 ? pos1 : pos2;
+      const to = has1 ? pos2 : pos1;
+      for (let i = 0; i < next.length; i++) {
+        const item = next[i];
+        if (item && Math.abs(item) === from) next[i] = item > 0 ? to : -to;
       }
     }
     return next;
@@ -2511,6 +2663,7 @@ export class Build {
     Build._sortDeferBackendSync = true;
     Build.syncSetSortButtonState();
     try {
+      Build.beginSortDomBatch();
       if (classEdgeSort) {
         await Build.normalizeClassTalentsToMajorSide();
         await Build.mirrorBuildRightToLeft();
@@ -2530,7 +2683,8 @@ export class Build {
         }
       }
 
-      if (!setTalentToKey.size) return;
+      // Без загруженных сетов не выходим: при ПКМ зеркалирование уже применено локально
+      // и должно уйти на сервер (раньше return пропускал syncSortResultToBackend).
 
       const fixedSlots = new Set();
       const setTalentCounters = new Map();
@@ -2589,6 +2743,7 @@ export class Build {
       for (const k of orderedSetKeys) {
         setSize.set(k, getSetPriorityWeight(k));
       }
+      const setRankByKey = new Map(orderedSetKeys.map((k, i) => [k, i]));
       const makeColsArray = () => new Array(6).fill(0);
       const getSetAtSlot = (slot) => {
         const t = Build.installedTalents?.[slot];
@@ -2630,45 +2785,55 @@ export class Build {
         }
         return support;
       };
+      // Оценка доски на битовых масках (6 колонок -> 6 бит): та же формула, что и раньше,
+      // но без Map/массивов на каждый вызов — функция вызывается сотни раз за сортировку.
+      const scoreSetKeys = Array.from(setTalentCounters.keys());
+      const scoreSetIdx = new Map(scoreSetKeys.map((k, i) => [k, i]));
+      const scoreSetW = scoreSetKeys.map((k) => Math.max(1, Number(setSize.get(k)) || 1));
+      const scoreSetTotal = scoreSetKeys.map((k) => Number(setTalentCounters.get(k)) || 0);
+      const scoreMasks = new Int32Array(scoreSetKeys.length * 7);
+      const scoreRowSlots = [null];
+      for (let level = 1; level <= 6; level++) scoreRowSlots.push(Build.getRowSlotIndicesByLevel(level));
+      const bitCount6 = (m) => (m & 1) + ((m >> 1) & 1) + ((m >> 2) & 1) + ((m >> 3) & 1) + ((m >> 4) & 1) + ((m >> 5) & 1);
+      const scoreHist = new Int32Array(6);
       const evaluateBoardScore = () => {
-        let score = 0;
-        const bySet = new Map();
-        for (let level = 6; level >= 1; level--) {
-          const rowSlots = Build.getRowSlotIndicesByLevel(level);
-          const setToCols = new Map();
+        scoreMasks.fill(0);
+        for (let level = 1; level <= 6; level++) {
+          const rowSlots = scoreRowSlots[level];
           for (let c = 0; c < 6; c++) {
             const sk = getSetAtSlot(rowSlots[c]);
             if (!sk) continue;
-            if (!setToCols.has(sk)) setToCols.set(sk, []);
-            setToCols.get(sk).push(c);
-          }
-          for (const [sk, cols] of setToCols.entries()) {
-            if (!bySet.has(sk)) bySet.set(sk, []);
-            bySet.get(sk).push({ level, cols: cols.slice().sort((a, b) => a - b) });
+            const idx = scoreSetIdx.get(sk);
+            if (idx === undefined) continue;
+            scoreMasks[idx * 7 + level] |= 1 << c;
           }
         }
-        for (const [sk, rows] of bySet.entries()) {
-          const w = Math.max(1, Number(setSize.get(sk)) || 1);
-          const totalCount = Number(setTalentCounters.get(sk)) || 0;
-          const hist = makeColsArray();
-          const rowColsByLevel = new Map();
-          for (const r of rows) {
-            for (const c of r.cols) hist[c] += 1;
-            rowColsByLevel.set(Number(r.level), new Set(r.cols));
+        let score = 0;
+        for (let idx = 0; idx < scoreSetKeys.length; idx++) {
+          const base = idx * 7;
+          let present = 0;
+          scoreHist.fill(0);
+          for (let level = 1; level <= 6; level++) {
+            const m = scoreMasks[base + level];
+            if (!m) continue;
+            present = 1;
+            for (let c = 0; c < 6; c++) if (m & (1 << c)) scoreHist[c]++;
           }
+          if (!present) continue;
+          const w = scoreSetW[idx];
+
           let bestCol = 0;
           for (let c = 1; c < 6; c++) {
-            if (hist[c] > hist[bestCol]) bestCol = c;
+            if (scoreHist[c] > scoreHist[bestCol]) bestCol = c;
           }
-          const vertical = Number(hist[bestCol]) || 0;
+          const vertical = scoreHist[bestCol];
           score += w * vertical * vertical * 40;
 
           let streak = 0;
           let bestStreak = 0;
+          const bestBit = 1 << bestCol;
           for (let level = 6; level >= 1; level--) {
-            const row = rows.find((r) => r.level === level);
-            const hasBestCol = !!row && row.cols.includes(bestCol);
-            if (hasBestCol) {
+            if (scoreMasks[base + level] & bestBit) {
               streak++;
               if (streak > bestStreak) bestStreak = streak;
             } else {
@@ -2678,42 +2843,33 @@ export class Build {
           score += w * bestStreak * bestStreak * 20;
 
           // For medium/large sets treat two-column shape as a single coherent structure.
-          if (totalCount >= 4) {
+          if (scoreSetTotal[idx] >= 4) {
             let secondCol = bestCol === 0 ? 1 : 0;
             for (let c = 0; c < 6; c++) {
               if (c === bestCol) continue;
-              if (hist[c] > hist[secondCol]) secondCol = c;
+              if (scoreHist[c] > scoreHist[secondCol]) secondCol = c;
             }
-            const secondSupport = Number(hist[secondCol]) || 0;
+            const secondSupport = scoreHist[secondCol];
             score += w * secondSupport * secondSupport * 22;
             if (Math.abs(secondCol - bestCol) === 1) score += w * 35;
           }
 
-          for (const r of rows) {
-            const cols = r.cols;
-            if (cols.length >= 2) {
-              for (let i = 0; i < cols.length - 1; i++) {
-                if (cols[i + 1] - cols[i] === 1) score += w * 12;
-              }
-              const spread = cols[cols.length - 1] - cols[0];
-              const ideal = cols.length - 1;
-              if (spread > ideal) score -= (spread - ideal) * w * 8;
-            }
+          for (let level = 1; level <= 6; level++) {
+            const m = scoreMasks[base + level];
+            const cnt = bitCount6(m);
+            if (cnt < 2) continue;
+            score += w * 12 * bitCount6(m & (m >> 1));
+            const lo = 31 - Math.clz32(m & -m);
+            const hi = 31 - Math.clz32(m);
+            const spread = hi - lo;
+            const ideal = cnt - 1;
+            if (spread > ideal) score -= (spread - ideal) * w * 8;
           }
 
-          // Multi-column continuity between adjacent rows:
-          // reward when a set keeps the same column-shape (not only one best column).
+          // Multi-column continuity between adjacent rows.
           for (let level = 1; level <= 5; level++) {
-            const lower = rowColsByLevel.get(level);
-            const upper = rowColsByLevel.get(level + 1);
-            if (!lower || !upper) continue;
-            let overlap = 0;
-            for (const c of lower) {
-              if (upper.has(c)) overlap++;
-            }
-            if (overlap > 0) {
-              score += w * overlap * overlap * 18;
-            }
+            const overlap = bitCount6(scoreMasks[base + level] & scoreMasks[base + level + 1]);
+            if (overlap > 0) score += w * overlap * overlap * 18;
           }
         }
         return score;
@@ -2810,6 +2966,16 @@ export class Build {
             if (targetSet && targetSet !== setKey) {
               const targetW = Number(setSize.get(targetSet)) || 0;
               if (targetW > curW) continue;
+              // Равный вес: не вытесняем более приоритетный сет (раньше в orderedSetKeys) из его
+              // целевой колонки — иначе два сета перекидывают талант туда-обратно до лимита проходов
+              // и побеждает тот, кто обработан последним (напр. зелье/перчатка в III ряду).
+              if (
+                targetW === curW &&
+                setRankByKey.get(targetSet) < setRankByKey.get(setKey) &&
+                preferredColBySet.get(targetSet) === targetCol
+              ) {
+                continue;
+              }
             }
             await Build.swapBuildSlotsWithBackend(sourceSlot, targetSlot);
             improved = true;
@@ -2872,7 +3038,10 @@ export class Build {
                   const strongToScore = Number(strongHist[strongToCol]) || 0;
                   const weakFromScore = Number(weakHist[weakFromCol]) || 0;
                   const weakToScore = Number(weakHist[weakToCol]) || 0;
-                  const strongerLoses = strongToScore < strongFromScore;
+                  // «Потеря» считается только если у сильного сета в исходной колонке есть опора
+                  // (ещё хотя бы один талант сета в этой колонке). Одиночный талант без связи
+                  // не должен блокировать достройку колонки слабым сетом.
+                  const strongerLoses = strongToScore < strongFromScore && strongFromScore > 1;
                   const weakerGains = weakToScore >= weakFromScore;
                   if (strongerLoses && weakerGains) continue;
 
@@ -2889,7 +3058,9 @@ export class Build {
                       if (c === top1) continue;
                       if ((sHist[c] || 0) > (sHist[top2] || 0)) top2 = c;
                     }
-                    const coreCols = new Set([top1, top2]);
+                    // Колонка входит в «ядро», только если в ней ≥2 таланта сета:
+                    // одиночный талант — не форма, его можно сдвинуть ради чужой колонки.
+                    const coreCols = new Set([top1, top2].filter((c) => (sHist[c] || 0) > 1));
                     if (coreCols.has(strongCol) && !coreCols.has(strongTargetCol)) continue;
                   }
                 }
@@ -2913,6 +3084,7 @@ export class Build {
         }
       }
 
+      Build.endSortDomBatch();
       Build.updateHeroStats();
       Build.renderCombatOrderBadges();
       Build.refreshActiveTalentDescription();
@@ -2924,10 +3096,12 @@ export class Build {
       }
 
     } catch {
+      Build.endSortDomBatch(false);
       try {
         await Build.refreshBuildStateFromServer({ refreshInventory: true });
       } catch {}
     } finally {
+      if (Build._sortDomBatch) Build.endSortDomBatch();
       Build._sortDeferBackendSync = false;
       Build.sortSetsInProgress = false;
       Build.syncSetSortButtonState();
@@ -4989,25 +5163,40 @@ export class Build {
     Build.renderCombatOrderBadges();
   }
 
+  /** Кэш разбора строки txtNum ("value,refine,stat;..."): одна и та же строка разбирается один раз. */
+  static _txtNumCache = new Map();
+
+  static parseTalentTxtNum(txtNum) {
+    const cached = Build._txtNumCache.get(txtNum);
+    if (cached) return cached;
+    const parsed = String(txtNum)
+      .split(';')
+      .map((part) => {
+        const v = part.split(',');
+        return [parseFloat(v[0]), parseFloat(v[1]), v[2]];
+      });
+    Build._txtNumCache.set(txtNum, parsed);
+    return parsed;
+  }
+
   static templateViewTalent(data) {
     const talent = DOM({ domaudio: domAudioPresets.talent, style: 'build-talent-item' });
 
     if (data.txtNum) {
-      let params = data.txtNum.split(';');
+      const params = Build.parseTalentTxtNum(data.txtNum);
       if (!data.stats) {
         data.stats = new Object();
       }
       if (!data.statsRefine) {
         data.statsRefine = new Object();
       }
-      for (let param in params) {
-        let paramValues = params[param].split(',');
-        if (Build.talentStatFilter(paramValues[2])) {
-          data.stats[paramValues[2]] = parseFloat(paramValues[0]);
-          data.statsRefine[paramValues[2]] = parseFloat(paramValues[1]);
-        } else if (!(paramValues[2] in data.stats) && paramValues[2] in Build.initialStats && Build.initialStats[paramValues[2]] > 0) {
-          data.stats[paramValues[2] + 'buff'] = parseFloat(paramValues[0]);
-          data.statsRefine[paramValues[2] + 'buff'] = parseFloat(paramValues[1]);
+      for (const [value, refine, key] of params) {
+        if (Build.talentStatFilter(key)) {
+          data.stats[key] = value;
+          data.statsRefine[key] = refine;
+        } else if (!(key in data.stats) && key in Build.initialStats && Build.initialStats[key] > 0) {
+          data.stats[key + 'buff'] = value;
+          data.statsRefine[key + 'buff'] = refine;
         }
       }
     }
@@ -5052,24 +5241,46 @@ export class Build {
     Build._regroupInventoryBySetsOnNextSort = true;
 
     const requestedBuildId = Build.id;
+    // Last-wins: при быстром переключении билдов рендерит только последний вызов.
+    const inventoryToken = (Number(Build._inventoryToken) || 0) + 1;
+    Build._inventoryToken = inventoryToken;
+    const isStale = () => Build._inventoryToken !== inventoryToken || requestedBuildId !== Build.id;
     Build.loading = true;
 
     // «Библиотека» отдаётся сервером страницами под бюджет размера
     // (лимит CF ~23 КБ на фрейм) — накапливаем полный список.
-    let data;
+    // Раньше при быстром переключении билдов новый запрос падал с REQUEST_ALREADY_PENDING
+    // (предыдущий build.inventory ещё висел), ошибка глушилась в пустой массив,
+    // а старый ответ отбрасывался как устаревший — библиотека оставалась пустой.
+    // Теперь ждём освобождения метода и повторяем запрос.
+    let data = null;
 
-    try {
-      data = await App.api.requestPaged('build', 'inventory', { buildId: Build.id });
-    } catch {
-      data = new Array();
+    for (let attempt = 0; attempt < 5 && data === null; attempt++) {
+      if (isStale()) return;
+      try {
+        data = await App.api.requestPaged('build', 'inventory', { buildId: requestedBuildId });
+      } catch (error) {
+        if (isStale()) return;
+        if (error?.code === 'REQUEST_ALREADY_PENDING') {
+          await Build.waitForApiMethodIdle('build', 'inventory', 5000);
+        } else if (attempt >= 1) {
+          break;
+        }
+      }
     }
+
+    if (isStale()) return;
+
+    if (!Array.isArray(data)) data = new Array();
 
     TalentData.enrich(data);
 
-    if (requestedBuildId !== Build.id) {
-      Build.loading = false;
-      return;
-    }
+    // Собираем всю библиотеку во фрагменте и вставляем в DOM одним разом:
+    // раньше каждый талант вставлялся отдельно (+ querySelector на каждой итерации),
+    // что вызывало сотни пересчётов вёрстки при открытии билда.
+    const talentsList = Build.inventoryView.querySelector('.build-talents');
+    const fragment = document.createDocumentFragment();
+    const preload = new PreloadImages();
 
     let orderIndex = 0;
     for (let item of data) {
@@ -5078,16 +5289,14 @@ export class Build {
       let talentContainer = DOM({ style: 'build-talent-item-container' });
       talentContainer.dataset.defaultOrder = `${orderIndex}`;
 
-      Build.inventoryView.querySelector('.build-talents').append(talentContainer);
-
-      let preload = new PreloadImages(talentContainer);
-
       item.state = 1;
 
-      preload.add(Build.templateViewTalent(item));
+      preload.add(Build.templateViewTalent(item), talentContainer);
+      fragment.append(talentContainer);
       orderIndex++;
     }
 
+    if (talentsList) talentsList.append(fragment);
     Build.loading = false;
     try {
       Build.sortInventory();
@@ -6194,6 +6403,27 @@ export class Build {
     });
   }
 
+  /** Ждёт, пока в App.api.awaiting не останется запросов конкретного object.method. */
+  static waitForApiMethodIdle(objectName, methodName, timeoutMs = 3000) {
+    return new Promise((resolve) => {
+      const start = performance.now();
+      const tick = () => {
+        let pending = 0;
+        try {
+          const awaiting = App?.api?.awaiting || {};
+          for (const v of Object.values(awaiting)) {
+            if (v?.object === objectName && v?.method === methodName) pending++;
+          }
+        } catch {}
+
+        if (pending === 0) return resolve(true);
+        if (performance.now() - start >= timeoutMs) return resolve(false);
+        setTimeout(tick, 50);
+      };
+      tick();
+    });
+  }
+
   static waitForApiIdle(objectName, timeoutMs = 3000) {
     return new Promise((resolve) => {
       const start = performance.now();
@@ -7201,7 +7431,145 @@ export class Build {
     }
   }
 
+  /** Фильтры библиотеки + поиск по названию поверх них. */
   static applySorting(itemContainer) {
+    Build.applySortingCore(itemContainer);
+    Build.applyLibrarySearch(itemContainer);
+  }
+
+  /** Строка поиска внизу Библиотеки: иконка, поле, кнопка очистки. Возвращает контейнер. */
+  static createLibrarySearchInput() {
+    Build._librarySearchQuery = '';
+    const row = document.createElement('div');
+    row.className = 'build-library-search-row';
+    const icon = document.createElement('span');
+    icon.className = 'build-library-search-icon';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'build-library-search';
+    // Ключ в lang/*.js можно добавить позже — пока встроенный фолбэк по языку.
+    input.placeholder =
+      Build.getLangWordSilently('librarySearchPlaceholder') ||
+      ({ en: 'Search by name', be: 'Пошук па назве' }[Lang.target] || 'Поиск по названию');
+    input.spellcheck = false;
+    input.autocomplete = 'off';
+    const clear = document.createElement('button');
+    clear.type = 'button';
+    clear.className = 'build-library-search-clear';
+    clear.textContent = '×';
+    row.append(icon, input, clear);
+
+    let timer = 0;
+    const apply = () => {
+      row.classList.toggle('build-library-search-row--active', input.value.trim() !== '');
+      const q = Build.normalizeSearchText(input.value);
+      if (q === Build._librarySearchQuery) return;
+      Build._librarySearchQuery = q;
+      Build.sortInventory();
+    };
+    const reset = () => {
+      input.value = '';
+      clearTimeout(timer);
+      apply();
+    };
+    input.addEventListener('input', () => {
+      row.classList.toggle('build-library-search-row--active', input.value.trim() !== '');
+      clearTimeout(timer);
+      timer = setTimeout(apply, 80);
+    });
+    input.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Escape') {
+        reset();
+        input.blur();
+      } else if (App.isEnterKey(e)) {
+        // Enter в поле — «готово»: снимаем фокус, фильтр остаётся.
+        e.preventDefault();
+        input.blur();
+      }
+    });
+    for (const type of ['mousedown', 'click', 'contextmenu', 'keyup']) {
+      row.addEventListener(type, (e) => e.stopPropagation());
+    }
+    icon.addEventListener('click', () => input.focus());
+    clear.addEventListener('click', () => {
+      reset();
+      input.focus();
+    });
+    Build.librarySearchInput = input;
+    Build.installLibrarySearchHotkey();
+    return row;
+  }
+
+  /** Enter в окне билда (вне полей ввода) — фокус в поиск Библиотеки с выделением текста. */
+  static installLibrarySearchHotkey() {
+    if (Build._librarySearchHotkeyHandler) {
+      window.removeEventListener('keydown', Build._librarySearchHotkeyHandler, true);
+    }
+    const handler = (e) => {
+      try {
+        if (e.repeat || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+        if (!App.isEnterKey(e)) return;
+        if (Window.windows?.main?.id !== 'wbuild') return;
+        const input = Build.librarySearchInput;
+        if (!input || !input.isConnected || input.offsetParent === null) return;
+        const active = document.activeElement;
+        if (active === input) return;
+        const tag = String(active?.tagName || '').toUpperCase();
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || active?.isContentEditable) return;
+        e.preventDefault();
+        e.stopPropagation();
+        input.focus();
+        input.select();
+      } catch {}
+    };
+    Build._librarySearchHotkeyHandler = handler;
+    window.addEventListener('keydown', handler, true);
+  }
+
+  static normalizeSearchText(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/ё/g, 'е')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  static getLangWordSilently(key) {
+    const target = Lang.list?.[Lang.target]?.word;
+    if (target && Object.prototype.hasOwnProperty.call(target, key)) return target[key];
+    const def = Lang.list?.[Lang.default]?.word;
+    if (def && Object.prototype.hasOwnProperty.call(def, key)) return def[key];
+    return '';
+  }
+
+  /** Нормализованное название таланта для поиска (кешируется по языку). */
+  static getTalentSearchName(id) {
+    const num = Number(id);
+    if (!Number.isFinite(num) || num === 0) return '';
+    if (!Build._talentSearchNameCache || Build._talentSearchNameCacheLang !== Lang.target) {
+      Build._talentSearchNameCache = new Map();
+      Build._talentSearchNameCacheLang = Lang.target;
+    }
+    const cache = Build._talentSearchNameCache;
+    if (cache.has(num)) return cache.get(num);
+    const key = num < 0 ? `htalent_${Math.abs(num)}_name` : `talent_${num}_name`;
+    const raw = String(Build.getLangWordSilently(key) || '').replace(/<[^>]*>/g, '');
+    const name = Build.normalizeSearchText(raw);
+    cache.set(num, name);
+    return name;
+  }
+
+  static applyLibrarySearch(itemContainer) {
+    const q = Build._librarySearchQuery;
+    if (!q || !itemContainer || itemContainer.style.display === 'none') return;
+    const id = itemContainer.firstChild?.dataset?.id;
+    if (!Build.getTalentSearchName(id).includes(q)) {
+      itemContainer.style.display = 'none';
+    }
+  }
+
+  static applySortingCore(itemContainer) {
     let item = itemContainer.firstChild;
 
     let data = Build.talents[item.dataset.id],
@@ -7414,8 +7782,13 @@ export class Build {
   }
 
   static syncFieldSlotsFromInstalledTalents() {
+    // Один проход по DOM вместо 36 отдельных querySelector.
+    const cellsByPosition = new Map();
+    for (const el of Build.fieldView?.querySelectorAll?.('.build-hero-grid-item[data-position]') || []) {
+      if (!cellsByPosition.has(el.dataset.position)) cellsByPosition.set(el.dataset.position, el);
+    }
     for (let index = 0; index < 36; index++) {
-      const cell = Build.fieldView?.querySelector?.(`.build-hero-grid-item[data-position="${index}"]`);
+      const cell = cellsByPosition.get(`${index}`);
       if (!cell) continue;
       const currentEl = cell.querySelector('.build-talent-item');
       const expectedTalent = Build.installedTalents?.[index] || null;
@@ -7784,27 +8157,56 @@ export class Build {
       element.style.left = event.clientX - shiftX + 'px';
       element.style.top = event.clientY - shiftY + 'px';
 
+      // Во время перетаскивания двигаем через CSS translate (композитор, без layout),
+      // не чаще одного раза за кадр. На mouseup переносим итог обратно в left/top —
+      // дальше вся логика броска работает как раньше.
+      const dragBaseLeft = event.clientX - shiftX;
+      const dragBaseTop = event.clientY - shiftY;
+      let dragLeft = dragBaseLeft;
+      let dragTop = dragBaseTop;
+      let dragRaf = 0;
+      const applyDragPosition = () => {
+        dragRaf = 0;
+        element.style.translate = `${dragLeft - dragBaseLeft}px ${dragTop - dragBaseTop}px`;
+      };
+      const commitDragPosition = () => {
+        if (dragRaf) cancelAnimationFrame(dragRaf);
+        dragRaf = 0;
+        element.style.translate = '';
+        element.style.left = dragLeft + 'px';
+        element.style.top = dragTop + 'px';
+      };
+
       elementSetDisplay(element, 'none');
       let startingElementBelow = elementFromPoint(event.clientX, event.clientY);
       elementSetDisplay(element, 'block');
 
       document.onmousemove = (e) => {
-        element.style.left = e.clientX - shiftX + 'px';
-        element.style.top = e.clientY - shiftY + 'px';
+        dragLeft = e.clientX - shiftX;
+        dragTop = e.clientY - shiftY;
+        if (!dragRaf) dragRaf = requestAnimationFrame(applyDragPosition);
       };
 
       element.onmouseup = async (event) => {
+        commitDragPosition();
         Build._isDraggingTalent = false;
         const finishDragVisualState = () => {
+          // Плавно «сажаем» талант с точки броска на итоговое место.
+          let dropRect = null;
+          try {
+            if (element.style.position === 'fixed') dropRect = element.getBoundingClientRect();
+          } catch {}
           fieldRow.style.background = '';
           element.style.position = 'static';
           element.style.zIndex = 'auto';
           element.style.left = '';
           element.style.top = '';
+          element.style.translate = '';
           element.style.transition = '';
           element.style.willChange = '';
           element.style.transformOrigin = '';
           element.style.removeProperty('transform');
+          if (dropRect) Build.animateTalentMove(element, dropRect, 180);
         };
 
         // Возвращаем исходный размер
@@ -8043,8 +8445,11 @@ export class Build {
                   Build.installedTalents[parseInt(elemBelow.dataset.position)] = swappingTal;
                   Build.installedTalents[parseInt(swapParentNode.dataset.position)] = swappedTal;
 
-                  swapParentNode.append(elemBelow.firstChild);
+                  const displacedNode = elemBelow.firstChild;
+                  const displacedRect = displacedNode?.getBoundingClientRect?.();
+                  swapParentNode.append(displacedNode);
                   elemBelow.append(element);
+                  Build.animateTalentMove(displacedNode, displacedRect);
                   // Active bar keeps clones, so force immediate redraw after field swap.
                   Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
                 } else {
@@ -8062,9 +8467,14 @@ export class Build {
                   Build.installedTalents[parseInt(elemBelow.dataset.position)] = data;
                   Build.installedTalents[parseInt(swapParentNode.dataset.position)] = null;
 
+                  const replacedNode = performSwapFromLibrary ? elemBelow.firstChild : null;
+                  const replacedRect = replacedNode?.getBoundingClientRect?.();
                   elemBelow.append(element);
                   if (performSwapFromLibrary) {
                     swapParentNode.prepend(elemBelow.firstChild);
+                    if (replacedNode && replacedNode.parentNode === swapParentNode) {
+                      Build.animateTalentMove(replacedNode, replacedRect);
+                    }
                   } else {
                     if (swapParentNode.classList == 'build-talent-item-container') {
                       removeContainerAfterMove = true;

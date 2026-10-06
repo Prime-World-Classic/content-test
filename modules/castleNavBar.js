@@ -53,6 +53,13 @@ export class CastleNAVBAR {
 
     CastleNAVBAR.body.children[4].onclick = () => {};
 
+    for (const index of [3, 4]) {
+      CastleNAVBAR.body.children[index].append(DOM({ style: ['account-rating-tooltip', 'castle-training-tooltip'] },
+        DOM({ style: 'account-rating-tooltip-title' }, Lang.text('trainingBotsTooltipTitle')),
+        DOM({ style: 'account-rating-tooltip-body' }, Lang.text('trainingBotsTooltipBody')),
+      ));
+    }
+
     CastleNAVBAR.body.children[5].innerText = App.CURRENT_MM == 'mmtest' ? Lang.text('fight') + ' test' : Lang.text('fight');
     CastleNAVBAR.body.children[5].dataset.tooltip = 'Выбрать героя для боя';
     /*

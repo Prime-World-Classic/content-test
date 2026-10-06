@@ -2445,6 +2445,82 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   user-select: none;
 }
 
+.build-library-search-row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 1cqh;
+  height: 4cqh;
+  padding: 0 1.4cqh;
+  box-sizing: border-box;
+  border-top: 0.25cqh solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.18);
+  transition: background-color 0.15s, box-shadow 0.15s;
+}
+
+.build-library-search-row:focus-within {
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0.25cqh 0 rgba(150, 235, 215, 0.35);
+}
+
+.build-library-search-icon {
+  flex: none;
+  width: 2cqh;
+  height: 2cqh;
+  opacity: 0.5;
+  cursor: text;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.6' stroke-linecap='round'%3E%3Ccircle cx='10.5' cy='10.5' r='6.5'/%3E%3Cpath d='M15.5 15.5L21 21'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: opacity 0.15s;
+}
+
+.build-library-search-row:focus-within .build-library-search-icon,
+.build-library-search-row--active .build-library-search-icon {
+  opacity: 0.9;
+}
+
+.build-library-search {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: none;
+  color: rgba(255, 255, 255, 0.9);
+  font: 2cqh / 1 'DejaVuSans', sans-serif;
+  text-shadow: rgba(0, 0, 0, 0.8) 0 0 0.6cqh;
+  user-select: text;
+}
+
+.build-library-search::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.build-library-search-clear {
+  flex: none;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.4cqh;
+  height: 2.4cqh;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.8);
+  font: 1.8cqh / 1 'DejaVuSans', sans-serif;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.build-library-search-clear:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.build-library-search-row--active .build-library-search-clear {
+  display: flex;
+}
+
 .build-talents-section {
   flex: 3;
   margin-top: 3cqh;
@@ -6669,7 +6745,8 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 @property --angle {
   syntax: '<angle>';
   initial-value: 90deg;
-  inherits: true;
+  /* false: анимируемое значение не наследуется потомками, иначе каждый кадр пересчитываются стили всего поддерева. */
+  inherits: false;
 }
 
 @property --gradX {
@@ -6705,8 +6782,16 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
     conic-gradient(from var(--angle), var(--c2), var(--c1) 0.1turn, var(--c1) 0.15turn, var(--c2) 0.25turn);
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  animation: borderRotate var(--d) linear infinite forwards;
+  /* steps(60): 15 кадров/с вместо 60 — conic-gradient перерисовывается на CPU каждый кадр,
+     а на глаз вращение за 4 с почти не отличается. */
+  animation: borderRotate var(--d) steps(60) infinite forwards;
 }
+@media (prefers-reduced-motion: reduce) {
+  .smartcast {
+    animation: none;
+  }
+}
+
 .smartcast:after {
   background: #8f9 !important;
 }
