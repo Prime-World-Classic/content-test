@@ -3785,9 +3785,9 @@ body {
   position: fixed;
   left: 50%;
   top: 50%;
-  width: min(54cqw, 700px);
+  width: min(64.81cqh, 36.46cqw);
   max-width: calc(100cqw - 4cqw);
-  height: min(70cqh, 680px);
+  height: 62.96cqh;
   z-index: 2147483646;
   box-sizing: border-box;
   display: flex;
@@ -4017,7 +4017,7 @@ body {
 }
 
 .launcher-notification-toast {
-  width: min(35cqw, 460px);
+  width: min(23.96cqw, 42.6cqh);
   box-sizing: border-box;
   min-height: 8.8cqh;
   display: grid;
@@ -4141,8 +4141,8 @@ body {
 }
 
 .launcher-notifications-panel {
-  width: min(88cqw, 1280px);
-  height: min(78cqh, 760px);
+  width: min(118.5cqh, 66.67cqw);
+  height: 70.4cqh;
   padding: 1.1cqh;
   border-radius: 0.85cqh;
   border: 0.22cqh solid rgba(204, 174, 89, 0.96);
