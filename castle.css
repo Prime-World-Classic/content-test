@@ -2266,6 +2266,7 @@ body {
 }
 
 .castle-roster-list-search-wrap {
+  --castle-roster-search-raise: 0.4cqh;
   box-sizing: border-box;
   overflow: hidden;
   border: 1px solid rgb(217, 193, 111);
@@ -2276,9 +2277,9 @@ body {
 .castle-roster-list-search-wrap::before {
   content: '';
   position: absolute;
-  top: 0.55cqh;
+  top: calc(0.55cqh - var(--castle-roster-search-raise));
   right: 0.55cqh;
-  bottom: calc(var(--castle-hero-lists-content-lift) + 0.55cqh);
+  bottom: calc(var(--castle-hero-lists-content-lift) + 0.55cqh + var(--castle-roster-search-raise));
   left: 0.55cqh;
   border: 1px solid rgba(217, 193, 111, 0.72);
   border-radius: 999px;
@@ -2295,11 +2296,13 @@ body {
   background: transparent;
   padding-left: 1.4cqh;
   padding-bottom: calc(var(--castle-hero-lists-content-lift) + 0.15cqh);
+  top: calc(-1 * var(--castle-roster-search-raise));
   text-shadow: #000 0 0 0.5cqh;
 }
 
 .castle-roster-list-search-wrap .castle-hero-list-search-clear {
   z-index: 2;
+  top: calc(-1 * var(--castle-roster-search-raise));
 }
 
 .castle-bottom-content {
