@@ -3755,6 +3755,42 @@ body {
   filter: brightness(1.1);
 }
 
+.launcher-restart-quick-tab {
+  position: fixed;
+  right: 1.15cqh;
+  top: 29.4cqh;
+  z-index: 80;
+  width: 6.4cqh;
+  height: 6.4cqh;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0.35cqh solid #e1c64d;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #b6e35a, #4f9a1f 55%, #2c5e10);
+  box-shadow: 0 0.35cqh 0.45cqh rgba(0, 0, 0, 0.52), 0 0 1cqh rgba(182, 227, 90, 0.55);
+  color: #fff6c8;
+  font: bold 3.6cqh / 1 'DejaVuSans', sans-serif;
+  text-shadow: 0 0.15cqh 0.25cqh rgba(0, 0, 0, 0.8);
+  cursor: var(--cursor-pointer);
+  animation: launcher-notification-pulse 1.4s ease-in-out infinite;
+  transition: filter 160ms ease;
+}
+
+.launcher-restart-quick-tab::before {
+  content: '⟳';
+}
+
+.launcher-restart-quick-tab:hover,
+.launcher-restart-quick-tab:focus-visible {
+  filter: brightness(1.15);
+}
+
+.launcher-restart-quick-tab.is-busy {
+  animation: none;
+  filter: grayscale(0.6);
+  cursor: default;
+}
+
 .launcher-hall-of-fame-quick-tab:focus-visible {
   outline: 0.15cqh solid #f5e29b;
   outline-offset: 0.2cqh;

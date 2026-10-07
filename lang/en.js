@@ -290,6 +290,8 @@ export const en = {
     fileCheckFailed: 'File check failed: ',
     gameUpdate: 'Game update',
     launcherUpdate: 'Launcher update',
+    launcherRestartReady: 'Update downloaded — restart the launcher',
+    launcherRestartReadyNotify: 'Launcher update downloaded. Press the restart button on the right when convenient',
     launcherUpdateRestartSoon: 'A launcher update is available — downloading it in {n} s, then the launcher will reload',
     downloadingArchives1: 'Downloading game archives 1/8',
     downloadingArchives2: 'Downloading game archives 2/8',

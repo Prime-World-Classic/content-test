@@ -293,6 +293,8 @@ export const ru = {
     fileCheckFailed: 'Проверка файлов не выполнена: ',
     gameUpdate: 'Обновление игры',
     launcherUpdate: 'Обновление лаунчера',
+    launcherRestartReady: 'Обновление загружено — перезапустить лаунчер',
+    launcherRestartReadyNotify: 'Обновление лаунчера загружено. Нажмите кнопку перезапуска справа, когда будет удобно',
     launcherUpdateRestartSoon: 'Вышло обновление лаунчера — через {n} с скачаем его и перезагрузим лаунчер',
     downloadingArchives1: 'Загрузка игровых архивов 1/8',
     downloadingArchives2: 'Загрузка игровых архивов 2/8',

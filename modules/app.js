@@ -1161,6 +1161,7 @@ export class App {
     App.notificationsButton = button;
     App.ensureNotificationsQuickTab();
     App.ensureHallOfFameQuickTab();
+    App.showLauncherRestartButton();
     App.renderNotificationsButton();
     return button;
   }
@@ -1203,6 +1204,7 @@ export class App {
     App.notificationsQuickButton = null;
     App.hallOfFameQuickButton?.remove();
     App.hallOfFameQuickButton = null;
+    App.launcherRestartButton?.remove();
   }
 
   static ensureHallOfFameQuickTab() {
@@ -1219,6 +1221,35 @@ export class App {
     });
     App.hallOfFameQuickButton.setAttribute('aria-label', title);
     document.body.append(App.hallOfFameQuickButton);
+  }
+
+  // Кнопка «Перезапустить» под быстрыми кнопками: появляется, когда фоновое
+  // обновление content скачано (NativeAPI.restartPending). Клик — перезагрузка окна.
+  static showLauncherRestartButton(notify = false) {
+    if (!NativeAPI.restartPending) return;
+    if (App.launcherRestartButton?.isConnected) return;
+    if (!App.launcherRestartButton) {
+      const title = Lang.text('launcherRestartReady');
+      App.launcherRestartButton = DOM({
+        domaudio: domAudioPresets.defaultButton,
+        tag: 'button',
+        type: 'button',
+        style: 'launcher-restart-quick-tab',
+        data: { tooltip: title },
+        event: [
+          'click',
+          () => {
+            if (App.launcherRestartButton.disabled) return;
+            App.launcherRestartButton.disabled = true;
+            App.launcherRestartButton.classList.add('is-busy');
+            NativeAPI.resetWhenContentReady();
+          },
+        ],
+      });
+      App.launcherRestartButton.setAttribute('aria-label', title);
+    }
+    document.body.append(App.launcherRestartButton);
+    if (notify) App.notify(Lang.text('launcherRestartReadyNotify'));
   }
 
   static renderNotificationsQuickTab() {

@@ -29,6 +29,8 @@ export class NativeAPI {
   static contentWatchPendingRev = null;
   static updateInProgress = false;
   static updateCallback = null;
+  static updateBackground = false;
+  static restartPending = false;
 
   // Лог-файлы обновления: лимит 10 МБ, при превышении остаётся хвост ~5 МБ
   static LOG_MAX_BYTES = 10 * 1024 * 1024;
@@ -524,6 +526,42 @@ export class NativeAPI {
     nw.Window.get().reloadIgnoringCache();
   }
 
+  // Перезагрузка после обновления content: апдейтер мог закрыться раньше,
+  // чем файлы реально стали доступны (антивирус/индексатор держат их на
+  // Windows) — тогда reload показывает страницу ошибки Chromium. Ждём паузу
+  // и проверяем, что ключевые файлы читаются, только потом перезагружаем.
+  static CONTENT_RELOAD_FILES = ['content/app.js', 'content/modules/_modules.js', 'content/modules/app.js'];
+
+  static async resetWhenContentReady() {
+    if (!NativeAPI.status) return;
+    const fs = NativeAPI.fileSystem;
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await sleep(1500);
+    for (let attempt = 1; attempt <= 20; attempt++) {
+      let missing = '';
+      for (const file of NativeAPI.CONTENT_RELOAD_FILES) {
+        try {
+          const handle = await fs.promises.open(file, 'r');
+          const stat = await handle.stat();
+          await handle.close();
+          if (!stat.size) missing = file;
+        } catch {
+          missing = file;
+        }
+        if (missing) break;
+      }
+      if (!missing) {
+        NativeAPI.logUpdate('reload', `attempt=${attempt}`);
+        NativeAPI.reset();
+        return;
+      }
+      NativeAPI.logUpdate('reload-wait', `attempt=${attempt} file=${missing}`);
+      await sleep(1000);
+    }
+    NativeAPI.logUpdate('reload', 'files-not-ready, reload anyway');
+    NativeAPI.reset();
+  }
+
   // Append-запись в лог-файл с лимитом размера (лимит → остаётся хвост).
   // Файлы: update.log (stages) и update-errors.log (исключения целиком).
   static async cappedAppend(file, line) {
@@ -844,13 +882,17 @@ export class NativeAPI {
     }
   }
 
-  static async update(callback) {
+  // background=true — фоновое обновление из content-watch: после загрузки не
+  // перезагружаем окно сами, а показываем кнопку «Перезапустить» (App).
+  // При старте (background=false) перезагрузка автоматическая, без подтверждения.
+  static async update(callback, { background = false } = {}) {
     if (!NativeAPI.status) {
       return false;
     }
     if (NativeAPI.updateInProgress) {
       return true;
     }
+    NativeAPI.updateBackground = Boolean(background);
     if (callback) NativeAPI.updateCallback = callback;
     callback = NativeAPI.updateCallback || (() => {});
 
@@ -946,8 +988,17 @@ export class NativeAPI {
             changed = NativeAPI.updated; // .git не читается — bar-флаг
           }
 
-          if (ok && changed) {
-            NativeAPI.reset();
+          if (ok && changed && NativeAPI.updateBackground) {
+            NativeAPI.restartPending = true;
+            NativeAPI.logUpdate('restart-pending', `rev=${revAfter || 'n/a'}`);
+            try {
+              App.showLauncherRestartButton(true);
+            } catch (e) {
+              NativeAPI.logUpdateError(e, 'restart-button');
+            }
+            NativeAPI.startContentWatch();
+          } else if (ok && changed) {
+            await NativeAPI.resetWhenContentReady();
           } else if (ok) {
             NativeAPI.startContentWatch();
           }
@@ -956,10 +1007,12 @@ export class NativeAPI {
         }
       });
 
-      // А уведомление показываем с задержкой
-      setTimeout(() => {
-        App.notify(Lang.text('checkingUpdatesAndFiles'));
-      }, 1000);
+      // А уведомление показываем с задержкой (в фоне — молча)
+      if (!NativeAPI.updateBackground) {
+        setTimeout(() => {
+          App.notify(Lang.text('checkingUpdatesAndFiles'));
+        }, 1000);
+      }
     } catch (e) {
       NativeAPI.logUpdateError(e, 'update');
     }
@@ -972,7 +1025,8 @@ export class NativeAPI {
   // content/.git с веткой на удалённом репозитории (smart-HTTP info/refs, git
   // не нужен). Если вышла новая — ждём, пока игрок не в поиске/лобби/бою, и
   // запускаем тот же апдейтер, что и при старте (NativeAPI.update): он скачает
-  // content, а при смене ревизии окно перезагрузится (reset → reloadIgnoringCache).
+  // content, а при смене ревизии появится кнопка «Перезапустить» под быстрыми
+  // кнопками справа (перезагрузка окна — только по клику игрока).
   // Процесс НЕ перезапускаем: detached-relauncher + exit (restart()) на Windows
   // просто закрывал лаунчер — дочерний процесс погибает вместе с NW.
   // Защита от петли: ради одной и той же ревизии апдейтер запускаем один раз.
@@ -1103,19 +1157,10 @@ export class NativeAPI {
     try {
       localStorage.setItem(NativeAPI.CONTENT_WATCH_GUARD_KEY, remoteRev);
     } catch {}
-    const seconds = Math.round(NativeAPI.CONTENT_WATCH_RESTART_DELAY_MS / 1000);
-    const text = Lang.text('launcherUpdateRestartSoon');
-    App.notify(
-      text && text !== 'launcherUpdateRestartSoon'
-        ? text.replace('{n}', String(seconds))
-        : `Вышло обновление лаунчера — через ${seconds} с скачаем его и перезагрузим лаунчер`,
-    );
-    setTimeout(() => {
-      if (!NativeAPI.isSafeToRestart()) return; // успел встать в поиск — в следующий раз
-      NativeAPI.contentWatchPendingRev = null;
-      NativeAPI.logUpdate('content-watch-update', `remote=${remoteRev}`);
-      NativeAPI.update().catch((e) => NativeAPI.logUpdateError(e, 'content-watch-update'));
-    }, NativeAPI.CONTENT_WATCH_RESTART_DELAY_MS);
+    NativeAPI.contentWatchPendingRev = null;
+    NativeAPI.logUpdate('content-watch-update', `remote=${remoteRev}`);
+    // Качаем в фоне; окно не перезагружаем — по готовности появится кнопка «Перезапустить».
+    await NativeAPI.update(null, { background: true });
   }
 
   static analysis() {
