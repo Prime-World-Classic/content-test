@@ -3,6 +3,7 @@ import { Voice } from './voice.js';
 import { PWGame } from './pwgame.js';
 import { Settings } from './settings.js';
 import { Lang } from './lang.js';
+import { MM } from './mm.js';
 
 export class NativeAPI {
   static status = false;
@@ -18,6 +19,14 @@ export class NativeAPI {
   static lastBranchV = null;
   static revBefore = null;
   static restartInProgress = false;
+
+  // Фоновая проверка обновлений content, пока лаунчер запущен
+  static CONTENT_WATCH_FIRST_MS = 2 * 60 * 1000;
+  static CONTENT_WATCH_INTERVAL_MS = 5 * 60 * 1000;
+  static CONTENT_WATCH_RESTART_DELAY_MS = 10 * 1000;
+  static CONTENT_WATCH_GUARD_KEY = 'contentWatchRestartRev';
+  static contentWatchTimer = 0;
+  static contentWatchPendingRev = null;
 
   // Лог-файлы обновления: лимит 10 МБ, при превышении остаётся хвост ~5 МБ
   static LOG_MAX_BYTES = 10 * 1024 * 1024;
@@ -929,6 +938,8 @@ export class NativeAPI {
 
           if (ok && changed) {
             NativeAPI.reset();
+          } else if (ok) {
+            NativeAPI.startContentWatch();
           }
         } catch (e) {
           NativeAPI.logUpdateError(e, 'close');
@@ -944,6 +955,154 @@ export class NativeAPI {
     }
 
     return true;
+  }
+
+  // ---- Фоновая проверка обновлений content ----
+  // Пока лаунчер открыт, раз в CONTENT_WATCH_INTERVAL_MS сверяем ревизию
+  // content/.git с веткой на удалённом репозитории (smart-HTTP info/refs, git
+  // не нужен). Если вышла новая — ждём, пока игрок не в поиске/лобби/бою, и
+  // перезапускаем лаунчер: новый инстанс прогоняет апдейтер и подхватывает код.
+  // Защита от петли: если после рестарта ради ревизии X content всё ещё не X
+  // (апдейтер тянет из другого места / упал) — ради X больше не рестартим.
+  static startContentWatch() {
+    if (!NativeAPI.status || NativeAPI.contentWatchTimer) return;
+    const tick = async () => {
+      try {
+        await NativeAPI.checkContentUpdate();
+      } catch (e) {
+        NativeAPI.logUpdateError(e, 'content-watch');
+      }
+      NativeAPI.contentWatchTimer = setTimeout(tick, NativeAPI.CONTENT_WATCH_INTERVAL_MS);
+    };
+    NativeAPI.contentWatchTimer = setTimeout(tick, NativeAPI.CONTENT_WATCH_FIRST_MS);
+  }
+
+  static async readContentRemote() {
+    const fs = NativeAPI.fileSystem;
+    const join = NativeAPI.path.join;
+    let head = '';
+    let config = '';
+    try {
+      head = (await fs.promises.readFile(join('content', '.git', 'HEAD'), 'utf-8')).trim();
+      config = await fs.promises.readFile(join('content', '.git', 'config'), 'utf-8');
+    } catch {
+      return null;
+    }
+    const refMatch = head.match(/^ref:\s*(refs\/heads\/.+)$/);
+    if (!refMatch) return null;
+    const ref = refMatch[1].trim();
+    const branch = ref.slice('refs/heads/'.length);
+
+    // remote ветки (branch.<name>.remote), по умолчанию origin
+    let remoteName = 'origin';
+    let section = '';
+    const urls = {};
+    for (const raw of config.split(/\r?\n/)) {
+      const line = raw.trim();
+      const sec = line.match(/^\[(.+)\]$/);
+      if (sec) {
+        section = sec[1];
+        continue;
+      }
+      const kv = line.match(/^([A-Za-z]+)\s*=\s*(.+)$/);
+      if (!kv) continue;
+      const key = kv[1].toLowerCase();
+      const value = kv[2].trim().replace(/^"(.*)"$/, '$1');
+      const remoteSec = section.match(/^remote\s+"(.+)"$/);
+      if (remoteSec && key === 'url' && !urls[remoteSec[1]]) urls[remoteSec[1]] = value;
+      if (section === `branch "${branch}"` && key === 'remote') remoteName = value;
+    }
+    const url = urls[remoteName];
+    if (!url || !/^https?:\/\//i.test(url)) return null;
+    return { url, ref };
+  }
+
+  static fetchText(url, redirects = 3) {
+    return new Promise((resolve, reject) => {
+      const lib = url.startsWith('https:') ? NativeAPI.https : NativeAPI.http;
+      const req = lib.get(url, { headers: { 'User-Agent': 'git/2.40.0 pw-launcher' }, timeout: 15000 }, (res) => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location && redirects > 0) {
+          res.resume();
+          resolve(NativeAPI.fetchText(new URL(res.headers.location, url).toString(), redirects - 1));
+          return;
+        }
+        if (res.statusCode !== 200) {
+          res.resume();
+          reject(new Error(`HTTP ${res.statusCode}`));
+          return;
+        }
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk) => (body += chunk));
+        res.on('end', () => resolve(body));
+      });
+      req.on('timeout', () => req.destroy(new Error('timeout')));
+      req.on('error', reject);
+    });
+  }
+
+  static async readRemoteRevision(url, ref) {
+    const base = url.replace(/\/+$/, '');
+    const body = await NativeAPI.fetchText(`${base}/info/refs?service=git-upload-pack`);
+    // pkt-line: "<4 hex len><sha> <ref>[\0caps]\n"
+    const re = /([0-9a-f]{40}) ([^\0\n]+)/g;
+    let m;
+    while ((m = re.exec(body))) {
+      if (m[2] === ref) return m[1];
+    }
+    return null;
+  }
+
+  static isSafeToRestart() {
+    return !MM.active && !MM.isInTambur && !MM.isInBattle && !NativeAPI.exitRequested;
+  }
+
+  static async checkContentUpdate() {
+    if (NativeAPI.restartInProgress) return;
+    // Без апдейтера (Steam/dev) рестарт ничего не обновит — не проверяем
+    const updaterPath = NativeAPI.platform == 'linux' ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
+    try {
+      await NativeAPI.fileSystem.promises.access(updaterPath);
+    } catch {
+      return;
+    }
+
+    const localRev = await NativeAPI.readContentRevision();
+    const remote = await NativeAPI.readContentRemote();
+    if (!localRev || !remote) return;
+
+    let remoteRev = NativeAPI.contentWatchPendingRev;
+    if (!remoteRev) {
+      remoteRev = await NativeAPI.readRemoteRevision(remote.url, remote.ref);
+      if (!remoteRev || remoteRev === localRev) return;
+
+      let guard = null;
+      try {
+        guard = localStorage.getItem(NativeAPI.CONTENT_WATCH_GUARD_KEY);
+      } catch {}
+      if (guard === remoteRev) return; // уже перезапускались ради неё — не помогло
+      NativeAPI.contentWatchPendingRev = remoteRev;
+      NativeAPI.logUpdate('content-watch-found', `local=${localRev} remote=${remoteRev}`);
+    }
+
+    // Игрок в поиске/лобби/бою — дождёмся следующей проверки
+    if (!NativeAPI.isSafeToRestart()) return;
+
+    try {
+      localStorage.setItem(NativeAPI.CONTENT_WATCH_GUARD_KEY, remoteRev);
+    } catch {}
+    const seconds = Math.round(NativeAPI.CONTENT_WATCH_RESTART_DELAY_MS / 1000);
+    const text = Lang.text('launcherUpdateRestartSoon');
+    App.notify(
+      text && text !== 'launcherUpdateRestartSoon'
+        ? text.replace('{n}', String(seconds))
+        : `Вышло обновление лаунчера — перезапуск через ${seconds} с`,
+    );
+    setTimeout(() => {
+      if (!NativeAPI.isSafeToRestart()) return; // успел встать в поиск — в следующий раз
+      NativeAPI.logUpdate('content-watch-restart', `remote=${remoteRev}`);
+      NativeAPI.restart();
+    }, NativeAPI.CONTENT_WATCH_RESTART_DELAY_MS);
   }
 
   static analysis() {
