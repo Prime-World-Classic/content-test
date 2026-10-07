@@ -27,6 +27,8 @@ export class NativeAPI {
   static CONTENT_WATCH_GUARD_KEY = 'contentWatchRestartRev';
   static contentWatchTimer = 0;
   static contentWatchPendingRev = null;
+  static updateInProgress = false;
+  static updateCallback = null;
 
   // Лог-файлы обновления: лимит 10 МБ, при превышении остаётся хвост ~5 МБ
   static LOG_MAX_BYTES = 10 * 1024 * 1024;
@@ -846,6 +848,11 @@ export class NativeAPI {
     if (!NativeAPI.status) {
       return false;
     }
+    if (NativeAPI.updateInProgress) {
+      return true;
+    }
+    if (callback) NativeAPI.updateCallback = callback;
+    callback = NativeAPI.updateCallback || (() => {});
 
     try {
       const isLinux = NativeAPI.platform == 'linux';
@@ -872,6 +879,7 @@ export class NativeAPI {
       NativeAPI.revBefore = await NativeAPI.readContentRevision();
       NativeAPI.logUpdate('start', `updater=${updaterPath} rev=${NativeAPI.revBefore || 'n/a'}`);
 
+      NativeAPI.updateInProgress = true;
       const child = NativeAPI.childProcess.spawn(updaterPath);
 
       let buffer = '';
@@ -895,12 +903,14 @@ export class NativeAPI {
       });
 
       child.on('error', (e) => {
+        NativeAPI.updateInProgress = false;
         NativeAPI.logUpdateError(e, 'updater-spawn');
         PWGame.isUpdateFailed = true;
         App.error(Lang.text('updateError') + ' ' + (e.message || e));
       });
 
       child.on('close', async (code) => {
+        NativeAPI.updateInProgress = false;
         try {
           callback({ update: false, title: '', total: 0 });
 
@@ -961,9 +971,11 @@ export class NativeAPI {
   // Пока лаунчер открыт, раз в CONTENT_WATCH_INTERVAL_MS сверяем ревизию
   // content/.git с веткой на удалённом репозитории (smart-HTTP info/refs, git
   // не нужен). Если вышла новая — ждём, пока игрок не в поиске/лобби/бою, и
-  // перезапускаем лаунчер: новый инстанс прогоняет апдейтер и подхватывает код.
-  // Защита от петли: если после рестарта ради ревизии X content всё ещё не X
-  // (апдейтер тянет из другого места / упал) — ради X больше не рестартим.
+  // запускаем тот же апдейтер, что и при старте (NativeAPI.update): он скачает
+  // content, а при смене ревизии окно перезагрузится (reset → reloadIgnoringCache).
+  // Процесс НЕ перезапускаем: detached-relauncher + exit (restart()) на Windows
+  // просто закрывал лаунчер — дочерний процесс погибает вместе с NW.
+  // Защита от петли: ради одной и той же ревизии апдейтер запускаем один раз.
   static startContentWatch() {
     if (!NativeAPI.status || NativeAPI.contentWatchTimer) return;
     const tick = async () => {
@@ -1058,7 +1070,7 @@ export class NativeAPI {
   }
 
   static async checkContentUpdate() {
-    if (NativeAPI.restartInProgress) return;
+    if (NativeAPI.restartInProgress || NativeAPI.updateInProgress) return;
     // Без апдейтера (Steam/dev) рестарт ничего не обновит — не проверяем
     const updaterPath = NativeAPI.platform == 'linux' ? PWGame.PATH_UPDATE_LINUX : PWGame.PATH_UPDATE;
     try {
@@ -1080,7 +1092,7 @@ export class NativeAPI {
       try {
         guard = localStorage.getItem(NativeAPI.CONTENT_WATCH_GUARD_KEY);
       } catch {}
-      if (guard === remoteRev) return; // уже перезапускались ради неё — не помогло
+      if (guard === remoteRev) return; // уже обновлялись ради неё — не помогло
       NativeAPI.contentWatchPendingRev = remoteRev;
       NativeAPI.logUpdate('content-watch-found', `local=${localRev} remote=${remoteRev}`);
     }
@@ -1096,12 +1108,13 @@ export class NativeAPI {
     App.notify(
       text && text !== 'launcherUpdateRestartSoon'
         ? text.replace('{n}', String(seconds))
-        : `Вышло обновление лаунчера — перезапуск через ${seconds} с`,
+        : `Вышло обновление лаунчера — через ${seconds} с скачаем его и перезагрузим лаунчер`,
     );
     setTimeout(() => {
       if (!NativeAPI.isSafeToRestart()) return; // успел встать в поиск — в следующий раз
-      NativeAPI.logUpdate('content-watch-restart', `remote=${remoteRev}`);
-      NativeAPI.restart();
+      NativeAPI.contentWatchPendingRev = null;
+      NativeAPI.logUpdate('content-watch-update', `remote=${remoteRev}`);
+      NativeAPI.update().catch((e) => NativeAPI.logUpdateError(e, 'content-watch-update'));
     }, NativeAPI.CONTENT_WATCH_RESTART_DELAY_MS);
   }
 
