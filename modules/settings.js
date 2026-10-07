@@ -10,6 +10,8 @@ export class Settings {
     render: true,
     globalVolume: 0.5,
     musicVolume: 0.5,
+    musicMuted: false,
+    heroVoicesMuted: false,
     soundsVolume: 0.2,
     voiceVolume: 1.0,
     language: 'ru',
@@ -203,7 +205,9 @@ export class Settings {
       if (options.audio !== false && typeof Sound !== 'undefined') {
         // Обновляем громкость для всех звуков
         for (const soundId in Sound.all) {
-          const type = soundId === 'castle' ? Castle.AUDIO_MUSIC : Castle.AUDIO_SOUNDS;
+          const type = ['castle', 'tambur'].includes(soundId)
+            ? Castle.AUDIO_MUSIC
+            : soundId.startsWith('heroSound_') ? Castle.AUDIO_HERO_VOICES : Castle.AUDIO_SOUNDS;
           Sound.setVolume(soundId, Castle.GetVolume(type));
         }
 

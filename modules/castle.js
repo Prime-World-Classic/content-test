@@ -26,6 +26,7 @@ export class Castle {
 
   static AUDIO_MUSIC = 0;
   static AUDIO_SOUNDS = 1;
+  static AUDIO_HERO_VOICES = 2;
   static GetVolume(type) {
     // Используем настройки из Settings вместо внутренних переменных
     const global = Settings.settings.globalVolume ?? 1.0;
@@ -33,7 +34,10 @@ export class Castle {
     const sounds = Settings.settings.soundsVolume ?? 0.3;
 
     if (type == Castle.AUDIO_MUSIC) {
-      return global * music;
+      return Settings.settings.musicMuted ? 0 : global * music;
+    }
+    if (type == Castle.AUDIO_HERO_VOICES) {
+      return Settings.settings.heroVoicesMuted ? 0 : global * sounds;
     }
     if (type == Castle.AUDIO_SOUNDS) {
       return global * sounds;

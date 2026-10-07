@@ -124,6 +124,7 @@ export class Events {
             }
           }
         }
+        MM.updateMapPointTooltip(item);
       }
     }
   }

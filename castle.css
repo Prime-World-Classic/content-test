@@ -3736,7 +3736,7 @@ body {
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: url('icons/hall-of-fame.png') center / 6.05cqh 6.05cqh no-repeat;
+  background: url('icons/hall-of-fame.png') center / 5.7cqh 5.7cqh no-repeat;
   opacity: 0.8;
   cursor: var(--cursor-pointer);
   transition: opacity 160ms ease, filter 160ms ease;

@@ -1183,6 +1183,37 @@ export class MM {
       chatInput.value = '';
     });
 
+    const audioControls = DOM({ style: 'mm-lobby-audio-controls' });
+    const audioButtons = [];
+    for (const [setting, icon, enableKey, disableKey] of [
+      ['musicMuted', 'music', 'mmEnableMusic', 'mmDisableMusic'],
+      ['heroVoicesMuted', 'speech', 'mmEnableHeroVoices', 'mmDisableHeroVoices'],
+    ]) {
+      const button = DOM({
+        tag: 'button',
+        type: 'button',
+        style: 'mm-lobby-audio-toggle',
+        event: ['click', async () => {
+          Settings.settings[setting] = !Settings.settings[setting];
+          syncAudioControls();
+          Settings.WriteSettingsSync();
+          await Settings.ApplySettings({ render: false, window: false, language: false });
+        }],
+      }, DOM({ style: ['mm-lobby-audio-icon', `mm-lobby-audio-icon--${icon}`], ariaHidden: 'true' }));
+      audioButtons.push({ button, setting, enableKey, disableKey });
+      audioControls.append(button);
+    }
+    const syncAudioControls = () => {
+      for (const { button, setting, enableKey, disableKey } of audioButtons) {
+        const muted = Boolean(Settings.settings[setting]);
+        button.classList.toggle('is-muted', muted);
+        button.setAttribute('aria-pressed', String(!muted));
+        button.title = Lang.text(muted ? enableKey : disableKey);
+        button.setAttribute('aria-label', button.title);
+      }
+    };
+    syncAudioControls();
+
     let body = DOM(
       { style: 'mm-lobby' },
       DOM({ style: 'mm-lobby-header' }, leftTeam, info, rightTeam),
@@ -1198,8 +1229,7 @@ export class MM {
               factionOutline('adornia'),
             ] : [])),
           ...(data.mode == 0 ? [DOM({ style: 'mm-lobby-map-caption' }, Lang.text('mmMapPositionHint'))] : []),
-          MM.chatBody,
-          chatInput,
+          DOM({ style: 'mm-lobby-chat-panel' }, audioControls, MM.chatBody, chatInput),
         ),
         lobbyBuild,
         DOM({ style: 'mm-lobby-middle-hero-column' },
@@ -1347,7 +1377,7 @@ export class MM {
       let item = DOM({
         domaudio: domAudioPresets.smallButton,
         style: `map-item-${number}`,
-        data: { player: 0, position: number },
+        data: { player: 0, position: number, laneLabel: label },
         role: 'button',
         tabIndex: 0,
         ariaLabel: label,
@@ -1366,12 +1396,14 @@ export class MM {
                 point.style.backgroundImage = 'none';
                 point.style.transform = 'scale(1)';
                 point.setAttribute('aria-pressed', 'false');
+                MM.updateMapPointTooltip(point);
               }
               if (!selected) {
                 item.dataset.player = MM.lobbyUserId;
                 item.style.backgroundImage = player.firstChild.style.backgroundImage;
                 item.style.transform = 'scale(1)';
                 item.setAttribute('aria-pressed', 'true');
+                MM.updateMapPointTooltip(item);
               }
               return;
             }
@@ -1394,6 +1426,8 @@ export class MM {
       });
 
       item.append(DOM({ style: 'mm-lobby-map-tooltip' }, label));
+      item.addEventListener('mouseenter', () => MM.updateMapPointTooltip(item));
+      item.addEventListener('focus', () => MM.updateMapPointTooltip(item));
       item.addEventListener('keydown', (event) => {
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
@@ -1406,6 +1440,13 @@ export class MM {
     return container;
   }
 
+  static updateMapPointTooltip(point) {
+    const nickname = MM.lobbyUsers?.[Number(point.dataset.player)]?.nickname;
+    const label = nickname || point.dataset.laneLabel || '';
+    point.querySelector('.mm-lobby-map-tooltip').textContent = label;
+    point.setAttribute('aria-label', label);
+  }
+
   static async select(data) {
     let findOldPlayer = document.getElementById(`PLAYER${data.userId}`);
     
@@ -1416,10 +1457,10 @@ export class MM {
       return;
     }
     
-    if (!data.silent) {
+    if (!data.silent && !Settings.settings.heroVoicesMuted) {
       Sound.play(SOUNDS_LIBRARY[`HERO_${data.heroId}_revive_${data.sound}`], {
         id: `heroSound_${data.heroId}_${data.sound}`,
-        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+        volume: Castle.GetVolume(Castle.AUDIO_HERO_VOICES),
       });
     }
 

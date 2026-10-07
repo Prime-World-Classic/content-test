@@ -3463,6 +3463,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 }
 
 .splash-content--titled > .title-modal,
+.splash-content--titled .chat-player-menu > .title-modal,
 .splash-content--titled .splash-help > .title-modal {
   z-index: 2;
   isolation: isolate;
@@ -3471,6 +3472,8 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .splash-content--titled > .title-modal::before,
 .splash-content--titled > .title-modal::after,
+.splash-content--titled .chat-player-menu > .title-modal::before,
+.splash-content--titled .chat-player-menu > .title-modal::after,
 .splash-content--titled .splash-help > .title-modal::before,
 .splash-content--titled .splash-help > .title-modal::after {
   display: none;
@@ -4026,6 +4029,79 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   flex: 0 0 auto;
 }
 
+.mm-lobby-chat-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+.mm-lobby--aram .mm-lobby-chat-panel {
+  flex: 1 1 0;
+}
+
+.mm-lobby-audio-controls {
+  position: absolute;
+  right: 1.2cqh;
+  bottom: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 3.8cqh;
+  gap: 0.6cqh;
+  padding-bottom: 0.4cqh;
+  box-sizing: border-box;
+}
+
+.mm-lobby-audio-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.2cqh;
+  height: 3.2cqh;
+  padding: 0;
+  border: 0.1cqh solid rgba(161, 206, 184, 0.65);
+  border-radius: 0.4cqh;
+  background: rgb(9, 52, 60);
+  color: rgb(238, 229, 171);
+  cursor: var(--cursor-pointer);
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+.mm-lobby-audio-toggle:is(:hover, :focus-visible) {
+  opacity: 1;
+  filter: brightness(1.2);
+  outline: 0.15cqh solid rgb(161, 206, 184);
+  outline-offset: 0.15cqh;
+}
+
+.mm-lobby-audio-toggle.is-muted {
+  background: rgb(49, 55, 57);
+  color: rgb(165, 173, 174);
+}
+
+.mm-lobby-audio-toggle.is-muted::after {
+  content: '';
+  position: absolute;
+  width: 2.6cqh;
+  height: 0.18cqh;
+  background: currentColor;
+  transform: rotate(-45deg);
+}
+
+.mm-lobby-audio-icon {
+  width: 2cqh;
+  height: 2cqh;
+  background: currentColor;
+  mask: center / contain no-repeat;
+}
+
+.mm-lobby-audio-icon--music { mask-image: url('icons/music.svg'); }
+.mm-lobby-audio-icon--speech { mask-image: url('icons/speech.svg'); }
+
 .mm-lobby-middle-chat-body {
   height: calc(35cqh * 2 / 3);
   flex: 0 0 calc(35cqh * 2 / 3);
@@ -4220,6 +4296,7 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .mm-lobby-map-tooltip {
   display: none;
+  overflow-wrap: anywhere;
   position: absolute;
   z-index: 5;
   left: 50%;
@@ -6062,6 +6139,37 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   text-align: center;
 }
 
+.chat-player-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5cqh;
+  width: min(36cqh, 75vw);
+  min-width: 0;
+}
+
+.chat-player-menu .splash-content-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0 1cqh;
+  text-align: center;
+}
+
+.chat-player-menu-nickname {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.chat-player-menu-nickname > span {
+  display: inline-block;
+  min-width: 100%;
+}
+
 .wtop-hero-filter-slot {
   display: flex;
   align-items: center;
@@ -6103,18 +6211,18 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   z-index: 13001;
   top: auto;
   right: auto;
-  bottom: calc(100% + 0.35vh);
+  bottom: calc(100% + 1.1vh);
   left: 50%;
   transform: translateX(-50%);
   content: attr(data-tooltip);
   background: rgba(14, 31, 33, 0.85);
-  border: 0.11vh solid rgba(90, 133, 130, 0.62);
+  border: 0.16vh solid rgba(90, 133, 130, 0.62);
   color: rgba(255, 255, 255, 0.88);
-  padding: 0.63vh 0.73vh;
-  border-radius: 0.6vh;
-  font: 1.03vh / 1.28 'DejaVuSans', sans-serif;
+  padding: 0.95vh 1.1vh;
+  border-radius: 0.9vh;
+  font: 1.55vh / 1.28 'DejaVuSans', sans-serif;
   width: max-content;
-  min-width: 10.7vh;
+  min-width: 16vh;
   white-space: nowrap;
   text-align: center;
   pointer-events: none;

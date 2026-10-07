@@ -87,7 +87,19 @@ export class Window {
         style: template.id === 'wquest' ? ['window__overlay', 'wquest__overlay'] : 'window__overlay',
         event: [
           'click',
-          () => {
+          async (event) => {
+            if (template.id === 'wbuild') {
+              const hero = document.elementsFromPoint(event.clientX, event.clientY)
+                .map((element) => element.closest('.castle-hero-item[data-hero-id]'))
+                .find(Boolean);
+              if (hero) {
+                const heroId = Number(hero.dataset.heroId);
+                View.setCastleOpenedBuildHero(heroId);
+                await Window.show(category, 'build', heroId, 0, true);
+                View.syncCastleOpenedBuildHeroGlow();
+                return;
+              }
+            }
             Window.close(category);
             requestAnimationFrame(() => Voice.updatePanelPosition());
           },
@@ -762,7 +774,7 @@ export class Window {
     const avatar = DOM({ style: 'wquest__avatar' });
     const avatarContainer = DOM({ style: 'quest_container' }, avatarBackground, avatar);
     const timerMs = Number(item.timer ?? quest.timer ?? item.timeLeft ?? quest.timeLeft ?? item.remainingMs ?? quest.remainingMs ?? item.remaining ?? quest.remaining ?? 0) || 0;
-    const isActiveQuest = Number(item.status ?? quest.status) === 1 || timerMs > 0;
+    const isActiveQuest = Number(quest.status ?? item.status) === 1;
 
     avatar.style.backgroundImage = `url("content/hero/${item.heroId}/1.webp")`;
     avatar.style.backgroundSize = 'cover, contain';

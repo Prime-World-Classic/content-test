@@ -2219,18 +2219,18 @@ export class View {
 
     for (let item of request.quests) {
       const timerMs = Number(item.timer ?? item.timeLeft ?? item.remainingMs ?? item.remaining ?? 0) || 0;
-      const isActiveQuest = Number(item.status) === 1 || timerMs > 0;
+      const isActiveQuest = Number(item.status) === 1;
       let hero = DOM({ style: 'quest-item-hero' }, DOM({ style: 'quest-item-portrait-glass' }));
       hero.style.backgroundImage = `url(content/hero/${item.heroId}/1.webp)`;
 
       let timer = DOM({ style: 'quest-item-timer' });
-      item.timer = Math.max(0, timerMs);
+      item.timer = isActiveQuest ? Math.max(0, timerMs) : 0;
       const tick = () => {
         item.timer = Math.max(0, item.timer - 1000);
         timer.textContent = Timer.getFormattedTimer(item.timer) || '00:00';
       };
       tick();
-      setInterval(tick, 1000);
+      if (isActiveQuest) setInterval(tick, 1000);
 
       let quest = DOM(
         {
@@ -4785,7 +4785,7 @@ export class View {
         const [result] = await Promise.all([
           isHeroStatsView
             ? App.api.request(App.CURRENT_MM, 'topHeroStats')
-            : App.api.request(App.CURRENT_MM, 'top', { limit: 100, hero: heroId, mode: activeMode }),
+            : App.api.request(App.CURRENT_MM, activePlayerPeriod === 'recent' ? 'topActive' : 'top', { limit: 100, hero: heroId, mode: activeMode }),
           (async () => {
             if (!MM.hero) {
               try {
@@ -4807,13 +4807,20 @@ export class View {
           makeHeroStatsTable(listScroll);
           listScroll.removeAttribute('aria-busy');
         } else {
-          renderPlayerList(Array.isArray(result) ? result : [], currentLoadId);
+          if (!Array.isArray(result)) throw new Error('Invalid Hall of Fame response');
+          renderPlayerList(result, currentLoadId);
         }
       } catch (error) {
         if (!body.isConnected || currentLoadId !== loadId) return;
         console.error('Hall of Fame failed to load', error);
         listScroll.removeAttribute('aria-busy');
-        showListStatus('topLoadError', true);
+        const reason = typeof error === 'string' ? error : error?.message;
+        const recentError = !isHeroStatsView && activePlayerPeriod === 'recent';
+        const statusKey = recentError && reason === 'activeRatingIndexRequired'
+          ? 'topRecentPlayersNotReady'
+          : recentError && ['activeRatingBusy', 'activeRatingRetryLater'].includes(reason)
+            ? 'topRecentPlayersBusy' : 'topLoadError';
+        showListStatus(statusKey, true);
       }
     };
     showListStatus('topLoading');
@@ -4861,17 +4868,7 @@ export class View {
               tabButton.classList.toggle('is-active', selected);
               tabButton.setAttribute('aria-selected', String(selected));
             }
-            ++loadId;
-            listScroll.removeAttribute('aria-busy');
-            if (period === 'all') {
-              loadTop();
-            } else {
-              const status = DOM({ style: 'wtop-list-status' });
-              status.setAttribute('role', 'status');
-              status.append(DOM({ style: 'wtop-list-status-text' }, Lang.text('topRecentPlayersUnavailable')));
-              // TODO: Finish 30-day rankings after the technical server update is released.
-              listScroll.replaceChildren(status);
-            }
+            loadTop();
           }],
         });
         button.setAttribute('role', 'tab');
@@ -4890,7 +4887,7 @@ export class View {
       const now = Date.now();
       if (now >= nextUpdateAt) {
         nextUpdateAt = Timer.getNextMoscowMidnight(now);
-        if (isHeroStatsView || activePlayerPeriod === 'all') loadTop();
+        loadTop();
       }
       const remaining = Math.min(Timer.oneDay - 1000, Math.ceil((nextUpdateAt - now) / 1000) * 1000);
       updateTime.textContent = Timer.getFormattedTimer(remaining) || '00:00';
