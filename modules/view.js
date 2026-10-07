@@ -201,14 +201,51 @@ export class View {
     return Lang.text('friendLastSeenTitle').replace('{date}', full);
   }
 
-  // Оффлайн-друг: плашка «🕓 3 ч» над кнопками + полная дата в title карточки.
+  static FRIEND_SINCE_STATES = ['queue', 'tambour', 'battle', 'away'];
+
+  static getFriendPresenceSince(item) {
+    const value = Number(item?.since || 0);
+    return Number.isFinite(value) && value > 0 ? value : 0;
+  }
+
+  // Длительность состояния: «<1 мин» / «12 мин» / «1 ч 5 мин» / «2 дн».
+  static formatFriendDuration(since, now = Date.now()) {
+    const minutes = Math.floor(Math.max(0, now - since) / 60000);
+    if (minutes < 1) return Lang.text('friendDurationLessMinute');
+    if (minutes < 60) return Lang.text('friendDurationMinutes').replace('{n}', String(minutes));
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) {
+      const rest = minutes % 60;
+      return rest
+        ? Lang.text('friendDurationHoursMinutes').replace('{h}', String(hours)).replace('{m}', String(rest))
+        : Lang.text('friendDurationHours').replace('{n}', String(hours));
+    }
+    return Lang.text('friendDurationDays').replace('{n}', String(Math.floor(hours / 24)));
+  }
+
+  static formatFriendSinceTitle(state, since) {
+    const time = new Date(since).toLocaleTimeString(View.getFriendLastSeenLocale(), { hour: '2-digit', minute: '2-digit' });
+    const key = state === 'away' ? 'friendSinceTitleAway' : 'friendSinceTitle';
+    return Lang.text(key).replace('{status}', View.getFriendPresenceLabel(state)).replace('{time}', time);
+  }
+
+  static getFriendBadgeText(badge, now = Date.now()) {
+    const value = Number(badge.dataset.lastOnline || badge.dataset.since || 0);
+    return badge.dataset.since ? View.formatFriendDuration(value, now) : View.formatFriendLastSeen(value, now);
+  }
+
+  // Плашка над кнопками: оффлайн — «🕓 3 ч назад» (из lastOnline),
+  // в поиске / тамбуре / бою / отошёл — «⏱ 12 мин» (since из памяти API, без БД).
   static syncFriendLastSeenBadge(card, item) {
     if (!card) return;
+    const state = View.normalizeFriendPresenceState(item);
+    const isFriend = Number(item?.status || 0) === 1;
     const lastOnline = View.getFriendLastOnline(item);
-    const show =
-      Number(item?.status || 0) === 1 && View.normalizeFriendPresenceState(item) === 'offline' && lastOnline > 0;
+    const since = View.getFriendPresenceSince(item);
+    const showLastSeen = isFriend && state === 'offline' && lastOnline > 0;
+    const showSince = isFriend && !showLastSeen && since > 0 && View.FRIEND_SINCE_STATES.includes(state);
     let badge = card.querySelector('.castle-friend-last-seen');
-    if (!show) {
+    if (!showLastSeen && !showSince) {
       badge?.remove();
       if (card.dataset.lastSeenTitle === '1') {
         card.removeAttribute('title');
@@ -220,9 +257,17 @@ export class View {
       badge = DOM({ style: 'castle-friend-last-seen' });
       card.append(badge);
     }
-    badge.dataset.lastOnline = String(lastOnline);
-    badge.textContent = View.formatFriendLastSeen(lastOnline);
-    card.title = View.formatFriendLastSeenTitle(lastOnline);
+    delete badge.dataset.lastOnline;
+    delete badge.dataset.since;
+    badge.classList.toggle('castle-friend-since', showSince);
+    if (showSince) {
+      badge.dataset.since = String(since);
+      card.title = View.formatFriendSinceTitle(state, since);
+    } else {
+      badge.dataset.lastOnline = String(lastOnline);
+      card.title = View.formatFriendLastSeenTitle(lastOnline);
+    }
+    badge.textContent = View.getFriendBadgeText(badge);
     card.dataset.lastSeenTitle = '1';
     View.ensureFriendLastSeenTicker();
   }
@@ -230,7 +275,9 @@ export class View {
   static ensureFriendLastSeenTicker() {
     if (View.friendLastSeenTimer) return;
     View.friendLastSeenTimer = setInterval(() => {
-      const badges = View.castleBottom?.querySelectorAll?.('.castle-friend-last-seen[data-last-online]');
+      const badges = View.castleBottom?.querySelectorAll?.(
+        '.castle-friend-last-seen[data-last-online], .castle-friend-last-seen[data-since]',
+      );
       if (!badges || !badges.length) {
         clearInterval(View.friendLastSeenTimer);
         View.friendLastSeenTimer = 0;
@@ -238,7 +285,7 @@ export class View {
       }
       const now = Date.now();
       for (const badge of badges) {
-        const text = View.formatFriendLastSeen(Number(badge.dataset.lastOnline), now);
+        const text = View.getFriendBadgeText(badge, now);
         if (badge.textContent !== text) badge.textContent = text;
       }
     }, View.FRIEND_LAST_SEEN_TICK_MS);
@@ -367,6 +414,7 @@ export class View {
       if ('mobile' in (data || {})) item.mobile = Number(data.mobile) === 1 ? 1 : 0;
       if ('inParty' in (data || {})) item.inParty = Number(data.inParty) === 1 ? 1 : 0;
       if ('mode' in (data || {})) item.mode = Number(data.mode);
+      item.since = Number(data?.since || 0);
       changed = true;
       changedItem = item;
       break;
@@ -838,7 +886,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261007-test-merge-perf-1';
+    const cssVersion = '20261008-test-friends-since-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 

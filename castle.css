@@ -2278,9 +2278,9 @@ body {
   content: '';
   position: absolute;
   top: calc(0.55cqh - var(--castle-roster-search-raise));
-  right: 0.55cqh;
+  right: calc(0.55cqh - var(--castle-roster-search-raise));
   bottom: calc(var(--castle-hero-lists-content-lift) + 0.55cqh + var(--castle-roster-search-raise));
-  left: 0.55cqh;
+  left: calc(0.55cqh - var(--castle-roster-search-raise));
   border: 1px solid rgba(217, 193, 111, 0.72);
   border-radius: 999px;
   background:
@@ -2808,6 +2808,10 @@ body {
   content: '🕓';
   margin-right: 1cqh;
   opacity: 0.85;
+}
+
+.castle-friend-last-seen.castle-friend-since::before {
+  content: '⏱';
 }
 
 .castle-friend-request {
