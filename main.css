@@ -2776,8 +2776,8 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   right: 17cqw;
   /* Панель шире своей колонки и залезает под соседние колонки (build-left/build-right):
      поднимаем её над ними, а пустые области контейнера делаем «прозрачными» для мыши,
-     чтобы они сами ничего не перекрывали. */
-  z-index: 8;
+     чтобы они сами ничего не перекрывали. build-left имеет z-index: 30 — панель выше. */
+  z-index: 31;
   pointer-events: none;
 }
 
