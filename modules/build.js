@@ -36,7 +36,7 @@ export class Build {
   static REGEN_HP_FROM_MAX_HP_PCT = 0.0015; // 0.15%
   static REGEN_MP_FROM_MAX_MP_PCT = 0.0036; // 0.36%
   // Max talent cooldown reduction percent shown in build hero stats and used in CD calculations.
-  static TALENT_COOLDOWN_PCT_MAX = 40;
+  static TALENT_COOLDOWN_PCT_MAX = 30;
 
   /** span с числом подсвеченных по стат-фильтру талантов (см. .build-hero-stats-highlight-count). */
   static statFilterHighlightCountValueEl = null;
@@ -2231,6 +2231,56 @@ export class Build {
     return true;
   }
 
+  /**
+   * Оба таланта обмена стоят в панели активных: сервер (optimisticSwap) панель не трогает,
+   * т.е. слоты остаются на позициях, а таланты в них меняются местами. Чтобы смарткаст
+   * «ехал» вместе с талантом, меняем знаки этих двух слотов и синхронизируем их с сервером.
+   */
+  static swapActiveSmartcastAfterBothSwap(i1, i2) {
+    const items = Build.activeBarItems;
+    if (!Array.isArray(items)) return false;
+    const pos1 = Number(i1) + 1;
+    const pos2 = Number(i2) + 1;
+    if (!Number.isFinite(pos1) || !Number.isFinite(pos2) || pos1 === pos2) return false;
+    const idx1 = items.findIndex((v) => Math.abs(Number(v) || 0) === pos1);
+    const idx2 = items.findIndex((v) => Math.abs(Number(v) || 0) === pos2);
+    if (idx1 < 0 || idx2 < 0) return false;
+    const smart1 = Number(items[idx1]) < 0;
+    const smart2 = Number(items[idx2]) < 0;
+    if (smart1 === smart2) return false;
+    // В слоте idx1 теперь талант, который был на pos2 (и наоборот) — переносим его смарткаст.
+    items[idx1] = smart2 ? -pos1 : pos1;
+    items[idx2] = smart1 ? -pos2 : pos2;
+    for (const index of [idx1, idx2]) {
+      Build.sendBuildMutation({
+        optimisticMethod: 'optimisticSetActive',
+        legacyMethod: 'setActive',
+        data: { buildId: Build.id, index, position: items[index] },
+      });
+    }
+    return true;
+  }
+
+  /** Слот панели активных под точкой (или ближайший к ней) — не зависит от перекрывающих слоёв. */
+  static findActiveBarSlotAt(x, y) {
+    const slots = Array.from(Build.activeBarView?.childNodes || []);
+    let best = null;
+    let bestDist = Infinity;
+    for (const slot of slots) {
+      const r = slot.getBoundingClientRect?.();
+      if (!r?.width) continue;
+      if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return slot;
+      const dx = x - (r.left + r.width / 2);
+      const dy = y - (r.top + r.height / 2);
+      const dist = Math.hypot(dx, dy);
+      if (dist < bestDist && dist <= r.width * 0.9) {
+        bestDist = dist;
+        best = slot;
+      }
+    }
+    return best;
+  }
+
   static async swapBuildSlotsWithBackend(i1, i2) {
     const slotA = Number(i1);
     const slotB = Number(i2);
@@ -2464,9 +2514,110 @@ export class Build {
   static ensureTalentMoveAnimStyle() {
     if (Build._talentMoveAnimStyleEl?.isConnected) return;
     const style = document.createElement('style');
-    style.textContent = '[data-talent-move-anim] > * { visibility: hidden !important; }';
+    style.textContent =
+      '[data-talent-move-anim] > * { visibility: hidden !important; }' +
+      // Призрак слота панели активных: без рамки/фона/смарткаста — летит только иконка.
+      '.build-talent-move-ghost-neutral { background: none !important; box-shadow: none !important;' +
+      ' border-color: transparent !important; animation: none !important; }' +
+      '.build-talent-move-ghost-neutral:after { display: none !important; }';
     document.head.append(style);
     Build._talentMoveAnimStyleEl = style;
+  }
+
+  /** Фиксированный слой-копия ячейки с копией таланта (для cq-единиц — те же размеры ячейки). */
+  static createTalentGhost(node, parent, parentRect) {
+    const ghost = document.createElement('div');
+    ghost.setAttribute('aria-hidden', 'true');
+    const isActiveSlot = parent.classList.contains('build-active-bar-item');
+    ghost.className = parent.className;
+    // Слот со смарткастом: призрак летит вместе с рамкой смарткаста (а в самом слоте
+    // она скрыта, пока идёт анимация); без смарткаста — только иконка.
+    if (isActiveSlot) {
+      ghost.classList.add(parent.classList.contains('smartcast') ? 'build-talent-move-ghost-smartcast' : 'build-talent-move-ghost-neutral');
+    }
+    let borderWidth = '';
+    try {
+      if (isActiveSlot) borderWidth = getComputedStyle(parent).borderTopWidth;
+    } catch {}
+    Object.assign(ghost.style, {
+      position: 'fixed',
+      left: `${parentRect.left}px`,
+      top: `${parentRect.top}px`,
+      width: `${parentRect.width}px`,
+      height: `${parentRect.height}px`,
+      margin: '0',
+      overflow: 'visible',
+      pointerEvents: 'none',
+      zIndex: '10000',
+      willChange: 'transform',
+    });
+    if (isActiveSlot) {
+      ghost.style.boxSizing = 'border-box';
+      if (borderWidth) ghost.style.borderWidth = borderWidth;
+    }
+    const clone = node.cloneNode(true);
+    clone.style.position = 'static';
+    clone.style.left = '';
+    clone.style.top = '';
+    clone.style.translate = '';
+    clone.style.removeProperty('transform');
+    clone.style.opacity = '1';
+    ghost.append(clone);
+    document.body.append(ghost);
+    return ghost;
+  }
+
+  /** Текущее видимое положение таланта: если он ещё «летит», берём позицию призрака. */
+  static getTalentVisualRect(node) {
+    try {
+      const done = Build._talentMoveGhosts?.get?.(node);
+      const ghostChild = done?.ghost?.firstChild;
+      if (ghostChild?.isConnected) return ghostChild.getBoundingClientRect();
+      return node.getBoundingClientRect();
+    } catch {
+      return null;
+    }
+  }
+
+  /** Талант убран из слота: копия плавно гаснет и сжимается на месте (rect — где её показать). */
+  static animateTalentVanish(node, rect = null, duration = 170) {
+    try {
+      if (!node || !Build.shouldAnimateSortMoves()) return;
+      const parent = node.parentElement;
+      if (!parent) return;
+      const nodeRect = rect || Build.getTalentVisualRect(node) || node.getBoundingClientRect();
+      const parentRect = parent.getBoundingClientRect();
+      if (!nodeRect?.width || !parentRect.width) return;
+      Build.ensureTalentMoveAnimStyle();
+      // Ячейку центрируем на видимом месте таланта (например, точке броска).
+      const box = {
+        left: nodeRect.left + nodeRect.width / 2 - parentRect.width / 2,
+        top: nodeRect.top + nodeRect.height / 2 - parentRect.height / 2,
+        width: parentRect.width,
+        height: parentRect.height,
+      };
+      Build._talentMoveGhosts?.get?.(node)?.();
+      const ghost = Build.createTalentGhost(node, parent, box);
+      ghost.style.display = 'flex';
+      ghost.style.alignItems = 'center';
+      ghost.style.justifyContent = 'center';
+      let finished = false;
+      const done = () => {
+        if (finished) return;
+        finished = true;
+        ghost.remove();
+      };
+      const anim = ghost.animate(
+        [
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(0.6)' },
+        ],
+        { duration, easing: 'ease-in' },
+      );
+      anim.onfinish = done;
+      anim.oncancel = done;
+      setTimeout(done, duration + 300);
+    } catch {}
   }
 
   static animateTalentMove(node, fromRect, duration = Build.SORT_MOVE_ANIMATION_MS) {
@@ -2484,34 +2635,12 @@ export class Build {
       Build._talentMoveGhosts.get(node)?.();
 
       const parentRect = parent.getBoundingClientRect();
-      const ghost = document.createElement('div');
-      ghost.className = parent.className;
-      ghost.setAttribute('aria-hidden', 'true');
-      Object.assign(ghost.style, {
-        position: 'fixed',
-        left: `${parentRect.left}px`,
-        top: `${parentRect.top}px`,
-        width: `${parentRect.width}px`,
-        height: `${parentRect.height}px`,
-        margin: '0',
-        overflow: 'visible',
-        pointerEvents: 'none',
-        zIndex: '10000',
-        willChange: 'transform',
-      });
-      const clone = node.cloneNode(true);
-      clone.style.position = 'static';
-      clone.style.left = '';
-      clone.style.top = '';
-      clone.style.translate = '';
-      clone.style.removeProperty('transform');
-      ghost.append(clone);
-      document.body.append(ghost);
+      Build.ensureTalentMoveAnimStyle();
+      const ghost = Build.createTalentGhost(node, parent, parentRect);
 
       // Оригинал прячем через атрибут на ЯЧЕЙКЕ, а не inline-стилем на самом таланте:
       // панель активных клонирует таланты с поля (cloneNode), и inline visibility:hidden
       // попадал в клоны — слоты выглядели пустыми/затемнёнными.
-      Build.ensureTalentMoveAnimStyle();
       parent.dataset.talentMoveAnim = `${(Number(parent.dataset.talentMoveAnim) || 0) + 1}`;
       let finished = false;
       const done = () => {
@@ -2523,6 +2652,7 @@ export class Build {
         else delete parent.dataset.talentMoveAnim;
         Build._talentMoveGhosts.delete(node);
       };
+      done.ghost = ghost;
       Build._talentMoveGhosts.set(node, done);
       const anim = ghost.animate(
         [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: 'translate(0, 0)' }],
@@ -3496,7 +3626,7 @@ export class Build {
 		*/
   }
 
-  static totalStat(stat) {
+  static totalStat(stat, { uncapped = false } = {}) {
     let initialStat = Build.initialStats[stat];
     if (!Number.isFinite(Number(initialStat))) initialStat = 0;
     else initialStat = Number(initialStat);
@@ -3516,7 +3646,7 @@ export class Build {
       talentsStat += speedAdd;
     }
     let total = initialStat + talentsStat + powerStat;
-    if (stat === 'speedtal') {
+    if (stat === 'speedtal' && !uncapped) {
       total = Math.max(0, Math.min(Build.TALENT_COOLDOWN_PCT_MAX, total));
     }
     return total;
@@ -4758,7 +4888,17 @@ export class Build {
     }
     if (Build.dataStats['talentCdPct']) {
       const cdPct = Math.max(0, Math.round(Build.totalStat('speedtal')));
-      Build.dataStats['talentCdPct'].lastChild.innerText = cdPct === 0 ? '0%' : `-${cdPct}%`;
+      // Сверх лимита — в скобках фактическая сумма: «-30% (-42%)».
+      const rawCdPct = Math.max(0, Math.round(Build.totalStat('speedtal', { uncapped: true })));
+      let cdText = cdPct === 0 ? '0%' : `-${cdPct}%`;
+      if (rawCdPct > cdPct) cdText += ` (-${rawCdPct}%)`;
+      Build.dataStats['talentCdPct'].lastChild.innerText = cdText;
+      // Подсказка: что такое значение и что в скобках.
+      const maxCd = String(Build.TALENT_COOLDOWN_PCT_MAX);
+      Build.dataStats['talentCdPct'].title =
+        rawCdPct > cdPct
+          ? Lang.text('statTalentCooldownPctTipOver').replace('{max}', maxCd).replace('{raw}', String(rawCdPct))
+          : Lang.text('statTalentCooldownPctTipMax').replace('{max}', maxCd);
     }
 
     const statAg = Build.totalStat('provorstvo');
@@ -6073,6 +6213,9 @@ export class Build {
             case 'ph_max':
               resolvedStatAffection = Build.getMaxStat(['provorstvo', 'hitrost']);
               break;
+            case 'hr_max':
+              resolvedStatAffection = Build.getMaxStat(['hitrost', 'razum']);
+              break;
             case 'hpmp_max':
               resolvedStatAffection = Build.getMaxStat(['hp', 'mp']);
               break;
@@ -7322,6 +7465,25 @@ export class Build {
   static activeBar(data) {
     Build.activeBarItems = data;
 
+    // FLIP: запоминаем, где стоял каждый талант (по id), чтобы после перерисовки
+    // плавно довезти его на новый слот вместо «телепорта». Только в рамках одного билда.
+    const prevActiveRects = new Map();
+    const sameBuild = Build._activeBarRenderedBuildId !== undefined && Build._activeBarRenderedBuildId === Build.id;
+    if (sameBuild && Build.activeBarView && Build.shouldAnimateSortMoves()) {
+      try {
+        for (const slot of Build.activeBarView.childNodes) {
+          const talent = slot.firstChild;
+          const id = talent?.dataset?.id;
+          if (id === undefined || prevActiveRects.has(id)) continue;
+          const rect = Build.getTalentVisualRect(talent);
+          if (rect?.width) prevActiveRects.set(id, rect);
+          Build._talentMoveGhosts?.get?.(talent)?.();
+        }
+      } catch {}
+    }
+    Build._activeBarRenderedBuildId = Build.id;
+    const activeMoves = [];
+
     try {
       Build.activeBarView?.replaceChildren();
     } catch {}
@@ -7375,6 +7537,8 @@ export class Build {
           clone.style.backgroundImage = `url("${clone.dataset.url}")`;
           clone.dataset.position = position;
           Build.move(clone, true);
+          const fromRect = prevActiveRects.get(clone.dataset.id);
+          if (fromRect) activeMoves.push({ node: clone, from: fromRect });
         }
       }
 
@@ -7387,6 +7551,8 @@ export class Build {
 
       index++;
     }
+
+    for (const m of activeMoves) Build.animateTalentMove(m.node, m.from);
   }
 
   static getKeyName(index) {
@@ -8163,6 +8329,17 @@ export class Build {
       shiftY = event.clientY - startRect.top;
 
       element.style.zIndex = '9999';
+      // Смарткаст «поднимаем» вместе с талантом: в слоте рамка гаснет, на таланте — подсветка.
+      const liftedSmartcastSlot =
+        fromActiveBar && element.parentElement?.classList?.contains('smartcast') ? element.parentElement : null;
+      if (liftedSmartcastSlot) {
+        liftedSmartcastSlot.dataset.smartcastLifted = '1';
+        element.classList.add('build-talent-drag-smartcast');
+      }
+      const dropLiftedSmartcast = () => {
+        element.classList.remove('build-talent-drag-smartcast');
+        if (liftedSmartcastSlot) delete liftedSmartcastSlot.dataset.smartcastLifted;
+      };
       element.style.position = 'fixed';
       element.style.left = event.clientX - shiftX + 'px';
       element.style.top = event.clientY - shiftY + 'px';
@@ -8198,13 +8375,21 @@ export class Build {
       };
 
       element.onmouseup = async (event) => {
+        // До любых cloneNode: класс подсветки не должен попасть в копии.
+        dropLiftedSmartcast();
         commitDragPosition();
         Build._isDraggingTalent = false;
+        // Точка броска (для анимаций в панели активных) и флаг «не возвращать оригинал полётом».
+        let dropPointRect = null;
+        try {
+          dropPointRect = element.getBoundingClientRect();
+        } catch {}
+        let skipReturnAnimation = false;
         const finishDragVisualState = () => {
           // Плавно «сажаем» талант с точки броска на итоговое место.
           let dropRect = null;
           try {
-            if (element.style.position === 'fixed') dropRect = element.getBoundingClientRect();
+            if (element.style.position === 'fixed' && !skipReturnAnimation) dropRect = element.getBoundingClientRect();
           } catch {}
           fieldRow.style.background = '';
           element.style.position = 'static';
@@ -8399,6 +8584,15 @@ export class Build {
           elementSetDisplay(element, 'none');
 
           let elemBelow = elementFromPoint(event.clientX, event.clientY);
+          // Поверх поля может лежать чужой слой — берём верхний элемент именно из поля.
+          if (elemBelow && !Build.fieldView?.contains(elemBelow)) {
+            try {
+              const inField = document
+                .elementsFromPoint(event.clientX, event.clientY)
+                .find((el) => Build.fieldView.contains(el) && el !== element && !element.contains(el) && el.className != 'build-level');
+              if (inField) elemBelow = inField;
+            } catch {}
+          }
 
           if (elemBelow.childNodes[0] && elemBelow.childNodes[0].className == 'build-talent-item') {
             // Select 'build-talent-item' if selected its parent
@@ -8506,7 +8700,10 @@ export class Build {
                   if (performSwap) {
                     const oldPos = Number(swapParentNode.dataset.position);
                     const newPos = Number(elemBelow.dataset.position);
-                    if (Build.remapActiveBarAfterSwap(oldPos, newPos)) {
+                    const activeChanged = Build.remapActiveBarAfterSwap(oldPos, newPos);
+                    // Оба таланта в панели: смарткаст переезжает вместе с талантом.
+                    const smartcastSwapped = !activeChanged && Build.swapActiveSmartcastAfterBothSwap(oldPos, newPos);
+                    if (activeChanged || smartcastSwapped) {
                       Build.scheduleActiveBarRender(Array.isArray(Build.activeBarItems) ? Build.activeBarItems : new Array(24).fill(0));
                     }
                     await Build.sendBuildMutationOrThrow({
@@ -8704,7 +8901,20 @@ export class Build {
 
           let elemBelow = elementFromPoint(event.clientX, event.clientY);
 
-          let isSwap = elemBelow.parentNode.classList.contains('build-active-bar-item');
+          // Слот ищем геометрически: поверх панели могут лежать другие слои (build-left и т.п.),
+          // и elementFromPoint вернёт их вместо слота.
+          {
+            let slot = elemBelow?.closest?.('.build-active-bar-item');
+            if (!slot || !Build.activeBarView?.contains(slot)) {
+              slot = Build.findActiveBarSlotAt(event.clientX, event.clientY) || Build.findActiveBarSlotAt(left, top);
+            }
+            if (slot) {
+              const occupant = slot.firstElementChild;
+              elemBelow = occupant && occupant !== element ? occupant : slot;
+            }
+          }
+
+          let isSwap = !!elemBelow?.parentNode?.classList?.contains('build-active-bar-item');
 
           elementSetDisplay(element, 'block');
 
@@ -8732,6 +8942,7 @@ export class Build {
               if (fromActiveBar) {
                 let startingIndex = element.parentNode.dataset.index;
                 if (isClick) {
+                  Build.animateTalentVanish(element, element.parentNode?.getBoundingClientRect?.());
                   await removeFromActive(positionRaw);
                 } else if (index != startingIndex) {
                   // moved to other position
@@ -8743,6 +8954,7 @@ export class Build {
                     const swapPosition = Number(swapPositionRaw) + 1;
                     const swapSmartCast = Number(targetElem.dataset.active);
                     const swapClone = elemBelow.cloneNode(true);
+                    const swapFromRect = Build.getTalentVisualRect(elemBelow);
                     const targetIndexNum = Number(index);
                     const startingIndexNum = Number(startingIndex);
                     const startPositionNum = Number(position);
@@ -8760,8 +8972,11 @@ export class Build {
                       Build.clearActiveSlotLocal(startingIndexNum);
                       Build.clearActiveSlotLocal(targetIndexNum);
                       
-                      Build.assignActiveSlotLocal(targetIndexNum, startPositionNum);
-                      Build.assignActiveSlotLocal(startingIndexNum, swapPositionNum);
+                      // Смарткаст едет вместе с талантом: знак позиции = смарткаст.
+                      const startSigned = smartCast ? -startPositionNum : startPositionNum;
+                      const swapSigned = swapSmartCast ? -swapPositionNum : swapPositionNum;
+                      Build.assignActiveSlotLocal(targetIndexNum, startSigned);
+                      Build.assignActiveSlotLocal(startingIndexNum, swapSigned);
                       
                       clone.dataset.position = `${Number(positionRaw)}`;
                       clone.dataset.state = 3;
@@ -8784,6 +8999,10 @@ export class Build {
                       
                       if (swapSmartCast) await Build.enableSmartCast(swapElemParent, false);
                       else await Build.disableSmartCast(swapElemParent, false);
+
+                      // После простановки смарткастов: призраки летят уже с нужной рамкой.
+                      Build.animateTalentMove(clone, dropPointRect, 180);
+                      Build.animateTalentMove(swapClone, swapFromRect);
                       
                       Build.sendBuildMutation({
                         optimisticMethod: 'optimisticSetActive',
@@ -8791,7 +9010,7 @@ export class Build {
                         data: {
                           buildId: Build.id,
                           index: targetIndexNum,
-                          position: startPositionNum,
+                          position: startSigned,
                         },
                       });
                       
@@ -8801,13 +9020,15 @@ export class Build {
                         data: {
                           buildId: Build.id,
                           index: startingIndexNum,
-                          position: swapPositionNum,
+                          position: swapSigned,
                         },
                       });
                     }
                   } else {
                     await removeFromActive(positionRaw);
-                    await addToActive(index, position, positionRaw, targetElem, clone, smartCast);
+                    const addPromise = addToActive(index, position, positionRaw, targetElem, clone, smartCast);
+                    Build.animateTalentMove(clone, dropPointRect, 180);
+                    await addPromise;
                   }
                 }
               } else {
@@ -8820,8 +9041,16 @@ export class Build {
                 clone.style.position = 'static';
 
                 if (isSwap) {
+                  Build.animateTalentVanish(elemBelow);
                   await removeFromActive(elemBelow.dataset.position);
                 }
+                // Если талант уже стоял в другом слоте — показываем, что он «уехал» оттуда.
+                const previousActiveIndex = (Build.activeBarItems || []).findIndex(
+                  (item, i) => Math.abs(Number(item) || 0) - 1 === Number(positionRaw) && String(i) !== String(index),
+                );
+                const previousActiveTalent =
+                  previousActiveIndex >= 0 ? Build.activeBarView?.childNodes?.[previousActiveIndex]?.firstChild : null;
+                const previousActiveRect = previousActiveTalent ? Build.getTalentVisualRect(previousActiveTalent) : null;
                 await removeFromActive(positionRaw);
                 await Build.sendBuildMutationOrThrow({
                   optimisticMethod: 'optimisticSetActive',
@@ -8837,12 +9066,17 @@ export class Build {
                 Build.move(clone, true);
 
                 targetElem.append(clone);
+                // Новый слот: из старого слота (если был) или с точки броска; оригинал на поле
+                // возвращаем без полёта, чтобы не было двух летящих иконок.
+                Build.animateTalentMove(clone, previousActiveRect || dropPointRect, previousActiveRect ? undefined : 180);
+                skipReturnAnimation = true;
               }
             } catch (e) {
               App.error('Failed to swap activebar');
             }
           }
         } else if (fromActiveBar) {
+          Build.animateTalentVanish(element, dropPointRect);
           await removeFromActive(element.dataset.position);
         }
 

@@ -163,6 +163,87 @@ export class View {
     }
   }
   
+  static FRIEND_LAST_SEEN_TICK_MS = 30 * 1000;
+  static friendLastSeenTimer = 0;
+
+  static getFriendLastOnline(item) {
+    const value = Number(item?.lastOnline || 0);
+    return Number.isFinite(value) && value > 0 ? value : 0;
+  }
+
+  // Короткая подпись «сколько не в сети»: только что / 15 мин / 3 ч / 2 дн / 12 мая.
+  static formatFriendLastSeen(lastOnline, now = Date.now()) {
+    const diff = Math.max(0, now - lastOnline);
+    const minute = 60 * 1000;
+    const hour = 60 * minute;
+    const day = 24 * hour;
+    if (diff < minute) return Lang.text('friendLastSeenJustNow');
+    if (diff < hour) return Lang.text('friendLastSeenMinutes').replace('{n}', String(Math.floor(diff / minute)));
+    if (diff < day) return Lang.text('friendLastSeenHours').replace('{n}', String(Math.floor(diff / hour)));
+    if (diff < 30 * day) return Lang.text('friendLastSeenDays').replace('{n}', String(Math.floor(diff / day)));
+    const date = new Date(lastOnline);
+    const sameYear = date.getFullYear() === new Date(now).getFullYear();
+    return date.toLocaleDateString(View.getFriendLastSeenLocale(), sameYear ? { day: 'numeric', month: 'short' } : { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  static getFriendLastSeenLocale() {
+    return Lang.target === 'en' ? 'en-GB' : 'ru-RU';
+  }
+
+  static formatFriendLastSeenTitle(lastOnline) {
+    const full = new Date(lastOnline).toLocaleString(View.getFriendLastSeenLocale(), {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    return Lang.text('friendLastSeenTitle').replace('{date}', full);
+  }
+
+  // Оффлайн-друг: плашка «🕓 3 ч» над кнопками + полная дата в title карточки.
+  static syncFriendLastSeenBadge(card, item) {
+    if (!card) return;
+    const lastOnline = View.getFriendLastOnline(item);
+    const show =
+      Number(item?.status || 0) === 1 && View.normalizeFriendPresenceState(item) === 'offline' && lastOnline > 0;
+    let badge = card.querySelector('.castle-friend-last-seen');
+    if (!show) {
+      badge?.remove();
+      if (card.dataset.lastSeenTitle === '1') {
+        card.removeAttribute('title');
+        delete card.dataset.lastSeenTitle;
+      }
+      return;
+    }
+    if (!badge) {
+      badge = DOM({ style: 'castle-friend-last-seen' });
+      card.append(badge);
+    }
+    badge.dataset.lastOnline = String(lastOnline);
+    badge.textContent = View.formatFriendLastSeen(lastOnline);
+    card.title = View.formatFriendLastSeenTitle(lastOnline);
+    card.dataset.lastSeenTitle = '1';
+    View.ensureFriendLastSeenTicker();
+  }
+
+  static ensureFriendLastSeenTicker() {
+    if (View.friendLastSeenTimer) return;
+    View.friendLastSeenTimer = setInterval(() => {
+      const badges = View.castleBottom?.querySelectorAll?.('.castle-friend-last-seen[data-last-online]');
+      if (!badges || !badges.length) {
+        clearInterval(View.friendLastSeenTimer);
+        View.friendLastSeenTimer = 0;
+        return;
+      }
+      const now = Date.now();
+      for (const badge of badges) {
+        const text = View.formatFriendLastSeen(Number(badge.dataset.lastOnline), now);
+        if (badge.textContent !== text) badge.textContent = text;
+      }
+    }, View.FRIEND_LAST_SEEN_TICK_MS);
+  }
+
   static isFriendGroupInviteEnabled(item) {
     return View.normalizeFriendPresenceState(item) === 'online';
   }
@@ -274,7 +355,14 @@ export class View {
     let changedItem = null;
     for (const item of View.castleFriendAll || []) {
       if (Number(item?.id) !== friendId) continue;
+      const wasOffline = View.normalizeFriendPresenceState(item) === 'offline';
       item.presenceState = String(data?.state || item?.presenceState || '');
+      if (Number(data?.lastOnline) > 0) {
+        item.lastOnline = Number(data.lastOnline);
+      } else if (!wasOffline && View.normalizeFriendPresenceState(item) === 'offline') {
+        // Старый бэкенд без lastOnline: друг вышел только что.
+        item.lastOnline = Date.now();
+      }
       if ('online' in (data || {})) item.online = Number(data.online) === 1 ? 1 : 0;
       if ('mobile' in (data || {})) item.mobile = Number(data.mobile) === 1 ? 1 : 0;
       if ('inParty' in (data || {})) item.inParty = Number(data.inParty) === 1 ? 1 : 0;
@@ -370,6 +458,7 @@ export class View {
     } else if (!showMobile && mobileEmoji) {
       mobileEmoji.remove();
     }
+    View.syncFriendLastSeenBadge(card, item);
   }
   
   static reorderVisibleFriendCards() {
@@ -749,7 +838,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261006-news-cq-scaling-1';
+    const cssVersion = '20261007-test-merge-perf-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -3607,6 +3696,9 @@ export class View {
 
       if (status == 1 && View.normalizeFriendPresenceState(item) !== 'offline' && Number(item.mobile) == 1) {
         friend.append(DOM({ style: 'castle-friend-mobile-emoji' }, '📱'));
+      }
+      if (!editMode) {
+        View.syncFriendLastSeenBadge(friend, item);
       }
 
       friend.dataset.url = `content/hero/friendLogo.png`;

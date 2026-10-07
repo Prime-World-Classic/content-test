@@ -2774,6 +2774,15 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   position: absolute;
   top: 89cqw;
   right: 17cqw;
+  /* Панель шире своей колонки и залезает под соседние колонки (build-left/build-right):
+     поднимаем её над ними, а пустые области контейнера делаем «прозрачными» для мыши,
+     чтобы они сами ничего не перекрывали. */
+  z-index: 8;
+  pointer-events: none;
+}
+
+.build-active-bar-container .build-active-bar-item {
+  pointer-events: auto;
 }
 
 .build-active-bar {
@@ -5384,6 +5393,27 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 .chat [data-tooltip-role]:hover::after,
 .chat [data-tooltip-source]:hover::after {
   display: none;
+}
+
+/* Пока талант со смарткастом летит/перетаскивается — рамка смарткаста в слоте скрыта,
+   её показывает призрак (или подсветка перетаскиваемого таланта). */
+.build-active-bar-item.smartcast[data-talent-move-anim],
+.build-active-bar-item.smartcast[data-smartcast-lifted] {
+  background-image: none !important;
+  animation: none !important;
+}
+.build-active-bar-item.smartcast[data-talent-move-anim]:after,
+.build-active-bar-item.smartcast[data-smartcast-lifted]:after {
+  background: gray !important;
+}
+.build-talent-move-ghost-smartcast {
+  box-shadow: none !important;
+}
+.build-talent-drag-smartcast {
+  border-radius: 1vh;
+  box-shadow:
+    0 0 0 0.3vh #8f9,
+    0 0 1.4vh rgba(136, 255, 153, 0.85) !important;
 }
 
 .chat-role-tooltip {

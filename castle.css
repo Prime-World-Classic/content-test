@@ -2779,6 +2779,34 @@ body {
   filter: drop-shadow(0 0.35cqh 0.3cqh rgba(0, 0, 0, 0.7));
 }
 
+.castle-friend-last-seen {
+  position: absolute;
+  left: 50%;
+  bottom: 36cqh;
+  transform: translateX(-50%);
+  max-width: 88%;
+  padding: 0.6cqh 2.4cqh;
+  box-sizing: border-box;
+  border-radius: 3cqh;
+  border: 0.25cqh solid rgba(142, 150, 96, 0.7);
+  background: linear-gradient(rgba(20, 24, 18, 0.82), rgba(8, 10, 8, 0.82));
+  box-shadow: 0 0.4cqh 1cqh rgba(0, 0, 0, 0.55);
+  color: rgba(252, 229, 188, 0.92);
+  font: 6.6cqh / 1.2 'DejaVuSans', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: rgba(0, 0, 0, 1) 0.1cqh 0.1cqh 0.2cqh;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.castle-friend-last-seen::before {
+  content: '🕓';
+  margin-right: 1cqh;
+  opacity: 0.85;
+}
+
 .castle-friend-request {
   color: rgba(255, 255, 255, 0.8);
   font-size: 11cqw;
@@ -5456,5 +5484,75 @@ body {
 
   .launcher-notification-detail-title {
     font-size: 2.45cqh;
+  }
+}
+
+/* News panel: adaptive layout for any aspect ratio / DPI */
+.launcher-notifications-panel.is-news-tab .launcher-notifications-body {
+  grid-template-columns: minmax(26cqh, 31%) minmax(0, 1fr);
+}
+
+.launcher-news-item .launcher-notification-meta {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  row-gap: 0.25cqh;
+}
+
+.launcher-news-item .launcher-notification-title {
+  flex: 1 1 100%;
+}
+
+.launcher-news-item .launcher-notification-date {
+  font-size: 1.3cqh;
+  opacity: 0.85;
+}
+
+.launcher-news-item .launcher-notification-message {
+  -webkit-line-clamp: 1;
+}
+
+.launcher-news-banner {
+  padding-top: 6.2cqh;
+}
+
+.launcher-news-banner-content {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.launcher-news-banner-title {
+  font-size: min(4.1cqh, 2.3cqw);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 780px), (max-height: 560px) {
+  .launcher-notifications-panel.is-news-tab .launcher-notifications-body {
+    grid-template-columns: 1fr;
+  }
+
+  .launcher-notifications-panel.is-news-tab .launcher-notifications-list {
+    padding-top: 5.6cqh;
+  }
+
+  .launcher-news-item .launcher-notification-meta {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+  }
+
+  .launcher-news-item .launcher-notification-title {
+    flex: 1 1 auto;
+  }
+
+  .launcher-news-banner {
+    min-height: 15cqh;
+    padding-top: 2.2cqh;
+  }
+
+  .launcher-news-banner-title {
+    font-size: min(3.3cqh, 3cqw);
   }
 }
