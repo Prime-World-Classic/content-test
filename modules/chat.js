@@ -1163,6 +1163,14 @@ export class Chat {
         { id: 'friendRemoveText', style: 'chat-player-menu-nickname' },
         DOM({ tag: 'span' }, String(data.nickname || '')),
       );
+      nicknameLine.tabIndex = 0;
+      const updateNicknameOverflow = () => {
+        const overflow = Math.max(0, nicknameLine.firstChild.offsetWidth - nicknameLine.clientWidth);
+        nicknameLine.style.setProperty('--nickname-scroll-distance', `${overflow}px`);
+        nicknameLine.classList.toggle('chat-player-menu-nickname--overflowing', overflow > 1);
+      };
+      nicknameLine.addEventListener('mouseenter', updateNicknameOverflow);
+      nicknameLine.addEventListener('focus', updateNicknameOverflow);
 
       body.append(
         modalTitle,
@@ -1215,6 +1223,7 @@ export class Chat {
       );
 
       Splash.show(DOM({ style: 'chat-player-menu' }, body));
+      requestAnimationFrame(updateNicknameOverflow);
       return false;
     });
 

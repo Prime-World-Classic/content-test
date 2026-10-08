@@ -1932,6 +1932,15 @@ body {
   z-index: 130;
 }
 
+/* Keep hero navigation reachable above the build backdrop. */
+body:has(#wbuild) .castle-bottom-content-container {
+  z-index: 101;
+}
+
+body:has(#wbuild) .castle-bottom-content {
+  pointer-events: auto;
+}
+
 .castle-bottom-content-container::before {
   content: '';
   position: absolute;

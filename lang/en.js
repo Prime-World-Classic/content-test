@@ -25,6 +25,9 @@ export const en = {
     titleStarsGlory:
       '"Stars of Glory" — 1 star = MVP 100%\n(best/most valuable player among 10 players in a match)\nwith zero deaths.',
     ready: 'Ready!',
+    partyNotReady: 'Not ready',
+    partyAddPlayer: 'Add',
+    partyHeroListError: 'Failed to load the hero list',
     ready2: "Confirm the hero's choice",
     mmModeMap: 'Mode map',
     mmSelectPositions: 'Select positions',

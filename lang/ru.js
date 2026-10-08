@@ -26,6 +26,9 @@ export const ru = {
     titleStarsGlory:
       '«Звёзды Славы» — 1 звезда = MVP 100%\n(ценный/лучший игрок из 10 игроков за матч)\nбез единой смерти.',
     ready: 'Готов!',
+    partyNotReady: 'Не готов',
+    partyAddPlayer: 'Добавить',
+    partyHeroListError: 'Не удалось загрузить список героев',
     ready2: 'Подтвердить выбор героя',
     mmModeMap: 'Карта режима',
     mmSelectPositions: 'Выбрать позиции',

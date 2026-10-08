@@ -6144,30 +6144,49 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   flex-direction: column;
   align-items: stretch;
   gap: 1.5cqh;
-  width: min(36cqh, 75vw);
+  width: 100%;
   min-width: 0;
 }
 
-.chat-player-menu .splash-content-button {
+.splash-content--titled .chat-player-menu > .splash-content-button {
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
+  margin: 0 auto;
   padding: 0 1cqh;
   text-align: center;
 }
 
-.chat-player-menu-nickname {
+#friendRemoveText.chat-player-menu-nickname {
+  margin: 0.6cqh 0;
+  min-width: 0;
   max-width: 100%;
   overflow-x: auto;
   white-space: nowrap;
   text-align: center;
+  font: 2cqh / 1.4 'DejaVuSans', sans-serif;
 }
 
 .chat-player-menu-nickname > span {
   display: inline-block;
+  width: max-content;
   min-width: 100%;
+}
+
+.chat-player-menu-nickname--overflowing {
+  text-align: left !important;
+}
+
+.chat-player-menu-nickname--overflowing:is(:hover, :focus) > span {
+  animation: mm-nickname-pan 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-player-menu-nickname--overflowing:is(:hover, :focus) > span {
+    animation: none;
+  }
 }
 
 .wtop-hero-filter-slot {

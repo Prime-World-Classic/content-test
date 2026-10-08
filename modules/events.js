@@ -219,8 +219,18 @@ export class Events {
       playerElement.style.backgroundPosition = 'center, center';
       playerElement.style.backgroundSize = 'contain, contain';
 
+      // Плашка могла быть скрыта (рейтинг 0 при первой отрисовке) — показываем,
+      // когда герой выбран и рейтинг пришёл; без героя — скрываем.
       const rankContainer = playerElement.querySelector('.rank');
-      Rank.updateRankContainer(rankContainer, data.rating);
+      if (rankContainer) {
+        const rating = Number(data.rating) || 0;
+        if (Number(data.hero) > 0 && rating > 0) {
+          Rank.updateRankContainer(rankContainer, rating);
+          rankContainer.style.display = 'flex';
+        } else {
+          rankContainer.style.display = 'none';
+        }
+      }
     }
   }
 
@@ -232,6 +242,9 @@ export class Events {
     let find = document.getElementById(`PP${data.id}`);
 
     if (find) {
+      // Готовность уже подтверждена сервером — кнопка больше не кликабельна
+      find.children[2].onclick = null;
+
       find.children[2].firstChild.innerText = Lang.text('ready');
 
       find.children[2].classList.replace('party-middle-item-not-ready', 'party-middle-item-ready');
