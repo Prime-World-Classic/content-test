@@ -377,6 +377,7 @@ export const en = {
     TALENT_ANOMALY_MISMATCH_CLIENT: 'This talent is not available for your client.',
     TALENT_ANOMALY_UNKNOWN_ACTION: 'Unknown talent action.',
     smartcastDescription: 'Right-click a talent in this bar to enable/disable smartcast (use skill without confirmation)',
+    buildActiveFilterTooltip: 'Active talents',
     stealBuild: 'Steal build?',
     overwriteBuild: 'Overwrite current build?',
     talents: 'Talents',
@@ -1279,6 +1280,9 @@ export const en = {
     banana_palm_doct: 'Topiary Tower',
     coconut_palm_ad: 'Coconut Palm',
     coconut_palm_doct: 'Topiary Pillar',
+    easel_ad: 'Scroll Workshop',
+    easel_doct: 'Scroll Workshop',
+    easelComingSoon: 'Scroll Workshop: the mini-game is coming soon',
 
     //Герои
     hero_1_name: 'Duelist',

@@ -381,6 +381,7 @@ export const ru = {
     TALENT_ANOMALY_UNKNOWN_ACTION: 'Неизвестное действие с талантом.',
     smartcastDescription:
       'Нажмите правой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст (применение навыка без подтверждения)',
+    buildActiveFilterTooltip: 'Активные таланты',
     stealBuild: 'Украсть билд?',
     overwriteBuild: 'Перезаписать текущий билд?',
     talents: 'Таланты',
@@ -1286,6 +1287,9 @@ export const ru = {
     banana_palm_doct: 'Топиарная башня',
     coconut_palm_ad: 'Кокосовая пальма',
     coconut_palm_doct: 'Топиарный столб',
+    easel_ad: 'Мастерская свитков',
+    easel_doct: 'Мастерская свитков',
+    easelComingSoon: 'Мастерская свитков: мини-игра скоро появится',
 
     //Герои
     hero_1_name: 'Дуэлянт',

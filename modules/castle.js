@@ -18,6 +18,7 @@ import { PreloadImages } from './preloadImages.js';
 import { DOM } from './dom.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
+import { EaselCastleFx } from './easel/easelCastleFx.js';
 
 export class Castle {
   static canvas;
@@ -49,8 +50,9 @@ export class Castle {
   static RENDER_LAYER_LAUNCHER = 0;
   static RENDER_LAYER_GAME = 1;
   static RENDER_LAYER_PLAYER = 2;
+  static RENDER_LAYER_EASEL = 3; // открыта мини-игра «Мастерская свитков»
 
-  static render = [true, true, true];
+  static render = [true, true, true, true];
 
   static MUSIC_LAYER_PLAYER = 0;
   static MUSIC_LAYER_GAME = 1;
@@ -233,6 +235,9 @@ export class Castle {
     'deco_30',
     'deco_31',
     'deco_32',
+
+    // Мини-игра «Мастерская свитков» (Easel из PW: Buildings/A|B/MiniGame)
+    'easel',
   ];
 
   static defaultPlacedBuildings = [
@@ -432,6 +437,7 @@ export class Castle {
     ['figured_reed_ad', 'figured_reed_doct'],
     ['banana_palm_ad', 'banana_palm_doct'],
     ['coconut_palm_ad', 'coconut_palm_doct'],
+    ['easel_ad', 'easel_doct'],
   ];
 
   static filter = RegExp('', '');
@@ -1321,10 +1327,27 @@ export class Castle {
       console.error('Fatal error getting index count (' + meshName + ')');
     }
 
+    // локальные границы меша — для частичного обновления карты теней (EaselCastleFx.updateShadow)
+    let posOffset = 0;
+    for (let attribute of attributes) {
+      if (attribute.name === 'vertPosition') break;
+      posOffset += attribute.count * attribute.sizeElem;
+    }
+    let bboxMin = [Infinity, Infinity, Infinity];
+    let bboxMax = [-Infinity, -Infinity, -Infinity];
+    for (let i = posOffset / 4; i + 2 < meshFloat.length; i += vertStride / 4) {
+      for (let k = 0; k < 3; ++k) {
+        bboxMin[k] = Math.min(bboxMin[k], meshFloat[i + k]);
+        bboxMax[k] = Math.max(bboxMax[k], meshFloat[i + k]);
+      }
+    }
+
     sceneObjectsContainer[objectId].meshData = {
       vertices: vertices,
       vertStride: vertStride,
       indexCount: meshFloat.length / (vertStride / 4),
+      bboxMin: bboxMin,
+      bboxMax: bboxMax,
     };
 
     // Add up first vertex as base offset
@@ -1427,6 +1450,11 @@ export class Castle {
       });
     }
 
+    // анимация капель «Мастерской свитков» (onIdleEffect PW)
+    if (buildingsToDraw.some((b) => b.name === 'easel')) {
+      EaselCastleFx.update(Castle.gl, Castle.sceneBuildings.easel, Castle.currentTime);
+    }
+
     Castle.updateMainCam();
 
     let outlinedBuilding = -1;
@@ -1486,6 +1514,11 @@ export class Castle {
         }
       }
       Castle.isStaticSMCached = true;
+    }
+
+    // тень анимированных капель «Мастерской свитков»: перерисовка участка карты теней
+    if (Castle.isSMEnabled && Castle.isStaticSMCached && buildingsToDraw.some((b) => b.name === 'easel')) {
+      EaselCastleFx.updateShadow(Castle, buildingsToDraw);
     }
 
     Castle.gl.bindFramebuffer(Castle.gl.FRAMEBUFFER, null);

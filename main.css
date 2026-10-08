@@ -1615,7 +1615,9 @@ input::placeholder {
 }
 
 .build-active-bar-hint {
-  width: 100cqw;
+  width: 100%;
+  left: 0;
+  box-sizing: border-box;
   font-size: 1.5cqmin;
   font-family: 'DejaVuSans', sans-serif;
   color: rgb(255 255 255 / 50%);
@@ -2073,7 +2075,6 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 }
 
 .build-talent-item-container .build-talent-item[data-active='1']:after,
-.build-rarity-other:after,
 .build-hero-grid-item .build-talent-item[data-active='1']:after {
   content: '';
   position: absolute;
@@ -2090,6 +2091,25 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .build-rarity-other:after {
   content: none;
+}
+
+.build-rarity > [data-filter-kind='rarity'] {
+  position: relative;
+}
+
+.build-rarity > [data-filter-kind='rarity']::before {
+  content: '';
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.28), transparent 72%);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  pointer-events: none;
+}
+
+.build-rarity > [data-filter-kind='rarity']:is(:hover, :focus-visible)::before {
+  opacity: 1;
 }
 
 .build-talent-view {
@@ -10473,6 +10493,136 @@ body:has(#wcastle-call)::before {
 .castle-menu-slider::-moz-range-thumb:hover {
   transform: scale(1.08);
   filter: brightness(1.08);
+}
+
+/* Build filter/settings changes adapted to the TEST layout. */
+@media (min-aspect-ratio: 1/1) {
+  :is(#wbuild, #viewbuild) {
+    --build-stat-text-size: 1.6cqh;
+    --build-top-edge-height: 2.8cqh;
+  }
+
+  :is(#wbuild, #viewbuild)::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: var(--build-top-edge-height);
+    border-radius: inherit;
+    background: linear-gradient(to bottom, #166f8d, #0e6993 15%, #06507b 42%, #0b3542 76%, transparent);
+    pointer-events: none;
+  }
+
+  :is(#wbuild, #viewbuild) .build-hero-stats-highlight-count-badge {
+    background: radial-gradient(85% 46% at 50% 0%, rgba(235, 255, 247, 0.32), transparent 78%), rgba(4, 32, 42, 0.82);
+  }
+
+  :is(#wbuild, #viewbuild) .build-settings-panel {
+    left: auto;
+    right: 2cqh;
+    top: 8cqh;
+    width: min(58cqh, calc(100% - 4cqh));
+    min-height: 72cqh;
+    gap: 0.3cqh;
+  }
+
+  :is(#wbuild, #viewbuild) .build-settings-title {
+    color: #e6e1ca;
+    font-size: 2.2cqh;
+    line-height: 1.3;
+    text-shadow: 0.06cqh 0 #102f36, -0.06cqh 0 #102f36, 0 0.06cqh #102f36, 0 -0.06cqh #102f36, 0 0 0.2cqh rgba(0, 0, 0, 0.4);
+    letter-spacing: 0;
+  }
+
+  :is(#wbuild, #viewbuild) .build-settings-panel :is(.build-settings-row-label, .build-settings-row-value, .build-settings-hl-line-label) {
+    color: #fff;
+    font-size: calc(var(--build-stat-text-size) * 0.95);
+    line-height: 1.3;
+    text-shadow: 0.1cqh 0 #000, -0.1cqh 0 #000, 0 0.1cqh #000, 0 -0.1cqh #000, 0.07cqh 0.07cqh #000, -0.07cqh 0.07cqh #000, 0.07cqh -0.07cqh #000, -0.07cqh -0.07cqh #000;
+    letter-spacing: 0;
+  }
+
+  :is(#wbuild, #viewbuild) .build-rarity {
+    gap: 1.2cqw;
+  }
+
+  :is(#wbuild, #viewbuild) .build-rarity > [data-filter-kind] {
+    position: relative;
+    margin-inline: 0.35cqw;
+  }
+
+  :is(#wbuild, #viewbuild) .build-rarity > [data-filter-kind]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    inset: auto;
+    height: auto;
+    top: calc(100% + 0.5vh);
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: min(42vw, 52vh);
+    padding: 0.95vh 1.1vh;
+    border: 0.16vh solid rgba(90, 133, 130, 0.62);
+    border-radius: 0.9vh;
+    background: rgba(14, 31, 33, 0.85);
+    color: rgba(255, 255, 255, 0.88);
+    font: 1.55vh / 1.28 'DejaVuSans', sans-serif;
+    white-space: pre;
+    text-align: center;
+    box-shadow: inset 0 0 0.42vh rgba(138, 194, 188, 0.15), 0 0.42vh 1.15vh rgba(0, 0, 0, 0.48);
+    pointer-events: none;
+    z-index: 2147483647;
+  }
+
+  :is(#wbuild, #viewbuild) .build-rarity > [data-filter-kind]:hover {
+    z-index: 90;
+  }
+
+  :is(#wbuild, #viewbuild) .build-rarity:has(> [data-filter-kind]:hover) {
+    z-index: 100;
+  }
+
+  :is(#wbuild, #viewbuild) .build-active-bar-hint::before,
+  :is(#wbuild, #viewbuild) .build-active-bar-hint::after {
+    content: '';
+    position: absolute;
+    top: -1.4cqh;
+    width: 2.8cqh;
+    height: 3.6cqh;
+    background: url('img/build/curl-reference.jpg') center / contain no-repeat;
+    mix-blend-mode: screen;
+    filter: brightness(1.5);
+    pointer-events: none;
+  }
+
+  :is(#wbuild, #viewbuild) .build-active-bar-hint::before {
+    left: -1.4cqh;
+    transform: scaleY(-1);
+  }
+
+  :is(#wbuild, #viewbuild) .build-active-bar-hint::after {
+    right: -1.4cqh;
+    transform: scale(-1, -1);
+  }
+
+  :is(#wbuild, #viewbuild) .build-hero-stats-item {
+    position: relative;
+    isolation: isolate;
+  }
+
+  :is(#wbuild, #viewbuild) .build-hero-stats-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, rgba(11, 122, 174, 0.72) 12%, rgba(11, 122, 174, 0.3) 26%, transparent 40%, transparent 60%, rgba(11, 122, 174, 0.3) 74%, rgba(11, 122, 174, 0.72) 88%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    opacity: 0;
+  }
+
+  :is(#wbuild, #viewbuild) .build-hero-stats-item:is(:hover, .highlight, [data-active='1'])::before {
+    opacity: 1;
+  }
 }
 
 #viewbuild {
