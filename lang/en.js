@@ -382,7 +382,6 @@ export const en = {
     TALENT_ANOMALY_MISMATCH_CLIENT: 'This talent is not available for your client.',
     TALENT_ANOMALY_UNKNOWN_ACTION: 'Unknown talent action.',
     smartcastDescription: 'Right-click a talent in this bar to enable/disable smartcast (use skill without confirmation)',
-    buildActiveFilterTooltip: 'Active talents',
     stealBuild: 'Steal build?',
     overwriteBuild: 'Overwrite current build?',
     talents: 'Talents',

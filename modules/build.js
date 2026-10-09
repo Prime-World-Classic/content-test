@@ -713,7 +713,6 @@ export class Build {
 
     Build.ruleSortInventory = new Object();
     Build.scheduleAttachBuildSettings();
-    Build.syncRarityFilterVisuals();
     return true;
   }
 
@@ -1102,8 +1101,6 @@ export class Build {
     button.type = 'button';
     button.textContent = '';
     Build.setUiTooltip(button, Lang.text('buildSettingsTitle'));
-    button.setAttribute('aria-label', Lang.text('buildSettingsTitle'));
-    button.setAttribute('aria-expanded', 'false');
     return button;
   }
 
@@ -1589,7 +1586,6 @@ export class Build {
     if (!panel) return;
     const shouldOpen = typeof force === 'boolean' ? force : panel.style.display === 'none';
     panel.style.display = shouldOpen ? 'flex' : 'none';
-    Build.buildSettingsButton?.setAttribute('aria-expanded', String(shouldOpen));
     if (shouldOpen) {
       try {
         Build.refreshBuildHighlightSettingsPanel?.();
@@ -7190,108 +7186,173 @@ export class Build {
     }
   }
 
-  static syncRarityFilterVisuals() {
-    const rules = Build.ruleSortInventory || {};
-    for (const button of Build.rarityView?.querySelectorAll('[data-filter-kind]') || []) {
-      const isActiveFilter = button.dataset.filterKind === 'active';
-      const enabled = isActiveFilter
-        ? !rules.active || rules.active.includes('1')
-        : !rules.rarity || rules.rarity.includes(button.dataset.rarityId);
-      button.dataset.active = enabled ? '1' : '0';
-      button.setAttribute('aria-checked', String(enabled));
-      const replacement = !isActiveFilter && ['2', '3'].includes(button.dataset.rarityId)
-        ? `build/filter-${button.dataset.rarityId === '3' ? 'orange' : 'purple'}`
-        : null;
-      button.style.backgroundImage = `url("content/img/${replacement || button.dataset.filterImage + (enabled ? 'Show' : 'NoShow')}.png")`;
-      button.style.backgroundColor = replacement && !enabled ? '#777' : 'transparent';
-      button.style.backgroundBlendMode = replacement && !enabled ? 'luminosity' : 'normal';
-      button.style.backgroundSize = isActiveFilter ? '92%' : 'cover';
-      button.style.filter = isActiveFilter && enabled
-        ? 'brightness(1.04) saturate(2.02)'
-        : 'none';
-    }
-  }
-
   static rarity() {
-    const qualities = [
-      { id: '4', name: Lang.text('titleTheRed'), image: 'red' },
-      { id: '3', name: Lang.text('titleTheOrange'), image: 'orange' },
-      { id: '2', name: Lang.text('titleThePurple'), image: 'purple' },
-      { id: '1', name: Lang.text('titleTheBlue'), image: 'blue' },
+    const element = [
+      { id: '4', name: Lang.text('titleTheRed'), color: '170,20,44' },
+      { id: '3', name: Lang.text('titleTheOrange'), color: '237,129,5' },
+      { id: '2', name: Lang.text('titleThePurple'), color: '205,0,205' },
+      { id: '1', name: Lang.text('titleTheBlue'), color: '17,105,237' },
     ];
-    const allQualities = qualities.map(item => item.id);
-    const updateFilters = () => {
-      Build._forceShowTalentIds = null;
-      Build._forceShowOnlySetTalentIds = null;
-      Build._forceShowOnlyTalentIds = null;
-      Build.sortInventory();
+    const rarityImageBaseById = {
+      4: 'red',
+      3: 'orange',
+      2: 'purple',
+      1: 'blue',
     };
-    const prepareButton = (button, image, kind) => {
-      button.dataset.filterKind = kind;
-      button.dataset.filterImage = image;
+    const applyActiveFilterVisualByState = (button, isActive) => {
+      if (!button) return;
+      const suffix = isActive ? 'Show' : 'NoShow';
+      button.style.backgroundImage = `url("content/img/active${suffix}.png")`;
       button.style.backgroundColor = 'transparent';
       button.style.backgroundRepeat = 'no-repeat';
       button.style.backgroundPosition = 'center';
       button.style.backgroundSize = 'cover';
-      button.style.border = 'none';
-      button.style.boxSizing = 'border-box';
-      button.setAttribute('role', 'checkbox');
-      button.tabIndex = 0;
-      button.addEventListener('keydown', event => {
-        if (event.key !== 'Enter' && event.key !== ' ') return;
-        event.preventDefault();
-        button.click();
+      button.style.filter = isActive
+        ? 'brightness(1.04) saturate(2.02) drop-shadow(0 0 0.45cqh rgba(255,255,255,0.35))'
+        : 'none';
+    };
+    const applyRarityVisualByState = (button, rarityId, isActive) => {
+      const base = rarityImageBaseById[Number(rarityId)];
+      if (!base || !button) return;
+      const suffix = isActive ? 'Show' : 'NoShow';
+      button.style.backgroundImage = `url("content/img/${base}${suffix}.png")`;
+      button.style.backgroundColor = 'transparent';
+      button.style.backgroundRepeat = 'no-repeat';
+      button.style.backgroundPosition = 'center';
+      button.style.backgroundSize = 'cover';
+    };
+
+    let a = document.createElement('div');
+    a.title = Lang.text('titleActiveTalents');
+
+    a.classList.add('build-rarity-other');
+
+    a.innerText = '';
+
+    a.dataset.active = 0;
+    applyActiveFilterVisualByState(a, false);
+
+    a.addEventListener('click', (e) => {
+      Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
+        id: 'ui-small-click',
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
       });
-      button.addEventListener('click', () => {
+      if (a.dataset.active == 1) {
+        Build.removeSortInventory('active', '1');
+
+        Build.sortInventory();
+
+        a.dataset.active = 0;
+        applyActiveFilterVisualByState(a, false);
+      } else {
+        Build.setSortInventory('active', '1');
+
+        Build.sortInventory();
+
+        a.dataset.active = 1;
+        applyActiveFilterVisualByState(a, true);
+      }
+    });
+
+    a.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
+        id: 'ui-small-click',
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+      });
+
+      for (let itemEl of element) {
+        Build.removeSortInventory('rarity', itemEl.id);
+      }
+
+      for (let l = 0; l < a.parentElement.childNodes.length; l++) {
+        const node = a.parentElement.childNodes[l];
+        node.dataset.active = 0;
+        node.style.border = 'none';
+        if (node !== a) {
+          applyRarityVisualByState(node, node?.dataset?.rarityId, false);
+        }
+      }
+      applyActiveFilterVisualByState(a, false);
+
+      Build.setSortInventory('active', '1');
+
+      Build.sortInventory();
+
+      a.dataset.active = 1;
+      applyActiveFilterVisualByState(a, true);
+    });
+
+    Build.rarityView.append(a);
+
+    for (let item of element) {
+      let button = document.createElement('div');
+
+      button.dataset.active = 0;
+
+      button.style.boxSizing = 'border-box';
+      button.dataset.rarityId = item.id;
+
+      button.addEventListener('click', (e) => {
         Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, {
           id: 'ui-small-click',
           volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
         });
-      });
-    };
+        if (button.dataset.active == 1) {
+          button.style.border = 'none';
 
-    const active = document.createElement('div');
-    active.classList.add('build-rarity-other');
-    prepareButton(active, 'active', 'active');
-    Build.setUiTooltip(active, Lang.text('buildActiveFilterTooltip'));
-    active.setAttribute('aria-label', Lang.text('buildActiveFilterTooltip'));
-    active.addEventListener('click', () => {
-      if (active.dataset.active === '1') Build.ruleSortInventory.active = ['0'];
-      else delete Build.ruleSortInventory.active;
-      updateFilters();
-    });
-    active.addEventListener('contextmenu', event => {
-      event.preventDefault();
-      delete Build.ruleSortInventory.rarity;
-      Build.ruleSortInventory.active = ['1'];
-      updateFilters();
-    });
-    Build.rarityView.append(active);
+          Build.removeSortInventory('rarity', item.id);
 
-    for (const item of qualities) {
-      const button = document.createElement('div');
-      button.dataset.rarityId = item.id;
-      prepareButton(button, item.image, 'rarity');
-      Build.setUiTooltip(button, Lang.text('talentQualityTitle').replace('{name}', item.name));
-      button.setAttribute('aria-label', Lang.text('talentQualityTitle').replace('{name}', item.name));
-      button.addEventListener('click', () => {
-        const selected = new Set(Build.ruleSortInventory.rarity ?? allQualities);
-        if (selected.has(item.id)) selected.delete(item.id);
-        else selected.add(item.id);
-        // An explicit empty selection hides all qualities; missing means all.
-        if (selected.size === allQualities.length) delete Build.ruleSortInventory.rarity;
-        else Build.ruleSortInventory.rarity = [...selected];
-        updateFilters();
+          Build.sortInventory();
+
+          button.dataset.active = 0;
+          applyRarityVisualByState(button, item.id, false);
+        } else {
+          button.style.border = 'none';
+
+          Build.setSortInventory('rarity', item.id);
+
+          Build.sortInventory();
+
+          button.dataset.active = 1;
+          applyRarityVisualByState(button, item.id, true);
+        }
       });
-      button.addEventListener('contextmenu', event => {
-        event.preventDefault();
-        delete Build.ruleSortInventory.active;
-        Build.ruleSortInventory.rarity = [item.id];
-        updateFilters();
+
+      button.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+
+        for (let itemEl of element) {
+          Build.removeSortInventory('rarity', itemEl.id);
+        }
+        Build.removeSortInventory('active', '1');
+
+        for (let l = 0; l < button.parentElement.childNodes.length; l++) {
+          const node = button.parentElement.childNodes[l];
+          node.dataset.active = 0;
+          node.style.border = 'none';
+          if (node !== a) {
+            applyRarityVisualByState(node, node?.dataset?.rarityId, false);
+          }
+        }
+        applyActiveFilterVisualByState(a, false);
+
+        Build.setSortInventory('rarity', item.id);
+
+        Build.sortInventory();
+
+        button.dataset.active = 1;
+
+        button.style.border = 'none';
+        applyRarityVisualByState(button, item.id, true);
       });
+
+      applyRarityVisualByState(button, item.id, false);
+
+      button.title = Lang.text('talentQualityTitle').replace('{name}', item.name);
+
       Build.rarityView.append(button);
     }
-    Build.syncRarityFilterVisuals();
   }
 
   static async removeTalentFromActive(activeId) {
@@ -7770,7 +7831,6 @@ export class Build {
   }
 
   static sortInventory() {
-    Build.syncRarityFilterVisuals();
     Build.refreshForcedSetOnlyTalentIds();
     for (let itemContainer of Build.inventoryView.querySelectorAll('.build-talent-item-container')) {
       Build.applySorting(itemContainer);
@@ -8188,7 +8248,6 @@ export class Build {
 
   static cancelSortInventory() {
     Build.ruleSortInventory = new Object();
-    Build.syncRarityFilterVisuals();
 
     for (let item of Build.inventoryView.children) {
       item.style.display = 'block';

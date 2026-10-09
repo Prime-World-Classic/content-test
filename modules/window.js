@@ -207,6 +207,26 @@ export class Window {
         (screen.width - 1280) / 2 +
         ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
     );
+    Window.allowExternalLinks(ParentEvent.children);
+  }
+  // Ссылки со страницы провайдера (соглашение об обработке ПДн и т.п.) должны
+  // уходить в системный браузер, а не открываться ещё одним окном лончера:
+  // new-win-policy перехватывает target="_blank"/window.open внутри попапа.
+  // Страница при этом сама отменяет переход (иначе форма регистрации
+  // заменилась бы текстом соглашения), поэтому вызывается window.open,
+  // который и попадает сюда.
+  static allowExternalLinks(win) {
+    if (!win || typeof nw === 'undefined' || !nw?.Window) return;
+    try {
+      const nwWin = nw.Window.get(win);
+      if (!nwWin) return;
+      nwWin.on('new-win-policy', (frame, url, policy) => {
+        policy.ignore();
+        if (/^https?:\/\//i.test(`${url || ''}`)) {
+          App.OpenExternalLink(`${url}`);
+        }
+      });
+    } catch {}
   }
   static async steamauth() {
     return DOM(

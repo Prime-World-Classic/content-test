@@ -386,7 +386,6 @@ export const ru = {
     TALENT_ANOMALY_UNKNOWN_ACTION: 'Неизвестное действие с талантом.',
     smartcastDescription:
       'Нажмите правой кнопкой мыши на талант в этой полосе чтобы включить/выключить смарткаст (применение навыка без подтверждения)',
-    buildActiveFilterTooltip: 'Активные таланты',
     stealBuild: 'Украсть билд?',
     overwriteBuild: 'Перезаписать текущий билд?',
     talents: 'Таланты',
