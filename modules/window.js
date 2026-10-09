@@ -202,10 +202,18 @@ export class Window {
   // query-параметр ?mode=register: вход нового игрока аккаунт НЕ создаёт
   // (бэкенд отвечает «Аккаунт не зарегистрирован»), регистрация — отдельный
   // путь, который заканчивается формой лончера (View.providerRegistration).
+  // enabled=false — провайдер скрыт в интерфейсе (кнопки входа, регистрации и
+  // привязки), сервис на бэкенде остаётся поднятым.
   static authProviders = {
-    steam: { popup: '/', register: '/register', label: 'providerSteam' },
-    yandex: { popup: '/yandex/', register: '/yandex/register', label: 'providerYandex' },
+    steam: { popup: '/', register: '/register', label: 'providerSteam', enabled: true },
+    yandex: { popup: '/yandex/', register: '/yandex/register', label: 'providerYandex', enabled: false },
   };
+  static authProviderEnabled(provider) {
+    return Window.authProviders[provider]?.enabled === true;
+  }
+  static authEnabledProviders() {
+    return Object.keys(Window.authProviders).filter((provider) => Window.authProviderEnabled(provider));
+  }
   static authPopupPath(provider, mode) {
     const base = Window.authProviders[provider]?.popup || '/';
     // Режим передаётся ЯВНО и на входе (?mode=login): бэкенд различает новый
@@ -2232,17 +2240,21 @@ export class Window {
         },
         Lang.text('steamConnect'),
       ),
-      DOM(
-        {
-          domaudio: domAudioPresets.bigButton,
-          style: 'castle-menu-item-button',
-          event: [
-            'click',
-            () => Window.authPopup(`/yandex/connect/${App.storage.data.token}`, 'YandexAuth'),
-          ],
-        },
-        Lang.text('yandexConnect'),
-      ),
+      ...(Window.authProviderEnabled('yandex')
+        ? [
+            DOM(
+              {
+                domaudio: domAudioPresets.bigButton,
+                style: 'castle-menu-item-button',
+                event: [
+                  'click',
+                  () => Window.authPopup(`/yandex/connect/${App.storage.data.token}`, 'YandexAuth'),
+                ],
+              },
+              Lang.text('yandexConnect'),
+            ),
+          ]
+        : []),
       DOM({ style: 'wcastle-menu__exit-separator' }),
       DOM(
         {
