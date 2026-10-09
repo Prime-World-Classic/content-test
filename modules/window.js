@@ -197,14 +197,13 @@ export class Window {
   // (ParentEvent). Base один на всех провайдеров — раньше URL был
   // захардкожен в трёх местах.
   static authBase = 'https://api.zone-play.com:2087';
-  // ui=launcher — маркер «открыватель понимает openExternal»: страница
-  // провайдера (регистрация через Яндекс) по нему решает, ссылку на соглашение
-  // отдавать как postMessage лончеру (откроется системный браузер) или как
-  // обычную target=_blank (старый лончер/обычный браузер — окно приложения).
+  // Язык серверных сообщений (ошибки входа/привязки) передаётся провайдеру:
+  // у попапа своя цепочка редиректов, Accept-Language там системный, а не
+  // выбранный в лончере.
   static authPopup(path, name) {
     const sep = path.includes('?') ? '&' : '?';
     ParentEvent.children = window.open(
-      `${Window.authBase}${path}${sep}ui=launcher`,
+      `${Window.authBase}${path}${sep}lang=${encodeURIComponent(Lang.target)}`,
       name,
       'width=1280, height=720, top=' +
         (screen.height - 720) / 2 +
@@ -231,8 +230,9 @@ export class Window {
       ),
     );
   }
-  // Яндекс-вход: тот же контракт postMessage, но регистрация — не автоматом,
-  // а HTML-страницей бэкенда (ник + фракция + согласие на обработку ПДн).
+  // Яндекс-вход: тот же контракт postMessage, что у Steam, но регистрация — не
+  // автоматом: бэкенд присылает билет {action:'register'}, а форму (ник,
+  // фракция, согласие на обработку ПДн) рисует лончер — View.yandexRegistration.
   static async yandexauth() {
     return DOM(
       { id: 'wyandexauth' },

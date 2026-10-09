@@ -2722,6 +2722,175 @@ export class App {
     View.show('castle');
   }
 
+  // Регистрация через Яндекс: страницу рисует лончер (эталон — steam.js:
+  // провайдер отдаёт только postMessage). Билет приходит из попапа
+  // (ParentEvent.register) и живёт в App.yandexPending: сервер сжигает его при
+  // каждой попытке, а при ошибке валидации возвращает НОВЫЙ — повтор после
+  // собственной ошибки не должен быть «ссылка устарела».
+  static yandexPending = null;
+
+  static showYandexRegistration(message) {
+    const ticket = `${(message && message.ticket) || ''}`.trim();
+
+    if (!ticket) {
+      App.yandexPending = null;
+      App.error(Lang.text('yandexRegistrationExpired'));
+      return View.show('authorization');
+    }
+
+    App.yandexPending = {
+      ticket: ticket,
+      agreementUrl: `${(message && message.agreementUrl) || ''}`.trim(),
+      login: '',
+      fraction: 0,
+      consent: false,
+      error: '',
+    };
+
+    View.show('yandexRegistration');
+  }
+
+  // POST JSON на хост авторизации (Window.authBase). Запрос идёт нативным
+  // http/https: окно лончера лежит на своём origin, CORS для чужого хоста не
+  // работает (тот же путь, что у запросов уведомлений).
+  static async authJsonRequest(path, body) {
+    const url = `${Window.authBase}${path}`;
+    const payload = JSON.stringify(body || {});
+
+    if (NativeAPI.status && (NativeAPI.https || NativeAPI.http)) {
+      return await App.authNativeJsonRequest(url, payload);
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        signal: controller.signal,
+      });
+
+      return await response.json();
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  static authNativeJsonRequest(url, payload) {
+    return new Promise((resolve, reject) => {
+      let parsed;
+
+      try {
+        parsed = new URL(url);
+      } catch {
+        reject(new Error('Auth URL error'));
+        return;
+      }
+
+      // http: — только для локального стенда (dev); боевой authBase — https.
+      const lib = parsed.protocol === 'http:' ? NativeAPI.http : NativeAPI.https;
+
+      const request = lib.request(
+        {
+          method: 'POST',
+          hostname: parsed.hostname,
+          port: parsed.port || (parsed.protocol === 'http:' ? 80 : 443),
+          path: `${parsed.pathname}${parsed.search}`,
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(payload),
+          },
+          timeout: 15000,
+        },
+        (response) => {
+          let text = '';
+
+          response.setEncoding('utf8');
+          response.on('data', (chunk) => (text += chunk));
+          response.on('end', () => {
+            let json = null;
+
+            try {
+              json = JSON.parse(text || '{}');
+            } catch {
+              reject(new Error(`Auth HTTP ${response.statusCode}: ${parsed.pathname}`));
+              return;
+            }
+
+            resolve(json);
+          });
+        },
+      );
+
+      request.on('timeout', () => request.destroy(new Error('Auth request timeout')));
+      request.on('error', (error) => reject(new Error(error?.message || 'Auth network error')));
+      request.write(payload);
+      request.end();
+    });
+  }
+
+  // Шаг регистрации Яндекс-входа: ник + фракция + согласие. Ответ — JSON
+  // {ok,id,token,login,fraction} либо {ok:false,error,ticket}. Успех — тот же
+  // путь, что у App.registration (сессия, замок, уведомления).
+  static async registrationYandex(fraction, login, consent) {
+    let pending = App.yandexPending;
+
+    if (!pending || !pending.ticket) {
+      App.yandexPending = null;
+      App.error(Lang.text('yandexRegistrationExpired'));
+      return View.show('authorization');
+    }
+
+    let request;
+
+    try {
+      request = await App.authJsonRequest('/yandex/register', {
+        ticket: pending.ticket,
+        login: `${login.value || ''}`.trim(),
+        fraction: Number(fraction.value) || 0,
+        consent: consent.checked === true,
+      });
+    } catch (error) {
+      return App.error(error?.message || error);
+    }
+
+    if (!request || request.ok !== true) {
+      let error = `${(request && request.error) || Lang.text('yandexRegistrationFailed')}`;
+
+      // Билет уже сожжён: без нового повторять нельзя — отказ и на вход.
+      if (!request || !request.ticket) {
+        App.yandexPending = null;
+        App.error(error);
+        return View.show('authorization');
+      }
+
+      pending.ticket = `${request.ticket}`;
+      pending.login = `${login.value || ''}`;
+      pending.fraction = Number(fraction.value) || 0;
+      pending.consent = consent.checked === true;
+      pending.error = error;
+
+      return View.show('yandexRegistration');
+    }
+
+    App.yandexPending = null;
+
+    await App.storage.set({
+      id: request.id,
+      token: request.token,
+      login: request.login,
+      fraction: request.fraction,
+      launcherToken: request.launcherToken || '',
+      auditToken: request.auditToken || '',
+    });
+
+    App.notificationsAuthChanged();
+
+    View.show('castle');
+  }
+
   static async exit() {
     await App.storage.set({ id: 0, token: '', login: '', launcherToken: '', auditToken: '' });
 

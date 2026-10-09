@@ -1253,6 +1253,110 @@ export class View {
     );
   }
 
+  // Регистрация через Яндекс: поля как у View.registration(), но без пароля и
+  // инвайта — вместо них согласие на обработку персональных данных (ссылка на
+  // соглашение — адрес от бэкенда, открывается в системном браузере: окно
+  // лончера внешние страницы не показывает). Ввод и ошибка живут в
+  // App.yandexPending: форма перерисовывается после отказа сервера (с новым
+  // билетом в ответе).
+  static yandexRegistration() {
+    let pending = App.yandexPending || { agreementUrl: '', login: '', fraction: 0, consent: false, error: '' };
+
+    let fraction = DOM({
+      tag: 'button',
+      type: 'button',
+      value: `${pending.fraction || ''}`,
+      domaudio: domAudioPresets.defaultSelect,
+      style: ['registration-fraction-trigger', ...(pending.fraction ? ['registration-fraction-trigger--selected'] : [])],
+      event: ['click', () => Window.show('main', 'registrationFraction', fraction)],
+    }, Number(pending.fraction) === 1 ? Lang.text('adornia') : Number(pending.fraction) === 2 ? Lang.text('docts') : Lang.text('fraction'));
+
+    let consent = DOM({
+      tag: 'input',
+      type: 'checkbox',
+      checked: pending.consent === true,
+      domaudio: domAudioPresets.defaultInput,
+    });
+
+    let login = DOM({
+      tag: 'input',
+      domaudio: domAudioPresets.defaultInput,
+      placeholder: Lang.text('nickname'),
+      maxLength: 20,
+      autocomplete: 'off',
+      value: `${pending.login || ''}`,
+      event: [
+        'keyup',
+        async (event) => {
+          if (!App.isEnterKey(event)) return;
+          await App.registrationYandex(fraction, login, consent);
+        },
+      ],
+    });
+
+    let agreement = DOM({
+      tag: 'a',
+      style: 'yandex-registration-agreement',
+      href: `${pending.agreementUrl || ''}`,
+      target: '_blank',
+      rel: 'noopener',
+      event: ['click', (event) => NativeAPI.linkHandler(event)],
+    }, Lang.text('agreement'));
+
+    let consentLine = DOM(
+      { style: 'yandex-registration-consent' },
+      consent,
+      DOM({ tag: 'span' }, Lang.text('consentPre'), agreement, Lang.text('consentPost')),
+    );
+
+    return DOM(
+      { style: 'login_box' },
+      DOM(
+        { style: ['login-box-forma', 'login-box-forma--registration', 'login-box-forma--yandex-registration'] },
+
+        DOM(
+          { style: 'login-box-forma-inputs' },
+          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('yandexRegistration')),
+          DOM({ style: 'yandex-registration-intro' }, Lang.text('yandexRegistrationIntro')),
+          DOM({ style: 'yandex-registration-error' }, pending.error || ''),
+          fraction,
+          login,
+          DOM({ style: 'yandex-registration-hint' }, Lang.text('nicknameHint')),
+          consentLine,
+          DOM(
+            { style: 'login-box-forma-buttons' },
+            DOM(
+              {
+                domaudio: domAudioPresets.defaultButton,
+                style: 'login-box-forma-button',
+                event: ['click', () => App.registrationYandex(fraction, login, consent)],
+              },
+              Lang.text('registration1'),
+            ),
+            DOM(
+              {
+                domaudio: domAudioPresets.defaultButton,
+                style: 'login-box-forma-button',
+                event: ['click', () => View.show('authorization')],
+              },
+              Lang.text('back'),
+            ),
+          ),
+          DOM({ style: 'yandex-registration-exists' }, Lang.text('yandexRegistrationExists')),
+        ),
+        DOM(
+          { style: 'login-box-forma-right' },
+          DOM({
+            tag: 'img',
+            style: ['login-box-forma-logo', 'login-box-forma-brand'],
+            src: 'content/img/logo_classic.webp',
+          }),
+        ),
+      ),
+      DOM({ style: 'author' }, `Prime World: Classic v.${App.PW_VERSION}.${App.APP_VERSION}`),
+    );
+  }
+
   static progress() {
     let body = DOM({ style: 'progress' }, DOM({ style: 'animation1' }), DOM());
 

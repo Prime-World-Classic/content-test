@@ -63,24 +63,15 @@ export class ParentEvent {
     App.notify(body);
   }
 
-  // Страница провайдера (регистрация через Яндекс) просит открыть ссылку в
-  // системном браузере: попап — окно приложения, и обычная ссылка открыла бы
-  // соглашение ещё одним окном лончера. Хост — только наш: сообщение может
-  // прислать любая страница, открытая как попап.
-  static openExternal(body) {
-    const url = `${(body && body.url) || ''}`.trim();
-    let host = '';
-
-    try {
-      const parsed = new URL(url);
-      if (parsed.protocol !== 'https:') return;
-      host = parsed.hostname.toLowerCase();
-    } catch {
-      return;
+  // Страницы регистрации на бэкенде нет (эталон — steam.js: провайдер отдаёт
+  // только postMessage): новый Яндекс-id приходит как {action:'register'} с
+  // билетом и адресом соглашения об обработке ПДн. Форму (ник, фракция,
+  // согласие) рисует лончер, ответ — JSON на /yandex/register.
+  static async register(body) {
+    if (ParentEvent.children) {
+      ParentEvent.children.close();
     }
 
-    if (host !== 'zone-play.com' && !host.endsWith('.zone-play.com')) return;
-
-    App.OpenExternalLink(url);
+    App.showYandexRegistration(body);
   }
 }

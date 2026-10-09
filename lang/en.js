@@ -124,6 +124,17 @@ export const en = {
     yandexauthTitle: 'Login with Yandex',
     yandexauth:
       'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. Only the unique identifier is taken from your Yandex account.\n\nIf you want to log in to your current PW Classic account, go back to the sign in page first: connect your Yandex account from the account menu.',
+    // Форма регистрации через Яндекс — экран лончера (бэкенд отдаёт только
+    // билет), поэтому тексты здесь.
+    yandexRegistration: 'Prime World: Classic sign up',
+    yandexRegistrationIntro: 'Yandex account found. Pick a game name and choose a faction.',
+    nicknameHint: '2–20 characters: letters (latin/cyrillic), digits and spaces',
+    consentPre: 'I consent to the processing of my personal data in accordance with the ',
+    agreement: 'Personal Data Processing Agreement',
+    consentPost: '.',
+    yandexRegistrationExists: 'Already have an account? Go back to sign in and connect Yandex from the settings.',
+    yandexRegistrationExpired: 'This sign up link expired. Open Yandex sign in again',
+    yandexRegistrationFailed: 'Sign up failed, please try again',
     language: 'Language',
     LangTarg: 'Language changed',
     training: 'Training',
