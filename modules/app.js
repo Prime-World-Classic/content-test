@@ -30,6 +30,11 @@ export class App {
 
   static RVPN = 'ws://26.187.55.30:3737';
   static VPS = 'wss://pw-classic.ru';
+  // Резервный API-хост (тот же бэкенд на второй VPS, Let's Encrypt сертификат
+  // валиден). Гонка параллельная — он просто ещё один кандидат: если основной
+  // VPS молчит, побеждает он (проверено: wss://pw-classic-backup.ru
+  // открывается, wss://pw-classic.ru в этот момент — 1006 без ответа).
+  static VPS_BACKUP = 'wss://pw-classic-backup.ru';
   // ВАЖНО: прокси CF молча роняет WS-фреймы больше ~23 КБ (замер: 22 КБ
   // проходит, ≥24 КБ сброшен; после oversized-фрейма деградирует всё
   // соединение). Поэтому ВСЕ ответы лончеру должны быть < 23 КБ: чат-синк —
@@ -40,7 +45,7 @@ export class App {
   // не доходит; 17.9 КБ первым — OK, вторым — нет; задержки не помогают).
   // Прямой DOK:2096 и VPS (pw-classic.ru) — без ограничений. Повторно
   // включить, только если CF починит WS-прокси.
-  static hostList = [this.RVPN, this.VPS];
+  static hostList = [this.RVPN, this.VPS, this.VPS_BACKUP];
 
   // Бессмертное подключение: таймаут на кандидата растёт по мере провальных
   // раундов (потолок — конец списка); тупикового «конечного отказа» нет —
@@ -116,6 +121,7 @@ export class App {
   static async init(socket = null, host = null, latencyMs = 0) {
     // ws://26.187.55.30:3737 - Radmin VPN relay (DOK)
     // wss://pw-classic.ru - VPS
+    // wss://pw-classic-backup.ru - VPS2 (резерв)
     // wss://api2.zone-play.com:2096/api - Cloudflare edge (DOK)
     App.api = new Api(this.hostList, Events, { socket: socket, host: host, latencyMs: latencyMs });
 
