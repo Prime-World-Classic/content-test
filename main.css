@@ -819,17 +819,32 @@ input::placeholder {
 }
 
 .registration-consent input {
+  /* Галку рисует сам лончер: глобальное правило `input, select { appearance:
+     none }` (начало main.css) снимает нативный вид чекбокса, поэтому без
+     :checked-стиля отмеченное и не отмеченное состояние выглядели одинаково. */
+  appearance: none;
+  -webkit-appearance: none;
   flex: none;
-  width: 2.2vh;
-  height: 2.2vh;
+  width: 2.6vh;
+  height: 2.6vh;
   min-height: 0;
-  margin: 0.35vh 0 0;
+  margin: 0.15vh 0 0;
   padding: 0;
-  border: 0.14vh solid rgba(158, 155, 104, 0.9);
-  border-radius: 0.4vh;
-  background: rgba(6, 41, 56, 0.9);
+  border: 0;
+  border-radius: 50%;
+  background: url('icons/circle.webp') center / cover no-repeat;
   box-shadow: none;
   cursor: var(--cursor-pointer);
+}
+
+/* Пара иконок та же, что у чекбокса настроек (.castle-menu-item-checkbox):
+   пустой диск → диск с галкой. */
+.registration-consent input:checked {
+  background-image: url('icons/checkbox.webp');
+}
+
+.registration-consent input:hover {
+  filter: brightness(1.12);
 }
 
 .registration-agreement {
