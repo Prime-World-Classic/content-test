@@ -1114,6 +1114,14 @@ export class View {
               },
               Lang.text('authorizationSteam'),
             ),
+            DOM(
+              {
+                domaudio: domAudioPresets.bigButton,
+                style: ['login-box-forma-button', 'login-box-forma-button--yandex', 'yandexauth'],
+                event: ['click', () => Window.show('main', 'yandexauth')],
+              },
+              Lang.text('authorizationYandex'),
+            ),
           ),
         ),
       ),

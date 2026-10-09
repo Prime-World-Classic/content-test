@@ -71,6 +71,7 @@ export const en = {
     menu: 'Game Menu',
     account: 'Account',
     steamConnect: 'Connect Steam',
+    yandexConnect: 'Connect Yandex',
     nicknameChange: 'Change your nickname',
     sideChange: 'Choose a Faction',
     preferences: 'Settings',
@@ -119,6 +120,10 @@ export const en = {
     steamauthTitle: 'Login with Steam',
     steamauth:
       'By clicking Continue, you will register a new account! If you want to log in to your current PW Classic account, you must first link your Steam account from the settings menu.',
+    authorizationYandex: 'Login with Yandex',
+    yandexauthTitle: 'Login with Yandex',
+    yandexauth:
+      'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. Only the unique identifier is taken from your Yandex account.\n\nIf you want to log in to your current PW Classic account, go back to the sign in page first: connect your Yandex account from the account menu.',
     language: 'Language',
     LangTarg: 'Language changed',
     training: 'Training',

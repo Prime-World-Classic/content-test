@@ -23,7 +23,7 @@ import { keybindings } from './keybindings/keybindings.window.js';
 export class Window {
   static windows = {};
   static windowOrder = [];
-  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wsteamauth', 'wregistration-fraction']);
+  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wsteamauth', 'wyandexauth', 'wregistration-fraction']);
   static overlayWindowMethods = new Set(['menu', 'settings', 'advancedSettings', 'keybindings', 'accountPanel', 'support']);
   static async show(category, method, value, value2, value3) {
     if (!(method in Window)) {
@@ -192,6 +192,22 @@ export class Window {
   static anyOpen() {
     return Window.windowOrder.length > 0;
   }
+  // Окно входа через внешнего провайдера (Steam/Яндекс): бэкенд отдаёт
+  // редирект на провайдера, результат возвращается postMessage'ом opener'у
+  // (ParentEvent). Base один на всех провайдеров — раньше URL был
+  // захардкожен в трёх местах.
+  static authBase = 'https://api.zone-play.com:2087';
+  static authPopup(path, name) {
+    ParentEvent.children = window.open(
+      `${Window.authBase}${path}`,
+      name,
+      'width=1280, height=720, top=' +
+        (screen.height - 720) / 2 +
+        ', left=' +
+        (screen.width - 1280) / 2 +
+        ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
+    );
+  }
   static async steamauth() {
     return DOM(
       { id: 'wsteamauth' },
@@ -203,20 +219,27 @@ export class Window {
           {
             domaudio: domAudioPresets.defaultButton,
             style: ['castle-menu-item-button', 'steam-auth-continue'],
-            event: [
-              'click',
-              () => {
-                ParentEvent.children = window.open(
-                  'https://api.zone-play.com:2087',
-                  'SteamAuth',
-                  'width=1280, height=720, top=' +
-                    (screen.height - 720) / 2 +
-                    ', left=' +
-                    (screen.width - 1280) / 2 +
-                    ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
-                );
-              },
-            ],
+            event: ['click', () => Window.authPopup('/', 'SteamAuth')],
+          },
+          Lang.text('continue'),
+        ),
+      ),
+    );
+  }
+  // Яндекс-вход: тот же контракт postMessage, но регистрация — не автоматом,
+  // а HTML-страницей бэкенда (ник + фракция + согласие на обработку ПДн).
+  static async yandexauth() {
+    return DOM(
+      { id: 'wyandexauth' },
+      DOM({ style: ['castle-menu-title', 'auth-title', 'auth-window-title'] }, Lang.text('yandexauthTitle')),
+      DOM(
+        { style: ['castle-menu-items', 'auth-items'] },
+        DOM({ style: ['castle-menu-text', 'auth-text'] }, Lang.text('yandexauth')),
+        DOM(
+          {
+            domaudio: domAudioPresets.defaultButton,
+            style: ['castle-menu-item-button', 'auth-continue'],
+            event: ['click', () => Window.authPopup('/yandex/', 'YandexAuth')],
           },
           Lang.text('continue'),
         ),
@@ -2162,20 +2185,21 @@ export class Window {
           style: 'castle-menu-item-button',
           event: [
             'click',
-            () => {
-              ParentEvent.children = window.open(
-                `https://api.zone-play.com:2087/connect/${App.storage.data.token}`,
-                `SteamAuth`,
-                'width=1280, height=720, top=' +
-                  (screen.height - 720) / 2 +
-                  ', left=' +
-                  (screen.width - 1280) / 2 +
-                  ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
-              );
-            },
+            () => Window.authPopup(`/connect/${App.storage.data.token}`, 'SteamAuth'),
           ],
         },
         Lang.text('steamConnect'),
+      ),
+      DOM(
+        {
+          domaudio: domAudioPresets.bigButton,
+          style: 'castle-menu-item-button',
+          event: [
+            'click',
+            () => Window.authPopup(`/yandex/connect/${App.storage.data.token}`, 'YandexAuth'),
+          ],
+        },
+        Lang.text('yandexConnect'),
       ),
       DOM({ style: 'wcastle-menu__exit-separator' }),
       DOM(

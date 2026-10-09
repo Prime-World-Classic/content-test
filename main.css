@@ -166,6 +166,19 @@ select {
   margin-top: -0.75em;
 }
 
+/* Иконка кнопки «Вход через Яндекс» (тот же хук, что у .steamauth). */
+.yandexauth:before {
+  content: '';
+  background-image: url('icons/yandex.webp');
+  background-size: cover;
+  display: inline-block;
+  height: 1.3em;
+  width: 1.3em;
+  margin-right: 0.2em;
+  margin-bottom: -0.3em;
+  margin-top: -0.75em;
+}
+
 .invite-input {
   display: flex;
   align-items: center;
@@ -684,6 +697,17 @@ input::placeholder {
     inset 0 0.18vh 0.25vh rgba(235, 169, 111, 0.25),
     inset 0 -0.28vh 0.45vh rgba(0, 0, 0, 0.5),
     0 0 0 0.14vh rgba(78, 36, 14, 0.95);
+}
+
+/* Кнопка «Вход через Яндекс» — вариант кнопки Steam, акцент фирменный красный. */
+.login-box-forma-button--yandex {
+  border-color: rgba(216, 66, 38, 0.98);
+  background: linear-gradient(180deg, rgba(126, 34, 20, 0.99), rgba(94, 20, 10, 0.99) 34%, rgba(58, 10, 4, 1));
+  color: rgba(255, 231, 222, 0.96);
+  box-shadow:
+    inset 0 0.18vh 0.25vh rgba(252, 122, 92, 0.25),
+    inset 0 -0.28vh 0.45vh rgba(0, 0, 0, 0.5),
+    0 0 0 0.14vh rgba(96, 24, 12, 0.95);
 }
 
 .login-box-forma-button:hover,
@@ -9785,6 +9809,7 @@ body:has(#wcastle-call)::before {
   bottom: 0;
 }
 #wsteamauth {
+#wyandexauth {
   container-type: inline-size;
   position: absolute;
   margin-top: 5cqh;
@@ -9814,12 +9839,15 @@ body:has(#wcastle-call)::before {
 }
 
 #wsteamauth > .close-button,
+#wyandexauth > .close-button,
 #wsteamauth > .close-button .close-image-style {
+#wyandexauth > .close-button .close-image-style {
   width: 5.7vh !important;
   height: 5.7vh !important;
 }
 
 #wsteamauth .steam-auth-title {
+#wyandexauth .auth-title {
   flex: 0 0 6.8vh;
   width: 100%;
   margin: 0;
@@ -9832,6 +9860,7 @@ body:has(#wcastle-call)::before {
 }
 
 #wsteamauth .steam-auth-text {
+#wyandexauth .auth-text {
   width: 80cqw;
   color: rgba(255, 255, 255, 0.96);
   margin: 4.2cqw 1cqw 2.8cqw;
@@ -9846,6 +9875,7 @@ body:has(#wcastle-call)::before {
 }
 
 #wsteamauth .steam-auth-continue {
+#wyandexauth .auth-continue {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -9992,12 +10022,14 @@ body:has(#wcastle-call)::before {
 }
 
 #wsteamauth .steam-auth-continue:hover {
+#wyandexauth .auth-continue:hover {
   border-color: rgba(231, 205, 93, 0.98);
   filter: brightness(1.1);
 }
 
 @media (max-aspect-ratio: 1/1) {
   body #wsteamauth {
+  body #wyandexauth {
     width: min(92vw, 68vh);
   }
 
@@ -10006,12 +10038,14 @@ body:has(#wcastle-call)::before {
   }
 
   body #wsteamauth > .close-button,
+  body #wyandexauth > .close-button,
   body #wregistration-fraction > .close-button {
     right: 1.2vh;
     transform: translate(35%, -40%);
   }
 
   body #wsteamauth > .close-button:hover,
+  body #wyandexauth > .close-button:hover,
   body #wregistration-fraction > .close-button:hover {
     transform: translate(35%, -40%);
   }
