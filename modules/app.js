@@ -2745,9 +2745,17 @@ export class App {
     App.showAccountSplash(template);
   }
 
-  static async registration(fraction, invite, login, password, password2) {
+  static async registration(fraction, invite, login, password, password2, consent) {
     if (!fraction.value || !invite.value || !login.value || !password.value || !password2.value) {
       return App.error(Lang.text('missingValuesError'));
+    }
+
+    // Согласие на обработку ПДн — обязательный гейт создания аккаунта (тот же,
+    // что у регистрации через Steam/Яндекс). Сервер проверяет его сам (env
+    // REGISTRATION_CONSENT), здесь — только UX, чтобы не гонять запрос впустую.
+    // В БД согласие нигде не фиксируется.
+    if (!consent || consent.checked !== true) {
+      return App.error(Lang.text('consentRequiredError'));
     }
 
     if (password.value != password2.value) {
@@ -2774,6 +2782,7 @@ export class App {
         invite: invite.value.trim(),
         login: login.value.trim(),
         password: password.value.trim(),
+        consent: consent.checked === true,
         analysis: analysis,
         mac: NativeAPI.getMACAdress(),
       });
@@ -2795,23 +2804,68 @@ export class App {
     View.show('castle');
   }
 
-  // Регистрация через Яндекс: страницу рисует лончер (эталон — steam.js:
+  // Адрес соглашения об обработке ПДн и признак «сервер умеет регистрацию через
+  // провайдеров» — ОДИН запрос user.agreementUrl, кэш на сессию. Адрес в
+  // клиенте не хардкодится (меняется env AGREEMENT_URL на бэкенде).
+  //
+  // Тот же запрос — capability-проба: на СТАРОМ бэкенде метода нет в
+  // Api.unauthorizedMethods, ответ — «Access denied.». Кнопки
+  // «Зарегистрироваться через Steam/Яндекс» при этом прячутся: старый сервер не
+  // понимает ?mode=register (его catch-all уводит попап на обычный вход) и
+  // зарегистрировал бы аккаунт по-старому — без ника, фракции и согласия.
+  static agreementUrl = '';
+  static providerRegistrationEnabled = false;
+  static authCapabilities = null;
+
+  static async fetchAuthCapabilities() {
+    if (App.authCapabilities) {
+      return App.authCapabilities;
+    }
+
+    if (!App.api) {
+      return null;
+    }
+
+    try {
+      let request = await App.api.request('user', 'agreementUrl', {});
+
+      App.agreementUrl = `${(request && request.url) || ''}`.trim();
+      App.providerRegistrationEnabled = !!App.agreementUrl;
+    } catch (error) {
+      // Старый бэкенд (или ещё не поднятый WS) — тишина, тоста не будет:
+      // экран регистрации обязан открыться и без провайдеров.
+      App.agreementUrl = '';
+      App.providerRegistrationEnabled = false;
+      return null;
+    }
+
+    App.authCapabilities = {
+      agreementUrl: App.agreementUrl,
+      providers: App.providerRegistrationEnabled,
+    };
+
+    return App.authCapabilities;
+  }
+
+  // Регистрация через провайдера: страницу рисует лончер (эталон — steam.js:
   // провайдер отдаёт только postMessage). Билет приходит из попапа
-  // (ParentEvent.register) и живёт в App.yandexPending: сервер сжигает его при
+  // (ParentEvent.register) и живёт в App.providerPending: сервер сжигает его при
   // каждой попытке, а при ошибке валидации возвращает НОВЫЙ — повтор после
   // собственной ошибки не должен быть «ссылка устарела».
-  static yandexPending = null;
+  static providerPending = null;
 
-  static showYandexRegistration(message) {
+  static showProviderRegistration(message) {
+    const provider = `${(message && message.provider) || ''}`.trim().toLowerCase();
     const ticket = `${(message && message.ticket) || ''}`.trim();
 
-    if (!ticket) {
-      App.yandexPending = null;
-      App.error(Lang.text('yandexRegistrationExpired'));
+    if (!ticket || !(provider in Window.authProviders)) {
+      App.providerPending = null;
+      App.error(Lang.text('providerRegistrationExpired'));
       return View.show('authorization');
     }
 
-    App.yandexPending = {
+    App.providerPending = {
+      provider: provider,
       ticket: ticket,
       agreementUrl: `${(message && message.agreementUrl) || ''}`.trim(),
       login: '',
@@ -2820,7 +2874,7 @@ export class App {
       error: '',
     };
 
-    View.show('yandexRegistration');
+    View.show('providerRegistration');
   }
 
   // POST JSON на хост авторизации (Window.authBase). Запрос идёт нативным
@@ -2904,22 +2958,23 @@ export class App {
     });
   }
 
-  // Шаг регистрации Яндекс-входа: ник + фракция + согласие. Ответ — JSON
+  // Шаг регистрации через провайдера: ник + фракция + согласие. POST идёт на
+  // путь провайдера (Window.authProviders[...].register). Ответ — JSON
   // {ok,id,token,login,fraction} либо {ok:false,error,ticket}. Успех — тот же
   // путь, что у App.registration (сессия, замок, уведомления).
-  static async registrationYandex(fraction, login, consent) {
-    let pending = App.yandexPending;
+  static async registrationProvider(fraction, login, consent) {
+    let pending = App.providerPending;
 
-    if (!pending || !pending.ticket) {
-      App.yandexPending = null;
-      App.error(Lang.text('yandexRegistrationExpired'));
+    if (!pending || !pending.ticket || !(pending.provider in Window.authProviders)) {
+      App.providerPending = null;
+      App.error(Lang.text('providerRegistrationExpired'));
       return View.show('authorization');
     }
 
     let request;
 
     try {
-      request = await App.authJsonRequest('/yandex/register', {
+      request = await App.authJsonRequest(Window.authProviders[pending.provider].register, {
         ticket: pending.ticket,
         login: `${login.value || ''}`.trim(),
         fraction: Number(fraction.value) || 0,
@@ -2930,11 +2985,11 @@ export class App {
     }
 
     if (!request || request.ok !== true) {
-      let error = `${(request && request.error) || Lang.text('yandexRegistrationFailed')}`;
+      let error = `${(request && request.error) || Lang.text('providerRegistrationFailed')}`;
 
       // Билет уже сожжён: без нового повторять нельзя — отказ и на вход.
       if (!request || !request.ticket) {
-        App.yandexPending = null;
+        App.providerPending = null;
         App.error(error);
         return View.show('authorization');
       }
@@ -2945,10 +3000,10 @@ export class App {
       pending.consent = consent.checked === true;
       pending.error = error;
 
-      return View.show('yandexRegistration');
+      return View.show('providerRegistration');
     }
 
-    App.yandexPending = null;
+    App.providerPending = null;
 
     await App.storage.set({
       id: request.id,

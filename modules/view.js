@@ -938,7 +938,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261011-minigames-close-1';
+    const cssVersion = '20261012-auth-split-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1131,12 +1131,17 @@ export class View {
     return authorizationForm;
   }
 
-  static registration() {
+  static async registration() {
+    // Адрес соглашения об обработке ПДн и признак «сервер умеет регистрацию
+    // через провайдеров» — один WS-запрос (кэш на сессию). Без него экран
+    // работает как раньше: ссылка показывается текстом, кнопок провайдеров нет.
+    await App.fetchAuthCapabilities();
+
     let numEnterEvent = [
       'keyup',
       async (event) => {
         if (!App.isEnterKey(event)) return;
-        App.registration(fraction, invite, login, password, password2);
+        App.registration(fraction, invite, login, password, password2, consent);
       },
     ];
 
@@ -1197,6 +1202,94 @@ export class View {
       event: numEnterEvent,
     });
 
+    // Согласие на обработку ПДн — обязательный гейт: без него аккаунт не
+    // создаётся (и на сервере, и здесь). Ссылка — адрес от бэкенда
+    // (env AGREEMENT_URL), открывается в системном браузере: окно лончера
+    // внешние страницы не показывает.
+    let consent = DOM({
+      tag: 'input',
+      type: 'checkbox',
+      domaudio: domAudioPresets.defaultInput,
+      event: ['change', () => consentGate()],
+    });
+
+    let consentLine = DOM(
+      { style: 'registration-consent' },
+      consent,
+      DOM(
+        { tag: 'span' },
+        Lang.text('consentPre'),
+        App.agreementUrl
+          ? DOM(
+              {
+                tag: 'a',
+                style: 'registration-agreement',
+                href: App.agreementUrl,
+                target: '_blank',
+                rel: 'noopener',
+                event: ['click', (event) => NativeAPI.linkHandler(event)],
+              },
+              Lang.text('agreement'),
+            )
+          : DOM({ tag: 'span' }, Lang.text('agreement')),
+        Lang.text('consentPost'),
+      ),
+    );
+
+    // Кнопка «Зарегистрироваться» неактивна, пока не стоит галка согласия:
+    // вид приглушённый, клик игнорируется. Проверка согласия в
+    // App.registration (и на сервере) остаётся — это страховка, а не основной
+    // гейт.
+    let submit = DOM(
+      {
+        domaudio: domAudioPresets.defaultButton,
+        style: ['login-box-forma-button', 'login-box-forma-button--disabled'],
+        event: [
+          'click',
+          () => {
+            if (consent.checked !== true) return;
+            App.registration(fraction, invite, login, password, password2, consent);
+          },
+        ],
+      },
+      Lang.text('registration1'),
+    );
+
+    let consentGate = () => submit.classList.toggle('login-box-forma-button--disabled', consent.checked !== true);
+
+    consentGate();
+
+    // Регистрация через Steam/Яндекс — те же попапы, что и на входе, но в
+    // режиме регистрации (?mode=register): провайдер отдаёт билет, а аккаунт
+    // создаётся на экране View.providerRegistration. Кнопок нет, если сервер их
+    // не поддерживает (capability-проба App.fetchAuthCapabilities).
+    let providers = [];
+
+    if (App.providerRegistrationEnabled) {
+      providers.push(
+        DOM({ style: 'registration-providers-title' }, Lang.text('registrationViaTitle')),
+        DOM(
+          { style: 'login-box-forma-buttons' },
+          DOM(
+            {
+              domaudio: domAudioPresets.bigButton,
+              style: ['login-box-forma-button', 'login-box-forma-button--steam', 'steamauth'],
+              event: ['click', () => Window.show('main', 'steamauth', 'register')],
+            },
+            Lang.text('registrationSteam'),
+          ),
+          DOM(
+            {
+              domaudio: domAudioPresets.bigButton,
+              style: ['login-box-forma-button', 'login-box-forma-button--yandex', 'yandexauth'],
+              event: ['click', () => Window.show('main', 'yandexauth', 'register')],
+            },
+            Lang.text('registrationYandex'),
+          ),
+        ),
+      );
+    }
+
     return DOM(
       { style: 'login_box' },
       DOM(
@@ -1210,16 +1303,10 @@ export class View {
           login,
           password,
           password2,
+          consentLine,
           DOM(
             { style: 'login-box-forma-buttons' },
-            DOM(
-              {
-                domaudio: domAudioPresets.defaultButton,
-                style: 'login-box-forma-button',
-                event: ['click', () => App.registration(fraction, invite, login, password, password2)],
-              },
-              Lang.text('registration1'),
-            ),
+            submit,
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
@@ -1229,6 +1316,7 @@ export class View {
               Lang.text('back'),
             ),
           ),
+          ...providers,
         ),
         DOM(
           { style: 'login-box-forma-right' },
@@ -1253,14 +1341,16 @@ export class View {
     );
   }
 
-  // Регистрация через Яндекс: поля как у View.registration(), но без пароля и
-  // инвайта — вместо них согласие на обработку персональных данных (ссылка на
-  // соглашение — адрес от бэкенда, открывается в системном браузере: окно
-  // лончера внешние страницы не показывает). Ввод и ошибка живут в
-  // App.yandexPending: форма перерисовывается после отказа сервера (с новым
-  // билетом в ответе).
-  static yandexRegistration() {
-    let pending = App.yandexPending || { agreementUrl: '', login: '', fraction: 0, consent: false, error: '' };
+  // Регистрация через провайдера (Steam/Яндекс): поля как у
+  // View.registration(), но без пароля и инвайта — вместо них согласие на
+  // обработку персональных данных (ссылка на соглашение — адрес от бэкенда,
+  // открывается в системном браузере: окно лончера внешние страницы не
+  // показывает). Ввод и ошибка живут в App.providerPending: форма
+  // перерисовывается после отказа сервера (с новым билетом в ответе).
+  static providerRegistration() {
+    let pending = App.providerPending || { provider: 'steam', agreementUrl: '', login: '', fraction: 0, consent: false, error: '' };
+    let provider = pending.provider in Window.authProviders ? pending.provider : 'steam';
+    let providerName = Lang.text(Window.authProviders[provider].label);
 
     let fraction = DOM({
       tag: 'button',
@@ -1276,6 +1366,7 @@ export class View {
       type: 'checkbox',
       checked: pending.consent === true,
       domaudio: domAudioPresets.defaultInput,
+      event: ['change', () => consentGate()],
     });
 
     let login = DOM({
@@ -1289,50 +1380,68 @@ export class View {
         'keyup',
         async (event) => {
           if (!App.isEnterKey(event)) return;
-          await App.registrationYandex(fraction, login, consent);
+          await App.registrationProvider(fraction, login, consent);
         },
       ],
     });
 
     let agreement = DOM({
       tag: 'a',
-      style: 'yandex-registration-agreement',
-      href: `${pending.agreementUrl || ''}`,
+      style: 'registration-agreement',
+      href: `${pending.agreementUrl || App.agreementUrl || ''}`,
       target: '_blank',
       rel: 'noopener',
       event: ['click', (event) => NativeAPI.linkHandler(event)],
     }, Lang.text('agreement'));
 
     let consentLine = DOM(
-      { style: 'yandex-registration-consent' },
+      { style: 'registration-consent' },
       consent,
       DOM({ tag: 'span' }, Lang.text('consentPre'), agreement, Lang.text('consentPost')),
     );
 
+    // Тот же гейт, что и на экране регистрации по инвайт-коду: без галки кнопка
+    // неактивна (галка восстанавливается из App.providerPending.consent после
+    // отказа сервера).
+    let submit = DOM(
+      {
+        domaudio: domAudioPresets.defaultButton,
+        style: ['login-box-forma-button', 'login-box-forma-button--disabled'],
+        event: [
+          'click',
+          () => {
+            if (consent.checked !== true) return;
+            App.registrationProvider(fraction, login, consent);
+          },
+        ],
+      },
+      Lang.text('registration1'),
+    );
+
+    let consentGate = () => submit.classList.toggle('login-box-forma-button--disabled', consent.checked !== true);
+
+    consentGate();
+
     return DOM(
       { style: 'login_box' },
       DOM(
-        { style: ['login-box-forma', 'login-box-forma--registration', 'login-box-forma--yandex-registration'] },
+        { style: ['login-box-forma', 'login-box-forma--registration', 'login-box-forma--provider-registration'] },
 
         DOM(
           { style: 'login-box-forma-inputs' },
-          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('yandexRegistration')),
-          DOM({ style: 'yandex-registration-intro' }, Lang.text('yandexRegistrationIntro')),
-          DOM({ style: 'yandex-registration-error' }, pending.error || ''),
+          DOM({ style: ['login-box-forma-title', 'auth-window-title'] }, Lang.text('providerRegistration')),
+          DOM(
+            { style: 'registration-intro' },
+            Lang.text(provider === 'steam' ? 'providerRegistrationIntroSteam' : 'providerRegistrationIntroYandex'),
+          ),
+          DOM({ style: 'registration-error' }, pending.error || ''),
           fraction,
           login,
-          DOM({ style: 'yandex-registration-hint' }, Lang.text('nicknameHint')),
+          DOM({ style: 'registration-hint' }, Lang.text('nicknameHint')),
           consentLine,
           DOM(
             { style: 'login-box-forma-buttons' },
-            DOM(
-              {
-                domaudio: domAudioPresets.defaultButton,
-                style: 'login-box-forma-button',
-                event: ['click', () => App.registrationYandex(fraction, login, consent)],
-              },
-              Lang.text('registration1'),
-            ),
+            submit,
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
@@ -1342,7 +1451,7 @@ export class View {
               Lang.text('back'),
             ),
           ),
-          DOM({ style: 'yandex-registration-exists' }, Lang.text('yandexRegistrationExists')),
+          DOM({ style: 'registration-exists' }, Lang.text('providerRegistrationExists').replace('{provider}', providerName)),
         ),
         DOM(
           { style: 'login-box-forma-right' },

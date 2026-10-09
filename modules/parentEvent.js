@@ -13,6 +13,10 @@ export class ParentEvent {
       if ('error' in body) {
         await App.handleAuthPulseSignal(body.error, { ownerLogin: body?.login || '' });
         App.error(body.error);
+        // Ошибка провайдера (в т.ч. «Аккаунт не зарегистрирован») — игрок
+        // возвращается на главную (экран входа): попап закрыт, а оставаться на
+        // полшага регистрации/входа непонятно.
+        View.show('authorization');
       }
 
       return;
@@ -64,14 +68,14 @@ export class ParentEvent {
   }
 
   // Страницы регистрации на бэкенде нет (эталон — steam.js: провайдер отдаёт
-  // только postMessage): новый Яндекс-id приходит как {action:'register'} с
-  // билетом и адресом соглашения об обработке ПДн. Форму (ник, фракция,
-  // согласие) рисует лончер, ответ — JSON на /yandex/register.
+  // только postMessage): новый id провайдера приходит как {action:'register'} с
+  // билетом, адресом соглашения об обработке ПДн и именем провайдера. Форму
+  // (ник, фракция, согласие) рисует лончер, ответ — JSON на /…/register.
   static async register(body) {
     if (ParentEvent.children) {
       ParentEvent.children.close();
     }
 
-    App.showYandexRegistration(body);
+    App.showProviderRegistration(body);
   }
 }

@@ -197,6 +197,19 @@ export class Window {
   // (ParentEvent). Base один на всех провайдеров — раньше URL был
   // захардкожен в трёх местах.
   static authBase = 'https://api.zone-play.com:2087';
+  // Провайдеры входа/регистрации. popup — путь попапа (initiator), register —
+  // путь JSON-шага регистрации (POST из основного окна). Режим регистрации —
+  // query-параметр ?mode=register: вход нового игрока аккаунт НЕ создаёт
+  // (бэкенд отвечает «Аккаунт не зарегистрирован»), регистрация — отдельный
+  // путь, который заканчивается формой лончера (View.providerRegistration).
+  static authProviders = {
+    steam: { popup: '/', register: '/register', label: 'providerSteam' },
+    yandex: { popup: '/yandex/', register: '/yandex/register', label: 'providerYandex' },
+  };
+  static authPopupPath(provider, mode) {
+    const base = Window.authProviders[provider]?.popup || '/';
+    return mode === 'register' ? `${base}?mode=register` : base;
+  }
   // Язык серверных сообщений (ошибки входа/привязки) передаётся провайдеру:
   // у попапа своя цепочка редиректов, Accept-Language там системный, а не
   // выбранный в лончере.
@@ -212,39 +225,50 @@ export class Window {
         ', toolbar=no, menubar=no, location=no, scrollbars=no, resizable=no, status=no',
     );
   }
-  static async steamauth() {
+  // Окно провайдера (Steam): mode='register' — тот же попап, но провайдер
+  // запрашивается в режиме регистрации (тексты объясняют, что будет создан
+  // аккаунт, а не выполнен вход).
+  static async steamauth(mode) {
+    const register = mode === 'register';
     return DOM(
       { id: 'wsteamauth' },
-      DOM({ style: ['castle-menu-title', 'steam-auth-title', 'auth-window-title'] }, Lang.text('steamauthTitle')),
+      DOM(
+        { style: ['castle-menu-title', 'steam-auth-title', 'auth-window-title'] },
+        Lang.text(register ? 'registrationSteam' : 'steamauthTitle'),
+      ),
       DOM(
         { style: ['castle-menu-items', 'steam-auth-items'] },
-        DOM({ style: ['castle-menu-text', 'steam-auth-text'] }, Lang.text('steamauth')),
+        DOM({ style: ['castle-menu-text', 'steam-auth-text'] }, Lang.text(register ? 'steamauthRegister' : 'steamauth')),
         DOM(
           {
             domaudio: domAudioPresets.defaultButton,
             style: ['castle-menu-item-button', 'steam-auth-continue'],
-            event: ['click', () => Window.authPopup('/', 'SteamAuth')],
+            event: ['click', () => Window.authPopup(Window.authPopupPath('steam', mode), 'SteamAuth')],
           },
           Lang.text('continue'),
         ),
       ),
     );
   }
-  // Яндекс-вход: тот же контракт postMessage, что у Steam, но регистрация — не
+  // Яндекс-вход: тот же контракт postMessage, что у Steam. Регистрация — не
   // автоматом: бэкенд присылает билет {action:'register'}, а форму (ник,
-  // фракция, согласие на обработку ПДн) рисует лончер — View.yandexRegistration.
-  static async yandexauth() {
+  // фракция, согласие на обработку ПДн) рисует лончер — View.providerRegistration.
+  static async yandexauth(mode) {
+    const register = mode === 'register';
     return DOM(
       { id: 'wyandexauth' },
-      DOM({ style: ['castle-menu-title', 'auth-title', 'auth-window-title'] }, Lang.text('yandexauthTitle')),
+      DOM(
+        { style: ['castle-menu-title', 'auth-title', 'auth-window-title'] },
+        Lang.text(register ? 'registrationYandex' : 'yandexauthTitle'),
+      ),
       DOM(
         { style: ['castle-menu-items', 'auth-items'] },
-        DOM({ style: ['castle-menu-text', 'auth-text'] }, Lang.text('yandexauth')),
+        DOM({ style: ['castle-menu-text', 'auth-text'] }, Lang.text(register ? 'yandexauthRegister' : 'yandexauth')),
         DOM(
           {
             domaudio: domAudioPresets.defaultButton,
             style: ['castle-menu-item-button', 'auth-continue'],
-            event: ['click', () => Window.authPopup('/yandex/', 'YandexAuth')],
+            event: ['click', () => Window.authPopup(Window.authPopupPath('yandex', mode), 'YandexAuth')],
           },
           Lang.text('continue'),
         ),

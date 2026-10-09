@@ -764,28 +764,36 @@ input::placeholder {
 
 }
 
-/* Регистрация через Яндекс (View.yandexRegistration). Блок обязан идти ПОСЛЕ
-   правил .login-box-forma-inputs input: специфичность та же (класс + тег),
-   побеждает порядок — иначе к чекбоксу согласия приедут рамка, фон и min-height
-   текстовых полей. */
-.yandex-registration-intro,
-.yandex-registration-hint,
-.yandex-registration-exists {
+/* Регистрация (View.registration и View.providerRegistration). Блок обязан
+   идти ПОСЛЕ правил .login-box-forma-inputs input: специфичность та же
+   (класс + тег), побеждает порядок — иначе к чекбоксу согласия приедут рамка,
+   фон и min-height текстовых полей. */
+.registration-intro,
+.registration-hint,
+.registration-exists,
+.registration-providers-title {
   margin: 0 4% 1.4vh;
   text-align: center;
   color: rgba(210, 220, 225, 0.78);
   font: clamp(0.85rem, 1.7vh, 1.05rem) / 1.3 'DejaVuSans', sans-serif;
 }
 
-.yandex-registration-intro {
+.registration-intro {
   margin-top: -2vh;
 }
 
-.yandex-registration-hint {
+.registration-hint {
   margin-top: -0.6vh;
 }
 
-.yandex-registration-error {
+/* Подпись над кнопками «Зарегистрироваться через Steam/Яндекс» на экране
+   регистрации по инвайт-коду. */
+.registration-providers-title {
+  margin-top: 0.6vh;
+  margin-bottom: 0.8vh;
+}
+
+.registration-error {
   margin: 0 4% 1.4vh;
   padding: 0.9vh 1.2vh;
   border: 0.18vh solid rgba(224, 86, 66, 0.7);
@@ -796,11 +804,11 @@ input::placeholder {
   font: clamp(0.9rem, 1.8vh, 1.1rem) / 1.3 'DejaVuSans', sans-serif;
 }
 
-.yandex-registration-error:empty {
+.registration-error:empty {
   display: none;
 }
 
-.yandex-registration-consent {
+.registration-consent {
   display: flex;
   gap: 1vh;
   align-items: flex-start;
@@ -810,7 +818,7 @@ input::placeholder {
   font: clamp(0.85rem, 1.7vh, 1.02rem) / 1.35 'DejaVuSans', sans-serif;
 }
 
-.yandex-registration-consent input {
+.registration-consent input {
   flex: none;
   width: 2.2vh;
   height: 2.2vh;
@@ -824,10 +832,27 @@ input::placeholder {
   cursor: var(--cursor-pointer);
 }
 
-.yandex-registration-agreement {
+.registration-agreement {
   color: rgba(255, 213, 61, 0.96);
   text-decoration: underline;
   cursor: var(--cursor-pointer);
+}
+
+/* Неактивная кнопка («Зарегистрироваться» без галки согласия) — приглушённый
+   вариант той же золотой кнопки. Правило идёт ПОСЛЕ .login-box-forma-button:hover
+   (специфичность одинаковая, побеждает порядок) — иначе hover возвращает яркость.
+   Клик по такой кнопке игнорируется в View.registration /
+   View.providerRegistration, здесь только вид и курсор. */
+.login-box-forma-button--disabled,
+.login-box-forma-button--disabled:hover {
+  filter: grayscale(0.55) brightness(0.6);
+  border-color: rgba(150, 130, 60, 0.75);
+  box-shadow:
+    inset 0 0.18vh 0.25vh rgba(255, 247, 170, 0.16),
+    inset 0 -0.28vh 0.45vh rgba(68, 38, 0, 0.42),
+    0 0 0 0.14vh rgba(75, 51, 5, 0.6);
+  color: rgba(255, 250, 232, 0.55);
+  cursor: var(--cursor-default);
 }
 
 .language-select-container {

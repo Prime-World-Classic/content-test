@@ -119,22 +119,33 @@ export const en = {
     authorizationSteam: 'Login with Steam',
     steamauthTitle: 'Login with Steam',
     steamauth:
-      'By clicking Continue, you will register a new account! If you want to log in to your current PW Classic account, you must first link your Steam account from the settings menu.',
+      'By clicking Continue you will sign in to the account linked to your Steam account.\n\nIf the account is not registered yet, signing in will not work — open the sign up page first. You can link an existing account to Steam from the settings.',
     authorizationYandex: 'Login with Yandex',
     yandexauthTitle: 'Login with Yandex',
     yandexauth:
-      'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. Only the unique identifier is taken from your Yandex account.\n\nIf you want to log in to your current PW Classic account, go back to the sign in page first: connect your Yandex account from the account menu.',
-    // Форма регистрации через Яндекс — экран лончера (бэкенд отдаёт только
-    // билет), поэтому тексты здесь.
-    yandexRegistration: 'Prime World: Classic sign up',
-    yandexRegistrationIntro: 'Yandex account found. Pick a game name and choose a faction.',
+      'By clicking Continue you will sign in to the account linked to your Yandex account. Only the unique identifier is taken from your Yandex account.\n\nIf the account is not registered yet, signing in will not work — open the sign up page first. You can link an existing account to Yandex from the account menu.',
+    // Регистрация: отдельный путь (аккаунт создаётся только после отправки
+    // формы регистрации).
+    registrationSteam: 'Sign up with Steam',
+    registrationYandex: 'Sign up with Yandex',
+    registrationViaTitle: 'Sign up with',
+    steamauthRegister:
+      'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. The account will be linked to your Steam account.\n\nIf you already have an account, go back to the sign in page. You can link an account to Steam from the settings.',
+    yandexauthRegister:
+      'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. Only the unique identifier is taken from your Yandex account.\n\nIf you already have an account, go back to the sign in page. You can link an account to Yandex from the account menu.',
+    providerSteam: 'Steam',
+    providerYandex: 'Yandex',
+    providerRegistration: 'Prime World: Classic sign up',
+    providerRegistrationIntroSteam: 'Steam account found. Pick a game name and choose a faction.',
+    providerRegistrationIntroYandex: 'Yandex account found. Pick a game name and choose a faction.',
     nicknameHint: '2–20 characters: letters (latin/cyrillic), digits and spaces',
     consentPre: 'I consent to the processing of my personal data in accordance with the ',
     agreement: 'Personal Data Processing Agreement',
     consentPost: '.',
-    yandexRegistrationExists: 'Already have an account? Go back to sign in and connect Yandex from the settings.',
-    yandexRegistrationExpired: 'This sign up link expired. Open Yandex sign in again',
-    yandexRegistrationFailed: 'Sign up failed, please try again',
+    consentRequiredError: 'Consent to personal data processing is required',
+    providerRegistrationExists: 'Already have an account? Go back to sign in and connect {provider} from the settings.',
+    providerRegistrationExpired: 'This sign up link expired. Open the provider sign in again',
+    providerRegistrationFailed: 'Sign up failed, please try again',
     language: 'Language',
     LangTarg: 'Language changed',
     training: 'Training',
