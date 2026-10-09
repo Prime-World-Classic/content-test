@@ -179,6 +179,8 @@ export const en = {
     topModesHeading: 'Modes',
     topOtherHeading: 'Other',
     topHeroesTab: 'Heroes',
+    topStarsTab: 'Stars of Glory',
+    topColStars: 'Stars',
     topPeriodRecentPlayers: '30 days',
     topPeriodAllPlayers: 'All players',
     topRecentPlayersUnavailable: '30-day rankings are not available yet',
@@ -1287,6 +1289,10 @@ export const en = {
     easel_ad: 'Scroll Workshop',
     easel_doct: 'Scroll Workshop',
     easelComingSoon: 'Scroll Workshop: the mini-game is coming soon',
+    minigames: 'Mini-games',
+    minigameEaselSub: 'Zuma: paint the picture with drops',
+    minigameMatch3: 'Talent farm',
+    minigameMatch3Sub: 'Match three: collect talent shards',
 
     //Герои
     hero_1_name: 'Duelist',

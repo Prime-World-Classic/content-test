@@ -181,6 +181,8 @@ export const ru = {
     topModesHeading: 'Режимы',
     topOtherHeading: 'Другое',
     topHeroesTab: 'Герои',
+    topStarsTab: 'Звёзды славы',
+    topColStars: 'Звёзды',
     topPeriodRecentPlayers: '30 дней',
     topPeriodAllPlayers: 'Все игроки',
     topRecentPlayersUnavailable: 'Рейтинг за 30 дней пока недоступен',
@@ -1294,6 +1296,10 @@ export const ru = {
     easel_ad: 'Мастерская свитков',
     easel_doct: 'Мастерская свитков',
     easelComingSoon: 'Мастерская свитков: мини-игра скоро появится',
+    minigames: 'Мини-игры',
+    minigameEaselSub: 'Зума: закрасьте картину каплями',
+    minigameMatch3: 'Фарм талантов',
+    minigameMatch3Sub: 'Три в ряд: собирайте осколки талантов',
 
     //Герои
     hero_1_name: 'Дуэлянт',

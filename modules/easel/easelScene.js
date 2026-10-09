@@ -112,7 +112,18 @@ export class EaselScene {
     const inDir = sub3(inTo, inFrom);
     const inLen = len3(inDir);
     const outLen = len3(sub3(out1, out0)) + len3(sub3(out2, out1));
+    // EaselLuxView::CreateTunnels: лунки на длине begin + startPointOffset и end + endPointOffset
+    // (Tunnel/_.SOBJ — плоскость в плоскости доски, поворот фиксированный)
+    const to = this.common.tunnels || { startPointOffset: 0, endPointOffset: 0 };
+    const tunnels = [];
+    for (const t of p.tunnels) {
+      for (const l of [t.begin + to.startPointOffset, t.end + to.endPointOffset]) {
+        const [x, y] = traj.coords(l);
+        tunnels.push(mat4.fromTranslation(mat4.create(), toClient(x, y, 2)));
+      }
+    }
     return {
+      tunnels,
       cannon,
       well,
       inFrom,
@@ -156,6 +167,7 @@ export class EaselScene {
     for (const gp of this.game.paths) {
       const t = gp.traj.poly;
       for (let l = 0; l <= t.length; l += 200) {
+        if (gp.tunnels.some((tn) => l >= tn.begin && l <= tn.end)) continue;
         const [x, y] = t.coords(l);
         const c = toClient(x, y);
         const q = (dx, dy, u, w) => [c[0] + dx * size, c[1] + dy * size, z, 0, 0, 1, u, w];
@@ -183,7 +195,6 @@ export class EaselScene {
         const pos = lerp3(lerp3(a, c, t), lerp3(c, e, t), t);
         return { pos, dir: sub3(lerp3(c, e, t), lerp3(a, c, t)) };
       }
-      if (b.state === BALL.IN_TUNNEL) return null;
     }
     const pos = fromLogic(b.pos);
     return { pos, dir: [b.dir.x, -b.dir.y, 0] };
@@ -227,6 +238,30 @@ export class EaselScene {
     return v;
   }
 
+  // EaselBallView::UpdateAnimation: перед лункой (ближе jumpInDistance) и в тоннеле — MOVEUNDERGROUND
+  // (jumpIn: капля подпрыгивает, на 12/16 анимации пересекает доску и уходит под неё), на выходе — jumpOut
+  _chainAnim(v, b, moving) {
+    const sk = this.r.skeletons.drop;
+    v.inTunnel = b.state === BALL.IN_TUNNEL;
+    let under = v.inTunnel;
+    if (!under) {
+      const speed = Math.max(Math.abs(b.speed), v.jumpSpeed || 0);
+      const toTunnel = b.nextTunnel - b.covered;
+      under = toTunnel > 0 && toTunnel < speed * sk.duration('jumpIn') * 1000 * (12 / 16);
+    }
+    if (under) {
+      if (v.anim !== 'jumpIn') {
+        v.jumpSpeed = Math.abs(b.speed);
+        this._setAnim(v, 'jumpIn', false);
+      }
+    } else if (v.anim === 'jumpIn') {
+      v.jumpSpeed = 0;
+      this._setAnim(v, 'jumpOut', false);
+    } else if (v.anim !== 'jumpOut' || v.t >= sk.duration('jumpOut')) {
+      this._setAnim(v, moving ? 'move01' : 'idle01');
+    }
+  }
+
   _setAnim(v, anim, loop = true) {
     if (v.anim === anim) return;
     v.prevAnim = v.anim;
@@ -248,7 +283,7 @@ export class EaselScene {
     g.forAllBalls((b, path, chain) => {
       const v = this._place(b, path, 'chain');
       const moving = chain.speed !== 0 && !g.frozen;
-      if (!v.dying) this._setAnim(v, moving ? 'move01' : 'idle01');
+      if (!v.dying) this._chainAnim(v, b, moving);
     });
     for (const b of g.bullets) {
       const v = this._place(b, null, 'bullet');
@@ -605,6 +640,8 @@ export class EaselScene {
         bones: cannonSkel.pose(P.bones, anim, Math.min(P.openT, cannonSkel.duration(anim)), false),
       });
       r.draw({ model: r.models.well, matrix: P.well });
+      // EaselLuxViewTunnelPoint: видны с начала уровня (LEVEL_RUN) до его окончания
+      if (g.state === BOARD.LEVEL_RUN) for (const m of P.tunnels) r.draw({ model: r.models.tunnel, matrix: m, order: 6, cull: false });
     }
 
     // капли
@@ -623,6 +660,9 @@ export class EaselScene {
         }
       }
       if (v.hidden) continue;
+      // в тоннеле капля под доской: после jumpIn не рисуется; тень гаснет (EaselBallView::UpdateShadow)
+      v.shadow = Math.max(0, Math.min(1, (v.shadow ?? 1) + (v.inTunnel ? -dt : dt) * 4));
+      if (v.inTunnel && (v.anim !== 'jumpIn' || v.t >= r.skeletons.drop.duration('jumpIn'))) continue;
       const b = v.ball;
       let pos;
       let dir = v.dir;
@@ -646,8 +686,8 @@ export class EaselScene {
         const k = 0.35 + 0.25 * Math.sin(this.time * 10);
         add = [k, k * 0.6, 0.05, 0];
       }
-      if (v.mode === 'chain' && !v.inPipe && !v.dying)
-        this._sprite('__dot', [pos[0], pos[1] - 0.05, LUX_Z + 0.005], 0.62, [0, 0, 0, 0.35], 'alpha', 5);
+      if (v.mode === 'chain' && !v.inPipe && !v.dying && v.shadow > 0)
+        this._sprite('__dot', [pos[0], pos[1] - 0.05, LUX_Z + 0.005], 0.62, [0, 0, 0, 0.35 * v.shadow], 'alpha', 5);
       if (b.type === BALL_TYPE.PAINTBLAST && this.efx) continue; // PaintBlastBall/_.EFFT
       r.draw({ model: r.models.drop, matrix: m, bones: this._bonesFor(v), tex: { 0: tex }, add });
       if (b.type === BALL_TYPE.PAINTBLAST) this._sprite('__dot', [pos[0], pos[1], pos[2] + 0.2], 0.9, [1, 0.6, 0.2, 0.6], 'add', 1);

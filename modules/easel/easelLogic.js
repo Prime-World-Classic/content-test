@@ -231,12 +231,14 @@ class BallChain {
       if (tn) r.ball.nextTunnel = tn.begin * M;
       if (!t) {
         if (r.ball.state === BALL.IN_TUNNEL) {
+          this.game.emit({ type: 'tunnel', in: false, ball: r.ball }); // LuxBall: SendBallLeavesTunnelNotification
           r.ball.lastTunnel = r.tunnelEnd;
           r.ball.state = this.state === CHAIN.ON_BOARD ? BALL.ON_BOARD : this.state === CHAIN.ROLL_IN ? BALL.ROLL_IN : BALL.ROLL_OUT;
         }
       } else if (this.speed >= 0) {
         r.ball.lastTunnel = t.begin * M;
         r.tunnelEnd = t.end * M;
+        if (r.ball.state !== BALL.IN_TUNNEL) this.game.emit({ type: 'tunnel', in: true, ball: r.ball });
         r.ball.state = BALL.IN_TUNNEL;
       }
     }

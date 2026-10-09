@@ -938,7 +938,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261007-castle-navigation-1';
+    const cssVersion = '20261009-easel-hof-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -4130,6 +4130,10 @@ export class View {
       { id: 3, labelKey: 'gm4' },
     ];
     const HERO_STATS_TAB_ID = 6;
+    // «Звёзды славы»: топ по звёздам, что видны у ника в чате (user.star, API user.stars)
+    const STARS_TAB_ID = 7;
+    const STARS_PAGE_SIZE = 25;
+    const STARS_MAX_PAGES = 4;
 
     const heroId = hero == null || hero === '' ? 0 : Number(hero) || 0;
     let activeMode = mode == null || mode === '' ? 0 : Number(mode);
@@ -4140,7 +4144,8 @@ export class View {
       activeMode = 0;
     }
     const isHeroStatsView = activeMode === HERO_STATS_TAB_ID;
-    if (!isHeroStatsView && activeMode > 3) {
+    const isStarsView = activeMode === STARS_TAB_ID;
+    if (!isHeroStatsView && !isStarsView && activeMode > 3) {
       activeMode = 0;
     }
 
@@ -4199,7 +4204,7 @@ export class View {
     };
 
     const makeTableRow = (player, rankNum) => {
-      const hName = heroNameById(player.hero);
+      const hName = player.hero ? heroNameById(player.hero) : '';
       const placeCell = DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, String(rankNum));
       const nameCellStyle = ['wtop-cell', 'wtop-cell--name'];
       if (rankNum <= 3) {
@@ -4211,15 +4216,24 @@ export class View {
         ...makeCrownForRank(rankNum, 'row'),
       );
       const heroIcon = DOM({ style: 'wtop-cell-hero-icon' });
-      heroIcon.style.backgroundImage = `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`;
+      heroIcon.style.backgroundImage = player.hero
+        ? `url(content/hero/${player.hero}/${player.skin ? player.skin : 1}.webp)`
+        : 'url(content/hero/empty.webp)';
       const heroNameEl = DOM({ style: 'wtop-cell-hero-name' }, hName || '—');
       const heroCell = DOM({ style: ['wtop-cell', 'wtop-cell--hero'] }, heroIcon, heroNameEl);
-      const ratingCell = DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, String(player.rating));
+      const ratingCell = isStarsView
+        ? DOM(
+          { style: ['wtop-cell', 'wtop-cell--rating', 'wtop-cell--stars'], data: { tooltip: Lang.text('titleStarsGlory') } },
+          DOM({ tag: 'span' }, String(player.rating)),
+          DOM({ tag: 'img', src: 'content/icons/starOrange.webp', alt: '', style: 'wtop-star-icon', draggable: false }),
+        )
+        : DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, String(player.rating));
       return DOM(
         {
           domaudio: domAudioPresets.defaultButton,
           style: 'wtop-table-row',
-          event: ['click', () => Build.view(player.id, player.hero, player.nickname)],
+          // герой — последнего боя, за который дали звезду; без него билд открыть не на чем
+          event: ['click', () => player.hero && Build.view(player.id, player.hero, player.nickname)],
         },
         placeCell,
         nameCell,
@@ -4487,6 +4501,27 @@ export class View {
         ],
       }),
     );
+    modeBar.append(
+      DOM({
+        domaudio: domAudioPresets.defaultButton,
+        style: ['wtop-mode-tab', isStarsView ? 'is-active' : null].filter(Boolean),
+        tag: 'button',
+        type: 'button',
+        data: { tooltip: Lang.text('titleStarsGlory') },
+        event: [
+          'click',
+          () => {
+            if (isStarsView) return;
+            if (isSplah) {
+              Window.show('main', 'top', heroId, STARS_TAB_ID);
+            } else {
+              View.show('top', heroId, false, STARS_TAB_ID);
+            }
+          },
+        ],
+      },
+      Lang.text('topStarsTab')),
+    );
 
     const listScroll = DOM({ style: 'wtop-list-scroll' });
     let loadId = 0;
@@ -4515,7 +4550,7 @@ export class View {
         DOM({ style: ['wtop-cell', 'wtop-cell--place'] }, Lang.text('topColPlace')),
         DOM({ style: ['wtop-cell', 'wtop-cell--name'] }, DOM({ tag: 'span', style: 'wtop-cell-name-text' }, Lang.text('topColPlayer'))),
         DOM({ style: ['wtop-cell', 'wtop-cell--hero'] }, Lang.text('topColHero')),
-        DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, Lang.text('topColRating')),
+        DOM({ style: ['wtop-cell', 'wtop-cell--rating'] }, Lang.text(isStarsView ? 'topColStars' : 'topColRating')),
       );
       const rows = DOM({ style: 'wtop-table-rows' });
       const spacer = DOM({ style: 'wtop-list-spacer' });
@@ -4552,13 +4587,32 @@ export class View {
       appendBatch();
     };
 
+    // Сервер отдаёт по 25 игроков (user.stars, page) — первые 100, страницы по очереди
+    const loadStars = async () => {
+      const players = [];
+      for (let page = 0; page < STARS_MAX_PAGES; page++) {
+        const rows = await App.api.request('user', 'stars', { page });
+        if (!Array.isArray(rows)) {
+          if (page) break;
+          return rows;
+        }
+        for (const row of rows) {
+          players.push({ id: row.id, nickname: row.nickname, hero: Number(row.hero) || 0, rating: Number(row.star) || 0 });
+        }
+        if (rows.length < STARS_PAGE_SIZE) break;
+      }
+      return players;
+    };
+
     const loadTop = async () => {
       const currentLoadId = ++loadId;
       listScroll.setAttribute('aria-busy', 'true');
       showListStatus('topLoading');
       try {
         const [result] = await Promise.all([
-          isHeroStatsView
+          isStarsView
+            ? loadStars()
+            : isHeroStatsView
             ? App.api.request(App.CURRENT_MM, 'topHeroStats')
             : App.api.request(App.CURRENT_MM, activePlayerPeriod === 'recent' ? 'topActive' : 'top', { limit: 100, hero: heroId, mode: activeMode }),
           (async () => {
@@ -4590,7 +4644,7 @@ export class View {
         console.error('Hall of Fame failed to load', error);
         listScroll.removeAttribute('aria-busy');
         const reason = typeof error === 'string' ? error : error?.message;
-        const recentError = !isHeroStatsView && activePlayerPeriod === 'recent';
+        const recentError = !isHeroStatsView && !isStarsView && activePlayerPeriod === 'recent';
         const statusKey = recentError && reason === 'activeRatingIndexRequired'
           ? 'topRecentPlayersNotReady'
           : recentError && ['activeRatingBusy', 'activeRatingRetryLater'].includes(reason)
@@ -4619,7 +4673,7 @@ export class View {
       heroFilterImg,
     );
     heroFilterBtn.setAttribute('aria-label', Lang.text('topHeroFilterTooltip'));
-    if (!isHeroStatsView) {
+    if (!isHeroStatsView && !isStarsView) {
       modeBar.append(DOM({ style: 'wtop-hero-filter-slot' }, heroFilterBtn));
     }
 
@@ -4627,7 +4681,7 @@ export class View {
     periodTabs.setAttribute('role', 'tablist');
     const periodButtons = [];
     let activePlayerPeriod = 'all';
-    if (!isHeroStatsView) {
+    if (!isHeroStatsView && !isStarsView) {
       for (const period of ['recent', 'all']) {
         const button = DOM({
           domaudio: domAudioPresets.defaultButton,
@@ -4653,7 +4707,7 @@ export class View {
       }
     }
 
-    const listRow = DOM({ style: 'wtop-list-row' }, ...(!isHeroStatsView ? [periodTabs] : []), listScroll);
+    const listRow = DOM({ style: 'wtop-list-row' }, ...(!isHeroStatsView && !isStarsView ? [periodTabs] : []), listScroll);
     const updateTime = DOM({ tag: 'span', style: 'wtop-update-time' });
     const updateFooter = DOM({ style: 'wtop-update-footer' }, Lang.text('topUpdateCountdown'), updateTime);
     let nextUpdateAt = Timer.getNextMoscowMidnight();
@@ -4676,7 +4730,8 @@ export class View {
         modeBar,
         DOM({ style: 'wtop-window-content' }, listRow),
       ),
-      updateFooter,
+      // звёзды начисляются сразу после боя — суточного обновления у этого топа нет
+      ...(isStarsView ? [] : [updateFooter]),
     );
 
     const helpBtn = DOM({
