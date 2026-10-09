@@ -21,12 +21,13 @@ import { HostRacer } from './hostRacer.js';
 export class App {
   static APP_VERSION = '0';
 
-  // Тест-линия: CURRENT_MM=mmtest требует PW_VERSION == objects/mmtest.model.js
-  // (`this.version`) — иначе каждый mm-запрос даёт «Вышло обновление …».
+  // Прод-пара: CURRENT_MM=mm требует PW_VERSION == objects/mm.model.js.
+  // (тест-линия: CURRENT_MM=mmtest требует PW_VERSION == objects/mmtest.model.js
+  // (`this.version`) — иначе каждый mm-запрос даёт «Вышло обновление …».)
   // С 2.16.0 обе линии (mm и mmtest) одной версии.
   static PW_VERSION = '2.16.0';
 
-  static CURRENT_MM = 'mmtest';
+  static CURRENT_MM = 'mm';
 
   static RVPN = 'ws://26.187.55.30:3737';
   static VPS = 'wss://pw-classic.ru';

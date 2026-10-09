@@ -80,6 +80,8 @@ export class Easel {
   // opts: {level, track} — сразу начать уровень (иначе — меню уровней)
   static async open(faction = 'doct', opts = {}) {
     if (Easel.root) return;
+    // одна мини-игра за раз: «Фарм талантов» и др. закрываются (Window слушает pw:minigame-open)
+    window.dispatchEvent(new CustomEvent('pw:minigame-open', { detail: 'easel' }));
     Easel.faction = faction === 'ad' ? 'ad' : 'doct';
     Easel.progress = loadProgress();
     Easel._injectStyle();
@@ -114,6 +116,8 @@ export class Easel {
     Easel._onMmClose = () => Easel.suspended === 'mm' && Easel.suspend(false);
     window.addEventListener('pw:mm-show', Easel._onMmShow);
     window.addEventListener('pw:mm-close', Easel._onMmClose);
+    Easel._onMinigameOpen = (e) => e.detail !== 'easel' && Easel.close();
+    window.addEventListener('pw:minigame-open', Easel._onMinigameOpen);
     Easel.$('.easel-menu-btn').onclick = () => Easel.game && Easel.pause(!Easel.paused);
     // звуки кнопок — как у лаунчера (domAudioPresets: Click / ClickClose)
     root.addEventListener('pointerdown', (e) => {
@@ -155,6 +159,7 @@ export class Easel {
     window.removeEventListener('keydown', Easel._onKey, true);
     window.removeEventListener('pw:mm-show', Easel._onMmShow);
     window.removeEventListener('pw:mm-close', Easel._onMmClose);
+    window.removeEventListener('pw:minigame-open', Easel._onMinigameOpen);
     clearInterval(Easel._suspendPoll);
     Easel.suspended = false;
     Easel.records = Easel._recordsReq = null;

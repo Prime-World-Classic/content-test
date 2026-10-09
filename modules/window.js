@@ -303,6 +303,15 @@ export class Window {
     return DOM({ id: 'wtop', cleanup: () => viewTop.cleanup?.() }, viewTop);
   }
   static async farm() {
+    // одна мини-игра за раз: открытая «Мастерская свитков» закрывается,
+    // а при её открытии закрывается это окно
+    window.dispatchEvent(new CustomEvent('pw:minigame-open', { detail: 'farm' }));
+    if (!Window.farmMinigameListener) {
+      Window.farmMinigameListener = (e) => {
+        if (e.detail !== 'farm' && Window.windows.main?.id === 'wgame') Window.close('main');
+      };
+      window.addEventListener('pw:minigame-open', Window.farmMinigameListener);
+    }
     let view = await View.game(true);
     return DOM({ id: 'wgame' }, view);
   }

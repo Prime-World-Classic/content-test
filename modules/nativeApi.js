@@ -532,10 +532,39 @@ export class NativeAPI {
   // и проверяем, что ключевые файлы читаются, только потом перезагружаем.
   static CONTENT_RELOAD_FILES = ['content/app.js', 'content/modules/_modules.js', 'content/modules/app.js'];
 
+  // Перезагрузка сразу после успешного обновления: апдейтер только что
+  // отработал, а повторный запуск на старте (_modules.js → update) в эту же
+  // секунду ловил сетевой сбой/заблокированные NW файлы content — NanoUpdater
+  // на любой ошибке удаляет .git и клонирует content целиком заново.
+  // Поэтому перед reload запоминаем ревизию, и на старте, если она не
+  // изменилась, апдейтер не запускаем (следующую проверку сделает content-watch).
+  static RELOAD_AFTER_UPDATE_KEY = 'pwUpdateReloadRev';
+  static RELOAD_AFTER_UPDATE_TTL_MS = 10 * 60 * 1000;
+
+  static async markReloadAfterUpdate() {
+    try {
+      const rev = await NativeAPI.readContentRevision();
+      if (!rev) return;
+      sessionStorage.setItem(NativeAPI.RELOAD_AFTER_UPDATE_KEY, JSON.stringify({ rev, at: Date.now() }));
+    } catch {}
+  }
+
+  static async takeReloadAfterUpdate() {
+    let mark = null;
+    try {
+      mark = JSON.parse(sessionStorage.getItem(NativeAPI.RELOAD_AFTER_UPDATE_KEY) || 'null');
+      sessionStorage.removeItem(NativeAPI.RELOAD_AFTER_UPDATE_KEY);
+    } catch {}
+    if (!mark || !mark.rev || !(Date.now() - mark.at < NativeAPI.RELOAD_AFTER_UPDATE_TTL_MS)) return false;
+    const rev = await NativeAPI.readContentRevision();
+    return rev !== null && rev === mark.rev;
+  }
+
   static async resetWhenContentReady() {
     if (!NativeAPI.status) return;
     const fs = NativeAPI.fileSystem;
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    await NativeAPI.markReloadAfterUpdate();
     await sleep(1500);
     for (let attempt = 1; attempt <= 20; attempt++) {
       let missing = '';
@@ -911,6 +940,16 @@ export class NativeAPI {
         PWGame.isUpToDate = true;
         PWGame.isValidated = true;
         NativeAPI.logUpdate('updater-missing', updaterPath);
+        return true;
+      }
+
+      // Окно только что перезагружено после обновления — content уже свежий,
+      // повторный прогон апдейтера не нужен (и опасен, см. markReloadAfterUpdate).
+      if (!background && (await NativeAPI.takeReloadAfterUpdate())) {
+        PWGame.isUpToDate = true;
+        PWGame.isValidated = true;
+        NativeAPI.logUpdate('skip-after-reload', `rev=${await NativeAPI.readContentRevision()}`);
+        NativeAPI.startContentWatch();
         return true;
       }
 
