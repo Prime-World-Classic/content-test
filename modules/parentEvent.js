@@ -62,4 +62,25 @@ export class ParentEvent {
 
     App.notify(body);
   }
+
+  // Страница провайдера (регистрация через Яндекс) просит открыть ссылку в
+  // системном браузере: попап — окно приложения, и обычная ссылка открыла бы
+  // соглашение ещё одним окном лончера. Хост — только наш: сообщение может
+  // прислать любая страница, открытая как попап.
+  static openExternal(body) {
+    const url = `${(body && body.url) || ''}`.trim();
+    let host = '';
+
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'https:') return;
+      host = parsed.hostname.toLowerCase();
+    } catch {
+      return;
+    }
+
+    if (host !== 'zone-play.com' && !host.endsWith('.zone-play.com')) return;
+
+    App.OpenExternalLink(url);
+  }
 }
