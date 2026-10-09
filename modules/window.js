@@ -208,7 +208,11 @@ export class Window {
   };
   static authPopupPath(provider, mode) {
     const base = Window.authProviders[provider]?.popup || '/';
-    return mode === 'register' ? `${base}?mode=register` : base;
+    // Режим передаётся ЯВНО и на входе (?mode=login): бэкенд различает новый
+    // клиент / старый по наличию mode (временный STEAM_LEGACY_REGISTER: запрос
+    // без mode = старый контент, ему разрешено авторегистрировать аккаунт).
+    // Без явного login вход нового клиента уехал бы в legacy-авторегистрацию.
+    return `${base}?mode=${mode === 'register' ? 'register' : 'login'}`;
   }
   // Язык серверных сообщений (ошибки входа/привязки) передаётся провайдеру:
   // у попапа своя цепочка редиректов, Accept-Language там системный, а не
