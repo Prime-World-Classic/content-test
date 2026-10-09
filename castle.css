@@ -3767,7 +3767,7 @@ body:has(#wbuild) .castle-bottom-content {
 .launcher-restart-quick-tab {
   position: fixed;
   right: 1.15cqh;
-  top: 29.4cqh;
+  top: 36.2cqh;
   z-index: 80;
   width: 6.4cqh;
   height: 6.4cqh;
@@ -3783,6 +3783,177 @@ body:has(#wbuild) .castle-bottom-content {
   cursor: var(--cursor-pointer);
   animation: launcher-notification-pulse 1.4s ease-in-out infinite;
   transition: filter 160ms ease;
+}
+
+/* «Мини-игры» под «Залом славы»: при наведении — список (мини-игры доступны и без 3D-замка) */
+.launcher-minigames-quick {
+  position: fixed;
+  right: 1.15cqh;
+  top: 29.4cqh;
+  z-index: 80;
+  width: 6.4cqh;
+  height: 6.4cqh;
+}
+
+.launcher-minigames-quick-tab {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  border: 0.35cqh solid #e1c64d;
+  border-radius: 50%;
+  background:
+    url('icons/minigame-zuma.webp') center 52% / 72% 72% no-repeat,
+    radial-gradient(circle at 35% 30%, #b6e35a, #4f9a1f 55%, #2c5e10);
+  box-shadow:
+    0 0.35cqh 0.45cqh rgba(0, 0, 0, 0.52),
+    inset 0 0.3cqh 0.6cqh rgba(255, 255, 255, 0.25);
+  opacity: 0.8;
+  cursor: var(--cursor-pointer);
+  transition:
+    opacity 160ms ease,
+    filter 160ms ease;
+}
+
+.launcher-minigames-quick:hover .launcher-minigames-quick-tab,
+.launcher-minigames-quick.is-open .launcher-minigames-quick-tab,
+.launcher-minigames-quick-tab:focus-visible {
+  opacity: 1;
+  filter: brightness(1.1);
+}
+
+.launcher-minigames-list {
+  display: none;
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  box-sizing: border-box;
+  width: max-content;
+  min-width: 27cqh;
+  margin-right: 0.8cqh;
+  padding: 3.2cqh 1cqh 1cqh;
+  border: 0.22cqh solid rgb(208, 180, 96);
+  border-radius: 1cqh;
+  background:
+    url('img/modalHeader.png') left top / auto 2.2cqh no-repeat,
+    url('img/modalHeaderRight.png') 16.4cqh top / auto 2.2cqh repeat-x,
+    linear-gradient(180deg, rgba(16, 147, 159, 0.96), rgba(3, 72, 82, 0.98)) top / 100% 2.2cqh no-repeat,
+    linear-gradient(180deg, rgba(18, 76, 80, 0.94) 0%, rgba(14, 62, 66, 0.95) 100%);
+  box-shadow:
+    0 0.6cqh 1.8cqh rgba(0, 0, 0, 0.5),
+    inset 0 0 0.7cqh rgba(255, 255, 255, 0.06);
+  flex-direction: column;
+  gap: 0.8cqh;
+}
+
+.launcher-minigames-quick:hover .launcher-minigames-list,
+.launcher-minigames-quick.is-open .launcher-minigames-list,
+.launcher-minigames-quick:focus-within .launcher-minigames-list {
+  display: flex;
+}
+
+.launcher-minigames-quick::before {
+  /* прозрачный «мостик» между кнопкой и списком: список не пропадает, пока курсор идёт к нему */
+  content: '';
+  position: absolute;
+  top: -2cqh;
+  bottom: -2cqh;
+  right: 100%;
+  width: 1.6cqh;
+}
+
+.launcher-minigames-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.2cqh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgb(252, 229, 188);
+  font:
+    1.55cqh / 1 'DejaVuSans',
+    sans-serif;
+  text-shadow:
+    rgba(0, 0, 0, 0.5) 0.1cqh 0.1cqh 0.1cqh,
+    rgba(0, 0, 0, 0.5) -0.1cqh -0.1cqh 0.1cqh;
+}
+
+.launcher-minigames-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1cqh;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.7cqh 1.4cqh 0.7cqh 0.7cqh;
+  border: 0.16cqh solid rgba(168, 151, 82, 0.95);
+  border-radius: 1cqh;
+  background: linear-gradient(180deg, rgba(4, 64, 63, 0.98), rgba(0, 32, 35, 0.98));
+  box-shadow:
+    inset 0 0.16cqh 0.22cqh rgba(99, 222, 211, 0.18),
+    inset 0 -0.28cqh 0.45cqh rgba(0, 0, 0, 0.48),
+    0 0 0 0.12cqh rgba(13, 61, 45, 0.95);
+  color: rgb(252, 229, 188);
+  text-align: left;
+  cursor: var(--cursor-pointer);
+  transition:
+    filter 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.launcher-minigames-item:not(.is-soon):hover {
+  border-color: rgba(195, 181, 101, 0.98);
+  filter: brightness(1.12);
+}
+
+.launcher-minigames-item.is-soon {
+  cursor: var(--cursor-default);
+  filter: grayscale(0.55) brightness(0.75);
+}
+
+.launcher-minigames-item-icon {
+  flex: none;
+  width: 4.6cqh;
+  height: 4.6cqh;
+  border-radius: 50%;
+  border: 0.2cqh solid #e1c64d;
+  background: radial-gradient(circle at 35% 30%, #b6e35a, #4f9a1f 55%, #2c5e10);
+  box-shadow: inset 0 0.25cqh 0.5cqh rgba(255, 255, 255, 0.25);
+}
+
+.launcher-minigames-item-icon.is-easel {
+  background:
+    url('icons/minigame-zuma.webp') center 52% / 74% 74% no-repeat,
+    radial-gradient(circle at 35% 30%, #b6e35a, #4f9a1f 55%, #2c5e10);
+}
+
+.launcher-minigames-item-icon.is-match3 {
+  background:
+    url('icons/minigame-match3.webp') center / 70% 70% no-repeat,
+    radial-gradient(circle at 35% 30%, #8fd8e8, #2a7c9a 55%, #123f55);
+}
+
+.launcher-minigames-item-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35cqh;
+  font:
+    1.75cqh / 1.1 'DejaVuSans',
+    sans-serif;
+  text-shadow: 0 0.1cqh 0.2cqh rgba(0, 0, 0, 0.7);
+}
+
+.launcher-minigames-item-text b {
+  font-weight: normal;
+}
+
+.launcher-minigames-item-text small {
+  font-size: 1.3cqh;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .launcher-restart-quick-tab::before {

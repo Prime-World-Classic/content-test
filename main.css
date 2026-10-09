@@ -6321,8 +6321,10 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   top: auto;
   right: auto;
   bottom: calc(100% + 1.1vh);
-  left: 50%;
-  transform: translateX(-50%);
+  /* кнопка у левого края окна, а .wtop-window-body режет overflow:
+     по центру подсказка уходила за край («ильтровать по герою») — тянем вправо от кнопки */
+  left: 0;
+  transform: none;
   content: attr(data-tooltip);
   background: rgba(14, 31, 33, 0.85);
   border: 0.16vh solid rgba(90, 133, 130, 0.62);
@@ -6619,6 +6621,24 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .wtop-cell--hero-stat-number {
   font-weight: 400;
+}
+
+/* «Звёзды славы»: число + звезда, как у ника в чате */
+.wtop-cell--stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4cqh;
+  color: #ffd06a;
+  font-weight: 600;
+}
+
+.wtop-star-icon {
+  width: 2.3cqh;
+  height: 2.3cqh;
+  object-fit: contain;
+  flex: 0 0 auto;
+  pointer-events: none;
 }
 
 .wtop-cell--hero-stat-winrate {

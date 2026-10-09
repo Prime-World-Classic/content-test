@@ -115,6 +115,8 @@ export const be = {
     language: 'Мова',
     LangTarg: 'Мова зменены',
     topHeroesTab: 'Героі',
+    topStarsTab: 'Зоркі славы',
+    topColStars: 'Зоркі',
     topPeriodRecentPlayers: '30 дзён',
     topPeriodAllPlayers: 'Усе гульцы',
     topUpdateCountdown: 'Рэйтынг абновіцца праз',

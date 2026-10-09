@@ -3958,20 +3958,9 @@
           "objects": [
             {
               "mesh": "easel/doct_0.bin",
-              "indexCount": 6204,
+              "indexCount": 1710,
               "shader": "shader_pos_norm_uv_ak",
               "texture": "easel/doct_board",
-              "transform": [
-                -4.65, 0, 0, 1090.0, 0, 0, 4.65, 27.9603, 0, 4.65, 0, 1380.0,
-
-                0, 0, 0, 1
-              ]
-            },
-            {
-              "mesh": "easel/doct_1.bin",
-              "indexCount": 6360,
-              "shader": "shader_pos_norm_uv",
-              "texture": "easel/doct_gem",
               "transform": [
                 -4.65, 0, 0, 1090.0, 0, 0, 4.65, 27.9603, 0, 4.65, 0, 1380.0,
 
@@ -3984,7 +3973,7 @@
               "shader": "shader_pos_norm_uv",
               "texture": "easel/fx_drops",
               "transform": [
-                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 25.6353, 0, 5.115, 0, 1373.025,
+                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 25.556305, 0, 5.115, 0, 1372.38449,
 
                 0, 0, 0, 1
               ]
@@ -3997,7 +3986,7 @@
               "blend": ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
               "tintColor": [1, 1, 1, 0.7],
               "transform": [
-                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 26.1468, 0, 5.115, 0, 1373.025,
+                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 26.067805, 0, 5.115, 0, 1372.38449,
 
                 0, 0, 0, 1
               ]
@@ -8860,9 +8849,20 @@
           "objects": [
             {
               "mesh": "easel/ad_0.bin",
-              "indexCount": 3420,
+              "indexCount": 3102,
               "shader": "shader_pos_norm_uv_ak",
               "texture": "easel/ad_board",
+              "transform": [
+                -4.65, 0, 0, 1090.0, 0, 0, 4.65, 27.9603, 0, 4.65, 0, 1380.0,
+
+                0, 0, 0, 1
+              ]
+            },
+            {
+              "mesh": "easel/ad_1.bin",
+              "indexCount": 3180,
+              "shader": "shader_pos_norm_uv",
+              "texture": "easel/ad_gem",
               "transform": [
                 -4.65, 0, 0, 1090.0, 0, 0, 4.65, 27.9603, 0, 4.65, 0, 1380.0,
 
@@ -8875,7 +8875,7 @@
               "shader": "shader_pos_norm_uv",
               "texture": "easel/fx_drops",
               "transform": [
-                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 25.556305, 0, 5.115, 0, 1372.38449,
+                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 25.6353, 0, 5.115, 0, 1373.025,
 
                 0, 0, 0, 1
               ]
@@ -8888,7 +8888,7 @@
               "blend": ["SRC_ALPHA", "ONE_MINUS_SRC_ALPHA"],
               "tintColor": [1, 1, 1, 0.7],
               "transform": [
-                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 26.067805, 0, 5.115, 0, 1372.38449,
+                -5.115, 0, 0, 1090.0, 0, 0, 5.115, 26.1468, 0, 5.115, 0, 1373.025,
 
                 0, 0, 0, 1
               ]

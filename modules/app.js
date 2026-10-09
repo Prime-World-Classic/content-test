@@ -1161,6 +1161,7 @@ export class App {
     App.notificationsButton = button;
     App.ensureNotificationsQuickTab();
     App.ensureHallOfFameQuickTab();
+    App.ensureMinigamesQuickTab();
     App.showLauncherRestartButton();
     App.renderNotificationsButton();
     return button;
@@ -1204,6 +1205,8 @@ export class App {
     App.notificationsQuickButton = null;
     App.hallOfFameQuickButton?.remove();
     App.hallOfFameQuickButton = null;
+    App.minigamesQuickTab?.remove();
+    App.minigamesQuickTab = null;
     App.launcherRestartButton?.remove();
   }
 
@@ -1221,6 +1224,62 @@ export class App {
     });
     App.hallOfFameQuickButton.setAttribute('aria-label', title);
     document.body.append(App.hallOfFameQuickButton);
+  }
+
+  // Быстрая кнопка «Мини-игры» под «Залом славы»: при наведении — список мини-игр
+  // (доступны и без 3D-замка, где здания не видно)
+  static ensureMinigamesQuickTab() {
+    if (App.minigamesQuickTab?.isConnected) return;
+    const title = Lang.text('minigames');
+    const item = (icon, name, sub, open) => {
+      const props = { tag: 'button', type: 'button', style: ['launcher-minigames-item'] };
+      if (open) {
+        props.domaudio = domAudioPresets.bigButton;
+        props.event = [
+          'click',
+          () => {
+            App.minigamesQuickTab?.classList.remove('is-open');
+            open();
+          },
+        ];
+      } else {
+        props.style.push('is-soon');
+        props.disabled = true;
+      }
+      return DOM(
+        props,
+        DOM({ style: ['launcher-minigames-item-icon', icon] }),
+        DOM({ style: 'launcher-minigames-item-text' }, DOM({ tag: 'b' }, name), DOM({ tag: 'small' }, sub)),
+      );
+    };
+    const list = DOM(
+      { style: 'launcher-minigames-list' },
+      DOM({ style: 'launcher-minigames-title' }, title),
+      item('is-easel', Lang.text('easel_doct'), Lang.text('minigameEaselSub'), () => App.openEasel()),
+      // «Фарм талантов» (здание talent_farm, Window.farm → View.game / game.js): три в ряд из талантов
+      item('is-match3', Lang.text('minigameMatch3'), Lang.text('minigameMatch3Sub'), () => Window.show('main', 'farm')),
+    );
+    const button = DOM({
+      tag: 'button',
+      type: 'button',
+      domaudio: domAudioPresets.defaultButton,
+      style: 'launcher-minigames-quick-tab',
+      event: ['click', () => App.minigamesQuickTab.classList.toggle('is-open')],
+    });
+    button.setAttribute('aria-label', title);
+    App.minigamesQuickTab = DOM({ style: 'launcher-minigames-quick' }, button, list);
+    App.minigamesQuickTab.addEventListener('mouseleave', () => App.minigamesQuickTab?.classList.remove('is-open'));
+    document.body.append(App.minigamesQuickTab);
+  }
+
+  static async openEasel() {
+    try {
+      const [{ Easel }, { Castle }] = await Promise.all([import('./easel/easel.js'), import('./castle.js')]);
+      await Easel.open(Castle.currentSceneName || (App.storage.data.fraction == 1 ? 'ad' : 'doct'));
+    } catch (e) {
+      console.error(e);
+      App.notify(Lang.text('easelComingSoon'));
+    }
   }
 
   // Кнопка «Перезапустить» под быстрыми кнопками: появляется, когда фоновое

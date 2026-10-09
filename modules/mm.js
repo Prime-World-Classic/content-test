@@ -148,6 +148,8 @@ export class MM {
     MM.view.append(content);
 
     MM.view.style.display = 'flex';
+    // окно боя (готовность/тамбур) поверх всего: мини-игры сворачиваются (easel.js)
+    window.dispatchEvent(new Event('pw:mm-show'));
   }
 
   static close() {
@@ -191,6 +193,7 @@ export class MM {
     MM.skipVoiceRestoreOnClose = false;
 
     MM.view.style.display = 'none';
+    window.dispatchEvent(new Event('pw:mm-close'));
 
     Voice.infoPanel.classList.remove('left-offset-no-shift');
     Voice.infoPanel.classList.add('left-offset-with-shift');

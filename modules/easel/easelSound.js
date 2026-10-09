@@ -21,6 +21,8 @@ export const SOUNDS = [
   'easel_result_gold',
   'easel_result_silver',
   'easel_coin_catched',
+  'easel_ball_in_tunnel',
+  'easel_ball_out_tunnel',
   'easel_boost_paintblast_clic',
   'easel_boost_paintblas_explosion',
   'easel_boost_freeze_click',
