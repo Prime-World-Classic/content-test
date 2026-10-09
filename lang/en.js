@@ -130,9 +130,9 @@ export const en = {
     registrationYandex: 'Sign up with Yandex',
     registrationViaTitle: 'Sign up with',
     steamauthRegister:
-      'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. The account will be linked to your Steam account.\n\nIf you already have an account, go back to the sign in page. You can link an account to Steam from the settings.',
+      'By clicking Continue you will get to the sign up page: pick a game name and choose a faction. The account will be linked to your Steam account.\n\nIf you already have an account, go back to the sign in page. You can link an account to Steam from the settings.',
     yandexauthRegister:
-      'By clicking Continue you will get to the sign up page: pick a game name, choose a faction and accept the personal data processing terms. Only the unique identifier is taken from your Yandex account.\n\nIf you already have an account, go back to the sign in page. You can link an account to Yandex from the account menu.',
+      'By clicking Continue you will get to the sign up page: pick a game name and choose a faction. Only the unique identifier is taken from your Yandex account.\n\nIf you already have an account, go back to the sign in page. You can link an account to Yandex from the account menu.',
     providerSteam: 'Steam',
     providerYandex: 'Yandex',
     providerRegistration: 'Prime World: Classic sign up',
