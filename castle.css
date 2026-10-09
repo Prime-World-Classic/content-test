@@ -3849,6 +3849,11 @@ body:has(#wbuild) .castle-bottom-content {
   display: flex;
 }
 
+/* после выбора игры список скрыт, пока курсор не уйдёт с кнопки (иначе держится :hover/:focus-within) */
+.launcher-minigames-quick.is-picked .launcher-minigames-list {
+  display: none;
+}
+
 .launcher-minigames-quick::before {
   /* прозрачный «мостик» между кнопкой и списком: список не пропадает, пока курсор идёт к нему */
   content: '';

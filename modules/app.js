@@ -1245,6 +1245,8 @@ export class App {
           'click',
           () => {
             App.minigamesQuickTab?.classList.remove('is-open');
+            App.minigamesQuickTab?.classList.add('is-picked');
+            document.activeElement?.blur?.();
             open();
           },
         ];
@@ -1270,11 +1272,17 @@ export class App {
       type: 'button',
       domaudio: domAudioPresets.defaultButton,
       style: 'launcher-minigames-quick-tab',
-      event: ['click', () => App.minigamesQuickTab.classList.toggle('is-open')],
+      event: [
+        'click',
+        () => {
+          App.minigamesQuickTab.classList.remove('is-picked');
+          App.minigamesQuickTab.classList.toggle('is-open');
+        },
+      ],
     });
     button.setAttribute('aria-label', title);
     App.minigamesQuickTab = DOM({ style: 'launcher-minigames-quick' }, button, list);
-    App.minigamesQuickTab.addEventListener('mouseleave', () => App.minigamesQuickTab?.classList.remove('is-open'));
+    App.minigamesQuickTab.addEventListener('mouseleave', () => App.minigamesQuickTab?.classList.remove('is-open', 'is-picked'));
     document.body.append(App.minigamesQuickTab);
   }
 
