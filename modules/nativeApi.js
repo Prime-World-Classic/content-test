@@ -92,6 +92,9 @@ export class NativeAPI {
     NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
     NativeAPI.refreshVoiceHotkeys();
 
+    // Любая перезагрузка страницы (не только NativeAPI.reset) — снять глобальные хоткеи.
+    window.addEventListener('beforeunload', () => NativeAPI.unregisterAllGlobalHotkeys());
+
     NativeAPI.window.on('close', () => {
       NativeAPI.exit();
     });
@@ -197,6 +200,18 @@ export class NativeAPI {
     NativeAPI.voiceDestroyShortcut = null;
     NativeAPI.voiceUpVolume = null;
     NativeAPI.voiceDownVolume = null;
+  }
+
+  // Глобальные хоткеи регистрируются на всё NW-приложение и переживают перезагрузку
+  // страницы (reloadIgnoringCache после фонового обновления). Старая регистрация
+  // ведёт в уничтоженный контекст, а новая с тем же ключом не проходит — Ctrl+Z
+  // переставал работать до полного перезапуска. Поэтому снимаем всё перед выгрузкой.
+  static unregisterAllGlobalHotkeys() {
+    if (!NativeAPI.status || !NativeAPI.app) return;
+    NativeAPI.unregisterVoiceHotkeys();
+    try {
+      if (NativeAPI.altEnterShortcut) NativeAPI.app.unregisterGlobalHotKey(NativeAPI.altEnterShortcut);
+    } catch {}
   }
 
   static refreshVoiceHotkeys() {
@@ -523,6 +538,7 @@ export class NativeAPI {
       return;
     }
 
+    NativeAPI.unregisterAllGlobalHotkeys();
     nw.Window.get().reloadIgnoringCache();
   }
 
