@@ -66,6 +66,8 @@ export class Voice {
 
   static userMedia = null;
 
+  static localMediaPromise = null;
+
   static rawMic = null;
 
   static mic = null;
@@ -97,6 +99,10 @@ export class Voice {
   static mergeAutoAcceptUntil = new Map();
   
   static battleSuspendedPeers = new Map();
+
+  static battleSuspendedAt = 0;
+
+  static battleSuspendMaxMs = 3 * 60 * 1000;
   
   static mutedPeers = new Set();
   
@@ -543,7 +549,17 @@ export class Voice {
     if (Voice.userMedia) {
       return;
     }
+    // Two calls started before getUserMedia resolves must share one mic; otherwise the second
+    // overwrites Voice.mic and the first peer keeps a track that Ctrl+Z no longer controls.
+    if (!Voice.localMediaPromise) {
+      Voice.localMediaPromise = Voice.initLocalMediaOnce().finally(() => {
+        Voice.localMediaPromise = null;
+      });
+    }
+    return Voice.localMediaPromise;
+  }
 
+  static async initLocalMediaOnce() {
     Voice.showInfoPanel();
 
     try {
@@ -860,6 +876,18 @@ export class Voice {
             status = Lang.text('voiceConnecting');
             break;
 
+          case 'disconnected':
+            status = Lang.text('voiceDisconnected');
+            break;
+
+          case 'failed':
+            status = Lang.text('voiceFailed');
+            break;
+
+          case 'closed':
+            status = Lang.text('voiceClosed');
+            break;
+
           default:
             status = Voice.manager[id].peer.connectionState;
             break;
@@ -957,11 +985,15 @@ export class Voice {
 
     indication();
 
-    const originalOnConnectionStateChange = Voice.manager[id].peer.onconnectionstatechange;
-    Voice.manager[id].peer.onconnectionstatechange = (...args) => {
+    // Wrap the constructor's handler, not the current one: the panel is rebuilt on every
+    // updateInfoPanel, and chaining wrappers would grow without bound (one meter per layer).
+    const target = Voice.manager[id];
+    const baseOnConnectionStateChange = target.baseOnConnectionStateChange;
+    target.peer.onconnectionstatechange = (...args) => {
       try {
-        originalOnConnectionStateChange?.(...args);
+        baseOnConnectionStateChange?.(...args);
       } catch {}
+      if (Voice.manager[id] !== target) return;
       updateItemView();
 
       indication();
@@ -1082,7 +1114,15 @@ export class Voice {
     return Array.from(new Set(result));
   }
 
+  // Between the lobby closing and the game process starting neither MM.isInTambur nor
+  // MM.isInBattle is set; friend calls must still be ignored then. Cleared on restore,
+  // and expires on its own in case the game never started.
+  static isBattleSuspendActive() {
+    return Voice.battleSuspendedAt > 0 && Date.now() - Voice.battleSuspendedAt < Voice.battleSuspendMaxMs;
+  }
+
   static suspendPeersForBattle(allyIds = []) {
+    Voice.battleSuspendedAt = Date.now();
     const cleanIds = Array.from(new Set((allyIds || []).map((x) => Number(x)).filter((x) => Number.isFinite(x) && x > 0)));
     const allySet = new Set(cleanIds);
     for (const idText of Object.keys(Voice.manager)) {
@@ -1124,6 +1164,7 @@ export class Voice {
   }
 
   static restoreSuspendedBattlePeers() {
+    Voice.battleSuspendedAt = 0;
     if (!Voice.battleSuspendedPeers.size) {
       return;
     }
@@ -1149,6 +1190,13 @@ export class Voice {
   }
 
   static async remoteDrop(id) {
+    // The peer hung up (or paused for battle): stop re-calling them even between attempts,
+    // when there is no live entry to close.
+    for (const job of Array.from(Voice.reconnectJobs.values())) {
+      if (job.id === Number(id)) {
+        Voice.stopReconnectJob(job.id, job.key);
+      }
+    }
     const target = Voice.manager[id];
     if (!target) return;
     Voice.setMutedByPeer(id, false);
@@ -1166,13 +1214,25 @@ export class Voice {
     if (!full && Voice.infoPanel?.classList?.contains('voice-window-mode')) {
       return;
     }
-    Voice.stopAllReconnectJobs();
-    Voice.battleSuspendedPeers.clear();
+    if (full) {
+      Voice.stopAllReconnectJobs();
+      Voice.battleSuspendedPeers.clear();
+    } else {
+      // Pending reconnects of non-friend calls (peer currently not in manager) must stop too.
+      for (const job of Array.from(Voice.reconnectJobs.values())) {
+        if (!job.important && job.key !== 'friend') {
+          Voice.stopReconnectJob(job.id, job.key);
+        }
+      }
+    }
     for (let id in Voice.manager) {
-      if (!full && Voice.manager[id].important) {
+      // Ctrl+K drops everything except friends; auto-accepted friend calls (merge, battle
+      // restore) are not flagged important, so check the friend scope as well.
+      if (!full && (Voice.manager[id].important || Voice.isFriendScopedConnection(Voice.manager[id]))) {
         continue;
       }
 
+      Voice.stopReconnectJob(Number(id), String(Voice.manager[id].key || ''));
       if (Number(id) > 0) {
         App.api.ghost('user', 'callDrop', { id: Number(id) }).catch(() => {});
       }
@@ -1300,9 +1360,16 @@ export class Voice {
         continue;
       }
 
-      let voice = new Voice(user.id, key, user.name);
+      // One rejected ally (left the match, server check failed) must not stop calls to the rest.
+      let voice = null;
+      try {
+        voice = new Voice(user.id, key, user.name);
 
-      await voice.call();
+        await voice.call();
+      } catch (error) {
+        console.log('Voice.association call failed:', user.id, error);
+        voice?.close();
+      }
     }
   }
 
@@ -1480,6 +1547,7 @@ export class Voice {
           break;
       }
     };
+    this.baseOnConnectionStateChange = this.peer.onconnectionstatechange;
 
     this.peer.oniceconnectionstatechange = () => {
       switch (this.peer.iceConnectionState) {
@@ -1577,7 +1645,8 @@ export class Voice {
     this.timer = setTimeout(() => {
       this.timer = null;
 
-      this.close();
+      // Unanswered reconnect attempt: keep the job so it retries per reconnectPlanMs.
+      this.close({ keepReconnect: Boolean(Voice.getReconnectJob(this.id, this.key)) });
     }, 15000);
 
     await App.api.request('user', 'call', {
@@ -1632,11 +1701,18 @@ export class Voice {
   }
 
   async close(options = {}) {
+    // A placeholder (constructor found the id busy or the limit hit) was never registered:
+    // closing it must not evict the live entry for this id or stop its reconnect job.
+    if (!this.peer) {
+      return;
+    }
+    // A repeated close() of an already replaced object must not touch the newer entry for this id.
+    const isLive = Voice.manager[this.id] === this;
     const keepReconnect = Boolean(options?.keepReconnect);
     if (!keepReconnect) {
       this.allowAutoReconnect = false;
     }
-    if (!keepReconnect) {
+    if (!keepReconnect && isLive) {
       Voice.stopReconnectJob(this.id, this.key);
     }
     if (this.disconnectTimer) {
@@ -1657,6 +1733,18 @@ export class Voice {
     try {
       this.playbackGain?.disconnect?.();
     } catch {}
+    if (this.controller) {
+      try {
+        this.controller.pause();
+        this.controller.srcObject = null;
+        this.controller.remove();
+      } catch {}
+      this.controller = null;
+    }
+
+    if (!isLive) {
+      return;
+    }
 
     delete Voice.manager[this.id];
     

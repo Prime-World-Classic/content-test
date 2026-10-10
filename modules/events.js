@@ -5,6 +5,7 @@ import { View } from './view.js';
 import { Rank } from './rank.js';
 import { App } from './app.js';
 import { Voice } from './voice.js';
+import { shouldYieldToIncomingCall } from './voiceGlare.js';
 import { Chat } from './chat.js';
 import { NativeAPI } from './nativeApi.js';
 import { MM } from './mm.js';
@@ -367,7 +368,7 @@ export class Events {
       return;
     }
     const callKey = String(data?.key || '');
-    if (MM.isInBattle && callKey === 'friend') {
+    if ((MM.isInBattle || Voice.isBattleSuspendActive()) && callKey === 'friend') {
       return;
     }
     const activeMatchKey = String(MM.id || '');
@@ -377,8 +378,11 @@ export class Events {
     const existing = Voice.manager?.[Number(data?.id)];
     if (existing?.peer && existing.peer.connectionState !== 'closed') {
       // Cross-calls may arrive while we already have an active/pending connection.
-      // Ignore duplicate incoming invite for the same peer to prevent race-induced drops.
-      return;
+      // Ignore duplicate incoming invite, except glare where we must yield (see voiceGlare.js).
+      if (!shouldYieldToIncomingCall(App.storage?.data?.id, data?.id, existing.peer)) {
+        return;
+      }
+      existing.close({ keepReconnect: true });
     }
     const forceAutoAccept = Voice.consumeMergeAutoAccept(data?.id);
     if (data.isCaller && Number(data?.reconnect || 0) !== 1 && !forceAutoAccept) {
@@ -394,16 +398,22 @@ export class Events {
         );
       };  
 	  
+      // Окно предыдущего звонка закрываем до подстановки новых данных и до запуска мелодии:
+      // иначе Window.close сбросит уже новый звонок (и его звук), а окно отрисуется пустым.
+      if (Window.windows?.main?.id === 'wcastle-call') {
+        Window.close('main');
+      }
+
       if (!MM.isInTambur) {
 		playCallSoundLoop();
 	  }
-	  
+
       Window.callData = data;
         
       Window.show('main', 'callWindow');
 		
     } else {
-      let voice = new Voice(data.id, callKey, data.name);
+      let voice = new Voice(data.id, callKey, data.name, callKey === 'friend');
 
       await voice.accept(data.offer);
     }
@@ -426,7 +436,7 @@ export class Events {
   }
 
   static async VFriendMerge(data) {
-    if (MM.isInTambur || MM.isInBattle) {
+    if (MM.isInTambur || MM.isInBattle || Voice.isBattleSuspendActive()) {
       return;
     }
     await Voice.mergeFriendCalls(data?.users || []);

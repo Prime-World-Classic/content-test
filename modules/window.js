@@ -139,8 +139,7 @@ export class Window {
       if (windowElement) {
         // Окно звонка
         if (windowElement.id === 'wcastle-call') {
-          Sound.stop('ui-call');
-          Window.callData = null;
+          Window.dismissIncomingCall();
         }
 
         // Окно приглашения
@@ -174,8 +173,7 @@ export class Window {
       if (lastCategory === 'main') {
         const currentWindow = Window.windows['main'];
         if (currentWindow && currentWindow.id === 'wcastle-call') {
-          Sound.stop('ui-call');
-          Window.callData = null;
+          Window.dismissIncomingCall();
         }
         if (currentWindow.id === 'wcastle-invite') {
           if (Window.inviteTimeout) {
@@ -188,6 +186,21 @@ export class Window {
       return this.close(lastCategory);
     }
     return false;
+  }
+  // Закрытие окна входящего звонка без ответа (отклонить, Esc, таймаут):
+  // сообщаем звонящему, чтобы он не ждал 15 секунд «ожидание ответа».
+  // При принятии callData уже обнулён, сброс не отправляется.
+  static dismissIncomingCall() {
+    Sound.stop('ui-call');
+    if (Window.callTimeout) {
+      clearTimeout(Window.callTimeout);
+      Window.callTimeout = null;
+    }
+    const callerId = Number(Window.callData?.id);
+    Window.callData = null;
+    if (Number.isFinite(callerId) && callerId > 0) {
+      App.api.ghost('user', 'callDrop', { id: callerId }).catch(() => {});
+    }
   }
   static anyOpen() {
     return Window.windowOrder.length > 0;
@@ -2309,15 +2322,11 @@ export class Window {
     }
 
     const callTimeout = setTimeout(() => {
-      Sound.stop('ui-call');
-
-      if (Window.windows['main'] && Window.windows['main'].id === 'wcastle-call') {
-        App.api.request('user', 'callTimeout', { id: data.id }).catch(console.error);
+      Window.callTimeout = null;
+      // Окно может уже показывать другой звонок — закрываем только свой.
+      if (Window.callData === data && Window.windows['main'] && Window.windows['main'].id === 'wcastle-call') {
         Window.close('main');
       }
-
-      Window.callData = null;
-      Window.callTimeout = null;
     }, 15000);
 
     Window.callTimeout = callTimeout;
@@ -2338,6 +2347,11 @@ export class Window {
               'click',
               async () => {
                 Sound.stop('ui-call');
+                // Принимаем: таймаут окна не должен сработать (и сбросить звонок), пока идёт accept.
+                if (Window.callTimeout) {
+                  clearTimeout(Window.callTimeout);
+                  Window.callTimeout = null;
+                }
                 try {
                   let voice = new Voice(data.id, String(data?.key || ''), data.name, true);
                   await voice.accept(data.offer);
@@ -2361,8 +2375,7 @@ export class Window {
             event: [
               'click',
               async () => {
-                Sound.stop('ui-call');
-                Window.callData = null;
+                // Window.close → dismissIncomingCall сообщит звонящему об отказе
                 Window.close('main');
               },
             ],

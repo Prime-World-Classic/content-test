@@ -1,3 +1,4 @@
+@charset "UTF-8";
 html,
 body {
   cursor:
@@ -2814,13 +2815,13 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .castle-friend-last-seen::before {
-  content: '🕓';
+  content: '\1F553';
   margin-right: 1cqh;
   opacity: 0.85;
 }
 
 .castle-friend-last-seen.castle-friend-since::before {
-  content: '⏱';
+  content: '\23F1';
 }
 
 .castle-friend-request {
@@ -3950,7 +3951,7 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .launcher-restart-quick-tab::before {
-  content: '⟳';
+  content: '\27F3';
 }
 
 .launcher-restart-quick-tab:hover,
@@ -5060,7 +5061,7 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .launcher-news-state-badge::before {
-  content: '✓';
+  content: '\2713';
   width: 1.55cqh;
   height: 1.55cqh;
   display: inline-flex;

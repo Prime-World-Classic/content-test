@@ -24,7 +24,7 @@ export class App {
   // Тест-линия: CURRENT_MM=mmtest требует PW_VERSION == objects/mmtest.model.js
   // (`this.version`) — иначе каждый mm-запрос даёт «Вышло обновление …».
   // С 2.16.0 обе линии (mm и mmtest) одной версии.
-  static PW_VERSION = '2.16.1';
+  static PW_VERSION = '2.16.0';
 
   static CURRENT_MM = 'mmtest';
 
