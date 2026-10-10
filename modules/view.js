@@ -2512,11 +2512,9 @@ export class View {
         DOM(
           { style: 'quest-item-portrait-background' },
           hero,
-          isActiveQuest
-            ? ''
-            : DOM({
-                style: item.status == 0 ? 'quest-item-exclamation' : 'quest-item-completed',
-              }),
+          DOM({
+            style: item.status == 0 ? 'quest-item-exclamation' : 'quest-item-completed',
+          }),
         ),
         isActiveQuest ? timer : '',
       );

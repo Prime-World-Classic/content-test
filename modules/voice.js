@@ -13,7 +13,12 @@ export class Voice {
   static peerConnectionConfig = {
     // проверка stun https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
     iceServers: [
-      { urls: ['turn:81.88.210.30:3478'], credential: 'pw', username: 'pw' },
+      { urls: ['stun:pw-classic-backup.ru:3478'] },
+      {
+        urls: ['turn:pw-classic-backup.ru:3478?transport=udp', 'turn:pw-classic-backup.ru:3478?transport=tcp'],
+        credential: '2mOPlRXn4Y2BJSbGY0zN',
+        username: 'pwvoice',
+      },
       /*
 			{url:'turn:192.158.29.39:3478?transport=udp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
 			{url:'turn:192.158.29.39:3478?transport=tcp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
