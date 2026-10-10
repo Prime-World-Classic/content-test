@@ -2787,6 +2787,7 @@ body:has(#wbuild) .castle-bottom-content {
   bottom: 39.4cqh;
   font-size: 11cqh;
   line-height: 1;
+  color: rgba(235, 245, 255, 0.95);
   z-index: 3;
   pointer-events: none;
   filter: drop-shadow(0 0.35cqh 0.3cqh rgba(0, 0, 0, 0.7));
@@ -2815,13 +2816,21 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .castle-friend-last-seen::before {
-  content: '\1F553';
+  content: '';
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.14em;
   margin-right: 1cqh;
   opacity: 0.85;
+  background-color: currentColor;
+  -webkit-mask: url('icons/ui/clock.svg') center / contain no-repeat;
+  mask: url('icons/ui/clock.svg') center / contain no-repeat;
 }
 
 .castle-friend-last-seen.castle-friend-since::before {
-  content: '\23F1';
+  -webkit-mask-image: url('icons/ui/stopwatch.svg');
+  mask-image: url('icons/ui/stopwatch.svg');
 }
 
 .castle-friend-request {
@@ -3951,7 +3960,14 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .launcher-restart-quick-tab::before {
-  content: '\27F3';
+  content: '';
+  display: inline-block;
+  width: 3.6cqh;
+  height: 3.6cqh;
+  vertical-align: middle;
+  background-color: currentColor;
+  -webkit-mask: url('icons/ui/refresh.svg') center / contain no-repeat;
+  mask: url('icons/ui/refresh.svg') center / contain no-repeat;
 }
 
 .launcher-restart-quick-tab:hover,
@@ -4925,8 +4941,13 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .launcher-news-edit-button::before {
-  content: '\2699';
-  font: 1.65cqh / 1 'DejaVuSans', sans-serif;
+  content: '';
+  display: inline-block;
+  width: 1.65cqh;
+  height: 1.65cqh;
+  background-color: currentColor;
+  -webkit-mask: url('icons/ui/gear.svg') center / contain no-repeat;
+  mask: url('icons/ui/gear.svg') center / contain no-repeat;
 }
 
 .launcher-news-edit-button:hover {
@@ -5061,7 +5082,8 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .launcher-news-state-badge::before {
-  content: '\2713';
+  content: '';
+  background: url('icons/ui/check-badge.svg') center / 78% no-repeat;
   width: 1.55cqh;
   height: 1.55cqh;
   display: inline-flex;
@@ -5081,6 +5103,7 @@ body:has(#wbuild) .castle-bottom-content {
 
 .launcher-news-state-badge.is-unread::before {
   content: '!';
+  background-image: none;
   border-color: rgba(255, 217, 135, 0.9);
   color: #fff2bf;
 }

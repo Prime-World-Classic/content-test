@@ -25,6 +25,7 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { Sound } from './sound.js';
 import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/keybindings.io.js';
 import { getHeroSearchAliases } from './heroSearchAliases.js';
+import { uiIcon } from './uiIcon.js';
 
 const KEYBOARD_LAYOUT_EN_TO_RU = {
   q: 'й',
@@ -235,8 +236,8 @@ export class View {
     return badge.dataset.since ? View.formatFriendDuration(value, now) : View.formatFriendLastSeen(value, now);
   }
 
-  // Плашка над кнопками: оффлайн — «🕓 3 ч назад» (из lastOnline),
-  // в поиске / тамбуре / бою / отошёл — «⏱ 12 мин» (since из памяти API, без БД).
+  // Плашка над кнопками: оффлайн — «[часы] 3 ч назад» (из lastOnline),
+  // в поиске / тамбуре / бою / отошёл — «[секундомер] 12 мин» (since из памяти API, без БД).
   static syncFriendLastSeenBadge(card, item) {
     if (!card) return;
     const state = View.normalizeFriendPresenceState(item);
@@ -503,7 +504,7 @@ export class View {
     const mobileEmoji = card.querySelector('.castle-friend-mobile-emoji');
     const showMobile = status === 1 && View.normalizeFriendPresenceState(item) !== 'offline' && Number(item?.mobile) === 1;
     if (showMobile && !mobileEmoji) {
-      card.append(DOM({ style: 'castle-friend-mobile-emoji' }, '📱'));
+      card.append(DOM({ style: 'castle-friend-mobile-emoji' }, uiIcon('phone')));
     } else if (!showMobile && mobileEmoji) {
       mobileEmoji.remove();
     }
@@ -938,7 +939,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261012-css-charset-1';
+    const cssVersion = '20261012-ui-icons-2';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -3956,7 +3957,7 @@ export class View {
       }
 
       if (status == 1 && View.normalizeFriendPresenceState(item) !== 'offline' && Number(item.mobile) == 1) {
-        friend.append(DOM({ style: 'castle-friend-mobile-emoji' }, '📱'));
+        friend.append(DOM({ style: 'castle-friend-mobile-emoji' }, uiIcon('phone')));
       }
       if (!editMode) {
         View.syncFriendLastSeenBadge(friend, item);

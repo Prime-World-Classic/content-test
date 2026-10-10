@@ -17,6 +17,7 @@ import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY, generateHeroSoundsNative, generateHeroSoundsFallback } from './soundsLibrary.js';
 import { SessionPulse } from './sessionPulse.js';
 import { HostRacer } from './hostRacer.js';
+import { uiIcon } from './uiIcon.js';
 
 export class App {
   static APP_VERSION = '0';
@@ -2363,7 +2364,7 @@ export class App {
       item.details ? DOM({ style: 'launcher-notification-details' }, item.details) : DOM(),
       DOM(
         { style: 'launcher-notification-detail-status' },
-        DOM({ style: 'launcher-notification-detail-check' }, '✓'),
+        DOM({ style: 'launcher-notification-detail-check' }, uiIcon('check')),
         DOM({}, `Статус: ${item.is_read ? 'прочитано' : 'непрочитано'}`),
       ),
       DOM({ style: 'launcher-notification-footer' }, readButton),

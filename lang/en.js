@@ -2500,20 +2500,20 @@ export const en = {
     htalent_292_name: 'Eternal Servant',
     htalent_292_description:
       'The cooldown of the Archon Strike talent is reduced by <num>80%</num>.<br>The Talented Archon Lord instantly summons a new servant and does not interrupt the already active talent Demonic Shield.',
-    htalent_293_name: 'Bloody stroke 45❤️ <CD>3</CD>',
+    htalent_293_name: 'Bloody stroke <lifecost>45</lifecost> <CD>3</CD>',
     htalent_293_description:
       'Creates <num>0.2</num> seconds, deals <mag>%s</mag> damage to targets, restoring itself <num>%s</num> Health (from Intellect) if a Bloody stroke kills her.<br><rz>When used from native land, it pre-lowers by <num>%s</num> Durability (from Strength) or Will (from Intellect) of the target for <num>3</num> seconds, depending on the highest parameter of the hero.</rz>',
-    htalent_294_name: 'Scarlet Rose 100❤️ <CD>12</CD>',
+    htalent_294_name: 'Scarlet Rose <lifecost>100</lifecost> <CD>12</CD>',
     htalent_294_description: 'The hero throws a scarlet rose, dealing <mag>%s</mag> damage to all enemies in his path.',
     htalent_295_name: 'Deep Cut',
     htalent_295_description: 'The Blood Stroke talent deals additional <fiz>%s</fiz> damage and restores <num>%s</num> more Health.',
-    htalent_296_name: 'Concealing Mist 70❤️ <CD>25</CD>',
+    htalent_296_name: 'Concealing Mist <lifecost>70</lifecost> <CD>25</CD>',
     htalent_296_description:
       'For <num>10</num> seconds, it creates an area in which the hero is invisible, and enemies in it receive <mag>%s</mag> damage every second. Attacks and the use of talents reveal the hero for a short time.',
     htalent_297_name: 'Entangling flicker',
     htalent_297_description:
       'The last enemy hero touched by the Scarlet Rose is marked for <num>4</num> seconds, which allows you to re-apply the talent, immobilize him for <num>2</num> seconds and move behind him.   <br>The hero for <num>5</num> seconds gets <num>%s</num> to the greatest of Stamina and Will (from the greatest of Strength and Intellect).',
-    htalent_298_name: 'Blood Ritual 100❤️ <CD>90</CD>',
+    htalent_298_name: 'Blood Ritual <lifecost>100</lifecost> <CD>90</CD>',
     htalent_298_description:
       'Stuns an enemy hero and takes <num>3</num> seconds, dealing him <mag>%s</mag> damage per second, while restoring himself an equal amount of Health.',
     htalent_299_name: 'Armor of Darkness',
@@ -2646,13 +2646,13 @@ export const en = {
     htalent_344_description: 'Deals <fiz>%s</fiz> damage to enemies.',
     htalent_345_name: 'Courage',
     htalent_345_description:
-      "Accumulates 1⚡ for each successful attack or when taking damage up to 20⚡.<br>Consumes 2⚡ for every <num>1</num> sec. if the hero does not deal or receive damage for <num>5</num> sec.<br>Restores <num>%s</num> Health (from Intellect) for every spent ⚡.<br>The hero becomes emboldened if he has more than 10..<br><rz>In his native land, the hero's attacks additionally inflict <mag>%s</mag> damage for each ⚡.</rz>",
+      "Accumulates <bloodlust>1</bloodlust> for each successful attack or when taking damage up to <bloodlust>20</bloodlust>.<br>Consumes <bloodlust>2</bloodlust> for every <num>1</num> sec. if the hero does not deal or receive damage for <num>5</num> sec.<br>Restores <num>%s</num> Health (from Intellect) for every spent <bloodlust></bloodlust>.<br>The hero becomes emboldened if he has more than 10..<br><rz>In his native land, the hero's attacks additionally inflict <mag>%s</mag> damage for each <bloodlust></bloodlust>.</rz>",
     htalent_346_name: 'Survival Instinct <CD>15</CD>',
     htalent_346_description:
-      'Deals <mag>%s</mag> damage to the first enemy hero in the path and to all affected creatures. The hero jumps away in the opposite direction, and his Speed increases by <num>50%</num> for <num>2</num> seconds.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>',
+      'Deals <mag>%s</mag> damage to the first enemy hero in the path and to all affected creatures. The hero jumps away in the opposite direction, and his Speed increases by <num>50%</num> for <num>2</num> seconds.<br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending <bloodlust>6</bloodlust>.</bronze>',
     htalent_347_name: 'Red-hot barrel <CD>0.1</CD>',
     htalent_347_description:
-      "Each hero's attack additionally deals <mag>%s</mag> damage and consumes 3⚡.<br><hr><bronze>Courage: Additional talent damage increased by <num>%s</num>.</bronze>",
+      "Each hero's attack additionally deals <mag>%s</mag> damage and consumes <bloodlust>3</bloodlust>.<br><hr><bronze>Courage: Additional talent damage increased by <num>%s</num>.</bronze>",
     htalent_348_name: 'Stunning Shot',
     htalent_348_description:
       'Blinds a wounded enemy hero for <num>2</num> seconds, and if he was nearby, stuns him for <num>1</num> seconds.',
@@ -2660,15 +2660,15 @@ export const en = {
     htalent_349_description: 'The number of attacks per second increases by <num>50%</num>.',
     htalent_350_name: "Hunter's Mark <CD>18</CD>",
     htalent_350_description:
-      "Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give 2⚡ more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires. Reduces the target's movement speed by <num>10%</num>. <br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending 6⚡.</bronze>",
+      "Puts a Mark on the opponent for <num>8</num> seconds. <br>Attacks on the target give <bloodlust>2</bloodlust> more and it takes <mag>%s</mag> damage if it leaves the field of view or after the effect expires. Reduces the target's movement speed by <num>10%</num>. <br><hr><bronze>Courage: Increases talent damage by <num>%s</num>, spending <bloodlust>6</bloodlust>.</bronze>",
     htalent_351_name: 'Hunting excitement <CD>90</CD>',
     htalent_351_description:
-      'When using talent, it consumes all ⚡. For <num>5</num> seconds, the hero loses 4⚡ per second, and his attacks additionally cause <mag>%s</mag> damage.<br><hr><bronze>Courage: When used, it increases the duration of the talent by <num>1</num> second for every 4⚡.</bronze>',
+      'When using talent, it consumes all <bloodlust></bloodlust>. For <num>5</num> seconds, the hero loses <bloodlust>4</bloodlust> per second, and his attacks additionally cause <mag>%s</mag> damage.<br><hr><bronze>Courage: When used, it increases the duration of the talent by <num>1</num> second for every <bloodlust>4</bloodlust>.</bronze>',
     htalent_352_name: 'The Ultimatum',
     htalent_352_description: 'Target damage is reduced by <num>35%</num>.',
     htalent_353_name: 'Rage Management',
     htalent_353_description:
-      'The hero becomes Emboldened for the duration of the Hunting Passion talent, and his class talents do not consume ⚡, and Agility increases by <num>%s</num> (from Intellect).',
+      'The hero becomes Emboldened for the duration of the Hunting Passion talent, and his class talents do not consume <bloodlust></bloodlust>, and Agility increases by <num>%s</num> (from Intellect).',
     htalent_354_name: 'The damned one',
     htalent_354_description:
       "All abilities require Health to be used.<br>Increases Health regeneration by <num>%s</num> (from the highest of Strength and Intellect) for every <num>5%</num> of missing Health.<br>\n<rz>In the native land additionally increases the regeneration of the hero's Health by <num>%s</num> (from the Intellect).</rz>",
@@ -2697,7 +2697,7 @@ export const en = {
       'After the expiration of the Rampage talent, the hero restores <num>%s</num> Health and additional <num>%s</num> Health (from Intellect).',
     htalent_363_name: "Don't make me angry!",
     htalent_363_description:
-      'Accumulates 1⚡ for each successful attack or damage.<br>Spends 6⚡ for every <num>2</num> seconds if the hero does not deal or receive damage for <num>10</num> seconds, or in the form of <bronze>Grrr</bronze>.<br>Restores <num>%s</num> Health (from Strength) for every spent ⚡.<br>At 50⚡, the hero takes the form of <bronze> for <num>2</num> secondsGrrr</bronze> and increases maximum Health by <num>%s</num> (from the greatest of Strength and Intellect). It stays in this form until ⚡ ends. After that, it stops accumulating ⚡ for <num>15</num> seconds.',
+      'Accumulates <bloodlust>1</bloodlust> for each successful attack or damage.<br>Spends <bloodlust>6</bloodlust> for every <num>2</num> seconds if the hero does not deal or receive damage for <num>10</num> seconds, or in the form of <bronze>Grrr</bronze>.<br>Restores <num>%s</num> Health (from Strength) for every spent <bloodlust></bloodlust>.<br>At <bloodlust>50</bloodlust>, the hero takes the form of <bronze> for <num>2</num> secondsGrrr</bronze> and increases maximum Health by <num>%s</num> (from the greatest of Strength and Intellect). It stays in this form until <bloodlust></bloodlust> ends. After that, it stops accumulating <bloodlust></bloodlust> for <num>15</num> seconds.',
     htalent_364_name: 'Jump!  <CD>18</CD> / <bronze>Grrr</bronze> <CD>12</CD>',
     htalent_364_description:
       'Jumps to the specified location.<br><hr><bronze>Grrr: Jumps to the specified location and strikes <mag>%s</mag> damage to all enemies around.</bronze>',
@@ -2715,7 +2715,7 @@ export const en = {
       'For <num>2.5</num> seconds, he cannot be the target of enemy attacks and talents and gets the opportunity to pass through creatures. The hero cannot attack, but when he comes into contact with the enemy for the first time, he causes <mag>%s</mag> damage.<br><hr><bronze>Grrr: Reduces damage from enemy attacks around by <num>%s</num> (at most) for <num>10</num> seconds.</bronze>',
     htalent_369_name: 'Defending myself! <CD>60</CD>',
     htalent_369_description:
-      "Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the greatest of the hero's Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>",
+      "Takes the form <bronze>Grrr</bronze> if the hero has more than <bloodlust>15</bloodlust>.<br><hr><bronze>Grrr: Increases the greatest of the hero's Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>",
     htalent_370_name: 'Overtaken!',
     htalent_370_description:
       'Fear Talent increases Speed by <num>60%</num>.<br><hr><bronze>Grrr: Prohibits all wounded enemies from using talents for <num>2</num> seconds.</bronze>',
@@ -2939,7 +2939,7 @@ export const en = {
     htalent_447_name: 'Sulfur Power <mana>270</mana> <CD>120</CD>',
     htalent_447_description:
       "The summoned clone attacks the enemy's hero, after which it disappears. Deals <fiz>%s</fiz> damage to targets.",
-    htalent_448_name: 'Buried alive 100❤️ <CD>90</CD>',
+    htalent_448_name: 'Buried alive <lifecost>100</lifecost> <CD>90</CD>',
     htalent_448_description:
       'Creates <num>0.2</num> seconds, removes the specified enemy hero from battle for <num>4</num> seconds, stopping the restoration of his Health, Energy and <time></time> talents.',
     htalent_449_name: 'Suffocation',
@@ -3067,7 +3067,7 @@ export const en = {
       "The Destructive Jump talent increases the hero's Stamina and Strength by <num>%s</num> (from max. Health) for <num>3</num> seconds.",
     htalent_494_name: 'Skirmish <CD>90</CD>',
     htalent_494_description:
-      "When using a talent, it consumes all ⚡. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter's Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr><bronze>Courage: When used, the number of shots increases by <num>2</num> for every 10⚡.</bronze>",
+      "When using a talent, it consumes all <bloodlust></bloodlust>. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter's Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr><bronze>Courage: When used, the number of shots increases by <num>2</num> for every <bloodlust>10</bloodlust>.</bronze>",
     htalent_495_name: 'Especially dangerous',
     htalent_495_description: 'If a firefight kills an enemy hero, its recovery time is <num>10</num> seconds.',
     htalent_496_name: 'Partisan',
@@ -3252,7 +3252,7 @@ export const en = {
     htalent_561_description: "The Pain Test talent additionally increases the hero's maximum Health by the value taken from the target.",
     htalent_562_name: 'Attack! <CD>60</CD>',
     htalent_562_description:
-      "Takes the form <bronze>Grrr</bronze> if the hero has more than 15⚡.<br><hr><bronze>Grrr: Increases the hero's Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>",
+      "Takes the form <bronze>Grrr</bronze> if the hero has more than <bloodlust>15</bloodlust>.<br><hr><bronze>Grrr: Increases the hero's Cunning by <num>%s</num> (from the greatest of Strength and Intellect).</bronze>",
     htalent_563_name: 'Watch out!',
     htalent_563_description:
       '<bronze>Grrr: Thanks to my talent, I attack! all enemies around have <num>5</num> seconds of decreased Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect) after the moment of reincarnation.</bronze>',
@@ -3732,7 +3732,7 @@ export const en = {
       'Reduces the recovery time of active class talents by <num>20%</num>. <br> Increases the damage of active class talents by <num>12%</num>.',
     htalent_741_name: 'Rrrrrr!',
     htalent_741_description:
-      'Being in the form of <bronze>Grrr</bronze>, the hero spends <num>20%</num>less ⚡ and restores <num>25%</num> more Health (total <num>%s</num>) for each expended ⚡, and after exiting it begins to accumulate ⚡ <num>5</num> seconds earlier.',
+      'Being in the form of <bronze>Grrr</bronze>, the hero spends <num>20%</num>less <bloodlust></bloodlust> and restores <num>25%</num> more Health (total <num>%s</num>) for each expended <bloodlust></bloodlust>, and after exiting it begins to accumulate <bloodlust></bloodlust> <num>5</num> seconds earlier.',
     htalent_742_name: 'Disembodied',
     htalent_742_description:
       'The value of the Swift Capture talent increases to <num>15%</num> of the current Health.<br>The hero ignores creatures and buildings until the talent is ready for use. <br>The damage of the Swift Capture talent has been increased by <num>20%</num>.<br> The cost of the Destructive Strikes talent increases to <num>10%</num> of current Health.',
@@ -4883,7 +4883,7 @@ export const en = {
     talent_367_name: 'Strong-willed face',
     talent_367_description: '<num>+%s</num> <rz>Freedom in the native land</rz>',
     talent_368_name: 'Vigilance',
-    talent_368_description: '<rz>-%s%⌛ in his native land</rz>',
+    talent_368_description: '<rz>-%s%<cdicon></cdicon> in his native land</rz>',
     talent_369_name: 'The Gift of Cunning',
     talent_369_description: '<num>+%s</num> <rz>Cunnings on the native land</rz>',
     talent_370_name: 'The Indomitability of the beast',
@@ -4891,7 +4891,7 @@ export const en = {
     talent_371_name: 'Intuition of the beast',
     talent_371_description: '<num>+%s</num> <rz>Agility in his native land</rz>',
     talent_372_name: 'Forethought',
-    talent_372_description: '<rz>-%s%⌛ in his native land</rz>',
+    talent_372_description: '<rz>-%s%<cdicon></cdicon> in his native land</rz>',
     talent_373_name: 'Primordial Strength',
     talent_373_description: '<num>+%s</num> <rz>Forces in the native land</rz>',
     talent_374_name: 'Primordial Wisdom',
@@ -5576,19 +5576,19 @@ export const en = {
       'The Hero\'s speed increases by <yellow>%s</yellow> and additionally by <yellow>0.3</yellow> every minute. The maximum total increase is <yellow>6</yellow><br><br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
     talent_609_name: 'The Time of the first',
     talent_609_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_610_name: 'The Time of the Wise ',
     talent_610_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_611_name: 'The Time of the Strong ',
     talent_611_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_612_name: 'The Time of the Brave',
     talent_612_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_613_name: 'Time for change ',
     talent_613_description:
-      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_614_name: 'Life path<white> <CD>70</CD></white>',
     talent_614_description:
       '<num>Protective</num><br><br>Restores <num>%s</num> when used. Healths.<br> <br> <gray>Set</gray> <orange-d>"Life path"</orange-d><br><br><gray>- can be improved by <num>2</num> talents</gray>',
@@ -5618,16 +5618,16 @@ export const en = {
       '<gray>Set</gray> <orange-d>"The Healing Pillar"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Increases Health recovery for yourself and your allies next to the Hero by <num>10%</num></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The Healing Pillar</orange-d></gray>',
     talent_623_name: 'A Moment of Cunning',
     talent_623_description:
-      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
+      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_624_name: 'Desperate moment<white> <CD>240</CD></white>',
     talent_624_description:
-      '<num>Tactical</num><br><br>Instantly restores all class talents except the ultimate ability <br> <br> <gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
+      '<num>Tactical</num><br><br>Instantly restores all class talents except the ultimate ability <br> <br> <gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_625_name: 'A Moment of audacity',
     talent_625_description:
-      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
+      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_626_name: 'A Moment of wit',
     talent_626_description:
-      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
+      '<gray>Set</gray> <tn>"Desperate Moment"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <gray>The cooldown of the <tn>"Desperate Moment"</tn> talent is reduced by <num>80</num> seconds</gray>',
     talent_627_name: 'Champion of Stamina',
     talent_627_description:
       '<gray>Set</gray> <orange-d>"The Reward of the Champion"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Allows you to use talent <orange-d>The reward of the champion</orange-d></gray>',
@@ -5818,16 +5818,16 @@ export const en = {
       '<gray>Set</gray> <orange-d>"Ruiner of life"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+3%</num> <gray>to Crit\'s chance</gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+30%</num> <gray>to the Crit multiplier</gray></font>',
     talent_690_name: 'Tamer of light',
     talent_690_description:
-      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+10%</num> <gray>to Talents penetration </gray></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <BR> <num>+10%</num> <gray>to Talents penetration </gray></font>',
     talent_691_name: 'Flame Tamer',
     talent_691_description:
-      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
     talent_692_name: 'The Lightning Tamer',
     talent_692_description:
-      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
     talent_693_name: 'Tamer of Darkness',
     talent_693_description:
-      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
+      '<gray>Set</gray> <orange-d>"Tamer of the Elements"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 talents</orange-l> <br> <num>+10%</num> <gray>for Talent Testing</gray></font>',
     talent_694_name: 'The Solar Guardian',
     talent_694_description:
       '<gray>Set</gray> <orange-d>"Keeper of Dreams"</orange-d><white> <CD>60</CD></white> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7%</num> <gray>to protect against talents</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>After receiving talent damage exceeding <num>25%</num> maximum Health, the hero absorbs <num>30%</num> damage and receives <num>30%</num> less talent damage for <num>3</num> seconds</gray></font>',

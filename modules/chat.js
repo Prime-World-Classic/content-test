@@ -4,6 +4,7 @@ import { App } from './app.js';
 import { NativeAPI } from './nativeApi.js';
 import { Splash } from './splash.js';
 import { domAudioPresets } from './domAudioPresets.js';
+import { uiIcon } from './uiIcon.js';
 
 export class Chat {
   static body;
@@ -78,7 +79,7 @@ export class Chat {
         ],
         title: useSendButton ? 'Отправить сообщение' : 'Прокрутить чат вниз',
       },
-      useSendButton ? '➤' : '▼',
+      useSendButton ? uiIcon('send') : '▼',
     );
 
     let input = DOM({
@@ -407,7 +408,7 @@ export class Chat {
     return true;
   }
 
-  static createPinButton(data, label = '📌') {
+  static createPinButton(data, label = uiIcon('pin')) {
     return DOM(
       {
         tag: 'button',
@@ -956,7 +957,7 @@ export class Chat {
       const sourceType = Chat.getMessageSourceType(data) || 'unknown';
       sourceIcon = DOM({ tag: 'span', style: ['chat-source-icon', `chat-source-icon-${sourceType}`] });
       sourceIcon.dataset.tooltipSource = sourceLabel;
-      sourceIcon.textContent = sourceType === 'phone' ? '📱' : '';
+      if (sourceType === 'phone') sourceIcon.append(uiIcon('phone'));
     }
     
     const starValue = Number(data?.star || 0);
@@ -1398,7 +1399,7 @@ export class Chat {
         contentWrap,
       );
 
-      if (Chat.canManagePins) row.append(Chat.createPinButton(msg, '❌'));
+      if (Chat.canManagePins) row.append(Chat.createPinButton(msg, uiIcon('cross')));
       list.append(row);
     });
   }
@@ -1452,7 +1453,7 @@ export class Chat {
       },
     );
 
-    const title = DOM({ tag: 'div' }, '📌 ');
+    const title = DOM({ tag: 'div' }, uiIcon('pin'), ' ');
     const headerText = DOM({ tag: 'div' }, last.message);
     const count = DOM({ tag: 'div', style: 'chat-pinned-count' }, `${total}`);
 

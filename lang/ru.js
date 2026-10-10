@@ -2505,21 +2505,21 @@ export const ru = {
     htalent_292_name: 'Вечный слуга',
     htalent_292_description:
       'Время восстановления таланта Удар архонтов сокращается на <num>80%</num>.<br>\nТалант Владыка архонтов мгновенно призывает нового слугу и не прерывает уже действующий талант Демонический щит.',
-    htalent_293_name: 'Кровавый росчерк 45❤️ <CD>3</CD>',
+    htalent_293_name: 'Кровавый росчерк <lifecost>45</lifecost> <CD>3</CD>',
     htalent_293_description:
       'Сотворяется <num>0.2</num> сек, наносит цели <mag>%s</mag> урона, восстанавливая себе <num>%s</num> Здоровья (от Разума), если Кровавый росчерк убьет ее.<br><rz>При использовании с родной земли предварительно понижает на <num>%s</num> Стойкость (от Силы) или Волю (от Разума) цели на <num>3</num> сек, в зависимости от наибольшего параметра героя.</rz>',
-    htalent_294_name: 'Алая роза 100❤️ <CD>12</CD>',
+    htalent_294_name: 'Алая роза <lifecost>100</lifecost> <CD>12</CD>',
     htalent_294_description: 'Герой бросает алую розу, наносящую <mag>%s</mag> урона всем противникам на своём пути.',
     htalent_295_name: 'Глубокий разрез',
     htalent_295_description:
       'Талант Кровавый росчерк наносит дополнительно <fiz>%s</fiz> урона и восстанавливает на <num>%s</num> больше Здоровья.',
-    htalent_296_name: 'Скрывающая мгла 70❤️ <CD>25</CD>',
+    htalent_296_name: 'Скрывающая мгла <lifecost>70</lifecost> <CD>25</CD>',
     htalent_296_description:
       'На <num>10</num> сек создаёт область, в которой герой невидим, а враги в ней получают <mag>%s</mag> урона каждую сек. Атаки и применение талантов обнаруживают героя на короткое время.',
     htalent_297_name: 'Опутывающее мерцание',
     htalent_297_description:
       'На последнего задетого Алой розой вражеского героя на <num>4</num> сек вешается метка, позволяющая повторно применив талант, обездвижить его на <num>2</num> сек и переместиться к нему за спину.   <br>Герой на <num>5</num> сек получает <num>%s</num> к наибольшему из Стойкости и Воли (от наибольшего из Силы и Разума).',
-    htalent_298_name: 'Ритуал крови 100❤️ <CD>90</CD>',
+    htalent_298_name: 'Ритуал крови <lifecost>100</lifecost> <CD>90</CD>',
     htalent_298_description:
       'Оглушает вражеского героя и сотворяется <num>3</num> сек, нанося ему <mag>%s</mag> урона в сек, восстанавливая при этом себе равное количество Здоровья.',
     htalent_299_name: 'Броня тьмы',
@@ -2653,13 +2653,13 @@ export const ru = {
     htalent_344_description: 'Наносит врагам <fiz>%s</fiz> урона.',
     htalent_345_name: 'Кураж',
     htalent_345_description:
-      'Накапливает 1⚡ за каждую успешную атаку или при получении урона до 20⚡.<br>Расходует 2⚡ за каждые <num>1</num> сек, если герой не наносит или не получает урона в течение <num>5</num> сек.<br>Восстанавливает <num>%s</num> Здоровья (от Разума) за каждую расходуемую ⚡.<br>Герой впадает в Кураж, если имеет более 10⚡.<br><rz>На родной земле атаки героя дополнительно наносят <mag>%s</mag> урона за каждую ⚡.</rz>',
+      'Накапливает <bloodlust>1</bloodlust> за каждую успешную атаку или при получении урона до <bloodlust>20</bloodlust>.<br>Расходует <bloodlust>2</bloodlust> за каждые <num>1</num> сек, если герой не наносит или не получает урона в течение <num>5</num> сек.<br>Восстанавливает <num>%s</num> Здоровья (от Разума) за каждую расходуемую <bloodlust></bloodlust>.<br>Герой впадает в Кураж, если имеет более <bloodlust>10</bloodlust>.<br><rz>На родной земле атаки героя дополнительно наносят <mag>%s</mag> урона за каждую <bloodlust></bloodlust>.</rz>',
     htalent_346_name: 'Инстинкт выживания <CD>15</CD>',
     htalent_346_description:
-      'Наносит <mag>%s</mag> урона первому вражескому герою на пути и всем задетым существам. Герой при этом отпрыгивает в противоположную сторону, а его Скорость увеличивается на <num>50%</num> на <num>2</num> сек.<br><hr><bronze>Кураж: Увеличивает наносимый талантом урон на <num>%s</num>, расходуя 6⚡.</bronze>',
+      'Наносит <mag>%s</mag> урона первому вражескому герою на пути и всем задетым существам. Герой при этом отпрыгивает в противоположную сторону, а его Скорость увеличивается на <num>50%</num> на <num>2</num> сек.<br><hr><bronze>Кураж: Увеличивает наносимый талантом урон на <num>%s</num>, расходуя <bloodlust>6</bloodlust>.</bronze>',
     htalent_347_name: 'Раскаленный ствол <CD>0.1</CD>',
     htalent_347_description:
-      'Каждая атака героя дополнительно наносит <mag>%s</mag> урона и расходует 3⚡.<br><hr><bronze>Кураж: Дополнительный урон таланта увеличен на <num>%s</num>.</bronze>',
+      'Каждая атака героя дополнительно наносит <mag>%s</mag> урона и расходует <bloodlust>3</bloodlust>.<br><hr><bronze>Кураж: Дополнительный урон таланта увеличен на <num>%s</num>.</bronze>',
     htalent_348_name: 'Ошеломительный выстрел',
     htalent_348_description:
       'Ослепляет задетого вражеского героя на <num>2</num> сек, и если тот был поблизости, оглушает его на <num>1</num> сек.',
@@ -2667,15 +2667,15 @@ export const ru = {
     htalent_349_description: 'Количество Атак в секунду увеличивается на <num>50%</num>.',
     htalent_350_name: 'Метка охотника <CD>18</CD>',
     htalent_350_description:
-      'Вешает на противника Метку на <num>8</num> сек. <br>Атаки по цели дают на 2⚡ больше и она получает <mag>%s</mag> урона, если уходит из области видимости или по истечении действия эффекта. Снижает скорость передвижения цели на <num>10%</num>. <br><hr><bronze>Кураж: Увеличивает наносимый талантом урон на <num>%s</num>, расходуя 6⚡.</bronze>',
+      'Вешает на противника Метку на <num>8</num> сек. <br>Атаки по цели дают на <bloodlust>2</bloodlust> больше и она получает <mag>%s</mag> урона, если уходит из области видимости или по истечении действия эффекта. Снижает скорость передвижения цели на <num>10%</num>. <br><hr><bronze>Кураж: Увеличивает наносимый талантом урон на <num>%s</num>, расходуя <bloodlust>6</bloodlust>.</bronze>',
     htalent_351_name: 'Охотничий азарт <CD>90</CD>',
     htalent_351_description:
-      'При использовании таланта расходует всю ⚡. В течение <num>5</num> сек герой теряет по 4⚡ в сек, а его атаки дополнительно наносят <mag>%s</mag> урона.<br><hr><bronze>Кураж: При использовании увеличивает время действия таланта на <num>1</num> сек за каждые 4⚡.</bronze>',
+      'При использовании таланта расходует всю <bloodlust></bloodlust>. В течение <num>5</num> сек герой теряет по <bloodlust>4</bloodlust> в сек, а его атаки дополнительно наносят <mag>%s</mag> урона.<br><hr><bronze>Кураж: При использовании увеличивает время действия таланта на <num>1</num> сек за каждые <bloodlust>4</bloodlust>.</bronze>',
     htalent_352_name: 'Ультиматум',
     htalent_352_description: 'Получаемый от цели урон уменьшается на <num>35%</num>.',
     htalent_353_name: 'Управление яростью',
     htalent_353_description:
-      'Герой впадает в Кураж на время действия таланта Охотничий азарт, и его классовые таланты не расходуют ⚡, а Проворство увеличивается на <num>%s</num> (от Разума).',
+      'Герой впадает в Кураж на время действия таланта Охотничий азарт, и его классовые таланты не расходуют <bloodlust></bloodlust>, а Проворство увеличивается на <num>%s</num> (от Разума).',
     htalent_354_name: 'Проклятый',
     htalent_354_description:
       'Все способности для своего применения требуют Здоровье.<br>\nУвеличивает регенерацию Здоровья на <num>%s</num> (от наибольшего из Силы и Разума) за каждые <num>5%</num> отсутствующего Здоровья.<br>\n<rz>На родной земле дополнительно увеличивает регенерацию Здоровья героя на <num>%s</num> (от Разума).</rz>',
@@ -2704,7 +2704,7 @@ export const ru = {
       'По истечении времени действия таланта Буйство герой восстанавливает <num>%s</num> Здоровья и дополнительно <num>%s</num> Здоровья (от Разума).',
     htalent_363_name: 'Не зли меня!',
     htalent_363_description:
-      'Накапливает 1⚡ за каждую успешную атаку или при получении урона.<br>Расходует 6⚡ за каждые <num>2</num> сек, если герой не наносит и не получает урона в течение <num>10</num> сек, или в форме <bronze>Гррр</bronze>.<br>Восстанавливает <num>%s</num> Здоровья (от Силы) за каждую расходуемую ⚡.<br>При 50⚡ герой в течение <num>2</num> сек принимает форму <bronze>Гррр</bronze> и увеличивает максимальное Здоровье на <num>%s</num> (от наибольшего из Силы и Разума). Он находится в этой форме пока ⚡ не закончится. После этого в течение <num>15</num> сек перестает накапливать ⚡.',
+      'Накапливает <bloodlust>1</bloodlust> за каждую успешную атаку или при получении урона.<br>Расходует <bloodlust>6</bloodlust> за каждые <num>2</num> сек, если герой не наносит и не получает урона в течение <num>10</num> сек, или в форме <bronze>Гррр</bronze>.<br>Восстанавливает <num>%s</num> Здоровья (от Силы) за каждую расходуемую <bloodlust></bloodlust>.<br>При <bloodlust>50</bloodlust> герой в течение <num>2</num> сек принимает форму <bronze>Гррр</bronze> и увеличивает максимальное Здоровье на <num>%s</num> (от наибольшего из Силы и Разума). Он находится в этой форме пока <bloodlust></bloodlust> не закончится. После этого в течение <num>15</num> сек перестает накапливать <bloodlust></bloodlust>.',
     htalent_364_name: 'Прыг!  <CD>18</CD> / <bronze>Гррр</bronze> <CD>12</CD>',
     htalent_364_description:
       'Прыгает в указанное место.<br><hr><bronze>Гррр: Прыгает в указанное место и наносит <mag>%s</mag> урона всем врагам вокруг.</bronze>',
@@ -2722,7 +2722,7 @@ export const ru = {
       'В течение <num>2.5</num> сек не может быть целью атак и талантов врагов и получает возможность проходить сквозь существ. Герой не может атаковать, но соприкасаясь с врагом в первый раз, наносит <mag>%s</mag> урона.<br><hr><bronze>Гррр: Уменьшает урон от атак противников вокруг на <num>%s</num> (от Силы) на <num>10</num> сек.</bronze>',
     htalent_369_name: 'Защищаюсь! <CD>60</CD>',
     htalent_369_description:
-      'Принимает форму <bronze>Гррр</bronze>, если у героя больше 15⚡.<br><hr><bronze>Гррр: Увеличивает наибольшее из Стойкости и Воли героя на <num>%s</num> (от наибольшего из Силы и Разума).</bronze>',
+      'Принимает форму <bronze>Гррр</bronze>, если у героя больше <bloodlust>15</bloodlust>.<br><hr><bronze>Гррр: Увеличивает наибольшее из Стойкости и Воли героя на <num>%s</num> (от наибольшего из Силы и Разума).</bronze>',
     htalent_370_name: 'Настигну!',
     htalent_370_description:
       'Талант Страшись увеличивает Скорость на <num>60%</num>.<br><hr><bronze>Гррр: Запрещает на <num>2</num> сек всем задетым врагам использовать таланты.</bronze>',
@@ -2944,7 +2944,7 @@ export const ru = {
     htalent_446_description: 'Время восстановления таланта Мощь серы сокращается на <num>20%</num>.',
     htalent_447_name: 'Мощь серы <mana>270</mana> <CD>90</CD>',
     htalent_447_description: 'Призванный клон атакует героя врага, нанося ему <fiz>%s</fiz> урона.',
-    htalent_448_name: 'Погребенный заживо 100❤️ <CD>90</CD>',
+    htalent_448_name: 'Погребенный заживо <lifecost>100</lifecost> <CD>90</CD>',
     htalent_448_description:
       'Сотворяется <num>0.2</num> сек, выводит из боя указанного вражеского героя на <num>4</num> сек, останавливая восстановление его Здоровья, Энергии и <time></time> талантов.',
     htalent_449_name: 'Удушье',
@@ -3071,7 +3071,7 @@ export const ru = {
       'Талант Разрушительный прыжок увеличивает Стойкость и Силу героя на <num>%s</num> (от макс. Здоровья) на <num>7</num> сек.',
     htalent_494_name: 'Перестрелка <CD>90</CD>',
     htalent_494_description:
-      'При использовании таланта расходует всю ⚡. Герой перемещается в указанную точку и в течение <num>1</num> сек делает <num>4</num> выстрела, наносящих <fiz>%s</fiz> урона вражескому герою, помеченному талантом Метка охотника или ближайшему.<br>Если герой не находит цель для атаки, то время восстановления таланта составляет <num>10</num> сек.<br><hr><bronze>Кураж: При использовании увеличивается количество выстрелов на <num>2</num> за каждые 10⚡.</bronze>',
+      'При использовании таланта расходует всю <bloodlust></bloodlust>. Герой перемещается в указанную точку и в течение <num>1</num> сек делает <num>4</num> выстрела, наносящих <fiz>%s</fiz> урона вражескому герою, помеченному талантом Метка охотника или ближайшему.<br>Если герой не находит цель для атаки, то время восстановления таланта составляет <num>10</num> сек.<br><hr><bronze>Кураж: При использовании увеличивается количество выстрелов на <num>2</num> за каждые <bloodlust>10</bloodlust>.</bronze>',
     htalent_495_name: 'Особо опасен',
     htalent_495_description: 'Если Перестрелка убивает вражеского героя, то время ее восстановления составляет <num>10</num> сек.',
     htalent_496_name: 'Партизан',
@@ -3251,7 +3251,7 @@ export const ru = {
     htalent_561_description: 'Талант Испытание болью дополнительно увеличивает максимальное Здоровье героя на значение отнятого у цели.',
     htalent_562_name: 'Атакую! <CD>60</CD>',
     htalent_562_description:
-      'Принимает форму <bronze>Гррр</bronze>, если у героя более 15⚡.<br><hr><bronze>Гррр: Увеличивает Хитрость героя на <num>%s</num> (от наибольшего из Силы и Разума).</bronze>',
+      'Принимает форму <bronze>Гррр</bronze>, если у героя более <bloodlust>15</bloodlust>.<br><hr><bronze>Гррр: Увеличивает Хитрость героя на <num>%s</num> (от наибольшего из Силы и Разума).</bronze>',
     htalent_563_name: 'Берегись!',
     htalent_563_description:
       '<bronze>Гррр: Благодаря таланту Атакую! у всех врагов вокруг на <num>5</num> сек понижается Стойкость и Воля на <num>%s</num> (от наибольшего из Силы и Разума) после момента перевоплощения.</bronze>',
@@ -3732,7 +3732,7 @@ export const ru = {
       'Уменьшает время восстановления активных классовых талантов на <num>20%</num>. <br> Увеличивает урон активных классовых талантов на <num>12%</num>.',
     htalent_741_name: 'Ррррр!',
     htalent_741_description:
-      'Находясь в форме <bronze>Гррр</bronze>, герой расходует на <num>20%</num> меньше ⚡ и восстанавливает на <num>25%</num> больше Здоровья (всего <num>%s</num>) за каждую расходуемую ⚡, а после выхода из неё начинает накапливать ⚡ на <num>5</num> сек раньше.',
+      'Находясь в форме <bronze>Гррр</bronze>, герой расходует на <num>20%</num> меньше <bloodlust></bloodlust> и восстанавливает на <num>25%</num> больше Здоровья (всего <num>%s</num>) за каждую расходуемую <bloodlust></bloodlust>, а после выхода из неё начинает накапливать <bloodlust></bloodlust> на <num>5</num> сек раньше.',
     htalent_742_name: 'Бесплотный',
     htalent_742_description:
       'Стоимость таланта Стремительный захват увеличивается до <num>15%</num> от текущего Здоровья.<br>Герой игнорирует существ и здания, пока талант не готов к применению. <br>Урон таланта Стремительный захват увеличен на <num>20%</num>.<br> Стоимость таланта Разрушительные удары увеличивается до <num>10%</num> от текущего Здоровья.',
@@ -4877,7 +4877,7 @@ export const ru = {
     talent_367_name: 'Волевой лик',
     talent_367_description: '<num>+%s</num> <rz>Воли на родной земле</rz>',
     talent_368_name: 'Бдительность',
-    talent_368_description: '<rz>-%s%⌛ на родной земле</rz>',
+    talent_368_description: '<rz>-%s%<cdicon></cdicon> на родной земле</rz>',
     talent_369_name: 'Дар коварства',
     talent_369_description: '<num>+%s</num> <rz>Хитрости на родной земле</rz>',
     talent_370_name: 'Неукротимость зверя',
@@ -4885,7 +4885,7 @@ export const ru = {
     talent_371_name: 'Интуиция зверя',
     talent_371_description: '<num>+%s</num> <rz>Проворства на родной земле</rz>',
     talent_372_name: 'Предусмотрительность',
-    talent_372_description: '<rz>-%s%⌛ на родной земле</rz>',
+    talent_372_description: '<rz>-%s%<cdicon></cdicon> на родной земле</rz>',
     talent_373_name: 'Первородная сила',
     talent_373_description: '<num>+%s</num> <rz>Силы на родной земле</rz>',
     talent_374_name: 'Первородная мудрость',
@@ -5568,19 +5568,19 @@ export const ru = {
       'Скорость Героя увеличивается на <yellow>%s</yellow> и дополнительно на <yellow>0.3</yellow> каждую минуту. Предельная суммарная прибавка — <yellow>6</yellow><br> <br> <gray>Сет</gray> <tn>"Спиннеры Героев"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <gray>Каждые <num>4</num> сек. дает <prime>+1</prime></gray><br><hr><gray>Совместимость</gray><br>Не может быть установлен совместно с талантом <yst>"Приток Прайма"</yst>.',
     talent_609_name: 'Время первых',
     talent_609_description:
-      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_610_name: 'Время мудрых ',
     talent_610_description:
-      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_611_name: 'Время сильных ',
     talent_611_description:
-      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_612_name: 'Время смелых',
     talent_612_description:
-      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_613_name: 'Время перемен ',
     talent_613_description:
-      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray>⌛</gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num>⌛</gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num>⌛</gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num>⌛</gray><br>',
+      '<gray>Сет</gray> <tn>"Горячее время"</tn> <br> <br> <orange-l>1 талант</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 таланта</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 таланта</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 таланта</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
     talent_614_name: 'Жизненный путь<white> <CD>70</CD></white>',
     talent_614_description:
       '<num>Защитный</num><br><br>При использовании восстанавливает <num>%s</num> Здоровья.<br> <br> <gray>Сет</gray> <tn>"Жизненный путь"</tn><br><br><gray>- может быть улучшен <num>2</num> талантами</gray>',
@@ -5610,16 +5610,16 @@ export const ru = {
       '<gray>Сет</gray> <tn>"Исцеляющий столп"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <gray>Увеличивает восстановления Здоровья себе и союзникам рядом с Героем на <num>10%</num></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Позволяет использовать талант <tn>Исцеляющий столп</tn></gray>',
     talent_623_name: 'Миг коварства',
     talent_623_description:
-      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
+      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_624_name: 'Отчаянный миг<white> <CD>240</CD></white>',
     talent_624_description:
-      '<num>Тактический</num><br><br>Мнгновенно восстанавливает все классовые таланты кроме ультимативной способности <br> <br> <gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
+      '<num>Тактический</num><br><br>Мнгновенно восстанавливает все классовые таланты кроме ультимативной способности <br> <br> <gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_625_name: 'Миг дерзости',
     talent_625_description:
-      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
+      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_626_name: 'Миг смекалки',
     talent_626_description:
-      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
+      '<gray>Сет</gray> <tn>"Отчаяный миг"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Время восстановления таланта <tn>"Отчаянный миг"</tn> снижается на <num>80</num> cек</gray>',
     talent_627_name: 'Поборник выносливости',
     talent_627_description:
       '<gray>Сет</gray> <tn>"Воздаяние поборника"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+6</num> <gray>к наибольшему из Стойкости и Воли</gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Позволяет использовать талант <tn>Воздаяние поборника</tn></gray>',
@@ -5810,16 +5810,16 @@ export const ru = {
       '<gray>Сет</gray> <tn>"Губитель жизни"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+3%</num> <gray>к Шансу крита</gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+30%</num> <gray>к Множителю крита</gray></font>',
     talent_690_name: 'Укротитель света',
     talent_690_description:
-      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
+      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
     talent_691_name: 'Укротитель пламени',
     talent_691_description:
-      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
+      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
     talent_692_name: 'Укротитель молний',
     talent_692_description:
-      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
+      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
     talent_693_name: 'Укротитель тьмы',
     talent_693_description:
-      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num>⌛ <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
+      '<gray>Сет</gray> <tn>"Укротитель стихий"</tn> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>-6%</num><cdicon></cdicon> <gray></gray> <br> <orange-l>3 таланта</orange-l> <br> <num>+10%</num> <gray>к Пробиванию талантов</gray></font>',
     talent_694_name: 'Солнечный хранитель',
     talent_694_description:
       '<gray>Сет</gray> <tn>"Хранитель снов"</tn><white> <CD>60</CD></white> <br> <br> <orange-l>2 таланта</orange-l> <br> <num>+7%</num> <gray>к защите от талантов</gray> <br> <orange-l>3 таланта</orange-l> <br> <gray>Получив урон от таланта, превышающий <num>25%</num> максимального Здоровья, герой поглощает <num>30%</num> урона и получает на <num>30%</num> урона меньше от талантов в течение <num>3</num> сек</gray></font>',

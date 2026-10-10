@@ -8,6 +8,7 @@ import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { normalizeKey } from './keybindings/keybindings.input.js';
 import { MM } from './mm.js';
+import { uiIcon } from './uiIcon.js';
 
 export class Voice {
   static peerConnectionConfig = {
@@ -934,13 +935,13 @@ export class Voice {
       {
         style: 'voice-info-panel-body-item-muted-by',
       },
-      '✖',
+      uiIcon('cross'),
     );
     
     const updateItemView = () => {
       const mutedMark = Voice.isPeerMuted(Number(id)) ? ' [MUTED]' : '';
       item.innerText = `${state()}${mutedMark}`;
-      mute.innerText = Voice.isPeerMuted(Number(id)) ? '🔇' : '🔊';
+      mute.replaceChildren(uiIcon(Voice.isPeerMuted(Number(id)) ? 'sound-off' : 'sound-on'));
       mutedByIcon.style.display = Voice.isMutedByPeer(Number(id)) ? '' : 'none';
     };
     

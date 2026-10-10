@@ -5,6 +5,7 @@ import { EaselGame, Rng, BOARD, BOOST, BALL_TYPE, STEP_MS, M, FIELD_L, selectTra
 import { EaselSound } from './easelSound.js';
 import { EaselFx } from './easelFx.js';
 import { EaselScene, toLogic, FIELD } from './easelScene.js';
+import { uiIconHtml } from '../uiIcon.js';
 
 export { FIELD, toClient, toLogic, COLOR_TEX } from './easelScene.js';
 
@@ -23,7 +24,8 @@ const BOOST_UI = [
 ];
 const DIFFICULTY = { Easy: 'Лёгкий', Medium: 'Средний', Hard: 'Сложный', Impossible: 'Невозможный' };
 const MEDAL = { gold: 'Золотая медаль', silver: 'Серебряная медаль', bronze: 'Без медали' };
-const MEDAL_ICON = { gold: '🥇', silver: '🥈', bronze: '✔' };
+const MEDAL_ICON = { gold: uiIconHtml('medal-gold'), silver: uiIconHtml('medal-silver'), bronze: uiIconHtml('check') };
+const COIN = uiIconHtml('coin');
 const MEDAL_RANK = { bronze: 1, silver: 2, gold: 3 };
 const MEDAL_BY_RANK = [null, 'bronze', 'silver', 'gold'];
 const svg = (d) =>
@@ -428,7 +430,7 @@ export class Easel {
       box.innerHTML = b.timeMs !== null ? `<small>Рекорд уровня: <b>${fmtRec(b.timeMs)}</b> · место ${r.place} из ${r.total}</small>` : '';
       return;
     }
-    const rec = r.newTime && b.wins > 1 ? '<div class="easel-newrec">🏆 Новый рекорд!</div>' : '';
+    const rec = r.newTime && b.wins > 1 ? `<div class="easel-newrec">${uiIconHtml('trophy')} Новый рекорд!</div>` : '';
     box.innerHTML = `${rec}<p>Ваш рекорд: <b>${fmtRec(b.timeMs)}</b> · место <b>${r.place}</b> из ${r.total}</p>`;
   }
 
@@ -463,9 +465,9 @@ export class Easel {
     const my = Easel._myId();
     const overall = level < 0;
     const head = overall
-      ? '<th>#</th><th class="l">Игрок</th><th title="Пройдено уровней">Уровни</th><th title="Золотые медали">🥇</th><th title="Серебряные медали">🥈</th><th title="Сумма лучших очков">Очки</th><th title="Сумма лучших времён">Время</th>'
+      ? '<th>#</th><th class="l">Игрок</th><th title="Пройдено уровней">Уровни</th><th title="Золотые медали">' + MEDAL_ICON.gold + '</th><th title="Серебряные медали">' + MEDAL_ICON.silver + '</th><th title="Сумма лучших очков">Очки</th><th title="Сумма лучших времён">Время</th>'
       : '<th>#</th><th class="l">Игрок</th><th>Время</th><th title="Лучшие очки">Очки</th><th>Медаль</th>';
-    const place = (n) => (n === 1 ? '🥇' : n === 2 ? '🥈' : n === 3 ? '🥉' : n);
+    const place = (n) => (n === 1 ? MEDAL_ICON.gold : n === 2 ? MEDAL_ICON.silver : n === 3 ? uiIconHtml('medal-bronze') : n);
     const row = (x) => {
       const cls = x.userId === my ? ' class="me"' : '';
       const name = `<td class="l">${esc(x.login || '—')}</td>`;
@@ -641,10 +643,10 @@ export class Easel {
     const html = won
       ? `<div class="easel-medal">${MEDAL_ICON[medal]} ${MEDAL[medal]}</div>
          <p>Время: <b>${fmtTime(g.elapsed / 1000)}</b> <small>· золото ≤ ${fmtTime(st.goldMedalTime)} · серебро ≤ ${fmtTime(st.silverMedalTime)}</small></p>
-         <p>Заработано: <b>${g.goldEarned}</b> 🪙 · всего: <b>${P.gold}</b> 🪙</p>
+         <p>Заработано: <b>${g.goldEarned}</b> ${COIN} · всего: <b>${P.gold}</b> ${COIN}</p>
          <div class="easel-record"></div>`
       : `<p>Цепочка дошла до конца трассы. Попробуйте ещё раз!</p>
-         <p>Заработано: <b>${g.goldEarned}</b> 🪙 · всего: <b>${P.gold}</b> 🪙</p>
+         <p>Заработано: <b>${g.goldEarned}</b> ${COIN} · всего: <b>${P.gold}</b> ${COIN}</p>
          <div class="easel-record"></div>`;
     const next = won && g.level + 1 < LEVELS;
     Easel._showPanel(
@@ -704,15 +706,15 @@ export class Easel {
         const cls = (locked ? ' locked' : '') + (i === P.maxLevel ? ' easel-primary' : '');
         return `<button class="easel-lvl${cls} d-${esc(l.difficulty)}" data-level="${i}" ${locked ? 'disabled' : ''}>
           <b>${i + 1}</b><small>${esc(DIFFICULTY[l.difficulty] || l.difficulty)}</small>
-          <span>${locked ? '🔒' : medal ? MEDAL_ICON[medal] : ''}</span>${best}</button>`;
+          <span>${locked ? uiIconHtml('lock') : medal ? MEDAL_ICON[medal] : ''}</span>${best}</button>`;
       })
       .join('');
     Easel._showPanel(
       `<p>Закрасьте картину каплями нужного цвета, пока цепочка не докатилась до колодца.</p>
-      <div class="easel-gold-big">${P.gold} 🪙</div>
+      <div class="easel-gold-big">${P.gold} ${COIN}</div>
       <div class="easel-levels">${cells}</div>
       <div class="easel-actions easel-row">
-        ${Easel._online() ? '<button class="easel-btn" data-act="rating">🏆 Рейтинг</button>' : ''}
+        ${Easel._online() ? '<button class="easel-btn" data-act="rating">' + uiIconHtml('trophy') + ' Рейтинг</button>' : ''}
         <button class="easel-btn easel-red" data-act="exit">Выйти${KBD.esc}</button></div>`,
       { title: 'Мастерская свитков', back: Easel._levelsBack, wide: true },
     );
@@ -811,7 +813,7 @@ export class Easel {
       el.className = 'easel-boost';
       el.innerHTML = `<img src="${EASEL_BASE}ui/${ui.icon}.webp" alt=""><i class="easel-cd"></i>
         <span class="easel-price">${b.price}</span><kbd>${ui.key}</kbd>
-        <div class="easel-tip"><b>${esc(tip.title)}</b> <em>${b.price} 🪙 · ${Math.round(b.cooldown / 1000)} с</em><br>${esc(tip.body)}</div>`;
+        <div class="easel-tip"><b>${esc(tip.title)}</b> <em>${b.price} ${COIN} · ${Math.round(b.cooldown / 1000)} с</em><br>${esc(tip.body)}</div>`;
       el.onclick = (e) => {
         e.stopPropagation();
         Easel._fireBoost(ui.type);
@@ -842,10 +844,10 @@ export class Easel {
     const st = g.levelStats;
     const t = g.elapsed / 1000;
     const medal =
-      t <= st.goldMedalTime ? '🥇 ' + fmtTime(st.goldMedalTime) : t <= st.silverMedalTime ? '🥈 ' + fmtTime(st.silverMedalTime) : '';
-    Easel._setText('.easel-time', `⏱ ${fmtTime(t)} <small>${medal}</small>`);
-    Easel._setText('.easel-fill', `🎨 ${Math.round(g.paint.fillRatio() * 100)}%`);
-    Easel._setText('.easel-gold', `${g.gold} 🪙`);
+      t <= st.goldMedalTime ? MEDAL_ICON.gold + ' ' + fmtTime(st.goldMedalTime) : t <= st.silverMedalTime ? MEDAL_ICON.silver + ' ' + fmtTime(st.silverMedalTime) : '';
+    Easel._setText('.easel-time', `${uiIconHtml('stopwatch')} ${fmtTime(t)} <small>${medal}</small>`);
+    Easel._setText('.easel-fill', `${uiIconHtml('palette')} ${Math.round(g.paint.fillRatio() * 100)}%`);
+    Easel._setText('.easel-gold', `${g.gold} ${COIN}`);
     let banner = '';
     if (g.state === BOARD.LEVEL_BEGIN) banner = `Уровень ${g.level + 1}<small>Щёлкните, чтобы начать</small>`;
     else if (g.state >= BOARD.LEVEL_WON && g.state <= BOARD.WON_MOVIE) banner = 'Картина готова!';

@@ -18,6 +18,7 @@ import { TalentSets } from './talentSets.js';
 import { TalentData } from './talentData.js';
 import { Settings } from './settings.js';
 import { getMainHeroTalentId } from './mainHeroTalent.js';
+import { uiIcon } from './uiIcon.js';
 
 export class Build {
   static loading = false;
@@ -6344,7 +6345,7 @@ export class Build {
       const hasCdModsEffect = textWithMods !== textWithoutMods;
       const showBracketValue = hasCdModsEffect && textWithoutMods !== baseText;
       const rightPart = showBracketValue ? `${textWithMods}(${textWithoutMods})` : textWithMods;
-      cdNode.textContent = `${baseText} ➤ ${rightPart}`;
+      cdNode.replaceChildren(`${baseText} `, uiIcon('send'), ` ${rightPart}`);
     }
   }
 
