@@ -134,6 +134,27 @@ export class Voice {
 
   static logQueue = Promise.resolve();
 
+  // Выбор игрока «микрофон включён» (Ctrl+Z) живёт до выхода из лаунчера: sessionStorage
+  // переживает перезагрузку страницы после фонового обновления, но не перезапуск. Раньше микрофон
+  // выключался сам, когда заканчивались звонки, при бое и при новом микрофоне — и каждый раз
+  // приходилось снова жать Ctrl+Z.
+  static micWantedStorageKey = 'voice-mic-wanted';
+
+  static getMicWanted() {
+    try {
+      return sessionStorage.getItem(Voice.micWantedStorageKey) === '1';
+    } catch {
+      return false;
+    }
+  }
+
+  static setMicWanted(wanted) {
+    try {
+      if (wanted) sessionStorage.setItem(Voice.micWantedStorageKey, '1');
+      else sessionStorage.removeItem(Voice.micWantedStorageKey);
+    } catch {}
+  }
+
   // Журнал войса (voice.log рядом с лаунчером, с лимитом размера): звонки, входящие и решения
   // по ним, переподключения, бой. Нужен, чтобы разбирать сбои, которые воспроизводятся только
   // у живых игроков (восстановление после боя и т.п.).
@@ -642,7 +663,8 @@ export class Voice {
     }
 
     if (Voice.mic) {
-      Voice.mic.enabled = false;
+      // В режиме рации микрофон включается только удержанием клавиши.
+      Voice.mic.enabled = !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
     }
   }
 
@@ -683,6 +705,7 @@ export class Voice {
     }
 
     Voice.mic.enabled = !Voice.mic.enabled;
+    Voice.setMicWanted(Voice.mic.enabled);
 
     if (Voice.mic.enabled) {
       Sound.play(SOUNDS_LIBRARY.VC_ENABALED, {
@@ -1186,10 +1209,7 @@ export class Voice {
       target.close();
     }
 
-    if (Voice.mic && !Object.keys(Voice.manager).length) {
-      Voice.mic.enabled = false;
-      Voice.updateInfoPanel();
-    }
+    Voice.updateInfoPanel();
   }
 
   static restoreSuspendedBattlePeers() {
@@ -1215,7 +1235,9 @@ export class Voice {
   static async remoteDrop(id) {
     Voice.log('remote-drop', { id: Number(id), hadEntry: Boolean(Voice.manager[id]) });
     // The peer hung up (or paused for battle): stop re-calling them even between attempts,
-    // when there is no live entry to close.
+    // when there is no live entry to close. If we are in battle, don't restore them afterwards
+    // either (e.g. they closed the launcher while our battle was going on).
+    Voice.battleSuspendedPeers.delete(Number(id));
     for (const job of Array.from(Voice.reconnectJobs.values())) {
       if (job.id === Number(id)) {
         Voice.stopReconnectJob(job.id, job.key);
@@ -1282,12 +1304,8 @@ export class Voice {
         Voice.rawMic = null;
 
         Voice.userMedia = null;
-      } else {
-        if (!Object.keys(Voice.manager).length) {
-          if (Voice.mic) {
-            Voice.mic.enabled = false;
-          }
-        }
+
+        Voice.setMicWanted(false);
       }
 
       Voice.updateInfoPanel();
@@ -1310,10 +1328,7 @@ export class Voice {
       target.close();
     }
 
-    if (Voice.mic && !Object.keys(Voice.manager).length) {
-      Voice.mic.enabled = false;
-      Voice.updateInfoPanel();
-    }
+    Voice.updateInfoPanel();
   }
 
   static setVolumeLevel(level = 1.0) {
@@ -1677,12 +1692,23 @@ export class Voice {
 
     Voice.log('call', { id: Number(this.id), key: this.key, reconnect: Number(options?.reconnect || 0) ? 1 : 0 });
     try {
-      await App.api.request('user', 'call', {
-        id: this.id,
-        key: this.key,
-        offer: offer,
-        reconnect: Number(options?.reconnect || 0) ? 1 : 0,
-      });
+      // API отклоняет второй user.call, пока не пришёл ответ на первый (REQUEST_ALREADY_PENDING).
+      // При восстановлении после боя звонки нескольким друзьям идут почти одновременно — ждём
+      // освобождения метода, а не теряем звонок.
+      for (let wait = 0; ; wait++) {
+        try {
+          await App.api.request('user', 'call', {
+            id: this.id,
+            key: this.key,
+            offer: offer,
+            reconnect: Number(options?.reconnect || 0) ? 1 : 0,
+          });
+          break;
+        } catch (error) {
+          if (error?.code !== 'REQUEST_ALREADY_PENDING' || wait >= 40 || Voice.manager[this.id] !== this) throw error;
+          await new Promise((resolve) => setTimeout(resolve, 150));
+        }
+      }
     } catch (error) {
       Voice.log('call-error', { id: Number(this.id), error: String(error) });
       throw error;
