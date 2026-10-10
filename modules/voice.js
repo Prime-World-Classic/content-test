@@ -9,6 +9,7 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { normalizeKey } from './keybindings/keybindings.input.js';
 import { MM } from './mm.js';
 import { uiIcon } from './uiIcon.js';
+import { NativeAPI } from './nativeApi.js';
 
 export class Voice {
   static peerConnectionConfig = {
@@ -130,6 +131,23 @@ export class Voice {
   static radioPressedByKeyboard = false;
 
   static radioPulseTimer = null;
+
+  static logQueue = Promise.resolve();
+
+  // Журнал войса (voice.log рядом с лаунчером, с лимитом размера): звонки, входящие и решения
+  // по ним, переподключения, бой. Нужен, чтобы разбирать сбои, которые воспроизводятся только
+  // у живых игроков (восстановление после боя и т.п.).
+  static log(event, data = {}) {
+    let payload = '';
+    try {
+      payload = JSON.stringify(data);
+    } catch {}
+    const self = Number(App.storage?.data?.id || 0);
+    const line = `[${new Date().toISOString()}] me=${self} ${event} ${payload}\n`;
+    console.log('[voice]', event, data);
+    if (!NativeAPI.status) return;
+    Voice.logQueue = Voice.logQueue.then(() => NativeAPI.cappedAppend('voice.log', line)).catch(() => {});
+  }
 
   static getReconnectToken(id, key) {
     return `${String(key || '')}:${Number(id) || 0}`;
@@ -337,6 +355,7 @@ export class Voice {
     const token = Voice.getReconnectToken(id, key);
     const job = Voice.reconnectJobs.get(token);
     if (!job) return;
+    Voice.log('reconnect-stop', { id: job.id, key: job.key, attempts: job.attempt });
     if (job.timer) {
       clearTimeout(job.timer);
       job.timer = null;
@@ -384,26 +403,30 @@ export class Voice {
       activeCallAttempt: false,
     };
     Voice.reconnectJobs.set(token, job);
+    Voice.log('reconnect-start', { id: job.id, key: job.key, delay: Number(initialDelayMs) || 0 });
     const run = async () => {
       const current = Voice.reconnectJobs.get(token);
       if (!current) return;
       if (Date.now() - current.startedAt > Voice.reconnectMaxDurationMs) {
+        Voice.log('reconnect-expired', { id: current.id });
         Voice.stopReconnectJob(current.id, current.key);
         return;
       }
       const existing = Voice.manager[current.id];
       if (existing && existing.peer && existing.peer.connectionState !== 'closed') {
         const delayBusy = Voice.reconnectPlanMs[Math.min(current.attempt, Voice.reconnectPlanMs.length - 1)];
+        Voice.log('reconnect-busy', { id: current.id, state: existing.peer.connectionState, signaling: existing.peer.signalingState });
         current.timer = setTimeout(run, delayBusy);
         return;
       }
       let voice = null;
       try {
         current.activeCallAttempt = true;
+        Voice.log('reconnect-attempt', { id: current.id, attempt: current.attempt + 1 });
         voice = new Voice(current.id, current.key, current.name, current.important);
         await voice.call({ reconnect: 1 });
       } catch (error) {
-        console.log('Voice reconnect attempt failed:', error);
+        Voice.log('reconnect-attempt-error', { id: current.id, error: String(error) });
         try {
           voice?.close({ keepReconnect: true });
         } catch {}
@@ -1024,8 +1047,10 @@ export class Voice {
 
   static async ready(id, answer) {
     if (!(id in Voice.manager)) {
+      Voice.log('ready-ignored', { id: Number(id) });
       return;
     }
+    Voice.log('ready', { id: Number(id) });
 
     if (Voice.manager[id].timer) {
       clearTimeout(Voice.manager[id].timer);
@@ -1074,8 +1099,10 @@ export class Voice {
       }
       // Deterministic initiator to avoid both sides calling simultaneously.
       if (Number.isFinite(selfId) && selfId > 0 && selfId > id) {
+        Voice.log('merge-skip-higher-id', { id });
         continue;
       }
+      Voice.log('merge-call', { id });
 
       try {
         Voice.markMergeAutoAccept(id);
@@ -1126,6 +1153,7 @@ export class Voice {
     Voice.battleSuspendedAt = Date.now();
     const cleanIds = Array.from(new Set((allyIds || []).map((x) => Number(x)).filter((x) => Number.isFinite(x) && x > 0)));
     const allySet = new Set(cleanIds);
+    Voice.log('battle-suspend', { allies: cleanIds, peers: Object.keys(Voice.manager).map(Number), jobs: Array.from(Voice.reconnectJobs.values()).map((j) => j.id) });
     for (const idText of Object.keys(Voice.manager)) {
       const id = Number(idText);
       if (allySet.has(id)) {
@@ -1172,25 +1200,20 @@ export class Voice {
 
     const list = Array.from(Voice.battleSuspendedPeers.values());
     Voice.battleSuspendedPeers.clear();
+    Voice.log('battle-restore', { ids: list.map((x) => x.id) });
 
+    // Через задачу переподключения, а не одним звонком: единственная попытка могла сорваться
+    // (встречный звонок от VFriendMerge, гонка состояний, отказ сервера) — и друг не возвращался.
+    // Задача повторяет звонок по reconnectPlanMs, останавливается при соединении или VDrop.
     let delayMs = 0;
     for (const item of list) {
-      setTimeout(async () => {
-        if (item.id in Voice.manager) {
-          return;
-        }
-        try {
-          const voice = new Voice(item.id, String(item.key || 'friend'), String(item.name || ''), Boolean(item.important));
-          await voice.call({ reconnect: 1 });
-        } catch (error) {
-          console.log('Voice battle restore failed:', error);
-        }
-      }, delayMs);
+      Voice.ensureReconnectJob(item.id, String(item.key || 'friend'), String(item.name || ''), Boolean(item.important), delayMs);
       delayMs += 250;
     }
   }
 
   static async remoteDrop(id) {
+    Voice.log('remote-drop', { id: Number(id), hadEntry: Boolean(Voice.manager[id]) });
     // The peer hung up (or paused for battle): stop re-calling them even between attempts,
     // when there is no live entry to close.
     for (const job of Array.from(Voice.reconnectJobs.values())) {
@@ -1492,6 +1515,7 @@ export class Voice {
 
     this.peer.onconnectionstatechange = () => {
       const state = String(this.peer?.connectionState || '');
+      Voice.log('state', { id: Number(this.id), key: this.key, state, caller: this.isCaller });
       switch (state) {
         case 'connected':
           this.hasEverConnected = true;
@@ -1647,15 +1671,22 @@ export class Voice {
       this.timer = null;
 
       // Unanswered reconnect attempt: keep the job so it retries per reconnectPlanMs.
+      Voice.log('call-timeout', { id: Number(this.id), job: Boolean(Voice.getReconnectJob(this.id, this.key)) });
       this.close({ keepReconnect: Boolean(Voice.getReconnectJob(this.id, this.key)) });
     }, 15000);
 
-    await App.api.request('user', 'call', {
-      id: this.id,
-      key: this.key,
-      offer: offer,
-      reconnect: Number(options?.reconnect || 0) ? 1 : 0,
-    });
+    Voice.log('call', { id: Number(this.id), key: this.key, reconnect: Number(options?.reconnect || 0) ? 1 : 0 });
+    try {
+      await App.api.request('user', 'call', {
+        id: this.id,
+        key: this.key,
+        offer: offer,
+        reconnect: Number(options?.reconnect || 0) ? 1 : 0,
+      });
+    } catch (error) {
+      Voice.log('call-error', { id: Number(this.id), error: String(error) });
+      throw error;
+    }
 
     this.isCaller = true;
 
@@ -1680,6 +1711,7 @@ export class Voice {
       this.peer.addTrack(Voice.mic);
     }
 
+    Voice.log('accept', { id: Number(this.id), key: this.key });
     await this.peer.setRemoteDescription(offer);
 
     let answer = await this.peer.createAnswer();

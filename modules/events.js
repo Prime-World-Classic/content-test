@@ -368,20 +368,27 @@ export class Events {
       return;
     }
     const callKey = String(data?.key || '');
+    const logIn = (decision, extra = {}) =>
+      Voice.log('incoming', { id: Number(data?.id), key: callKey, reconnect: Number(data?.reconnect || 0), caller: Boolean(data?.isCaller), decision, ...extra });
     if ((MM.isInBattle || Voice.isBattleSuspendActive()) && callKey === 'friend') {
+      logIn('ignored-battle', { inBattle: MM.isInBattle });
       return;
     }
     const activeMatchKey = String(MM.id || '');
     if ((MM.isInTambur || MM.isInBattle) && (!activeMatchKey || callKey !== activeMatchKey)) {
+      logIn('ignored-tambur');
       return;
     }
     const existing = Voice.manager?.[Number(data?.id)];
     if (existing?.peer && existing.peer.connectionState !== 'closed') {
       // Cross-calls may arrive while we already have an active/pending connection.
       // Ignore duplicate incoming invite, except glare where we must yield (see voiceGlare.js).
+      const existingState = { state: existing.peer.connectionState, signaling: existing.peer.signalingState };
       if (!shouldYieldToIncomingCall(App.storage?.data?.id, data?.id, existing.peer)) {
+        logIn('ignored-existing', existingState);
         return;
       }
+      logIn('glare-yield', existingState);
       existing.close({ keepReconnect: true });
     }
     const forceAutoAccept = Voice.consumeMergeAutoAccept(data?.id);
@@ -408,11 +415,13 @@ export class Events {
 		playCallSoundLoop();
 	  }
 
+      logIn('ring');
       Window.callData = data;
         
       Window.show('main', 'callWindow');
 		
     } else {
+      logIn('auto-accept', { merge: forceAutoAccept });
       let voice = new Voice(data.id, callKey, data.name, callKey === 'friend');
 
       await voice.accept(data.offer);
@@ -436,9 +445,12 @@ export class Events {
   }
 
   static async VFriendMerge(data) {
+    const users = (data?.users || []).map((x) => Number(x?.id));
     if (MM.isInTambur || MM.isInBattle || Voice.isBattleSuspendActive()) {
+      Voice.log('merge-ignored', { users, tambur: MM.isInTambur, battle: MM.isInBattle });
       return;
     }
+    Voice.log('merge', { users });
     await Voice.mergeFriendCalls(data?.users || []);
   }
 
