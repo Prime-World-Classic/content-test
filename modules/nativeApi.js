@@ -31,6 +31,8 @@ export class NativeAPI {
   static updateCallback = null;
   static updateBackground = false;
   static restartPending = false;
+  static hashTestChild = null;
+  static hashTestDone = Promise.resolve();
 
   // Лог-файлы обновления: лимит 10 МБ, при превышении остаётся хвост ~5 МБ
   static LOG_MAX_BYTES = 10 * 1024 * 1024;
@@ -576,11 +578,31 @@ export class NativeAPI {
     return rev !== null && rev === mark.rev;
   }
 
+  // Колбэк Node (child_process/fs), прилетевший после reload в уничтоженный
+  // контекст старой страницы, роняет весь процесс NW (ACCESS_VIOLATION в nw.dll) —
+  // лаунчер просто закрывался. Поэтому перед reload ждём проверку хэшей
+  // (зависла — убиваем и ждём её close) и не оставляем незаписанный лог.
+  static HASH_TEST_RELOAD_WAIT_MS = 60 * 1000;
+
+  static async waitHashTestBeforeReload() {
+    const child = NativeAPI.hashTestChild;
+    if (!child) return;
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    NativeAPI.logUpdate('reload-wait-hash-test');
+    await Promise.race([NativeAPI.hashTestDone, sleep(NativeAPI.HASH_TEST_RELOAD_WAIT_MS)]);
+    if (!NativeAPI.hashTestChild) return;
+    try {
+      child.kill();
+    } catch {}
+    await Promise.race([NativeAPI.hashTestDone, sleep(3000)]);
+  }
+
   static async resetWhenContentReady() {
     if (!NativeAPI.status) return;
     const fs = NativeAPI.fileSystem;
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await NativeAPI.markReloadAfterUpdate();
+    await NativeAPI.waitHashTestBeforeReload();
     await sleep(1500);
     for (let attempt = 1; attempt <= 20; attempt++) {
       let missing = '';
@@ -596,14 +618,14 @@ export class NativeAPI {
         if (missing) break;
       }
       if (!missing) {
-        NativeAPI.logUpdate('reload', `attempt=${attempt}`);
+        await NativeAPI.logUpdate('reload', `attempt=${attempt}`);
         NativeAPI.reset();
         return;
       }
       NativeAPI.logUpdate('reload-wait', `attempt=${attempt} file=${missing}`);
       await sleep(1000);
     }
-    NativeAPI.logUpdate('reload', 'files-not-ready, reload anyway');
+    await NativeAPI.logUpdate('reload', 'files-not-ready, reload anyway');
     NativeAPI.reset();
   }
 
@@ -637,7 +659,7 @@ export class NativeAPI {
   // Лог обновления (stage), с timestamp, лимит 10 МБ
   static logUpdate(stage, extra = '') {
     const line = `[${new Date().toISOString()}] ${stage}${extra ? ` ${extra}` : ''}\n`;
-    NativeAPI.cappedAppend('update.log', line).catch(() => {});
+    return NativeAPI.cappedAppend('update.log', line).catch(() => {});
   }
 
   // Любое исключение в цепочке обновления: App.error + stack целиком в файл, с timestamp
@@ -792,14 +814,23 @@ export class NativeAPI {
         }
 
         const spawn = NativeAPI.childProcess.spawn(PWGame.PATH_TEST_HASHES);
+        let finish;
+        NativeAPI.hashTestChild = spawn;
+        NativeAPI.hashTestDone = new Promise((resolve) => (finish = resolve));
+        const done = () => {
+          if (NativeAPI.hashTestChild === spawn) NativeAPI.hashTestChild = null;
+          finish();
+        };
 
         spawn.on('error', (e) => {
+          done();
           NativeAPI.logUpdateError(e, 'hash-test-spawn');
           PWGame.isTestHashesFailed = true;
           App.error(Lang.text('fileCheckFailed') + ' ' + (e.message || e));
         });
 
         spawn.on('close', (code) => {
+          done();
           if (code == 0) {
             PWGame.isValidated = true;
             App.notify(Lang.text('updateCheckComplete'));
@@ -961,10 +992,11 @@ export class NativeAPI {
 
       // Окно только что перезагружено после обновления — content уже свежий,
       // повторный прогон апдейтера не нужен (и опасен, см. markReloadAfterUpdate).
+      // Проверку хэшей перед reload не запускали (см. close ниже) — делаем её здесь.
       if (!background && (await NativeAPI.takeReloadAfterUpdate())) {
         PWGame.isUpToDate = true;
-        PWGame.isValidated = true;
         NativeAPI.logUpdate('skip-after-reload', `rev=${await NativeAPI.readContentRevision()}`);
+        NativeAPI.testHashes();
         NativeAPI.startContentWatch();
         return true;
       }
@@ -1017,7 +1049,6 @@ export class NativeAPI {
 
           if (ok) {
             PWGame.isUpToDate = true;
-            NativeAPI.testHashes();
           } else {
             PWGame.isUpdateFailed = true;
             App.error(Lang.text('updateError') + code);
@@ -1041,6 +1072,12 @@ export class NativeAPI {
             changed = false; // .git пропал — content скорее всего битый, не рестартим
           } else {
             changed = NativeAPI.updated; // .git не читается — bar-флаг
+          }
+
+          // На старте при смене ревизии окно сейчас перезагрузится — хэши
+          // проверит уже новая страница (skip-after-reload).
+          if (ok && !(changed && !NativeAPI.updateBackground)) {
+            NativeAPI.testHashes();
           }
 
           if (ok && changed && NativeAPI.updateBackground) {
