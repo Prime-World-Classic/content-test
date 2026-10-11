@@ -64,6 +64,7 @@ export const be = {
     advancedSettings: 'Дад. налады',
     windowMode: 'Аконны рэжым',
     threeD: '3D графіка',
+    dayNight: 'Змена дня і ночы',
     voiceInWindow: 'Голас у акне',
     voiceInWindowRequiresWin11: 'Патрабуецца Windows 11',
     voiceInWindowRequiresNwjs: 'Патрабуецца nw.js 100.1 або вышэй',

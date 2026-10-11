@@ -100,6 +100,7 @@ export const ru = {
     radminGuideVk: 'ВКонтакте',
     radminGuideTelegram: 'Telegram',
     threeD: '3D графика',
+    dayNight: 'Смена дня и ночи',
     voiceEnabled: 'Выключить войс чат',
     voiceInWindow: 'Войс в окне',
     voiceInWindowRequiresWin11: 'Требуется Windows 11',

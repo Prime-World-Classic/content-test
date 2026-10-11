@@ -51,6 +51,56 @@ function pickNode() {
 
 const states = new WeakMap(); // объект капель сцены → состояние
 
+// Перерисовать участок карты теней [x0, y0, x1, y1] (тексели): очистить и заново нарисовать всех,
+// кто в него попадает. Используется для капель мольберта и для вращающихся объектов (Castle).
+export function redrawShadowRect(Castle, rect, visible) {
+  const size = Castle.depthTextureSize;
+  const lvp = Castle.lightViewProjMatrix;
+  rect = [Math.max(0, Math.floor(rect[0])), Math.max(0, Math.floor(rect[1])), Math.min(size, Math.ceil(rect[2])), Math.min(size, Math.ceil(rect[3]))];
+  if (rect[2] <= rect[0] || rect[3] <= rect[1]) return;
+  const gl = Castle.gl;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, Castle.depthFramebuffer);
+  gl.viewport(0, 0, size, size);
+  gl.enable(gl.SCISSOR_TEST);
+  gl.scissor(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]);
+  gl.depthMask(true);
+  gl.clear(gl.DEPTH_BUFFER_BIT);
+  const hits = (obj, rotation, translation) => {
+    const md = obj.meshData;
+    if (!md || !md.vertices || (obj.noShadowCast && Castle.dayNightActive)) return false;
+    if (obj.objRotation || !md.bboxMin || !isFinite(md.bboxMin[0])) return true;
+    const r = smRect(lvp, size, obj, rotation, translation, md.bboxMin, md.bboxMax, 4);
+    return r[0] < rect[2] && r[2] > rect[0] && r[1] < rect[3] && r[3] > rect[1];
+  };
+  // те же заслонители, что и в статическом проходе Castle.loop
+  for (const obj of Castle.sceneObjects) {
+    if (obj.blend) break;
+    if (hits(obj)) Castle.prepareAndDrawObject(obj, true);
+  }
+  for (const b of visible) {
+    for (const obj of b.mesh.objects) {
+      if (hits(obj, b.rotation, b.translation)) Castle.prepareAndDrawObject(obj, true, b.rotation, b.translation);
+    }
+  }
+  gl.disable(gl.SCISSOR_TEST);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+}
+
+// Участок карты теней, который вращающийся объект (objRotation) может занять при любом угле:
+// вращение идёт вокруг локального начала координат, берём куб радиуса самой дальней вершины.
+export function rotatingShadowRect(Castle, obj, rotation, translation) {
+  const md = obj.meshData;
+  if (!md || !md.bboxMin || !isFinite(md.bboxMin[0])) return null;
+  let r = 0;
+  for (let c = 0; c < 8; c++) {
+    const x = c & 1 ? md.bboxMax[0] : md.bboxMin[0];
+    const y = c & 2 ? md.bboxMax[1] : md.bboxMin[1];
+    const z = c & 4 ? md.bboxMax[2] : md.bboxMin[2];
+    r = Math.max(r, Math.hypot(x, y, z));
+  }
+  return smRect(Castle.lightViewProjMatrix, Castle.depthTextureSize, obj, rotation, translation, [-r, -r, -r], [r, r, r], 4);
+}
+
 export class EaselCastleFx {
   // building — Castle.sceneBuildings.easel; time — секунды
   static update(gl, building, time) {
@@ -113,38 +163,7 @@ export class EaselCastleFx {
       rect = unionRect(rect, smRect(lvp, size, drops, b.rotation, b.translation, s.box[0], s.box[1], 2));
     }
     if (!rect) return;
-    rect[0] = Math.max(0, Math.floor(rect[0]));
-    rect[1] = Math.max(0, Math.floor(rect[1]));
-    rect[2] = Math.min(size, Math.ceil(rect[2]));
-    rect[3] = Math.min(size, Math.ceil(rect[3]));
-    if (rect[2] <= rect[0] || rect[3] <= rect[1]) return;
-
-    const gl = Castle.gl;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, Castle.depthFramebuffer);
-    gl.viewport(0, 0, size, size);
-    gl.enable(gl.SCISSOR_TEST);
-    gl.scissor(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]);
-    gl.depthMask(true);
-    gl.clear(gl.DEPTH_BUFFER_BIT);
-    const hits = (obj, rotation, translation) => {
-      const md = obj.meshData;
-      if (!md || !md.vertices) return false;
-      if (obj.objRotation || !md.bboxMin || !isFinite(md.bboxMin[0])) return true;
-      const r = smRect(lvp, size, obj, rotation, translation, md.bboxMin, md.bboxMax, 4);
-      return r[0] < rect[2] && r[2] > rect[0] && r[1] < rect[3] && r[3] > rect[1];
-    };
-    // те же заслонители, что и в статическом проходе Castle.loop
-    for (const obj of Castle.sceneObjects) {
-      if (obj.blend) break;
-      if (hits(obj)) Castle.prepareAndDrawObject(obj, true);
-    }
-    for (const b of visible) {
-      for (const obj of b.mesh.objects) {
-        if (hits(obj, b.rotation, b.translation)) Castle.prepareAndDrawObject(obj, true, b.rotation, b.translation);
-      }
-    }
-    gl.disable(gl.SCISSOR_TEST);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    redrawShadowRect(Castle, rect, visible);
   }
 
   // границы капель (локально) по всем позам обеих анимаций и позе привязки

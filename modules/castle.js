@@ -18,7 +18,7 @@ import { PreloadImages } from './preloadImages.js';
 import { DOM } from './dom.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
-import { EaselCastleFx } from './easel/easelCastleFx.js';
+import { EaselCastleFx, redrawShadowRect, rotatingShadowRect } from './easel/easelCastleFx.js';
 
 export class Castle {
   static canvas;
@@ -894,6 +894,7 @@ export class Castle {
       ); // mip level
 
       const unusedTexture = Castle.gl.createTexture();
+      Castle.smColorTexture = unusedTexture;
       Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, unusedTexture);
       Castle.gl.texImage2D(
         Castle.gl.TEXTURE_2D,
@@ -973,12 +974,285 @@ export class Castle {
     mat4.translate(lightViewMatrix, lightViewMatrix, smCam.camPos);
     mat4.multiply(lightViewMatrix2, Castle.flipMatr, lightViewMatrix);
     mat4.multiply(Castle.lightViewProjMatrix, lightProjMatrix, lightViewMatrix2);
+
+    // Центр, вокруг которого ходит солнце, — не точка исходной камеры теней (она висит высоко и смещена,
+    // при повороте солнца карта теней уезжала с замка и тени обрывались по прямой), а земля под
+    // видимой частью замка. Камера замка у обеих фракций одна, центр общий. Подобран замером
+    // (Castle.shadowCoverageReport): вне карты теней 0-0.2% кадра в обычных видах в любое время суток.
+    Castle.smCenter = Castle.sunShadowCenter.slice();
+    // Для движущегося солнца камера теней дальше и глубже исходной: при низком солнце далёкие
+    // холмы иначе резались ближней плоскостью, и их тень обрывалась ползущей прямой линией.
+    const ext = Castle.sunShadowExtent;
+    Castle.smProj = mat4.ortho(mat4.create(), -ext, ext, -ext, ext, Castle.zNearSM, Castle.sunZFar);
+    Castle.sunDirForSM = null;
+    Castle.camAxes = null;
+  }
+
+  // ---- Смена дня и ночи --------------------------------------------------------------------
+  // Ускоренные сутки по общему времени (у всех игроков одинаково): солнце восходит справа от
+  // камеры, проходит высоко у неё за спиной (в кадр не попадает) и садится слева. Тени идут
+  // за солнцем (карта теней пересчитывается при сдвиге солнца), ночью яркость ~25% дневной.
+  static dayCycleSeconds = 20 * 60;
+  static dayShare = 0.75; // доля суток, когда солнце над горизонтом: 15 мин день, 5 мин ночь
+  static sunMaxElevationDeg = 55;
+  static sunMinShadowElevationDeg = 30;
+  static nightExposure = 0.8; // средняя яркость ночью ~25% дневной (замерено по кадру)
+  static dayTimeOverride = null; // 0..1 — зафиксировать время суток (отладка)
+  static sunLight = [1, 1, 1, 1]; // rgb — цвет и сила солнца, a — экспозиция
+  // a — смещение глубины теней (исходно 0.001; для солнца со смены дня и ночи камера теней глубже — 0.0004)
+  static ambientLight = [1, 1, 1, 0.001];
+  static dayNightActive = false;
+  static smCenter = null;
+  static sunDist = 1500;
+  static sunZFar = 3000;
+  static sunShadowCenter = [1170, 27, 1230];
+  static sunShadowExtent = 550; // ±550: 7.4 текселя карты теней на единицу (исходно ±400)
+  static smProj = null;
+  static sunDirForSM = null;
+  static sunSMUpdatedAt = 0;
+  static smUpdateIntervalMs = 500;
+  static camAxes = null;
+
+  // ---- Отладка теней -----------------------------------------------------------------------
+  // В проходе теней каждый объект пишет свой номер (debugId) в цветовое вложение карты теней.
+  // Castle.setShadowDebug(1) — тени окрашены цветом отбросившего их объекта;
+  // Castle.setShadowDebug(2) — затенённые пиксели выводятся кодом объекта, отчёт: shadowDebugReport().
+  static shadowDebugMode = 0;
+  static smColorTexture = null;
+  static debugObjects = [];
+  static currentDrawObject = null;
+
+  static setShadowDebug(mode = 1) {
+    Castle.shadowDebugMode = Number(mode) || 0;
+    Castle.isStaticSMCached = false;
+  }
+
+  // Какие объекты отбрасывают тень в текущем кадре и на сколько пикселей экрана (режим 2).
+  static shadowDebugReport(top = 15) {
+    const gl = Castle.gl;
+    const prev = Castle.shadowDebugMode;
+    Castle.shadowDebugMode = 2;
+    Castle.isStaticSMCached = false;
+    Castle.loop();
+    const w = gl.drawingBufferWidth, h = gl.drawingBufferHeight;
+    const px = new Uint8Array(w * h * 4);
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    Castle.shadowDebugMode = prev;
+    const counts = new Map();
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i + 2] !== 255) continue;
+      const id = px[i] | (px[i + 1] << 8);
+      counts.set(id, (counts.get(id) || 0) + 1);
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, top)
+      .map(([id, n]) => ({ id, mesh: Castle.debugObjects[id - 1] || '?', pixels: n, share: +((n / (w * h)) * 100).toFixed(2) }));
+  }
+
+  // Доля кадра вне карты теней (режим 3: зелёный — внутри, красный — снаружи), в процентах.
+  static shadowCoverageReport() {
+    const gl = Castle.gl;
+    const prev = Castle.shadowDebugMode;
+    Castle.shadowDebugMode = 3;
+    Castle.loop();
+    const w = gl.drawingBufferWidth, h = gl.drawingBufferHeight;
+    const px = new Uint8Array(w * h * 4);
+    gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    Castle.shadowDebugMode = prev;
+    let inside = 0, outside = 0;
+    for (let i = 0; i < px.length; i += 4) {
+      if (px[i + 1] === 255 && px[i] === 0) inside++;
+      else if (px[i] === 255 && px[i + 1] === 0) outside++;
+    }
+    const total = inside + outside || 1;
+    return { outsidePct: +((outside / total) * 100).toFixed(1), insidePct: +((inside / total) * 100).toFixed(1) };
+  }
+
+  // Вращающиеся объекты (objRotation) — мельницы, флюгеры. Карта теней статическая и
+  // перестраивается целиком только при сдвиге солнца, поэтому их тень отставала. Каждый кадр
+  // перерисовываем лишь участки карты под ними. Объекты с огромным участком (птицы, летающие
+  // по большому кругу) пропускаем — они обновляются вместе с общим пересчётом.
+  static movingShadowMaxShare = 0.25;
+
+  static updateMovingShadows(buildingsToDraw) {
+    const size = Castle.depthTextureSize;
+    const visible = buildingsToDraw.filter((b) => !b.outlined);
+    const rects = [];
+    const add = (obj, rotation, translation) => {
+      if (!obj.objRotation || (obj.noShadowCast && Castle.dayNightActive)) return;
+      const r = rotatingShadowRect(Castle, obj, rotation, translation);
+      if (!r) return;
+      const x0 = Math.max(0, r[0]), y0 = Math.max(0, r[1]), x1 = Math.min(size, r[2]), y1 = Math.min(size, r[3]);
+      if (x1 <= x0 || y1 <= y0) return; // вне карты теней
+      if (((x1 - x0) * (y1 - y0)) / (size * size) > Castle.movingShadowMaxShare) return;
+      rects.push([x0, y0, x1, y1]);
+    };
+    for (const obj of Castle.sceneObjects) {
+      if (obj.blend) break;
+      add(obj);
+    }
+    for (const b of visible) {
+      for (const obj of b.mesh.objects) add(obj, b.rotation, b.translation);
+    }
+    // пересекающиеся участки сливаем, чтобы не перерисовывать одно место дважды
+    for (let merged = true; merged; ) {
+      merged = false;
+      for (let i = 0; i < rects.length && !merged; i++) {
+        for (let j = i + 1; j < rects.length; j++) {
+          const a = rects[i], c = rects[j];
+          if (a[0] < c[2] && c[0] < a[2] && a[1] < c[3] && c[1] < a[3]) {
+            rects[i] = [Math.min(a[0], c[0]), Math.min(a[1], c[1]), Math.max(a[2], c[2]), Math.max(a[3], c[3])];
+            rects.splice(j, 1);
+            merged = true;
+            break;
+          }
+        }
+      }
+    }
+    for (const rect of rects) redrawShadowRect(Castle, rect, visible);
+  }
+
+  static smoothstep(a, b, x) {
+    const t = Castle.clamp((x - a) / (b - a), 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+
+  // Горизонтальные «вправо» и «назад» камеры замка в мире. Камера по рысканию не вращается,
+  // поэтому считаем один раз: проецируем сдвиги от центра сцены и смотрим, куда они уходят.
+  static getCamAxes() {
+    if (Castle.camAxes || !Castle.viewProjMatr || !Castle.smCenter) return Castle.camAxes;
+    const project = (p) => {
+      const v = vec4.transformMat4(vec4.create(), [p[0], p[1], p[2], 1], Castle.viewProjMatr);
+      return [v[0] / v[3], v[3]];
+    };
+    const c = Castle.smCenter;
+    const vm = Castle.viewMatrix2;
+    let right = vec3.normalize(vec3.create(), [vm[0], 0, vm[8]]);
+    let back = vec3.normalize(vec3.create(), [vm[2], 0, vm[10]]);
+    if (project([c[0] + right[0] * 50, c[1], c[2] + right[2] * 50])[0] < project(c)[0]) vec3.negate(right, right);
+    // «назад» — к камере: точка, сдвинутая назад, ближе к камере (меньше w)
+    if (project([c[0] + back[0] * 50, c[1], c[2] + back[2] * 50])[1] > project(c)[1]) vec3.negate(back, back);
+    Castle.camAxes = { right, back };
+    return Castle.camAxes;
+  }
+
+  static isGroundDecal(obj, bboxMin, bboxMax) {
+    const ext = [0, 1, 2].map((k) => bboxMax[k] - bboxMin[k]);
+    const maxExt = Math.max(...ext);
+    const k = ext.indexOf(Math.min(...ext));
+    if (!(maxExt > 0) || ext[k] > 1.5 || ext[k] / maxExt > 0.05) return false;
+    // нормаль плоскости — локальная ось k в мире (transform хранится построчно, как в шейдере)
+    const t = obj.transform || [1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1];
+    const n = [t[k], t[4 + k], t[8 + k]];
+    const len = Math.hypot(n[0], n[1], n[2]);
+    return len > 0 && Math.abs(n[1]) / len > 0.9;
+  }
+
+  static setLightFromSun(dir) {
+    const c = Castle.smCenter;
+    const d = Castle.sunDist;
+    const eye = [c[0] + dir[0] * d, c[1] + dir[1] * d, c[2] + dir[2] * d];
+    const up = Math.abs(dir[1]) > 0.98 ? [0, 0, 1] : [0, 1, 0];
+    const view = mat4.lookAt(mat4.create(), eye, c, up);
+    const view2 = mat4.multiply(mat4.create(), Castle.flipMatr, view);
+    mat4.multiply(Castle.lightViewProjMatrix, Castle.smProj, view2);
+  }
+
+  // Настройка «Смена дня и ночи» (Доп. настройки). Выключено — всё как до неё: исходная неподвижная
+  // камера теней фракции, прежняя формула света, прежнее смещение глубины, все объекты отбрасывают тень.
+  static get dayNightEnabled() {
+    return Settings.settings?.dayNight !== false;
+  }
+
+  static disableDayNight() {
+    Castle.dayNightActive = false;
+    Castle.sunLight = [1, 1, 1, 1];
+    Castle.ambientLight = [1, 1, 1, 0.001];
+    if (Castle.isSMEnabled && Castle.currentSceneName) {
+      Castle.setupLightMatrix(Castle.currentSceneName);
+      Castle.isStaticSMCached = false;
+    }
+  }
+
+  static updateDayNight() {
+    if (!Castle.dayNightEnabled) {
+      if (Castle.dayNightActive) Castle.disableDayNight();
+      return;
+    }
+    const axes = Castle.getCamAxes();
+    if (!axes) return;
+    if (!Castle.dayNightActive) {
+      Castle.dayNightActive = true;
+      Castle.sunDirForSM = null;
+    }
+    const cycle = Castle.dayCycleSeconds;
+    const p = Castle.dayTimeOverride !== null ? Castle.dayTimeOverride : ((Date.now() / 1000) % cycle) / cycle;
+    const day = Castle.dayShare;
+    const e = (Castle.sunMaxElevationDeg * Math.PI) / 180;
+    let theta, altitude;
+    if (p < day) {
+      theta = (Math.PI * p) / day;
+      altitude = Math.sin(theta) * Math.sin(e);
+    } else {
+      // ночь: солнце под горизонтом (тени не нужны), высота уходит в минус и возвращается
+      theta = p - day < (1 - day) / 2 ? Math.PI : 0;
+      altitude = -0.5 * Math.sin((Math.PI * (p - day)) / (1 - day));
+    }
+    const { right, back } = axes;
+    const st = Math.sin(theta), ct = Math.cos(theta);
+    const dir = vec3.normalize(vec3.create(), [
+      ct * right[0] + st * Math.cos(e) * back[0],
+      st * Math.sin(e) + 0.02,
+      ct * right[2] + st * Math.cos(e) * back[2],
+    ]);
+
+    // Сцена рассчитана на свет сверху: за краем карты меши обрезаны по прямой, и при низком солнце
+    // их тень ложилась через весь замок полосами с прямыми краями. Для теней и направленного света
+    // солнце не опускается ниже sunMinShadowElevationDeg — восход/закат передают цвет и яркость.
+    const minElev = (Castle.sunMinShadowElevationDeg * Math.PI) / 180;
+    if (Math.asin(Castle.clamp(dir[1], -1, 1)) < minElev) {
+      const h = Math.hypot(dir[0], dir[2]) || 1;
+      dir[0] = (dir[0] / h) * Math.cos(minElev);
+      dir[2] = (dir[2] / h) * Math.cos(minElev);
+      dir[1] = Math.sin(minElev);
+    }
+
+    // Прямой свет (и с ним тени) гаснет полностью к моменту, когда солнце касается горизонта,
+    // общая яркость и небо темнеют дольше — сумерки после заката.
+    const sunStrength = Castle.smoothstep(0.0, 0.18, altitude);
+    const daylight = Castle.smoothstep(-0.12, 0.12, altitude);
+    const highSun = Castle.smoothstep(0.02, 0.45, altitude);
+    // низкое солнце тёплое, высокое — почти белое
+    const sun = [1.0, 0.55 + 0.43 * highSun, 0.3 + 0.62 * highSun].map((x) => x * sunStrength);
+    const exposure = Castle.nightExposure + (1 - Castle.nightExposure) * daylight;
+    Castle.sunLight = [sun[0], sun[1], sun[2], exposure];
+    // ночной фон голубоватый, дневной нейтральный
+    Castle.ambientLight = [0.62 + 0.38 * daylight, 0.72 + 0.28 * daylight, 1.0, 0.0004];
+
+    // Карту теней ведём и ночью: в середине ночи направление переключается с заката на восход,
+    // пока прямого света нет и теней не видно. Раньше ночью она замирала на закате и на рассвете
+    // разворачивалась на 180 градусов прямо на глазах.
+    if (Castle.isSMEnabled && Castle.smCenter && Castle.smProj) {
+      const prev = Castle.sunDirForSM;
+      // Пересчёт карты теней (8192x8192) стоит ~2.5 мс на RTX 3080 Ti и заметно больше на встроенной
+      // графике, поэтому не чаще smUpdateIntervalMs, даже если солнце движется быстро.
+      const now = performance.now();
+      const moved = !prev || vec3.dot(prev, dir) < Math.cos((0.25 * Math.PI) / 180);
+      if (moved && (!prev || now - Castle.sunSMUpdatedAt >= Castle.smUpdateIntervalMs)) {
+        Castle.sunSMUpdatedAt = now;
+        Castle.setLightFromSun(dir);
+        Castle.sunDirForSM = dir;
+        Castle.isStaticSMCached = false;
+      }
+    }
   }
 
   // Загрузка сцены фракции: объекты, здания, текстуры, шейдеры (дефайн фракции). Вызывается из
   // initDemo и при смене фракции (switchScene) — без пересоздания WebGL-контекста и страницы.
   static async loadScene(sceneName) {
     Castle.sceneObjects = [];
+    Castle.debugObjects = [];
 
     let shaderNames = [],
       texNames = [];
@@ -1438,6 +1712,18 @@ export class Castle {
       bboxMax: bboxMax,
     };
 
+    // Плоские горизонтальные подложки зданий (квадрат земли/травы чуть над рельефом) не должны
+    // отбрасывать тень: при солнце сверху она пряталась под самой подложкой, а при низком солнце
+    // (смена дня и ночи) уезжала в сторону тёмным параллелограммом.
+    sceneObjectsContainer[objectId].debugId = Castle.debugObjects.push(sceneObjectsContainer[objectId].meshName);
+
+    // Рельеф (terrain/understage, у Доктов горы — doct/rocks_*) тень принимает, но не отбрасывает: его меши обрезаны по прямой за
+    // краем карты, и при солнце сбоку их тень ложилась на замок многоугольниками с прямыми краями
+    // (видно в Castle.setShadowDebug(1)). Скалы, деревья и здания тени отбрасывают как обычно.
+    sceneObjectsContainer[objectId].noShadowCast =
+      /^sky_|(^|\/)(terrain|understage)|^doct\/rocks_/.test(sceneObjectsContainer[objectId].meshName) ||
+      Castle.isGroundDecal(sceneObjectsContainer[objectId], bboxMin, bboxMax);
+
     // Add up first vertex as base offset
     if (sceneObjectsContainer[objectId].startFreq) {
       sceneObjectsContainer[objectId].startFreq[0] += meshFloat[0];
@@ -1536,6 +1822,8 @@ export class Castle {
 
     Castle.updateMainCam();
 
+    Castle.updateDayNight();
+
     let outlinedBuilding = -1;
     Castle.outlinedBuilding = null;
     if (Object.keys(Window.windows).length === 0) {
@@ -1583,16 +1871,22 @@ export class Castle {
       for (let i = 0; i < Castle.sceneObjects.length; ++i) {
         let obj = Castle.sceneObjects[i];
         if (obj.blend) break;
+        if (obj.noShadowCast && Castle.dayNightActive) continue;
         Castle.prepareAndDrawObject(obj, true);
       }
       for (let buildingToDraw of buildingsToDraw) {
         for (let i = 0; i < buildingToDraw.mesh.objects.length; ++i) {
-          if (!buildingToDraw.outlined) {
+          if (!buildingToDraw.outlined && !(buildingToDraw.mesh.objects[i].noShadowCast && Castle.dayNightActive)) {
             Castle.prepareAndDrawObject(buildingToDraw.mesh.objects[i], true, buildingToDraw.rotation, buildingToDraw.translation);
           }
         }
       }
       Castle.isStaticSMCached = true;
+    }
+
+    // тени вращающихся объектов (мельницы, флюгеры) — каждый кадр, а не только при пересчёте карты
+    if (Castle.isSMEnabled && Castle.isStaticSMCached) {
+      Castle.updateMovingShadows(buildingsToDraw);
     }
 
     // тень анимированных капель «Мастерской свитков»: перерисовка участка карты теней
@@ -1698,6 +1992,7 @@ export class Castle {
       uvScroll[1] = obj.uvScroll[1] * Castle.currentTime;
     }
 
+    Castle.currentDrawObject = obj;
     Castle.drawObject(
       isSMPass ? associatedShader.PSO_SM : associatedShader.PSO,
       textures,
@@ -1820,6 +2115,10 @@ export class Castle {
     let matViewProjSMUniformLocation = Castle.getUniformLocation(program, 'lightViewProj');
 
     Castle.gl.uniformMatrix4fv(matViewProjSMUniformLocation, Castle.gl.FALSE, Castle.lightViewProjMatrix);
+
+    Castle.gl.uniform4fv(Castle.getUniformLocation(program, 'sunLight'), Castle.sunLight);
+
+    Castle.gl.uniform4fv(Castle.getUniformLocation(program, 'ambientLight'), Castle.ambientLight);
 
     let zNearFar = Castle.getUniformLocation(program, 'zNear_zFar');
 
@@ -2118,6 +2417,18 @@ export class Castle {
       let texLocationSM = Castle.getUniformLocation(program, attribNameSM);
 
       Castle.gl.uniform1i(texLocationSM, textures.length + 1);
+    }
+
+    if (isSMPass) {
+      const id = (Castle.currentDrawObject && Castle.currentDrawObject.debugId) || 0;
+      Castle.gl.uniform4f(Castle.getUniformLocation(program, 'smDebugColor'), (id & 255) / 255, ((id >> 8) & 255) / 255, 1, 1);
+    } else {
+      Castle.gl.uniform4f(Castle.getUniformLocation(program, 'shadowDebug'), Castle.shadowDebugMode, 0, 0, 0);
+      if (Castle.shadowDebugMode && Castle.smColorTexture) {
+        Castle.gl.activeTexture(Castle.gl.TEXTURE0 + textures.length + 2);
+        Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, Castle.smColorTexture);
+        Castle.gl.uniform1i(Castle.getUniformLocation(program, 'smColor'), textures.length + 2);
+      }
     }
 
     Castle.gl.drawArrays(strip ? Castle.gl.TRIANGLE_STRIP : Castle.gl.TRIANGLES, 0, indexCount);

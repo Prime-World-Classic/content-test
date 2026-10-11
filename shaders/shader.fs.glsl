@@ -35,6 +35,20 @@ uniform vec4 zNear_zFar;
 uniform mat4 lightViewProj;
 
 varying vec4 v_projectedTexcoord;
+
+// Day/night cycle (Castle.updateDayNight): sunLight.rgb - sun colour and strength,
+// sunLight.a - exposure; ambientLight.rgb - tint of the light where the sun does not reach.
+uniform vec4 sunLight;
+uniform vec4 ambientLight;
+
+// Shadow debug (Castle.setShadowDebug): smColor holds the id of the occluder nearest to the sun.
+// shadowDebug.x: 0 - off, 1 - tint shadows with the occluder colour, 2 - output the raw id.
+uniform sampler2D smColor;
+uniform vec4 shadowDebug;
+#endif
+
+#ifdef RENDER_PASS_SM
+uniform vec4 smDebugColor;
 #endif
 
 #ifdef PS_GRID
@@ -153,7 +167,7 @@ void main()
 #ifdef RENDER_PASS_COLOR
   // No division needed since there's only one light with orthogonal projection
   vec3 projectedTexcoord = vec3(v_projectedTexcoord.xy * 0.5 + 0.5, v_projectedTexcoord.z);
-  float currentDepth = projectedTexcoord.z * 0.5 + 0.5 - 0.001;
+  float currentDepth = projectedTexcoord.z * 0.5 + 0.5 - ambientLight.w; // depth bias (Castle.ambientLight)
   float projectedDepth = texture2D(smTexture, projectedTexcoord.xy).r;  
   bool inRange = 
       projectedTexcoord.x >= 0.0 &&
@@ -162,19 +176,45 @@ void main()
       projectedTexcoord.y <= 1.0;
   float shadowLight = (inRange && projectedDepth <= currentDepth) ? 0.0 : 1.0;
 
+  vec3 shadowDebugTint = vec3(-1.0);
+  if (shadowDebug.x > 2.5) {
+    // mode 3: shadow map coverage - green inside the light frustum, red outside
+    gl_FragColor = inRange ? vec4(0.0, 1.0, 0.0, 1.0) : vec4(1.0, 0.0, 0.0, 1.0);
+    return;
+  }
+  if (shadowDebug.x > 0.5) {
+    vec4 occluder = texture2D(smColor, projectedTexcoord.xy);
+    if (shadowDebug.x > 1.5) {
+      gl_FragColor = shadowLight < 0.5 ? vec4(occluder.rg, 1.0, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
+      return;
+    }
+    if (shadowLight < 0.5 && occluder.b > 0.99) {
+      float hue = fract((occluder.r * 255.0 + occluder.g * 65280.0) * 0.6180339);
+      shadowDebugTint = clamp(abs(mod(hue * 6.0 + vec3(0.0, 4.0, 2.0), 6.0) - 3.0) - 1.0, 0.0, 1.0);
+    }
+  }
+
   // Multiply diffuse by shadow weight (0 or 1)
-  light *= shadowLight;
+  light *= shadowLight * sunLight.rgb;
 
   // Apply lighting
-  gl_FragColor.xyz *= max(light, shadowContrast);
+  gl_FragColor.xyz *= max(light, shadowContrast * ambientLight.rgb);
+  gl_FragColor.xyz *= sunLight.a;
 
   // Tonemapping
   gl_FragColor.xyz = neutral(gl_FragColor.xyz);
+  if (shadowDebugTint.x >= 0.0) {
+    // tint follows the sun strength, so at night (no direct light, no visible shadows) it is off
+    gl_FragColor.xyz = mix(gl_FragColor.xyz, shadowDebugTint, 0.7 * clamp(sunLight.r, 0.0, 1.0));
+  }
 #ifdef SNOW
   snow(gl_FragColor, fragTexCoord * uvScale.zw);
   gl_FragColor.w *= posDepth * 0.002;
 #endif
   // Exposure
   // gl_FragColor.xyz *= pow(2.0, 0.0); // -0.5
+#endif
+#ifdef RENDER_PASS_SM
+  gl_FragColor = smDebugColor;
 #endif
 }

@@ -1355,6 +1355,24 @@ export class Window {
           }),
           DOM({ tag: 'label', for: 'render-toggle' }, Lang.text('threeD')),
         ),
+        DOM(
+          { style: 'castle-menu-item-checkbox' },
+          DOM({
+            tag: 'input',
+            domaudio: domAudioPresets.defaultSelect,
+            type: 'checkbox',
+            id: 'daynight-toggle',
+            checked: Settings.settings.dayNight !== false,
+            event: [
+              'change',
+              (e) => {
+                // выкл — освещение и тени замка как до смены дня и ночи (Castle.updateDayNight)
+                Settings.settings.dayNight = e.target.checked;
+              },
+            ],
+          }),
+          DOM({ tag: 'label', for: 'daynight-toggle' }, Lang.text('dayNight')),
+        ),
         DOM({ style: 'castle-menu-section-title' }, 'Голосовая связь'),
         DOM(
           { style: 'castle-menu-item-checkbox' },

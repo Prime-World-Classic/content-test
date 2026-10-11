@@ -98,6 +98,7 @@ export const en = {
     radminGuideVk: 'VK',
     radminGuideTelegram: 'Telegram',
     threeD: '3D',
+    dayNight: 'Day/night cycle',
     voiceEnabled: 'Turn off voice chat',
     voiceInWindow: 'Voice in window',
     voiceInWindowRequiresWin11: 'Windows 11 is required',
