@@ -1,4 +1,5 @@
 import { App } from './app.js';
+import { Lang } from './lang.js';
 import { NativeAPI } from './nativeApi.js';
 
 export class PWGame {
@@ -69,6 +70,11 @@ export class PWGame {
       // falls back to its standard ports (server_ip.h).
       if (port) {
         protocol = `${protocol}/${port}`;
+        // Language of the in-game texts (7th token, the last one). Only after
+        // the IP block and the port: the client takes it from a fixed position.
+        if (Lang.target) {
+          protocol = `${protocol}/${Lang.target}`;
+        }
       }
     }
     return protocol;
