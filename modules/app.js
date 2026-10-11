@@ -2720,8 +2720,20 @@ export class App {
             }
 
             await App.storage.set({ fraction: selectedFaction });
-            View.show('castle');
+
             Splash.hide();
+
+            // 3D-замок создаётся один раз (Castle.initDemo), поэтому раньше новая фракция появлялась
+            // только после перезапуска лаунчера. Теперь пересобираем лишь сцену замка.
+            if (Castle.gl) {
+              try {
+                await Castle.switchScene(Number(selectedFaction) == 1 ? 'ad' : 'doct');
+              } catch (error) {
+                App.error(error);
+              }
+            }
+
+            View.show('castle');
           },
         ],
       },

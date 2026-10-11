@@ -844,41 +844,7 @@ export class Castle {
     }
 
     if (Castle.isSMEnabled) {
-      // Setup matrix. Only one viewProj is needed
-      let lightViewMatrix = new Float32Array(16);
-      let lightViewMatrix2 = new Float32Array(16);
-      let lightProjMatrix = new Float32Array(16);
-      Castle.lightViewProjMatrix = new Float32Array(16);
-      mat4.ortho(lightProjMatrix, -400, 400, -400, 400, Castle.zNearSM, Castle.zFarSM);
-
-      let smCamParams = [
-        {
-          name: 'ad',
-          camPos: [-1239.6, -151, -1433],
-          camRot: [-2.29, 2.813, 3.14],
-        },
-        {
-          name: 'doct',
-          camPos: [-1395.8, -291.7, -1338.5],
-          camRot: [-2.4, -1.423, 3.14],
-        },
-      ];
-
-      let quatStart = quat.create();
-      quat.identity(quatStart);
-      let quatX = quat.create();
-      let quatY = quat.create();
-      let quatZ = quat.create();
-
-      let smCam = smCamParams.find((value) => value.name === sceneName);
-      quat.rotateX(quatX, quatStart, smCam.camRot[0]);
-      quat.rotateY(quatY, quatX, smCam.camRot[1]);
-      quat.rotateZ(quatZ, quatY, smCam.camRot[2]);
-
-      mat4.fromRotationTranslation(lightViewMatrix, quatZ, vec3.create());
-      mat4.translate(lightViewMatrix, lightViewMatrix, smCam.camPos);
-      mat4.multiply(lightViewMatrix2, Castle.flipMatr, lightViewMatrix);
-      mat4.multiply(Castle.lightViewProjMatrix, lightProjMatrix, lightViewMatrix2);
+      Castle.setupLightMatrix(sceneName);
 
       Castle.gridTexture = Castle.gl.createTexture();
       Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, Castle.gridTexture);
@@ -954,6 +920,65 @@ export class Castle {
         0,
       ); // mip level
     }
+
+    await Castle.loadScene(sceneName);
+
+    //var canvas = globalCanvas; //document.getElementById('game-surface');
+
+    Castle.globalCanvas.classList.add('castle-fade-in');
+
+    if (!('castle' in Sound.all)) {
+      Castle.startCastleMusic(sceneName);
+    }
+
+    Castle.loadBuildings();
+
+    Castle.MainLoop(Castle.sceneObjects, Castle.sceneBuildings, Castle.sceneShaders, Castle.sceneTextures);
+  }
+
+  // Матрица источника света для карты теней зависит от сцены (фракции).
+  static setupLightMatrix(sceneName) {
+    // Setup matrix. Only one viewProj is needed
+    let lightViewMatrix = new Float32Array(16);
+    let lightViewMatrix2 = new Float32Array(16);
+    let lightProjMatrix = new Float32Array(16);
+    Castle.lightViewProjMatrix = new Float32Array(16);
+    mat4.ortho(lightProjMatrix, -400, 400, -400, 400, Castle.zNearSM, Castle.zFarSM);
+
+    let smCamParams = [
+      {
+        name: 'ad',
+        camPos: [-1239.6, -151, -1433],
+        camRot: [-2.29, 2.813, 3.14],
+      },
+      {
+        name: 'doct',
+        camPos: [-1395.8, -291.7, -1338.5],
+        camRot: [-2.4, -1.423, 3.14],
+      },
+    ];
+
+    let quatStart = quat.create();
+    quat.identity(quatStart);
+    let quatX = quat.create();
+    let quatY = quat.create();
+    let quatZ = quat.create();
+
+    let smCam = smCamParams.find((value) => value.name === sceneName);
+    quat.rotateX(quatX, quatStart, smCam.camRot[0]);
+    quat.rotateY(quatY, quatX, smCam.camRot[1]);
+    quat.rotateZ(quatZ, quatY, smCam.camRot[2]);
+
+    mat4.fromRotationTranslation(lightViewMatrix, quatZ, vec3.create());
+    mat4.translate(lightViewMatrix, lightViewMatrix, smCam.camPos);
+    mat4.multiply(lightViewMatrix2, Castle.flipMatr, lightViewMatrix);
+    mat4.multiply(Castle.lightViewProjMatrix, lightProjMatrix, lightViewMatrix2);
+  }
+
+  // Загрузка сцены фракции: объекты, здания, текстуры, шейдеры (дефайн фракции). Вызывается из
+  // initDemo и при смене фракции (switchScene) — без пересоздания WebGL-контекста и страницы.
+  static async loadScene(sceneName) {
+    Castle.sceneObjects = [];
 
     let shaderNames = [],
       texNames = [];
@@ -1063,36 +1088,94 @@ export class Castle {
 
     await Castle.loadResources(Castle.sceneObjects, Castle.sceneBuildings, shaderNames, texNames);
 
-    //var canvas = globalCanvas; //document.getElementById('game-surface');
+    Castle.updateGridTranslation();
+  }
 
-    Castle.globalCanvas.classList.add('castle-fade-in');
+  static updateGridTranslation() {
+    if (Castle.sceneBuildings) {
+      var gridBuilding = Castle.sceneBuildings['grid'];
 
-    if (!('castle' in Sound.all)) {
-      switch (sceneName) {
-        case 'ad':
-          var soundFiles = Object.values(SOUNDS_LIBRARY.AD);
-          break;
-        case 'doct':
-          var soundFiles = Object.values(SOUNDS_LIBRARY.DOCT);
-          break;
-        default:
-          App.error('Unknown scene name for castle music: ' + sceneName);
-          break;
-      }
+      var gridTransform = gridBuilding.transparentObjects[0].transform;
 
-      let playCastleMusic = function () {
-        let musicName = soundFiles[Math.floor(Math.random() * soundFiles.length)];
-        console.log('Playing castle music: ' + musicName);
-        Sound.stop('castle');
-        Sound.play(musicName, { id: 'castle', volume: Castle.GetVolume(Castle.AUDIO_MUSIC) }, playCastleMusic);
-      };
-      playCastleMusic();
+      Castle.gridTranslation = [gridTransform[3], gridTransform[11]];
+
+      Castle.gridTranslationY = gridTransform[7];
+    } else {
+      Castle.gridTranslation = [0, 0];
+    }
+  }
+
+  static startCastleMusic(sceneName) {
+    switch (sceneName) {
+      case 'ad':
+        var soundFiles = Object.values(SOUNDS_LIBRARY.AD);
+        break;
+      case 'doct':
+        var soundFiles = Object.values(SOUNDS_LIBRARY.DOCT);
+        break;
+      default:
+        App.error('Unknown scene name for castle music: ' + sceneName);
+        break;
     }
 
-    Castle.loadBuildings();
-
-    Castle.MainLoop(Castle.sceneObjects, Castle.sceneBuildings, Castle.sceneShaders, Castle.sceneTextures);
+    let playCastleMusic = function () {
+      let musicName = soundFiles[Math.floor(Math.random() * soundFiles.length)];
+      console.log('Playing castle music: ' + musicName);
+      Sound.stop('castle');
+      Sound.play(musicName, { id: 'castle', volume: Castle.GetVolume(Castle.AUDIO_MUSIC) }, playCastleMusic);
+    };
+    playCastleMusic();
   }
+
+  // Смена фракции без перезагрузки лаунчера: тот же WebGL-контекст, обработчики и цикл отрисовки,
+  // заново грузится только сцена (объекты, здания, текстуры, шейдеры), свет теней и музыка.
+  // Расстановка зданий (castle.cfg) общая для обеих фракций и не меняется.
+  static async switchScene(sceneName) {
+    if (!Castle.gl || sceneName === Castle.currentSceneName || Castle.sceneLoading) return;
+    const gl = Castle.gl;
+    Castle.sceneLoading = true;
+    try {
+      const freeMeshes = (list) => {
+        for (const obj of list || []) {
+          if (obj.meshData && obj.meshData.vertices) gl.deleteBuffer(obj.meshData.vertices);
+        }
+      };
+      freeMeshes(Castle.sceneObjects);
+      for (const name in Castle.sceneBuildings || {}) {
+        freeMeshes(Castle.sceneBuildings[name].objects);
+        freeMeshes(Castle.sceneBuildings[name].transparentObjects);
+      }
+      for (const texture of Castle.sceneTextures || []) {
+        if (texture) gl.deleteTexture(texture);
+      }
+      for (const shader of Castle.sceneShaders || []) {
+        if (shader?.PSO?.prog) gl.deleteProgram(shader.PSO.prog);
+        if (shader?.PSO_SM?.prog) gl.deleteProgram(shader.PSO_SM.prog);
+      }
+      Castle.uniformLocationCache = new Object();
+      // Отрисовка только включает атрибуты (enableVertexAttribArray) и не выключает. После удаления
+      // буферов включённый атрибут без буфера даёт INVALID_OPERATION на drawArrays, если шейдеры
+      // новой фракции его не перепривяжут, — выключаем все, нужные включатся при отрисовке.
+      const maxAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+      for (let i = 0; i < maxAttribs; i++) gl.disableVertexAttribArray(i);
+      gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+      Castle.currentSceneName = sceneName;
+      Castle.shaderFactionDef = sceneName == 'doct' ? 'SCENE_DOCT' : 'SCENE_AD';
+      if (Castle.isSMEnabled) {
+        Castle.setupLightMatrix(sceneName);
+      }
+      await Castle.loadScene(sceneName);
+      Castle.isStaticSMCached = false;
+
+      Sound.stop('castle');
+      Castle.startCastleMusic(sceneName);
+    } finally {
+      Castle.sceneLoading = false;
+    }
+  }
+
+  static sceneLoading = false;
 
   static loadObjectResources(shaderNames, texNames, obj) {
     shaderNames.push(obj.shader);
@@ -1185,7 +1268,12 @@ export class Castle {
     }
 
     for (let i = 0; i < texNames.length; ++i) {
-      Castle.sceneTextures[i] = Castle.loadTexture(await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`));
+      // Грани скайбокса (sky_*) — без повтора: при REPEAT край грани подмешивает противоположный
+      // край, и на стыке граней видна тонкая линия.
+      Castle.sceneTextures[i] = Castle.loadTexture(
+        await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`),
+        /^sky_/.test(texNames[i]) ? Castle.gl.CLAMP_TO_EDGE : Castle.gl.REPEAT,
+      );
 
       loaded.texture++;
     }
@@ -1280,14 +1368,14 @@ export class Castle {
     return Math.min(Math.max(val, min), max);
   }
 
-  static loadTexture(image) {
+  static loadTexture(image, wrap = Castle.gl.REPEAT) {
     let texture = Castle.gl.createTexture();
 
     Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, texture);
 
-    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.REPEAT);
+    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, wrap);
 
-    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, Castle.gl.REPEAT);
+    Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, wrap);
 
     Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.LINEAR);
 
@@ -1367,22 +1455,13 @@ export class Castle {
   }
 
   static MainLoop(sceneObjects, sceneBuildings, sceneShaders, sceneTextures) {
-    if (Castle.sceneBuildings) {
-      var gridBuilding = Castle.sceneBuildings['grid'];
-
-      var gridTransform = gridBuilding.transparentObjects[0].transform;
-
-      Castle.gridTranslation = [gridTransform[3], gridTransform[11]];
-
-      Castle.gridTranslationY = gridTransform[7];
-    } else {
-      Castle.gridTranslation = [0, 0];
-    }
+    Castle.updateGridTranslation();
     requestAnimationFrame(Castle.loop);
   }
 
   static loop() {
-    let isStopRender = Castle.render.includes(false);
+    // Пока switchScene грузит сцену другой фракции, массивы сцены неполные — не рисуем.
+    let isStopRender = Castle.render.includes(false) || Castle.sceneLoading;
     if (isStopRender) {
       requestAnimationFrame(Castle.loop);
       return;

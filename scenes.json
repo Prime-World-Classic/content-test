@@ -4408,48 +4408,48 @@
           "mesh": "sky_01.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_01",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_doct_01",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_02.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_02",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_doct_02",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_03.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_03",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_doct_03",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_04.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_04",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_doct_04",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_05.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_05",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_doct_05",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_06.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_06",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_doct_06",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
@@ -9678,48 +9678,48 @@
           "mesh": "sky_01.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_01",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_ad_01",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_02.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_02",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_ad_02",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_03.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_03",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_ad_03",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_04.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_04",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_ad_04",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_05.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_05",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_ad_05",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
           "mesh": "sky_06.bin",
           "indexCount": 6,
           "shader": "shader_pos_uv",
-          "texture": "sky_06",
-          "tintColor": [10, 10, 10, 1],
+          "texture": "sky_ad_06",
+          "tintColor": [0.8, 0.8, 0.8, 1],
           "transform": [-2857.23, 0, -914.43, 1442, 0, 3000, 0, -500, 914.43, 0, -2857.23, 1504, 0, 0, 0, 1]
         },
         {
