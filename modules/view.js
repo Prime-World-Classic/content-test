@@ -946,6 +946,16 @@ export class View {
     document.head.appendChild(css);
   }
 
+  // Окно, открытое пока строился новый вью (входящий звонок, приглашение), попадает в старый
+  // View.active и уходит вместе с ним: мелодия звонка играет, а окна нет. Переносим в новый вью.
+  static adoptOrphanWindows() {
+    for (const element of Object.values(Window.windows || {})) {
+      if (element && !element.isConnected) {
+        View.active.append(element);
+      }
+    }
+  }
+
   static async show(method, value, value2, value3) {
     if (!(method in View)) {
       return;
@@ -991,6 +1001,8 @@ export class View {
           View.activeAnimation = template.animate(View.defaultAnimation, View.defaultOptionAnimation);
 
           document.body.append(template);
+
+          View.adoptOrphanWindows();
         });
       } else {
         View.active.remove();
@@ -998,6 +1010,8 @@ export class View {
         View.active = template;
 
         document.body.append(template);
+
+        View.adoptOrphanWindows();
       }
     } else {
       if (View.animationIsEnabled) {
@@ -1006,10 +1020,14 @@ export class View {
         View.activeAnimation = template.animate(View.defaultAnimation, View.defaultOptionAnimation);
 
         document.body.append(template);
+
+        View.adoptOrphanWindows();
       } else {
         View.active = template;
 
         document.body.append(template);
+
+        View.adoptOrphanWindows();
       }
     }
   }
