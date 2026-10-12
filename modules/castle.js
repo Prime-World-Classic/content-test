@@ -1037,6 +1037,7 @@ export class Castle {
   static deferredPass = false;
   static sceneTextureAvg = [];
   static dayNightActive = false;
+  static daylight = 1; // 0 ночью, 1 днём (Castle.updateDayNight)
   static smCenter = null;
   static sunDist = 1500;
   static sunZFar = 3000;
@@ -1275,6 +1276,7 @@ export class Castle {
     // общая яркость и небо темнеют дольше — сумерки после заката.
     const sunStrength = Castle.smoothstep(0.0, 0.18, altitude);
     const daylight = Castle.smoothstep(-0.12, 0.12, altitude);
+    Castle.daylight = daylight;
     const highSun = Castle.smoothstep(0.02, 0.45, altitude);
     // низкое солнце тёплое, высокое — почти белое
     const sun = [1.0, 0.55 + 0.43 * highSun, 0.3 + 0.62 * highSun].map((x) => x * sunStrength);
@@ -2397,6 +2399,11 @@ export class Castle {
     isSMPass ? Castle.setupSMCam(program) : Castle.setupMainCam(program);
 
     let tintColorValue = tintOverride ? tintOverride : tintColor ? tintColor : [1, 1, 1, 1];
+    // радуга (аддитивная) видна только днём: гаснет к закату, появляется на рассвете
+    if (!isSMPass && Castle.dayNightActive && /rainbow/.test(Castle.currentDrawObject?.meshName || '')) {
+      const k = Castle.daylight * Castle.daylight;
+      tintColorValue = [tintColorValue[0] * k, tintColorValue[1] * k, tintColorValue[2] * k, tintColorValue[3]];
+    }
 
     let tintColorLocation = Castle.getUniformLocation(program, 'tintColor');
 

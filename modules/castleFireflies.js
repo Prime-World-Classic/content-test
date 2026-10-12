@@ -11,7 +11,10 @@ export class CastleFireflies {
   static cellSize = 4;
   // меши, над которыми летают светлячки (по имени меша сцены)
   static groundMeshes = /(^|\/)(terrain|understage|highland|rocks_|trees_|bushes_|water)/;
-  static waterMeshes = /(^|\/)water/;
+  static waterMeshes = /(^|\/)water_/; // реки и пруды; водопады (waterfall_*) — не поверхность
+
+  static plantMeshes = /(^|\/)(trees_|bushes_)/;
+  static flyHeight = [1.5, 5]; // над землёй: от и до (ниже крыш зданий)
   static wallMarginCells = 2; // отступ от стен наружу, клеток сетки (по 7 единиц)
   static nearWallBandCells = 9; // полоса за стенами (клеток), куда идёт nearWallShare светлячков
   static nearWallShare = 0.4;
@@ -67,8 +70,8 @@ export class CastleFireflies {
         minZ = Math.min(minZ, w[v * 3 + 2]);
         maxZ = Math.max(maxZ, w[v * 3 + 2]);
       }
-      // 0 — рельеф, деревья, кусты; 2 — вода
-      const kind = CastleFireflies.waterMeshes.test(obj.meshName) ? 2 : 0;
+      // 0 — рельеф и скалы, 1 — деревья и кусты, 2 — вода
+      const kind = CastleFireflies.waterMeshes.test(obj.meshName) ? 2 : CastleFireflies.plantMeshes.test(obj.meshName) ? 1 : 0;
       const triCount = obj.strip ? n - 2 : Math.floor(n / 3);
       for (let k = 0; k < triCount; k++) {
         const a = obj.strip ? k : k * 3;
@@ -82,7 +85,8 @@ export class CastleFireflies {
     }
     const gw = Math.ceil((maxX - minX) / cs) + 1;
     const gh = Math.ceil((maxZ - minZ) / cs) + 1;
-    const heights = new Float32Array(gw * gh).fill(NaN);
+    const heights = new Float32Array(gw * gh).fill(NaN); // верх всего, кроме воды (с кронами)
+    const groundH = new Float32Array(gw * gh).fill(NaN); // только рельеф и скалы
     const waterH = new Float32Array(gw * gh).fill(NaN);
     for (let i = 0; i < tris.length; i += 5) {
       const w = tris[i];
@@ -112,12 +116,17 @@ export class CastleFireflies {
             continue;
           }
           if (!(heights[idx] >= y)) heights[idx] = y;
+          if (kind === 0 && !(groundH[idx] >= y)) groundH[idx] = y;
         }
       }
     }
     // вода видна, если её поверхность выше рельефа и растений (или под ней ничего нет)
     for (let idx = 0; idx < waterH.length; idx++) {
       if (heights[idx] > waterH[idx] + 0.5) waterH[idx] = NaN;
+    }
+    // летают у земли, а не над кронами: высота — рельеф, а где его нет — верх растений
+    for (let idx = 0; idx < heights.length; idx++) {
+      if (groundH[idx] === groundH[idx]) heights[idx] = groundH[idx];
     }
     CastleFireflies.heights = heights;
     CastleFireflies.water = waterH;
@@ -201,7 +210,7 @@ export class CastleFireflies {
       }
       if (!Number.isFinite(y)) continue;
       CastleFireflies.flies.push({
-        base: [x, y + 2 + rnd() * 7, z],
+        base: [x, y + CastleFireflies.flyHeight[0] + rnd() * (CastleFireflies.flyHeight[1] - CastleFireflies.flyHeight[0]), z],
         phase: rnd() * 100,
         speed: 0.25 + rnd() * 0.35,
         blink: 0.6 + rnd() * 1.2,
@@ -221,7 +230,7 @@ export class CastleFireflies {
       const p = f.phase, s = f.speed, rg = f.range;
       f.pos = [
         f.base[0] + Math.sin(t * s + p) * rg + Math.sin(t * s * 2.3 + p * 1.7) * rg * 0.3,
-        f.base[1] + Math.sin(t * s * 1.6 + p * 0.7) * 1.5,
+        f.base[1] + Math.sin(t * s * 1.6 + p * 0.7) * 1.0,
         f.base[2] + Math.cos(t * s * 0.8 + p * 1.3) * rg + Math.sin(t * s * 1.9 + p) * rg * 0.3,
       ];
       const b = Math.sin(t * f.blink + p * 3.1);
