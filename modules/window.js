@@ -1373,6 +1373,24 @@ export class Window {
           }),
           DOM({ tag: 'label', for: 'daynight-toggle' }, Lang.text('dayNight')),
         ),
+        DOM(
+          { style: 'castle-menu-item-checkbox' },
+          DOM({
+            tag: 'input',
+            domaudio: domAudioPresets.defaultSelect,
+            type: 'checkbox',
+            id: 'building-lights-toggle',
+            checked: Settings.settings.buildingLights !== false,
+            event: [
+              'change',
+              (e) => {
+                // выкл — без огней зданий и отложенного освещения (CastleLighting), отрисовка как раньше
+                Settings.settings.buildingLights = e.target.checked;
+              },
+            ],
+          }),
+          DOM({ tag: 'label', for: 'building-lights-toggle' }, Lang.text('buildingLights')),
+        ),
         DOM({ style: 'castle-menu-section-title' }, 'Голосовая связь'),
         DOM(
           { style: 'castle-menu-item-checkbox' },

@@ -1920,6 +1920,54 @@ body {
   filter: saturate(20%);
 }
 
+/* Time of day button in the empty corner under the list arrows: centred between the end of the list
+   and the window edge (the container leaves 1.85vh + max(3.8vw, 4vh) on the right) and between the
+   arrows' bottom (6.4cqh) and the window bottom: cycle / always day / always night
+   (View.createCastleDayModeButton) */
+.castle-daymode-btn {
+  --castle-arrow-w: max(1.85cqw * 18 / 43, 1.85cqh);
+  --castle-daymode-size: calc(var(--castle-arrow-w) * 2.4);
+  position: absolute;
+  bottom: calc((6.4cqh - var(--castle-daymode-size)) / 2);
+  right: calc((1.85vh + max(3.8vw, 4vh)) / -2 - var(--castle-daymode-size) / 2);
+  width: var(--castle-daymode-size);
+  height: var(--castle-daymode-size);
+  box-sizing: border-box;
+  border: max(0.2vh, 2px) solid rgb(142, 150, 96);
+  border-radius: 18%;
+  background: linear-gradient(0deg, rgba(12, 92, 107, 1), rgba(6, 41, 56, 1));
+  box-shadow: 0 0.25vh 0.6vh rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  filter: brightness(85%);
+}
+
+.castle-daymode-btn:hover {
+  filter: brightness(115%);
+}
+
+.castle-daymode-icon {
+  width: 68%;
+  height: 68%;
+  background: rgb(242, 214, 120);
+  -webkit-mask: url('icons/ui/sun-moon.svg') center / contain no-repeat;
+  mask: url('icons/ui/sun-moon.svg') center / contain no-repeat;
+}
+
+.castle-daymode-btn[data-mode='day'] .castle-daymode-icon {
+  background: rgb(255, 214, 90);
+  -webkit-mask-image: url('icons/ui/sun.svg');
+  mask-image: url('icons/ui/sun.svg');
+}
+
+.castle-daymode-btn[data-mode='night'] .castle-daymode-icon {
+  background: rgb(176, 205, 255);
+  -webkit-mask-image: url('icons/ui/moon.svg');
+  mask-image: url('icons/ui/moon.svg');
+}
+
 .castle-bottom-content-container {
   position: absolute;
   left: calc(max(12vw, 17vh));
@@ -2109,6 +2157,20 @@ body:has(#wbuild) .castle-bottom-content {
 
 .castle-friend-lists-bar {
   left: 0.2cqh;
+}
+
+/* Panel of buildings: text tabs (buildings / decorations / lights), width follows the label */
+.castle-hero-lists-bar.castle-building-types-bar .castle-hero-list-btn {
+  width: auto;
+  min-width: 9cqh;
+  padding-left: 1.4cqh;
+  padding-right: 1.4cqh;
+}
+
+/* no favourite-hero badge on the active tab (the hero-list rule has higher specificity) */
+.castle-hero-lists-bar.castle-building-types-bar .castle-hero-list-btn.castle-hero-list-btn-active::after {
+  content: none !important;
+  display: none !important;
 }
 
 .castle-friend-lists-bar .castle-hero-list-btn-all,

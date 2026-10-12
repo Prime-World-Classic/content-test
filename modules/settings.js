@@ -9,6 +9,7 @@ export class Settings {
     fullscreen: true,
     render: true,
     dayNight: true,
+    buildingLights: true,
     globalVolume: 0.5,
     musicVolume: 0.5,
     musicMuted: false,

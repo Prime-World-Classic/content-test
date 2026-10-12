@@ -939,7 +939,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261012-ui-icons-2';
+    const cssVersion = '20261012-daymode-4';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -2282,6 +2282,7 @@ export class View {
         View.castleBottom,
         DOM({ style: 'castle-bottom-content-left-scroll' }, View.arrows.ls, View.arrows.ld),
         DOM({ style: 'castle-bottom-content-right-scroll' }, View.arrows.rs, View.arrows.rd),
+        View.createCastleDayModeButton(),
       ),
     );
 
@@ -2557,19 +2558,85 @@ export class View {
     render();
   }
 
+  // Кнопка времени суток справа от стрелок списка: смена дня и ночи → всегда день → всегда ночь
+  static createCastleDayModeButton() {
+    const button = DOM({ style: 'castle-daymode-btn', domaudio: domAudioPresets.smallButton }, DOM({ style: 'castle-daymode-icon' }));
+    const update = () => {
+      const mode = Castle.dayMode;
+      button.dataset.mode = mode;
+      button.title = Lang.text(
+        { cycle: 'castleDayModeCycle', day: 'castleDayModeDay', night: 'castleDayModeNight' }[mode],
+      );
+    };
+    button.addEventListener('click', () => {
+      // режимы работают только со сменой дня и ночи — включаем её, если была выключена в настройках
+      if (Settings.settings && Settings.settings.dayNight === false) Settings.settings.dayNight = true;
+      Castle.nextDayMode();
+      update();
+    });
+    update();
+    return button;
+  }
+
+  // Вкладки над списком построек (как у героев): здания, украшения, осветители (Castle.getBuildingCategory)
+  static CASTLE_BUILDING_CATEGORY_STORAGE_KEY = 'castleBuildingCategory';
+  static castleBuildingCategory = (() => {
+    try {
+      const value = localStorage.getItem('castleBuildingCategory');
+      return ['buildings', 'decorations', 'lights'].includes(value) ? value : 'buildings';
+    } catch {
+      return 'buildings';
+    }
+  })();
+
+  static renderCastleBuildingTypesToolbar() {
+    const bar = View.castleHeroListsBar;
+    if (!bar) return;
+    bar.replaceChildren();
+    bar.classList.remove('castle-hero-lists-bar-hidden', 'castle-friend-lists-bar');
+    bar.classList.add('castle-building-types-bar');
+    const categories = [
+      ['buildings', 'castleBuildCategoryBuildings'],
+      ['decorations', 'castleBuildCategoryDecorations'],
+      ['lights', 'castleBuildCategoryLights'],
+    ];
+    for (const [category, langKey] of categories) {
+      bar.append(
+        DOM(
+          {
+            style: ['castle-hero-list-btn', View.castleBuildingCategory === category ? 'castle-hero-list-btn-active' : null].filter(Boolean),
+            domaudio: domAudioPresets.defaultButton,
+            event: [
+              'click',
+              () => {
+                if (View.castleBuildingCategory === category) return;
+                View.castleBuildingCategory = category;
+                try {
+                  localStorage.setItem(View.CASTLE_BUILDING_CATEGORY_STORAGE_KEY, category);
+                } catch {}
+                View.bodyCastleBuildings();
+                View.resetCastleBottomScroll(0);
+              },
+            ],
+          },
+          Lang.text(langKey),
+        ),
+      );
+    }
+  }
+
   static bodyCastleBuildings() {
     View.castleActiveTab = 'buildings';
     View.updateCastlePanelMenuActiveState();
     View.castleHeroDeleteConfirmListId = 0;
     View.castleFriendClearConfirm = false;
     View.cleanupCastleHeroPhantomList();
-    View.castleHeroListsBar?.classList?.add('castle-hero-lists-bar-hidden');
-    View.castleHeroListsBar?.replaceChildren?.();
     View.castleHeroPinnedEditor?.replaceChildren?.();
     View.castleBottom?.classList?.remove('castle-bottom-content-with-editor');
     while (View.castleBottom.firstChild) {
       View.castleBottom.firstChild.remove();
     }
+    View.renderCastleBuildingTypesToolbar();
 
     let selectedFaction = -1;
     if (Castle.currentSceneName == 'ad') {
@@ -2590,6 +2657,7 @@ export class View {
 
     for (let i = 1; i < Castle.buildings.length; ++i) {
       let item = Castle.buildings[i];
+      if (Castle.getBuildingCategory(item) !== View.castleBuildingCategory) continue;
       let itemName = Lang.text(Castle.buildingsNames[i][selectedFaction]);
 
       let buildingName = DOM({ style: 'castle-hero-name' }, DOM({}, itemName));
@@ -2838,7 +2906,7 @@ export class View {
   static renderCastleHeroListsToolbar() {
     const bar = View.castleHeroListsBar;
     if (!bar) return;
-    bar.classList.remove('castle-friend-lists-bar');
+    bar.classList.remove('castle-friend-lists-bar', 'castle-building-types-bar');
     bar.replaceChildren();
 
     const createdCount = View.getCastleCreatedHeroListCount();
@@ -3302,7 +3370,7 @@ export class View {
     const bar = View.castleHeroListsBar;
     if (!bar) return;
     bar.replaceChildren();
-    bar.classList.remove('castle-hero-lists-bar-hidden');
+    bar.classList.remove('castle-hero-lists-bar-hidden', 'castle-building-types-bar');
     bar.classList.add('castle-friend-lists-bar');
 
     const allBtn = DOM(

@@ -1,5 +1,16 @@
 // Uber shader. Leave first line non functional
 
+#ifdef DEFERRED
+// G-buffer for opaque objects (CastleLighting): gl_FragData[0] - lit colour before tonemapping,
+// [1] - albedo (a - receives point lights), [2] - world normal (a - 1 if the mesh has normals).
+// "#extension GL_EXT_draw_buffers" is prepended by Castle.prepareShader (it must precede all code).
+// gl_FragColor and gl_FragData cannot be mixed, so the colour is built in fragOut.
+vec4 fragOut;
+#define FRAG_COLOR fragOut
+#else
+#define FRAG_COLOR gl_FragColor
+#endif
+
 varying vec2 fragTexCoord;
 
 #if defined(VS_UV2) || defined(VS_UV2_UNUSED)
@@ -40,6 +51,8 @@ varying vec4 v_projectedTexcoord;
 // sunLight.a - exposure; ambientLight.rgb - tint of the light where the sun does not reach.
 uniform vec4 sunLight;
 uniform vec4 ambientLight;
+// Glows (additive blending) stay bright at night: lower bound of the lighting factor (CastleLighting)
+uniform float emissive;
 
 // Shadow debug (Castle.setShadowDebug): smColor holds the id of the occluder nearest to the sun.
 // shadowDebug.x: 0 - off, 1 - tint shadows with the occluder colour, 2 - output the raw id.
@@ -104,17 +117,17 @@ void main()
 
 #ifdef PS_GRID
   // Grid cells
-  gl_FragColor = vec4(0.0, 0.0, 0.0, max(0.0, (1.5 - mod(posXZ.x, 7.0))) + max(0.0, (1.5 - mod(posXZ.y, 7.0))));
-  gl_FragColor.rgb += vec3(gl_FragColor.a, gl_FragColor.a, 0.1*gl_FragColor.a);
-  float gridMul = clamp(1.0 - gl_FragColor.r * 10000.0, 0.0, 1.0);
+  FRAG_COLOR = vec4(0.0, 0.0, 0.0, max(0.0, (1.5 - mod(posXZ.x, 7.0))) + max(0.0, (1.5 - mod(posXZ.y, 7.0))));
+  FRAG_COLOR.rgb += vec3(FRAG_COLOR.a, FRAG_COLOR.a, 0.1*FRAG_COLOR.a);
+  float gridMul = clamp(1.0 - FRAG_COLOR.r * 10000.0, 0.0, 1.0);
 
   // Grid falloff
   float falloff = sqrt(dot(posXZ - cursorGridPosition, posXZ - cursorGridPosition)) - gridFalloffDistance;
-  gl_FragColor.a *= 1.0 - falloff;
-  gl_FragColor.a = (max(0.0, gl_FragColor.a - 0.9) / 30.0);
+  FRAG_COLOR.a *= 1.0 - falloff;
+  FRAG_COLOR.a = (max(0.0, FRAG_COLOR.a - 0.9) / 30.0);
   vec4 gridColor = texture2D(gridTex, (posXZ.xy + vec2(126.0, 77.0)) / vec2(322.0, 266.0) * vec2(46.0 / 64.0, 38.0 / 64.0));
-  gl_FragColor += vec4(gridColor * vec4(gridMul));
-  //gl_FragColor.a = gl_FragColor.a / (1.0 + abs(gl_FragColor.a));
+  FRAG_COLOR += vec4(gridColor * vec4(gridMul));
+  //FRAG_COLOR.a = FRAG_COLOR.a / (1.0 + abs(FRAG_COLOR.a));
 
   vec3 light = vec3(1.0);
 #ifdef RENDER_PASS_SM
@@ -126,7 +139,7 @@ void main()
 #ifdef VS_NORMAL
   // Debug Render Normals
 /*
-  gl_FragColor = vec4(fragNormal * 0.5 + 0.5, 1.0);
+  FRAG_COLOR = vec4(fragNormal * 0.5 + 0.5, 1.0);
   return;
 */
 
@@ -136,17 +149,17 @@ void main()
 #endif // VS_NORMAL
 
   // Albedo
-  gl_FragColor = texture2D(tex0, (fragTexCoord + uvScroll) * uvScale.xx);
+  FRAG_COLOR = texture2D(tex0, (fragTexCoord + uvScroll) * uvScale.xx);
 
-  gl_FragColor *= tintColor;
+  FRAG_COLOR *= tintColor;
 #if defined(PS_FALLOFF_BLEND) && defined(VS_COLOR)
-  gl_FragColor *= fragColor;
+  FRAG_COLOR *= fragColor;
 #endif
 #endif // PS_GRID
 
   // Alpha test
 #if defined(PS_ALPHAKILL)
-  if (gl_FragColor.a - 0.9 < 0.0) {
+  if (FRAG_COLOR.a - 0.9 < 0.0) {
     discard;
   }
 #endif
@@ -154,14 +167,14 @@ void main()
     vec4 fragColor = tintColor;
   #endif
 #ifdef TEX2
-  gl_FragColor = mix(gl_FragColor, texture2D(tex0, fragTexCoord * uvScale.yy), fragColor.x);
+  FRAG_COLOR = mix(FRAG_COLOR, texture2D(tex0, fragTexCoord * uvScale.yy), fragColor.x);
 #endif
 #ifdef TEX3
-  gl_FragColor = mix(gl_FragColor, texture2D(tex2, fragTexCoord * uvScale.zz), fragColor.y);
+  FRAG_COLOR = mix(FRAG_COLOR, texture2D(tex2, fragTexCoord * uvScale.zz), fragColor.y);
 #endif
 #ifdef TEX4
   // WTF?
-  //gl_FragColor += texture2D(tex3, fragTexCoord2 * uvScale.ww) * (1.0 - fragColor.w);
+  //FRAG_COLOR += texture2D(tex3, fragTexCoord2 * uvScale.ww) * (1.0 - fragColor.w);
 #endif
 
 #ifdef RENDER_PASS_COLOR
@@ -179,13 +192,13 @@ void main()
   vec3 shadowDebugTint = vec3(-1.0);
   if (shadowDebug.x > 2.5) {
     // mode 3: shadow map coverage - green inside the light frustum, red outside
-    gl_FragColor = inRange ? vec4(0.0, 1.0, 0.0, 1.0) : vec4(1.0, 0.0, 0.0, 1.0);
+    FRAG_COLOR = inRange ? vec4(0.0, 1.0, 0.0, 1.0) : vec4(1.0, 0.0, 0.0, 1.0);
     return;
   }
   if (shadowDebug.x > 0.5) {
     vec4 occluder = texture2D(smColor, projectedTexcoord.xy);
     if (shadowDebug.x > 1.5) {
-      gl_FragColor = shadowLight < 0.5 ? vec4(occluder.rg, 1.0, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
+      FRAG_COLOR = shadowLight < 0.5 ? vec4(occluder.rg, 1.0, 1.0) : vec4(0.0, 0.0, 0.0, 1.0);
       return;
     }
     if (shadowLight < 0.5 && occluder.b > 0.99) {
@@ -197,24 +210,39 @@ void main()
   // Multiply diffuse by shadow weight (0 or 1)
   light *= shadowLight * sunLight.rgb;
 
+#ifdef DEFERRED
+  vec3 albedo = FRAG_COLOR.xyz;
+#endif
+
   // Apply lighting
-  gl_FragColor.xyz *= max(light, shadowContrast * ambientLight.rgb);
-  gl_FragColor.xyz *= sunLight.a;
+  FRAG_COLOR.xyz *= max(max(light, shadowContrast * ambientLight.rgb), vec3(emissive));
+  FRAG_COLOR.xyz *= sunLight.a;
+
+#ifdef DEFERRED
+  gl_FragData[0] = vec4(FRAG_COLOR.xyz, 1.0);
+  gl_FragData[1] = vec4(clamp(albedo, 0.0, 1.0), tintColor.a > 1.5 ? 0.0 : 1.0); // outline (tint alpha 2) is unlit
+#ifdef VS_NORMAL
+  gl_FragData[2] = vec4(normalize(fragNormal) * 0.5 + 0.5, 1.0);
+#else
+  gl_FragData[2] = vec4(0.5, 1.0, 0.5, 0.0);
+#endif
+  return;
+#endif
 
   // Tonemapping
-  gl_FragColor.xyz = neutral(gl_FragColor.xyz);
+  FRAG_COLOR.xyz = neutral(FRAG_COLOR.xyz);
   if (shadowDebugTint.x >= 0.0) {
     // tint follows the sun strength, so at night (no direct light, no visible shadows) it is off
-    gl_FragColor.xyz = mix(gl_FragColor.xyz, shadowDebugTint, 0.7 * clamp(sunLight.r, 0.0, 1.0));
+    FRAG_COLOR.xyz = mix(FRAG_COLOR.xyz, shadowDebugTint, 0.7 * clamp(sunLight.r, 0.0, 1.0));
   }
 #ifdef SNOW
-  snow(gl_FragColor, fragTexCoord * uvScale.zw);
-  gl_FragColor.w *= posDepth * 0.002;
+  snow(FRAG_COLOR, fragTexCoord * uvScale.zw);
+  FRAG_COLOR.w *= posDepth * 0.002;
 #endif
   // Exposure
-  // gl_FragColor.xyz *= pow(2.0, 0.0); // -0.5
+  // FRAG_COLOR.xyz *= pow(2.0, 0.0); // -0.5
 #endif
 #ifdef RENDER_PASS_SM
-  gl_FragColor = smDebugColor;
+  FRAG_COLOR = smDebugColor;
 #endif
 }

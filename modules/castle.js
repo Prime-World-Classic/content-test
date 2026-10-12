@@ -19,6 +19,8 @@ import { DOM } from './dom.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { EaselCastleFx, redrawShadowRect, rotatingShadowRect } from './easel/easelCastleFx.js';
+import { CastleLighting } from './castleLighting.js';
+import { CastleFireflies } from './castleFireflies.js';
 
 export class Castle {
   static canvas;
@@ -440,6 +442,15 @@ export class Castle {
     ['easel_ad', 'easel_doct'],
   ];
 
+  // Категории в панели построек (View.renderCastleBuildingTypesToolbar). Осветители — украшения-фонари:
+  // у Доктов «Фонарь», «Большой фонарь», у Адорнийцев светящиеся цветы, у обеих «Лавка с фонарями».
+  static lightingDecos = ['deco_0', 'deco_1', 'deco_7'];
+
+  static getBuildingCategory(name) {
+    if (Castle.lightingDecos.includes(name)) return 'lights';
+    return /^deco_/.test(name) ? 'decorations' : 'buildings';
+  }
+
   static filter = RegExp('', '');
 
   static toggleMusic(layer, value) {
@@ -837,6 +848,9 @@ export class Castle {
 
     Castle.isSMEnabled = true;
 
+    // отложенное освещение (точечные источники зданий) — до загрузки шейдеров: от него зависит PSO_GB
+    CastleLighting.init(Castle.gl);
+
     const ext = Castle.gl.getExtension('WEBGL_depth_texture');
 
     if (!ext) {
@@ -998,9 +1012,30 @@ export class Castle {
   static sunMinShadowElevationDeg = 30;
   static nightExposure = 0.8; // средняя яркость ночью ~25% дневной (замерено по кадру)
   static dayTimeOverride = null; // 0..1 — зафиксировать время суток (отладка)
+  // Кнопка времени суток у списка внизу (View): смена дня и ночи / всегда день / всегда ночь
+  static DAY_MODES = ['cycle', 'day', 'night'];
+  static dayModeTime = { day: 0.3, night: 0.875 }; // доля суток: утреннее солнце / середина ночи
+
+  static get dayMode() {
+    const mode = Settings.settings?.dayNightMode;
+    return Castle.DAY_MODES.includes(mode) ? mode : 'cycle';
+  }
+
+  static nextDayMode() {
+    const modes = Castle.DAY_MODES;
+    const mode = modes[(modes.indexOf(Castle.dayMode) + 1) % modes.length];
+    if (Settings.settings) Settings.settings.dayNightMode = mode;
+    Settings.WriteSettings?.().catch?.(() => {});
+    return mode;
+  }
   static sunLight = [1, 1, 1, 1]; // rgb — цвет и сила солнца, a — экспозиция
   // a — смещение глубины теней (исходно 0.001; для солнца со смены дня и ночи камера теней глубже — 0.0004)
   static ambientLight = [1, 1, 1, 0.001];
+  static lighting = CastleLighting; // для отладки из консоли: Castle.lighting.debugMarkers = true
+  static fireflies = CastleFireflies;
+  static glowNightFloor = 1.0; // яркость свечений ночью (множитель освещения, днём на солнце ~1.6)
+  static deferredPass = false;
+  static sceneTextureAvg = [];
   static dayNightActive = false;
   static smCenter = null;
   static sunDist = 1500;
@@ -1165,10 +1200,23 @@ export class Castle {
     return Settings.settings?.dayNight !== false;
   }
 
+  // Настройка «Огни зданий»: отложенное освещение с точечными источниками. Работает вместе со сменой
+  // дня и ночи (огни горят ночью); выключено или без нужных расширений WebGL — прежняя отрисовка.
+  static get deferredActive() {
+    return (
+      CastleLighting.supported &&
+      Settings.settings?.buildingLights !== false &&
+      Castle.dayNightActive &&
+      !Castle.shadowDebugMode &&
+      Castle.sceneShaders?.[0]?.PSO_GB != null
+    );
+  }
+
   static disableDayNight() {
     Castle.dayNightActive = false;
     Castle.sunLight = [1, 1, 1, 1];
     Castle.ambientLight = [1, 1, 1, 0.001];
+    CastleLighting.nightLevel = 0;
     if (Castle.isSMEnabled && Castle.currentSceneName) {
       Castle.setupLightMatrix(Castle.currentSceneName);
       Castle.isStaticSMCached = false;
@@ -1187,7 +1235,12 @@ export class Castle {
       Castle.sunDirForSM = null;
     }
     const cycle = Castle.dayCycleSeconds;
-    const p = Castle.dayTimeOverride !== null ? Castle.dayTimeOverride : ((Date.now() / 1000) % cycle) / cycle;
+    const p =
+      Castle.dayTimeOverride !== null
+        ? Castle.dayTimeOverride
+        : Castle.dayMode !== 'cycle'
+          ? Castle.dayModeTime[Castle.dayMode]
+          : ((Date.now() / 1000) % cycle) / cycle;
     const day = Castle.dayShare;
     const e = (Castle.sunMaxElevationDeg * Math.PI) / 180;
     let theta, altitude;
@@ -1229,6 +1282,8 @@ export class Castle {
     Castle.sunLight = [sun[0], sun[1], sun[2], exposure];
     // ночной фон голубоватый, дневной нейтральный
     Castle.ambientLight = [0.62 + 0.38 * daylight, 0.72 + 0.28 * daylight, 1.0, 0.0004];
+    // огни зданий загораются на закате, пока солнце ещё не ушло, и гаснут после рассвета
+    CastleLighting.nightLevel = 1 - Castle.smoothstep(-0.08, 0.2, altitude);
 
     // Карту теней ведём и ночью: в середине ночи направление переключается с заката на восход,
     // пока прямого света нет и теней не видно. Раньше ночью она замирала на закате и на рассвете
@@ -1362,6 +1417,11 @@ export class Castle {
 
     await Castle.loadResources(Castle.sceneObjects, Castle.sceneBuildings, shaderNames, texNames);
 
+    // источники света зданий — из их свечений (нужны загруженные меши и средние цвета текстур)
+    CastleLighting.buildTemplates(Castle);
+    // карта высот рельефа и места светлячков
+    CastleFireflies.onSceneLoaded(Castle);
+
     Castle.updateGridTranslation();
   }
 
@@ -1425,6 +1485,7 @@ export class Castle {
       for (const shader of Castle.sceneShaders || []) {
         if (shader?.PSO?.prog) gl.deleteProgram(shader.PSO.prog);
         if (shader?.PSO_SM?.prog) gl.deleteProgram(shader.PSO_SM.prog);
+        if (shader?.PSO_GB?.prog) gl.deleteProgram(shader.PSO_GB.prog);
       }
       Castle.uniformLocationCache = new Object();
       // Отрисовка только включает атрибуты (enableVertexAttribArray) и не выключает. После удаления
@@ -1511,6 +1572,7 @@ export class Castle {
     }
 
     Castle.sceneTextures = new Array(texNames.length);
+    Castle.sceneTextureAvg = new Array(texNames.length);
     let loaded = { mesh: 0, texture: 0, shader: 0 };
 
     Castle.sceneShaders = new Array(shaderNames.length);
@@ -1531,9 +1593,21 @@ export class Castle {
 
       let programSM = Castle.prepareShader(`\n#define RENDER_PASS_SM\n #define ${Castle.shaderFactionDef}`, definesText, vsText, fsText);
 
+      // G-buffer отложенного освещения (CastleLighting) — тот же шейдер с тремя выходами
+      let programGB = CastleLighting.supported
+        ? Castle.prepareShader(
+            `\n#define RENDER_PASS_COLOR\n#define DEFERRED\n #define ${Castle.shaderFactionDef}`,
+            definesText,
+            vsText,
+            fsText,
+            '#extension GL_EXT_draw_buffers : require\n',
+          )
+        : null;
+
       Castle.sceneShaders[i] = {
         PSO: programColor,
         PSO_SM: programSM,
+        PSO_GB: programGB && programGB !== 1 ? programGB : null,
         attributes: Castle.scenesJson.shaderLayouts.find((value) => value.name === shaderNames[i]).layout,
         vertStride: 0,
       };
@@ -1544,8 +1618,11 @@ export class Castle {
     for (let i = 0; i < texNames.length; ++i) {
       // Грани скайбокса (sky_*) — без повтора: при REPEAT край грани подмешивает противоположный
       // край, и на стыке граней видна тонкая линия.
+      const image = await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`);
+      // средний цвет — цвет источника света у свечений зданий (CastleLighting.glowOf)
+      Castle.sceneTextureAvg[i] = CastleLighting.averageColor(image);
       Castle.sceneTextures[i] = Castle.loadTexture(
-        await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`),
+        image,
         /^sky_/.test(texNames[i]) ? Castle.gl.CLAMP_TO_EDGE : Castle.gl.REPEAT,
       );
 
@@ -1583,13 +1660,14 @@ export class Castle {
 
   static shaderFactionDef = 'INVALID_DEFINE';
 
-  static prepareShader(renderPassDefine, definesText, vsText, fsText) {
+  // fsPrefix — строки, которые должны стоять до любого кода фрагментного шейдера (#extension)
+  static prepareShader(renderPassDefine, definesText, vsText, fsText, fsPrefix = '') {
     let vertexShader = Castle.gl.createShader(Castle.gl.VERTEX_SHADER),
       fragmentShader = Castle.gl.createShader(Castle.gl.FRAGMENT_SHADER);
 
     Castle.gl.shaderSource(vertexShader, definesText + renderPassDefine + vsText);
 
-    Castle.gl.shaderSource(fragmentShader, definesText + renderPassDefine + fsText);
+    Castle.gl.shaderSource(fragmentShader, fsPrefix + definesText + renderPassDefine + fsText);
 
     Castle.gl.compileShader(vertexShader);
 
@@ -1704,13 +1782,33 @@ export class Castle {
       }
     }
 
+    // средний цвет вершин (0..1) — для цвета источника у свечений с цветом вершин (CastleLighting.glowOf)
+    let avgColor = null;
+    let colorOffset = 0;
+    for (let attribute of attributes) {
+      if (attribute.name === 'vertColor') {
+        const bytes = new Uint8Array(meshData);
+        avgColor = [0, 0, 0, 0];
+        let n = 0;
+        for (let v = colorOffset; v + 3 < bytes.length; v += vertStride, n++) {
+          for (let k = 0; k < 4; ++k) avgColor[k] += bytes[v + k];
+        }
+        avgColor = avgColor.map((x) => (n ? x / n / 255 : 0));
+        break;
+      }
+      colorOffset += attribute.count * attribute.sizeElem;
+    }
+
     sceneObjectsContainer[objectId].meshData = {
       vertices: vertices,
       vertStride: vertStride,
       indexCount: meshFloat.length / (vertStride / 4),
       bboxMin: bboxMin,
       bboxMax: bboxMax,
+      avgColor: avgColor,
     };
+    // вершины рельефа, деревьев и кустов — для карты высот светлячков (CastleFireflies)
+    CastleFireflies.keepGroundPositions(sceneObjectsContainer[objectId], meshFloat, vertStride, posOffset);
 
     // Плоские горизонтальные подложки зданий (квадрат земли/травы чуть над рельефом) не должны
     // отбрасывать тень: при солнце сверху она пряталась под самой подложкой, а при низком солнце
@@ -1894,10 +1992,19 @@ export class Castle {
       EaselCastleFx.updateShadow(Castle, buildingsToDraw);
     }
 
-    Castle.gl.bindFramebuffer(Castle.gl.FRAMEBUFFER, null);
-    Castle.gl.viewport(0, 0, Castle.gl.canvas.width, Castle.gl.canvas.height);
-    Castle.gl.clearColor(0.75, 0.85, 0.8, 1.0);
-    Castle.gl.clear(Castle.gl.COLOR_BUFFER_BIT | Castle.gl.DEPTH_BUFFER_BIT);
+    // Отложенное освещение: непрозрачное — в G-buffer, затем огни зданий и вывод на экран
+    // (CastleLighting.finish), прозрачное — как раньше, поверх, с глубиной из G-buffer.
+    const clearColor = [0.75, 0.85, 0.8];
+    Castle.deferredPass = Castle.deferredActive && CastleLighting.beginGBuffer(Castle.gl, clearColor);
+    if (!Castle.deferredPass) {
+      Castle.gl.bindFramebuffer(Castle.gl.FRAMEBUFFER, null);
+      Castle.gl.viewport(0, 0, Castle.gl.canvas.width, Castle.gl.canvas.height);
+      Castle.gl.clearColor(clearColor[0], clearColor[1], clearColor[2], 1.0);
+      Castle.gl.clear(Castle.gl.COLOR_BUFFER_BIT | Castle.gl.DEPTH_BUFFER_BIT);
+    }
+
+    // светлячки за стенами — ночью, вместе с огнями зданий (та же настройка)
+    const fireflyLevel = Castle.dayNightActive && Settings.settings?.buildingLights !== false ? CastleLighting.nightLevel : 0;
 
     if (Castle.sceneObjects) {
       let blendsFrom;
@@ -1942,6 +2049,14 @@ export class Castle {
         }
       }
 
+      if (fireflyLevel > 0) CastleFireflies.update(Castle.currentTime);
+      if (Castle.deferredPass) {
+        CastleLighting.collectLights(buildingsToDraw);
+        CastleLighting.lights.push(...CastleFireflies.lights(fireflyLevel));
+        CastleLighting.finish(Castle.gl, Castle);
+        Castle.deferredPass = false;
+      }
+
       for (let i = blendsFrom; i < Castle.sceneObjects.length; ++i) {
         Castle.prepareAndDrawObject(Castle.sceneObjects[i], false);
       }
@@ -1956,6 +2071,8 @@ export class Castle {
           );
         }
       }
+
+      CastleFireflies.draw(Castle.gl, Castle, fireflyLevel);
     }
     Castle.gl.disable(Castle.gl.BLEND);
     Castle.gl.enable(Castle.gl.CULL_FACE);
@@ -1994,7 +2111,7 @@ export class Castle {
 
     Castle.currentDrawObject = obj;
     Castle.drawObject(
-      isSMPass ? associatedShader.PSO_SM : associatedShader.PSO,
+      isSMPass ? associatedShader.PSO_SM : Castle.deferredPass && associatedShader.PSO_GB ? associatedShader.PSO_GB : associatedShader.PSO,
       textures,
       meshData.vertices,
       meshData.indexCount,
@@ -2290,6 +2407,13 @@ export class Castle {
     let uvScaleLocation = Castle.getUniformLocation(program, 'uvScale');
 
     Castle.gl.uniform4fv(uvScaleLocation, uvScaleValue);
+
+    // Свечения (аддитивное смешивание: огни, кристаллы, фонари) ночью не темнеют вместе со сценой
+    if (!isSMPass) {
+      const glowFloor =
+        blend && blend[1] === 'ONE' && Settings.settings?.buildingLights !== false ? CastleLighting.nightLevel * Castle.glowNightFloor : 0;
+      Castle.gl.uniform1f(Castle.getUniformLocation(program, 'emissive'), glowFloor);
+    }
 
     // Programmable vertex animation
     let uStartFreqValue = startFreqValue ? startFreqValue : [0, 0, 0, 0];
