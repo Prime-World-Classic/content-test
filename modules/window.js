@@ -73,7 +73,10 @@ export class Window {
         style: 'close-image-style',
       }),
     );
-    template.append(closeButton);
+    // Входящий звонок закрывается только кнопками «Принять»/«Отклонить» (и таймаутом)
+    if (!(template.id === 'wcastle-call' && Window.callData)) {
+      template.append(closeButton);
+    }
     if (category in Window.windows) {
       Window.windows[category].cleanup?.();
       Window.windows[category].remove();
@@ -172,8 +175,10 @@ export class Window {
       const lastCategory = Window.windowOrder[0]; // Берем первый элемент (последний открытый)
       if (lastCategory === 'main') {
         const currentWindow = Window.windows['main'];
-        if (currentWindow && currentWindow.id === 'wcastle-call') {
-          Window.dismissIncomingCall();
+        // Esc входящий звонок не закрывает и не отклоняет — только кнопка «Отклонить».
+        // true — Esc обработан: меню поверх звонка тоже не открываем.
+        if (currentWindow && currentWindow.id === 'wcastle-call' && Window.callData) {
+          return true;
         }
         if (currentWindow.id === 'wcastle-invite') {
           if (Window.inviteTimeout) {
@@ -187,7 +192,7 @@ export class Window {
     }
     return false;
   }
-  // Закрытие окна входящего звонка без ответа (отклонить, Esc, таймаут):
+  // Закрытие окна входящего звонка без ответа (отклонить, таймаут):
   // сообщаем звонящему, чтобы он не ждал 15 секунд «ожидание ответа».
   // При принятии callData уже обнулён, сброс не отправляется.
   static dismissIncomingCall() {
