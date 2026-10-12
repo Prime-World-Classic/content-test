@@ -14,13 +14,9 @@ import { NativeAPI } from './nativeApi.js';
 export class Voice {
   static peerConnectionConfig = {
     // проверка stun https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/
+    // TURN добавляется перед звонком: временный логин выдаёт API (user.turnCredentials), см. applyIceServers.
     iceServers: [
       { urls: ['stun:pw-classic-backup.ru:3478'] },
-      {
-        urls: ['turn:pw-classic-backup.ru:3478?transport=udp', 'turn:pw-classic-backup.ru:3478?transport=tcp'],
-        credential: '2mOPlRXn4Y2BJSbGY0zN',
-        username: 'pwvoice',
-      },
       /*
 			{url:'turn:192.158.29.39:3478?transport=udp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
 			{url:'turn:192.158.29.39:3478?transport=tcp',credential:'JZEOEt2V3Qb0y27GRntt2u2PAYA=',username:'28224511:1379330808'},
@@ -29,6 +25,63 @@ export class Voice {
 			*/
     ],
   };
+
+  static turnIceServers = null;
+
+  static turnExpiresAt = 0;
+
+  static turnPromise = null;
+
+  // Временные TURN-логины от API. Кэш, пока до истечения больше часа; параллельные звонки
+  // ждут один запрос. Ошибка (старый API, таймаут) — звоним только через STUN.
+  static async getIceServers() {
+    if (Voice.turnIceServers && Date.now() < Voice.turnExpiresAt - 3600000) {
+      return Voice.turnIceServers;
+    }
+
+    if (!Voice.turnPromise) {
+      Voice.turnPromise = App.api
+        .request('user', 'turnCredentials', {})
+        .then((result) => {
+          const servers = Array.isArray(result?.iceServers) ? result.iceServers : null;
+          const ttl = Number(result?.ttl) || 0;
+
+          if (servers && ttl > 0) {
+            Voice.turnIceServers = servers;
+            Voice.turnExpiresAt = Date.now() + ttl * 1000;
+          }
+
+          return servers || Voice.peerConnectionConfig.iceServers;
+        })
+        .catch((error) => {
+          Voice.log('turn-error', { error: String(error) });
+
+          return Voice.peerConnectionConfig.iceServers;
+        })
+        .finally(() => {
+          Voice.turnPromise = null;
+        });
+    }
+
+    // Медленный API не должен съедать 15-секундный таймаут звонка.
+    return await Promise.race([
+      Voice.turnPromise,
+      new Promise((resolve) => setTimeout(() => resolve(Voice.peerConnectionConfig.iceServers), 5000)),
+    ]);
+  }
+
+  // До setLocalDescription: сбор ICE-кандидатов начнётся уже с TURN.
+  async applyIceServers() {
+    const iceServers = await Voice.getIceServers();
+
+    if (!this.peer || this.peer.signalingState === 'closed') return;
+
+    try {
+      this.peer.setConfiguration({ ...this.peer.getConfiguration(), iceServers });
+    } catch (error) {
+      Voice.log('turn-apply-error', { id: Number(this.id), error: String(error) });
+    }
+  }
 
   static mediaAudioConfigManual = {
     echoCancellation: false,
@@ -1675,6 +1728,8 @@ export class Voice {
       this.peer.addTrack(Voice.mic);
     }
 
+    await this.applyIceServers();
+
     let offer = await this.peer.createOffer({
       offerToReceiveAudio: true,
       offerToReceiveVideo: false,
@@ -1736,6 +1791,8 @@ export class Voice {
     if (Voice.mic) {
       this.peer.addTrack(Voice.mic);
     }
+
+    await this.applyIceServers();
 
     Voice.log('accept', { id: Number(this.id), key: this.key });
     await this.peer.setRemoteDescription(offer);
