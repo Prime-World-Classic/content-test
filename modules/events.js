@@ -5,6 +5,7 @@ import { View } from './view.js';
 import { Rank } from './rank.js';
 import { App } from './app.js';
 import { Voice } from './voice.js';
+import { VoiceGameBridge } from './voiceGameBridge.js';
 import { shouldYieldToIncomingCall } from './voiceGlare.js';
 import { Chat } from './chat.js';
 import { NativeAPI } from './nativeApi.js';
@@ -442,6 +443,11 @@ export class Events {
   
   static async VMuteState(data) {
     Voice.setMutedByPeer(data?.id, Number(data?.muted || 0) === 1);
+  }
+
+  // Собеседник сообщил состояние своего микрофона (для оверлея в бою).
+  static async VMicState(data) {
+    VoiceGameBridge.setPeerMicState(data?.id, data?.state);
   }
 
   static async VFriendMerge(data) {

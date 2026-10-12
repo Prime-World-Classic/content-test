@@ -20,7 +20,10 @@ import { Voice } from './voice.js';
 //   cfg <оверлей 0|1> <рация 0|1> <VK клавиши рации через запятую или -> <x> <y>
 //   me <мик 0 нет|1 вкл|2 выкл> <говорит 0|1> <ник>
 //   p <id> <флаги> <громкость %> <ник>     флаги: 1 говорит, 2 заглушён мной,
-//                                          4 заглушил меня, 8 нет соединения
+//                                          4 заглушил меня, 8 нет соединения,
+//                                          16 микрофон выключен, 32 микрофона нет
+// Состояние своего микрофона лаунчер шлёт собеседникам через бэкенд
+// (user.callMicState -> событие VMicState), пока идёт бой и оно меняется.
 export class VoiceGameBridge {
   static PORT = 34981;
 
@@ -37,6 +40,12 @@ export class VoiceGameBridge {
   static SPEAK_HOLD_MS = 300;
 
   static pttPressed = false;
+
+  // id собеседника -> состояние его микрофона (0 нет, 1 вкл, 2 выкл) из VMicState.
+  static peerMicStates = new Map();
+
+  // id собеседника -> какое состояние своего микрофона мы ему уже отправили.
+  static sentMicStates = new Map();
 
   static pttWatchdog = null;
 
@@ -99,6 +108,9 @@ export class VoiceGameBridge {
 
   static stop() {
     VoiceGameBridge.releasePtt();
+    // Следующий бой начинаем с чистого листа: собеседники перешлют состояния заново.
+    VoiceGameBridge.peerMicStates.clear();
+    VoiceGameBridge.sentMicStates.clear();
 
     if (VoiceGameBridge.socket) {
       try {
@@ -226,6 +238,24 @@ export class VoiceGameBridge {
     return codes.join(',');
   }
 
+  static setPeerMicState(id, state) {
+    const peerId = Number(id);
+    const value = Number(state);
+    if (!Number.isFinite(peerId) || peerId <= 0 || ![0, 1, 2].includes(value)) return;
+    VoiceGameBridge.peerMicStates.set(peerId, value);
+  }
+
+  // Шлём собеседникам своё состояние микрофона, когда оно изменилось или собеседник новый.
+  // В режиме рации мик гаснет между нажатиями — для остальных это «включён».
+  static syncMicState(ownState, connectedIds) {
+    const reported = ownState === 2 && Settings.settings?.voiceRadioMode ? 1 : ownState;
+    for (const id of connectedIds) {
+      if (VoiceGameBridge.sentMicStates.get(id) === reported) continue;
+      VoiceGameBridge.sentMicStates.set(id, reported);
+      Promise.resolve(App.api?.ghost?.('user', 'callMicState', { id, state: reported })).catch(() => {});
+    }
+  }
+
   static cleanName(name) {
     return String(name || '').replace(/[\r\n]+/g, ' ').trim() || '?';
   }
@@ -246,6 +276,8 @@ export class VoiceGameBridge {
 
     const now = Date.now();
     const alive = new Set();
+    const present = new Set();
+    const connectedIds = [];
 
     let micState = 0;
     let meSpeaking = false;
@@ -264,6 +296,8 @@ export class VoiceGameBridge {
       if (!peer || !Number.isFinite(id)) continue;
 
       const connected = peer.peer?.connectionState === 'connected';
+      present.add(id);
+      if (connected) connectedIds.push(id);
       let flags = 0;
       if (connected && peer.stream) {
         alive.add(peer.stream);
@@ -272,11 +306,23 @@ export class VoiceGameBridge {
       if (Voice.isPeerMuted(id)) flags |= 2;
       if (Voice.isMutedByPeer(id)) flags |= 4;
       if (!connected) flags |= 8;
+      const peerMic = VoiceGameBridge.peerMicStates.get(id);
+      if (peerMic === 2) flags |= 16;
+      if (peerMic === 0) flags |= 32;
 
       lines.push(`p ${id} ${flags} ${Voice.getPeerVolumePercent(id)} ${VoiceGameBridge.cleanName(peer.name || `id${id}`)}`);
     }
 
     VoiceGameBridge.pruneMeters(alive);
+
+    // Ушедшим из звонка — забыть, чтобы при новом звонке состояния переслались заново.
+    for (const map of [VoiceGameBridge.peerMicStates, VoiceGameBridge.sentMicStates]) {
+      for (const id of Array.from(map.keys())) {
+        if (!present.has(id)) map.delete(id);
+      }
+    }
+    VoiceGameBridge.syncMicState(micState, connectedIds);
+
     return lines.join('\n');
   }
 
