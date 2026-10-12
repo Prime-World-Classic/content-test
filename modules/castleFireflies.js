@@ -12,7 +12,9 @@ export class CastleFireflies {
   // меши, над которыми летают светлячки (по имени меша сцены)
   static groundMeshes = /(^|\/)(terrain|understage|highland|rocks_|trees_|bushes_|water)/;
   static waterMeshes = /(^|\/)water/;
-  static minDistance = 60; // от края сетки замка
+  static wallMarginCells = 2; // отступ от стен наружу, клеток сетки (по 7 единиц)
+  static nearWallBandCells = 9; // полоса за стенами (клеток), куда идёт nearWallShare светлячков
+  static nearWallShare = 0.4;
   static maxDistance = 420; // от центра замка
   static lightRadius = 10;
   static lightIntensity = 0.9;
@@ -149,23 +151,47 @@ export class CastleFireflies {
     return [x0, z0, x0 + 47 * 7, z0 + 38 * 7];
   }
 
-  // Места светлячков: случайные точки вокруг замка, но не ближе minDistance к его сетке
+  // Внутри стен (с запасом marginCells клеток наружу). Форма — как в Castle.isBuildingAllowed:
+  // сетка 46x38 клеток со срезанными нижним, левым и правым углами; клетка 7 единиц.
+  static insideWalls(castle, x, z, marginCells) {
+    const gx = (x - castle.zeroTranslation[0]) / 7;
+    const gy = (z - castle.zeroTranslation[1]) / 7 + 17;
+    const m = marginCells, d = marginCells * Math.SQRT2;
+    if (gx < -m || gy < -m || gx > 46 + m || gy > 38 + m) return false;
+    if (gx + gy > 66 + d) return false; // нижний угол
+    if (gx - gy > 44 + d) return false; // левый угол
+    if (gy - gx > 36 + d) return false; // правый угол
+    return true;
+  }
+
+  // Места светлячков: случайные точки вокруг замка, сразу за стенами и дальше
   static spawn(castle) {
     CastleFireflies.flies = [];
     if (!CastleFireflies.heights) return;
     const r = CastleFireflies.castleRect(castle);
     const cx = (r[0] + r[2]) / 2, cz = (r[1] + r[3]) / 2;
-    const m = CastleFireflies.minDistance;
     let seed = 12345;
     const rnd = () => {
       seed = (seed * 16807) % 2147483647;
       return (seed - 1) / 2147483646;
     };
-    for (let tries = 0; CastleFireflies.flies.length < CastleFireflies.count && tries < CastleFireflies.count * 40; tries++) {
-      const a = rnd() * Math.PI * 2;
-      const d = Math.sqrt(rnd()) * CastleFireflies.maxDistance;
-      const x = cx + Math.cos(a) * d * 1.3, z = cz + Math.sin(a) * d;
-      if (x > r[0] - m && x < r[2] + m && z > r[1] - m && z < r[3] + m) continue;
+    // часть — в полосе сразу за стенами (равномерный разброс по большой площади её почти не задевает)
+    const nearCount = Math.round(CastleFireflies.count * CastleFireflies.nearWallShare);
+    const margin = CastleFireflies.wallMarginCells, band = CastleFireflies.nearWallBandCells;
+    for (let tries = 0; CastleFireflies.flies.length < CastleFireflies.count && tries < CastleFireflies.count * 60; tries++) {
+      let x, z;
+      if (CastleFireflies.flies.length < nearCount) {
+        // точка сетки замка с запасом band клеток, но вне стен с отступом margin
+        x = castle.zeroTranslation[0] + (-band + rnd() * (46 + 2 * band)) * 7;
+        z = castle.zeroTranslation[1] + (-band + rnd() * (38 + 2 * band) - 17) * 7;
+        if (!CastleFireflies.insideWalls(castle, x, z, band)) continue;
+      } else {
+        const a = rnd() * Math.PI * 2;
+        const d = Math.sqrt(rnd()) * CastleFireflies.maxDistance;
+        x = cx + Math.cos(a) * d * 1.3;
+        z = cz + Math.sin(a) * d;
+      }
+      if (CastleFireflies.insideWalls(castle, x, z, margin)) continue;
       const ground = CastleFireflies.heightAt(x, z);
       const water = CastleFireflies.waterAt(x, z);
       let y = ground;
