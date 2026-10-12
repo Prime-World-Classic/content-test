@@ -1302,18 +1302,6 @@ export class Window {
   }
 
   static async advancedSettings() {
-    const voiceInWindowUnavailableByWindows = NativeAPI.isLegacyWindowsForVoiceWindow?.() === true;
-    const voiceInWindowUnavailableByNwjs = NativeAPI.isLegacyNwjsForVoiceWindow?.() === true;
-    const voiceInWindowUnavailable = voiceInWindowUnavailableByWindows || voiceInWindowUnavailableByNwjs;
-    const voiceInWindowUnavailableTitle = voiceInWindowUnavailableByWindows
-      ? Lang.text('voiceInWindowRequiresWin11')
-      : voiceInWindowUnavailableByNwjs
-        ? Lang.text('voiceInWindowRequiresNwjs')
-        : '';
-    if (voiceInWindowUnavailable) {
-      Settings.settings.voiceInWindow = false;
-    }
-
     return DOM(
       { id: 'wcastle-menu', style: ['wcastle-menu--quest-bg', 'wcastle-menu--settings-shade'] },
       DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('advancedSettings'))),
@@ -1416,34 +1404,24 @@ export class Window {
           DOM({ tag: 'label', for: 'novoice' }, Lang.text('voiceEnabled')),
         ),
         DOM(
-          {
-            style: voiceInWindowUnavailable ? ['castle-menu-item-checkbox', 'is-disabled'] : 'castle-menu-item-checkbox',
-            title: voiceInWindowUnavailableTitle,
-          },
+          { style: 'castle-menu-item-checkbox' },
           DOM(
             {
               tag: 'input',
               domaudio: domAudioPresets.defaultSelect,
               type: 'checkbox',
-              id: 'voice-in-window',
-              checked: !voiceInWindowUnavailable && Settings.settings.voiceInWindow !== false,
-              disabled: voiceInWindowUnavailable,
-              title: voiceInWindowUnavailableTitle,
+              id: 'voice-overlay',
+              checked: Settings.settings.voiceOverlay !== false,
               event: [
                 'change',
                 (e) => {
-                  if (voiceInWindowUnavailable) {
-                    Settings.settings.voiceInWindow = false;
-                    e.target.checked = false;
-                    return;
-                  }
-                  Settings.settings.voiceInWindow = e.target.checked;
+                  Settings.settings.voiceOverlay = e.target.checked;
                 },
               ],
             },
-            { checked: !voiceInWindowUnavailable && Settings.settings.voiceInWindow !== false },
+            { checked: Settings.settings.voiceOverlay !== false },
           ),
-          DOM({ tag: 'label', for: 'voice-in-window', title: voiceInWindowUnavailableTitle }, Lang.text('voiceInWindow')),
+          DOM({ tag: 'label', for: 'voice-overlay' }, Lang.text('voiceOverlay')),
         ),
         DOM(
           { style: 'castle-menu-item-checkbox' },

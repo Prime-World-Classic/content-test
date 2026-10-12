@@ -57,6 +57,13 @@ export const KeybindStore = {
       ],
       sections: ['adventure_screen'],
     },
+    voiceOverlayUnlock: {
+      members: [
+        { command: 'voice_overlay_unlock_on', negated: false },
+        { command: 'voice_overlay_unlock_off', negated: true },
+      ],
+      sections: ['adventure_screen'],
+    },
     selfCast: {
       members: [
         { command: 'self_cast_on', negated: false },
@@ -185,12 +192,26 @@ export const KeybindStore = {
     this.fileModel = fileModel;
     this.source = source;
     this.configPath = configPath;
+    this.ensureVoiceOverlayBind();
     if (this.fixConflicts().length > 0) {
       saveKeybinds(this.fileModel, this.configPath);
       App.error(Lang.text('resetConflictedKeybindings'));
     }
     this.uiModel = this.mapFileToUiModel();
     this.notify();
+  },
+
+  // Бинд оверлея войса появился позже остальных: в старых input_new.cfg его нет, а без
+  // записи в модели клавишу нельзя переназначить. Добавляем пару с клавишей по
+  // умолчанию (как в клиенте, VoiceOverlayController.cpp) — файл не трогаем до «Сохранить».
+  ensureVoiceOverlayBind() {
+    if (this.getBind('voice_overlay_unlock_on')) return;
+    const section = this.fileModel?.sections?.find((s) => s.name === 'adventure_screen');
+    if (!section) return;
+    section.binds.push(
+      { type: 'bind', command: 'voice_overlay_unlock_on', value: null, negated: false, keys: ['SHIFT'] },
+      { type: 'bind', command: 'voice_overlay_unlock_off', value: null, negated: true, keys: ['SHIFT'] },
+    );
   },
 
   findLinkedBinds(changedBind) {

@@ -7,6 +7,7 @@ import { Rank } from './rank.js';
 import { Build } from './build.js';
 import { App } from './app.js';
 import { Voice } from './voice.js';
+import { VoiceGameBridge } from './voiceGameBridge.js';
 import { PWGame } from './pwgame.js';
 import { NativeAPI } from './nativeApi.js';
 import { Castle } from './castle.js';
@@ -60,22 +61,19 @@ export class MM {
   static skipVoiceRestoreOnClose = false;
 
   static gameRunEvent() {
-    if (Settings.settings?.voiceInWindow && !Settings.settings?.novoice) {
-      Settings.setVoiceWindowCrashGuard(true);
-    }
     MM.isInBattle = true;
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, false);
     document.body.style.display = 'none';
-    NativeAPI.openVoiceWindow();
+    VoiceGameBridge.start();
     NativeAPI.window.hide();
 
     NativeAPI.app.unregisterGlobalHotKey(NativeAPI.altEnterShortcut);
   }
 
   static gameStopEvent() {
-    Settings.setVoiceWindowCrashGuard(false);
     MM.isInBattle = false;
+    VoiceGameBridge.stop();
     Castle.toggleRender(Castle.RENDER_LAYER_GAME, true);
     Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, true);
     document.body.style.display = 'block';
@@ -84,7 +82,6 @@ export class MM {
       try {
         Settings.ApplySettings();
 
-        NativeAPI.closeVoiceWindow();
         NativeAPI.window.show();
         NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
       } catch (e) {

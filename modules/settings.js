@@ -18,8 +18,8 @@ export class Settings {
     voiceVolume: 1.0,
     language: 'ru',
     novoice: false,
-    voiceInWindow: true,
-    voiceWindowCrashGuard: false,
+    voiceOverlay: true,
+    voiceOverlayPos: null,
     voiceRadioMode: false,
     voiceToggleHotkey: ['CTRL', 'Z'],
     voiceDropHotkey: ['CTRL', 'K'],
@@ -107,20 +107,6 @@ export class Settings {
     } catch {}
   }
   
-  static setVoiceWindowCrashGuard(active = false) {
-    this.settings.voiceWindowCrashGuard = Boolean(active);
-    this.WriteSettingsSync();
-  }
-  
-  static async applyVoiceWindowCrashRecovery() {
-    if (!this.settings?.voiceWindowCrashGuard) {
-      return;
-    }
-    this.settings.voiceWindowCrashGuard = false;
-    this.settings.voiceInWindow = false;
-    await this.WriteSettings();
-  }
-
   // Инициализация глобальных горячих клавиш
   static initGlobalHotkeys() {
     console.log('Initializing global hotkeys...');
@@ -232,7 +218,6 @@ export class Settings {
 
   static async init() {
     await this.ReadSettings();
-    await this.applyVoiceWindowCrashRecovery();
     NativeAPI.refreshVoiceHotkeys?.();
     await this.ApplySettings();
 

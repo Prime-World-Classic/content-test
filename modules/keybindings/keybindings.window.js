@@ -125,6 +125,7 @@ function buildVoiceHotkeys() {
   const rows = [];
   rows.push(createRow(Lang.text('voiceEnableToggle'), createSettingsKeyInput({ settingKey: 'voiceToggleHotkey' })));
   rows.push(createRow(Lang.text('voiceDropCalls'), createSettingsKeyInput({ settingKey: 'voiceDropHotkey' })));
+  rows.push(createRow(Lang.text('voiceOverlayUnlock'), createKeyInput({ command: 'voice_overlay_unlock_on' })));
   return createGroup(Lang.text('voiceHotkeys'), rows);
 }
 

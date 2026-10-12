@@ -1004,11 +1004,7 @@ export class Voice {
         event: [
           'click',
           () => {
-            if (
-              Voice.infoPanel?.classList?.contains('voice-window-mode') ||
-              MM.isInTambur ||
-              MM.isInBattle
-            ) {
+            if (MM.isInTambur || MM.isInBattle) {
               return;
             }
             Voice.drop(Number(id));
@@ -1310,7 +1306,8 @@ export class Voice {
   }
 
   static destroy(full = false, say = false) {
-    if (!full && Voice.infoPanel?.classList?.contains('voice-window-mode')) {
+    // В бою Ctrl+K не рвёт звонки команды (раньше их защищало окно войса).
+    if (!full && MM.isInBattle) {
       return;
     }
     if (full) {
