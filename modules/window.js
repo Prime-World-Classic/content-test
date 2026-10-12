@@ -813,16 +813,19 @@ export class Window {
     });
     let root = DOM({ id: 'wquest' }, helpBtn);
 
+    // английский текст квеста (колонки *_en на сервере), если он заполнен
+    const questText = (field) => (Lang.target === 'en' && quest[`${field}_en`]) || quest[field];
+
     const content = DOM({ style: 'wquest__content' });
 
     const titlebar = DOM({ style: 'wquest__titlebar' });
-    const h3 = DOM({ tag: 'h3', style: 'wquest__title' }, quest.title);
+    const h3 = DOM({ tag: 'h3', style: 'wquest__title' }, questText('title'));
 
     titlebar.appendChild(h3);
 
-    const body = DOM({ style: 'wquest__body' }, quest.description);
+    const body = DOM({ style: 'wquest__body' }, questText('description'));
 
-    const objectiveText = DOM({ style: 'wquest__objective-title' }, quest.target);
+    const objectiveText = DOM({ style: 'wquest__objective-title' }, questText('target'));
     const objective = DOM({ style: 'wquest__objective' }, objectiveText);
     //const objText = DOM({ style: 'wquest__objective' }, quest.target);
     //objective.appendChild(objText);
