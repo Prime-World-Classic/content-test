@@ -20,13 +20,18 @@ export class NativeAPI {
   static revBefore = null;
   static restartInProgress = false;
 
-  // Фоновая проверка обновлений content, пока лаунчер запущен
+  // Фоновая проверка обновлений content и игры, пока лаунчер запущен
   static CONTENT_WATCH_FIRST_MS = 2 * 60 * 1000;
   static CONTENT_WATCH_INTERVAL_MS = 5 * 60 * 1000;
   static CONTENT_WATCH_RESTART_DELAY_MS = 10 * 1000;
-  static CONTENT_WATCH_GUARD_KEY = 'contentWatchRestartRev';
+  // Репозитории, которые обновляет NanoUpdater (пути от папки Launcher).
+  // guardKey — ревизия, ради которой апдейтер уже запускали (защита от петли).
+  static WATCH_REPOS = [
+    { name: 'content', dir: 'content', guardKey: 'contentWatchRestartRev' },
+    { name: 'game', dir: '../Game', guardKey: 'gameWatchUpdateRev' },
+  ];
   static contentWatchTimer = 0;
-  static contentWatchPendingRev = null;
+  static watchPendingRevs = {};
   static updateInProgress = false;
   static updateCallback = null;
   static updateBackground = false;
@@ -436,15 +441,15 @@ export class NativeAPI {
     } catch {}
   }
 
-  // Ревизия content БЕЗ git (в NW.js git-модуля нет и не будет — только чтение файлов):
-  // content/.git/HEAD → «ref: <path>» → .git/<path>, fallback — packed-refs;
+  // Ревизия репозитория (по умолчанию content) БЕЗ git (в NW.js git-модуля нет и не будет —
+  // только чтение файлов): <dir>/.git/HEAD → «ref: <path>» → .git/<path>, fallback — packed-refs;
   // если HEAD сам по себе hash — он и есть ревизия. Не удалось прочитать — null.
-  static async readContentRevision() {
+  static async readContentRevision(dir = 'content') {
     const fs = NativeAPI.fileSystem;
     const join = NativeAPI.path.join;
     let head = '';
     try {
-      head = (await fs.promises.readFile(join('content', '.git', 'HEAD'), 'utf-8')).trim();
+      head = (await fs.promises.readFile(join(dir, '.git', 'HEAD'), 'utf-8')).trim();
     } catch {
       return null;
     }
@@ -455,10 +460,10 @@ export class NativeAPI {
     if (!m) return null;
     const ref = m[1].trim();
     try {
-      return (await fs.promises.readFile(join('content', '.git', ref), 'utf-8')).trim().toLowerCase();
+      return (await fs.promises.readFile(join(dir, '.git', ref), 'utf-8')).trim().toLowerCase();
     } catch {}
     try {
-      const packed = await fs.promises.readFile(join('content', '.git', 'packed-refs'), 'utf-8');
+      const packed = await fs.promises.readFile(join(dir, '.git', 'packed-refs'), 'utf-8');
       for (const line of packed.split('\n')) {
         const t = line.trim();
         if (!t || t.startsWith('#') || t.startsWith('^')) continue;
@@ -870,13 +875,15 @@ export class NativeAPI {
     return true;
   }
 
-  // ---- Фоновая проверка обновлений content ----
-  // Пока лаунчер открыт, раз в CONTENT_WATCH_INTERVAL_MS сверяем ревизию
-  // content/.git с веткой на удалённом репозитории (smart-HTTP info/refs, git
-  // не нужен). Если вышла новая — ждём, пока игрок не в поиске/лобби/бою, и
-  // запускаем тот же апдейтер, что и при старте (NativeAPI.update): он скачает
-  // content, а при смене ревизии появится кнопка «Перезапустить» под быстрыми
-  // кнопками справа (перезагрузка окна — только по клику игрока).
+  // ---- Фоновая проверка обновлений content и игры ----
+  // Пока лаунчер открыт, раз в CONTENT_WATCH_INTERVAL_MS сверяем ревизии
+  // content/.git и ../Game/.git с веткой на удалённом репозитории (smart-HTTP
+  // info/refs, git не нужен; адрес — origin из .git/config, т.е. тестовый клиент
+  // смотрит в *-test репозитории). Если вышла новая — ждём, пока игрок не в
+  // поиске/лобби/бою, и запускаем тот же апдейтер, что и при старте
+  // (NativeAPI.update): он скачает content и игру. Кнопка «Перезапустить» под
+  // быстрыми кнопками справа появится только при смене ревизии content —
+  // обновление одной игры перезапуска лаунчера не требует.
   // Процесс НЕ перезапускаем: detached-relauncher + exit (restart()) на Windows
   // просто закрывал лаунчер — дочерний процесс погибает вместе с NW.
   // Защита от петли: ради одной и той же ревизии апдейтер запускаем один раз.
@@ -893,14 +900,14 @@ export class NativeAPI {
     NativeAPI.contentWatchTimer = setTimeout(tick, NativeAPI.CONTENT_WATCH_FIRST_MS);
   }
 
-  static async readContentRemote() {
+  static async readContentRemote(dir = 'content') {
     const fs = NativeAPI.fileSystem;
     const join = NativeAPI.path.join;
     let head = '';
     let config = '';
     try {
-      head = (await fs.promises.readFile(join('content', '.git', 'HEAD'), 'utf-8')).trim();
-      config = await fs.promises.readFile(join('content', '.git', 'config'), 'utf-8');
+      head = (await fs.promises.readFile(join(dir, '.git', 'HEAD'), 'utf-8')).trim();
+      config = await fs.promises.readFile(join(dir, '.git', 'config'), 'utf-8');
     } catch {
       return null;
     }
@@ -983,34 +990,53 @@ export class NativeAPI {
       return;
     }
 
-    const localRev = await NativeAPI.readContentRevision();
-    const remote = await NativeAPI.readContentRemote();
-    if (!localRev || !remote) return;
-
-    let remoteRev = NativeAPI.contentWatchPendingRev;
-    if (!remoteRev) {
-      remoteRev = await NativeAPI.readRemoteRevision(remote.url, remote.ref);
-      if (!remoteRev || remoteRev === localRev) return;
-
-      let guard = null;
+    // Сбой проверки одного репозитория (таймаут зеркала) не мешает проверить другой
+    const found = [];
+    for (const repo of NativeAPI.WATCH_REPOS) {
       try {
-        guard = localStorage.getItem(NativeAPI.CONTENT_WATCH_GUARD_KEY);
-      } catch {}
-      if (guard === remoteRev) return; // уже обновлялись ради неё — не помогло
-      NativeAPI.contentWatchPendingRev = remoteRev;
-      NativeAPI.logUpdate('content-watch-found', `local=${localRev} remote=${remoteRev}`);
+        const remoteRev = await NativeAPI.findRepoUpdate(repo);
+        if (remoteRev) found.push({ repo, remoteRev });
+      } catch (e) {
+        NativeAPI.logUpdateError(e, `${repo.name}-watch`);
+      }
     }
+    if (!found.length) return;
 
     // Игрок в поиске/лобби/бою — дождёмся следующей проверки
     if (!NativeAPI.isSafeToRestart()) return;
 
-    try {
-      localStorage.setItem(NativeAPI.CONTENT_WATCH_GUARD_KEY, remoteRev);
-    } catch {}
-    NativeAPI.contentWatchPendingRev = null;
-    NativeAPI.logUpdate('content-watch-update', `remote=${remoteRev}`);
-    // Качаем в фоне; окно не перезагружаем — по готовности появится кнопка «Перезапустить».
+    for (const { repo, remoteRev } of found) {
+      try {
+        localStorage.setItem(repo.guardKey, remoteRev);
+      } catch {}
+      delete NativeAPI.watchPendingRevs[repo.name];
+      NativeAPI.logUpdate(`${repo.name}-watch-update`, `remote=${remoteRev}`);
+    }
+    // Качаем в фоне; окно не перезагружаем — если сменился content, по готовности
+    // появится кнопка «Перезапустить», если только игра — просто обновится молча.
     await NativeAPI.update(null, { background: true });
+  }
+
+  // Новая ревизия репозитория на сервере, ради которой ещё не запускали апдейтер, иначе null
+  static async findRepoUpdate(repo) {
+    const pending = NativeAPI.watchPendingRevs[repo.name];
+    if (pending) return pending;
+
+    const localRev = await NativeAPI.readContentRevision(repo.dir);
+    const remote = await NativeAPI.readContentRemote(repo.dir);
+    if (!localRev || !remote) return null;
+
+    const remoteRev = await NativeAPI.readRemoteRevision(remote.url, remote.ref);
+    if (!remoteRev || remoteRev === localRev) return null;
+
+    let guard = null;
+    try {
+      guard = localStorage.getItem(repo.guardKey);
+    } catch {}
+    if (guard === remoteRev) return null; // уже обновлялись ради неё — не помогло
+    NativeAPI.watchPendingRevs[repo.name] = remoteRev;
+    NativeAPI.logUpdate(`${repo.name}-watch-found`, `local=${localRev} remote=${remoteRev}`);
+    return remoteRev;
   }
 
   static analysis() {
