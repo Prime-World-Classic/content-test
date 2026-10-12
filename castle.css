@@ -641,7 +641,7 @@ body {
 }
 
 #MMQueue::before {
-  content: 'Очередь ';
+  content: var(--mm-queue-label, '');
 }
 
 .castle-button-play {
@@ -4639,12 +4639,12 @@ body:has(#wbuild) .castle-bottom-content {
   filter: drop-shadow(0 0 0.25cqh rgba(255, 224, 143, 0.45));
 }
 
-.launcher-notifications-action[title='Прочитать все'] {
+.launcher-notifications-action[data-action='read-all'] {
   --notification-action-icon: url('icons/svg/audit_mark_all_read.svg');
   gap: 0.8cqh;
 }
 
-.launcher-notifications-action[title='Обновить']::before {
+.launcher-notifications-action[data-action='refresh']::before {
   display: none;
 }
 
@@ -4663,7 +4663,7 @@ body:has(#wbuild) .castle-bottom-content {
   filter: brightness(1.18);
 }
 
-.launcher-notifications-action[title='Закрыть'] {
+.launcher-notifications-action[data-variant='close'] {
   --notification-action-icon: url('icons/svg/audit_close.svg');
   font-size: 0;
 }

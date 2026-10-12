@@ -909,7 +909,7 @@ export class Window {
                 },
               ],
             },
-            DOM({ style: 'quest-button-text' }, 'Начать'),
+            DOM({ style: 'quest-button-text' }, Lang.text('questStart')),
           ),
         );
 
@@ -933,7 +933,7 @@ export class Window {
                 },
               ],
             },
-            DOM({ style: 'quest-button-text' }, 'Завершить'),
+            DOM({ style: 'quest-button-text' }, Lang.text('questFinish')),
           ),
         );
 
@@ -1391,7 +1391,7 @@ export class Window {
           }),
           DOM({ tag: 'label', for: 'building-lights-toggle' }, Lang.text('buildingLights')),
         ),
-        DOM({ style: 'castle-menu-section-title' }, 'Голосовая связь'),
+        DOM({ style: 'castle-menu-section-title' }, Lang.text('voiceHotkeys')),
         DOM(
           { style: 'castle-menu-item-checkbox' },
           DOM(
@@ -1674,7 +1674,7 @@ export class Window {
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('support'))),
       DOM(
         { style: 'castle-menu-items' },
-        DOM({ style: 'castle-menu-text' }, 'У вас есть вопросы или нужна помощь, то можете связаться с нами через социальные сети.'),
+        DOM({ style: 'castle-menu-text' }, Lang.text('supportSocialText')),
         DOM(
           { style: 'menu-icons' },
           DOM(
@@ -2370,7 +2370,7 @@ export class Window {
     return DOM(
       { id: 'wcastle-call' },
       DOM({style: 'title-modal'},
-        DOM({style: 'title-modal-text'}, 'Звонок'),
+        DOM({style: 'title-modal-text'}, Lang.text('callAFriend')),
       ),
       DOM({ style: 'castle-menu-title' }, Lang.text('friendCallFrom').replace('{name}', displayName)),
       DOM(

@@ -939,7 +939,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261012-daymode-4';
+    const cssVersion = '20261012-l10n-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1188,8 +1188,8 @@ export class View {
       tag: 'a',
       target: '_blank',
       href: tgBotUrl,
-      title: 'Получить инвайт в Telegram',
-      'aria-label': 'Получить инвайт в Telegram',
+      title: Lang.text('telegramInvite'),
+      'aria-label': Lang.text('telegramInvite'),
       event: ['click', (e) => NativeAPI.linkHandler(e)],
     });
 
@@ -1308,8 +1308,8 @@ export class View {
           }),
           DOM(
             { style: 'login-box-form-invite-text' },
-            DOM({ tag: 'span' }, 'Получить инвайт-код'),
-            DOM({ tag: 'span' }, 'через QR-код'),
+            DOM({ tag: 'span' }, Lang.text('inviteCodeGet')),
+            DOM({ tag: 'span' }, Lang.text('inviteViaQr')),
           ),
         ),
       ),
@@ -1925,7 +1925,7 @@ export class View {
       // счётчик: всегда стартует с "0/0"
       const lbl = DOM({ tag: 'div', style: ['banner-count', 'is-loading'] });
       lbl.textContent = '0/0';
-      lbl.title = 'Отображение очереди по режимам:\n' + 'слева — игроков в поиске,\n' + 'справа — количество групп (пати).';
+      lbl.title = Lang.text('queueCountTooltip');
       wrap.append(lbl);
 
       const onQueuesUpdated = () => {
@@ -1974,8 +1974,8 @@ export class View {
         },
       ],
     });
-    statsBtn.setAttribute('aria-label', 'Статистика');
-    const statsTooltip = DOM({ style: 'banner-stat-tooltip', textContent: 'Статистика' });
+    statsBtn.setAttribute('aria-label', Lang.text('statistics'));
+    const statsTooltip = DOM({ style: 'banner-stat-tooltip', textContent: Lang.text('statistics') });
 
     // бейдж дивизии под кнопкой Stat
     const divId = getDivisionId();
@@ -2002,7 +2002,7 @@ export class View {
       {
         domaudio: domAudioPresets.bigButton,
         style: ['crystal-container', Shop.requireAnimation ? 'crystal-container-anim' : '_dummy_'],
-        data: { tooltip: 'Кристаллы' },
+        data: { tooltip: Lang.text('crystals') },
         event: [
           'click',
           () => {
@@ -2022,14 +2022,14 @@ export class View {
     let builds = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-builds', 'button-outline'],
-      data: { tooltip: 'Рейтинг' },
+      data: { tooltip: Lang.text('rating') },
       event: ['click', () => View.show('top')],
     });
 
     let settings = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-settings-btn', 'button-outline'],
-      data: { tooltip: 'Вкл/Выкл графики замка' },
+      data: { tooltip: Lang.text('castleGraphicsToggle') },
       event: [
         'click',
         () => {
@@ -2042,14 +2042,14 @@ export class View {
     let clan = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-clans', 'button-outline'],
-      data: { tooltip: 'Кланы' },
+      data: { tooltip: Lang.text('clans') },
       event: ['click', () => Frame.open('clan')],
     });
 
     let farm = DOM({
       domaudio: domAudioPresets.bigButton,
       style: ['castle-farm', 'button-outline'],
-      data: { tooltip: 'Фарм' },
+      data: { tooltip: Lang.text('farm') },
       event: ['click', () => Window.show('main', 'farm')],
     });
 
@@ -2190,7 +2190,7 @@ export class View {
           Chat.changeChatVisibility();
         },
       ],
-      data: { tooltip: 'Вкл/выкл. чат' },
+      data: { tooltip: Lang.text('chatToggle') },
     });
     let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
@@ -2686,7 +2686,7 @@ export class View {
 
       let buildingNameBase = DOM({ style: 'castle-item-hero-name' }, buildingName);
       let buildingIcon = DOM({ style: 'buildingIcon', src: 'content/img/buildings/hammerIcon.png', tag: 'img' });
-      let buildingIconBox = DOM({ style: 'buildingIconBox', data: { tooltip: 'Построить' } }, buildingIcon);
+      let buildingIconBox = DOM({ style: 'buildingIconBox', data: { tooltip: Lang.text('buildingBuild') } }, buildingIcon);
 
       let building = DOM(
         { style: 'castle-building-item' },
@@ -2868,7 +2868,7 @@ export class View {
   static getCastleHeroListName(listId) {
     const id = Number(listId) || 0;
     const custom = String(View.castleHeroListNames?.[id] || '').trim();
-    return custom || `Список ${id}`;
+    return custom || Lang.text('heroListDefaultName').replace('{id}', id);
   }
 
   static setCastleHeroListName(listId, value) {
@@ -2995,7 +2995,7 @@ export class View {
         {
           style: ['castle-hero-list-btn', 'castle-hero-list-btn-add'],
           domaudio: domAudioPresets.defaultButton,
-          data: { tooltip: 'Создать список' },
+          data: { tooltip: Lang.text('heroListCreate') },
           event: [
             'click',
             () => {
@@ -3079,12 +3079,16 @@ export class View {
           ? 'castle-hero-list-editor-mode-remove'
           : 'castle-hero-list-editor-mode-idle';
     const titleText =
-      mode === 'add' ? `Добавить выбранных героев в ${listName}` : mode === 'remove' ? `Удалить выбранных героев из ${listName}` : listName;
+      mode === 'add'
+        ? Lang.text('heroListAddTitle').replace('{name}', listName)
+        : mode === 'remove'
+          ? Lang.text('heroListRemoveTitle').replace('{name}', listName)
+          : listName;
     const titleContent =
       mode === 'add'
         ? DOM(
             { style: ['castle-hero-list-editor-title', 'castle-hero-list-editor-title-add'] },
-            DOM({ tag: 'span' }, 'Добавить выбранных героев в'),
+            DOM({ tag: 'span' }, Lang.text('heroListAddPrefix')),
             DOM({ tag: 'span' }, listName),
           )
         : DOM({ style: 'castle-hero-list-editor-title' }, titleText);
@@ -3104,7 +3108,7 @@ export class View {
           canAddToList ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Добавить' },
+        data: { tooltip: Lang.text('listAdd') },
         event: [
           'click',
           () => {
@@ -3126,7 +3130,7 @@ export class View {
           canRemoveFromList ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Убрать' },
+        data: { tooltip: Lang.text('listRemove') },
         event: [
           'click',
           () => {
@@ -3163,13 +3167,13 @@ export class View {
           },
         ],
       },
-      'Подтвердить',
+      Lang.text('confirm'),
     );
     const clear = DOM(
       {
         style: ['castle-hero-list-editor-confirm', 'castle-hero-list-editor-delete-action'],
         domaudio: domAudioPresets.defaultButton,
-        title: `Удалить список ${listId}`,
+        title: Lang.text('heroListDeleteTitle').replace('{id}', listId),
         event: [
           'click',
           async () => {
@@ -3189,7 +3193,7 @@ export class View {
           },
         ],
       },
-      View.castleHeroDeleteConfirmListId === listId ? Lang.text('confirmAction') : 'Удалить список',
+      View.castleHeroDeleteConfirmListId === listId ? Lang.text('confirmAction') : Lang.text('heroListDelete'),
     );
 
     const middle = DOM(
@@ -3322,7 +3326,7 @@ export class View {
     }
 
     if (renderedHeroCount === 0) {
-      const emptyText = hasSearch ? 'Ничего не найдено' : 'Список пуст';
+      const emptyText = hasSearch ? Lang.text('nothingFound') : Lang.text('listEmpty');
       View.castleBottom.append(
         DOM(
           { style: ['castle-hero-item', 'castle-hero-list-empty-item'] },
@@ -3400,7 +3404,7 @@ export class View {
           View.castleFriendSelectedList === 0 ? 'castle-hero-list-btn-active' : null,
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Список друзей' },
+        data: { tooltip: Lang.text('friendListAll') },
         event: [
           'click',
           () => {
@@ -3425,7 +3429,7 @@ export class View {
           View.castleFriendSelectedList === 1 ? 'castle-hero-list-btn-active' : null,
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Фавориты' },
+        data: { tooltip: Lang.text('friendListFavorites') },
         event: [
           'click',
           () => {
@@ -3450,7 +3454,7 @@ export class View {
             View.castleFriendSelectedList === 2 ? 'castle-hero-list-btn-active' : null,
           ].filter(Boolean),
           domaudio: domAudioPresets.defaultButton,
-          title: 'Онлайн игроки',
+          title: Lang.text('onlinePlayers'),
           event: [
             'click',
             () => {
@@ -3536,7 +3540,7 @@ export class View {
           canAdd ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Добавить' },
+        data: { tooltip: Lang.text('listAdd') },
         event: [
           'click',
           () => {
@@ -3558,7 +3562,7 @@ export class View {
           canRemove ? null : 'castle-hero-list-editor-sign-disabled',
         ].filter(Boolean),
         domaudio: domAudioPresets.defaultButton,
-        data: { tooltip: 'Убрать' },
+        data: { tooltip: Lang.text('listRemove') },
         event: [
           'click',
           () => {
@@ -3598,7 +3602,7 @@ export class View {
           },
         ],
       },
-      'Подтвердить',
+      Lang.text('confirm'),
     );
 
     const clear = DOM(
@@ -3633,7 +3637,8 @@ export class View {
         : mode === 'remove'
           ? 'castle-hero-list-editor-mode-remove'
           : 'castle-hero-list-editor-mode-idle';
-    const titleText = mode === 'add' ? 'Добавить друзей в список' : mode === 'remove' ? 'Удалить друзей из списка' : 'Избранные друзья';
+    const titleText =
+      mode === 'add' ? Lang.text('friendListAddTitle') : mode === 'remove' ? Lang.text('friendListRemoveTitle') : Lang.text('friendListFavoritesTitle');
 
     return DOM(
       { style: ['castle-hero-item', 'castle-hero-list-editor-item', modeClass] },
@@ -3763,7 +3768,7 @@ export class View {
                         View.patchCastleFriendListLocal('add', 1, [found.id]);
                         await View.updateCastleFriendListBackend('add', 1, [found.id]);
                       }
-                      App.notify(`Заявка в друзья ${found.nickname} отправлена`, 1000);
+                      App.notify(Lang.text('friendRequestSent').replace('{name}', found.nickname), 1000);
                       Splash.hide();
                       View.bodyCastleFriends();
                     },
@@ -4031,7 +4036,7 @@ export class View {
                   'click',
                   async () => {
                     await App.api.request('friend', 'request', { id: item.id, fromFav: 0 });
-                    App.notify(`Заявка в друзья ${item.nickname} отправлена`, 800);
+                    App.notify(Lang.text('friendRequestSent').replace('{name}', item.nickname), 800);
                     View.bodyCastleFriends();
                   },
                 ],
@@ -4143,10 +4148,10 @@ export class View {
           },
         ],
       },
-      'Выйти из аккаунта',
+      Lang.text('logoutAccount'),
     );
 
-    let close = DOM({ domaudio: domAudioPresets.closeButton, event: ['click', () => Splash.hide()] }, 'Отмена');
+    let close = DOM({ domaudio: domAudioPresets.closeButton, event: ['click', () => Splash.hide()] }, Lang.text('cancel'));
 
     let wrap = DOM({ style: 'wrap' }, logout, close);
 
@@ -4270,7 +4275,7 @@ export class View {
           style: 'main-header-item',
           event: ['click', () => View.show('castle')],
         },
-        Castle.gl ? 'Замок' : 'Лобби',
+        Castle.gl ? Lang.text('castle') : Lang.text('lobby'),
       ),
       DOM(
         {
@@ -4278,17 +4283,17 @@ export class View {
           style: 'main-header-item',
           event: ['click', () => View.show('builds')],
         },
-        'Билды',
+        Lang.text('builds'),
       ),
       /*DOM({ style: 'main-header-item', event: ['click', () => View.show('history')] }, 'История'),*/
-      DOM({ domaudio: domAudioPresets.defaultButton, style: 'main-header-item', event: ['click', () => View.show('top')] }, 'Рейтинг'),
+      DOM({ domaudio: domAudioPresets.defaultButton, style: 'main-header-item', event: ['click', () => View.show('top')] }, Lang.text('rating')),
       DOM(
         {
           domaudio: domAudioPresets.defaultButton,
           style: 'main-header-item',
           event: ['click', () => View.show('game')],
         },
-        'Фарм',
+        Lang.text('farm'),
       ),
       DOM(
         {
@@ -4296,7 +4301,7 @@ export class View {
           style: 'main-header-item',
           event: ['click', () => View.exitOrLogout()],
         },
-        'Выйти',
+        Lang.text('logoutShort'),
       ),
     );
 
@@ -4316,7 +4321,7 @@ export class View {
 
             hero.style.backgroundImage = `url(content/hero/${item.hero}/${item.skin ? item.skin : 1}.webp)`;
 
-            let game = DOM({ style: 'history-item' }, hero, DOM({ style: 'history-text-box', tag: 'div' }, (item.team == 1) ? 'Докты' : 'Адорния'), DOM({ style: 'history-text-box', tag: 'div' }, Math.round(((item.team == item.win) ? +item.rating : -item.rating) * 10.0) / 10.0), DOM({ style: 'history-text-box', tag: 'div' }, new Date(item.added).toLocaleString()));
+            let game = DOM({ style: 'history-item' }, hero, DOM({ style: 'history-text-box', tag: 'div' }, (item.team == 1) ? Lang.text('factionDoctsShort') : Lang.text('factionAdorniaShort')), DOM({ style: 'history-text-box', tag: 'div' }, Math.round(((item.team == item.win) ? +item.rating : -item.rating) * 10.0) / 10.0), DOM({ style: 'history-text-box', tag: 'div' }, new Date(item.added).toLocaleString()));
 
             if (item.team == item.win) {
 
@@ -5118,7 +5123,7 @@ export class View {
               style: 'main-header-item',
               event: ['click', () => View.show('inventory')],
             },
-            'Осколки',
+            Lang.text('shards'),
           ),
           DOM(
             {
@@ -5126,7 +5131,7 @@ export class View {
               style: 'main-header-item',
               event: ['click', () => View.show('game')],
             },
-            'Фарм',
+            Lang.text('farm'),
           ),
           DOM(
             {
@@ -5134,7 +5139,7 @@ export class View {
               style: 'main-header-item',
               event: ['click', () => View.exitOrLogout()],
             },
-            'Выйти',
+            Lang.text('logoutShort'),
           ),
         ),
       );
@@ -5159,7 +5164,7 @@ export class View {
             let request = await App.api.request('gamev2', 'start');
 
             if ('error' in request) {
-              button.innerText = `Начать фарм можно будет через ${request.error} мин.`;
+              button.innerText = Lang.text('farmCooldown').replace('{min}', request.error);
 
               return;
             }
@@ -5184,21 +5189,21 @@ export class View {
           },
         ],
       },
-      'Начать фарм',
+      Lang.text('farmStart'),
     );
 
     let dscription = DOM(
       { style: 'game-description' },
-      DOM({ tag: 'h1' }, 'Лорды и леди!'),
-      DOM({ tag: 'p' }, '— необходимо собрать 1000 осколков одного и того же таланта, чтобы получить 1 талант для билда;'),
-      DOM({ tag: 'p' }, '— на одну карту рассчитано 100 ходов;'),
+      DOM({ tag: 'h1' }, Lang.text('farmIntroTitle')),
+      DOM({ tag: 'p' }, Lang.text('farmRule1')),
+      DOM({ tag: 'p' }, Lang.text('farmRule2')),
       //DOM({tag:'p'},'— кулдаун между играми 60 минут;'),
       DOM(
         { tag: 'p' },
-        '— чтобы сделать ход, переставляйте два соседних таланта местами. Если такая перестановка приводит к образованию комбинации, то «выстроившиеся»‎ таланты исчезают, и на их место падают таланты верхних рядов;',
+        Lang.text('farmRule3'),
       ),
-      DOM({ tag: 'p' }, '— засчитывается комбинация минимум из трёх одинаковых талантов;'),
-      DOM({ tag: 'p' }, '— если за 100 ходов серебряных монет будет 150, даётся +100 дополнительных ходов;'),
+      DOM({ tag: 'p' }, Lang.text('farmRule4')),
+      DOM({ tag: 'p' }, Lang.text('farmRule5')),
       //DOM({tag:'p'},'— в рейтинге на главной страничке отображается сумма всех очков на одного игрока за всё время.'),
       button,
       isWindow

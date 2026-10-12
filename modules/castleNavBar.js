@@ -61,7 +61,7 @@ export class CastleNAVBAR {
     }
 
     CastleNAVBAR.body.children[5].innerText = App.CURRENT_MM == 'mmtest' ? Lang.text('fight') + ' test' : Lang.text('fight');
-    CastleNAVBAR.body.children[5].dataset.tooltip = 'Выбрать героя для боя';
+    CastleNAVBAR.body.children[5].dataset.tooltip = Lang.text('fightButtonTooltip');
     /*
         CastleNAVBAR.body.children[5].onclick = () => {
             
@@ -85,7 +85,7 @@ export class CastleNAVBAR {
     CastleNAVBAR.body.children[9].append(
       DOM({
         style: 'castle-button-play-queue',
-        data: { tooltip: 'Очередь игроков матчмейкинга на данный режим игры' },
+        data: { tooltip: Lang.text('mmQueueTooltip') },
       }),
     );
 

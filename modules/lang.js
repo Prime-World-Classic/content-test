@@ -32,6 +32,7 @@ export class Lang {
         Lang.target = Settings.settings.language;
         console.log('Language from settings:', Lang.target);
         Lang.clearCache(); // Очистка кеша при смене языка
+        Lang.applyCssTexts();
         return;
       }
     }
@@ -53,6 +54,7 @@ export class Lang {
 
     console.log('Final language:', Lang.target);
     Lang.clearCache(); // Очистка кеша после инициализации
+    Lang.applyCssTexts();
   }
 
   static clearCache() {
@@ -127,7 +129,14 @@ export class Lang {
     return this.text(`hero_${heroId}_name`);
   }
 
+  // Тексты, которые CSS берёт из переменных (content: var(...))
+  static applyCssTexts() {
+    document.documentElement.style.setProperty('--mm-queue-label', JSON.stringify(`${Lang.text('mmQueueLabel')} `));
+  }
+
   static async reinitViews() {
+    Lang.applyCssTexts();
+    App.resetLocalizedQuickTabs();
     Chat.initView();
     MM.initView();
     await App.ShowCurrentViewAsync();

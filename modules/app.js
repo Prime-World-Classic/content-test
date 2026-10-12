@@ -392,7 +392,7 @@ export class App {
   static notificationsRefreshMs = 60000;
   static notifications = [];
   static notificationsUnreadCount = 0;
-  static notificationsStatus = 'Войдите в игровой аккаунт, чтобы получить уведомления';
+  static notificationsStatus = '';
   static notificationsLastError = '';
   static notificationsLoading = false;
   static notificationsActionLocked = false;
@@ -512,7 +512,7 @@ export class App {
       App.notificationsNews = [];
       App.notificationsNewsUnreadCount = 0;
       App.notificationsLastError = '';
-      App.notificationsStatus = 'Войдите в игровой аккаунт, чтобы получить уведомления';
+      App.notificationsStatus = Lang.text('notifLoginRequired');
       App.renderNotifications();
       return false;
     }
@@ -557,7 +557,7 @@ export class App {
 
   static async notificationsRequestList() {
     const token = App.getNotificationsToken();
-    if (!token) throw new Error('Для уведомлений войдите в аккаунт');
+    if (!token) throw new Error(Lang.text('notifNeedLogin'));
 
     return await App.notificationsHttpRequest(App.notificationsListUrl, {
       method: 'GET',
@@ -570,7 +570,7 @@ export class App {
 
   static async notificationsRequestAction(action, fields = {}) {
     const token = App.getNotificationsToken();
-    if (!token) throw new Error('Для уведомлений войдите в аккаунт');
+    if (!token) throw new Error(Lang.text('notifNeedLogin'));
 
     const body = new URLSearchParams();
     body.set('action', action);
@@ -596,7 +596,7 @@ export class App {
 
   static async notificationsRequestNewsList() {
     const token = App.getNotificationsToken();
-    if (!token) throw new Error('Для новостей войдите в аккаунт');
+    if (!token) throw new Error(Lang.text('newsNeedLogin'));
 
     return await App.notificationsHttpRequest(App.notificationsNewsListUrl, {
       method: 'GET',
@@ -639,7 +639,7 @@ export class App {
 
   static async notificationsRequestNewsAction(action, fields = {}) {
     const token = App.getNotificationsToken();
-    if (!token) throw new Error('Для новостей войдите в аккаунт');
+    if (!token) throw new Error(Lang.text('newsNeedLogin'));
 
     const body = new URLSearchParams();
     body.set('action', action);
@@ -665,7 +665,7 @@ export class App {
 
   static async notificationsRequestNewsMultipartAction(action, fields = {}, bannerFile = null) {
     const token = App.getNotificationsToken();
-    if (!token) throw new Error('Для новостей войдите в аккаунт');
+    if (!token) throw new Error(Lang.text('newsNeedLogin'));
 
     const form = new FormData();
     form.set('action', action);
@@ -871,7 +871,7 @@ export class App {
     if (!App.notifications.some((item) => item.id === App.notificationsSelectedId)) {
       App.notificationsSelectedId = App.notifications[0]?.id || 0;
     }
-    App.notificationsStatus = App.notifications.length ? '' : 'Уведомлений нет';
+    App.notificationsStatus = App.notifications.length ? '' : Lang.text('notifNone');
     App.notificationsLastError = '';
     App.renderNotifications();
     return true;
@@ -881,7 +881,7 @@ export class App {
     return {
       id: Number(item?.id || 0),
       type: String(item?.type || 'system'),
-      title: String(item?.title || 'Уведомление'),
+      title: String(item?.title || Lang.text('notifDefaultTitle')),
       message: String(item?.message || ''),
       details: String(item?.details || ''),
       banner_url: App.normalizeAuditAssetUrl(item?.banner_url || item?.image_url || ''),
@@ -933,8 +933,8 @@ export class App {
     } catch (error) {
       App.notifications = [];
       App.notificationsUnreadCount = 0;
-      App.notificationsStatus = 'Audit не вернул уведомления';
-      App.notificationsLastError = String(error?.message || error || 'Ошибка Audit API');
+      App.notificationsStatus = Lang.text('notifAuditEmpty');
+      App.notificationsLastError = String(error?.message || error || Lang.text('notifErrAudit'));
       App.renderNotifications();
       console.warn('Audit notifications failed', error);
     } finally {
@@ -971,7 +971,7 @@ export class App {
       const data = await App.notificationsRequestAction('mark_read', { notification_id: id });
       if (!App.applyNotificationsState(data)) await App.refreshNotifications();
     } catch (error) {
-      App.notificationsLastError = String(error?.message || error || 'Ошибка отметки уведомления');
+      App.notificationsLastError = String(error?.message || error || Lang.text('notifErrMark'));
       App.renderNotifications();
     } finally {
       App.notificationsActionLocked = false;
@@ -998,7 +998,7 @@ export class App {
         App.renderNotifications();
       }
     } catch (error) {
-      App.notificationsLastError = String(error?.message || error || 'Ошибка отметки уведомлений');
+      App.notificationsLastError = String(error?.message || error || Lang.text('notifErrMarkAll'));
       App.renderNotifications();
     } finally {
       App.notificationsActionLocked = false;
@@ -1022,7 +1022,7 @@ export class App {
     const item = App.normalizeNotification({
       id: source.id || --App.notificationsLocalId,
       type: source.type || 'system',
-      title: source.title || 'Уведомление',
+      title: source.title || Lang.text('notifDefaultTitle'),
       message: source.message || source.text || '',
       details: source.details || '',
       created_at: source.created_at || new Date().toISOString(),
@@ -1131,7 +1131,7 @@ export class App {
       App.createNotificationNewsThumb(item),
       DOM(
         { style: 'launcher-notification-toast-body' },
-        DOM({ style: 'launcher-notification-toast-kind' }, 'Новость'),
+        DOM({ style: 'launcher-notification-toast-kind' }, Lang.text('newsSingle')),
         DOM({ style: 'launcher-notification-toast-title' }, item.title),
         DOM({ style: 'launcher-notification-toast-message' }, item.message),
       ),
@@ -1157,7 +1157,7 @@ export class App {
       {
         domaudio: domAudioPresets.defaultButton,
         style: 'launcher-notifications-menu-item',
-        data: { tooltip: 'Уведомления' },
+        data: { tooltip: Lang.text('notifications') },
         event: ['click', () => App.toggleNotificationsPanel()],
       },
       DOM({ style: 'launcher-notifications-icon' }),
@@ -1180,7 +1180,7 @@ export class App {
       App.notificationsButton.classList.toggle('has-unread', totalUnread > 0);
       App.notificationsButton.classList.toggle('no-unread', totalUnread <= 0);
       App.notificationsButton.classList.toggle('is-loading', App.notificationsLoading);
-      App.notificationsButton.dataset.tooltip = App.notificationsLastError || App.notificationsStatus || 'Уведомления';
+      App.notificationsButton.dataset.tooltip = App.notificationsLastError || App.notificationsStatus || Lang.text('notifications');
       App.notificationsButton.badge.textContent = totalUnread > 99 ? '99+' : String(totalUnread);
       App.notificationsButton.badge.style.display = 'flex';
     }
@@ -1195,7 +1195,7 @@ export class App {
       {
         domaudio: domAudioPresets.defaultButton,
         style: 'launcher-notifications-quick-tab',
-        data: { tooltip: 'Новости' },
+        data: { tooltip: Lang.text('news') },
         event: ['click', () => App.openNotificationsPanel()],
       },
       DOM({ style: 'launcher-notifications-quick-icon' }),
@@ -1215,6 +1215,15 @@ export class App {
     App.minigamesQuickTab?.remove();
     App.minigamesQuickTab = null;
     App.launcherRestartButton?.remove();
+  }
+
+  // Быстрые кнопки и панель новостей создаются один раз с текстами текущего языка:
+  // при смене языка убираем их, View.show('castle') создаст заново
+  static resetLocalizedQuickTabs() {
+    App.removeNotificationsQuickTab();
+    App.notificationsPanel?.remove();
+    App.notificationsPanel = null;
+    if (App.launcherRestartButton && !App.launcherRestartButton.disabled) App.launcherRestartButton = null;
   }
 
   static ensureHallOfFameQuickTab() {
@@ -1332,7 +1341,7 @@ export class App {
     const totalUnread = App.getTotalLauncherUnreadCount();
     App.notificationsQuickButton.classList.toggle('has-unread', totalUnread > 0);
     App.notificationsQuickButton.classList.toggle('no-unread', totalUnread <= 0);
-    App.notificationsQuickButton.dataset.tooltip = 'Новости';
+    App.notificationsQuickButton.dataset.tooltip = Lang.text('news');
     App.notificationsQuickButton.removeAttribute('title');
     App.notificationsQuickButton.badge.textContent = totalUnread > 99 ? '99+' : String(totalUnread);
   }
@@ -1392,15 +1401,15 @@ export class App {
     App.notificationsTabs = {};
     App.notificationsHelpNode = DOM(
       { style: 'launcher-notifications-help' },
-      DOM({ tag: 'b' }, 'Справка по уведомлениям'),
-      DOM({}, 'Здесь отображаются ваши уведомления: новые сообщения, оценки, достижения и другие важные события. Непрочитанные уведомления выделяются в списке и отмечаются счетчиком.'),
+      DOM({ tag: 'b' }, Lang.text('notifHelpTitle')),
+      DOM({}, Lang.text('notifHelpText')),
     );
     App.notificationsFilterNode = DOM(
       {
         tag: 'select',
         domaudio: domAudioPresets.defaultButton,
         style: 'launcher-notifications-filter',
-        title: 'Фильтр',
+        title: Lang.text('filter'),
         event: [
           'change',
           (event) => {
@@ -1409,15 +1418,15 @@ export class App {
           },
         ],
       },
-      DOM({ tag: 'option', value: 'all' }, 'Все'),
-      DOM({ tag: 'option', value: 'unread' }, 'Непрочитанные'),
-      DOM({ tag: 'option', value: 'read' }, 'Прочитанные'),
+      DOM({ tag: 'option', value: 'all' }, Lang.text('filterAll')),
+      DOM({ tag: 'option', value: 'unread' }, Lang.text('filterUnread')),
+      DOM({ tag: 'option', value: 'read' }, Lang.text('filterRead')),
     );
 
     const tabs = DOM(
       { style: 'launcher-notifications-tabs' },
-      App.createNotificationsTab('news', 'Новости'),
-      App.createNotificationsTab('notifications', 'Уведомления'),
+      App.createNotificationsTab('news', Lang.text('news')),
+      App.createNotificationsTab('notifications', Lang.text('notifications')),
       DOM(
         { style: 'launcher-notifications-tab-separator' },
         DOM({ style: 'shop_separator_left' }),
@@ -1436,7 +1445,8 @@ export class App {
             {
               domaudio: domAudioPresets.defaultButton,
               style: 'launcher-notifications-action',
-              title: 'Обновить',
+              data: { action: 'refresh' },
+              title: Lang.text('refresh'),
               event: ['click', () => App.refreshActiveNotificationsTab()],
             },
             '⟳',
@@ -1445,17 +1455,17 @@ export class App {
             {
               domaudio: domAudioPresets.defaultButton,
               style: 'launcher-notifications-action',
-              data: { variant: 'wide' },
-              title: 'Прочитать все',
+              data: { variant: 'wide', action: 'read-all' },
+              title: Lang.text('markAllRead'),
               event: ['click', () => App.markAllActiveNotificationsRead()],
             },
-            'Прочитать всё',
+            Lang.text('markAllRead'),
           ),
           DOM(
             {
               domaudio: domAudioPresets.defaultButton,
               style: ['help-button', 'launcher-notifications-help-button'],
-              title: 'Справка',
+              title: Lang.text('help'),
               event: [
                 'click',
                 () => {
@@ -1471,7 +1481,7 @@ export class App {
             domaudio: domAudioPresets.closeButton,
             style: 'launcher-notifications-action',
             data: { variant: 'close' },
-            title: 'Закрыть',
+            title: Lang.text('close'),
             event: ['click', () => App.closeNotificationsPanel()],
           },
           '×',
@@ -1554,7 +1564,7 @@ export class App {
     }
 
     if (App.notificationsLoading) {
-      App.setNotificationsPanelStatus('Проверяем уведомления...');
+      App.setNotificationsPanelStatus(Lang.text('notifChecking'));
     } else if (App.notificationsLastError) {
       App.setNotificationsPanelStatus(App.notificationsLastError);
     } else {
@@ -1572,7 +1582,7 @@ export class App {
         App.notificationsListNode.append(
           DOM(
             { style: 'launcher-notifications-empty' },
-            DOM({ tag: 'div' }, App.notificationsLastError ? `Audit: ${App.notificationsLastError}` : 'Войдите в игровой аккаунт, чтобы получить уведомления'),
+            DOM({ tag: 'div' }, App.notificationsLastError ? `Audit: ${App.notificationsLastError}` : Lang.text('notifLoginRequired')),
             DOM(
               {
                 domaudio: domAudioPresets.defaultButton,
@@ -1585,19 +1595,19 @@ export class App {
                   },
                 ],
               },
-              'Войти в аккаунт',
+              Lang.text('loginToAccount'),
             ),
           ),
         );
-        App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Уведомление появится здесь после входа'));
+        App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, Lang.text('notifAfterLogin')));
         return;
       }
 
       const emptyText = App.notificationsLoading
-        ? 'Проверяем уведомления...'
+        ? Lang.text('notifChecking')
         : App.notificationsLastError
           ? `Audit: ${App.notificationsLastError}`
-          : App.notificationsStatus || 'Уведомлений нет';
+          : App.notificationsStatus || Lang.text('notifNone');
       App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, emptyText));
       App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, emptyText));
       return;
@@ -1609,8 +1619,8 @@ export class App {
     }
 
     if (!filtered.length) {
-      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, 'В этой категории пусто'));
-      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Выберите другой фильтр'));
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, Lang.text('categoryEmpty')));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, Lang.text('chooseAnotherFilter')));
       return;
     }
 
@@ -1646,7 +1656,7 @@ export class App {
         });
       const unreadCount = App.notificationsNews.filter((item) => !item.is_read).length;
       App.notificationsNewsUnreadCount = unreadCount;
-      App.notificationsNewsStatus = App.notificationsNews.length ? `Непрочитанных новостей: ${unreadCount}` : 'Новостей нет';
+      App.notificationsNewsStatus = App.notificationsNews.length ? Lang.text('newsUnreadCount').replace('{count}', unreadCount) : Lang.text('newsNone');
       if (!App.notificationsNews.some((item) => item.id === App.notificationsNewsSelectedId)) {
         App.notificationsNewsSelectedId = App.notificationsNews[0]?.id || 0;
       }
@@ -1655,7 +1665,7 @@ export class App {
     } catch (error) {
       App.notificationsNews = [];
       App.notificationsNewsUnreadCount = 0;
-      App.notificationsNewsStatus = String(error?.message || error || 'Не удалось загрузить новости');
+      App.notificationsNewsStatus = String(error?.message || error || Lang.text('newsLoadFailed'));
     } finally {
       App.notificationsNewsLoading = false;
       if (render) App.renderNotificationsPanel();
@@ -1769,7 +1779,7 @@ export class App {
       const link = App.getXmlNodeText(item, 'link');
       const pubDate = App.getXmlNodeText(item, 'pubDate');
       const image = App.extractFirstSteamImage(rawDescription);
-      const message = App.htmlToPlainText(rawDescription) || 'Новость Steam пока без описания';
+      const message = App.htmlToPlainText(rawDescription) || Lang.text('newsSteamNoDescription');
       const id = App.stablePositiveHash(`steam:${link || title}:${pubDate}`);
 
       return {
@@ -1854,8 +1864,8 @@ export class App {
       .split(/\r?\n/)
       .map((line) => line.trim())
       .filter(Boolean);
-    const title = String(item?.title || lines[0] || 'Новость');
-    const message = String(item?.message || (lines.length > 1 ? lines.slice(1).join('\n') : text || 'Новость пока без описания'));
+    const title = String(item?.title || lines[0] || Lang.text('newsSingle'));
+    const message = String(item?.message || (lines.length > 1 ? lines.slice(1).join('\n') : text || Lang.text('newsNoDescription')));
     const type = String(item?.type || 'news');
 
     return {
@@ -1886,17 +1896,17 @@ export class App {
     App.notificationsDetailNode.replaceChildren();
     if (App.notificationsFilterNode) App.notificationsFilterNode.value = 'all';
     if (App.notificationsHelpNode) App.notificationsHelpNode.classList.toggle('is-open', App.notificationsHelpVisible);
-    App.setNotificationsPanelStatus(App.notificationsNewsLoading ? 'Загружаем новости...' : '');
+    App.setNotificationsPanelStatus(App.notificationsNewsLoading ? Lang.text('newsLoading') : '');
 
     if (App.notificationsNewsLoading && !App.notificationsNews.length) {
-      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Загружаем новости...'));
-      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Новость появится здесь'));
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, Lang.text('newsLoading')));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, Lang.text('newsWillAppear')));
       return;
     }
 
     if (!App.notificationsNews.length) {
-      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, App.notificationsNewsStatus || 'Новостей нет'));
-      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, 'Свежие новости появятся здесь'));
+      App.notificationsListNode.append(DOM({ style: 'launcher-notifications-empty' }, App.notificationsNewsStatus || Lang.text('newsNone')));
+      App.notificationsDetailNode.append(DOM({ style: 'launcher-notifications-empty' }, Lang.text('newsFreshWillAppear')));
       return;
     }
 
@@ -1930,7 +1940,7 @@ export class App {
             type: 'button',
             domaudio: domAudioPresets.defaultButton,
             style: 'launcher-news-edit-button',
-            title: 'Редактировать новость',
+            title: Lang.text('newsEdit'),
             event: [
               'click',
               (event) => {
@@ -1961,7 +1971,7 @@ export class App {
         DOM(
           { style: 'launcher-notification-meta' },
           DOM({ style: 'launcher-notification-title' }, item.title),
-          DOM({ style: 'launcher-notification-date' }, item.created_at ? App.formatNotificationShortDate(item.created_at) : 'Новости'),
+          DOM({ style: 'launcher-notification-date' }, item.created_at ? App.formatNotificationShortDate(item.created_at) : Lang.text('news')),
         ),
         DOM({ style: 'launcher-notification-message' }, item.message),
       ),
@@ -2008,7 +2018,7 @@ export class App {
       imagePattern.lastIndex = 0;
       while ((match = imagePattern.exec(line))) {
         if (match.index > cursor) fragment.append(line.slice(cursor, match.index));
-        const alt = String(match[1] || match[4] || 'Новость Prime World Classic').trim();
+        const alt = String(match[1] || match[4] || Lang.text('newsImageAlt')).trim();
         const src = App.normalizeAuditAssetUrl(match[2] || match[3] || '');
         if (src && (!skipFirstImageSrc || skippedFirstImage || App.normalizeComparableUrl(src) !== skipFirstImageSrc)) {
           fragment.append(App.createNewsInlineImage(src, alt));
@@ -2051,7 +2061,7 @@ export class App {
         state.skippedFirstImage = true;
         return null;
       }
-      return App.createNewsInlineImage(src, node.getAttribute('alt') || 'Новость Prime World Classic');
+      return App.createNewsInlineImage(src, node.getAttribute('alt') || Lang.text('newsImageAlt'));
     }
 
     if (tag === 'a') {
@@ -2102,7 +2112,7 @@ export class App {
       tag: 'img',
       style: 'launcher-news-inline-image',
       src,
-      alt: String(alt || 'Новость Prime World Classic'),
+      alt: String(alt || Lang.text('newsImageAlt')),
       loading: 'lazy',
     });
     return image;
@@ -2116,7 +2126,7 @@ export class App {
   }
 
   static createNotificationNewsDetail(item) {
-    if (!item) return DOM({ style: 'launcher-notifications-empty' }, 'Новостей нет');
+    if (!item) return DOM({ style: 'launcher-notifications-empty' }, Lang.text('newsNone'));
 
     const banner = DOM(
       { style: 'launcher-news-banner' },
@@ -2126,7 +2136,7 @@ export class App {
         DOM(
           { style: 'launcher-news-banner-badges' },
           DOM({ style: 'launcher-news-label' }, App.getNotificationNewsLifetimeLabel(item)),
-          DOM({ style: ['launcher-news-state-badge', item.is_read ? 'is-read' : 'is-unread'] }, item.is_read ? 'Прочитано' : 'Новая'),
+          DOM({ style: ['launcher-news-state-badge', item.is_read ? 'is-read' : 'is-unread'] }, item.is_read ? Lang.text('newsRead') : Lang.text('newsNew')),
         ),
         DOM({ style: 'launcher-news-banner-title' }, item.title),
       ),
@@ -2159,7 +2169,7 @@ export class App {
                 },
               ],
             },
-            'Продолжить читать',
+            Lang.text('continueReading'),
           ),
         ),
     );
@@ -2167,8 +2177,8 @@ export class App {
 
   static getNotificationNewsLifetimeLabel(item) {
     if (item?.source === 'steam') return 'Steam';
-    if (item?.expires_at) return `До ${App.formatNotificationShortDate(item.expires_at)}`;
-    return item?.created_at ? App.formatNotificationShortDate(item.created_at) : 'Постоянно';
+    if (item?.expires_at) return Lang.text('newsUntil').replace('{date}', App.formatNotificationShortDate(item.expires_at));
+    return item?.created_at ? App.formatNotificationShortDate(item.created_at) : Lang.text('newsPermanent');
   }
 
   static async markNotificationNewsRead(id) {
@@ -2180,7 +2190,9 @@ export class App {
     if (item && !item.is_read) {
       item.is_read = true;
       App.notificationsNewsUnreadCount = Math.max(0, App.notificationsNewsUnreadCount - 1);
-      App.notificationsNewsStatus = App.notificationsNews.length ? `Непрочитанных новостей: ${App.notificationsNewsUnreadCount}` : 'Новостей нет';
+      App.notificationsNewsStatus = App.notificationsNews.length
+      ? Lang.text('newsUnreadCount').replace('{count}', App.notificationsNewsUnreadCount)
+      : Lang.text('newsNone');
       App.rememberNotificationNewsLocalId('read', id);
       App.renderNotificationsButton();
     }
@@ -2205,7 +2217,7 @@ export class App {
       App.rememberNotificationNewsLocalId('read', item.id);
     });
     App.notificationsNewsUnreadCount = 0;
-    App.notificationsNewsStatus = App.notificationsNews.length ? 'Непрочитанных новостей: 0' : 'Новостей нет';
+    App.notificationsNewsStatus = App.notificationsNews.length ? Lang.text('newsUnreadCount').replace('{count}', 0) : Lang.text('newsNone');
     App.renderNotifications();
 
     try {
@@ -2233,7 +2245,7 @@ export class App {
       DOM(
         { style: 'launcher-news-banner-badges' },
         DOM({ style: 'launcher-news-label' }, App.getNotificationNewsLifetimeLabel(item)),
-        DOM({ style: ['launcher-news-state-badge', 'is-read'] }, 'Прочитано'),
+        DOM({ style: ['launcher-news-state-badge', 'is-read'] }, Lang.text('newsRead')),
       ),
       DOM({ style: 'launcher-news-reader-title' }, item.title),
     );
@@ -2332,7 +2344,7 @@ export class App {
   }
 
   static createNotificationDetail(item) {
-    if (!item) return DOM({ style: 'launcher-notifications-empty' }, 'Уведомлений нет');
+    if (!item) return DOM({ style: 'launcher-notifications-empty' }, Lang.text('notifNone'));
 
     const type = App.getNotificationVisualType(item);
     const banner = item.banner_url ? DOM({ style: 'launcher-notification-banner' }) : DOM();
@@ -2347,7 +2359,7 @@ export class App {
             style: 'launcher-notification-read-button',
             event: ['click', () => App.markNotificationRead(item.id)],
           },
-          'Прочитать',
+          Lang.text('markRead'),
         );
 
     return DOM(
@@ -2365,7 +2377,7 @@ export class App {
       DOM(
         { style: 'launcher-notification-detail-status' },
         DOM({ style: 'launcher-notification-detail-check' }, uiIcon('check')),
-        DOM({}, `Статус: ${item.is_read ? 'прочитано' : 'непрочитано'}`),
+        DOM({}, item.is_read ? Lang.text('notifStatusRead') : Lang.text('notifStatusUnread')),
       ),
       DOM({ style: 'launcher-notification-footer' }, readButton),
     );
@@ -2386,14 +2398,14 @@ export class App {
   }
 
   static getNotificationScopeLabel(item) {
-    return item.is_global || item.target_type === 'all' ? 'Общее' : 'Личное';
+    return item.is_global || item.target_type === 'all' ? Lang.text('notifScopeGlobal') : Lang.text('notifScopePersonal');
   }
 
   static formatNotificationDate(value) {
     const date = new Date(String(value || '').replace(' ', 'T'));
     if (!Number.isFinite(date.getTime())) return String(value || '');
 
-    return date.toLocaleString('ru-RU', {
+    return date.toLocaleString(View.getFriendLastSeenLocale(), {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -2409,10 +2421,10 @@ export class App {
     const now = new Date();
     const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
-    const time = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    const time = date.toLocaleTimeString(View.getFriendLastSeenLocale(), { hour: '2-digit', minute: '2-digit' });
     if (date.toDateString() === now.toDateString()) return time;
-    if (date.toDateString() === yesterday.toDateString()) return `Вчера, ${time}`;
-    return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    if (date.toDateString() === yesterday.toDateString()) return Lang.text('yesterdayAt').replace('{time}', time);
+    return date.toLocaleDateString(View.getFriendLastSeenLocale(), { day: '2-digit', month: '2-digit', year: 'numeric' });
   }
 
   static ensureNotificationsToastRoot() {
@@ -2533,7 +2545,7 @@ export class App {
     loadingTemplate.append(
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('nicknamePlaceholder'))),
       DOM({ style: 'splash-account-loader' }),
-      DOM({ tag: 'div', style: 'splash-account-loader-text' }, 'Загрузка...'),
+      DOM({ tag: 'div', style: 'splash-account-loader-text' }, Lang.text('loading')),
       close,
     );
     App.showAccountSplash(loadingTemplate);

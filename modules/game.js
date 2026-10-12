@@ -1,4 +1,5 @@
 import { DOM } from './dom.js';
+import { Lang } from './lang.js';
 import { App } from './app.js';
 import { domAudioPresets } from './domAudioPresets.js';
 
@@ -92,19 +93,19 @@ export class Game {
       }
     }
 
-    Game.viewMoves.innerText = `Ходы: ${object.move} (${object.moveTotal})`;
+    Game.viewMoves.innerText = Lang.text('match3Moves').replace('{move}', object.move).replace('{total}', object.moveTotal);
 
-    Game.viewTotalScore.innerText = `Оcколки: ${Game.totalScore} | `;
+    Game.viewTotalScore.innerText = `${Lang.text('match3Shards').replace('{count}', Game.totalScore)} | `;
 
     if (!isSplah) {
-      Game.viewInfo.append(DOM({domaudio: domAudioPresets.smallButton, event: ['click', () => Game.eventBack()] }, 'Вернуться назад'), DOM({}, ` | `));
+      Game.viewInfo.append(DOM({domaudio: domAudioPresets.smallButton, event: ['click', () => Game.eventBack()] }, Lang.text('goBack')), DOM({}, ` | `));
     }
 
     Game.viewInfo.append(
       Game.viewTotalScore,
       Game.viewMoves,
       DOM({}, ` | `),
-      DOM({domaudio: domAudioPresets.bigButton, event: ['click', () => Game.eventFinish()] }, 'Завершить игру'),
+      DOM({domaudio: domAudioPresets.bigButton, event: ['click', () => Game.eventFinish()] }, Lang.text('finishGame')),
     );
 
     Game.scoring.append(Game.viewScore);
@@ -141,7 +142,7 @@ export class Game {
 
     Game.totalScore += number;
 
-    Game.viewTotalScore.innerText = `Оcколки: ${Game.totalScore} | `;
+    Game.viewTotalScore.innerText = `${Lang.text('match3Shards').replace('{count}', Game.totalScore)} | `;
 
     Game.dataScore[id].firstChild.innerText = Number(Game.dataScore[id].innerText) + number;
 
@@ -387,7 +388,7 @@ export class Game {
 
       Game.moves++;
 
-      Game.viewMoves.innerText = `Ходов: ${request.move} (${request.moveTotal})`;
+      Game.viewMoves.innerText = Lang.text('match3Moves').replace('{move}', request.move).replace('{total}', request.moveTotal);
     }
 
     let element1Animate = element1.animate(

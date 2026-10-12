@@ -22,8 +22,16 @@ const BOOST_UI = [
   { type: BOOST.MAGNET, icon: 'boost_magnet', key: '5' },
   { type: BOOST.ALCHEMIST, icon: 'boost_alchemist', key: '6' },
 ];
-const DIFFICULTY = { Easy: 'Лёгкий', Medium: 'Средний', Hard: 'Сложный', Impossible: 'Невозможный' };
-const MEDAL = { gold: 'Золотая медаль', silver: 'Серебряная медаль', bronze: 'Без медали' };
+// Тексты — из Lang лаунчера (подгружается в open)
+let Lang = null;
+const T = (key, vars = {}) => {
+  let s = Lang ? Lang.text(key) : key;
+  for (const v in vars) s = s.split(`{${v}}`).join(vars[v]);
+  return s;
+};
+const DIFFICULTY_KEY = { Easy: 'easelDiffEasy', Medium: 'easelDiffMedium', Hard: 'easelDiffHard', Impossible: 'easelDiffImpossible' };
+const difficulty = (d) => (DIFFICULTY_KEY[d] ? T(DIFFICULTY_KEY[d]) : '');
+const MEDAL_KEY = { gold: 'easelMedalGold', silver: 'easelMedalSilver', bronze: 'easelMedalBronze' };
 const MEDAL_ICON = { gold: uiIconHtml('medal-gold'), silver: uiIconHtml('medal-silver'), bronze: uiIconHtml('check') };
 const COIN = uiIconHtml('coin');
 const MEDAL_RANK = { bronze: 1, silver: 2, gold: 3 };
@@ -81,6 +89,13 @@ export class Easel {
 
   // opts: {level, track} — сразу начать уровень (иначе — меню уровней)
   static async open(faction = 'doct', opts = {}) {
+    if (!Lang) {
+      try {
+        Lang = (await import('../lang.js')).Lang;
+      } catch (e) {
+        Lang = null;
+      }
+    }
     if (Easel.root) return;
     // одна мини-игра за раз: «Фарм талантов» и др. закрываются (Window слушает pw:minigame-open)
     window.dispatchEvent(new CustomEvent('pw:minigame-open', { detail: 'easel' }));
@@ -102,12 +117,12 @@ export class Easel {
         <div class="easel-boosts"></div>
       </div>
       <div class="easel-buttons">
-        <button class="easel-ibtn easel-settings" title="Громкость — в настройках лаунчера" hidden>${ICON.settings}</button>
-        <button class="easel-ibtn easel-menu-btn" title="Пауза (Esc)" hidden>${ICON.pause}</button>
-        <button class="easel-x easel-close" title="Закрыть мини-игру"></button>
+        <button class="easel-ibtn easel-settings" title="${T('easelVolumeHint')}" hidden>${ICON.settings}</button>
+        <button class="easel-ibtn easel-menu-btn" title="${T('easelPauseEsc')}" hidden>${ICON.pause}</button>
+        <button class="easel-x easel-close" title="${T('easelCloseGame')}"></button>
       </div>
       <div class="easel-panel" hidden></div>
-      <div class="easel-loading">Загрузка…</div>`;
+      <div class="easel-loading">${T('easelLoading')}</div>`;
     document.body.appendChild(root);
     Easel.root = root;
     Easel.$ = (s) => root.querySelector(s);
@@ -370,7 +385,7 @@ export class Easel {
       console.warn('easel api', method, e);
       const text = String((e && e.message) || e || '');
       // старый сервер без объекта easel / сбой — без технического текста
-      return { error: !text || /^Not (object|method)|Внутренняя/.test(text) ? 'Рейтинг временно недоступен' : text };
+      return { error: !text || /^Not (object|method)|Внутренняя/.test(text) ? T('easelRatingUnavailableTemp') : text };
     }
   }
 
@@ -404,10 +419,10 @@ export class Easel {
     const box = Easel.$('.easel-record');
     if (!box) return;
     if (!Easel._online()) {
-      box.innerHTML = Easel._app ? '<small>Войдите в аккаунт, чтобы попасть в рейтинг</small>' : '';
+      box.innerHTML = Easel._app ? `<small>${T('easelLoginForRating')}</small>` : '';
       return;
     }
-    box.innerHTML = '<small>Сохраняем результат…</small>';
+    box.innerHTML = `<small>${T('easelSaving')}</small>`;
     await Easel._startReq;
     const r = await Easel._req('finish', {
       level: g.level,
@@ -419,7 +434,7 @@ export class Easel {
     });
     if (!box.isConnected) return;
     if (!r || r.error) {
-      box.innerHTML = `<small>${esc((r && r.error) || 'Рейтинг недоступен')}</small>`;
+      box.innerHTML = `<small>${esc((r && r.error) || T('easelRatingUnavailable'))}</small>`;
       return;
     }
     const b = r.best;
@@ -427,35 +442,35 @@ export class Easel {
     Easel.records[g.level] = { level: g.level, ...b };
     Easel.overallMe = null;
     if (!won) {
-      box.innerHTML = b.timeMs !== null ? `<small>Рекорд уровня: <b>${fmtRec(b.timeMs)}</b> · место ${r.place} из ${r.total}</small>` : '';
+      box.innerHTML = b.timeMs !== null ? `<small>${T('easelLevelRecord', { time: fmtRec(b.timeMs), place: r.place, total: r.total })}</small>` : '';
       return;
     }
-    const rec = r.newTime && b.wins > 1 ? `<div class="easel-newrec">${uiIconHtml('trophy')} Новый рекорд!</div>` : '';
-    box.innerHTML = `${rec}<p>Ваш рекорд: <b>${fmtRec(b.timeMs)}</b> · место <b>${r.place}</b> из ${r.total}</p>`;
+    const rec = r.newTime && b.wins > 1 ? `<div class="easel-newrec">${uiIconHtml('trophy')} ${T('easelNewRecord')}</div>` : '';
+    box.innerHTML = `${rec}<p>${T('easelYourRecord', { time: fmtRec(b.timeMs), place: r.place, total: r.total })}</p>`;
   }
 
   // Окно рейтинга: level = -1 — общий, 0..15 — лучшее время уровня
   static async showRating(level = -1) {
     Easel._ratingLevel = level;
     const tabs = `<div class="easel-rtabs">
-        <button class="easel-rtab${level < 0 ? ' on' : ''}" data-rlevel="-1">Общий</button>
+        <button class="easel-rtab${level < 0 ? ' on' : ''}" data-rlevel="-1">${T('easelOverall')}</button>
         ${Easel.data.levels.map((l, i) => `<button class="easel-rtab d-${esc(l.difficulty)}${i === level ? ' on' : ''}" data-rlevel="${i}">${i + 1}</button>`).join('')}
       </div>`;
     const panel = (body) =>
       Easel._showPanel(
         `${tabs}<div class="easel-rbody">${body}</div>
-        <div class="easel-actions easel-row"><button class="easel-btn" data-act="levels">К уровням${KBD.esc}</button></div>`,
-        { title: 'Рейтинг игроков', back: () => Easel.showLevels(), wide: true },
+        <div class="easel-actions easel-row"><button class="easel-btn" data-act="levels">${T('easelToLevels')}${KBD.esc}</button></div>`,
+        { title: T('easelRatingTitle'), back: () => Easel.showLevels(), wide: true },
       );
     if (!Easel._online()) {
-      return panel(`<p>${Easel._app ? 'Войдите в аккаунт, чтобы смотреть рейтинг.' : 'Рейтинг доступен в лаунчере.'}</p>`);
+      return panel(`<p>${Easel._app ? T('easelLoginToView') : T('easelRatingInLauncher')}</p>`);
     }
-    panel('<p class="easel-rmsg">Загрузка…</p>');
+    panel(`<p class="easel-rmsg">${T('easelLoading')}</p>`);
     const r = await Easel._req('top', { level, limit: 30 });
     if (Easel._ratingLevel !== level || !Easel.root || !Easel.$('.easel-rbody')) return;
     const body = Easel.$('.easel-rbody');
     if (!r || r.error) {
-      body.innerHTML = `<p class="easel-rmsg">${esc((r && r.error) || 'Рейтинг недоступен')}</p>`;
+      body.innerHTML = `<p class="easel-rmsg">${esc((r && r.error) || T('easelRatingUnavailable'))}</p>`;
       return;
     }
     body.innerHTML = Easel._ratingTable(r, level);
@@ -465,8 +480,8 @@ export class Easel {
     const my = Easel._myId();
     const overall = level < 0;
     const head = overall
-      ? '<th>#</th><th class="l">Игрок</th><th title="Пройдено уровней">Уровни</th><th title="Золотые медали">' + MEDAL_ICON.gold + '</th><th title="Серебряные медали">' + MEDAL_ICON.silver + '</th><th title="Сумма лучших очков">Очки</th><th title="Сумма лучших времён">Время</th>'
-      : '<th>#</th><th class="l">Игрок</th><th>Время</th><th title="Лучшие очки">Очки</th><th>Медаль</th>';
+      ? `<th>#</th><th class="l">${T('easelColPlayer')}</th><th title="${T('easelColLevelsHint')}">${T('easelColLevels')}</th><th title="${T('easelColGoldHint')}">${MEDAL_ICON.gold}</th><th title="${T('easelColSilverHint')}">${MEDAL_ICON.silver}</th><th title="${T('easelColScoreSumHint')}">${T('easelColScore')}</th><th title="${T('easelColTimeSumHint')}">${T('easelColTime')}</th>`
+      : `<th>#</th><th class="l">${T('easelColPlayer')}</th><th>${T('easelColTime')}</th><th title="${T('easelColBestScoreHint')}">${T('easelColScore')}</th><th>${T('easelColMedal')}</th>`;
     const place = (n) => (n === 1 ? MEDAL_ICON.gold : n === 2 ? MEDAL_ICON.silver : n === 3 ? uiIconHtml('medal-bronze') : n);
     const row = (x) => {
       const cls = x.userId === my ? ' class="me"' : '';
@@ -476,18 +491,18 @@ export class Easel {
         : `<tr${cls}><td>${place(x.place)}</td>${name}<td><b>${fmtRec(x.timeMs)}</b></td><td>${x.score}</td><td>${MEDAL_ICON[MEDAL_BY_RANK[x.medal]] || ''}</td></tr>`;
     };
     if (!r.rows.length) {
-      return `<p class="easel-rmsg">${overall ? 'Пока никто не прошёл ни одного уровня. Станьте первым!' : `Уровень ${level + 1} ещё никто не прошёл. Станьте первым!`}</p>`;
+      return `<p class="easel-rmsg">${overall ? T('easelNoOneOverall') : T('easelNoOneLevel', { level: level + 1 })}</p>`;
     }
     let rows = r.rows.map(row).join('');
     if (r.me && !r.rows.some((x) => x.userId === r.me.userId)) rows += `<tr class="gap"><td colspan="7">…</td></tr>${row(r.me)}`;
     const mine =
       r.me || r.rows.some((x) => x.userId === my)
         ? ''
-        : `<p class="easel-rmsg"><small>${overall ? 'Пройдите уровень, чтобы попасть в рейтинг' : 'Вы ещё не прошли этот уровень'}</small></p>`;
+        : `<p class="easel-rmsg"><small>${overall ? T('easelPassToRate') : T('easelNotPassed')}</small></p>`;
     const sub = overall
-      ? 'Порядок: пройдено уровней → очки → время'
-      : `Лучшее время уровня ${level + 1} · ${esc(DIFFICULTY[Easel.data.levels[level].difficulty] || '')}`;
-    return `<p class="easel-rsub"><small>${sub} · игроков: ${r.total}</small></p>
+      ? T('easelOrderOverall')
+      : T('easelBestTimeLevel', { level: level + 1, difficulty: esc(difficulty(Easel.data.levels[level].difficulty)) });
+    return `<p class="easel-rsub"><small>${sub} · ${T('easelPlayersCount', { count: r.total })}</small></p>
       <div class="easel-rscroll"><table class="easel-rtable"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>${mine}`;
   }
 
@@ -641,23 +656,23 @@ export class Easel {
     if (Easel.sound && (medal === 'gold' || medal === 'silver')) Easel.sound.play('easel_result_' + medal, { id: 'medal' });
     const st = g.levelStats;
     const html = won
-      ? `<div class="easel-medal">${MEDAL_ICON[medal]} ${MEDAL[medal]}</div>
-         <p>Время: <b>${fmtTime(g.elapsed / 1000)}</b> <small>· золото ≤ ${fmtTime(st.goldMedalTime)} · серебро ≤ ${fmtTime(st.silverMedalTime)}</small></p>
-         <p>Заработано: <b>${g.goldEarned}</b> ${COIN} · всего: <b>${P.gold}</b> ${COIN}</p>
+      ? `<div class="easel-medal">${MEDAL_ICON[medal]} ${T(MEDAL_KEY[medal])}</div>
+         <p>${T('easelTimeLine', { time: fmtTime(g.elapsed / 1000), gold: fmtTime(st.goldMedalTime), silver: fmtTime(st.silverMedalTime) })}</p>
+         <p>${T('easelEarned', { earned: g.goldEarned, total: P.gold, coin: COIN })}</p>
          <div class="easel-record"></div>`
-      : `<p>Цепочка дошла до конца трассы. Попробуйте ещё раз!</p>
-         <p>Заработано: <b>${g.goldEarned}</b> ${COIN} · всего: <b>${P.gold}</b> ${COIN}</p>
+      : `<p>${T('easelFailText')}</p>
+         <p>${T('easelEarned', { earned: g.goldEarned, total: P.gold, coin: COIN })}</p>
          <div class="easel-record"></div>`;
     const next = won && g.level + 1 < LEVELS;
     Easel._showPanel(
       html +
         `<div class="easel-actions">
-          ${next ? `<button class="easel-btn easel-primary" data-act="next">Следующий уровень${KBD.enter}</button>` : ''}
-          <button class="easel-btn${next ? '' : ' easel-primary'}" data-act="retry">Ещё раз${next ? '' : KBD.enter}</button>
-          <button class="easel-btn" data-act="levels">Уровни${KBD.esc}</button>
-          <button class="easel-btn easel-red" data-act="exit">Выйти</button>
+          ${next ? `<button class="easel-btn easel-primary" data-act="next">${T('easelNextLevel')}${KBD.enter}</button>` : ''}
+          <button class="easel-btn${next ? '' : ' easel-primary'}" data-act="retry">${T('easelRetry')}${next ? '' : KBD.enter}</button>
+          <button class="easel-btn" data-act="levels">${T('easelLevels')}${KBD.esc}</button>
+          <button class="easel-btn easel-red" data-act="exit">${T('easelExit')}</button>
         </div>`,
-      { title: won ? 'Картина готова!' : 'Краска утекла в колодец', back: () => Easel.showLevels() },
+      { title: won ? T('easelWonTitle') : T('easelFailTitle'), back: () => Easel.showLevels() },
     );
     Easel._sendResult(g, won, medal);
   }
@@ -674,16 +689,16 @@ export class Easel {
       return;
     }
     Easel._showPanel(
-      `<p>Уровень ${g.level + 1} · ${esc(DIFFICULTY[Easel.data.levels[g.level].difficulty] || '')}</p>
+      `<p>${T('easelLevelLine', { level: g.level + 1, difficulty: esc(difficulty(Easel.data.levels[g.level].difficulty)) })}</p>
       <div class="easel-actions">
-        <button class="easel-btn easel-primary" data-act="resume">Продолжить${KBD.esc}</button>
-        <button class="easel-btn" data-act="retry">Начать заново</button>
-        <button class="easel-btn" data-act="levels">К выбору уровня</button>
-        ${Easel._win ? '<button class="easel-btn" data-act="settings">Громкость и настройки</button>' : ''}
-        <button class="easel-btn easel-red" data-act="exit">Выйти из мини-игры</button>
+        <button class="easel-btn easel-primary" data-act="resume">${T('easelResume')}${KBD.esc}</button>
+        <button class="easel-btn" data-act="retry">${T('easelRestart')}</button>
+        <button class="easel-btn" data-act="levels">${T('easelToLevelSelect')}</button>
+        ${Easel._win ? `<button class="easel-btn" data-act="settings">${T('easelVolumeSettings')}</button>` : ''}
+        <button class="easel-btn easel-red" data-act="exit">${T('easelExitGame')}</button>
       </div>
-      <div class="easel-help">Мышь — тележка · ЛКМ — выстрел · ПКМ / Пробел — поменять капли · 1–6 — бусты</div>`,
-      { title: 'Пауза', back: () => Easel.pause(false) },
+      <div class="easel-help">${T('easelControls')}</div>`,
+      { title: T('easelPause'), back: () => Easel.pause(false) },
     );
   }
 
@@ -705,18 +720,18 @@ export class Easel {
         const best = rec && rec.timeMs !== null && rec.wins ? `<em>${fmtRec(rec.timeMs)}</em>` : '';
         const cls = (locked ? ' locked' : '') + (i === P.maxLevel ? ' easel-primary' : '');
         return `<button class="easel-lvl${cls} d-${esc(l.difficulty)}" data-level="${i}" ${locked ? 'disabled' : ''}>
-          <b>${i + 1}</b><small>${esc(DIFFICULTY[l.difficulty] || l.difficulty)}</small>
+          <b>${i + 1}</b><small>${esc(difficulty(l.difficulty) || l.difficulty)}</small>
           <span>${locked ? uiIconHtml('lock') : medal ? MEDAL_ICON[medal] : ''}</span>${best}</button>`;
       })
       .join('');
     Easel._showPanel(
-      `<p>Закрасьте картину каплями нужного цвета, пока цепочка не докатилась до колодца.</p>
+      `<p>${T('easelIntro')}</p>
       <div class="easel-gold-big">${P.gold} ${COIN}</div>
       <div class="easel-levels">${cells}</div>
       <div class="easel-actions easel-row">
-        ${Easel._online() ? '<button class="easel-btn" data-act="rating">' + uiIconHtml('trophy') + ' Рейтинг</button>' : ''}
-        <button class="easel-btn easel-red" data-act="exit">Выйти${KBD.esc}</button></div>`,
-      { title: 'Мастерская свитков', back: Easel._levelsBack, wide: true },
+        ${Easel._online() ? `<button class="easel-btn" data-act="rating">${uiIconHtml('trophy')} ${T('easelRating')}</button>` : ''}
+        <button class="easel-btn easel-red" data-act="exit">${T('easelExit')}${KBD.esc}</button></div>`,
+      { title: T('easel_doct'), back: Easel._levelsBack, wide: true },
     );
     // рекорды с сервера — один раз за открытие; после загрузки перерисовать плитки, если окно ещё открыто
     if (!Easel.records && Easel._online()) {
@@ -734,7 +749,7 @@ export class Easel {
     const p = Easel.$('.easel-panel');
     p.innerHTML = `<div class="easel-box${wide ? ' easel-wide' : ''}">
       <div class="easel-title">${esc(title)}</div>
-      <button class="easel-x easel-box-x" data-act="back" title="Закрыть (Esc)"></button>
+      <button class="easel-x easel-box-x" data-act="back" title="${T('easelCloseEsc')}"></button>
       ${html}</div>`;
     p.hidden = false;
     Easel._panelBack = back;
@@ -801,19 +816,20 @@ export class Easel {
     const data = Easel.data;
     Easel.$('.easel-hud').hidden = false;
     Easel._updateMenuBtn();
-    Easel.$('.easel-level').textContent = `Уровень ${g.level + 1} · ${DIFFICULTY[data.levels[g.level].difficulty] || ''}`;
+    Easel.$('.easel-level').textContent = T('easelLevelLine', { level: g.level + 1, difficulty: difficulty(data.levels[g.level].difficulty) });
     const bar = Easel.$('.easel-boosts');
     bar.innerHTML = '';
     Easel.boostEls = [];
     for (const ui of BOOST_UI) {
       const b = g.boosts.get(ui.type);
       if (!b) continue;
-      const tip = parseTooltip(data.boostTooltips[ui.type], b.price);
+      const tipSrc = (Lang && Lang.list[Lang.target]?.word?.['easelBoostTip' + ui.type]) || data.boostTooltips[ui.type];
+      const tip = parseTooltip(tipSrc, b.price);
       const el = document.createElement('button');
       el.className = 'easel-boost';
       el.innerHTML = `<img src="${EASEL_BASE}ui/${ui.icon}.webp" alt=""><i class="easel-cd"></i>
         <span class="easel-price">${b.price}</span><kbd>${ui.key}</kbd>
-        <div class="easel-tip"><b>${esc(tip.title)}</b> <em>${b.price} ${COIN} · ${Math.round(b.cooldown / 1000)} с</em><br>${esc(tip.body)}</div>`;
+        <div class="easel-tip"><b>${esc(tip.title)}</b> <em>${b.price} ${COIN} · ${T('easelSeconds', { n: Math.round(b.cooldown / 1000) })}</em><br>${esc(tip.body)}</div>`;
       el.onclick = (e) => {
         e.stopPropagation();
         Easel._fireBoost(ui.type);
@@ -849,12 +865,12 @@ export class Easel {
     Easel._setText('.easel-fill', `${uiIconHtml('palette')} ${Math.round(g.paint.fillRatio() * 100)}%`);
     Easel._setText('.easel-gold', `${g.gold} ${COIN}`);
     let banner = '';
-    if (g.state === BOARD.LEVEL_BEGIN) banner = `Уровень ${g.level + 1}<small>Щёлкните, чтобы начать</small>`;
-    else if (g.state >= BOARD.LEVEL_WON && g.state <= BOARD.WON_MOVIE) banner = 'Картина готова!';
-    else if (g.state === BOARD.LEVEL_FAIL) banner = 'Краска утекла…';
+    if (g.state === BOARD.LEVEL_BEGIN) banner = `${T('easelLevelN', { level: g.level + 1 })}<small>${T('easelClickToStart')}</small>`;
+    else if (g.state >= BOARD.LEVEL_WON && g.state <= BOARD.WON_MOVIE) banner = T('easelWonTitle');
+    else if (g.state === BOARD.LEVEL_FAIL) banner = T('easelFailBanner');
     else if (g.boosts.get(BOOST.MAGNET) && g.boosts.get(BOOST.MAGNET).state === 'waiting')
-      banner = '<small>Выберите место для магнита</small>';
-    else if (g.frozen) banner = '<small>Заморозка</small>';
+      banner = `<small>${T('easelMagnetPlace')}</small>`;
+    else if (g.frozen) banner = `<small>${T('easelFreeze')}</small>`;
     Easel._setText('.easel-banner', banner);
     for (const x of Easel.boostEls) {
       const b = x.boost;

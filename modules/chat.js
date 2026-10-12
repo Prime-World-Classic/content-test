@@ -77,7 +77,7 @@ export class Chat {
             Chat.scroll(true);
           },
         ],
-        title: useSendButton ? 'Отправить сообщение' : 'Прокрутить чат вниз',
+        title: useSendButton ? Lang.text('chatSend') : Lang.text('chatScrollDown'),
       },
       useSendButton ? uiIcon('send') : '▼',
     );
@@ -1159,7 +1159,7 @@ export class Chat {
       event.preventDefault();
       const canModerate = App.isAdmin() || App.isHelper();
       let body = document.createDocumentFragment();
-      const modalTitle = DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, 'Чат'));
+      const modalTitle = DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('chatTitle')));
       const nicknameLine = DOM(
         { id: 'friendRemoveText', style: 'chat-player-menu-nickname' },
         DOM({ tag: 'span' }, String(data.nickname || '')),
@@ -1207,7 +1207,7 @@ export class Chat {
                 },
               ],
             },
-            'Выдать мут',
+            Lang.text('chatMute'),
           ),
         );
       }
