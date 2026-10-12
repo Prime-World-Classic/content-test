@@ -281,7 +281,8 @@ export class VoiceGameBridge {
 
     let micState = 0;
     let meSpeaking = false;
-    if (Voice.mic) {
+    // Выдернутый микрофон (дорожка 'ended') показываем как «нет микрофона», пока он не вернётся.
+    if (Voice.mic && Voice.rawMic?.readyState !== 'ended') {
       micState = Voice.mic.enabled ? 1 : 2;
       if (Voice.mic.enabled && Voice.userMedia) {
         alive.add(Voice.userMedia);

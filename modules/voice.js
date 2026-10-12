@@ -123,6 +123,10 @@ export class Voice {
 
   static localMediaPromise = null;
 
+  static reacquireMicPromise = null;
+
+  static deviceChangeListening = false;
+
   static rawMic = null;
 
   static mic = null;
@@ -661,14 +665,7 @@ export class Voice {
     Voice.showInfoPanel();
 
     try {
-      Voice.userMedia = await navigator.mediaDevices.getUserMedia({
-        audio: App.isAdmin()
-          ? App.storage.data.id == 1
-            ? Voice.mediaAudioConfigManual
-            : Voice.mediaAudioConfigHighQality
-          : Voice.mediaAudioConfig,
-        video: false,
-      });
+      Voice.userMedia = await navigator.mediaDevices.getUserMedia(Voice.getMediaConstraints());
     } catch (error) {
       return App.error(Lang.text('mediaDevicesError').replace('{error}', error));
     }
@@ -690,6 +687,7 @@ export class Voice {
     }
 
     Voice.rawMic = tracks[0];
+    Voice.watchRawMic(Voice.rawMic);
 
     try {
       Voice.processingContext = new AudioContext();
@@ -719,6 +717,99 @@ export class Voice {
       // В режиме рации микрофон включается только удержанием клавиши.
       Voice.mic.enabled = !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
     }
+  }
+
+  static getMediaConstraints() {
+    return {
+      audio: App.isAdmin()
+        ? App.storage.data.id == 1
+          ? Voice.mediaAudioConfigManual
+          : Voice.mediaAudioConfigHighQality
+        : Voice.mediaAudioConfig,
+      video: false,
+    };
+  }
+
+  // Выдернутый микрофон завершает свою дорожку ('ended'), и без повторного getUserMedia
+  // звонок после подключения обратно шлёт тишину. Новая дорожка подключается ко входу той же
+  // цепочки обработки: собеседникам по-прежнему идёт Voice.mic, переподключать звонки не нужно.
+  static watchRawMic(track) {
+    track?.addEventListener?.('ended', () => {
+      if (track !== Voice.rawMic) return;
+      Voice.log('mic-ended', { label: track.label || '' });
+      Voice.updateInfoPanel();
+      Voice.reacquireMic();
+    });
+
+    if (!Voice.deviceChangeListening && navigator.mediaDevices?.addEventListener) {
+      Voice.deviceChangeListening = true;
+      navigator.mediaDevices.addEventListener('devicechange', () => {
+        if (Voice.userMedia && Voice.rawMic?.readyState === 'ended') {
+          Voice.reacquireMic();
+        }
+      });
+    }
+  }
+
+  static reacquireMic() {
+    if (!Voice.reacquireMicPromise) {
+      Voice.reacquireMicPromise = Voice.reacquireMicOnce().finally(() => {
+        Voice.reacquireMicPromise = null;
+      });
+    }
+    return Voice.reacquireMicPromise;
+  }
+
+  static async reacquireMicOnce() {
+    if (!Voice.userMedia || Voice.rawMic?.readyState !== 'ended') return;
+
+    let stream = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(Voice.getMediaConstraints());
+    } catch (error) {
+      // Микрофона пока нет — следующая попытка будет по 'devicechange'.
+      Voice.log('mic-reacquire-failed', { error: String(error?.name || error) });
+      return;
+    }
+
+    const track = stream.getAudioTracks()[0];
+    // Пока ждали, звонки могли закончиться (destroy обнуляет userMedia).
+    if (!track || !Voice.userMedia) {
+      stream.getTracks().forEach((item) => item.stop());
+      return;
+    }
+
+    const oldRaw = Voice.rawMic;
+    Voice.userMedia = stream;
+    Voice.rawMic = track;
+    Voice.watchRawMic(track);
+
+    if (Voice.processingContext && Voice.processingGain && Voice.mic !== oldRaw) {
+      try {
+        Voice.processingInput?.disconnect?.();
+      } catch {}
+      Voice.processingInput = Voice.processingContext.createMediaStreamSource(new MediaStream([track]));
+      Voice.processingInput.connect(Voice.processingGain);
+    } else {
+      // Без обработки собеседникам уходит сама дорожка микрофона — меняем её в отправителях.
+      track.enabled = Voice.mic ? Voice.mic.enabled : !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+      for (const id in Voice.manager) {
+        const senders = Voice.manager[id]?.peer?.getSenders?.() || [];
+        for (const sender of senders) {
+          if (sender.track === oldRaw || sender.track?.kind === 'audio') {
+            sender.replaceTrack(track).catch(() => {});
+          }
+        }
+      }
+      Voice.mic = track;
+    }
+
+    try {
+      oldRaw?.stop?.();
+    } catch {}
+
+    Voice.log('mic-reacquired', { label: track.label || '' });
+    Voice.updateInfoPanel();
   }
 
   static resetMicProcessing() {
