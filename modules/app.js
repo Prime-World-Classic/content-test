@@ -384,9 +384,9 @@ export class App {
     Chat.syncRecentMessagesWithBackend?.();
   }
 
-  static notificationsListUrl = 'https://pw2.26rus-game.ru/stats/api/launcher/notifications.php?action=list';
-  static notificationsPostUrl = 'https://pw2.26rus-game.ru/stats/api/launcher/notifications.php';
-  static notificationsNewsListUrl = 'https://pw2.26rus-game.ru/stats/api/launcher/notifications.php?action=news_list';
+  static notificationsListUrl = 'https://pw.zone-play.com/stats/api/launcher/notifications.php?action=list';
+  static notificationsPostUrl = 'https://pw.zone-play.com/stats/api/launcher/notifications.php';
+  static notificationsNewsListUrl = 'https://pw.zone-play.com/stats/api/launcher/notifications.php?action=news_list';
   static notificationsSteamAppId = 3684820;
   static notificationsSteamNewsCacheMs = 600000;
   static notificationsRefreshMs = 60000;
@@ -3051,7 +3051,7 @@ export class App {
     };
     document.addEventListener('keydown', onEsc, { once: true });
 
-    const BASE = 'https://pw2.26rus-game.ru/stats/';
+    const BASE = 'https://pw.zone-play.com/stats/';
     const targetId = Number(id) || 0;
     const targetLogin = String(login || '').trim();
     const ownId = Number(App?.storage?.data?.id) || 0;
