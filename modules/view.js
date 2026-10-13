@@ -939,7 +939,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261013-build-tabs-1';
+    const cssVersion = '20261013-build-tabs-2';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -2633,7 +2633,8 @@ export class View {
               'castle-building-type-btn',
               View.castleBuildingCategory === category ? 'castle-hero-list-btn-active' : null,
             ].filter(Boolean),
-            data: { tooltip: Lang.text(langKey) },
+            // у открытой вкладки название и так видно — подсказка только у остальных
+            ...(View.castleBuildingCategory === category ? {} : { data: { tooltip: Lang.text(langKey) } }),
             domaudio: domAudioPresets.defaultButton,
             event: [
               'click',
@@ -2649,6 +2650,8 @@ export class View {
             ],
           },
           DOM({ tag: 'img', style: 'castle-building-type-icon', src: `content/img/buildings/tabs/${category}.png` }),
+          // у открытой вкладки рядом с иконкой — её название
+          ...(View.castleBuildingCategory === category ? [DOM({ style: 'castle-building-type-name' }, Lang.text(langKey))] : []),
         ),
       );
     }

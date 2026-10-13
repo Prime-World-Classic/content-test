@@ -2165,6 +2165,19 @@ body:has(#wbuild) .castle-bottom-content {
   min-width: 6cqh;
 }
 
+/* the open tab grows to show its name next to the icon */
+.castle-hero-lists-bar.castle-building-types-bar .castle-hero-list-btn.castle-hero-list-btn-active {
+  width: auto;
+  padding-left: 0.9cqh;
+  padding-right: 1.3cqh;
+  gap: 0.6cqh;
+}
+
+.castle-building-type-name {
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 .castle-building-type-icon {
   width: 3.9cqh;
   height: 3.9cqh;
