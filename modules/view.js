@@ -2597,7 +2597,9 @@ export class View {
   }
 
   // Вкладки-иконки над списком построек, как в оригинальном замке (Castle.getBuildingCategory):
-  // для героев, производство, развитие, услуги, декорации + осветители
+  // для героев, производство, развитие, услуги, декорации + осветители.
+  // «Склад» (Pocket в оригинале — убранные с карты здания) пока скрыт: понадобится для «Развития замка»,
+  // включается снятием hidden.
   static CASTLE_BUILDING_CATEGORY_STORAGE_KEY = 'castleBuildingCategory';
   static CASTLE_BUILDING_CATEGORIES = [
     ['heroes', 'castleBuildCategoryHeroes'],
@@ -2606,13 +2608,16 @@ export class View {
     ['services', 'castleBuildCategoryServices'],
     ['decor', 'castleBuildCategoryDecor'],
     ['lights', 'castleBuildCategoryLights'],
+    ['storage', 'castleBuildCategoryStorage', { hidden: true }],
   ];
   static castleBuildingCategory = (() => {
     try {
       const value = localStorage.getItem('castleBuildingCategory');
       // старые значения из вкладок «Здания» / «Украшения»
       if (value === 'decorations') return 'decor';
-      return View.CASTLE_BUILDING_CATEGORIES.some(([category]) => category === value) ? value : 'production';
+      return View.CASTLE_BUILDING_CATEGORIES.some(([category, , options]) => category === value && !options?.hidden)
+        ? value
+        : 'production';
     } catch {
       return 'production';
     }
@@ -2624,7 +2629,8 @@ export class View {
     bar.replaceChildren();
     bar.classList.remove('castle-hero-lists-bar-hidden', 'castle-friend-lists-bar');
     bar.classList.add('castle-building-types-bar');
-    for (const [category, langKey] of View.CASTLE_BUILDING_CATEGORIES) {
+    for (const [category, langKey, options] of View.CASTLE_BUILDING_CATEGORIES) {
+      if (options?.hidden) continue;
       bar.append(
         DOM(
           {

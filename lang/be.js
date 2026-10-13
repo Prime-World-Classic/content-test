@@ -72,6 +72,7 @@ export const be = {
     castleBuildCategoryServices: 'Паслугі',
     castleBuildCategoryDecor: 'Дэкарацыі',
     castleBuildCategoryLights: 'Асвятляльнікі',
+    castleBuildCategoryStorage: 'Склад',
     castleDayModeCycle: 'Змена дня і ночы',
     castleDayModeDay: 'Заўсёды дзень',
     castleDayModeNight: 'Заўсёды ноч',

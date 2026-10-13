@@ -108,6 +108,7 @@ export const ru = {
     castleBuildCategoryServices: 'Услуги',
     castleBuildCategoryDecor: 'Декорации',
     castleBuildCategoryLights: 'Осветители',
+    castleBuildCategoryStorage: 'Склад',
     castleDayModeCycle: 'Смена дня и ночи',
     castleDayModeDay: 'Всегда день',
     castleDayModeNight: 'Всегда ночь',
