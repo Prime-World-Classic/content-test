@@ -15,6 +15,8 @@ body {
   --castle-hero-lists-content-lift: 3.54cqh;
   --castle-hero-lists-all-icon-lift: 1.8cqh;
   --castle-hero-lists-active-badge-lift: 0.25cqh;
+  /* the open tab grows upwards by this much, its bottom stays on the panel edge */
+  --castle-hero-lists-active-grow: 0.68cqh;
   --castle-hero-lists-search-width: 16.8cqh;
 }
 
@@ -2042,6 +2044,9 @@ body:has(#wbuild) .castle-bottom-content {
   gap: var(--castle-hero-lists-bar-gap);
   z-index: 7;
   pointer-events: auto;
+  /* cut the tabs at the panel edge: their lower part must not show through the translucent panel
+     (bottom inset = the bar's downward shift; top and sides stay open for tooltips) */
+  clip-path: inset(-100vh -100vw calc(var(--castle-hero-lists-bar-overlap) + 0.35cqh) -100vw);
 }
 
 .castle-hero-lists-bar-hidden {
@@ -2072,7 +2077,9 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .castle-hero-list-btn-active {
-  transform: translateY(-1.35cqh);
+  transform: translateY(-0.16cqh);
+  height: calc(var(--castle-hero-lists-btn-height) + var(--castle-hero-lists-active-grow));
+  margin-top: calc(-1 * var(--castle-hero-lists-active-grow));
   filter: brightness(1.2);
 }
 
@@ -2139,7 +2146,9 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .castle-hero-lists-bar:not(.castle-friend-lists-bar) .castle-hero-list-btn-active {
-  transform: translateY(-0.68cqh);
+  transform: translateY(-0.16cqh);
+  height: calc(var(--castle-hero-lists-btn-height) + var(--castle-hero-lists-active-grow));
+  margin-top: calc(-1 * var(--castle-hero-lists-active-grow));
   background:
     linear-gradient(
       90deg,
@@ -2250,7 +2259,9 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 .castle-friend-lists-bar .castle-hero-list-btn-active {
-  transform: translateY(-0.68cqh);
+  transform: translateY(-0.16cqh);
+  height: calc(var(--castle-hero-lists-btn-height) + var(--castle-hero-lists-active-grow));
+  margin-top: calc(-1 * var(--castle-hero-lists-active-grow));
 }
 
 .castle-friend-list-btn-fav::before {
@@ -2285,6 +2296,8 @@ body:has(#wbuild) .castle-bottom-content {
 
 .castle-friend-lists-bar .castle-friend-list-btn-online.castle-hero-list-btn-active {
   transform: translateY(-0.16cqh);
+  height: var(--castle-hero-lists-btn-height);
+  margin-top: 0;
   background: rgb(2, 79, 117);
   filter: none;
 }
@@ -3104,6 +3117,10 @@ body:has(#wbuild) .castle-bottom-content {
 }
 
 #wshop:hover {
+  z-index: 140;
+}
+
+#wgame:hover {
   z-index: 140;
 }
 

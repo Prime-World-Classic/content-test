@@ -7868,6 +7868,8 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 #wgame {
   container-type: size;
   position: absolute;
+  /* above the castle chat (5) and the bottom panel with tabs (8), like the other windows */
+  z-index: 9;
   margin-top: 9cqh;
   margin-left: auto;
   margin-right: auto;
