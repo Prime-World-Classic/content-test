@@ -169,6 +169,16 @@ export class VoiceGameBridge {
           break;
         }
 
+        // Смарткаст переключён на панели в бою: сохраняем в билд (build.battleSmartCast),
+        // иначе при следующем бое настройка откатывалась к билду из БД.
+        case 'smartcast': {
+          const talent = String(parts[1] || '');
+          if (/^[A-Za-z0-9_-]{1,64}$/.test(talent) && (parts[2] === '0' || parts[2] === '1')) {
+            Promise.resolve(App.api?.ghost?.('build', 'battleSmartCast', { talent, on: parts[2] === '1' })).catch(() => {});
+          }
+          break;
+        }
+
         case 'pos': {
           const x = Number(parts[1]);
           const y = Number(parts[2]);
