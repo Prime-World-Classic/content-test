@@ -939,7 +939,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261012-voice-overlay-1';
+    const cssVersion = '20261013-build-tabs-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -2596,14 +2596,25 @@ export class View {
     return button;
   }
 
-  // Вкладки над списком построек (как у героев): здания, украшения, осветители (Castle.getBuildingCategory)
+  // Вкладки-иконки над списком построек, как в оригинальном замке (Castle.getBuildingCategory):
+  // для героев, производство, развитие, услуги, декорации + осветители
   static CASTLE_BUILDING_CATEGORY_STORAGE_KEY = 'castleBuildingCategory';
+  static CASTLE_BUILDING_CATEGORIES = [
+    ['heroes', 'castleBuildCategoryHeroes'],
+    ['production', 'castleBuildCategoryProduction'],
+    ['house', 'castleBuildCategoryHouse'],
+    ['services', 'castleBuildCategoryServices'],
+    ['decor', 'castleBuildCategoryDecor'],
+    ['lights', 'castleBuildCategoryLights'],
+  ];
   static castleBuildingCategory = (() => {
     try {
       const value = localStorage.getItem('castleBuildingCategory');
-      return ['buildings', 'decorations', 'lights'].includes(value) ? value : 'buildings';
+      // старые значения из вкладок «Здания» / «Украшения»
+      if (value === 'decorations') return 'decor';
+      return View.CASTLE_BUILDING_CATEGORIES.some(([category]) => category === value) ? value : 'production';
     } catch {
-      return 'buildings';
+      return 'production';
     }
   })();
 
@@ -2613,16 +2624,16 @@ export class View {
     bar.replaceChildren();
     bar.classList.remove('castle-hero-lists-bar-hidden', 'castle-friend-lists-bar');
     bar.classList.add('castle-building-types-bar');
-    const categories = [
-      ['buildings', 'castleBuildCategoryBuildings'],
-      ['decorations', 'castleBuildCategoryDecorations'],
-      ['lights', 'castleBuildCategoryLights'],
-    ];
-    for (const [category, langKey] of categories) {
+    for (const [category, langKey] of View.CASTLE_BUILDING_CATEGORIES) {
       bar.append(
         DOM(
           {
-            style: ['castle-hero-list-btn', View.castleBuildingCategory === category ? 'castle-hero-list-btn-active' : null].filter(Boolean),
+            style: [
+              'castle-hero-list-btn',
+              'castle-building-type-btn',
+              View.castleBuildingCategory === category ? 'castle-hero-list-btn-active' : null,
+            ].filter(Boolean),
+            data: { tooltip: Lang.text(langKey) },
             domaudio: domAudioPresets.defaultButton,
             event: [
               'click',
@@ -2637,7 +2648,7 @@ export class View {
               },
             ],
           },
-          Lang.text(langKey),
+          DOM({ tag: 'img', style: 'castle-building-type-icon', src: `content/img/buildings/tabs/${category}.png` }),
         ),
       );
     }

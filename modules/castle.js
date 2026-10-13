@@ -442,13 +442,43 @@ export class Castle {
     ['easel_ad', 'easel_doct'],
   ];
 
-  // Категории в панели построек (View.renderCastleBuildingTypesToolbar). Осветители — украшения-фонари:
-  // у Доктов «Фонарь», «Большой фонарь», у Адорнийцев светящиеся цветы, у обеих «Лавка с фонарями».
+  // Категории в панели построек (View.renderCastleBuildingTypesToolbar) — вкладки оригинального замка
+  // (ConstructionTab в ExportedSocialData): для героев, производство, развитие, услуги, декорации.
+  // Осветители — своя вкладка: у Доктов «Фонарь», «Большой фонарь», у Адорнийцев светящиеся цветы,
+  // у обеих «Лавка с фонарями».
   static lightingDecos = ['deco_0', 'deco_1', 'deco_7'];
+
+  static buildingCategoryByName = {
+    agility: 'heroes',
+    cunning: 'heroes',
+    health: 'heroes',
+    intelligence: 'heroes',
+    strength: 'heroes',
+    tavern: 'heroes',
+
+    crystal_farm: 'production',
+    food_farm: 'production',
+    heavy_farm: 'production',
+    light_farm: 'production',
+    silver_farm: 'production',
+    talent_farm: 'production',
+
+    clan_house: 'house',
+    fair: 'house',
+    house: 'house',
+    library: 'house',
+    storage: 'house',
+
+    cat: 'services',
+    dog: 'services',
+    unicorn: 'services',
+    easel: 'services',
+  };
 
   static getBuildingCategory(name) {
     if (Castle.lightingDecos.includes(name)) return 'lights';
-    return /^deco_/.test(name) ? 'decorations' : 'buildings';
+    if (/^deco_/.test(name)) return 'decor';
+    return Castle.buildingCategoryByName[name] || 'services';
   }
 
   static filter = RegExp('', '');
