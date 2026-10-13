@@ -939,7 +939,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261013-build-tabs-2';
+    const cssVersion = '20261013-build-tabs-4';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -2598,8 +2598,8 @@ export class View {
 
   // Вкладки-иконки над списком построек, как в оригинальном замке (Castle.getBuildingCategory):
   // для героев, производство, развитие, услуги, декорации + осветители.
-  // «Склад» (Pocket в оригинале — убранные с карты здания) пока скрыт: понадобится для «Развития замка»,
-  // включается снятием hidden.
+  // «Склад» (Pocket в оригинале — убранные с карты здания) пока серый и не нажимается: понадобится
+  // для «Развития замка», включается снятием disabled.
   static CASTLE_BUILDING_CATEGORY_STORAGE_KEY = 'castleBuildingCategory';
   static CASTLE_BUILDING_CATEGORIES = [
     ['heroes', 'castleBuildCategoryHeroes'],
@@ -2608,14 +2608,14 @@ export class View {
     ['services', 'castleBuildCategoryServices'],
     ['decor', 'castleBuildCategoryDecor'],
     ['lights', 'castleBuildCategoryLights'],
-    ['storage', 'castleBuildCategoryStorage', { hidden: true }],
+    ['storage', 'castleBuildCategoryStorage', { disabled: true }],
   ];
   static castleBuildingCategory = (() => {
     try {
       const value = localStorage.getItem('castleBuildingCategory');
       // старые значения из вкладок «Здания» / «Украшения»
       if (value === 'decorations') return 'decor';
-      return View.CASTLE_BUILDING_CATEGORIES.some(([category, , options]) => category === value && !options?.hidden)
+      return View.CASTLE_BUILDING_CATEGORIES.some(([category, , options]) => category === value && !options?.disabled)
         ? value
         : 'production';
     } catch {
@@ -2630,7 +2630,19 @@ export class View {
     bar.classList.remove('castle-hero-lists-bar-hidden', 'castle-friend-lists-bar');
     bar.classList.add('castle-building-types-bar');
     for (const [category, langKey, options] of View.CASTLE_BUILDING_CATEGORIES) {
-      if (options?.hidden) continue;
+      if (options?.disabled) {
+        bar.append(
+          DOM(
+            {
+              style: ['castle-hero-list-btn', 'castle-building-type-btn', 'castle-building-type-btn-disabled'],
+              data: { tooltip: `${Lang.text(langKey)}
+${Lang.text('castleBuildCategoryUnavailable')}` },
+            },
+            DOM({ tag: 'img', style: 'castle-building-type-icon', src: `content/img/buildings/tabs/${category}.png` }),
+          ),
+        );
+        continue;
+      }
       bar.append(
         DOM(
           {

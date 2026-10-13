@@ -107,6 +107,7 @@ export const en = {
     castleBuildCategoryDecor: 'Decorations',
     castleBuildCategoryLights: 'Lights',
     castleBuildCategoryStorage: 'Storage',
+    castleBuildCategoryUnavailable: 'Not available yet',
     castleDayModeCycle: 'Day/night cycle',
     castleDayModeDay: 'Always day',
     castleDayModeNight: 'Always night',

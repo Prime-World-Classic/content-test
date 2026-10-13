@@ -2173,6 +2173,18 @@ body:has(#wbuild) .castle-bottom-content {
   gap: 0.6cqh;
 }
 
+/* tab that is not available yet (storage): grey, no hover highlight, not clickable */
+.castle-hero-lists-bar.castle-building-types-bar .castle-hero-list-btn.castle-building-type-btn-disabled,
+.castle-hero-lists-bar.castle-building-types-bar .castle-hero-list-btn.castle-building-type-btn-disabled:hover {
+  background: rgb(52, 62, 68);
+  border-color: rgb(120, 116, 98);
+  cursor: default;
+}
+
+.castle-building-type-btn-disabled .castle-building-type-icon {
+  filter: grayscale(1) brightness(0.65);
+}
+
 .castle-building-type-name {
   white-space: nowrap;
   pointer-events: none;
