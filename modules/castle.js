@@ -1583,9 +1583,11 @@ export class Castle {
 
     let fsText = await HTTP.request(`content/shaders/shader.fs.glsl`, 'text');
 
-    for (let i = 0; i < shaderNames.length; ++i) {
-      let definesText = await HTTP.request(`content/shaders/${shaderNames[i]}.glsl`, 'text');
+    // Скиннинг на GPU (VS_SKIN), если вершинному шейдеру хватает uniform-векторов под кости (3 vec4 на кость
+    // и запас под свои uniform). Иначе шейдер собирается без VS_SKIN, а вершины скинит CPU (EaselCastleFx).
+    Castle.gpuSkinning = Castle.gl.getParameter(Castle.gl.MAX_VERTEX_UNIFORM_VECTORS) >= Castle.SKIN_MAX_BONES * 3 + 32;
 
+    const preparePrograms = (definesText) => {
       let programColor = Castle.prepareShader(
         `\n#define RENDER_PASS_COLOR\n #define ${Castle.shaderFactionDef}`,
         definesText,
@@ -1605,6 +1607,25 @@ export class Castle {
             '#extension GL_EXT_draw_buffers : require\n',
           )
         : null;
+
+      return { programColor, programSM, programGB };
+    };
+
+    for (let i = 0; i < shaderNames.length; ++i) {
+      let definesText = await HTTP.request(`content/shaders/${shaderNames[i]}.glsl`, 'text');
+
+      const skinned = /#define VS_SKIN\b/.test(definesText);
+      const cpuSkinDefines = skinned ? definesText.replace(/#define VS_SKIN\b/, '') : definesText;
+
+      let { programColor, programSM, programGB } = preparePrograms(
+        skinned && Castle.gpuSkinning ? `${definesText}\n#define SKIN_MAX_BONES ${Castle.SKIN_MAX_BONES}\n` : cpuSkinDefines,
+      );
+
+      if (skinned && Castle.gpuSkinning && (programColor === 1 || programSM === 1)) {
+        console.warn('Castle: шейдер со скиннингом не собрался, скиннинг на CPU');
+        Castle.gpuSkinning = false;
+        ({ programColor, programSM, programGB } = preparePrograms(cpuSkinDefines));
+      }
 
       Castle.sceneShaders[i] = {
         PSO: programColor,
@@ -1659,6 +1680,24 @@ export class Castle {
   }
 
   static uniqueProgCounter = 0;
+
+  // Скиннинг в убер-шейдере (VS_SKIN): размер uniform-массива костей и выбор GPU/CPU (loadResources)
+  static SKIN_MAX_BONES = 72;
+  static gpuSkinning = false;
+  static _bindPoseBones = null;
+
+  // Кости в позе привязки (единичные матрицы, 3 строки на кость) — пока объект не получил свою позу
+  static bindPoseBones() {
+    if (!Castle._bindPoseBones) {
+      Castle._bindPoseBones = new Float32Array(Castle.SKIN_MAX_BONES * 12);
+      for (let i = 0; i < Castle.SKIN_MAX_BONES; i++) {
+        Castle._bindPoseBones[i * 12] = 1;
+        Castle._bindPoseBones[i * 12 + 5] = 1;
+        Castle._bindPoseBones[i * 12 + 10] = 1;
+      }
+    }
+    return Castle._bindPoseBones;
+  }
 
   static shaderFactionDef = 'INVALID_DEFINE';
 
@@ -1917,7 +1956,7 @@ export class Castle {
 
     // анимация капель «Мастерской свитков» (onIdleEffect PW)
     if (buildingsToDraw.some((b) => b.name === 'easel')) {
-      EaselCastleFx.update(Castle.gl, Castle.sceneBuildings.easel, Castle.currentTime);
+      EaselCastleFx.update(Castle.gl, Castle.sceneBuildings.easel, Castle.currentTime, Castle.gpuSkinning ? Castle.SKIN_MAX_BONES : 0);
     }
 
     Castle.updateMainCam();
@@ -2375,6 +2414,12 @@ export class Castle {
     for (let attribute of attributes) {
       let attribLocation = Castle.gl.getAttribLocation(program.prog, attribute.name);
 
+      // атрибута нет в программе (например, кости при скиннинге на CPU) — только сдвигаем смещение
+      if (attribLocation < 0) {
+        attribOffset += attribute.count * attribute.sizeElem;
+        continue;
+      }
+
       let attribType =
         attribute.sizeElem == 4 ? Castle.gl.FLOAT : attribute.sizeElem == 2 ? Castle.gl.UNSIGNED_SHORT : Castle.gl.UNSIGNED_BYTE;
 
@@ -2500,6 +2545,12 @@ export class Castle {
     let matWorldUniformLocation = Castle.getUniformLocation(program, 'mWorld');
 
     Castle.gl.uniformMatrix4fv(matWorldUniformLocation, Castle.gl.FALSE, worldMatrix2);
+
+    // кости скиннинга (VS_SKIN): поза объекта (EaselCastleFx), до первой позы — поза привязки
+    let bonesLocation = Castle.getUniformLocation(program, 'bones');
+    if (bonesLocation) {
+      Castle.gl.uniform4fv(bonesLocation, Castle.currentDrawObject?.bones || Castle.bindPoseBones());
+    }
 
     for (let i = 0; i < textures.length; ++i) {
       if (textures[i]) {

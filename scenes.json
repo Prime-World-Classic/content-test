@@ -31,6 +31,36 @@
       ]
     },
     {
+      "name": "shader_pos_norm_uv_skin",
+      "layout": [
+        {
+          "name": "vertPosition",
+          "count": 3,
+          "sizeElem": 4
+        },
+        {
+          "name": "vertNormal",
+          "count": 3,
+          "sizeElem": 4
+        },
+        {
+          "name": "vertTexCoord",
+          "count": 2,
+          "sizeElem": 4
+        },
+        {
+          "name": "vertBoneIdx",
+          "count": 4,
+          "sizeElem": 1
+        },
+        {
+          "name": "vertBoneWeight",
+          "count": 4,
+          "sizeElem": 1
+        }
+      ]
+    },
+    {
       "name": "shader_pos_uv_norm",
       "layout": [
         {
@@ -3970,7 +4000,7 @@
             {
               "mesh": "easel/fx_drops.bin",
               "indexCount": 11316,
-              "shader": "shader_pos_norm_uv",
+              "shader": "shader_pos_norm_uv_skin",
               "texture": "easel/fx_drops",
               "transform": [
                 -5.115, 0, 0, 1090.0, 0, 0, 5.115, 25.556305, 0, 5.115, 0, 1372.38449,
@@ -8872,7 +8902,7 @@
             {
               "mesh": "easel/fx_drops.bin",
               "indexCount": 11316,
-              "shader": "shader_pos_norm_uv",
+              "shader": "shader_pos_norm_uv_skin",
               "texture": "easel/fx_drops",
               "transform": [
                 -5.115, 0, 0, 1090.0, 0, 0, 5.115, 25.6353, 0, 5.115, 0, 1373.025,

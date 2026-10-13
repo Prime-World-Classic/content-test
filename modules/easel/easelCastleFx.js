@@ -1,10 +1,12 @@
 // Анимация здания «Мастерская свитков» в замке — как onIdleEffect PW (Buildings/B/MiniGame/FX.EFFT):
 // скиннинговые капли (FXallDrops01.skin, скелет FXroot.skel) по графу idle → idle1 (FXIdle1, вероятность 1)
 // или idle2 (FXIdle2, вероятность 2), переходы 0.5 с; «дыра» (FXHoleHolle.stat) видна только в idle1.
-// Меши лежат в scenes.json (easel/fx_drops.bin, easel/fx_hole.bin), здесь — только CPU-скиннинг капель
-// в их вершинный буфер. Данные: tools/pw-convert/build_easel_castle.py → content/easel/castle/.
+// Меши лежат в scenes.json: easel/fx_drops.bin (с индексами и весами костей, шейдер shader_pos_norm_uv_skin)
+// и easel/fx_hole.bin. Здесь — граф анимаций и позы скелета: матрицы костей уходят в убер-шейдер замка
+// (drops.bones → uniform bones, VS_SKIN). Если скиннинг на GPU недоступен (Castle.gpuSkinning), вершины
+// капель скинятся на CPU в их вершинный буфер. Данные: tools/pw-convert/build_easel_castle.py.
 import * as mat4 from '../glMatrix/mat4.js';
-import { Skeleton, fetchOk, EASEL_BASE } from './easelRenderer.js';
+import { Skeleton, fetchOk, EASEL_BASE, CONTENT_BASE } from './easelRenderer.js';
 
 const DROPS = 'easel/fx_drops.bin';
 const HOLE = 'easel/fx_hole.bin';
@@ -16,23 +18,45 @@ const NODES = [
 const BLEND = 0.5; // PoseToAnim, сек
 const HOLE_ALPHA = 0.7; // DiffuseMul.A материала дыры
 const HOLE_FADE_OUT = 0.2;
-const STEP = 1 / 30; // анимации PW — 30 кадров/с
+const STEP = 1 / 30; // анимации PW — 30 кадров/с; с этим шагом обновляются тень (и вершины при скиннинге на CPU)
 const BOX_STEP = 0.5; // шаг выборки поз для границ капель за всю анимацию, сек
+const STRIDE = 10; // вершина капель во float: pos3 norm3 uv2 + индексы костей 4×u8 + веса 4×u8 (40 байт)
 const DEFAULT_TRANSFORM = [1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1]; // как в Castle.drawObject
 
-let assets = null; // Promise<{ skel, src, stride }>
+let assets = null; // Promise<{ skel, src, joints, weights, n, boneBox }>
 
 function loadAssets() {
   if (!assets) {
     assets = Promise.all([
       fetchOk(BASE + 'assets.json'),
-      fetchOk(BASE + 'models/drops.bin', 'buf'),
+      fetchOk(CONTENT_BASE + 'meshes/' + DROPS, 'buf'),
       fetchOk(BASE + 'anims/fx.bin', 'buf'),
-    ]).then(([desc, mesh, anims]) => ({
-      skel: new Skeleton(desc.skeletons.fx, new Float32Array(anims)),
-      src: new Float32Array(mesh),
-      stride: desc.models.drops.stride,
-    }));
+    ]).then(([desc, mesh, anims]) => {
+      const skel = new Skeleton(desc.skeletons.fx, new Float32Array(anims));
+      const src = new Float32Array(mesh);
+      const bytes = new Uint8Array(mesh);
+      const n = src.length / STRIDE;
+      const joints = new Uint8Array(n * 4);
+      const weights = new Float32Array(n * 4);
+      // границы вершин каждой кости в позе привязки — для границ капель за всю анимацию (_animBox)
+      const boneBox = new Float32Array(skel.count * 6);
+      for (let b = 0; b < skel.count; b++) boneBox.set([Infinity, Infinity, Infinity, -Infinity, -Infinity, -Infinity], b * 6);
+      for (let i = 0; i < n; i++) {
+        for (let j = 0; j < 4; j++) {
+          const w = bytes[i * STRIDE * 4 + 36 + j];
+          if (!w) continue;
+          const b = bytes[i * STRIDE * 4 + 32 + j];
+          joints[i * 4 + j] = b;
+          weights[i * 4 + j] = w / 255;
+          for (let k = 0; k < 3; k++) {
+            const v = src[i * STRIDE + k];
+            if (v < boneBox[b * 6 + k]) boneBox[b * 6 + k] = v;
+            if (v > boneBox[b * 6 + 3 + k]) boneBox[b * 6 + 3 + k] = v;
+          }
+        }
+      }
+      return { skel, src, joints, weights, n, boneBox };
+    });
     assets.catch((e) => {
       console.error('easel castle fx:', e);
     });
@@ -102,8 +126,9 @@ export function rotatingShadowRect(Castle, obj, rotation, translation) {
 }
 
 export class EaselCastleFx {
-  // building — Castle.sceneBuildings.easel; time — секунды
-  static update(gl, building, time) {
+  // building — Castle.sceneBuildings.easel; time — секунды;
+  // gpuMaxBones — сколько костей принимает шейдер (Castle.SKIN_MAX_BONES), 0 — скиннинг на CPU
+  static update(gl, building, time, gpuMaxBones = 0) {
     const drops = building && building.objects.find((o) => o.meshName === DROPS);
     if (!drops || !drops.meshData || !drops.meshData.vertices) return;
     let s = states.get(drops);
@@ -113,13 +138,13 @@ export class EaselCastleFx {
       const hole = building.transparentObjects.find((o) => o.meshName === HOLE);
       loadAssets()
         .then((a) => {
-          const n = a.src.length / a.stride;
-          if (n !== drops.meshData.indexCount) throw new Error('easel castle fx: число вершин капель не совпадает');
+          if (a.n !== drops.meshData.indexCount) throw new Error('easel castle fx: число вершин капель не совпадает');
+          const gpu = gpuMaxBones >= a.skel.count;
           Object.assign(s, a, {
             ready: true,
-            n,
-            out: new Float32Array(n * 8),
-            bones: new Float32Array(a.skel.count * 16),
+            gpu,
+            pose: new Float32Array(a.skel.count * 16),
+            out: gpu ? null : new Float32Array(a.src),
             hole,
             holeCount: hole && hole.meshData ? hole.meshData.indexCount : 0,
             holeFade: 0,
@@ -129,18 +154,33 @@ export class EaselCastleFx {
             shadowDirty: false,
           });
           s.box = EaselCastleFx._animBox(s);
+          // заслонители при перерисовке участка карты теней отбираются по границам меша
+          drops.meshData.bboxMin = s.box[0];
+          drops.meshData.bboxMax = s.box[1];
+          if (gpu) drops.bones = new Float32Array(a.skel.count * 12);
         })
         .catch(() => {});
       return;
     }
     if (!s.ready) return;
     EaselCastleFx._step(s, time);
-    if (time - s.last < STEP && s.last >= 0) return;
+    const shadowStep = s.last < 0 || time - s.last >= STEP;
+    if (s.gpu) {
+      // позы — каждый кадр (70 костей), вершины скинит шейдер; тень — с шагом анимации PW
+      EaselCastleFx._pose(s, time);
+      packRows(drops.bones, s.pose, s.skel.count);
+      if (shadowStep) {
+        s.last = time;
+        s.shadowDirty = true;
+      }
+      return;
+    }
+    if (!shadowStep) return;
     s.last = time;
     EaselCastleFx._pose(s, time);
     EaselCastleFx._skin(s);
     gl.bindBuffer(gl.ARRAY_BUFFER, drops.meshData.vertices);
-    gl.bufferData(gl.ARRAY_BUFFER, s.out, gl.DYNAMIC_DRAW);
+    gl.bufferSubData(gl.ARRAY_BUFFER, 0, s.out);
     s.shadowDirty = true;
   }
 
@@ -166,26 +206,40 @@ export class EaselCastleFx {
     redrawShadowRect(Castle, rect, visible);
   }
 
-  // границы капель (локально) по всем позам обеих анимаций и позе привязки
+  // Границы капель (локально) по всем позам обеих анимаций и позе привязки. Вершина — взвешенная сумма
+  // своей точки, перенесённой матрицами костей, поэтому лежит внутри объединения границ костей,
+  // перенесённых их матрицами: хватает 8 углов на кость вместо скиннинга всех вершин.
   static _animBox(s) {
     const mn = [Infinity, Infinity, Infinity];
     const mx = [-Infinity, -Infinity, -Infinity];
-    const grow = (a, st) => {
-      for (let i = 0; i < s.n; i++) {
-        for (let k = 0; k < 3; k++) {
-          const v = a[i * st + k];
-          if (v < mn[k]) mn[k] = v;
-          if (v > mx[k]) mx[k] = v;
-        }
+    const { boneBox, pose } = s;
+    const count = s.skel.count;
+    for (let i = 0; i < s.n; i++) {
+      for (let k = 0; k < 3; k++) {
+        const v = s.src[i * STRIDE + k];
+        if (v < mn[k]) mn[k] = v;
+        if (v > mx[k]) mx[k] = v;
       }
-    };
-    grow(s.src, s.stride);
+    }
     for (const node of NODES) {
       const d = s.skel.duration(node.anim);
       for (let t = 0; t <= d; t += BOX_STEP) {
-        s.skel.pose(s.bones, node.anim, t, false);
-        EaselCastleFx._skin(s);
-        grow(s.out, 8);
+        s.skel.pose(pose, node.anim, t, false);
+        for (let b = 0; b < count; b++) {
+          const bb = b * 6;
+          if (!isFinite(boneBox[bb])) continue;
+          const m = b * 16;
+          for (let c = 0; c < 8; c++) {
+            const x = boneBox[bb + (c & 1 ? 3 : 0)];
+            const y = boneBox[bb + (c & 2 ? 4 : 1)];
+            const z = boneBox[bb + (c & 4 ? 5 : 2)];
+            for (let k = 0; k < 3; k++) {
+              const v = pose[m + k] * x + pose[m + 4 + k] * y + pose[m + 8 + k] * z + pose[m + 12 + k];
+              if (v < mn[k]) mn[k] = v;
+              if (v > mx[k]) mx[k] = v;
+            }
+          }
+        }
       }
     }
     return [mn, mx];
@@ -216,25 +270,25 @@ export class EaselCastleFx {
 
   static _pose(s, time) {
     const skel = s.skel;
-    const bones = s.bones;
+    const pose = s.pose;
     const local = time - s.cur.start;
     if (s.prev) {
-      skel.pose(bones, s.prev.anim, s.prev.time, false, {
+      skel.pose(pose, s.prev.anim, s.prev.time, false, {
         anim: s.cur.node.anim,
         time: local,
         loop: false,
         weight: Math.min(1, local / BLEND),
       });
     } else {
-      skel.pose(bones, s.cur.node.anim, local, false);
+      skel.pose(pose, s.cur.node.anim, local, false);
     }
   }
 
+  // запасной путь без VS_SKIN: позиции и нормали капель в позе s.pose → s.out (UV и байты костей не меняются)
   static _skin(s) {
-    const { src, stride, out, bones, n } = s;
+    const { src, joints, weights, out, pose, n } = s;
     for (let i = 0; i < n; i++) {
-      const b = i * stride;
-      const o = i * 8;
+      const b = i * STRIDE;
       const x = src[b],
         y = src[b + 1],
         z = src[b + 2];
@@ -248,25 +302,43 @@ export class EaselCastleFx {
         qy = 0,
         qz = 0;
       for (let j = 0; j < 4; j++) {
-        const w = src[b + 12 + j];
+        const w = weights[i * 4 + j];
         if (!w) continue;
-        const m = src[b + 8 + j] * 16;
-        px += w * (bones[m] * x + bones[m + 4] * y + bones[m + 8] * z + bones[m + 12]);
-        py += w * (bones[m + 1] * x + bones[m + 5] * y + bones[m + 9] * z + bones[m + 13]);
-        pz += w * (bones[m + 2] * x + bones[m + 6] * y + bones[m + 10] * z + bones[m + 14]);
-        qx += w * (bones[m] * nx + bones[m + 4] * ny + bones[m + 8] * nz);
-        qy += w * (bones[m + 1] * nx + bones[m + 5] * ny + bones[m + 9] * nz);
-        qz += w * (bones[m + 2] * nx + bones[m + 6] * ny + bones[m + 10] * nz);
+        const m = joints[i * 4 + j] * 16;
+        px += w * (pose[m] * x + pose[m + 4] * y + pose[m + 8] * z + pose[m + 12]);
+        py += w * (pose[m + 1] * x + pose[m + 5] * y + pose[m + 9] * z + pose[m + 13]);
+        pz += w * (pose[m + 2] * x + pose[m + 6] * y + pose[m + 10] * z + pose[m + 14]);
+        qx += w * (pose[m] * nx + pose[m + 4] * ny + pose[m + 8] * nz);
+        qy += w * (pose[m + 1] * nx + pose[m + 5] * ny + pose[m + 9] * nz);
+        qz += w * (pose[m + 2] * nx + pose[m + 6] * ny + pose[m + 10] * nz);
       }
-      out[o] = px;
-      out[o + 1] = py;
-      out[o + 2] = pz;
-      out[o + 3] = qx;
-      out[o + 4] = qy;
-      out[o + 5] = qz;
-      out[o + 6] = src[b + 6];
-      out[o + 7] = src[b + 7];
+      out[b] = px;
+      out[b + 1] = py;
+      out[b + 2] = pz;
+      out[b + 3] = qx;
+      out[b + 4] = qy;
+      out[b + 5] = qz;
     }
+  }
+}
+
+// матрицы скиннинга (mat4, column-major) → uniform bones убер-шейдера: 3 строки аффинной матрицы на кость
+function packRows(rows, m, count) {
+  for (let i = 0; i < count; i++) {
+    const a = i * 16;
+    const o = i * 12;
+    rows[o] = m[a];
+    rows[o + 1] = m[a + 4];
+    rows[o + 2] = m[a + 8];
+    rows[o + 3] = m[a + 12];
+    rows[o + 4] = m[a + 1];
+    rows[o + 5] = m[a + 5];
+    rows[o + 6] = m[a + 9];
+    rows[o + 7] = m[a + 13];
+    rows[o + 8] = m[a + 2];
+    rows[o + 9] = m[a + 6];
+    rows[o + 10] = m[a + 10];
+    rows[o + 11] = m[a + 14];
   }
 }
 

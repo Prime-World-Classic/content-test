@@ -31,6 +31,14 @@ attribute vec4 vertColor;
 varying vec4 fragColor;
 #endif
 
+// Skinning: bone indices and weights are bytes (weights sum to 255),
+// bones[] holds 3 rows of the affine skin matrix per bone (SKIN_MAX_BONES is set by Castle.loadResources)
+#ifdef VS_SKIN
+attribute vec4 vertBoneIdx;
+attribute vec4 vertBoneWeight;
+uniform vec4 bones[SKIN_MAX_BONES * 3];
+#endif
+
 #ifdef RENDER_PASS_COLOR
 uniform mat4 lightViewProj;
 
@@ -100,8 +108,28 @@ void main()
 #ifdef VS_COLOR
   fragColor = vertColor / 255.0;
 #endif
+// Skinning
+  vec3 skinnedPosition = vertPosition;
+#ifdef VS_NORMAL
+  vec3 skinnedNormal = vertNormal;
+#endif
+#ifdef VS_SKIN
+  vec4 boneWeight = vertBoneWeight / 255.0;
+  int b0 = int(vertBoneIdx.x) * 3;
+  int b1 = int(vertBoneIdx.y) * 3;
+  int b2 = int(vertBoneIdx.z) * 3;
+  int b3 = int(vertBoneIdx.w) * 3;
+  vec4 row0 = bones[b0] * boneWeight.x + bones[b1] * boneWeight.y + bones[b2] * boneWeight.z + bones[b3] * boneWeight.w;
+  vec4 row1 = bones[b0 + 1] * boneWeight.x + bones[b1 + 1] * boneWeight.y + bones[b2 + 1] * boneWeight.z + bones[b3 + 1] * boneWeight.w;
+  vec4 row2 = bones[b0 + 2] * boneWeight.x + bones[b1 + 2] * boneWeight.y + bones[b2 + 2] * boneWeight.z + bones[b3 + 2] * boneWeight.w;
+  vec4 bindPosition = vec4(vertPosition, 1.0);
+  skinnedPosition = vec3(dot(row0, bindPosition), dot(row1, bindPosition), dot(row2, bindPosition));
+  #ifdef VS_NORMAL
+  skinnedNormal = vec3(dot(row0.xyz, vertNormal), dot(row1.xyz, vertNormal), dot(row2.xyz, vertNormal));
+  #endif
+#endif
 // Vertex animation
-  vec3 animatedVertPosition = vertPosition;
+  vec3 animatedVertPosition = skinnedPosition;
 // 1. Weight animation
   float weight = minimum_distance(startFreq.xyz, endAmp.xyz, vertPosition);
 // 2. Wave animation
@@ -114,7 +142,7 @@ void main()
   vec4 worldPos = mWorld * vec4(animatedVertPosition, 1.0);
   gl_Position = mViewProj * worldPos;
 #ifdef VS_NORMAL
-  vec4 worldNormal = mWorld * vec4(normalize(vertNormal), 0.0);
+  vec4 worldNormal = mWorld * vec4(normalize(skinnedNormal), 0.0);
   fragNormal = (worldNormal.xyz);
 #endif
 
