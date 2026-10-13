@@ -162,7 +162,12 @@ export class Voice {
   static battleSuspendedAt = 0;
 
   static battleSuspendMaxMs = 3 * 60 * 1000;
-  
+
+  // Матч, в котором звонки не рвём: 1×1 (союзников нет — иначе пауза сбросила бы всех)
+  // и любой матч тестового клиента. Ставится при «Матч найден» и в лобби, сбрасывается
+  // вместе с паузой (restoreSuspendedBattlePeers).
+  static battleKeepCalls = false;
+
   static mutedPeers = new Set();
   
   static mutedByPeers = new Set();
@@ -1312,7 +1317,29 @@ export class Voice {
     return Voice.battleSuspendedAt > 0 && Date.now() - Voice.battleSuspendedAt < Voice.battleSuspendMaxMs;
   }
 
-  static suspendPeersForBattle(allyIds = []) {
+  static isTestClient() {
+    return App.CURRENT_MM === 'mmtest';
+  }
+
+  // playerCount — сколько живых игроков в матче (0 — неизвестно).
+  static setMatchKeepCalls(playerCount = 0) {
+    const count = Number(playerCount) || 0;
+    Voice.battleKeepCalls = Voice.isTestClient() || (count > 0 && count <= 2);
+    Voice.log('match-keep-calls', { players: count, keep: Voice.battleKeepCalls });
+    return Voice.battleKeepCalls;
+  }
+
+  static isMatchKeepCalls() {
+    return Voice.battleKeepCalls || Voice.isTestClient();
+  }
+
+  static suspendPeersForBattle(allyIds = [], playerCount = 0) {
+    if (Voice.setMatchKeepCalls(playerCount)) {
+      // Ничего не ставим на паузу и не игнорируем переподключения друзей до начала боя.
+      Voice.battleSuspendedAt = 0;
+      Voice.log('battle-keep', { peers: Object.keys(Voice.manager).map(Number) });
+      return;
+    }
     Voice.battleSuspendedAt = Date.now();
     const cleanIds = Array.from(new Set((allyIds || []).map((x) => Number(x)).filter((x) => Number.isFinite(x) && x > 0)));
     const allySet = new Set(cleanIds);
@@ -1354,6 +1381,7 @@ export class Voice {
 
   static restoreSuspendedBattlePeers() {
     Voice.battleSuspendedAt = 0;
+    Voice.battleKeepCalls = false;
     if (!Voice.battleSuspendedPeers.size) {
       return;
     }

@@ -371,12 +371,14 @@ export class Events {
     const callKey = String(data?.key || '');
     const logIn = (decision, extra = {}) =>
       Voice.log('incoming', { id: Number(data?.id), key: callKey, reconnect: Number(data?.reconnect || 0), caller: Boolean(data?.isCaller), decision, ...extra });
-    if ((MM.isInBattle || Voice.isBattleSuspendActive()) && callKey === 'friend') {
+    // 1×1 и тестовый клиент: звонок не рвётся на матч, поэтому его переподключение пускаем.
+    const keepReconnect = Voice.isMatchKeepCalls() && Number(data?.reconnect || 0) === 1;
+    if ((MM.isInBattle || Voice.isBattleSuspendActive()) && callKey === 'friend' && !keepReconnect) {
       logIn('ignored-battle', { inBattle: MM.isInBattle });
       return;
     }
     const activeMatchKey = String(MM.id || '');
-    if ((MM.isInTambur || MM.isInBattle) && (!activeMatchKey || callKey !== activeMatchKey)) {
+    if ((MM.isInTambur || MM.isInBattle) && (!activeMatchKey || callKey !== activeMatchKey) && !keepReconnect) {
       logIn('ignored-tambur');
       return;
     }

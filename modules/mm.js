@@ -374,7 +374,10 @@ export class MM {
     MM.soundEvent();
     
     try {
-      Voice.destroyTamburCallsOnly();
+      // 1×1 и тестовый клиент: звонки не рвём (limit — игроков в матче).
+      if (!Voice.setMatchKeepCalls(data.limit)) {
+        Voice.destroyTamburCallsOnly();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -1343,19 +1346,21 @@ export class MM {
       const myTeam = data?.users?.[myId]?.team;
       const allyIds = new Array();
       let list = new Array();
+      let playerCount = 0;
 
       for (let key of data.map) {
         const peerId = Number(key);
         if (!Number.isFinite(peerId) || peerId <= 0) {
           continue;
         }
+        playerCount++;
         if (myTeam && data.users[key].team == myTeam) {
           allyIds.push(peerId);
           list.push({ id: peerId, name: data.users[key].nickname });
         }
       }
       
-      Voice.suspendPeersForBattle(allyIds);
+      Voice.suspendPeersForBattle(allyIds, playerCount);
 
       Voice.association(App.storage.data.id, list, data.id);
     } catch (error) {
