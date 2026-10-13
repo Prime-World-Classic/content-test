@@ -1583,10 +1583,6 @@ export class Castle {
 
     let fsText = await HTTP.request(`content/shaders/shader.fs.glsl`, 'text');
 
-    // Скиннинг на GPU (VS_SKIN), если вершинному шейдеру хватает uniform-векторов под кости (3 vec4 на кость
-    // и запас под свои uniform). Иначе шейдер собирается без VS_SKIN, а вершины скинит CPU (EaselCastleFx).
-    Castle.gpuSkinning = Castle.gl.getParameter(Castle.gl.MAX_VERTEX_UNIFORM_VECTORS) >= Castle.SKIN_MAX_BONES * 3 + 32;
-
     const preparePrograms = (definesText) => {
       let programColor = Castle.prepareShader(
         `\n#define RENDER_PASS_COLOR\n #define ${Castle.shaderFactionDef}`,
@@ -1614,17 +1610,16 @@ export class Castle {
     for (let i = 0; i < shaderNames.length; ++i) {
       let definesText = await HTTP.request(`content/shaders/${shaderNames[i]}.glsl`, 'text');
 
+      // Скиннинг (VS_SKIN) — размер массива костей. Если шейдер со скиннингом не собрался (например, не хватило
+      // uniform-векторов: нужно 3 на кость), собираем без VS_SKIN — такие объекты стоят в позе привязки.
       const skinned = /#define VS_SKIN\b/.test(definesText);
-      const cpuSkinDefines = skinned ? definesText.replace(/#define VS_SKIN\b/, '') : definesText;
+      if (skinned) definesText += `\n#define SKIN_MAX_BONES ${Castle.SKIN_MAX_BONES}\n`;
 
-      let { programColor, programSM, programGB } = preparePrograms(
-        skinned && Castle.gpuSkinning ? `${definesText}\n#define SKIN_MAX_BONES ${Castle.SKIN_MAX_BONES}\n` : cpuSkinDefines,
-      );
+      let { programColor, programSM, programGB } = preparePrograms(definesText);
 
-      if (skinned && Castle.gpuSkinning && (programColor === 1 || programSM === 1)) {
-        console.warn('Castle: шейдер со скиннингом не собрался, скиннинг на CPU');
-        Castle.gpuSkinning = false;
-        ({ programColor, programSM, programGB } = preparePrograms(cpuSkinDefines));
+      if (skinned && (programColor === 1 || programSM === 1)) {
+        console.warn('Castle: шейдер со скиннингом не собрался, скиннинговые объекты без анимации');
+        ({ programColor, programSM, programGB } = preparePrograms(definesText.replace(/#define VS_SKIN\b/, '')));
       }
 
       Castle.sceneShaders[i] = {
@@ -1681,9 +1676,8 @@ export class Castle {
 
   static uniqueProgCounter = 0;
 
-  // Скиннинг в убер-шейдере (VS_SKIN): размер uniform-массива костей и выбор GPU/CPU (loadResources)
+  // Скиннинг в убер-шейдере (VS_SKIN): размер uniform-массива костей (loadResources)
   static SKIN_MAX_BONES = 72;
-  static gpuSkinning = false;
   static _bindPoseBones = null;
 
   // Кости в позе привязки (единичные матрицы, 3 строки на кость) — пока объект не получил свою позу
@@ -1956,7 +1950,7 @@ export class Castle {
 
     // анимация капель «Мастерской свитков» (onIdleEffect PW)
     if (buildingsToDraw.some((b) => b.name === 'easel')) {
-      EaselCastleFx.update(Castle.gl, Castle.sceneBuildings.easel, Castle.currentTime, Castle.gpuSkinning ? Castle.SKIN_MAX_BONES : 0);
+      EaselCastleFx.update(Castle.sceneBuildings.easel, Castle.currentTime, Castle.SKIN_MAX_BONES);
     }
 
     Castle.updateMainCam();
@@ -2414,7 +2408,7 @@ export class Castle {
     for (let attribute of attributes) {
       let attribLocation = Castle.gl.getAttribLocation(program.prog, attribute.name);
 
-      // атрибута нет в программе (например, кости при скиннинге на CPU) — только сдвигаем смещение
+      // атрибута нет в программе (например, кости, если шейдер собран без VS_SKIN) — только сдвигаем смещение
       if (attribLocation < 0) {
         attribOffset += attribute.count * attribute.sizeElem;
         continue;
