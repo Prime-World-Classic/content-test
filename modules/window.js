@@ -978,30 +978,30 @@ export class Window {
         { style: 'castle-menu-items' },
         App.isAdmin()
           ? DOM(
-              { style: 'castle-menu-item-button' },
-              DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminPanel')] }, 'Админ'),
+              { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminPanel')] },
+              'Админ',
             )
           : Window.canManageNews()
             ? DOM(
-                { style: 'castle-menu-item-button' },
-                DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminNewsPanel')] }, 'Новости'),
+                { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'adminNewsPanel')] },
+                'Новости',
               )
             : DOM(),
         DOM(
-          { style: 'castle-menu-item-button' },
-          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'accountPanel')] }, Lang.text('account')),
+          { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'accountPanel')] },
+          Lang.text('account'),
         ),
         DOM(
-          { style: 'castle-menu-item-button' },
-          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'settings')] }, Lang.text('preferences')),
+          { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'settings')] },
+          Lang.text('preferences'),
         ),
         DOM(
-          { style: 'castle-menu-item-button' },
-          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'battleSettings')] }, Lang.text('battleSettings')),
+          { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'battleSettings')] },
+          Lang.text('battleSettings'),
         ),
         DOM(
-          { style: 'castle-menu-item-button' },
-          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'support')] }, Lang.text('support')),
+          { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'support')] },
+          Lang.text('support'),
         ),
         DOM(
           {
