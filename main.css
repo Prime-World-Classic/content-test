@@ -11614,6 +11614,12 @@ body:has(#wcastle-call)::before {
   text-align: center;
 }
 
+/* the click handler of many menu buttons is on the inner element (window.js menu()): it covers the whole button */
+#wcastle-menu .castle-menu-item-button > div {
+  margin: -0.9cqh -2.4cqh;
+  padding: 0.9cqh 2.4cqh;
+}
+
 #wcastle-menu .castle-menu-item-button.castle-menu-item-button--small {
   width: auto;
   min-width: 18cqh;
