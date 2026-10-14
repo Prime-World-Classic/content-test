@@ -134,6 +134,7 @@ export const en = {
     spectateTestClient: 'Test client',
     spectateLiveClient: 'Main client',
     spectateOwnMatch: 'Your match',
+    spectateModeTournament: 'Tournament',
     spectateOtherClientHint: 'This match runs on another client and can only be watched from the same client',
     save: 'Save',
     soundHelp:

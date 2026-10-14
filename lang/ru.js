@@ -136,6 +136,7 @@ export const ru = {
     spectateTestClient: 'Тестовый клиент',
     spectateLiveClient: 'Основной клиент',
     spectateOwnMatch: 'Ваш матч',
+    spectateModeTournament: 'Турнир',
     spectateOtherClientHint: 'Матч идёт на другом клиенте — смотреть его можно только из того же клиента',
     save: 'Сохранить',
     soundHelp:

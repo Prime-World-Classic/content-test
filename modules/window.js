@@ -1931,11 +1931,20 @@ export class Window {
       team(1),
       DOM(
         { style: 'spectate-meta' },
+        DOM({ style: 'spectate-mode' }, Window.spectateModeName(Number(match.mode))),
         DOM({ style: 'spectate-time' }, match.startedAt ? Lang.text('spectateMinutes').replace('{min}', minutes) : ''),
         watch,
       ),
       team(2),
     );
+  }
+
+  // MM mode id -> name: 0..5 are the castle mode buttons (gm1..gm6)
+  static spectateModeName(mode) {
+    if (mode >= 0 && mode <= 5) return Lang.text(`gm${mode + 1}`);
+    if (mode === 97) return Lang.text('spectateModeTournament');
+    if (mode === 99) return Lang.text('training');
+    return '';
   }
 
   static async spectateWatch(id, button) {

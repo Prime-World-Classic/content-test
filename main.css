@@ -9684,6 +9684,11 @@ body:has(#wcastle-call)::before {
   gap: 0.8cqw;
 }
 
+.spectate-mode {
+  color: rgba(252, 229, 188, 0.9);
+  font: 2.4cqw / 1 'DejaVuSans', sans-serif;
+}
+
 .spectate-time {
   color: rgba(252, 229, 188, 0.7);
   font: 2.2cqw / 1 'DejaVuSans', sans-serif;
