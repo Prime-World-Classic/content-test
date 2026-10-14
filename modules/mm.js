@@ -50,6 +50,10 @@ export class MM {
 
   static lobbySkinRequestId = 0;
 
+  // Номер текущей отрисовки тамбура: MM.lobby() асинхронный, и пока он ждёт
+  // ответов бэкенда, лобби могут закрыть или уже запустить бой (MMEnd).
+  static lobbyRunId = 0;
+
   static lobbyVoiceResizeObserver = null;
 
   static lobbyVoiceResizeHandler = null;
@@ -150,6 +154,7 @@ export class MM {
   }
 
   static close() {
+    MM.lobbyRunId++;
     MM.lobbySkinRequestId++;
     MM.lobbyVoiceResizeObserver?.disconnect();
     MM.lobbyVoiceResizeObserver = null;
@@ -766,6 +771,22 @@ export class MM {
   }
 
   static async lobby(data, { preview = false } = {}) {
+    // Тамбур во время боя не открываем: это запоздавший MMStart (например,
+    // тренировка — бэкенд шлёт его, пока ждёт игровой сервер).
+    if (!preview && MM.isInBattle) {
+      return;
+    }
+
+    const runId = ++MM.lobbyRunId;
+    // После каждого await: если за это время пришёл MMEnd/MMCancel (MM.close)
+    // или начался бой — бросаем отрисовку, иначе тамбур всплывёт после игры.
+    const isStale = () => !preview && (runId !== MM.lobbyRunId || MM.isInBattle);
+    const dropStale = () => {
+      if (runId === MM.lobbyRunId) {
+        MM.isInTambur = false;
+      }
+    };
+
     MM.lobbyVoiceResizeObserver?.disconnect();
     MM.lobbyVoiceResizeObserver = null;
     if (MM.lobbyVoiceResizeHandler) {
@@ -784,6 +805,11 @@ export class MM {
 
     if (!preview && !MM.hero) {
       MM.hero = await App.api.request('build', 'heroAll');
+
+      if (isStale()) {
+        dropStale();
+        return;
+      }
     }
 
     const heroes = preview ? data.previewHeroes : MM.hero;
@@ -1128,6 +1154,17 @@ export class MM {
         MM.close();
         MM.searchActive(true);
       });
+
+      if (isStale()) {
+        // таймер этого лобби уже не нужен, если тамбур закрыт или идёт бой;
+        // при новом MM.lobby() его таймер перезапустит сам Timer.start
+        if (!MM.isInTambur || MM.isInBattle) {
+          Timer.stop();
+        }
+        dropStale();
+        return;
+      }
+
       Timer.sfxOptions.play = currentUserId == data.target;
     }
 
