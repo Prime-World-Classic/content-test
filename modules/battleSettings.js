@@ -21,7 +21,7 @@ const USER_CFG_HEADER = [
   '//============================================================================',
 ];
 
-const UserCfg = {
+export const UserCfg = {
   path: null,
   lines: [],
   eol: '\r\n',
@@ -490,6 +490,39 @@ function buildWheelEditor(wheel) {
       e.dataTransfer.effectAllowed = 'move';
     });
   };
+  // SVG-секторы HTML-перетаскивание не поддерживают: сектор тянется мышью, цель — сектор или
+  // строка слота под курсором (data-wheel-slot), как в бою
+  const sectorDrag = (el, slot) => {
+    el.addEventListener('mousedown', (down) => {
+      if (down.button !== 0) return;
+      let moved = false;
+      let target = null;
+      const targetAt = (e) => document.elementFromPoint(e.clientX, e.clientY)?.closest?.('[data-wheel-slot]') ?? null;
+      const onMove = (e) => {
+        if (!moved && Math.hypot(e.clientX - down.clientX, e.clientY - down.clientY) < 4) return;
+        moved = true;
+        const next = targetAt(e);
+        if (next === target) return;
+        target?.classList.remove('is-drop');
+        target = next;
+        target?.classList.add('is-drop');
+      };
+      const onUp = (e) => {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        target?.classList.remove('is-drop');
+        if (!moved) return; // щелчок — выбор слота (click)
+        const to = targetAt(e);
+        if (!to) return;
+        const slotTo = Number(to.getAttribute('data-wheel-slot'));
+        swapSlots(slot, slotTo);
+        selected = slotTo;
+        render();
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  };
   const dropTarget = (el, slot) => {
     el.addEventListener('dragover', (e) => {
       e.preventDefault();
@@ -530,7 +563,8 @@ function buildWheelEditor(wheel) {
         selected = i;
         render();
       });
-      dragSource(path, { slot: i });
+      path.setAttribute('data-wheel-slot', String(i));
+      sectorDrag(path, i);
       dropTarget(path, i);
       svg.append(path);
 
@@ -571,6 +605,7 @@ function buildWheelEditor(wheel) {
         selected = i;
         render();
       });
+      value.setAttribute('data-wheel-slot', String(i));
       dragSource(value, { slot: i });
       dropTarget(value, i);
       slots.append(DOM({ style: 'bs-wheel-slot-row' }, DOM({ style: 'bs-wheel-slot-num' }, String(i + 1)), value));

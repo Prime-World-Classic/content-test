@@ -20,11 +20,12 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 // windows
 import { keybindings } from './keybindings/keybindings.window.js';
 import { battleSettings, voiceHotkeyInput } from './battleSettings.js';
+import { fair } from './fair.js';
 
 export class Window {
   static windows = {};
   static windowOrder = [];
-  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wsteamauth', 'wyandexauth', 'wregistration-fraction']);
+  static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wfair', 'wsteamauth', 'wyandexauth', 'wregistration-fraction']);
   static overlayWindowMethods = new Set(['menu', 'settings', 'battleSettings', 'advancedSettings', 'keybindings', 'accountPanel', 'support']);
   static async show(category, method, value, value2, value3) {
     if (!(method in Window)) {
@@ -797,13 +798,23 @@ export class Window {
     return wnd;
   }
 
-  static async shop() {
+  // «Ярмарка» в стиле «Настроек боя» (fair.js); tab — вкладка: 'skin', 'flag', …, 'collection'
+  static async shop(tab) {
+    return await fair(typeof tab === 'string' ? tab : null);
+  }
+
+  static async collection() {
+    return await fair('collection');
+  }
+
+  // прежнее окно ярмарки — пока новое не проверено
+  static async shopLegacy() {
     let request = await App.api.request('shop', 'available');
     //request.sort((x,y) => x.id - y.id );
     return await this.processShopAndCollection(request, true);
   }
 
-  static async collection() {
+  static async collectionLegacy() {
     let request = await App.api.request('shop', 'purchase');
 
     return await this.processShopAndCollection(request, false);

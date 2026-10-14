@@ -19,6 +19,7 @@ import { Splash } from './splash.js';
 import { Timer } from './timer.js';
 import { HelpSplash } from './helpSpalsh.js';
 import { Shop } from './shop.js';
+import { syncFairGameFiles } from './fair.js';
 import { DomAudio } from './domAudio.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
@@ -299,7 +300,8 @@ export class View {
   
   static isFriendCallEnabled(item) {
     const state = View.normalizeFriendPresenceState(item);
-    return state === 'online' || state === 'queue';
+    // «Отошёл» — лаунчер друга открыт, просто давно без действий: звонок до него доходит
+    return state === 'online' || state === 'queue' || state === 'away';
   }
   
   static getFriendPresenceFilter(state) {
@@ -1415,6 +1417,7 @@ export class View {
     document.body.classList.add('noselect');
 
     Shop.retrieveLastUpdate();
+    syncFairGameFiles(); // номер выбранной похвалы и тексты похвал — в файлы игры
 
     View.setCss('content/castle.css');
 
