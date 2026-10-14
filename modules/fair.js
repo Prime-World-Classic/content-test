@@ -20,8 +20,10 @@ import { UserCfg } from './battleSettings.js';
 // покупка shop.buy, выбор shop.apply / shop.applyDefault, скины — Build.changeSkinForHero.
 //
 // Новые категории (shop_item.categoryId, отдельной таблицы категорий в базе нет):
-// - Загрузочные экраны (4): externalId = имя файла без расширения в content/img/fair/loadscreens/.
-//   Выбранный экран виден только самому игроку на экране загрузки боя — передача в игру следующим шагом.
+// - Загрузочные экраны (4): externalId = имя картинки: content/img/fair/loadscreens/<имя>.webp (превью лаунчера)
+//   и /UI/Styles/LoadingBack/Fair/<имя>.dds в данных игры (DXT1 1920x1080). Выбранное имя — user.cfg
+//   `setvar fair_loadscreen = <имя>` (none — фон карты), игра подменяет фон загрузки только у этого игрока
+//   (PW_Game LoadingScreenLogic, FairLoadingBack). Новый экран = webp в лаунчер + dds в Data (патч игры).
 // - Похвалы (5): externalId = номер похвалы, текст — Lang `praise_<номер>` (ru/en), название — `praise_<номер>_name`.
 //   В бой уходит только номер: user.cfg `setvar praise_id = <номер>` -> CmdPraise (amount), а текст каждый клиент
 //   берёт из praises.txt («<номер>\t<текст>», пишет syncFairGameFiles) — PW_Game AdventureScreen::OnPraise.
@@ -42,8 +44,10 @@ const CATEGORIES = [
 ];
 
 const TEST_ITEMS = [
-  { id: 'test-ls-1', categoryId: CAT.loadscreen, externalId: 'test_castle', price: 30, image: 'content/img/bg.jpg', test: true },
-  { id: 'test-ls-2', categoryId: CAT.loadscreen, externalId: 'test_map', price: 40, image: 'content/img/map.png', test: true, isNew: true },
+  { id: 'test-ls-1', categoryId: CAT.loadscreen, externalId: 'winter_rider', price: 30, test: true },
+  { id: 'test-ls-2', categoryId: CAT.loadscreen, externalId: 'moon_garden', price: 30, test: true },
+  { id: 'test-ls-3', categoryId: CAT.loadscreen, externalId: 'pumpkin_fox', price: 40, test: true, isNew: true },
+  { id: 'test-ls-4', categoryId: CAT.loadscreen, externalId: 'violet_blade', price: 40, test: true, isNew: true },
   { id: 'test-pr-1', categoryId: CAT.praise, externalId: '1', price: 8, test: true },
   { id: 'test-pr-2', categoryId: CAT.praise, externalId: '2', price: 8, test: true },
   { id: 'test-pr-3', categoryId: CAT.praise, externalId: '3', price: 10, test: true, isNew: true },
@@ -70,9 +74,9 @@ function saveLocalState(state) {
   } catch {}
 }
 
-// Файлы игры (My Games/Prime World Classic): номер выбранной похвалы в user.cfg и тексты всех похвал
-// в praises.txt (у получателя похвалы должен быть текст её номера). Вызывается при входе в замок
-// и при выборе похвалы.
+// Файлы игры (My Games/Prime World Classic): номер выбранной похвалы и имя загрузочного экрана в user.cfg,
+// тексты всех похвал в praises.txt (у получателя похвалы должен быть текст её номера). Вызывается при входе
+// в замок и при выборе экрана или похвалы.
 export async function syncFairGameFiles() {
   try {
     if (!NativeAPI.status) return;
@@ -88,9 +92,15 @@ export async function syncFairGameFiles() {
     await NativeAPI.fileSystem.promises.mkdir(folder, { recursive: true });
     await NativeAPI.fileSystem.promises.writeFile(NativeAPI.path.join(folder, 'praises.txt'), lines.join('\n') + '\n', 'utf8');
 
-    const praiseId = Number(loadLocalState().selected[CAT.praise]) || 0;
+    const selected = loadLocalState().selected;
+    const praiseId = Number(selected[CAT.praise]) || 0;
+    // имя фона /UI/Styles/LoadingBack/Fair/<имя>.dds в данных игры; none — фон карты
+    const loadscreen = /^[A-Za-z0-9_-]{1,64}$/.test(selected[CAT.loadscreen] || '') ? selected[CAT.loadscreen] : 'none';
     await UserCfg.load();
-    if (UserCfg.num('praise_id', 0) !== praiseId) await UserCfg.set({ praise_id: praiseId });
+    const changes = {};
+    if (UserCfg.num('praise_id', 0) !== praiseId) changes.praise_id = praiseId;
+    if (UserCfg.get('fair_loadscreen', '') !== loadscreen) changes.fair_loadscreen = loadscreen;
+    if (Object.keys(changes).length) await UserCfg.set(changes);
   } catch (e) {
     console.error('fair: game files write failed', e);
   }
