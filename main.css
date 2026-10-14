@@ -4731,8 +4731,9 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 
 .mm-lobby-skin-choice:is(:hover, :focus-visible),
 .mm-lobby-skin-choice[aria-pressed='true'] {
-  border-color: rgba(36, 255, 203, 0.78);
-  box-shadow: 0 0 2px rgba(36, 255, 203, 0.6), 0 0 7px rgba(36, 255, 203, 0.3), 0 0 12px rgba(36, 255, 203, 0.12);
+  border-color: rgba(75, 255, 216, 0.98);
+  box-shadow: inset 0 0 5px rgba(36, 255, 203, 0.65), inset 0 0 10px rgba(36, 255, 203, 0.24),
+    0 0 3px rgba(36, 255, 203, 0.65), 0 0 8px rgba(36, 255, 203, 0.3);
 }
 
 .mm-lobby-skin-choice:disabled {
@@ -4916,6 +4917,10 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
 .mm-lobby-middle-hero-item--unavailable::before {
   filter: grayscale(1) brightness(0.58);
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+.mm-lobby-middle-hero-item--unavailable {
+  cursor: url(img/cursor_default32x32.png), default;
 }
 
 .mm-lobby-middle-hero-item > .rank {
@@ -9129,6 +9134,48 @@ i-success {
   z-index: 9999;
 }
 
+#wcastle-invite {
+  background: linear-gradient(180deg, rgba(18, 76, 80, 0.72), rgba(18, 76, 80, 0.64) 42%, rgba(18, 76, 80, 0.74));
+  backdrop-filter: none;
+}
+
+#wcastle-invite .splash-content-button-modal {
+  font-size: 1.5cqh;
+}
+
+.chat-menu-item--muted {
+  filter: grayscale(0.72) saturate(0.4);
+}
+
+#wally-build {
+  position: fixed;
+  z-index: 10000;
+  box-sizing: border-box;
+  margin: 0;
+  align-items: center;
+  width: min(42cqh, calc(100vw - 16px));
+}
+
+#wally-build .mm-ally-build-nickname {
+  width: 100%;
+  color: rgb(252, 229, 188);
+  text-shadow: 0 0.18cqh 0.18cqh rgba(0, 0, 0, 0.72);
+  font: 1.72cqh / 1.18 'DejaVuSans', sans-serif;
+  overflow-wrap: anywhere;
+}
+
+#wally-build .mm-ally-build-grid {
+  width: min(26cqh, 100%);
+  height: 26cqh;
+}
+
+#wally-build .splash-content-button-modal {
+  flex: 0 0 auto;
+  width: 78%;
+  min-height: 4.45cqh;
+  font-size: 1.74cqh;
+}
+
 body:has(#wcastle-invite)::before,
 body:has(#wcastle-call)::before {
   content: "";
@@ -9557,6 +9604,115 @@ body:has(#wcastle-call)::before {
 
 #wcastle-menu {
   z-index: 2147483647 !important;
+}
+
+/* Spectator mode: live matches (Window.spectate) */
+#wcastle-menu.wcastle-menu--spectate {
+  width: calc(min(80cqh, 60cqw));
+  max-height: 70cqh;
+}
+
+.spectate-list {
+  width: 100%;
+  max-height: 52cqh;
+  overflow-y: auto;
+  margin-top: 1cqh;
+}
+
+.spectate-empty {
+  color: rgba(252, 229, 188, 0.9);
+  font: 3.4cqw / 1.3 'DejaVuSans', sans-serif;
+  padding: 3cqw 2cqw;
+}
+
+.spectate-match {
+  display: flex;
+  align-items: center;
+  gap: 1.5cqw;
+  margin: 1cqw 1.5cqw;
+  padding: 1cqw;
+  border-radius: 1cqw;
+  border: 0.15cqw solid rgba(158, 155, 104, 0.6);
+  background-color: rgba(0, 39, 36, 0.6);
+}
+
+.spectate-team {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4cqw;
+  min-width: 0;
+}
+
+.spectate-team--2 {
+  align-items: flex-end;
+}
+
+.spectate-player {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  max-width: 100%;
+}
+
+.spectate-team--2 .spectate-player {
+  flex-direction: row-reverse;
+}
+
+.spectate-hero {
+  flex: none;
+  width: 3.6cqw;
+  height: 3.6cqw;
+  border-radius: 0.6cqw;
+  background-size: cover;
+  background-position: center;
+}
+
+.spectate-nickname {
+  color: rgba(252, 229, 188, 0.9);
+  font: 2.4cqw / 1.2 'DejaVuSans', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spectate-meta {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8cqw;
+}
+
+.spectate-time {
+  color: rgba(252, 229, 188, 0.7);
+  font: 2.2cqw / 1 'DejaVuSans', sans-serif;
+}
+
+.spectate-watch {
+  color: rgba(252, 229, 188, 0.9);
+  font: 2.6cqw / 1 'DejaVuSans', sans-serif;
+  padding: 1cqw 2cqw;
+  border-radius: 1cqw;
+  border: 0.15cqw solid rgb(158, 155, 104);
+  background-color: #002724;
+  cursor: pointer;
+}
+
+.spectate-watch:hover {
+  background-color: #0b3d38;
+}
+
+.spectate-watch:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.spectate-locked {
+  color: rgba(252, 229, 188, 0.55);
+  font: 2.2cqw / 1.2 'DejaVuSans', sans-serif;
+  max-width: 14cqw;
+  text-align: center;
 }
 
 #wcastle-menu.wcastle-menu--quest-bg {

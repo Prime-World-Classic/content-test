@@ -21,6 +21,7 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { keybindings } from './keybindings/keybindings.window.js';
 import { battleSettings, voiceHotkeyInput } from './battleSettings.js';
 import { fair } from './fair.js';
+import { PWGame } from './pwgame.js';
 
 export class Window {
   static windows = {};
@@ -126,7 +127,8 @@ export class Window {
 
     Window.windowOrder.unshift(category);
 
-    View.active.append(template);
+    const host = method === 'allyBuild' ? MM.view : View.active;
+    host.append(template);
   }
 
   static close(category) {
@@ -971,6 +973,7 @@ export class Window {
   }
 
   static async menu() {
+    const canSpectate = await Window.spectatorAllowed();
     return DOM(
       { id: 'wcastle-menu', style: ['wcastle-menu--main', 'wcastle-menu--quest-bg'] },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('menu'))),
@@ -987,6 +990,12 @@ export class Window {
                 'Новости',
               )
             : DOM(),
+        canSpectate
+          ? DOM(
+              { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'spectate')] },
+              Lang.text('spectateMenu'),
+            )
+          : DOM(),
         DOM(
           { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'accountPanel')] },
           Lang.text('account'),
@@ -1834,6 +1843,146 @@ export class Window {
     );
   }
   
+  // Spectator mode (live match viewing): admins and whoever the backend
+  // allows (web admin, spectator_access). The answer is cached per account;
+  // an old backend without the spectator object simply hides the menu item.
+  static spectatorAccess = { userId: 0, allowed: false, at: 0 };
+
+  static async spectatorAllowed() {
+    const userId = Number(App?.storage?.data?.id || 0);
+    if (!userId) return false;
+    const cached = Window.spectatorAccess;
+    if (cached.userId === userId && Date.now() - cached.at < 5 * 60 * 1000) return cached.allowed;
+    let allowed = false;
+    try {
+      const result = await App.api.request('spectator', 'access');
+      allowed = Boolean(result?.allowed);
+    } catch {
+      allowed = false;
+    }
+    Window.spectatorAccess = { userId, allowed, at: Date.now() };
+    return allowed;
+  }
+
+  static async spectate() {
+    const list = DOM({ style: 'spectate-list' }, DOM({ style: 'spectate-empty' }, Lang.text('spectateLoading')));
+    const root = DOM(
+      { id: 'wcastle-menu', style: ['wcastle-menu--quest-bg', 'wcastle-menu--spectate'] },
+      DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('spectateTitle'))),
+      list,
+      DOM(
+        { style: 'castle-menu-item-button', domaudio: domAudioPresets.bigButton, event: ['click', () => Window.spectateLoad(list)] },
+        Lang.text('spectateRefresh'),
+      ),
+    );
+    Window.spectateLoad(list);
+    return root;
+  }
+
+  static async spectateLoad(list) {
+    let matches;
+    try {
+      // All live matches are listed; only those of this launcher's MM line
+      // (live client - mm, test client - mmtest) can be watched: the spectator
+      // recomputes the battle and the two clients are different builds.
+      matches = await App.api.request('spectator', 'live', { mm: App.CURRENT_MM });
+    } catch (error) {
+      list.replaceChildren(DOM({ style: 'spectate-empty' }, String(error?.message || error)));
+      return;
+    }
+    if (!Array.isArray(matches) || !matches.length) {
+      list.replaceChildren(DOM({ style: 'spectate-empty' }, Lang.text('spectateEmpty')));
+      return;
+    }
+    list.replaceChildren(...matches.map((match) => Window.spectateMatch(match)));
+  }
+
+  static spectateMatch(match) {
+    const team = (teamId) =>
+      DOM(
+        { style: ['spectate-team', `spectate-team--${teamId}`] },
+        ...match.players
+          .filter((player) => player.team === teamId)
+          .map((player) => {
+            const hero = DOM({ style: 'spectate-hero' });
+            hero.style.backgroundImage = `url(content/hero/${Number(player.hero) || 0}/1.webp)`;
+            return DOM({ style: 'spectate-player' }, hero, DOM({ style: 'spectate-nickname' }, player.nickname || `id${player.id}`));
+          }),
+      );
+    const minutes = Math.max(0, Math.floor((Date.now() - Number(match.startedAt || 0)) / 60000));
+    const watch = match.watchable
+      ? DOM(
+          {
+            tag: 'button',
+            style: 'spectate-watch',
+            domaudio: domAudioPresets.bigButton,
+            event: ['click', () => Window.spectateWatch(match.id, watch)],
+          },
+          Lang.text('spectateWatch'),
+        )
+      : match.mm === App.CURRENT_MM
+        ? DOM({ style: 'spectate-locked' }, Lang.text('spectateOwnMatch'))
+        : DOM(
+            { style: 'spectate-locked', title: Lang.text('spectateOtherClientHint') },
+            Lang.text(match.mm === 'mmtest' ? 'spectateTestClient' : 'spectateLiveClient'),
+          );
+    return DOM(
+      { style: 'spectate-match' },
+      team(1),
+      DOM(
+        { style: 'spectate-meta' },
+        DOM({ style: 'spectate-time' }, match.startedAt ? Lang.text('spectateMinutes').replace('{min}', minutes) : ''),
+        watch,
+      ),
+      team(2),
+    );
+  }
+
+  static async spectateWatch(id, button) {
+    if (button.disabled) return;
+    button.disabled = true;
+    button.innerText = Lang.text('spectateConnecting');
+    let data;
+    try {
+      data = await App.api.request('spectator', 'watch', { id, mm: App.CURRENT_MM });
+    } catch (error) {
+      App.error(error);
+      button.disabled = false;
+      button.innerText = Lang.text('spectateWatch');
+      return;
+    }
+    Window.close('main');
+    // Like a battle start, but without the battle voice: a spectator is in no team
+    Castle.toggleRender(Castle.RENDER_LAYER_GAME, false);
+    Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, false);
+    document.body.style.display = 'none';
+    if (NativeAPI.status) {
+      NativeAPI.window.hide();
+      NativeAPI.app.unregisterGlobalHotKey(NativeAPI.altEnterShortcut);
+    }
+    try {
+      await PWGame.spectate(data.key, Window.spectateStopEvent, data.ips, data.port);
+    } catch (error) {
+      Window.spectateStopEvent();
+      App.error(error);
+    }
+  }
+
+  static spectateStopEvent() {
+    Castle.toggleRender(Castle.RENDER_LAYER_GAME, true);
+    Castle.toggleMusic(Castle.MUSIC_LAYER_GAME, true);
+    document.body.style.display = 'block';
+    if (NativeAPI.status) {
+      try {
+        Settings.ApplySettings();
+        NativeAPI.window.show();
+        NativeAPI.app.registerGlobalHotKey(NativeAPI.altEnterShortcut);
+      } catch (e) {
+        App.error(e);
+      }
+    }
+  }
+
   static async adminPanel() {
     return DOM(
       { id: 'wcastle-menu' },
@@ -2418,6 +2567,69 @@ export class Window {
         ),
       ),
     );
+  }
+
+  static async allyBuild({ request, user, hero, nickname, preview }) {
+    let overwrite = false;
+    let pending = false;
+    const copy = DOM({
+      tag: 'button', type: 'button', style: 'splash-content-button-modal',
+      domaudio: domAudioPresets.bigButton,
+      event: ['click', async () => {
+        if (pending) return;
+        if (!overwrite) {
+          overwrite = true;
+          copy.textContent = Lang.text('overwriteBuild');
+          return;
+        }
+        if (preview) return;
+        pending = true;
+        copy.disabled = true;
+        try {
+          await App.api.request('build', 'steal', { user, hero });
+          if (Window.windows.allyBuild === body) Window.close('allyBuild');
+          if (MM.isInTambur && Number(MM.targetHeroId) === Number(hero)) {
+            await MM.lobbyBuildView(hero);
+          }
+        } catch (error) {
+          App.error(error);
+        } finally {
+          pending = false;
+          copy.disabled = false;
+        }
+      }],
+    }, Lang.text('mmCopyBuild'));
+    const body = DOM({
+      id: 'wally-build', style: ['splash-content', 'splash-content--titled'],
+      role: 'dialog', ariaLabel: Lang.text('mmAllyBuildTitle'),
+    },
+    DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('mmAllyBuildTitle'))),
+    DOM({ style: 'mm-ally-build-nickname' }, nickname),
+    DOM({ style: 'mm-ally-build-grid' }, Build.viewModel(request, false, false)),
+    copy);
+    const position = () => {
+      if (!body.isConnected || !MM.lobbyConfirm?.isConnected) return;
+      const anchor = MM.lobbyConfirm.getBoundingClientRect();
+      const gap = 8;
+      const left = Math.max(gap, Math.min(anchor.left + anchor.width / 2 - body.offsetWidth / 2,
+        window.innerWidth - body.offsetWidth - gap));
+      body.style.left = `${left}px`;
+      body.style.top = `${Math.max(gap, Math.min(anchor.bottom + gap,
+        window.innerHeight - body.offsetHeight - gap))}px`;
+    };
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(position) : null;
+    observer?.observe(MM.lobbyConfirm);
+    observer?.observe(body);
+    window.addEventListener('resize', position);
+    const closeOnLobbyExit = () => Window.close('allyBuild');
+    window.addEventListener('pw:mm-close', closeOnLobbyExit, { once: true });
+    body.cleanup = () => {
+      observer?.disconnect();
+      window.removeEventListener('resize', position);
+      window.removeEventListener('pw:mm-close', closeOnLobbyExit);
+    };
+    requestAnimationFrame(position);
+    return body;
   }
 
   static async inviteWindow() {

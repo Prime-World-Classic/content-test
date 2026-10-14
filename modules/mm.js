@@ -722,6 +722,18 @@ export class MM {
     hero.setAttribute('aria-disabled', String(unavailable));
   }
 
+  static refreshLobbyHeroAvailability() {
+    if (!MM.lobbyHeroes) return;
+    const users = Object.entries(MM.lobbyUsers || {});
+    for (const hero of MM.lobbyHeroes.querySelectorAll('.mm-lobby-middle-hero-item')) {
+      const heroId = Number(hero.id.slice(4));
+      const owners = users.filter(([, user]) => Number(user.hero) === heroId);
+      const owner = owners.find(([id]) => Number(id) !== Number(MM.lobbyUserId)) || owners[0];
+      const banned = users.some(([, user]) => Number(user.banhero) === heroId);
+      MM.setLobbyHeroAvailability(hero, owner?.[0] || 0, banned);
+    }
+  }
+
   static watchLobbyBuildTabs() {
     const update = (tab) => {
       const label = tab.querySelector('span');
@@ -768,6 +780,7 @@ export class MM {
       player.classList.remove('mm-lobby-header-team-player--active'));
     document.getElementById(`PLAYER${target}`)?.classList.add('mm-lobby-header-team-player--active');
     MM.lobbyConfirm.disabled = App.storage.data.id != target;
+    Timer.updateConfirmLabel();
   }
 
   static async lobby(data, { preview = false } = {}) {
@@ -865,10 +878,12 @@ export class MM {
                 banHeroId: MM.targetBanHeroId,
               });
             } catch (error) {
+              MM.lobbyConfirm.dataset.errorUntil = Date.now() + 1500;
               MM.lobbyConfirm.innerText = error;
 
               setTimeout(() => {
-                MM.lobbyConfirm.innerText = Lang.text('mmConfirmChoice');
+                delete MM.lobbyConfirm.dataset.errorUntil;
+                Timer.updateConfirmLabel();
               }, 1500);
             }
           },
@@ -876,6 +891,8 @@ export class MM {
       },
       Lang.text('mmConfirmChoice'),
     );
+    MM.lobbyConfirm.dataset.defaultLabel = Lang.text('mmConfirmChoice');
+    MM.lobbyConfirm.dataset.urgentLabel = Lang.text('mmConfirmUrgent');
 
     MM.lobbyConfirm.disabled = currentUserId != data.target;
 
@@ -947,9 +964,8 @@ export class MM {
         leftTeam.append(player);
 
         player.onclick = () => {
-          if (MM.preview) return;
           if (player.dataset.hero) {
-            Build.view(key, player.dataset.hero, data.users[key].nickname, false);
+            Build.view(key, player.dataset.hero, data.users[key].nickname, false, { lobby: true });
           }
         };
       } else {
@@ -1360,21 +1376,7 @@ export class MM {
       setTimeout(() => MM.flushPendingHeroEvents(data.id), 1200);
     }
 
-    for (let key in data.users) {
-      let findHero = document.getElementById(`HERO${data.users[key].hero}`);
-
-      if (findHero) {
-        MM.setLobbyHeroAvailability(findHero, key);
-      }
-
-      if (data.banhero && data.users[key].banhero) {
-        let findHero = document.getElementById(`HERO${data.users[key].banhero}`);
-
-        if (findHero) {
-          MM.setLobbyHeroAvailability(findHero, 0, true);
-        }
-      }
-    }
+    MM.refreshLobbyHeroAvailability();
 
     if (preview) return;
 
@@ -1506,6 +1508,11 @@ export class MM {
       });
     }
 
+    if (MM.lobbyUsers?.[data.userId]) {
+      MM.lobbyUsers[data.userId].hero = data.heroId;
+      MM.lobbyUsers[data.userId].banhero = data.banHeroId || 0;
+    }
+    MM.refreshLobbyHeroAvailability();
     MM.lobbyPlayerAnimate?.cancel();
     MM.lobbyPlayerAnimate = null;
     MM.setLobbySelection(data.target);
@@ -1550,35 +1557,6 @@ export class MM {
       }
     }
 
-    for (let child of MM.lobbyHeroes.children) {
-      if (child.dataset.ban == data.userId) {
-        MM.setLobbyHeroAvailability(child);
-
-        break;
-      }
-    }
-
-    let findHero = document.getElementById(`HERO${data.heroId}`);
-
-    if (findHero) {
-      MM.setLobbyHeroAvailability(findHero, data.userId);
-
-      findHero.onclick = false;
-
-      findHero.oncontextmenu = false;
-    }
-
-    if (data.banHeroId) {
-      let findHero = document.getElementById(`HERO${data.banHeroId}`);
-
-      if (findHero) {
-        MM.setLobbyHeroAvailability(findHero, 0, true);
-
-        findHero.onclick = false;
-
-        findHero.oncontextmenu = false;
-      }
-    }
   }
   
   static syncHeroes(data) {
@@ -1671,6 +1649,8 @@ export class MM {
   }
 
   static eventChangeHero(data) {
+    if (MM.lobbyUsers?.[data.id]) MM.lobbyUsers[data.id].hero = data.heroId;
+    MM.refreshLobbyHeroAvailability();
     let findPlayer = document.getElementById(`PLAYER${data.id}`),
       skinId = 1;
 
@@ -1708,6 +1688,8 @@ export class MM {
   }
 
   static eventBanHero(data) {
+    if (MM.lobbyUsers?.[data.id]) MM.lobbyUsers[data.id].banhero = data.heroId;
+    MM.refreshLobbyHeroAvailability();
     let findPlayer = document.getElementById(`PLAYER${data.id}`);
 
     if (findPlayer) {

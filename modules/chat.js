@@ -172,7 +172,7 @@ export class Chat {
 
     document.addEventListener('keydown', (event) => {
       if (event.code == 'KeyM' && (event.ctrlKey || event.metaKey)) {
-        changeChatVisibility();
+        Chat.changeChatVisibility();
       }
     });
   }
@@ -186,6 +186,14 @@ export class Chat {
       Chat.body.style.display = 'none';
 
       Chat.hide = true;
+    }
+    Chat.updateToggleState();
+  }
+
+  static updateToggleState() {
+    for (const toggle of document.querySelectorAll('.chat-menu-item')) {
+      toggle.classList.toggle('chat-menu-item--muted', Chat.hide);
+      toggle.setAttribute('aria-pressed', String(!Chat.hide));
     }
   }
 
@@ -585,6 +593,7 @@ export class Chat {
     if (Chat.hide) {
       Chat.body.style.display = 'block';
       Chat.hide = false;
+      Chat.updateToggleState();
     }
   }
 

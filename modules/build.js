@@ -155,11 +155,16 @@ export class Build {
 
   static binds = [];
 
-  static async view(user, hero, nickname = '', animate = true) {
-    let request = await App.api.request('build', 'get', {
+  static async view(user, hero, nickname = '', animate = true, { lobby = false } = {}) {
+    const preview = lobby && MM.preview;
+    let request = preview ? Array.from({ length: 36 }, (_, index) => index + 1) : await App.api.request('build', 'get', {
       user: user,
       hero: hero,
     });
+    if (lobby) {
+      if (!MM.isInTambur) return;
+      return Window.show('allyBuild', 'allyBuild', { request, user, hero, nickname, preview });
+    }
 
     let container = DOM({
       domaudio: domAudioPresets.defaultButton,

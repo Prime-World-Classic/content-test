@@ -59,11 +59,13 @@ export class PWGame {
     }
   }
 
-  static GetPlayPwProtocol(id, ips, port) {
+  static GetPlayPwProtocol(id, ips, port, method = 'runGame') {
     // 5th token is the legacy mirror index. Mirror selection is gone: the
     // pool block is pre-sorted by the launcher (fastest reachable first),
     // so the client always starts from index 0.
-    let protocol = `pwclassic://runGame/${id}/${App.PW_VERSION}/0`;
+    // method: runGame (a player) or spectate (live match viewing, the key
+    // comes from the backend spectator.watch).
+    let protocol = `pwclassic://${method}/${id}/${App.PW_VERSION}/0`;
     if (ips) {
       protocol = `${protocol}/${ips}`;
       // Base port of the target server (6th token). Without it the client
@@ -210,7 +212,7 @@ export class PWGame {
     App.api.request(App.CURRENT_MM, 'reportPing', { seq: data.seq, ips: ips });
   }
 
-  static async start(id, callback, ips, port) {
+  static async start(id, callback, ips, port, method = 'runGame') {
     await PWGame.check();
 
     if (ips) {
@@ -219,7 +221,7 @@ export class PWGame {
       ips = await PWGame.orderServerIps(ips, port);
     }
 
-    PWGame.currentPlayPwProtocol = PWGame.GetPlayPwProtocol(id, ips, port);
+    PWGame.currentPlayPwProtocol = PWGame.GetPlayPwProtocol(id, ips, port, method);
 
     PWGame.openProtocolSocket();
 
@@ -235,6 +237,11 @@ export class PWGame {
 
   static async reconnect(id, callback, ips, port) {
     this.start(id, callback, ips, port);
+  }
+
+  // Live match viewing: key = <session 32><spectator key 64><user id>
+  static async spectate(key, callback, ips, port) {
+    return PWGame.start(key, callback, ips, port, 'spectate');
   }
 
   static async check() {

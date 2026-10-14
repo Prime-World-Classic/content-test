@@ -58,8 +58,17 @@ export class Timer {
   }
 
   static render(seconds) {
+    Timer.seconds = seconds;
     Timer.sb.innerText = `${Timer.message || ''} 00:${seconds < 10 ? '0' : ''}${seconds}`;
     Timer.body.classList.toggle('mm-timer--urgent', seconds > 0 && seconds <= 8);
+    Timer.updateConfirmLabel();
+  }
+
+  static updateConfirmLabel() {
+    const button = Timer.body?.parentElement?.querySelector('.mm-lobby-confirm');
+    if (!button || Number(button.dataset.errorUntil) > Date.now()) return;
+    const urgent = !button.disabled && Timer.seconds > 0 && Timer.seconds <= 8;
+    button.textContent = urgent ? button.dataset.urgentLabel : button.dataset.defaultLabel;
   }
 
   static end() {
@@ -75,6 +84,8 @@ export class Timer {
   }
 
   static stop() {
+    Timer.seconds = 0;
+    Timer.updateConfirmLabel();
     Timer.body?.classList.remove('mm-timer--urgent');
     Sound.stop('timer');
     Timer.sfxOptions.play = false;

@@ -2186,7 +2186,9 @@ export class View {
     });
     let chatMenuItem = DOM({
       domaudio: domAudioPresets.defaultButton,
-      style: 'chat-menu-item',
+      style: ['chat-menu-item', Chat.hide ? 'chat-menu-item--muted' : null],
+      role: 'button',
+      tabIndex: 0,
       event: [
         'click',
         () => {
@@ -2194,6 +2196,13 @@ export class View {
         },
       ],
       data: { tooltip: Lang.text('chatToggle') },
+    });
+    chatMenuItem.setAttribute('aria-pressed', String(!Chat.hide));
+    chatMenuItem.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        Chat.changeChatVisibility();
+      }
     });
     let notificationsMenuItem = App.createNotificationsButton();
     let heroesMenuItem = DOM({
