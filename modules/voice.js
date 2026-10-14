@@ -1840,6 +1840,17 @@ export class Voice {
 
     await Voice.initLocalMedia();
 
+    // Звонок другу, начатый самим игроком, сразу с включённым микрофоном (не при переподключении
+    // после боя и не в режиме рации — там микрофон включает зажатая клавиша)
+    if (Voice.mic && this.key === 'friend' && !Number(options?.reconnect || 0) && !Settings.settings?.voiceRadioMode && !Voice.mic.enabled) {
+      Voice.mic.enabled = true;
+      Voice.setMicWanted(true);
+      Sound.play(SOUNDS_LIBRARY.VC_ENABALED, {
+        id: 'Voice_enabled',
+        volume: Castle.GetVolume(Castle.AUDIO_SOUNDS),
+      });
+    }
+
     if (Voice.mic) {
       this.peer.addTrack(Voice.mic);
     }
