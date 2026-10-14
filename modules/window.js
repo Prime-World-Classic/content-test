@@ -19,12 +19,13 @@ import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 
 // windows
 import { keybindings } from './keybindings/keybindings.window.js';
+import { battleSettings, voiceHotkeyInput } from './battleSettings.js';
 
 export class Window {
   static windows = {};
   static windowOrder = [];
   static overlayWindowIds = new Set(['wquest', 'wbuild', 'wtop', 'wshop', 'wsteamauth', 'wyandexauth', 'wregistration-fraction']);
-  static overlayWindowMethods = new Set(['menu', 'settings', 'advancedSettings', 'keybindings', 'accountPanel', 'support']);
+  static overlayWindowMethods = new Set(['menu', 'settings', 'battleSettings', 'advancedSettings', 'keybindings', 'accountPanel', 'support']);
   static async show(category, method, value, value2, value3) {
     if (!(method in Window)) {
       return;
@@ -51,6 +52,11 @@ export class Window {
       const previousMethod = typeof value === 'string' ? value : 'settings';
       template.requestClose = () => {
         Window.show(category, previousMethod);
+      };
+    }
+    if (category === 'main' && method === 'battleSettings') {
+      template.requestClose = () => {
+        Window.show(category, 'menu');
       };
     }
     let closeButton = DOM(
@@ -980,6 +986,10 @@ export class Window {
         ),
         DOM(
           { style: 'castle-menu-item-button' },
+          DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'battleSettings')] }, Lang.text('battleSettings')),
+        ),
+        DOM(
+          { style: 'castle-menu-item-button' },
           DOM({ domaudio: domAudioPresets.bigButton, event: ['click', () => Window.show('main', 'support')] }, Lang.text('support')),
         ),
         DOM(
@@ -1239,6 +1249,10 @@ export class Window {
             `${Math.round((Number(Settings.settings.voiceVolume) || 1) * 100)}%`,
           ),
         ),
+        // клавиши голосовой связи лаунчера (те же — в «Настройках боя» → «Общение»)
+        DOM({ style: 'castle-menu-section-title' }, Lang.text('voiceHotkeys')),
+        DOM({ style: 'castle-menu-voice-key' }, DOM({}, Lang.text('voiceEnableToggle')), voiceHotkeyInput('voiceToggleHotkey', 'castle-keybinding-input')),
+        DOM({ style: 'castle-menu-voice-key' }, DOM({}, Lang.text('voiceDropCalls')), voiceHotkeyInput('voiceDropHotkey', 'castle-keybinding-input')),
         DOM(
           {
             style: 'castle-menu-item-button',
@@ -1269,19 +1283,6 @@ export class Window {
             ],
           },
           `${Lang.text('language')} (${Lang.target})`,
-        ),
-        // Добавленная кнопка "Клавиши"
-        DOM(
-          {
-            style: 'castle-menu-item-button',
-            event: [
-              'click',
-              () => {
-                Window.show('main', 'keybindings', 'settings');
-              },
-            ],
-          },
-          Lang.text('keys'),
         ),
         // Кнопка "Назад"
         DOM({ style: 'wcastle-menu__exit-separator' }),
@@ -2505,3 +2506,4 @@ export class Window {
   }
 }
 Window.keybindings = keybindings;
+Window.battleSettings = battleSettings;

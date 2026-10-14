@@ -11074,3 +11074,564 @@ body:has(#wcastle-call)::before {
     width: auto;
   }
 }
+
+/* ---------------------------------------------------------------- Battle settings (battleSettings.js) */
+#wbattle-settings {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 11cqh;
+  margin: 0 auto;
+  width: min(108cqh, 92cqw);
+  height: 76cqh;
+  box-sizing: border-box;
+  padding: 3.4cqh 1.6cqh 1.6cqh;
+  border-radius: 1cqh;
+  border: 0.1cqh solid rgb(158, 155, 104);
+  background-color: rgba(18, 76, 80, 0.66);
+  background-image:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.288) 0%, rgba(0, 0, 0, 0.176) 48%, rgba(0, 0, 0, 0.088) 100%),
+    radial-gradient(92% 72% at 50% 16%, rgba(13, 90, 118, 0.26) 0%, rgba(13, 90, 118, 0.16) 44%, rgba(13, 90, 118, 0) 100%),
+    linear-gradient(180deg, rgba(18, 76, 80, 0.72) 0%, rgba(18, 76, 80, 0.64) 42%, rgba(18, 76, 80, 0.74) 100%);
+  box-shadow:
+    0 0.6cqh 1.8cqh rgba(0, 0, 0, 0.45),
+    inset 0 0 0.7cqh rgba(255, 255, 255, 0.06);
+  z-index: 2147483647 !important;
+  display: flex;
+  flex-direction: column;
+  color: rgba(252, 229, 188, 0.94);
+  font-family: 'DejaVuSans', sans-serif;
+  text-align: left;
+}
+
+#wbattle-settings .close-button {
+  width: 3.4cqh;
+  height: 3.4cqh;
+}
+
+.bs-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 1.6cqh;
+}
+
+.bs-sidebar {
+  flex: 0 0 22cqh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1cqh;
+  padding: 1.2cqh;
+  border-radius: 0.8cqh;
+  background: rgba(2, 24, 29, 0.45);
+  box-shadow: inset 0 0 0.8cqh rgba(0, 0, 0, 0.45);
+}
+
+#wbattle-settings .castle-menu-item-button.bs-cat {
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 1cqh 0.8cqh;
+  font: 1.75cqh / 1.2 'DejaVuSans', sans-serif;
+  border-radius: 1cqh;
+  text-align: center;
+  cursor: var(--cursor-pointer);
+}
+
+#wbattle-settings .castle-menu-item-button.bs-cat.is-active {
+  color: #fff;
+  border-color: rgb(255, 205, 80);
+  box-shadow:
+    inset 0 0 1cqh rgba(0, 0, 0, 0.18),
+    0 0 0 0.25cqh rgba(255, 196, 64, 0.9),
+    0 0 1.2cqh rgba(255, 196, 64, 0.45);
+}
+
+.bs-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.bs-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 1cqh;
+}
+
+.bs-content::-webkit-scrollbar {
+  width: 1.2cqh;
+  background: rgba(16, 59, 65, 0.72);
+  border-radius: 1cqh;
+}
+
+.bs-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, rgba(42, 104, 98, 0.95), rgba(18, 69, 73, 0.95));
+  border-radius: 1cqh;
+  border: 0.1cqh solid rgba(158, 155, 104, 0.8);
+}
+
+.bs-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.bs-header {
+  margin: 1.2cqh 0 0.6cqh;
+  padding: 0.7cqh 1.4cqh;
+  font: 2cqh / 1.2 'DejaVuSans', sans-serif;
+  color: #ffe5b7;
+  text-shadow: -1px -1px 0 #612e0c, 1px -1px 0 #612e0c, -1px 1px 0 #612e0c, 1px 1px 0 #612e0c;
+  border-top: 0.1cqh solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.25) 1%, rgba(255, 255, 255, 0) 100%);
+}
+
+.bs-page > .bs-header:first-child {
+  margin-top: 0;
+}
+
+.bs-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4cqh;
+  min-height: 3.6cqh;
+  padding: 0.25cqh 1.4cqh;
+  font: 1.75cqh / 1.25 'DejaVuSans', sans-serif;
+}
+
+.bs-row--check {
+  justify-content: flex-start;
+}
+
+.bs-row-label {
+  color: rgba(252, 229, 188, 0.94);
+  text-shadow: rgba(0, 0, 0, 0.55) 0 0 0.5cqh;
+  cursor: default;
+}
+
+.bs-row--check .bs-row-label {
+  cursor: var(--cursor-pointer);
+}
+
+.bs-row.is-disabled,
+.bs-field.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.bs-note {
+  padding: 0 1.4cqh 0.4cqh 5cqh;
+  font: 1.55cqh / 1.25 'DejaVuSans', sans-serif;
+  color: rgba(205, 220, 214, 0.85);
+}
+
+.bs-check {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 0 0 auto;
+  width: 2.6cqh;
+  height: 2.6cqh;
+  margin: 0;
+  border-radius: 0.5cqh;
+  border: 0.15cqh solid rgb(158, 155, 104);
+  background: linear-gradient(180deg, rgba(2, 24, 29, 0.98), rgba(10, 48, 50, 0.96));
+  box-shadow: inset 0 0.3cqh 0.4cqh rgba(0, 0, 0, 0.55);
+  position: relative;
+  cursor: var(--cursor-pointer);
+}
+
+.bs-check:checked::before {
+  content: '';
+  position: absolute;
+  left: 0.75cqh;
+  top: 0.15cqh;
+  width: 0.7cqh;
+  height: 1.5cqh;
+  border: solid #ffc94a;
+  border-width: 0 0.45cqh 0.45cqh 0;
+  transform: rotate(40deg);
+  filter: drop-shadow(0 0 0.3cqh rgba(255, 190, 60, 0.6));
+}
+
+.bs-slider-box {
+  display: flex;
+  align-items: center;
+  gap: 1.2cqh;
+  flex: 0 0 auto;
+}
+
+#wbattle-settings .castle-menu-slider.bs-slider {
+  width: 22cqh;
+  height: 2cqh;
+  margin: 0;
+  border-radius: 1cqh;
+}
+
+#wbattle-settings .castle-menu-slider.bs-slider::-webkit-slider-runnable-track {
+  height: 2cqh;
+  border-radius: 1cqh;
+}
+
+#wbattle-settings .castle-menu-slider.bs-slider::-webkit-slider-thumb {
+  width: 2.6cqh;
+  height: 2.6cqh;
+  margin-top: -0.3cqh;
+}
+
+.bs-value {
+  width: 6cqh;
+  text-align: right;
+  font: 1.75cqh / 1 'DejaVuSans', sans-serif;
+  color: #ffd27a;
+}
+
+.bs-key,
+.bs-select {
+  flex: 0 0 auto;
+  width: 22cqh;
+  height: 3.2cqh;
+  box-sizing: border-box;
+  text-align: center;
+  font: 1.7cqh / 1 'DejaVuSans', sans-serif;
+  color: #ffe5b7;
+  background: #0d3f3d;
+  border: 0.1cqh solid rgba(158, 155, 104, 0.8);
+  border-radius: 1.2cqh;
+  box-shadow:
+    0 0.2cqh 0.2cqh 0.05cqh rgba(255, 255, 255, 0.25),
+    inset 0 1.2cqh 1cqh -0.8cqh rgba(0, 0, 0, 0.8);
+  text-shadow: -1px -1px 0 #612e0c, 1px -1px 0 #612e0c, -1px 1px 0 #612e0c, 1px 1px 0 #612e0c;
+  outline: none;
+  cursor: var(--cursor-pointer);
+}
+
+.bs-key:focus {
+  border-color: rgb(255, 205, 80);
+  box-shadow: 0 0 0.8cqh rgba(255, 196, 64, 0.6);
+}
+
+.bs-select {
+  text-align: left;
+  padding: 0 1cqh;
+}
+
+.bs-select option {
+  background: #0d3f3d;
+  color: #ffe5b7;
+}
+
+.bs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1cqh 3cqh;
+  padding: 0.4cqh 1.4cqh;
+}
+
+.bs-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8cqh;
+  font: 1.75cqh / 1.2 'DejaVuSans', sans-serif;
+}
+
+.bs-field .bs-select {
+  width: 100%;
+}
+
+.bs-buttons,
+.bs-footer {
+  display: flex;
+  justify-content: center;
+  gap: 2cqh;
+  padding: 1cqh 0;
+}
+
+.bs-footer {
+  border-top: 0.1cqh solid rgba(255, 255, 255, 0.2);
+  margin-top: 0.8cqh;
+  padding-bottom: 0;
+}
+
+#wbattle-settings .castle-menu-item-button.bs-button {
+  width: auto;
+  min-width: 18cqh;
+  height: auto;
+  margin: 0;
+  padding: 0.9cqh 2.4cqh;
+  font: 1.8cqh / 1.2 'DejaVuSans', sans-serif;
+  border-radius: 1cqh;
+  text-align: center;
+  cursor: var(--cursor-pointer);
+}
+
+#wbattle-settings .castle-menu-item-button.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.bs-warning {
+  padding-top: 0.6cqh;
+  text-align: center;
+  font: 1.5cqh / 1.2 'DejaVuSans', sans-serif;
+  color: #ffb27a;
+}
+
+/* wheel editor */
+.bs-wheel-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 3cqh;
+  padding: 0.6cqh 1.4cqh;
+}
+
+.bs-wheel {
+  flex: 0 0 auto;
+  width: 24cqh;
+  height: 24cqh;
+}
+
+.bs-wheel-sector {
+  fill: rgba(4, 32, 42, 0.92);
+  stroke: rgba(201, 170, 96, 0.9);
+  stroke-width: 1.2;
+  cursor: var(--cursor-pointer);
+}
+
+.bs-wheel-sector:hover,
+.bs-wheel-sector.is-drop {
+  fill: rgba(42, 104, 98, 0.95);
+}
+
+.bs-wheel-sector.is-selected {
+  fill: rgba(80, 140, 130, 0.95);
+}
+
+.bs-wheel-hub {
+  fill: rgba(2, 18, 22, 0.98);
+  stroke: rgba(201, 170, 96, 0.9);
+  stroke-width: 1.5;
+  pointer-events: none;
+}
+
+.bs-wheel-number {
+  fill: #fff;
+  font: 14px 'DejaVuSans', sans-serif;
+  pointer-events: none;
+}
+
+.bs-wheel-slots {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5cqh;
+}
+
+.bs-wheel-slot-row {
+  display: flex;
+  align-items: center;
+  gap: 1cqh;
+}
+
+.bs-wheel-slot-num {
+  width: 2.2cqh;
+  text-align: right;
+  font: 1.7cqh / 1 'DejaVuSans', sans-serif;
+  color: #ffd27a;
+}
+
+.bs-wheel-slot,
+.bs-wheel-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqh;
+  font: 1.65cqh / 1.2 'DejaVuSans', sans-serif;
+  color: #ffe5b7;
+  cursor: var(--cursor-pointer);
+  user-select: none;
+}
+
+.bs-wheel-slot {
+  flex: 1;
+  justify-content: center;
+  min-height: 2.8cqh;
+  padding: 0 1cqh;
+  border-radius: 1cqh;
+  background: #0d3f3d;
+  border: 0.1cqh solid rgba(158, 155, 104, 0.8);
+  box-shadow: inset 0 1.2cqh 1cqh -0.8cqh rgba(0, 0, 0, 0.8);
+}
+
+.bs-wheel-slot.is-selected {
+  color: #fff;
+  border-color: rgb(255, 205, 80);
+}
+
+.bs-wheel-slot.is-drop {
+  background: rgba(42, 104, 98, 0.95);
+}
+
+.bs-wheel-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2cqh;
+  margin-top: 0.8cqh;
+  font: 1.7cqh / 1 'DejaVuSans', sans-serif;
+}
+
+#wbattle-settings .castle-menu-item-button.bs-button.bs-wheel-count-btn {
+  min-width: 0;
+  width: 4cqh;
+  padding: 0.4cqh 0;
+}
+
+.bs-wheel-catalog {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6cqh 2cqh;
+  padding: 1.2cqh 1.4cqh 0.6cqh;
+}
+
+.bs-wheel-item:hover {
+  color: #fff;
+}
+
+.bs-wheel-item.is-used {
+  color: rgba(255, 229, 183, 0.6);
+}
+
+.bs-wheel-icon {
+  width: 2.2cqh;
+  height: 2.2cqh;
+  pointer-events: none;
+}
+
+/* castle settings: launcher voice keys */
+.castle-menu-voice-key {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1cqh;
+  width: 90%;
+  margin: 0.6cqh 0;
+  color: rgba(252, 229, 188, 0.9);
+  font: 1.6cqh / 1.2 'DejaVuSans', sans-serif;
+  text-align: left;
+}
+
+.castle-menu-voice-key .castle-keybinding-input {
+  width: 45%;
+  height: 3.2cqh;
+  font-size: 1.6cqh;
+  cursor: var(--cursor-pointer);
+}
+
+/* ---------------------------------------------------------------- Menus: buttons and sliders as in Battle settings */
+/* one look for #wcastle-menu windows and #wbattle-settings; sizes in cqh, the same in both */
+#wcastle-menu .castle-menu-item-button,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button,
+#wbattle-settings .castle-menu-item-button {
+  color: rgba(252, 229, 188, 0.9);
+  border: 0.25cqh solid rgb(158, 155, 104);
+  border-radius: 1cqh;
+  background: #002724;
+  box-shadow:
+    inset 0 0 1cqh rgba(0, 0, 0, 0.18),
+    inset 0 0 0 0.25cqh rgba(21, 23, 12, 1),
+    0 0 0 0.25cqh rgba(69, 67, 40, 1);
+  filter: none;
+  transition: filter 0.12s ease, border-color 0.12s ease;
+  cursor: var(--cursor-pointer);
+}
+
+#wcastle-menu .castle-menu-item-button:hover,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button:hover,
+#wbattle-settings .castle-menu-item-button:hover {
+  border-color: rgb(196, 182, 112);
+  filter: brightness(1.12);
+  box-shadow:
+    inset 0 0 1cqh rgba(0, 0, 0, 0.18),
+    inset 0 0 0 0.25cqh rgba(21, 23, 12, 1),
+    0 0 0 0.25cqh rgba(69, 67, 40, 1);
+}
+
+#wcastle-menu .castle-menu-item-button::before,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button::before,
+#wbattle-settings .castle-menu-item-button::before {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), transparent 20%);
+  mix-blend-mode: color-dodge;
+}
+
+#wcastle-menu .castle-menu-item-button::after,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button::after,
+#wbattle-settings .castle-menu-item-button::after {
+  left: 0;
+  right: 0;
+  height: 80%;
+  border-radius: 50%;
+  transform: translateY(-40%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.08));
+}
+
+#wcastle-menu .castle-menu-item-button.castle-menu-item-button--red,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button.castle-menu-item-button--red,
+#wbattle-settings .castle-menu-item-button.castle-menu-item-button--red {
+  background: linear-gradient(to bottom, #634232 0%, #3b0f02 25%, #381001 100%);
+  color: #f0c9b3;
+}
+
+#wcastle-menu .castle-menu-item-button.castle-menu-item-button--red::before,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button.castle-menu-item-button--red::before,
+#wbattle-settings .castle-menu-item-button.castle-menu-item-button--red::before {
+  background: linear-gradient(to bottom, #a1765b, transparent 20%);
+  mix-blend-mode: hard-light;
+}
+
+/* menu buttons keep the full width of the menu, size and text as the buttons of Battle settings */
+#wcastle-menu .castle-menu-item-button,
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button {
+  width: 82cqw;
+  height: auto;
+  box-sizing: border-box;
+  margin: 0.8cqh 0;
+  padding: 0.9cqh 2.4cqh;
+  font: 1.8cqh / 1.2 'DejaVuSans', sans-serif;
+  text-align: center;
+}
+
+#wcastle-menu .castle-menu-item-button.castle-menu-item-button--small {
+  width: auto;
+  min-width: 18cqh;
+}
+
+/* sliders: thin track, big round thumb (as in Battle settings) */
+#wcastle-menu .castle-menu-slider {
+  height: 2cqh;
+  border-radius: 1cqh;
+}
+
+#wcastle-menu .castle-menu-slider::-webkit-slider-runnable-track {
+  height: 2cqh;
+  border-radius: 1cqh;
+}
+
+#wcastle-menu .castle-menu-slider::-webkit-slider-thumb {
+  width: 2.6cqh;
+  height: 2.6cqh;
+  margin-top: -0.3cqh;
+}
+
+#wcastle-menu .castle-menu-slider::-moz-range-progress,
+#wcastle-menu .castle-menu-slider::-moz-range-track {
+  height: 2cqh;
+  border-radius: 1cqh;
+}
+
+#wcastle-menu .castle-menu-slider::-moz-range-thumb {
+  width: 2.6cqh;
+  height: 2.6cqh;
+}
