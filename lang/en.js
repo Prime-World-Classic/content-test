@@ -1848,7 +1848,7 @@ export const en = {
     htalent_29_description: 'Taking or dealing damage increases Speed by <num>20%</num> for <num>3</num> sec.',
     htalent_30_name: 'Heroism',
     htalent_30_description:
-      'Upon taking damage equal to <num>10%</num> of maximum Health, the hero increases their Stamina and Will by <num>0.5</num> and an additional <num>%s</num> (based on the higher of Strength or Intellect) for <num>12</num> sec.<br>The effect stacks up to <num>10</num> times.',
+      'Upon taking damage equal to <num>10%</num> of maximum Health, the hero increases their Stamina and Will by <num>0.5</num> and an additional <num>%s</num> (based on the higher of Strength or Intellect) for <num>12</num> sec.<br>\nThe effect stacks up to <num>7</num> times.',
     htalent_31_name: 'Descriptive Alchemy',
     htalent_31_description:
       'For each successful use of Caustic Substance or Portion of Glue on enemies, the hero gains one of the unique ingredients: Sulfur or Mercury. While in an alchemical circle with <num>4</num> ingredients, the hero automatically summons their clone (attack range - 17) corresponding to the last ingredient received. Sulfur attacks deal <fiz>%s</fiz> damage, and Mercury attacks deal <mag>%s</mag> damage.',
@@ -1887,7 +1887,7 @@ export const en = {
     htalent_43_description:
       "Blocks damage if it exceeds <num>25%</num> of the hero's current Health. Each activation of the Trick Blade talent reduces the talent's cooldown by <num>3</num> sec.",
     htalent_44_name: 'Razor-Sharp Sword',
-    htalent_44_description: "The hero's attacks and Trick Blade flashes deal <num>15%</num> more damage.",
+    htalent_44_description: "The hero's attacks and Trick Blade flashes deal <num>%s%</num> more damage.",
     htalent_45_name: 'Blizzard <mana>180</mana> <CD>8</CD>',
     htalent_45_description: 'Creates an area for <num>8</num> sec. where enemies take <mag>%s</mag> damage per sec.',
     htalent_46_name: 'Impenetrable Cold',
@@ -1910,7 +1910,7 @@ export const en = {
       'The Eternity talent additionally freezes the target for <num>2.5</num> sec., during which the freeze effect cannot be canceled.',
     htalent_53_name: 'Blade of Darkness <mana>90</mana> <CD>9</CD>',
     htalent_53_description:
-      'Hits the target, then flies to the enemy nearest to the hero near the target and deals <mag>%s</mag> damage to each.</br>\nIf Blade of Darkness finishes off the first target, damage to the second is increased by <num>%s</num>.',
+      'Hits the target, then bounces to the enemy nearest to the hero next to the target, dealing <mag>%s</mag> damage to each.</br>If Blade of Darkness finishes off the first target, damage to the second one is increased by <num>%s%</num>.',
     htalent_54_name: 'Shimmer <mana>100</mana> <CD>8</CD>',
     htalent_54_description: 'The hero is teleported to the specified location. ',
     htalent_55_name: 'Cutting Throw',
@@ -1999,12 +1999,12 @@ export const en = {
       'While under Veil and for <num>3</num> sec. after appearing, the target gains <num>%s</num> Intellect, Strength, Will, and Stamina (based on Strength) and <num>%s</num> Health regeneration (based on Intellect).<br> The Shadow receives only half the Health regeneration.',
     htalent_84_name: 'No Boundaries',
     htalent_84_description: 'The Invisible Help talent affects all allied heroes, even if they are not near the heroine.',
-    htalent_85_name: 'Wolf Call <mana>200</mana> <CD>20</CD>',
+    htalent_85_name: 'Wolf Call <mana>150</mana> <CD>20</CD>',
     htalent_85_description:
       'The hero summons a wolf, whose attacks deal <fiz>%s</fiz> damage from Strength and <fiz>%s</fiz> damage from Intellect, and has <num>%s</num> Health</br><rz>On native terrain, the hero summons an alpha wolf. The alpha wolf has <num>30%</num> higher stats.</rz>',
     htalent_86_name: 'Piercing Spear <mana>100</mana> <CD>10</CD>',
     htalent_86_description:
-      'Deals <mag>%s</mag> damage and interrupts talent casting, wolves pursue the target for <num>5</num> sec., accelerating by <num>2</num> times during this time.',
+      'Deals <mag>%s</mag> damage and interrupts talent casting; the wolves pursue the target for <num>5</num> sec., moving <num>2</num> times faster. If the talent is used on a soldier or creature, the spear bounces to <num>4</num> targets chosen among soldiers and creatures, dealing them damage reduced by <num>30%</num>.',
     htalent_87_name: 'Death Grip',
     htalent_87_description: "Each attack by a wolf summoned by Wolf Call reduces the enemy's speed by <num>25%</num> for <num>3</num> sec.",
     htalent_88_name: 'Curse of the Piercing Spear',
@@ -2012,9 +2012,9 @@ export const en = {
       'For <num>8</num> sec., each hit on the target restores <num>%s</num> Health to the attacker (based on the higher of Strength or Intellect). Wolves additionally restore health to the hero.',
     htalent_89_name: 'Pack Strength',
     htalent_89_description:
-      'Friends (wolves and allied heroes) nearby gain <num>%s</num> of the highest of Strength or Intellect (based on Intellect). Each such friend increases this bonus by <num>10%</num>.',
+      'Friends (wolves, allied heroes and soldiers) nearby gain <num>%s</num> to the higher of Strength or Intellect (based on Intellect). Each wolf and allied hero increases this bonus by <num>10%</num>, and each soldier by <num>3%</num>.',
     htalent_90_name: 'Wolf Brothers',
-    htalent_90_description: 'Wolf Call summons two wolves, but requires <num>75</num> more Energy.',
+    htalent_90_description: 'Wolf Call summons two wolves, but requires <num>50</num> more Energy.',
     htalent_91_name: 'Great Hunt <mana>320</mana> <CD>100</CD>',
     htalent_91_description:
       'Great Hunt increases the Speed of the hero and all allies by <num>40%</num> for <num>10</num> sec.<br>Each hero kill refreshes the duration of Great Hunt.',
@@ -2035,7 +2035,7 @@ export const en = {
       'The price of all items in shops is reduced by <num>30%</num>. The hero can now build up to <num>3</num> devices.',
     htalent_97_name: 'Vita-Generator 10<detail></detail> <CD>2</CD>',
     htalent_97_description:
-      'The hero places a vita-generator that restores <num>%s</num> Health (based on Intellect) to allied heroes every <num>8</num> sec. for <num>4</num> sec.Cannot maintain more than <num>3</num> devices simultaneously.</br><rz>On native terrain, the vita-generator additionally restores <num>%s</num> Health (based on Intellect).</rz>',
+      'The hero places a vita-generator that restores <num>%s</num> Health (based on Intellect) to allied heroes every <num>8</num> sec. for <num>4</num> sec. Cannot maintain more than <num>3</num> devices simultaneously.</br><rz>On native terrain, the vita-generator additionally restores <num>%s</num> Health (based on Intellect).</rz>',
     htalent_98_name: 'Machine Gun <CD>15</CD>',
     htalent_98_description:
       'For <num>3</num> sec., deals <fiz>%s</fiz> and <mag>%s</mag> damage per second to enemies in front, but can only change firing direction. Shooting consumes 16<detail>16</detail> per second.',
@@ -2045,7 +2045,7 @@ export const en = {
     htalent_100_description: 'While near a vita-generator, the hero gains 1<detail></detail> more per second.',
     htalent_101_name: 'Painted Beast <mana>84</mana> <CD>5</CD>',
     htalent_101_description:
-      "Draws a beast that, after <num>1.5</num> sec., attacks the specified enemy and deals <fiz>%s</fiz> damage to them. The beast's speed and range increase by <num>10%</num> per paint if Strength is greater than Intellect.",
+      "Draws a beast that, after <num>1.5</num> sec., attacks the specified enemy and deals <fiz>%s</fiz> damage to them. The beast's speed and cast range increase by <num>7%</num> per paint if Strength is greater than Intellect.",
     htalent_102_name: "Master's Paints",
     htalent_102_description:
       "The hero's attack additionally deals <fiz>%s</fiz> damage and an additional <num>15%</num> of base attack damage (<num>+4%</num> per <num>1</num> Paint) as <red-d>pure damage</red-d> over <num>4</num> sec.",
@@ -2133,10 +2133,10 @@ export const en = {
     htalent_133_description: 'Restores <num>%s</num> Health (based on Intellect) to the target and <num>%s</num> to the hero themselves.',
     htalent_134_name: "Land's Blessing <mana>170</mana> <CD>50</CD>",
     htalent_134_description:
-      "<rz>For <num>40</num> sec., increases the specified ally's maximum Health by <num>%s</num> (based on maximum Energy) and during this time restores <num>%s</num> Health (based on Intellect) to the target every <num>5</num> sec.<br>\nThe talent can only be used from native terrain.</rz>",
+      "For <num>40</num> sec., increases the specified ally's maximum Health by <num>%s</num> (based on maximum Energy) and during this time restores <num>%s</num> Health (based on Intellect) to the target every <num>5</num> sec.<br><rz>When used from native terrain, the cast range is 100.</rz>",
     htalent_135_name: 'Healing Mastery',
     htalent_135_description:
-      'If the Healing talent does not affect allied heroes, it refunds <num>50%</num> of the Energy spent and cools down <num>50%</num> faster.',
+      'If the Healing talent does not affect allied heroes, it refunds <num>%s%</num> of the Energy spent and cools down <num>%s%</num> faster.',
     htalent_136_name: 'Armor of Mercy',
     htalent_136_description:
       "The hero's Will and Stamina increase by <num>%s</num> (based on maximum Energy).<br>\nFor <num>8</num> sec., this effect is applied to the target of the Healing talent and to allies healed by Triumph of Life.",
@@ -2144,7 +2144,8 @@ export const en = {
     htalent_137_description:
       "The hero becomes invulnerable for <num>4</num> sec., healing themselves and <num>2</num> allied heroes around every <num>1</num> sec.<br>\nThe talent will activate automatically, without spending Energy, if the hero's Health drops below <num>5%</num>.",
     htalent_138_name: 'Healing Sparks',
-    htalent_138_description: 'The Healing talent additionally restores <num>%s</num> Health to all allies near the target.',
+    htalent_138_description:
+      'The Healing talent additionally restores <num>%s</num> Health to all allies near the target. Applies the Armor of Mercy and Inspiration of Mercy effects to secondary targets, weakened by <num>50%</num>',
     htalent_139_name: 'Inspiration of Mercy',
     htalent_139_description:
       "The hero's Intellect increases by <num>%s</num> (based on maximum Energy).<br>\nThe target of the Healing talent gains <num>%s</num> of the highest of Intellect or Strength (based on max. Energy) for <num>8</num> sec.<br>\nThe same effect is applied to allies healed by Total Triumph.",
@@ -2223,7 +2224,7 @@ export const en = {
       'Creates native terrain around the hero for <num>15</num> sec., and all enemies near the hero cannot move for <num>2.5</num> sec.',
     htalent_167_name: 'Shift in Balance',
     htalent_167_description:
-      'The Balance of Power talent deals <num>2</num> times more damage to enemy heroes.</br>\n<rz>When used from native terrain, allied heroes also gain <num>30%</num> Speed for <num>7</num> sec.</rz>',
+      'The Balance of Power talent deals <num>2</num> times more damage.</br>\n<rz>When used from native terrain, allied heroes also gain <num>30%</num> Speed for <num>7</num> sec.</rz>',
     htalent_168_name: 'Conquest',
     htalent_168_description: "The Bewitchment talent also reduces enemies' Will by <num>%s</num> for <num>6</num> sec. (based on Will).",
     htalent_169_name: 'Tranquility',
@@ -2243,13 +2244,13 @@ export const en = {
       "For <num>60</num> sec., increases the hero's highest of Stamina or Will by <num>%s</num> (based on Intellect), the hero's Cunning by <num>%s</num> (based on Intellect), and nearby allied heroes' highest of Stamina or Will by <num>%s</num> (based on Intellect).</br><rz>On native terrain, heroes' Cunning is additionally increased by <num>1.5</num> times.</rz>",
     htalent_175_name: 'Precise Shot',
     htalent_175_description:
-      'The bleeding effect stacks up to <num>3</num> times on targets with reduced Health regeneration. <br>The Enchanted Arrow talent, upon reaching maximum distance or hitting an enemy, explodes and deals <mag>%s</mag> damage to enemies around.',
+      'The bleeding effect stacks up to <num>3</num> times on targets with reduced Health regeneration. <br>The Enchanted Arrow talent, upon reaching maximum range or hitting an enemy, explodes, deals <mag>%s</mag> damage to enemies around and applies the bleeding effect to them.',
     htalent_176_name: "Hunt's fervor <mana>90</mana> <CD>18</CD>",
     htalent_176_description:
       'Increases the Speed of the specified allied target by <num>50%</num> for <num>6</num> sec. </br><rz>On native terrain, Speed is additionally increased by <num>20%</num>, healing is additionally increased by <num>50%</num> .</rz>',
     htalent_177_name: 'Devastating Shot <mana>215</mana> <CD>70</CD>',
     htalent_177_description:
-      'The hero draws the bow for <num>1.6</num> sec. and releases an arrow in the specified direction, dealing up to <mag>%s</mag> damage to all enemies in its path. The longer the shot is charged, the more damage it deals.',
+      'The hero draws the bow for <num>1.2</num> sec. and releases an arrow in the specified direction, dealing up to <mag>%s</mag> damage to all enemies in its path. The longer the shot is charged, the more damage it deals.',
     htalent_178_name: "Hunter's Briskness",
     htalent_178_description:
       "The Hunt's fervor talent also increases the specified allied target's Agility by <num>%s</num> (based on Intellect) and the hero's own Agility by <num>%s</num> (based on Intellect).<br><rz>On native terrain, Agility is additionally increased by <num>%s</num>.</rz>",
@@ -2271,8 +2272,8 @@ export const en = {
       "Deals <fiz>%s</fiz> damage to all nearby enemies.<br>\nWhile in ghost state, the talent's cooldown is reduced to <num>1</num> sec.<br>\nDamage from Reaping can steal Health and Energy, but from no more than <num>5</num> targets.",
     htalent_185_name: 'Thirst for Life',
     htalent_185_description:
-      "Killing an enemy extends any ghost's existence, including the hero's in ghost form, by <num>5</num> sec. (but no more than <num>30</num> sec. total).<br>\nWhen a ghost dies nearby, the hero restores <num>%s</num> Energy (based on Strength).",
-    htalent_186_name: 'Ghost of Death <mana>355</mana> <CD>65</CD>',
+      "Killing an enemy extends any ghost's existence, including the hero's in ghost form, by <num>5</num> sec. (but no more than <num>30</num> sec. total).<br>When a ghost dies or disappears nearby, the hero restores <num>%s</num> Energy (based on Strength).",
+    htalent_186_name: 'Ghost of Death <mana>300</mana> <CD>65</CD>',
     htalent_186_description:
       'The hero turns into a ghost for <num>9</num> sec., increasing their Speed by <num>50%</num> and becoming immune to transformation effects. The Reaping talent additionally deals <fiz>%s</fiz> damage (based on the higher of Strength or Intellect).',
     htalent_187_name: 'Life Transfusion',
@@ -2280,7 +2281,7 @@ export const en = {
       'The Ghost Lash talent restores <num>%s</num> more Health per sec. (based on Intellect).<br>Total restores <num>%s</num> Health (based on Intellect). <br> The hero gains <num>30%</num> Speed, and the ally gains <num>20%</num>.',
     htalent_188_name: 'Wrath of the Dead',
     htalent_188_description:
-      'Upon using Ghost of Death, explosions occur at the locations of fallen souls and spell targets, each dealing <mag>%s</mag> damage to nearby enemies, but no more than <mag>%s</mag> damage to a single target.<br>\nDamage from the hero and allies is additionally increased by <fiz>%s</fiz>.',
+      'Upon using Ghost of Death, explosions occur at the locations of fallen souls and spell targets, each dealing <mag>%s</mag> damage to nearby enemies, but no more than <mag>%s</mag> damage to a single target.<br>Damage from the hero and allies is additionally increased by <fiz>%s</fiz>. Ghosts gain <num>%s</num> Strength and Intellect (based on the higher of Strength or Intellect)',
     htalent_189_name: 'Rat Swarm <mana>120</mana> <CD>11</CD>',
     htalent_189_description:
       'Creates an area for <num>8</num> sec. where enemies take <mag>%s</mag> damage per sec.<br>\nRat Swarm turns enemy terrain neutral.',
@@ -2306,7 +2307,7 @@ export const en = {
       'After Charming Melody ends, nearby enemy heroes are slowed by <num>80%</num> and cannot use talents for <num>1.8</num> sec.',
     htalent_197_name: 'Shredding Volley <mana>100</mana> <CD>10</CD>',
     htalent_197_description:
-      "The hero draws the bow for <num>0.5</num> sec. and releases arrows in the specified direction, dealing <fiz>%s</fiz> (based on Intellect) and <mag>%s</mag> (based on Intellect) damage that can be <orange-d>Critical</orange-d> to all enemies in the path.<br><rz>When used from native terrain, the talent deals <num>1.3</num> times more damage.</rz><br> The talent's range is increased by <num>%s</num> (based on Intellect).",
+      "The hero draws the bow for <num>0.5</num> sec. and releases arrows in the specified direction, dealing <fiz>%s</fiz> (based on Intellect) and <mag>%s</mag> (based on Intellect) damage that can be <tn>Critical</tn> and <tn>steals Health</tn> to all enemies in the path.<br><rz>When used from native terrain, the talent deals <num>1.3</num> times more damage.</rz><br> The talent's range is increased by <num>%s</num> (based on Intellect).",
     htalent_198_name: 'Redeployment <mana>150</mana> <CD>15</CD>',
     htalent_198_description:
       "The hero is teleported to the specified location. <br>\n<rz>When used from native terrain, the talent's cooldown is reduced by <num>5</num> sec.</rz>",
@@ -2321,7 +2322,7 @@ export const en = {
       "The hero's attacks deal additional <fiz>%s</fiz> and <mag>%s</mag> damage, but not exceeding <num>2.2%</num> of the target's maximum Health.",
     htalent_202_name: 'Advantageous position',
     htalent_202_description:
-      "When the New Position talent is ready for use, the hero's Agility is increased by <num>%s</num> (from Strength and Intellect). ",
+      "When the New Position talent is ready, the higher of the hero's Agility or Cunning is increased by <num>%s</num> (based on Strength and Intellect). ",
     htalent_203_name: 'Decisive Shot <mana>300</mana> <CD>60</CD>',
     htalent_203_description:
       'The hero hits the target with the least Health, dealing it <fiz>%s</fiz> and <mag>%s</mag> damage. A hit enemy cannot hide from the hero for the next <num>3</num> seconds.',
@@ -2358,7 +2359,7 @@ export const en = {
     htalent_214_description: 'Finishing off an enemy with an attack, the hero restores <num>%s</num> Health.',
     htalent_215_name: 'Did you catch it?',
     htalent_215_description:
-      "Get talent! additionally reduces the target's Durability by <num>%s</num> (from Strength) for <num>5</num> seconds.",
+      "The Get it! talent additionally reduces the target's Stamina by <num>%s</num> (based on Strength) for <num>5</num> sec.",
     htalent_216_name: 'Chew better!',
     htalent_216_description: 'Swallow your Talent! additionally replenishes <num>%s</num> of energy.',
     htalent_217_name: 'Grab it! <mana>100</mana> <CD>18</CD>',
@@ -2376,7 +2377,7 @@ export const en = {
       "After <num>0.3</num> seconds, it deals <mag>%s</mag> damage to enemies in the area under the cursor and can steal Health, but not more than <num>3</num> targets.<br><rz>When used from native land, it reduces the target's Health recovery by <num>75%</num> for <num>2</num> seconds.</rz><br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero is transported to the specified location and deals enemies around <mag>%s</mag> damage (from the greatest of Strength and Intellect).</blue-l>",
     htalent_222_name: 'Living skin <mana>60</mana> <CD>30</CD> /<blue-l> 5<CD></CD></blue-l>',
     htalent_222_description:
-      'Attracts the selected enemy hero, dealing him <mag>%s</mag> damage and stunning him for <num>1.5</num> sec.<br> The range of talent increases by <num>0.2</num> for every <num>10</num> of the greatest of Strength and Intellect.<br> <hr> <blue-l>Applying talent to yourself turns the hero into <orange-d>Bear</orange-d> until the Energy drops below <num>5%</num>, which gets <num>%s</num> Health (from the highest of Strength and Intellect) and deals <num>15%</num> more attack damage, but loses <num>0.4%</num> max. Energy per second.</blue-l>',
+      "Pulls the selected enemy hero, dealing <mag>%s</mag> damage to them and stunning them for <num>1.5</num> sec.<br> The talent's range increases by <num>0.2</num> for every <num>10</num> of the higher of Strength or Intellect.<br> <hr> <blue-l>Using the talent on yourself turns the hero into a <tn>Bear</tn> until Energy drops below <num>5%</num>. The Bear gains <num>%s</num> Health (based on the higher of Strength or Intellect) and <num>%s</num> Stamina and Will (based on Strength) and deals <num>15%</num> more attack damage, but loses <num>%s%</num> of max. Energy per sec.</blue-l>",
     htalent_223_name: 'Woe to the weak',
     htalent_223_description:
       "The Roots of evil deal double damage to enemies under the Crow's Evil Eye or trapped Villains.<br> <hr> <blue-l>In the form of <orange-d>Bear</orange-d> the hero stuns the wounded enemies for <num>1</num> sec.</blue-l>",
@@ -2399,7 +2400,7 @@ export const en = {
       'Deals <mag>%s</mag> damage. If a talent kills an enemy, it consumes <num>3</num> times less Energy and immediately recovers.',
     htalent_230_name: 'Ethereal form <CD>20</CD>',
     htalent_230_description:
-      "For <num>5</num> seconds, the hero can pass through trees and living creatures. Touching a creature for the first time burns <num>5%</num> The creature's energy and restores itself to <num>%s</num> Energy.<br>\n<rz>After coming out of his Ethereal form on his native land, the hero restores <num>%s</num> Energy.</rz>",
+      'For <num>5</num> sec., the hero can pass through trees and living creatures. On first contact with a creature, burns <num>5%</num> of its Energy and restores <num>%s</num> Energy to the hero.<br>\n<rz>Upon leaving Ethereal form on native terrain, the hero restores <num>%s</num> Energy.</rz>',
     htalent_231_name: 'A magic trap',
     htalent_231_description:
       'For <num>5</num> seconds after being hit by the Enchantment Network, the enemy takes <mag>%s</mag> damage for each talent activation, while losing <num>50%</num> Speed and <num>%s</num> Agility (from Intellect) for <num>4</num> seconds.',
@@ -2421,7 +2422,7 @@ export const en = {
       'Deals <mag>%s</mag> damage for <num>4</num> seconds to <num>5</num> nearby enemies.</br>\n<rz>When used from its native land, it hits <num>10</num> targets.</rz>',
     htalent_238_name: 'The triumphant motif of <mana>80</mana> <CD>8</CD>',
     htalent_238_description:
-      "When the attacks of allied heroes are activated, the enemies' speed is reduced by <num>30%</num> for <num>3</num> seconds.",
+      "When activated, the attacks of nearby allied heroes reduce enemies' Speed by <num>30%</num> for <num>3</num> sec.",
     htalent_239_name: 'Defensive motive <mana>80</mana> <CD>8</CD>',
     htalent_239_description:
       'For <num>3</num> seconds, creates shields on allied heroes around, absorbing <num>%s</num> damage (from Stealth).<br>\n<rz>When used from its native land, it restores to itself <num>%s</num> Health (from Intellect).</rz>',
@@ -2475,7 +2476,7 @@ export const en = {
     htalent_256_description: 'The Transformation talent deals <fiz>%s</fiz> more damage.\n<br>Total damage: <fiz>%s</fiz>',
     htalent_257_name: 'Energy barrier <mana>80</mana> <CD>16</CD>',
     htalent_257_description:
-      "<num>0.6</num> sec. is created and creates a barrier in the specified area for <num>3</num> sec., crossing the border for the first time, the enemy is stunned for <num>1.5</num> sec.<br>\n<rz>Being inside the barrier in the hero's native land, enemies restore Health by <num>50%</num> worse.</rz>",
+      "Takes <num>0.6</num> sec. to cast and creates a barrier in the specified area for <num>3</num> sec.; an enemy crossing its border for the first time is stunned for <num>1.5</num> sec.<br>\n<rz>While inside the barrier on the hero's native terrain, enemies restore Health <num>50%</num> less effectively.</rz>",
     htalent_258_name: 'Summoning the Demon <mana>320</mana> <CD>90</CD>',
     htalent_258_description:
       "Creates <num>0.6</num> seconds and summons a Demon for <num>12</num> seconds, whose attacks deal <fiz>%s</fiz> damage. The appearance of a Demon deals <mag>%s</mag> damage to all enemies around it. The Demon\'s health is <num>%s</num> (from the highest of Strength and Intellect).<br><rz>When used on native land, the appearance of the Demon stuns nearby enemies for <num>0.5</num>. The Demon\’s duration is increased by 3 seconds</rz>",
@@ -2510,7 +2511,7 @@ export const en = {
       'Moves in the specified direction, dealing <fiz>%s</fiz> damage (from the highest of Strength and Intellect) to all enemies around, receiving <num>1</num> Heroism for each (no more than <num>6</num> in total).<br>Within <num>4</num> seconds, the talent can be applied <num>1 </num> more times.<br>During movement, the hero is not affected by control effects.',
     htalent_270_name: 'Second wind <mana>50</mana> <CD>20</CD>',
     htalent_270_description:
-      "Restores the hero's <num>%s</num> Health (from Intellect) and additionally using Heroism restores <num>%s</num> Health (from the Intellect) for each accumulated effect.<br>\n<rz>When used from the native land, it removes all negative effects.</rz>",
+      'Restores <num>%s</num> Health to the hero (based on the higher of Strength or Intellect) and, using Heroism, additionally restores <num>%s</num> Health (based on Intellect) for each accumulated stack.<br><rz>When used from native terrain, removes all negative effects from the hero.</rz>',
     htalent_271_name: 'Challenge',
     htalent_271_description:
       'Enemy heroes and creatures summoned by them who have received damage from the Resolute Attack talent are forced to attack the hero for <num>0.8</num> seconds.',
@@ -2519,7 +2520,7 @@ export const en = {
       'For <num>6</num> seconds, redirects <num>50%</num> damage to itself from the specified allied hero, but no more than <num>%s</num> (from the Intellect) and sends a hawk, which accelerates the target by <num>50%</num> for <num>5</num> seconds.The hero is displayed on the map of opponents who see the goal of the talent.<br>\A pUron obtained through the Bodyguard talent from another hero gives <num>3</num> times more Heroism.<br>\n<rz>When used from his native land, he gets <num>5</num> Heroism.</rz>',
     htalent_273_name: 'Fighting fervor',
     htalent_273_description: 'The hero can use the Decisive Attack talent <num>1</num> times more.',
-    htalent_274_name: 'Punishing blow <mana>300</mana> <CD>90</CD>',
+    htalent_274_name: 'Punishing blow <mana>200</mana> <CD>90</CD>',
     htalent_274_description:
       'The hero is transported to the specified target, deals <fiz>%s</fiz> damage and additionally <fiz>%s</fiz> for each Heroism effect, and stuns her for <num>1</num> sec.',
     htalent_275_name: 'Winged',
@@ -2532,7 +2533,7 @@ export const en = {
       'For <num>5</num> seconds, creates an area where enemies receive <fiz>%s</fiz> damage every <num>0.9</num> seconds, for <num>4</num> seconds. A moving target takes <num>3</num> times more damage.',
     htalent_278_name: 'Alchemy Circle <mana>70</mana> <CD>10</CD>',
     htalent_278_description:
-      'Creates an Alchemical Circle at the specified location or transfers the hero to an already created one. When moving, the talent preparation time depends on the distance of the circle and varies from <num>0</num> to <num>5</num> seconds, and the recovery time from <num>20</num> to <num>80</num> seconds. Creating a <num>4</num> circle destroys the nearest existing one.<br>\n<rz>Having used his talent to return to his native land, the hero is healed by <num>%s</num> Health (from Intellect).</rz>',
+      "Creates an Alchemical Circle at the specified location or teleports the hero to an existing one. When teleporting, the talent's cast time depends on the distance to the circle and ranges from <num>0</num> to <num>3</num> sec., and the cooldown from <num>%s</num> to <num>%s</num> sec. Creating a <num>4</num>th circle destroys the nearest existing one.<br><rz>After using the talent on native terrain, the hero heals <num>%s</num> Health (based on Intellect).</rz>",
     htalent_279_name: 'Special enzymes',
     htalent_279_description: 'This caustic substance creates an area that gradually increases in size.',
     htalent_280_name: 'Side effect',
@@ -2543,11 +2544,11 @@ export const en = {
       'In the specified cone, all enemies receive <mag>%s</mag> damage and slow down for <num>6</num> seconds by <num>10%</num>. The deceleration is additionally increased by <num>10%</num> per second to <num>70%</num>.<br>\n<rz>When used from home, the target slows down by <num>35%</num> and the deceleration additionally increases to <num>95%</num>.</rz>',
     htalent_282_name: 'Active connections',
     htalent_282_description: "Enemies trapped at the beginning of Portia Glue's talent cone cannot use talents for <num>2.5</num> seconds.",
-    htalent_283_name: 'The Power of Mercury <mana>270</mana> <CD>120</CD>',
+    htalent_283_name: 'The Power of Mercury <mana>270</mana> <CD>90</CD>',
     htalent_283_description:
-      "The summoned clone attacks the enemy hero, preventing him from doing anything from <num>2</num> (at <num>20%</num> Target's health or less) up to <num>4</num> seconds (at <num>80%</num> Goal health and more). The hero's attacks additionally inflict <num>%s</num>(from Intellect) for <num>6</num> seconds.",
+      "The summoned clone attacks the enemy hero, preventing them from doing anything for <num>3</num> sec. The hero's attacks additionally deal <num>%s</num> (based on Intellect) for <num>6</num> sec.",
     htalent_284_name: 'Mercury catalyst',
-    htalent_284_description: "Talent Recovery Time Mercury's Power is reduced by <num>40%</num>.",
+    htalent_284_description: 'The cooldown of The Power of Mercury talent is reduced by <num>20%</num>.',
     htalent_285_name: 'Mental Whip <mana>60</mana> <CD>7</CD>',
     htalent_285_description:
       'Strikes with a whip in the indicated direction, dealing <mag>%s</mag> damage (from the greatest of Strength and Intellect) to all affected enemies.',
@@ -2560,7 +2561,7 @@ export const en = {
     htalent_288_name: 'The Horror of the Trap',
     htalent_288_description:
       'Immobilized with the help of the Demon Trap talent, the hero cannot use talents. Enemy heroes who were near the target when completing the immobilizing effect of the Demon Trap cannot use talents for <num>2</num> seconds.',
-    htalent_289_name: 'Demonic Shield',
+    htalent_289_name: 'Demonic Shield <mana>87</mana> <CD>25</CD>',
     htalent_289_description:
       'For <num>4</num> seconds, the hero redirects <num>60%</num> of incoming damage to the archons, and while at least one of them is present, increases his Speed by <num>50%</num>.',
     htalent_290_name: 'Elevation',
@@ -2591,7 +2592,7 @@ export const en = {
     htalent_299_description: 'Being in the area created by the Concealing Mist talent, the hero takes <num>30% less damage</num>.',
     htalent_300_name: 'The last straw',
     htalent_300_description:
-      'By applying the Blood Ritual talent, the hero removes all negative effects from himself, becomes immune to control effects for <num>6</num> seconds and takes <num>25%</num> less damage.<br><hr><amethyst>At night, the damage reduction increases to <num>35%</num>.</amethyst>',
+      'Using the Blood Ritual talent, the hero removes all negative effects from themselves, becomes immune to control effects for <num>6</num> sec. and takes <num>25%</num> less damage.<br><hr><yst>At night, the damage reduction increases to <num>35%</num>.</yst>',
     htalent_301_name: 'Familiar <mana>50</mana> <CD>1</CD>',
     htalent_301_description:
       'The familiar is sent to attack enemies, starting from the specified target and moving on to the next target next to it each time. Targets attacked by the familiar take <fiz>%s</fiz> damage for <num>6</num> seconds. If there are no enemies near the current target or when using the talent on himself, the familiar returns to the hero.',
@@ -2673,9 +2674,9 @@ export const en = {
       'Creates a ray of light that restores <num>%s</num> Health (from Intellect) to all allies in its path, and inflicts <fiz>%s</fiz> damage to enemies for <num>3</num> seconds.',
     htalent_329_name: 'Light of the Spirit <mana>100</mana> <mag>10<CD></CD></mag>/<fiz>15<CD></CD></fiz>',
     htalent_329_description:
-      "For <num>10</num> seconds, creates a spirit light at the specified location, which increases the greatest of the Agility and Cunning of nearby allies by <num>%s</num> (from Intellect) and within <num>5</num> seconds restores allied heroes <num>%s</num> Health (from Intellect) per second.If the hero's Strength is greater than his Intellect, then the recovery time is longer.<br><rz>When used from his native land, the light also reduces damage from attacks on nearby allies by <num>%s</num> (from the greatest of Strength and Intellect).</rz>",
+      "For <num>10</num> sec., creates a spirit beacon at the specified location that increases the higher of Agility or Cunning of nearby allies by <num>%s</num> (based on Intellect) and for <num>5</num> sec. restores <num>%s</num> Health per sec. (based on Intellect) to allied heroes.<br> If the hero's Strength is greater than Intellect, the cooldown is longer.<br><rz>When used from native terrain, the beacon also reduces attack damage dealt to nearby allies by <num>%s</num> (based on the higher of Strength or Intellect).</rz>",
     htalent_330_name: 'Guardian of Life <mana>250</mana> <CD>100</CD>',
-    htalent_330_description: 'The hero gains control immunity and damage reduction by <num>50%</num> for <num>7</num> seconds.',
+    htalent_330_description: 'The hero gains control immunity and <num>25%</num> damage reduction for <num>3</num> sec.',
     htalent_331_name: 'Fullness',
     htalent_331_description:
       'By reapplying the Lightsaber talent, you can detonate the lightsaber, spreading the effect enhanced by <num>2</num> times lasting <num>5</num> seconds, as well as increasing the regeneration of Health to allies by <num>%s</num> (from the Intellect).<br> The explosion causes all enemies <fiz>%s</fiz> damage (from Strength).',
@@ -2687,9 +2688,10 @@ export const en = {
       'The Angel Light talent also speeds up allies and slows down enemies in its path by <num>30%</num> for <num>3</num> seconds.',
     htalent_334_name: 'Flight of the Angel <mana>100</mana> <CD>100</CD>',
     htalent_334_description:
-      "Created <num>2</num> seconds. The hero is transported to the specified allied hero, hero's soul, building, or spear.<br><rz> If the target is in their native land, the talent is restored <num>30%</num> faster.</rz>",
+      "Takes <num>2</num> sec. to cast. The hero teleports to the specified allied hero, hero's soul, building or spear.<br><rz> If the target is on native terrain, the talent cools down <num>30%</num> faster.</rz>",
     htalent_335_name: 'Infinity',
-    htalent_335_description: 'Restores all class talents of the hero, except for the ultimate.',
+    htalent_335_description:
+      "Increases the duration by <num>3</num> sec. and the damage absorption by <num>25%</num>. Restores all of the hero's class talents except the ultimate.",
     htalent_336_name: 'Spawn of Ice',
     htalent_336_description:
       'Using class talents gives the hero protection for <num>6</num> seconds, absorbing <num>12%</num> damage.<br>\The effect adds up to <num>3</num> times.<br>\n<rz>In his native land, the hero additionally restores <num>%s</num> Health (from the greatest of Strength and Intellect).</rz>',
@@ -2799,16 +2801,16 @@ export const en = {
     htalent_373_name: 'Frontline comrade <CD>0.1</CD>',
     htalent_373_description:
       'The hero is accompanied by a Bear, whose attacks cause <fiz>%s</fiz> damage. The bear has <num>%s</num> Health (from the greatest of Strength and Intellect) is reborn next to the hero <num>30</num> seconds after his death.The use of talent sets the behavior of the Bear depending on the goal: to attack the specified enemy, go and guard the specified point, or follow the hero. As long as the Bear is alive, the hero regenerates <num>0.7%</num> of maximum Health per second.',
-    htalent_374_name: 'Combat hello! <mana>85</mana> <CD>12</CD>',
+    htalent_374_name: 'Combat hello! <mana>85</mana> <CD>9</CD>',
     htalent_374_description:
-      'Deals <mag>%s</mag> to all enemies on the way.<br>\n<rz>When used from his native land, talent recovers <num>4</num> seconds faster.</rz> ',
+      'Deals <mag>%s</mag> (based on the higher of Strength or Intellect) to all enemies in its path.<br><rz>When used from native terrain, the talent cools down <num>4</num> sec. faster.</rz> ',
     htalent_375_name: 'Weighty argument',
     htalent_375_description:
       'Every <num>12</num> seconds, the next bear attack additionally deals <mag>%s</mag> damage, stuns the target for <num>0.7</num> seconds and marks it for <num>3</num> seconds.',
     htalent_376_name: 'Everything for the front!',
     htalent_376_description:
       'Hello Fighting Talent! reduces by <num>%s</num> Durability (by Strength) or by <num>%s</num> The will (from the Intellect) of all affected enemy heroes for <num>5</num> seconds, depending on the highest parameter of the hero.',
-    htalent_377_name: 'On guard of Borders <mana>135</mana> <CD>25</CD>',
+    htalent_377_name: 'On guard of Borders <mana>90</mana> <CD>23</CD>',
     htalent_377_description:
       'For <num>300</num> seconds, sets an invisible trap in the specified location, which deals <mag>%s</mag> damage to the first enemy hero to step on it and reduces its Speed by <num>95%</num> by <num>4</num> seconds. Deceleration decreases by <num>15%</num> per second to <num>35%</num>.',
     htalent_378_name: 'Aimed shot <mana>240</mana> <CD>40</CD>',
@@ -2816,28 +2818,28 @@ export const en = {
       'Creates <num>1.5</num> seconds and deals <mag>%s</mag> damage to the specified enemy hero. Cannot be avoided.',
     htalent_379_name: 'Steel Power',
     htalent_379_description:
-      "Enemies slowed down by Border guard talent cannot become invisible.<br>Talent recovers by <num>9</num> seconds faster, and triggering a trap increases the hero's Speed by <num>30%</num> by <num>4</num> seconds.",
+      "Enemies slowed by the On guard of Borders talent cannot become invisible.<br>The talent cools down <num>10</num> sec. faster, and triggering a trap increases the hero's Speed by <num>30%</num> for <num>4</num> sec.",
     htalent_380_name: 'Rout',
     htalent_380_description:
-      "When a trap created by a border guard talent is triggered, the talent's Aiming shot is instantly restored or, if it was ready for use, it is created <num>0.3</num> seconds.",
+      'When a trap created by the On guard of Borders talent is triggered, the Aimed shot talent is instantly restored or, if it was ready, takes only <num>0.3</num> sec. to cast.',
     htalent_381_name: 'Star Providence',
     htalent_381_description:
-      '<amethyst>At night, the hero can walk through creatures and see through obstacles, and class talents gain additional effects.</amethyst>',
+      '<yst>At night, the hero can pass through creatures and see through obstacles, and class talents gain additional effects.</yst>',
     htalent_382_name: 'A bundle of energy <mana>70</mana> <CD>8</CD>',
     htalent_382_description:
-      'Releases a burst of energy in the specified direction, which explodes upon contact with the enemy or reaching the maximum distance, deals damage to all enemies around <mag>%s</mag> and slows them down by <num>40%</num> for <num>3</num> seconds.<br><hr><amethyst>Starry Providence: After <num>2</num> For a second, enemies located in the explosion area are attracted to its epicenter.</amethyst>',
+      'Launches a bundle of energy in the specified direction that explodes on contact with an enemy or upon reaching maximum range, dealing <mag>%s</mag> damage to all enemies around and slowing them by <num>40%</num> for <num>3</num> sec.<br><hr><yst>Starry Providence: After <num>2</num> sec., enemies in the explosion area are pulled to its epicenter.</yst>',
     htalent_383_name: 'Stargate <mana>85</mana> <CD>1</CD>',
     htalent_383_description:
-      'Creates a Stargate at the specified location or explodes existing ones, causing <fiz>%s</fiz> damage to all enemies around, <rz> restoring <num>%s</num> (max. <num>%s</num>) Energy (from Maximum energy) for each hit enemy </rz>and increasing the current talent recovery time to <num>8</num> seconds.<br>When interacting with the gate, the allies move behind it and cannot interact with the gate again for <num>6</num> seconds.<br>Supports no more than <num>2</num> gates simultaneously.<br><hr><amethyst>Star Providence: Exploding gates does not increase talent time.</amethyst>',
+      "Creates a Stargate at the specified location or detonates existing ones, dealing <fiz>%s</fiz> damage to all enemies around,<rz> restoring <num>%s</num> (max. <num>%s</num>) Energy (based on maximum Energy) for each enemy hit </rz>and increasing the talent's current cooldown to <num>8</num> sec.<br>When interacting with a gate, allies are moved through it and cannot interact with gates again for <num>6</num> sec.<br>Supports no more than <num>2</num> gates at a time.<br><hr><yst>Starry Providence: Detonating a gate does not increase the talent's cooldown.</yst>",
     htalent_384_name: 'Particle acceleration',
     htalent_384_description:
-      'The Energy Cluster Talent reduces the cooldown of the ultimate talent by <num>3</num> seconds for each enemy hero hit by an explosion.<br><hr><amethyst>Starry Providence: deals additional damage <mag>%s</mag> (from the greatest of Strength and Intellect).</amethyst>',
+      "The A bundle of energy talent reduces the ultimate talent's cooldown by <num>3</num> sec. for each enemy hero hit by the explosion. <br><hr><yst>Starry Providence: deals <num>%s</num> additional damage (based on the higher of Strength or Intellect).</yst>",
     htalent_385_name: 'Hyperspace',
     htalent_385_description:
       'Interacting with the gate increases the Speed of allies by <num>20%</num> for <num>6</num> seconds, and the explosion stuns enemies for <num>1</num> seconds.',
     htalent_386_name: 'Serenity <mana>80</mana> <CD>24</CD>',
     htalent_386_description:
-      'The hero becomes invulnerable for <num>2.5</num> seconds, but cannot attack or use talents.<br><hr><amethyst>Star holding: During the action of the talent, the hero can Interact with the Stargate an unlimited number of times.</amethyst>',
+      'The hero becomes invulnerable for <num>2.5</num> sec., but cannot attack or use talents.<br><hr><yst>Starry Providence: While the talent is active, the hero can interact with Stargates an unlimited number of times.</yst>',
     htalent_387_name: 'Stasis <mana>230</mana> <CD>85</CD>',
     htalent_387_description:
       'For <num>4</num> seconds, creates an area that disables all enemies trapped in it.<br>\n After the effect expires, all enemy creatures and heroes will receive <mag>%s</mag> damage.',
@@ -2851,7 +2853,7 @@ export const en = {
       'Using a class talent empowers the next attack with <mag>%s</mag> damage. The effect stacks up to <num>3</num> times and lasts for <num>10</num> sec; damage and stun duration stack. While an empowered attack is readied, the hero has a <num>7%</num> chance to dodge an enemy attack for each active stack.<br>The next attack also stuns the target for <num>0.2</num> sec.',
     htalent_391_name: 'Somersault <mana>50</mana> <CD>14</CD>',
     htalent_391_description:
-      'Moves in the specified direction and deals <mag>%s</mag> damage to all enemies on the way.<br>\n Within <num>6</num> seconds, the talent can be applied <num>1</num> more times.',
+      'Dashes in the specified direction, dealing <mag>%s</mag> (based on the higher of Strength or Intellect) damage to all enemies in its path.<br>Within <num>6</num> sec., the talent can be used <num>1</num> more time.',
     htalent_392_name: 'Dizzying Throw <mana>80</mana> <CD>15</CD>',
     htalent_392_description:
       'Throws a ball that flies to the first enemy hero, stuns him by <num>0.5</num> and deals <mag>%s</mag> damage to all enemies in its path.<br>\n<rz>When used from home, the ball causes <num>30% more damage</num>.</rz>',
@@ -2859,11 +2861,11 @@ export const en = {
     htalent_393_description: 'Allows the hero to apply the Somersault talent once more.',
     htalent_394_name: 'Cats and Mice',
     htalent_394_description:
-      'A ball thrown with the Dizzying Throw talent marks the enemy hero for <num>3</num> seconds. While the target is marked, you can reactivate the talent to move behind her, deal <mag>%s</mag> damage and slow her down by <num>40%</num> for <num>3</num> seconds.',
-    htalent_395_name: 'Milkshake <mana>80</mana> <CD>30</CD>',
+      'A ball thrown with the Dizzying Throw talent marks the enemy hero for <num>4</num> sec. While the target is marked, you can reactivate the talent to move behind them, deal <mag>%s</mag> damage and slow them by <num>40%</num> for <num>3</num> sec.',
+    htalent_395_name: 'Milkshake <mana>80</mana> <CD>25</CD>',
     htalent_395_description:
       'Removes <num>1</num> negative effect and restores <num>%s</num> Health (based on the higher of Strength or Intellect) over <num>6</num> seconds.<br><rz>When used on native terrain, restores <num>30%</num> more Health.</rz>',
-    htalent_396_name: 'A straight kiss <mana>300</mana> <CD>120</CD>',
+    htalent_396_name: 'A straight kiss <mana>300</mana> <CD>70</CD>',
     htalent_396_description:
       'Deals enemy hero <fiz>%s</fiz> damage (from the highest of Strength and Intellect), knocks him away, and then stuns him for <num>0.5</num> sec.<br>A dropped enemy hero deals <fiz>%s</fiz> damage to all enemies in its path before landing.',
     htalent_397_name: 'Whipped cream',
@@ -2875,10 +2877,10 @@ export const en = {
     htalent_399_name: 'The shackles of fear',
     htalent_399_description:
       'Stealing Health affects all axe damage.<br> Reduces the damage from used talents around by <num>10%</num>.<br>\n<rz>In the native land additionally reduces the damage from used talents around by <num>5%</num>.</rz>\n',
-    htalent_400_name: 'Iron Accuracy <mana>100</mana> <CD>10</CD>',
+    htalent_400_name: 'Iron Accuracy <mana>60</mana> <CD>10</CD>',
     htalent_400_description:
       "The hero's next attack deals additional <fiz>%s</fiz> damage.<br>\The attack range increases by <num>2.8</num> times.",
-    htalent_401_name: 'Concussive lunge <mana>150</mana> <CD>20</CD>',
+    htalent_401_name: 'Concussive lunge <mana>120</mana> <CD>16</CD>',
     htalent_401_description:
       'The hero throws axes at the specified location, which slows down all enemies on the way by <num>35%</num> for <num>4</num> seconds and causes <fiz>%s</fiz> damage.',
     htalent_402_name: 'Crushing blow',
@@ -2889,7 +2891,7 @@ export const en = {
     htalent_404_name: 'Ferocious Hurricane <mana>100</mana> <CD>19</CD>',
     htalent_404_description:
       'The hero spins axes and deals them <fiz>%s</fiz> damage per second to enemies around.<br>\n<rz>Damage increased by <num>30%</num> in his native land.</rz>',
-    htalent_405_name: 'Shackles<mana>250</mana> <CD>100</CD>',
+    htalent_405_name: 'Shackles <mana>200</mana> <CD>100</CD>',
     htalent_405_description:
       'The hero throws chains in front of him, which fly to the first enemy hero, causing him and all opponents on the way <fiz>%s</fiz> damage (from max. Health).<br>\Heroes caught in chains follow the hero for <num>3.5</num> seconds.',
     htalent_406_name: 'Off the chain',
@@ -2922,13 +2924,13 @@ export const en = {
       'The hero spends charges on moving with the help of his talent On burnt wings. The hero receives <num>1</num> charge every <num>14</num> seconds, but no more than <num>3</num> in total.<br>\The talent recovery time On burnt wings is reduced to <num>3</num> seconds.',
     htalent_417_name: 'Blades of Chaos',
     htalent_417_description:
-      'For each rack change, the hero restores <num>%s</num> Health (from the highest of Strength and Intellect), and its Speed increases by <num>3</num> for <num>7</num> seconds.<br>The effect adds up to <num>3</num> times.',
+      'For each stance change, the hero restores <num>%s</num> Health (based on the higher of Strength or Intellect), and their Speed increases by <num>3</num> for <num>8</num> sec.<br>The effect stacks up to <num>3</num> times.',
     htalent_418_name: 'Swift Attack <mana>50</mana> <CD>6</CD>',
     htalent_418_description:
-      'The hero in this stance automatically moves behind the target of his attack if the target is a short distance away from him and causes additional <mag>%s</mag> damage.<br>The target can only be moved to <num>1</num> once within <num>10</num> seconds.',
+      'In this stance, the hero automatically moves behind the target of their attack if the target is at a short distance, and deals an additional <mag>%s</mag> damage.<br>The hero can move to <num>1</num> target only <num>1</num> time per <num>6</num> sec.',
     htalent_419_name: 'Combat Blades <mana>50</mana> <CD>6</CD>',
     htalent_419_description:
-      "In this stance, the hero's attacks deal additional <num>%s</num> damage.<br>\n<rz>In the native land, the Theft of Health increases by <num>%s</num> (at Most).</rz>",
+      "In this stance, the hero's attacks deal an additional <num>%s</num> damage, and Health Steal is increased by <num>%s</num> (based on Strength).<br><rz>On native terrain, Health Steal is additionally increased by <num>50%</num>.</rz>",
     htalent_420_name: 'Crushing Blows',
     htalent_420_description:
       'The hero in the Fast Attack stance slows down his attack by <num>30%</num> for <num>3</num> seconds after moving to the target of his attack.<br>\n<num>+%s</num> Agility (from Intellect).',
@@ -2981,14 +2983,14 @@ export const en = {
       "Each attack enhanced with the Primordial Fire talent restores the hero's <num>%s</num> Health (from the greatest of Strength and Intellect).<br>\The effect of the talent Playing with fire adds up to <num>2</num> times more.",
     htalent_437_name: 'Terrifying Howl <mana>330</mana> <CD>80</CD>',
     htalent_437_description:
-      "For <num>5</num> seconds, reduces the greatest of the enemies' Strength and Intellect by <num>%s</num> (from the greatest of Strength and Intellect) and stuns enemy heroes. The greater the number of enemy heroes, the shorter the stun time (from <num>2</num> to <num>0.5</num> seconds.<br><num>1</num> stun target <num>2</num> seconds<br><num>2</num>stun targets <num>1.5</num> seconds<br><num>3</num>stun targets <num>1</num> sec.<br><num>4</num> or <num>5</num> targets - stun <num>0.5</num> sec.)",
+      'For <num>5</num> sec., reduces the higher of Strength or Intellect of nearby enemies by <num>%s</num> (based on the higher of Strength or Intellect) and stuns enemy heroes for <num>%s</num> sec.',
     htalent_438_name: 'Bombardment of <mana>300</mana> <CD>75</CD>',
     htalent_438_description:
       'The hero takes aim for <num>0.4</num> seconds and shoots many arrows at the enemies in front of him, dealing each <fiz>%s</fiz> and <mag>%s</mag> damage.',
     htalent_439_name: 'Through wounds',
     htalent_439_description:
       'Shelling reduces the Stamina and Will of targets by <num>%s</num> (from Strength) and <num>%s</num> (from Intellect) for <num>5</num> seconds.',
-    htalent_440_name: 'The Ghost of Protection <mana>355</mana> <CD>65</CD>',
+    htalent_440_name: 'The Ghost of Protection <mana>300</mana> <CD>65</CD>',
     htalent_440_description:
       'The hero transforms into a ghost for <num>9</num> seconds, becoming immune to the effects of transformation, and imposes shields on all allied heroes around, which absorb <num>%s</num> damage for <num>6</num> seconds (from the largest of the Strength and Intellect).',
     htalent_441_name: 'Weakening of the spirit',
@@ -3006,10 +3008,9 @@ export const en = {
     htalent_445_description:
       'Using class abilities gives the hero protection that absorbs damage <num>%s</num> (from Strength) for <num>10</num> seconds. Maximum amount of absorbed damage <num>%s</num> (of Strength).',
     htalent_446_name: 'Sulfur catalyst',
-    htalent_446_description: 'Talent recovery time of Sulfur Power is reduced by <num>40%</num>.',
-    htalent_447_name: 'Sulfur Power <mana>270</mana> <CD>120</CD>',
-    htalent_447_description:
-      "The summoned clone attacks the enemy's hero, after which it disappears. Deals <fiz>%s</fiz> damage to targets.",
+    htalent_446_description: 'The cooldown of the Sulfur Power talent is reduced by <num>20%</num>.',
+    htalent_447_name: 'Sulfur Power <mana>270</mana> <CD>90</CD>',
+    htalent_447_description: 'The summoned clone attacks the enemy hero, dealing <fiz>%s</fiz> damage to them.',
     htalent_448_name: 'Buried alive <lifecost>100</lifecost> <CD>90</CD>',
     htalent_448_description:
       'Creates <num>0.2</num> seconds, removes the specified enemy hero from battle for <num>4</num> seconds, stopping the restoration of his Health, Energy and <time></time> talents.',
@@ -3069,7 +3070,7 @@ export const en = {
     htalent_468_description: 'The hero creates an area around himself that immobilizes enemies in it for <num>4</num> seconds.',
     htalent_469_name: 'Circle of Life',
     htalent_469_description:
-      "Defender's Oath Talent restores %s to allies in the area<num></num> Health (from Intellect) per second and increases their Stamina and Will by <num>%s</num> (from Intellect).",
+      "The Defender's Oath talent restores <num>%s</num> Health per sec. (based on Intellect) to allies in the area and increases their Stamina and Will by <num>%s</num> (based on Intellect).",
     htalent_470_name: 'Large-caliber',
     htalent_470_description:
       'The Ruthless Shot Talent deals <num>%s</num> more damage (total <num>%s</num>) and stuns the target for <num>0.5</num> sec. longer.',
@@ -3098,7 +3099,7 @@ export const en = {
       'Miasma additionally lowers the greatest of the Stamina and Will of enemies by <num>%s</num> (from the greatest of Strength and Intellect).',
     htalent_480_name: 'Fly Agaric <mana>250</mana> <CD>17</CD>',
     htalent_480_description:
-      'For <num>360</num> seconds, installs an invisible mushroom in the specified location, which deals <mag>%s</mag> damage to the first enemy to step on it and stuns it for <num>2</num> seconds.<br>\n Supports no more than <num>15</num> mushrooms at a time.',
+      'For <num>360</num> sec., places an invisible mushroom at the specified location that deals <mag>%s</mag> (based on the higher of Strength or Intellect) damage to the first enemy that steps on it and stuns them for <num>2</num> sec.<br>Supports no more than <num>15</num> mushrooms at a time.',
     htalent_481_name: 'Poisonous spores',
     htalent_481_description:
       'Fly agaric deals additional <mag>%s</mag> damage (from the greatest of Strength and Intellect) to the advancing enemy and blinds him for <num>4</num> seconds.',
@@ -3119,23 +3120,23 @@ export const en = {
     htalent_487_name: 'Demonic Healing',
     htalent_487_description:
       'After learning this passive ability, Asura restores her <num>%s</num> (of Intellect) Health by attacking any target if there is an enemy Hero with the Demon Mark effect in the field of view.',
-    htalent_488_name: 'Deafening Shot <mana>215</mana> <CD>90</CD>',
+    htalent_488_name: 'Deafening Shot <mana>215</mana> <CD>70</CD>',
     htalent_488_description:
       'Deals <fiz>%s</fiz> damage to the first hero on the flight path.<br>damage increases by <num>50%</num> for each bleeding effect on the target.',
     htalent_489_name: 'Steel tip',
     htalent_489_description:
-      'A stun shot causes additional <fiz>%s</fiz> damage and stuns the enemy for <num>1.5</num> seconds.<br>\Terrible damage: <fiz>%s</fiz>.',
-    htalent_490_name: 'Mercy Shield <mana>200</mana> <CD>180</CD>',
+      'Deafening Shot deals an additional <fiz>%s</fiz> damage and stuns the enemy for <num>1.5</num> sec.<br>Total damage: <fiz>%s</fiz>.',
+    htalent_490_name: 'Mercy Shield <mana>200</mana> <CD>150</CD>',
     htalent_490_description:
-      "The specified ally for <num>3</num> seconds. becomes invulnerable to damage.<br>The talent is triggered automatically, without wasting Energy, if the hero's Health drops below <num>5%</num>.\n",
+      "The specified ally becomes invulnerable to damage for <num>4</num> sec.<br>The talent activates automatically, without spending Energy, if the hero's Health drops below <num>5%</num>.",
     htalent_491_name: 'Double protection',
     htalent_491_description: 'The effect of the Mercy Shield talent extends to the hero himself.',
-    htalent_492_name: 'Destructive Jump <mana>250</mana> <CD>100</CD>',
+    htalent_492_name: 'Destructive Jump <mana>200</mana> <CD>100</CD>',
     htalent_492_description:
       'Jumps to the specified point.<br>\If there are enemy heroes near the landing point, they take <fiz>%s</fiz> damage and are stunned for <num>1</num> sec., and an impassable area forms around them for <num>3</num> sec.',
     htalent_493_name: 'Frenzy',
     htalent_493_description:
-      "The Destructive Jump talent increases the hero's Stamina and Strength by <num>%s</num> (from max. Health) for <num>3</num> seconds.",
+      "The Destructive Jump talent increases the hero's Stamina and Strength by <num>%s</num> (based on max. Health) for <num>7</num> sec.",
     htalent_494_name: 'Skirmish <CD>90</CD>',
     htalent_494_description:
       "When using a talent, it consumes all <bloodlust></bloodlust>. The hero moves to the specified point and within <num>1</num> second makes <num>4</num> shots, dealing <fiz>%s</fiz> damage to the enemy hero marked with the Hunter's Mark talent or the nearest one.<br>If the hero does not find a target to attack, the talent recovery time is <num>10</num> seconds.<br><hr><bronze>Courage: When used, the number of shots increases by <num>2</num> for every <bloodlust>10</bloodlust>.</bronze>",
@@ -3145,14 +3146,14 @@ export const en = {
     htalent_496_description: "Increases the radius of the hero's attacks and the use of the Combat Hello talent.",
     htalent_497_name: 'Hawkeye',
     htalent_497_description:
-      "The talent of the Guerrilla additionally increases the radius of the hero's vision and the use of talent To guard the borders",
+      "The Partisan talent additionally increases the hero's vision radius and the cast range of the On guard of Borders talent",
     htalent_498_name: 'Concentrated ether',
     htalent_498_description:
       "While the talent is active, the hero's attacks spend <num>3%</num> Energy and additionally inflict <mag>%s</mag> damage and <mag>%s</mag> damage for each accumulated effect of the Lord of Ether.",
     htalent_499_name: 'Exhaustion',
     htalent_499_description:
       "While the Concentrated Ether talent is active, the hero's attacks reduce the enemy's Agility by <num>%s</num> (from Intellect) and Speed by <num>30%</num> for <num>3</num> seconds.",
-    htalent_500_name: 'Beastman',
+    htalent_500_name: 'Beastman <mana>300</mana> <CD>100</CD>',
     htalent_500_description:
       'The hero throws a spear, which plunges into the ground and chains the nearest enemy hero. The chain holds the enemy close to the spear and reduces outgoing damage by <num>50%</num> for <num>4</num> seconds and prohibits the use of talents.',
     htalent_501_name: 'Alpha',
@@ -3198,7 +3199,7 @@ export const en = {
       'The hero disappears for <num>5</num> seconds, leaving behind an area where enemies take <mag>%s</mag> damage per second and slow down by <num>80%</num>. The slowdown is getting weaker every second by <num>10%</num>.',
     htalent_516_name: 'Intimidation',
     htalent_516_description:
-      'The Path of a Thousand Blades talent also reduces outgoing enemy damage by <num>20%</num>. Every second of the action, the damage of the ability increases by <num>10%</num>.',
+      "The Path of a Thousand Blades talent also reduces enemies' outgoing damage by <num>20%</num>. Each second it is active, the ability's damage increases by <num>15%</num>.",
     htalent_517_name: 'Jet Kettlebell <mana>200</mana> <CD>100</CD>',
     htalent_517_description:
       'The hero launches a kettlebell at the specified enemy hero, which deals <fiz>%s</fiz> damage and stuns him for <num>2</num> seconds.',
@@ -3295,13 +3296,13 @@ export const en = {
     htalent_551_name: 'Dogma',
     htalent_551_description: 'Hero attacks reduce the current cooldown of all class talents by <num>0.5</num> sec.',
     htalent_552_name: 'Ritual Strike <mana>75</mana> <CD>8</CD>',
-    htalent_552_description:
-      'Deals <fiz>%s</fiz> damage (from the greatest of Strength and Intellect) to enemies in front of the hero, evenly distributing it between targets.',
+    htalent_552_description: 'Deals <fiz>%s</fiz> damage (based on the higher of Strength or Intellect) to enemies in front of the hero.',
     htalent_553_name: 'Oath <mana>80</mana> <CD>15</CD>',
     htalent_553_description:
       'After <num>3</num> seconds, the specified allied hero restores Health equal to <num>200%</num> of the damage received during the duration of the effect, but not more than <num>%s</num> (from the Intellect).<br>\n<rz>When used from the native land, the target removes all negative effects.</rz>',
     htalent_554_name: 'Vow of silence',
-    htalent_554_description: 'Talent Ritual strike prevents targets from using talents for <num>1.3</num> sec.',
+    htalent_554_description:
+      'The Ritual Strike talent prevents targets from using talents and slows them by <num>25%</num> for <num>1.3</num> sec.',
     htalent_555_name: 'Blinding Word',
     htalent_555_description:
       'The Oath Talent, upon completion of the effect, blinds all enemies around the target for <num>3</num> seconds.',
@@ -3338,7 +3339,7 @@ export const en = {
       'Every <num>9</num> seconds, the hero receives protection that absorbs <num>%s</num> damage (from Strength and Intellect).<br>The effect adds up to <num>6</num> times.',
     htalent_567_name: 'Wave of Blades <mana>90</mana> <CD>12</CD>',
     htalent_567_description:
-      "Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> seconds</num>. If the hero's Strength is higher than Intellect, the talent's damage can be critical.<br><rz>On native land The hero additionally suppresses the acceleration effects of touched enemies.</rz>",
+      'Launches a wave of blades that deals <fiz>%s</fiz> damage to all enemies in its path and reduces their Speed by <num>30%</num> for <num>5</num> sec.<br><rz>On native terrain, the hero additionally suppresses the speed-up effects of enemies hit.</rz>',
     htalent_568_name: 'Eternal service <CD>6</CD>',
     htalent_568_description: 'The hero gets <num>1</num> An arsenal for finishing off enemy creatures and <num>4</num> for the hero.',
     htalent_569_name: 'At the forefront of the attack',
@@ -3407,7 +3408,7 @@ export const en = {
       'The Germination talent additionally restores to the hero <num>%s</num> Health (from the greatest of Strength and Intellect) for each spore effect on the target.',
     htalent_592_name: 'The Dying Vine <mana>200</mana> <CD>90</CD>',
     htalent_592_description:
-      "For <num>3</num> seconds, it immobilizes all enemies around the hero and sprays spores every second. After the end of the effect, it deals them <mag>%s</mag> damage for each spore effect.<br>\The hero's prowess increases by <num>%s</num> (from Intellect) for <num>6</num> seconds.",
+      "For <num>3</num> sec., immobilizes all enemies around the hero and sprays spores every second. When the effect ends, deals them <mag>%s</mag> damage for each spore effect.<br>\nThe hero's Agility increases by <num>%s</num> (based on Intellect) for <num>6</num> sec.",
     htalent_593_name: 'Blackthorn',
     htalent_593_description:
       'The Dying Vine talent additionally reduces the Speed of touched enemies by <num>80%</num>, decreasing within <num>4</num> seconds.',
@@ -3481,7 +3482,7 @@ export const en = {
     htalent_619_description:
       'The Hero gains a <num>60%</num> speed boost for <num>4</num> seconds. The cooldown of the Crossbow Shot talent is reduced by <num>50%</num>; if the Heavy Crossbow talent (on row 5) is learned, the cooldown of Crossbow Shot is reduced by <num>%s%</num>.',
     htalent_620_name: 'Disarming technique <mana>200</mana> <CD>60</CD>',
-    htalent_620_description: 'For <num>3</num> seconds, disarms all enemies around and slows them down by <num>50%</num>.',
+    htalent_620_description: 'For <num>3</num> sec., silences and disarms all enemies around and slows them by <num>50%</num>.',
     htalent_621_name: 'Insubordination',
     htalent_621_description: 'The Lightning Reflexes talent additionally removes all negative effects.',
     htalent_622_name: 'Adrenaline rush',
@@ -3501,7 +3502,8 @@ export const en = {
     htalent_627_name: 'Animal Grin',
     htalent_627_description: 'The chance of the hero and wolves attacking twice increases by <num>15%</num>.',
     htalent_628_name: 'Pack Defense',
-    htalent_628_description: 'Pack strength additionally increases the greatest of Stamina and Will by <num>%s</num>.',
+    htalent_628_description:
+      'Pack Strength additionally increases the higher of Stamina or Will by <num>%s</num> (based on the higher of Strength or Intellect).',
     htalent_629_name: 'Minor Fret',
     htalent_629_description: 'Increases the radius of application of non-exclusive class talents by <num>20%</num>.',
     htalent_630_name: 'Major mode',
@@ -3524,7 +3526,7 @@ export const en = {
       'The Angel Light talent has an increased area of influence. Angelic Light talent accelerates and heals allies, slows down and deals damage by <num>10%</num> more.',
     htalent_636_name: 'Righteous Anger',
     htalent_636_description:
-      'The Spear of Retribution talent deals <num>30%</num> more damage and has a <num>25% increased damage area</num>.',
+      'The Spear of Retribution talent deals <num>20%</num> more damage and has a <num>25%</num> larger area of effect.',
     htalent_637_name: 'Hungry Rats',
     htalent_637_description:
       'The Rat Invasion Talent deals additional <mag>%s</mag> damage to enemies and slows them down by <num>20%</num> For <num>3</num> seconds.',
@@ -3573,7 +3575,7 @@ export const en = {
     htalent_652_description: 'The impact area of the Crossbow Shot talent becomes <num>25%</num> wider.<br>The Lightning Reflexes talent reduces the cooldown of Crossbow Shot by <num>%s%</num>.',
     htalent_653_name: 'Rare, but accurate!',
     htalent_653_description:
-      'A medium-range weapon with the following characteristics:<br>\n- There are 2 cartridges in the magazine.<br>\n- Attack speed <num>5</num> per second and does not depend on agility.<br>\n-After emptying the store, the hero reloads his weapon. The cooldown time depends on agility.<br>\n- Attacks cannot be critical.',
+      'A medium-range weapon with the following characteristics:<br>The magazine holds <num>2</num> rounds.<br>Attack speed is <num>5</num> per sec. and does not depend on Agility.<br>After the magazine is emptied, the hero reloads the weapon. Reload time depends on Agility.<br>Attacks cannot be critical.',
     htalent_654_name: 'Explosive approach! <CD>8</CD>',
     htalent_654_description: 'Deals <mag>%s</mag> damage to enemies in front of the hero.',
     htalent_655_name: 'Emergency launch! <CD>18</CD>',
@@ -3604,7 +3606,7 @@ export const en = {
     htalent_664_description: "The hero's attack additionally hits the enemy closest to the target.",
     htalent_665_name: 'Explosive launch!',
     htalent_665_description:
-      'Talent Explosive approach! deals <num>10% more</num> damage and additionally, hitting an enemy hero, restores <num>50%</num> CDTAL the Emergency Launch talent.',
+      'The Explosive approach! talent deals <num>15%</num> more damage and additionally, when it hits an enemy hero, restores the Emergency launch! talent by <num>50%</num>.',
     htalent_666_name: 'Barbaric Attack',
     htalent_666_description:
       'The Concussive Lunge talent additionally slows down enemies by <num>15%</num>.<br>Reaching for the place where the axes fall, the hero deals <fiz>%s</fiz> damage (from Strength) to all enemies around.',
@@ -3637,7 +3639,7 @@ export const en = {
     htalent_676_name: 'The Scourge of Time',
     htalent_676_description:
       "The hero receives additional Health Regeneration (from the character's Level, 1 to 0.7). <br><br>If the enemy next to the hero is stunned, he takes <mag>%s</mag> damage (from the highest of Strength and Intellect), and the hero's speed increases by <num>30%</num> for <num>3</num> seconds.",
-    htalent_677_name: 'Merciless Time <mana>125</mana> <CD>9</CD>',
+    htalent_677_name: 'Merciless Time <mana>100</mana> <CD>9</CD>',
     htalent_677_description:
       'For <num>1.6</num> seconds, creates an area where enemies receive <mag>%s</mag> damage every <num>0.4</num> seconds. The area then explodes, stunning all enemies inside for 1.2 seconds.',
     htalent_678_name: 'Fleeting Pulse <mana>85</mana> <CD>20</CD>',
@@ -3651,12 +3653,12 @@ export const en = {
       "After <num>2</num> seconds, the talent owner or the specified enemy hero is transferred to his position at the time of talent application.<br><rz>When used from his native land, the hero's Agility increases by <num>%s</num> (from the greatest of Strength and Intellect) for <num>5</num> seconds.</rz>",
     htalent_682_name: 'Temporary anomaly <mana>230</mana> <CD>90</CD>',
     htalent_682_description:
-      'For <num>4</num> seconds, creates an area that stuns enemies trapped in it for <num>0.2</num> seconds every second.',
+      'For <num>4</num> sec., creates an area that stuns enemies inside it for <num>0.2</num> sec. every second and slows enemies in the area by <num>%s%</num>.',
     htalent_683_name: 'Time is up',
     htalent_683_description:
       "The Time has Passed Talent returns the target's Health and Energy to their values at the time of talent application: increases for the hero and decreases for the enemy.",
     htalent_684_name: 'Short interval',
-    htalent_684_description: 'Temporary Anomaly Talent slows down enemies in an area by <num>30%</num>.',
+    htalent_684_description: 'Increases the duration of the Temporary anomaly talent by <num>%s</num> sec. and its slow to <num>%s%</num>.',
     htalent_685_name: 'Instant Reaction',
     htalent_685_description: 'Activating the Aegis of Time talent stuns enemies around for <num>0.5</num> sec.',
     htalent_686_name: 'Time has stopped',
@@ -3675,14 +3677,14 @@ export const en = {
     htalent_690_description: '<num>+%s</num> to the greatest of Stamina and Will (from Strength) during Prime Time Talent.',
     htalent_691_name: 'Ghost Armor',
     htalent_691_description:
-      'The lifespan of ghosts increases by <num>100%</num>, and their Stamina and Will by <num>%s</num> (from the greatest of Strength and Intellect).',
+      'The lifespan of ghosts increases by <num>100%</num>, and their Stamina and Will by <num>%s</num> (based on the higher of Strength or Intellect). While in ghost form, the hero also gains <num>%s</num> Stamina and Will (based on the higher of Strength or Intellect)',
     htalent_692_name: 'Afterlife protection',
     htalent_692_description:
       'The Ghost Shield talent absorbs <num>25%</num> more damage, and each blow to it, with an interval of <num>0.3</num> seconds, restores the specified allied hero <num>%s</num> Health (from the Intellect).',
     htalent_693_name: 'Deep wounds',
     htalent_693_description: 'Talent Bleeding causes <num>30%</num> more damage.',
     htalent_694_name: 'Explosive Arrow',
-    htalent_694_description: 'The Enchanted Arrow Talent deals <num>1.3</num> times more damage to the enemy under the bleeding effect.',
+    htalent_694_description: 'The range, damage and flight speed of the Enchanted Arrow talent are increased by 20%.',
     htalent_695_name: 'Medicinal pollen',
     htalent_695_description:
       'Guardian Fairy Talent increases Allied Health Regeneration by <num>%s</num> (from Intellect) for <num>10</num> sec.',
@@ -3711,7 +3713,7 @@ export const en = {
     htalent_704_description: 'The Frost Onslaught talent stuns for <num>0.2</num> seconds more and deals <num>35%</num> more damage.',
     htalent_705_name: 'Reckless',
     htalent_705_description:
-      "The Clockwork talent additionally deals damage equal to <mag>1.7%</mag> of the attack target's maximum Health and stuns for <num>0.15</num> sec longer.",
+      "The Groovy talent additionally deals damage equal to <mag>%s%</mag> of the attack target's max. Health and stuns  <num>0.15</num> sec. longer.",
     htalent_706_name: 'Sugar riot',
     htalent_706_description:
       "The Milkshake talent removes all negative effects and also reduces incoming damage by an additional <num>10%</num>. Reduces the talent's cooldown by <num>5</num> seconds.",
@@ -3754,13 +3756,12 @@ export const en = {
       'The Honey effect adds up to <num>1</num> times more.<br>\n<rz>If there are <num>4</num> effects of Honey, an ally in their native land becomes immune to the effects of control.</rz>',
     htalent_722_name: 'Undying Flame',
     htalent_722_description:
-      "The hero's attacks and Dissec.ting Strike Talent set the enemy on fire, dealing <mag>%s</mag> damage (from the highest of Strength and Intellect) for <num>3</num> seconds.<br>The effect adds up to <num>3</num> times.",
+      "The hero's attacks and the Dissecting Strike talent set the enemy on fire, dealing <mag>%s</mag> damage (based on the higher of Strength or Intellect) over <num>3</num> sec.<br>The effect stacks up to <num>3</num> times.",
     htalent_723_name: 'Deadly Blade',
     htalent_723_description:
       'Increases the damage of ultimate talents by <num>25%</num>.<br>Lone Blade Path <fiz>+%s</fiz><br> Thousand Blades Path <mag>+%s</mag>',
     htalent_724_name: 'Humility',
-    htalent_724_description:
-      'The Ritual Strike talent slows down enemies by <num>50%</num> and is no longer distributed, but deals full damage to all enemies.',
+    htalent_724_description: 'The Ritual Strike talent deals <num>10%</num> more damage and slows enemies by <num>50%</num>.',
     htalent_725_name: 'Of One Faith',
     htalent_725_description:
       "If the target of the Oath talent is an ally, the effect is additionally applied to the hero. <br> The Pain Test takes away <num>%s</num> more Health (from Strength). <br> The Talent of the Righteous Man's Reward increases the hero's Health twice as much.",
@@ -3795,9 +3796,10 @@ export const en = {
       'The Healing Light talent increases the greatest of the Stamina and Will of allied heroes by <num>%s</num> (from the greatest of Strength and Intellect).',
     htalent_738_name: 'The Wrath of Chaos',
     htalent_738_description:
-      'The Blades of Chaos talent increases the damage inflicted by class talents and hero attacks by <num>5%</num> when changing stance.',
+      "The Blades of Chaos talent increases the damage of the hero's class talents and attacks by <num>7%</num> when changing stance. Reduces the cooldown of each stance by <num>1</num> sec.",
     htalent_739_name: 'Face of Chaos',
-    htalent_739_description: "The Blades of Chaos talent increases the hero's chance of evading by <num>5%</num> when changing stance.",
+    htalent_739_description:
+      "The Blades of Chaos talent increases the hero's chance to dodge by <num>8%</num> when changing stance. Reduces the cooldown of each stance by <num>1</num> sec.",
     htalent_740_name: 'No respite!',
     htalent_740_description:
       'Reduces the recovery time of active class talents by <num>20%</num>. <br> Increases the damage of active class talents by <num>12%</num>.',
@@ -3831,7 +3833,7 @@ export const en = {
       'By dealing a total of <num>%s</num> damage (from the highest of Strength and Intellect) with attacks or class talents, the hero accumulates 1&#x1F47F to a maximum of 3&#xF47F.<br>After receiving damage exceeding <num>5%</num> of maximum Health, the hero absorbs <num>30%</num> of the damage received, but consumes 1&#x1F47F.',
     htalent_751_name: 'Furious Throw <CD>9</CD>',
     htalent_751_description:
-      'Prepares for <num>1</num> second, choosing a direction, and then throws a spear that flies to the first enemy hero and deals <mag>%s</mag> damage to all opponents on the way. Attacks on affected heroes accumulate <num>300%</num> more &#x1F47F for <num>5</num> seconds.',
+      'Prepares for <num>0.5</num> sec. while choosing a direction, then throws a spear that flies to the first enemy hero and deals <mag>%s</mag> damage to all enemies in its path. Attacks on heroes hit accumulate <num>300%</num> more &#x1F47F for <num>5</num> sec.',
     htalent_752_name: 'Fighting Zeal',
     htalent_752_description: "Hero's speed increases by <num>7%</num> for every &#x1F47F.",
     htalent_753_name: 'Sharp Tip',
@@ -3965,7 +3967,7 @@ export const en = {
       "The hero is moving in the specified direction.<br>\r\When the talent is ready to be used, the hero's agility is increased by <num>%s</num> (from Intellect).",
     htalent_799_name: 'Fatal Withering <mana>240</mana> <CD>90</CD>',
     htalent_799_description:
-      "Health Regeneration the specified enemy hero's time <num>2.5</num> seconds is reduced by <num>%s</num> (from Intellect) or <num>%s</num> (from Cunning), (the largest is selected).",
+      'The Health regeneration of the specified enemy hero is reduced by <num>%s</num> (based on Intellect) or <num>%s</num> (based on Cunning), whichever is higher, for <num>2.5</num> sec.',
     htalent_800_name: 'Extinguished candle <CD>18</CD>',
     htalent_800_description: 'All class talents except the ultimate are instantly restored upon the death of a desiccated enemy hero.',
     htalent_801_name: 'Empty shell',
@@ -3984,12 +3986,12 @@ export const en = {
       'The Fog Step Talent for <num>6</num> seconds reduces hero damage by <num>5%</num> for each withered enemy and additionally increases hero Evasion by <num>20%</num> when ready to use.',
     htalent_806_name: 'The Magic of death',
     htalent_806_description:
-      "The allies around the hero receive <num>10%</num> less magic damage.<br>By dying next to the hero, enemies restore the hero's %s</num> Health (from the Greatest of Strength and Intellect), and his allied hero is next to <num>%s</num> Health (from Intellect). If an enemy hero is killed, he is restored to <num>3</num> times more Health.",
+      'Allies around the hero take <num>10%</num> less magic damage.<br>Enemies dying near the hero restore <num>%s</num> Health to the hero (based on the higher of Strength or Intellect) and <num>%s</num> Health to nearby allied heroes (based on Intellect). If an enemy hero dies, <num>3</num> times more Health is restored.',
     htalent_807_name: 'Totem of souls <mana>150</mana> <CD>7</CD>',
     htalent_807_description:
       "Creates a totem for <num>4</num> seconds, being next to which enemies receive <mag>%s</mag> damage per second. If the hero's  Strength is higher than Intellect, the radius of application and the area of damage decreased.",
     htalent_808_name: 'Disappearance of <mana>120</mana> <CD>12</CD>',
-    htalent_808_description: 'The hero is transported to the specified location.',
+    htalent_808_description: 'The hero teleports to the specified location. Stuns the first attacked enemy for <num>1</num> sec.',
     htalent_809_name: 'Afterlife cold',
     htalent_809_description: "Soul Totem Talent reduces enemies' Speed by <num>18%</num> for 2.5 sec.",
     htalent_810_name: 'Ancestral Power',
@@ -4007,25 +4009,24 @@ export const en = {
     htalent_814_description: 'The Primal Rage talent additionally stuns enemies for <num>0.3</num> sec.',
     htalent_815_name: 'Creepy call <mana>200</mana> <CD>90</CD>',
     htalent_815_description:
-      "Creates <num>0.4</num> sec. and forces the enemy hero to walk towards the source of the call for <num>2,5</num> sec. The enemy hero cannot use talents at the same time. The enemy's attack range is reduced to <num>0</num>.",
+      "Takes <num>0.4</num> sec. to cast and forces the enemy hero to walk toward the source of the call for <num>2.5</num> sec. During this time, the enemy hero cannot use talents. The enemy's attack range is reduced to <num>0</num>.",
     htalent_816_name: 'Devastation',
     htalent_816_description:
       'During the Eerie Call talent, the Stamina and Will of the enemy hero are reduced by <num>%s</num> (from Intellect).',
     htalent_817_name: 'The Rage of the Ancestors',
-    htalent_817_description: 'The first attack after using the Vanishing talent stuns the enemy by <num>1</num>.',
+    htalent_817_description: 'Increases the stun duration by <num>0.3</num> sec. and the cast range by <num>30%</num>.',
     htalent_818_name: 'Arcane Magic',
     htalent_818_description: 'The allies around you take <num>10% less physical damage</num>.',
     htalent_819_name: 'Firecrackers',
     htalent_819_description: 'Hero attacks additionally deal <num>30%</num> damage to enemies around the target.',
-    htalent_820_name: 'Explosive Bandolier <CD>9</CD>',
+    htalent_820_name: 'Mounted Bomb <mana>50</mana>  <CD>8</CD>',
     htalent_820_description:
-      'The hero accumulates bombs every <num>9</num> seconds to a maximum of <num>3</num>, each of which increases attack damage by <num>6%</num>. <br><rz>On native land, bombs are accumulated 1 second faster.</rz>',
+      'The hero spends a <num>bomb</num>, deals <mag>%s</mag> damage to all enemies in the specified area and restores <num>%s</num> Health to themselves (based on the higher of Strength or Intellect). Every <num>%s</num> sec., the hero accumulates <num>bombs</num>, up to a maximum of <num>%s</num>.',
     htalent_821_name: 'Sniffer Rocket <mana>150</mana> <mag>30<CD></CD></mag>/<fiz>15<CD></CD></fiz>',
     htalent_821_description:
-      "Launches a missile at the specified hero, which deals <mag>%s</mag> Intellect damage or <mag>%s</mag> Strength damage.  <br>  If the hero's Intellect is greater than his strength, then the deceleration time is <num>2</num> seconds, the deceleration force is <num>20%</num>, the range of application is <num>100</num> and increases by <num>0.5</num> with each level, the recovery time is <num>30</num> seconds.  <br> If the hero's strength is greater than his Intellect, then the deceleration time <num>is 4</num> seconds, the deceleration force <num>is 40%</num>, the recovery time <num>is 15</num> seconds.",
-    htalent_822_name: 'Mounted bomb <mana>50</mana> <CD>3</CD>',
-    htalent_822_description:
-      'The hero consumes a bomb and deals all enemies in the specified area <mag>%s</mag> damage and restores himself <num>%s</num> health from the greatest of Strength and Intellect.',
+      "Launches a missile at the specified hero that deals <mag>%s</mag> damage based on Intellect or <mag>%s</mag> damage based on Strength.<br> If the hero's Intellect is greater than Strength, the slow lasts <num>%s</num> sec. and its strength is <num>%s</num>.<br> If the hero's Strength is greater than Intellect, the slow lasts <num>%s</num> sec., its strength is <num>%s</num>, and the cooldown is <num>%s</num> sec.",
+    htalent_822_name: 'Explosive Bandolier',
+    htalent_822_description: 'Each accumulated <num>bomb</num> increases attack damage by <num>%s</num>.',
     htalent_823_name: 'Stun charge',
     htalent_823_description:
       "The Sniffer Missile talent additionally slows down the target.<br> If the hero's Intellect is greater than his strength, then the deceleration time is <num>2</num> seconds, the deceleration force is <num>20%</num>.<br> If the hero's strength is greater than his Intellect, then the deceleration time <num>is 4</num> seconds, the deceleration force <num>is 40%</num>.",
@@ -4085,7 +4086,7 @@ export const en = {
     talent_14_description: ' ',
     talent_15_name: 'Superiority',
     talent_15_description:
-      "The hero's attacks additionally inflict <fiz>%s</fiz> damage on soldiers and chudis.<br>Finishing them off, the hero gets <prime>5</prime>. After receiving <prime>675</prime> the influx stops from this talent.<br>",
+      "The hero's attacks deal an additional <fiz>%s</fiz> damage to soldiers and creatures.<br>Finishing them off grants the hero <prime>5</prime>. After <prime>675</prime> has been gained from this talent, the income stops.<br>",
     talent_16_name: 'Natural Restoration',
     talent_16_description: 'Increases the Health regeneration of the hero and nearby allies by <num>%s</num>',
     talent_17_name: 'Self-confidence',
@@ -4120,7 +4121,7 @@ export const en = {
       'Upon resurrection, the hero receives <prime>50</prime>  and increases your maximum health by <num>%s</num>. The maximum total Health gain is <num>%s</num>.',
     talent_29_name: 'Stealing the Intellect',
     talent_29_description:
-      "The attack burns <num>1% of the enemy's current Energy and deals twice as much damage from the burned energy. (The effect works if the attacker has a stat. Energy).",
+      "The attack burns <num>1%</num> of the enemy's current Energy and deals twice as much damage as the Energy burned. (The effect works if the attacker has the Energy stat.)",
     talent_30_name: 'Champion',
     talent_30_description: ' ',
     talent_31_name: 'Berserk',
@@ -4137,7 +4138,7 @@ export const en = {
     talent_35_description: ' ',
     talent_36_name: 'Ecstasy of battle<white> <CD>120</CD></white>',
     talent_36_description:
-      '<num>The attacker</num><br><br>When activated, the hero gains <num>%s</num> Stamina and Will (from the highest of Stamina and Will) for <num>8</num> seconds.',
+      '<num>The attacker</num><br><br>When activated, the hero gains <num>%s</num> Stamina and Will (based on the higher of Stamina or Will) for <num>6</num> sec.',
     talent_37_name: 'Mental Blade<white> <CD>120</CD></white>',
     talent_37_description: '<num>The attacker</num><br><br>When activated, it inflicts <mag>%s</mag> on the specified enemy.',
     talent_38_name: 'Skill Mastery',
@@ -4210,7 +4211,7 @@ export const en = {
       "The hero's maximum Energy increases by <num>3</num> when Energy-consuming talents are activated. The maximum total increase is <num>%s</num>.",
     talent_66_name: 'Steel hardening',
     talent_66_description:
-      "The hero's maximum Durability increases by <num>0.2</num> when taking <num>200</num> damage. The maximum total increase is <num>%s</num>.",
+      "The hero's maximum Stamina increases by <num>0.2</num> for every <num>200</num> damage taken. The maximum total increase is <num>%s</num>.",
     talent_67_name: 'Strengthening faith',
     talent_67_description:
       "The hero's maximum Will increases by <num>0.2</num> upon receiving <num>200</num> damage units. The maximum total increase is <num>%s</num>.",
@@ -4265,7 +4266,7 @@ export const en = {
     talent_90_description: ' ',
     talent_91_name: 'Paralyzing Blow',
     talent_91_description:
-      "A hero's attack with a <num>25%</num> chance additionally deals <Mag>%s</Mag> damage to the enemy and reduces its Speed by <num>20%</num> by <num>2</num> seconds.",
+      "The hero's attack has a <num>25%</num> chance to deal an additional <mag>%s</mag> damage to the enemy and reduce their Speed by <num>20%</num> for <num>2</num> sec.",
     talent_92_name: 'The power of thought',
     talent_92_description: '<num>+2</num> to Level',
     talent_93_name: 'Iron Will',
@@ -4347,7 +4348,7 @@ export const en = {
       '<num>The attacker</num><br><br>When activated, it increases Intellect by <num>%s</num> and Will by <num>%s</num> for <num>10</num> seconds.',
     talent_128_name: 'Armor piercing',
     talent_128_description:
-      "During an auto attack with a <num>45%</num> chance, reduces the target's Durability by <num>%s</num> for <num>4</num> seconds.",
+      "Auto attacks have a <num>45%</num> chance to reduce the target's Stamina by <num>%s</num> for <num>4</num> sec.",
     talent_129_name: 'Suppression of the will',
     talent_129_description: "In an auto-attack with a 45%chance reduces the target's Will by <num>%s</num> for 4 seconds.",
     talent_130_name: 'Life absorption',
@@ -4475,7 +4476,7 @@ export const en = {
     talent_181_description: '<num>Protective</num><br><br>When activated, enemy-imposed effects are removed from all around.',
     talent_182_name: 'Unjustified cruelty',
     talent_182_description: 'Hero attack with <num>25%</num> chance additionally causes <num>%s</num> <red-d>net damage</red-d>.',
-    talent_183_name: 'Spirit upgrade<white>360</white>',
+    talent_183_name: 'Spirit upgrade<white> <CD>360</CD></white>',
     talent_183_description:
       '<num>Tactical</num><br><br>When activated, it instantly reduces the recovery time of talents and items by <num>70%</num>.',
     talent_184_name: 'Ice Strength',
@@ -4640,7 +4641,7 @@ export const en = {
       '<num>Tactical</num><br><br>When activated, it turns the native and foreign land around the hero into neutral. When used from native land, it gives <num>%s</num> Energy.',
     talent_253_name: 'Great excellence',
     talent_253_description:
-      "The hero's attacks additionally inflict <fiz>%s</fiz> damage on soldiers and chudis.<br>Finishing them off, the hero gets <prime>5</prime>. After receiving <prime>675</prime> the influx stops from this talent.<br>Only one of the talents of excellence is active.",
+      "The hero's attacks deal an additional <fiz>%s</fiz> damage to soldiers and creatures.<br>Finishing them off grants the hero <prime>5</prime>. After <prime>675</prime> has been gained from this talent, the income stops.<br>Only one of the superiority talents is active.",
     talent_254_name: 'Seal of Wisdom',
     talent_254_description: ' ',
     talent_255_name: 'The agility of the snow leopard',
@@ -5000,7 +5001,7 @@ export const en = {
       '<num>Tactical</num><br><br><rz>When used from its native land, it restores <num>%s</num> Energy in <num>15</num> seconds.</rz><br>The effect stops working if any damage is inflicted on the hero.',
     talent_388_name: "The Hunter's Superiority",
     talent_388_description:
-      "The hero's attacks additionally inflict <fiz>%s</fiz> damage on soldiers and chudis.<br>Finishing them off, the hero gets <prime>5</prime>. After receiving <prime>675</prime> the influx stops from this talent.<br>Only one of the talents of excellence is active.<br><br><rz><fiz>+%s</fiz> damage on native land.</rz>",
+      "The hero's attacks deal an additional <fiz>%s</fiz> damage to soldiers and creatures.<br>Finishing them off grants the hero <prime>5</prime>. After <prime>675</prime> has been gained from this talent, the income stops.<br>Only one of the superiority talents is active.<br><br><rz><fiz>+%s</fiz> damage on native terrain.</rz>",
     talent_389_name: 'Initial regeneration',
     talent_389_description: ' <num>+%s</num> <coral-l>Regenerating health on enemy or neutral ground</coral-l>',
     talent_390_name: 'The superiority of the scout',
@@ -5047,7 +5048,7 @@ export const en = {
       'Every minute, the Intellect increases by an additional <num>0.4</num>. The total bonus cannot be greater than <num>%s</num>.<br>\n<col1>(400 sec.)</col1>',
     talent_408_name: 'Inflexibility',
     talent_408_description:
-      "After each Resurrection, Health increases by an additional <num>36</num>.<br>\r\nThe sum bonus cannot be greater than <num>%s</num>.<br>\r\n<col1 > (5 times).</col1><br>\r\nWith each visit to the resurrection site, the hero's speed increases by <num> 70%</num > until he takes or deals damage.",
+      'After each resurrection, Health additionally increases by <num>36</num>.<br>\r\nThe total bonus cannot exceed <num>%s</num>.<br>\r\n<col1>(5 times).</col1><br>\r\nEach time the hero visits the resurrection platform, their Speed increases by <num>70%</num> until they take or deal damage.',
     talent_409_name: 'Hard Logic',
     talent_409_description:
       'For every <num>100</num> damage taken, the Intellect increases by an additional <num>0.04</num>. <br>\nthe sum bonus cannot be greater than <num>%s</num>.<br>\n<col1>(12000 damage)</col1>',
@@ -5101,7 +5102,7 @@ export const en = {
       'For every <num>260</num> damage received, the Will increases by an additional <num>0.25</num>.<br>\nthe sum bonus cannot be greater than <num>%s</num>.<br>\n<col1>(13000 damage)</col1>',
     talent_426_name: 'Cunning',
     talent_426_description:
-      "The Hero's cunning increases by <num>0.06</num> every time an active talent is applied nearby.<br>\npridelnaya total increase - <num>%s</num>.<br>\n<col1>(209 activations)</col1><br > <br>\nHe can be installed together with the talent <tn>Victory star</tn>",
+      "The hero's Cunning increases by <num>0.06</num> every time an active talent is used nearby.<br>\nThe maximum total increase is <num>%s</num>.<br>\n<col1>(209 activations)</col1><br><br>\nCannot be equipped together with the <tn>Victory Star</tn> talent",
     talent_427_name: 'Intimidating quickness',
     talent_427_description:
       'For each creature killed, agility increases by <num>0.12</num>, and for killing a hero — by <num>1.2</num>.<br>\nthe sum bonus cannot be greater than <num>%s</num>.<br>\n<col1>(105 Kripa/11 heroes)</col1>',
@@ -5110,22 +5111,22 @@ export const en = {
       '<num>Protective</num><br><br>When activated, it restores <num>%s</num> Health and additional <num>%s</num> Health for each level of the Hero.',
     talent_429_name: 'Spinner of Strenght',
     talent_429_description:
-      'The Hero\'s strength increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Strength increases by <yellow>0.75</yellow> every minute. The maximum increase is <yellow>%s</yellow><br><br><gray>Set</gray> <tn>"Spinners of Heroes"</tn><br><br><orange-l>2 talents</orange-l><br><gray>Every <num>4</num> sec. grant <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_430_name: 'Spinner of Intellect',
     talent_430_description:
-      'The Hero\'s Intellect increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Intellect increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_431_name: 'Spinner Agility',
     talent_431_description:
-      'The Hero\'s strength increases by <yellow>0.75</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br><br><gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d><br><br><orange-l>2 talents</orange-l><br><gray>Each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Agility increases by <yellow>0.55</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_432_name: 'Spinner Cunnings',
     talent_432_description:
-      'The Hero\'s cunning increases by <yellow>0.55</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Cunning increases by <yellow>0.55</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_433_name: 'Spinner of Stamina',
     talent_433_description:
-      'The Hero\'s stamina increases by <yellow>0.37</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Stamina increases by <yellow>0.37</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_434_name: 'Spinner of Will',
     talent_434_description:
-      'The Hero\'s will increases by <yellow>0.37</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Will increases by <yellow>0.37</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_435_name: 'Terrible Strength',
     talent_435_description:
       '<gray>Set</gray> <orange-d>"Creepy time"</orange-d> <br><br> <orange-l>2 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Strength and Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray><num>+6</num> to the greatest of Agility and Cunning</gray>',
@@ -5263,7 +5264,7 @@ export const en = {
       'Deals enemies around <fiz>%s</fiz> damage from your hero\'s maximum health once every <num>1</num> sec.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_481_name: 'The rapture of rage',
     talent_481_description:
-      'The range of the Martial Rapture talent has been increased.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d>',
+      'The area of effect of the Martial ecstasy talent is increased.<br> <br> <gray>Set</gray> <tn>"Martial ecstasy"</tn>',
     talent_482_name: 'The rapture of cruelty',
     talent_482_description:
       'Deals <fiz>%s</fiz> maximum health damage to soldiers and chudies located in the area of the Combat Rapture talent.<br> <br> <gray>Set</gray> <orange-d>"Martial ecstasy"</orange-d>',
@@ -5470,7 +5471,7 @@ export const en = {
       '<num>The attacker</num><br><br>The specified enemy cannot use talents for <num>2</num> seconds.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d><br><br><gray>- can be improved by <num>3</num> talents</gray>',
     talent_550_name: 'Blinding Scream',
     talent_550_description:
-      'Talent <tn>The cry of doom</tn> additionally blinds the enemy.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
+      'The <tn>Cry of doom</tn> talent additionally blinds the enemy.<br> <br> <gray>Set</gray> <tn>"Cry of doom"</tn>',
     talent_551_name: 'The Chilling Scream',
     talent_551_description:
       'Talent <tn>Cry of doom</tn> additionally slows down the target by <num>40%</num>.<br> <br> <gray>Set</gray> <orange-d>"Cry of Doom"</orange-d>',
@@ -5512,7 +5513,7 @@ export const en = {
       'Talent <tn>Insidious flame</tn> additionally deals <mag>%s</mag> damage.<br> <br> <gray>Set</gray> <orange-d>"Insidious flame"</orange-d>',
     talent_564_name: 'The superiority of the warrior',
     talent_564_description:
-      'Soldiers and monsters receive additional <fiz>%s</fiz> damage from the hero\'s attack.<br> The hero receives <num>0.05</num> Power for each creature he kills. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
+      'Soldiers and monsters take an additional <fiz>%s</fiz> damage from the hero\'s attacks.<br> The hero gains <num>0.05</num> to the higher of Strength or Intellect for each creature that dies nearby. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <tn>"Absolute superiority"</tn>',
     talent_565_name: "The Wizard's Superiority",
     talent_565_description:
       'Soldiers and monsters take an additional <num>%s</num> damage from the hero\'s talents.<br> The hero gains <num>0.05</num> to the highest of Strength and Intellect for each creature that dies near them. The maximum total increase is <num>%s</num><br> <br> <gray>Set</gray> <orange-d>"Absolute superiority"</orange-d>',
@@ -5539,7 +5540,7 @@ export const en = {
       'During the talent action <orange-d>The Forest Symbol</orange-d> the hero receives <num>%s</num> Health Regeneration from maximum Health.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_573_name: 'Forest Power',
     talent_573_description:
-      'Talent <orange-d>Forest Symbol</orange-d> additionally deals 0.9%</num> <red-d>net damage</red-d> of the target\'s maximum health.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
+      'The <tn>Symbol of the forest</tn> talent additionally deals damage equal to <mag>0.9%</mag> of the target\'s maximum Health.<br> <br> <gray>Set</gray> <tn>"Symbol of the forest"</tn>',
     talent_574_name: 'Icy Revenge<white> <CD>1</CD></white>',
     talent_574_description:
       'The enemy attacking the hero takes <mag>%s</mag> damage.<br><br><gray>Set</gray> <orange-d>"Collector\'s habits"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray> <br> <orange-l>4 talents</orange-l> <br> <num>+2</num> <gray>for all characteristics</gray>',
@@ -5572,28 +5573,28 @@ export const en = {
       'Talent <orange-d>Forest symbol</orange-d> additionally deals <mag>%s</mag> damage. The damage is distributed evenly across the set targets affected by the class ability.<br> <br> <gray>Set</gray> <orange-d>"Forest symbol"</orange-d>',
     talent_584_name: 'The Order of Victory',
     talent_584_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers and buildings (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> sec., the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> sec. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> sec.</gray>.',
     talent_585_name: 'Order of Courage',
     talent_585_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers and buildings (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> sec., the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> sec. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> sec.</gray>.',
     talent_586_name: 'Order of Courage',
     talent_586_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers and buildings (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> sec., the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> sec. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> sec.</gray>.',
     talent_587_name: 'The Order of Nobility',
     talent_587_description:
-      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> seconds, the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> seconds. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> seconds</gray>.',
+      '<gray>Set</gray> <tn>"Experienced Warrior"</tn> <br> <br> <orange-l>1 talent</orange-l> <br> <gray>The Hero\'s attack deals <fiz>%s</fiz> bonus damage to enemy soldiers and buildings (based on the higher of Strength or Intellect)</gray> <br> <orange-l>2 talents</orange-l> <br> <gray>Once every <num>15</num> sec., the attack deals <mag>%s</mag> bonus damage (based on the higher of Strength or Intellect) to an enemy Hero or tower</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Reduces the cooldown of the empowered attack by <num>5</num> sec. The empowered attack slows the enemy Hero by <num>90%</num> for <num>0.5</num> sec.</gray>.',
     talent_588_name: 'Stronghold of Life',
     talent_588_description:
-      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
+      '<gray>Set</gray> <tn>"Impenetrable bulwark"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the higher of Stamina or Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Damage dealt to the Hero is reduced by <num>8.5%</num></gray>',
     talent_589_name: 'Bulwark of Protection',
     talent_589_description:
-      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
+      '<gray>Set</gray> <tn>"Impenetrable bulwark"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the higher of Stamina or Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Damage dealt to the Hero is reduced by <num>8.5%</num></gray>',
     talent_590_name: 'Rampart of Rage',
     talent_590_description:
-      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
+      '<gray>Set</gray> <tn>"Impenetrable bulwark"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the higher of Stamina or Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Damage dealt to the Hero is reduced by <num>8.5%</num></gray>',
     talent_591_name: 'Stronghold of Strength',
     talent_591_description:
-      '<gray>Set</gray> <orange-d>"Impenetrable bulwark"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the greatest of Stamina and Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero\'s damage is reduced by <num>10%</num></gray>',
+      '<gray>Set</gray> <tn>"Impenetrable bulwark"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+6</num> <gray>to the higher of Stamina or Will</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Damage dealt to the Hero is reduced by <num>8.5%</num></gray>',
     talent_592_name: 'Volume of Wisdom',
     talent_592_description:
       '<gray>Set</gray> <orange-d>"Wizard\'s Knowledge"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+7</num> <gray>Intellect</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Hero attacks reduce the target\'s Strength by <num>%s</num> (from Intellect) for <num>4</num> seconds</gray>',
@@ -5644,7 +5645,7 @@ export const en = {
       '<gray>Set</gray> <orange-d>"Martial art"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <num>+5</num> <gray>stealing Health</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>A hero\'s attack with a <num>13%</num> chance will stun the opponent for <num>0.4</num> sec.</gray>',
     talent_608_name: 'Speed Spinner',
     talent_608_description:
-      'The Hero\'s speed increases by <yellow>%s</yellow> and additionally by <yellow>0.3</yellow> every minute. The maximum total increase is <yellow>6</yellow><br><br> <gray>Set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> seconds. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Speed increases by <yellow>%s</yellow> and additionally by <yellow>0.3</yellow> every minute. The maximum total increase is <yellow>6</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_609_name: 'The Time of the first',
     talent_609_description:
       '<gray>Set</gray> <orange-d>"Hot time"</orange-d> <br> <br> <orange-l>1 talent</orange-l> <br><num>-5%</num><gray><cdicon></cdicon></gray> <orange-l><br>2 talents</orange-l> <br> <gray><num>-6%</num><cdicon></cdicon></gray><br> <orange-l>3 talents</orange-l> <br> <gray><num>-7%</num><cdicon></cdicon></gray> <br> <orange-l>4 talents</orange-l> <br> <gray><num>-8%</num><cdicon></cdicon></gray><br>',
@@ -5716,7 +5717,7 @@ export const en = {
       '<gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
     talent_632_name: 'The Power of the destroyer<white> <CD>180</CD></white>',
     talent_632_description:
-      '<num>The attacker</num><br><br>For <num>5</num> seconds, the Hero\'s attacks deal additional damage equal to <num>5%</num> of the target\'s max Health (bosses <num>2%</num>) <br> <br> <gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
+      '<num>The attacker</num><br><br>For <num>4</num> sec., the Hero\'s attacks deal additional damage equal to <num>5%</num> of the target\'s max. Health (<num>2%</num> to bosses) <br> <br> <gray><gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> sec.</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> sec.</gray>',
     talent_633_name: 'Destructive Knowledge',
     talent_633_description:
       '<gray>Set</gray> <tn>"The Power of the Destroyer"</tn> <br> <orange-l>2 talents</orange-l> <br> <gray>Reduces the cooldown of the <tn>The Power of the Destroyer</tn> talent by <num>45</num> seconds</gray> <br> <orange-l>3 talents</orange-l> <br> <gray>Increases the duration of the <tn>The Power of the Destroyer</tn> talent by <num>2</num> seconds</gray>',
@@ -6114,11 +6115,11 @@ export const en = {
     talent_765_description: '<num>defensive</num><br><br>When activated, the hero becomes invulnerable to physical damage for 2 seconds.',
     talent_766_name: 'Health Spinner',
     talent_766_description:
-      'the Hero\'s health increases every minute by <yellow>11.1</yellow>. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
+      'The hero\'s Health increases by <yellow>11.1</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
     talent_767_name: 'Energy Spinner',
     talent_767_description:
-      'the Hero\'s energy increases every minute by <yellow>11.1</yellow>. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>set</gray> <orange-d>"Spinners of Heroes"</orange-d> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>each <num>4</num> sec. gives <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with <amethyst>"Prime Influx"</amethyst>.',
-    talent_768_name: 'Sea Symbol<white> <CD>10</CD></white>',
+      'The hero\'s Energy increases by <yellow>11.1</yellow> every minute. The maximum total increase is <yellow>%s</yellow><br> <br> <gray>Set</gray> <tn>"Spinners of Heroes"</tn> <br> <br> <orange-l>2 talents</orange-l> <br> <gray>Every <num>4</num> sec. grants <prime>+1</prime></gray><br><hr><gray>Compatibility</gray><br>Cannot be equipped together with the <yst>"Prime Influx"</yst> talent.',
+    talent_768_name: 'Sea Symbol',
     talent_768_description:
       'An ally who received a buff from the class ability for <num>3</num> sec will gain <num>%s</num> Health per second from the highest of your hero\'s Strength and Intellect. Triggers on each hero no more than once every <num>10</num> sec. Each learned talent from the set increases the base healing by <num>%s%</num> <br> <br> <gray>Set</gray> <tn>"Sea Symbol"</tn><br><br><gray>- can be improved by <num>4</num> talents</gray>',
     talent_769_name: 'Sea Aspiration',
