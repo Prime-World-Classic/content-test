@@ -196,21 +196,45 @@ export class TalentAdmin {
     }
     if (!this.confirmDiscard()) return;
 
-    const value = window.prompt('Папка репозитория pw_classic_launcher (там content/lang/ru.js):', this.rootDir || '');
-    if (value === null) return;
+    this.pickDirectory((picked) => {
+      // Выбрали content или content/lang внутри репозитория — поднимаемся до корня.
+      let dir = picked;
+      for (let i = 0; i < 3 && dir && !this.fs.existsSync(NativeAPI.path.join(dir, 'content', 'lang', 'ru.js')); i++) {
+        const parent = NativeAPI.path.dirname(dir);
+        dir = parent === dir ? '' : parent;
+      }
 
-    const dir = value.trim().replace(/^"|"$/g, '');
-    if (dir && !this.fs.existsSync(NativeAPI.path.join(dir, 'content', 'lang', 'ru.js'))) {
-      App.error(`В папке ${dir} нет content/lang/ru.js`);
-      return;
-    }
+      if (!dir || !this.fs.existsSync(NativeAPI.path.join(dir, 'content', 'lang', 'ru.js'))) {
+        App.error(`В папке ${picked} нет content/lang/ru.js — выберите папку репозитория pw_classic_launcher`);
+        return;
+      }
 
-    try {
-      if (dir) localStorage.setItem(ROOT_STORAGE_KEY, dir);
-      else localStorage.removeItem(ROOT_STORAGE_KEY);
-    } catch {}
+      try {
+        localStorage.setItem(ROOT_STORAGE_KEY, dir);
+      } catch {}
 
-    this.reload();
+      this.reload();
+    });
+  }
+
+  // Системный диалог выбора папки (NW: input с атрибутом nwdirectory отдаёт полный путь).
+  pickDirectory(onPick) {
+    // Диалог отменили — change не придёт, старый input убираем при следующем открытии.
+    document.querySelectorAll('.tadm-dir-picker').forEach((el) => el.remove());
+
+    const input = DOM({ tag: 'input', type: 'file', style: 'tadm-dir-picker' });
+    input.setAttribute('nwdirectory', '');
+    if (this.rootDir) input.setAttribute('nwworkingdir', this.rootDir);
+    input.style.display = 'none';
+
+    input.addEventListener('change', () => {
+      const dir = input.files?.[0]?.path || input.value;
+      input.remove();
+      if (dir) onPick(dir);
+    });
+
+    document.body.append(input);
+    input.click();
   }
 
   readText(...parts) {
