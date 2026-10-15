@@ -402,10 +402,11 @@ export class TalentAdmin {
     }
 
     const badges = DOM({ style: 'tadm-badges' });
+    // Необязательные отметки — слева, уровень и редкость — у правого края, чтобы стояли колонкой.
+    if (sync !== 'ok') badges.append(DOM({ style: ['tadm-badge', 'tadm-badge-sync'], title: sync === 'missing' ? 'Нет в content/talent_data' : 'Отличается от content/talent_data' }, sync === 'missing' ? 'нет в контенте' : '≠ контент'));
+    if (Number(row.active) === 1) badges.append(DOM({ style: ['tadm-badge', 'tadm-badge-active'], title: 'Активный' }, 'акт'));
     badges.append(DOM({ style: ['tadm-badge', MMTEST_LEVELS.includes(level) ? 'tadm-badge-mmtest' : 'tadm-badge-level'] }, MMTEST_LEVELS.includes(level) ? `mm ${level}` : `ур ${level}`));
     if (kind === 'common') badges.append(DOM({ style: ['tadm-badge', `tadm-rarity-${Number(row.rarity) || 0}`], title: this.rarityName(Number(row.rarity) || 0) }, '●'));
-    if (Number(row.active) === 1) badges.append(DOM({ style: ['tadm-badge', 'tadm-badge-active'], title: 'Активный' }, 'акт'));
-    if (sync !== 'ok') badges.append(DOM({ style: ['tadm-badge', 'tadm-badge-sync'], title: sync === 'missing' ? 'Нет в content/talent_data' : 'Отличается от content/talent_data' }, sync === 'missing' ? 'нет в контенте' : '≠ контент'));
 
     const icon = DOM({ tag: 'img', style: 'tadm-icon', src: KINDS[kind].icon(row.id), loading: 'lazy' });
     icon.onerror = () => icon.classList.add('tadm-icon-missing');
