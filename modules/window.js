@@ -2037,27 +2037,9 @@ export class Window {
         {
           domaudio: domAudioPresets.bigButton,
           style: 'castle-menu-item-button',
-          event: [
-            'click',
-            () => {
-              View.show('talents'); // Логика для отображения обычных талантов
-            },
-          ],
+          event: ['click', () => View.show('talents')],
         },
-        'Таланты (обычные)',
-      ),
-      DOM(
-        {
-          domaudio: domAudioPresets.bigButton,
-          style: 'castle-menu-item-button',
-          event: [
-            'click',
-            () => {
-              View.show('talents2'); // Логика для отображения классовых талантов
-            },
-          ],
-        },
-        'Таланты (классовые)',
+        'Таланты',
       ),
       DOM(
         {

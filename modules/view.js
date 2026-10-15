@@ -27,6 +27,7 @@ import { Sound } from './sound.js';
 import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/keybindings.io.js';
 import { getHeroSearchAliases } from './heroSearchAliases.js';
 import { uiIcon } from './uiIcon.js';
+import { TalentAdmin } from './talentAdmin.js';
 
 const KEYBOARD_LAYOUT_EN_TO_RU = {
   q: 'й',
@@ -941,7 +942,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261013-tabs-grow-1';
+    const cssVersion = '20261015-talent-admin-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -5348,183 +5349,13 @@ ${Lang.text('castleBuildCategoryUnavailable')}` },
     return isWindow ? body : DOM({ id: 'viewbuild' }, body);
   }
 
+  // Админка талантов: обычные и классовые — одна страница с вкладками (talentAdmin.js).
   static async talents() {
-    let body = DOM({ style: 'main' });
-
-    // Создаем контейнер для заголовка (кнопка закрытия + поиск)
-    let header = DOM({ style: 'adm-header' });
-
-    // Кнопка закрытия
-    let closeBtn = DOM(
-      {
-        domaudio: domAudioPresets.closeButton,
-        style: 'close-btn',
-        event: ['click', () => View.show('castle')],
-      },
-      '[X]',
-    );
-
-    // Строка поиска
-    let searchInput = DOM({
-      tag: 'input',
-      placeholder: 'Поиск талантов...',
-      style: 'search-input',
-    });
-
-    header.append(closeBtn, searchInput);
-
-    let adm = DOM({ style: 'adm' }, header);
-    // Пагинация с бюджетом размера (backend): фреймы под лимит CF (~23 КБ),
-    // полный набор 777 строк набирается циклом (~10 запросов).
-    let result = await App.api.requestPaged('build', 'talentAll');
-    let talentContainers = [];
-    let talentsContainer = DOM({ style: 'talents-container' });
-
-    for (let item of result) {
-      let div = DOM({ tag: 'div', class: 'talent-item' });
-      div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/talents/${item.id}.webp` }));
-
-      for (let key in item) {
-        if (key == 'id') continue;
-
-        // Создаем контейнер для пары "ключ-значение"
-        let keyValuePair = DOM({
-          tag: 'div',
-          class: 'key-value-pair',
-        });
-
-        keyValuePair.append(
-          DOM({ tag: 'div', class: 'key' }, key),
-          App.input(
-            async (value) => {
-              let object = new Object();
-              object[key] = value;
-              await App.api.request('build', 'talentEdit', {
-                id: item.id,
-                object: object,
-              });
-            },
-            { value: item[key] },
-          ),
-        );
-
-        div.append(keyValuePair);
-      }
-
-      talentContainers.push({ element: div, data: item });
-      talentsContainer.append(div);
-    }
-
-    const filterTalents = (searchText) => {
-      searchText = searchText.toLowerCase();
-      talentContainers.forEach(({ element, data }) => {
-        let matches = false;
-        for (let key in data) {
-          if (String(data[key]).toLowerCase().includes(searchText)) {
-            matches = true;
-            break;
-          }
-        }
-        element.style.display = matches ? 'flex' : 'none';
-      });
-    };
-
-    searchInput.addEventListener('input', (e) => {
-      filterTalents(e.target.value);
-    });
-
-    adm.append(talentsContainer);
-    body.append(adm);
-    return body;
+    return DOM({ style: 'main' }, TalentAdmin.render('common'));
   }
 
   static async talents2() {
-    let body = DOM({ style: 'main' });
-
-    // Создаем контейнер для заголовка (кнопка закрытия + поиск)
-    let header = DOM({ style: 'adm-header' });
-
-    // Кнопка закрытия
-    let closeBtn = DOM(
-      {
-        domaudio: domAudioPresets.closeButton,
-        style: 'close-btn',
-        event: ['click', () => View.show('castle')],
-      },
-      '[X]',
-    );
-
-    // Строка поиска
-    let searchInput = DOM({
-      tag: 'input',
-      placeholder: 'Поиск геройских талантов...',
-      style: 'search-input',
-    });
-
-    header.append(closeBtn, searchInput);
-
-    let adm = DOM({ style: 'adm' }, header);
-    // То же, что talentAll: 831 строка набираются чанками под лимит CF.
-    let result = await App.api.requestPaged('build', 'talentHeroAll');
-    let talentContainers = [];
-    let talentsContainer = DOM({ style: 'talents-container' });
-
-    for (let item of result) {
-      let div = DOM({ tag: 'div', class: 'talent-item' });
-      div.append(DOM(`id${item.id}`), DOM({ tag: 'img', src: `content/htalents/${item.id}.webp` }));
-
-      for (let key in item) {
-        if (key == 'id') continue;
-
-        // Создаем контейнер для пары "ключ-значение"
-        let keyValuePair = DOM({
-          tag: 'div',
-          class: 'key-value-pair',
-        });
-
-        keyValuePair.append(
-          DOM({ tag: 'div', class: 'key' }, key),
-          App.input(
-            async (value) => {
-              let object = new Object();
-              object[key] = value;
-              await App.api.request('build', 'talentHeroEdit', {
-                id: item.id,
-                object: object,
-              });
-            },
-            { value: item[key] },
-          ),
-        );
-
-        div.append(keyValuePair);
-      }
-
-      talentContainers.push({ element: div, data: item });
-      talentsContainer.append(div);
-    }
-
-    const filterTalents = (searchText) => {
-      searchText = searchText.toLowerCase();
-      talentContainers.forEach(({ element, data }) => {
-        let matches = false;
-        for (let key in data) {
-          if (String(data[key]).toLowerCase().includes(searchText)) {
-            matches = true;
-            break;
-          }
-        }
-        element.style.display = matches ? 'flex' : 'none';
-      });
-    };
-
-    searchInput.addEventListener('input', (e) => {
-      filterTalents(e.target.value);
-    });
-
-    adm.append(talentsContainer);
-    body.append(adm);
-    return body;
+    return DOM({ style: 'main' }, TalentAdmin.render('hero'));
   }
 
   static async users() {
