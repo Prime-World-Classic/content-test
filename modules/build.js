@@ -166,73 +166,7 @@ export class Build {
       return Window.show('allyBuild', 'allyBuild', { request, user, hero, nickname, preview });
     }
 
-    let container = DOM({
-      domaudio: domAudioPresets.defaultButton,
-      event: [
-        'click',
-        async () => {
-          if (animate) {
-            Build.view(user, hero, nickname, false);
-          }
-        },
-      ],
-    });
-
-    container.style.width = '60cqmin';
-
-    container.style.height = '60cqmin';
-
-    let state = false;
-    let get = DOM(
-      {
-        domaudio: domAudioPresets.defaultButton,
-        event: [
-          'click',
-          async () => {
-            if (!state) {
-              get.innerText = Lang.text('overwriteBuild');
-
-              state = true;
-
-              return;
-            }
-
-            await App.api.request('build', 'steal', { user: user, hero: hero });
-
-            await Window.show('main', 'build', hero, 0, true);
-
-            Splash.hide();
-          },
-        ],
-      },
-      Lang.text('stealBuild'),
-    );
-
-    let bottom = DOM(
-      { style: 'build-bottom' },
-      get,
-      DOM(
-        {
-          domaudio: domAudioPresets.defaultButton,
-          event: [
-            'click',
-            () => {
-              Splash.hide();
-              requestAnimationFrame(() => Voice.updatePanelPosition());
-            },
-          ],
-        },
-        `[Х]`,
-      ),
-    );
-
-    if (animate) {
-      bottom.style.opacity = 1;
-    }
-
-    container.append(Build.viewModel(request, () => {}, animate));
-
-    Splash.show(DOM({ style: 'div' }, DOM({ style: 'build-top' }, nickname), container, bottom), false);
+    return Window.show('playerBuild', 'playerBuild', { request, user, hero, nickname, preview: false });
   }
 
   static viewModel(data, callback, animate = true) {

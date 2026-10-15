@@ -37,6 +37,7 @@ export const en = {
     mmConfirmChoice: 'Confirm selection',
     mmConfirmUrgent: 'Click to confirm!',
     mmAllyBuildTitle: 'Ally build',
+    playerBuildTitle: 'Player build',
     mmCopyBuild: 'Copy build',
     mmMapPositionHint: 'Choose your hero\'s position on the map.',
     mmPositionTop: 'Top lane',

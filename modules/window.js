@@ -973,7 +973,7 @@ export class Window {
   }
 
   static async menu() {
-    const canSpectate = await Window.spectatorAllowed();
+    const canSpectate = App.isSettingsPreviewEnabled?.() ? false : await Window.spectatorAllowed();
     return DOM(
       { id: 'wcastle-menu', style: ['wcastle-menu--main', 'wcastle-menu--quest-bg'] },
       DOM({style: 'title-modal'}, DOM({style: 'title-modal-text'}, Lang.text('menu'))),
@@ -2594,7 +2594,12 @@ export class Window {
     );
   }
 
-  static async allyBuild({ request, user, hero, nickname, preview }) {
+  static async playerBuild(value) {
+    return Window.allyBuild({ ...value, lobby: false });
+  }
+
+  static async allyBuild({ request, user, hero, nickname, preview, lobby = true }) {
+    const category = lobby ? 'allyBuild' : 'playerBuild';
     let overwrite = false;
     let pending = false;
     const copy = DOM({
@@ -2612,8 +2617,10 @@ export class Window {
         copy.disabled = true;
         try {
           await App.api.request('build', 'steal', { user, hero });
-          if (Window.windows.allyBuild === body) Window.close('allyBuild');
-          if (MM.isInTambur && Number(MM.targetHeroId) === Number(hero)) {
+          if (Window.windows[category] === body) Window.close(category);
+          if (!lobby) {
+            await Window.show('main', 'build', hero, 0, true);
+          } else if (MM.isInTambur && Number(MM.targetHeroId) === Number(hero)) {
             await MM.lobbyBuildView(hero);
           }
         } catch (error) {
@@ -2625,15 +2632,15 @@ export class Window {
       }],
     }, Lang.text('mmCopyBuild'));
     const body = DOM({
-      id: 'wally-build', style: ['splash-content', 'splash-content--titled'],
-      role: 'dialog', ariaLabel: Lang.text('mmAllyBuildTitle'),
+      id: lobby ? 'wally-build' : 'wplayer-build', style: ['splash-content', 'splash-content--titled'],
+      role: 'dialog', ariaLabel: Lang.text(lobby ? 'mmAllyBuildTitle' : 'playerBuildTitle'),
     },
-    DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text('mmAllyBuildTitle'))),
+    DOM({ style: 'title-modal' }, DOM({ style: 'title-modal-text' }, Lang.text(lobby ? 'mmAllyBuildTitle' : 'playerBuildTitle'))),
     DOM({ style: 'mm-ally-build-nickname' }, nickname),
     DOM({ style: 'mm-ally-build-grid' }, Build.viewModel(request, false, false)),
     copy);
     const position = () => {
-      if (!body.isConnected || !MM.lobbyConfirm?.isConnected) return;
+      if (!lobby || !body.isConnected || !MM.lobbyConfirm?.isConnected) return;
       const anchor = MM.lobbyConfirm.getBoundingClientRect();
       const gap = 8;
       const left = Math.max(gap, Math.min(anchor.left + anchor.width / 2 - body.offsetWidth / 2,
@@ -2643,11 +2650,11 @@ export class Window {
         window.innerHeight - body.offsetHeight - gap))}px`;
     };
     const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(position) : null;
-    observer?.observe(MM.lobbyConfirm);
+    if (lobby && MM.lobbyConfirm) observer?.observe(MM.lobbyConfirm);
     observer?.observe(body);
     window.addEventListener('resize', position);
     const closeOnLobbyExit = () => Window.close('allyBuild');
-    window.addEventListener('pw:mm-close', closeOnLobbyExit, { once: true });
+    if (lobby) window.addEventListener('pw:mm-close', closeOnLobbyExit, { once: true });
     body.cleanup = () => {
       observer?.disconnect();
       window.removeEventListener('resize', position);

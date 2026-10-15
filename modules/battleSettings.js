@@ -628,6 +628,12 @@ function buildWheelEditor(wheel) {
     });
     minus.classList.add('bs-wheel-count-btn');
     plus.classList.add('bs-wheel-count-btn');
+    minus.title = minus.textContent;
+    plus.title = plus.textContent;
+    minus.setAttribute('aria-label', minus.textContent);
+    plus.setAttribute('aria-label', plus.textContent);
+    minus.replaceChildren(DOM({ tag: 'img', src: 'content/icons/remove.png', alt: '', style: 'bs-wheel-count-icon' }));
+    plus.replaceChildren(DOM({ tag: 'img', src: 'content/icons/add.png', alt: '', style: 'bs-wheel-count-icon' }));
     minus.classList.toggle('is-disabled', items.length <= WHEEL_MIN);
     plus.classList.toggle('is-disabled', items.length >= WHEEL_MAX);
     slots.append(DOM({ style: 'bs-wheel-count' }, minus, DOM({}, `${Lang.text('bsWheelCount')}: ${items.length}`), plus));
@@ -814,7 +820,7 @@ export async function battleSettings() {
   NativeAPI.unregisterVoiceHotkeys?.();
 
   const ctx = { keysDirty: false };
-  const content = DOM({ style: 'bs-content' });
+  const content = DOM({ style: ['bs-content', 'wtop-list-scroll'] });
   const footer = DOM({ style: 'bs-footer' });
   const sidebar = DOM({ style: 'bs-sidebar' });
   const catButtons = new Map();

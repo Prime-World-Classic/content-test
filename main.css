@@ -9349,16 +9349,23 @@ i-success {
   filter: grayscale(0.72) saturate(0.4);
 }
 
-#wally-build {
+#wally-build,
+#wplayer-build {
   position: fixed;
   z-index: 10000;
   box-sizing: border-box;
   margin: 0;
   align-items: center;
-  width: min(42cqh, calc(100vw - 16px));
+  width: min(48cqh, calc(100vw - 16px));
 }
 
-#wally-build .mm-ally-build-nickname {
+#wplayer-build {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+:is(#wally-build, #wplayer-build) .mm-ally-build-nickname {
   width: 100%;
   color: rgb(252, 229, 188);
   text-shadow: 0 0.18cqh 0.18cqh rgba(0, 0, 0, 0.72);
@@ -9366,14 +9373,15 @@ i-success {
   overflow-wrap: anywhere;
 }
 
-#wally-build .mm-ally-build-grid {
-  width: min(26cqh, 100%);
-  height: 26cqh;
+:is(#wally-build, #wplayer-build) .mm-ally-build-grid {
+  width: min(34cqh, 100%);
+  aspect-ratio: 1;
+  height: auto;
 }
 
-#wally-build .splash-content-button-modal {
+:is(#wally-build, #wplayer-build) .splash-content-button-modal {
   flex: 0 0 auto;
-  width: 78%;
+  width: 64%;
   min-height: 4.45cqh;
   font-size: 1.74cqh;
 }
@@ -12086,6 +12094,129 @@ body:has(#wcastle-call)::before {
   height: 2.6cqh;
 }
 
+/* Restore the castle controls after the battle-settings redesign. */
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button,
+#wbattle-settings .castle-menu-item-button {
+  border: 0.08cqh solid rgba(168, 151, 82, 0.95);
+  border-radius: 1cqh;
+  color: rgba(252, 229, 188, 0.94);
+  background: linear-gradient(180deg, rgba(4, 64, 63, 0.98), rgba(0, 32, 35, 0.98));
+  box-shadow:
+    inset 0 0.06cqh 0.08cqh rgba(99, 222, 211, 0.18),
+    inset 0 -0.1cqh 0.16cqh rgba(0, 0, 0, 0.48),
+    0 0 0 0.06cqh rgba(13, 61, 45, 0.95);
+}
+
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button {
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 4.45cqh;
+  font: 6.25cqw / 1.1 'DejaVuSans', sans-serif;
+}
+
+#wbattle-settings .castle-menu-item-button.bs-cat,
+#wbattle-settings .castle-menu-item-button.bs-button {
+  font-size: 2.2cqh;
+}
+
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button::before,
+#wbattle-settings .castle-menu-item-button::before {
+  background: radial-gradient(85% 46% at 50% 0%, rgba(174, 255, 238, 0.34), rgba(174, 255, 238, 0) 72%);
+  mix-blend-mode: screen;
+}
+
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button::after,
+#wbattle-settings .castle-menu-item-button::after {
+  left: 0.18cqh;
+  right: 0.18cqh;
+  height: 54%;
+  border-radius: 50% 50% 55% 55%;
+  transform: translateY(-42%);
+  background: linear-gradient(180deg, rgba(235, 255, 247, 0.28), rgba(255, 255, 255, 0.04));
+}
+
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button:hover,
+#wbattle-settings .castle-menu-item-button:hover {
+  border-color: rgba(195, 181, 101, 0.98);
+  filter: brightness(1.09);
+  box-shadow:
+    inset 0 0.06cqh 0.1cqh rgba(170, 255, 236, 0.22),
+    inset 0 -0.1cqh 0.16cqh rgba(0, 0, 0, 0.43),
+    0 0 0 0.06cqh rgba(25, 78, 58, 0.95);
+}
+
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button.castle-menu-item-button--red,
+#wbattle-settings .castle-menu-item-button.castle-menu-item-button--red {
+  background: linear-gradient(180deg, rgba(83, 25, 9, 0.98), rgba(49, 8, 2, 0.99));
+}
+
+#wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button.castle-menu-item-button--red::before,
+#wbattle-settings .castle-menu-item-button.castle-menu-item-button--red::before {
+  background: radial-gradient(85% 46% at 50% 0%, rgba(255, 209, 164, 0.32), rgba(255, 209, 164, 0) 72%);
+}
+
+#wcastle-menu .castle-menu-slider,
+#wbattle-settings .castle-menu-slider.bs-slider {
+  height: 1.5cqh;
+  border-radius: 1cqh;
+}
+
+#wcastle-menu .castle-menu-slider::-webkit-slider-runnable-track,
+#wbattle-settings .castle-menu-slider.bs-slider::-webkit-slider-runnable-track {
+  height: 1.5cqh;
+  border-radius: 1cqh;
+  box-shadow: inset 0 0.12cqh 0.16cqh rgba(255, 255, 255, 0.2), inset 0 -0.16cqh 0.2cqh rgba(0, 0, 0, 0.38);
+}
+
+#wcastle-menu .castle-menu-slider::-webkit-slider-thumb,
+#wbattle-settings .castle-menu-slider.bs-slider::-webkit-slider-thumb {
+  width: 2.1cqh;
+  height: 2.1cqh;
+  margin-top: -0.3cqh;
+  border-width: 0.06cqh;
+  box-shadow: inset 0 0.15cqh 0.2cqh rgba(255, 255, 255, 0.24), 0 0.07cqh 0.2cqh rgba(0, 0, 0, 0.58);
+}
+
+#wcastle-menu .castle-menu-slider::-moz-range-track,
+#wcastle-menu .castle-menu-slider::-moz-range-progress,
+#wbattle-settings .castle-menu-slider.bs-slider::-moz-range-track,
+#wbattle-settings .castle-menu-slider.bs-slider::-moz-range-progress {
+  height: 1.5cqh;
+  border-radius: 1cqh;
+  box-shadow: inset 0 0.12cqh 0.16cqh rgba(255, 255, 255, 0.2), inset 0 -0.16cqh 0.2cqh rgba(0, 0, 0, 0.38);
+}
+
+#wcastle-menu .castle-menu-slider::-moz-range-thumb,
+#wbattle-settings .castle-menu-slider.bs-slider::-moz-range-thumb {
+  width: 2.1cqh;
+  height: 2.1cqh;
+  border-width: 0.06cqh;
+  box-shadow: inset 0 0.15cqh 0.2cqh rgba(255, 255, 255, 0.24), 0 0.07cqh 0.2cqh rgba(0, 0, 0, 0.58);
+}
+
+#wbattle-settings .bs-select {
+  appearance: none;
+  padding-right: 2.8cqh;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><path d='M5 9 Q5.3 9 5.6 8.6 L8.6 3.4 Q9 3 8.4 3 H1.6 Q1 3 1.4 3.4 L4.4 8.6 Q4.7 9 5 9 Z' fill='%23f5c542'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 1.1cqh 1.1cqh;
+  background-position: right 1cqh center;
+}
+
+#wbattle-settings .castle-menu-item-button.bs-button.bs-wheel-count-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4cqh;
+}
+
+.bs-wheel-count-icon {
+  display: block;
+  width: 1.7cqh;
+  height: 1.7cqh;
+  object-fit: contain;
+}
+
 /* ---------------------------------------------------------------- Fair (fair.js): window as Battle settings */
 #wfair {
   position: fixed;
@@ -12116,24 +12247,11 @@ body:has(#wcastle-call)::before {
 }
 
 #wfair .close-button {
-  top: 0;
-  right: 0;
-  width: 3.4cqh;
-  height: 3.4cqh;
-}
-
-#wfair > .close-button .close-image-style {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
+  z-index: 5;
 }
 
 #wfair > .help-button.fair-help {
-  top: 0;
-  right: 4.5cqh;
-  width: 3.4cqh;
-  height: 3.4cqh;
-  z-index: 4;
+  z-index: 5;
 }
 
 #wfair .wtop-mode-tab.fair-cat {

@@ -28,6 +28,7 @@ export const be = {
     mmConfirmChoice: 'Пацвердзіць выбар',
     mmConfirmUrgent: 'Націсніце для пацверджання!',
     mmAllyBuildTitle: 'Білд саюзніка',
+    playerBuildTitle: 'Білд гульца',
     mmCopyBuild: 'Скапіяваць білд',
     mmMapPositionHint: 'Абярыце пазіцыю героя на карце.',
     mmPositionTop: 'Верхняя лінія',
