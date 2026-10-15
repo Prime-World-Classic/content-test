@@ -11611,13 +11611,13 @@ body:has(#wcastle-call)::before {
   padding-right: 1cqh;
 }
 
-.bs-content::-webkit-scrollbar {
+.bs-content:not(.wtop-list-scroll)::-webkit-scrollbar {
   width: 1.2cqh;
   background: rgba(16, 59, 65, 0.72);
   border-radius: 1cqh;
 }
 
-.bs-content::-webkit-scrollbar-thumb {
+.bs-content:not(.wtop-list-scroll)::-webkit-scrollbar-thumb {
   background: linear-gradient(90deg, rgba(42, 104, 98, 0.95), rgba(18, 69, 73, 0.95));
   border-radius: 1cqh;
   border: 0.1cqh solid rgba(158, 155, 104, 0.8);
@@ -12117,6 +12117,11 @@ body:has(#wcastle-call)::before {
 #wbattle-settings .castle-menu-item-button.bs-cat,
 #wbattle-settings .castle-menu-item-button.bs-button {
   font-size: 2.2cqh;
+}
+
+#wbattle-settings .castle-menu-item-button.bs-cat.is-active {
+  border-color: rgba(220, 186, 87, 0.9);
+  box-shadow: inset 0.18cqh 0 0 rgba(239, 205, 104, 0.9), inset 0 0.1cqh 0.3cqh rgba(202, 255, 242, 0.1);
 }
 
 #wcastle-menu.wcastle-menu--quest-bg .castle-menu-item-button::before,
