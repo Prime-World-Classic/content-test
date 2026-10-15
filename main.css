@@ -13091,7 +13091,6 @@ body:has(#wcastle-call)::before {
 }
 
 .tadm-count {
-  margin-left: auto;
   color: var(--tadm-muted);
 }
 
@@ -13439,42 +13438,53 @@ body:has(#wcastle-call)::before {
   font-size: 0.85em;
 }
 
-.tadm-sync-ok {
-  border-color: rgba(111, 209, 139, 0.35);
-  color: var(--tadm-good);
-}
-
-.tadm-sync-diff,
-.tadm-sync-missing {
-  border-color: rgba(240, 162, 74, 0.5);
-  background: rgba(240, 162, 74, 0.06);
-}
-
-.tadm-sync-diff .tadm-section-title,
-.tadm-sync-missing .tadm-section-title {
-  color: var(--tadm-warn);
-}
-
-.tadm-sync-cmp {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.tadm-sync-cmp pre {
-  margin: 4px 0 0;
-  padding: 8px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.3);
-  white-space: pre-wrap;
-  word-break: break-all;
-  font-size: 0.85em;
-}
-
 .tadm-empty {
   padding: 24px;
   text-align: center;
   color: var(--tadm-muted);
+}
+
+.tadm-root {
+  margin-left: auto;
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tadm-num {
+  width: 90px;
+}
+
+.tadm-cost {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tadm-text-card .tadm-input {
+  width: 100%;
+}
+
+.tadm-text-body {
+  min-height: 1.4em;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.tadm-text-body num {
+  color: var(--tadm-accent);
+}
+
+.tadm-input.tadm-missing-input {
+  border-color: var(--tadm-warn);
+}
+
+.tadm-lang-table {
+  display: grid;
+  grid-template-columns: 120px 1fr 1fr;
+  gap: 6px 10px;
+  align-items: center;
 }
 
 /* Cost / cooldown tail of the talent name, rendered with the game tags (mana, lifecost, CD...) */
@@ -13492,6 +13502,41 @@ body:has(#wcastle-call)::before {
 
 .tadm-ed-cost-text {
   color: var(--tadm-muted);
+}
+
+.tadm-texts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tadm-text-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  line-height: 1.4;
+  min-width: 0;
+}
+
+.tadm-text-lang {
+  font-size: 0.75em;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  color: var(--tadm-muted);
+}
+
+.tadm-text-name {
+  font-weight: bold;
+  color: var(--tadm-accent);
+}
+
+.tadm-text-missing,
+.tadm-warn {
+  color: var(--tadm-warn);
+  font-weight: normal;
 }
 
 /* Fixed quick buttons on the right (news, hall of fame, minigames, restart) overlap the editor */
