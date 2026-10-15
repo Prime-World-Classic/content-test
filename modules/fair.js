@@ -368,7 +368,7 @@ export async function fair(tab = null, { previewData = null } = {}) {
     }
     if (isOwned(item)) return DOM({ style: 'fair-tag' }, Lang.text('fairInCollection'));
     return DOM(
-      { style: 'fair-price', domaudio: domAudioPresets.bigButton, title: Lang.text('fairBuyFor').replace('{price}', item.price), event: ['click', (e) => (e.stopPropagation(), select(item), buy(item))] },
+      { style: ['fair-price', 'fair-price--crystals'], domaudio: domAudioPresets.bigButton, title: Lang.text('fairBuyFor').replace('{price}', item.price), event: ['click', (e) => (e.stopPropagation(), select(item), buy(item))] },
       DOM({ tag: 'img', src: 'content/img/queue/DiamondBlue.png', style: 'fair-gem' }),
       String(item.price),
     );
@@ -400,7 +400,10 @@ export async function fair(tab = null, { previewData = null } = {}) {
   };
 
   const grid = (items) => {
-    const el = DOM({ style: items.every((item) => item.categoryId === CAT.loadscreen) ? ['fair-cards', 'fair-cards--loadscreens'] : 'fair-cards' });
+    const styles = ['fair-cards'];
+    if (items.length && items.every((item) => item.categoryId === CAT.loadscreen)) styles.push('fair-cards--loadscreens');
+    if (items.length && items.every((item) => item.categoryId === CAT.frame)) styles.push('fair-cards--frames');
+    const el = DOM({ style: styles });
     for (const item of items) el.append(card(item));
     return el;
   };
