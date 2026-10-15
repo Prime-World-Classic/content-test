@@ -13476,3 +13476,11 @@ body:has(#wcastle-call)::before {
   text-align: center;
   color: var(--tadm-muted);
 }
+
+/* Fixed quick buttons on the right (news, hall of fame, minigames, restart) overlap the editor */
+body:has(.tadm) .launcher-notifications-quick-tab,
+body:has(.tadm) .launcher-hall-of-fame-quick-tab,
+body:has(.tadm) .launcher-minigames-quick,
+body:has(.tadm) .launcher-restart-quick-tab {
+  display: none;
+}
