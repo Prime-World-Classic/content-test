@@ -316,27 +316,19 @@ export class Events {
   }
 
   static UChat(data) {
-    Chat.viewMessage(data);
+    Chat.onLive(data);
   }
 
-  /** Обновление только списка закреплённых (бэк шлёт UChatPinned, не UChat). */
   static UChatPinned(data) {
-    Chat.viewMessage(data);
+    Chat.onPinned(data);
   }
-  
+
   static eventForumEditMessage(data) {
-    const id = Number(data?.id || 0);
-    if (!(id > 0)) return;
-    const cached = Chat.findCachedMessageById(id);
-    if (!cached) return;
-    Chat.viewMessage({
-      ...cached,
-      dbMessageId: Number(cached?.dbMessageId || id),
-      message: String(data?.message || cached?.message || ''),
-      edited: true,
-      editedAt: Date.now(),
-      pinned: Boolean(cached?.pinned),
-    });
+    Chat.onEdited(data);
+  }
+
+  static eventForumRemoveMessage(data) {
+    Chat.onRemoved(data);
   }
 
   static UFriendIncoming(data) {

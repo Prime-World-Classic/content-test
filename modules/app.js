@@ -380,8 +380,7 @@ export class App {
   }
 
   static onApiReconnected() {
-    Chat.syncPinnedMessagesWithBackend?.();
-    Chat.syncRecentMessagesWithBackend?.();
+    Chat.onReconnect?.();
   }
 
   static notificationsListUrl = 'https://pw.zone-play.com/stats/api/launcher/notifications.php?action=list';
