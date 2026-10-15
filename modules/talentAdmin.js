@@ -3,6 +3,8 @@ import { Lang } from './lang.js';
 import { App } from './app.js';
 import { HTTP } from './http.js';
 import { View } from './view.js';
+import { Window } from './window.js';
+import { Splash } from './splash.js';
 import { domAudioPresets } from './domAudioPresets.js';
 
 // Админка талантов (обычные + классовые) для View.talents / View.talents2.
@@ -69,9 +71,31 @@ export class TalentAdmin {
     this.selectedId = null;
     this.draft = null;
     this.filters = { text: '', level: '', rarity: '', active: '', hero: '', sync: false };
+    this.sort = 'id';
 
     this.build();
     this.load();
+
+    // Esc закрывает админку. Глобальный обработчик лаунчера (App) на Esc открывает меню —
+    // перехватываем раньше него (capture), пока страница на экране и поверх нет окон/сплэша.
+    this.onEscape = (e) => {
+      if (!this.root.isConnected) {
+        document.removeEventListener('keydown', this.onEscape, true);
+        return;
+      }
+      if (e.key !== 'Escape' || Splash.body?.style.display === 'flex' || Window.anyOpen?.()) return;
+
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      this.close();
+    };
+    document.addEventListener('keydown', this.onEscape, true);
+  }
+
+  close() {
+    if (!this.confirmDiscard()) return;
+    document.removeEventListener('keydown', this.onEscape, true);
+    View.show('castle');
   }
 
   // ---------- данные ----------
@@ -158,11 +182,56 @@ export class TalentAdmin {
     return count;
   }
 
-  name(kind, id) {
+  // Название в lang = «имя» + хвост с разметкой игры: стоимость (<mana>, <lifecost>, «20<detail>»)
+  // и перезарядка (<CD>, варианты <mag>…<CD></CD></mag>/<fiz>…). Хвост рендерится теми же тегами,
+  // что и в билде (иконки из main.css), а числа разбираются отдельно.
+  splitName(kind, id) {
     const key = `${KINDS[kind].langPrefix}${id}_name`;
-    const text = Lang.text(key);
-    // В названиях встречается разметка игры (<white>, <CD>…</CD>) — для админки только текст.
-    return text === key ? '' : String(text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const raw = Lang.text(key);
+
+    if (raw === key) {
+      return { title: '', tail: '' };
+    }
+
+    const match = String(raw).match(/^([\s\S]*?)(\d+(?:\.\d+)?<detail>[\s\S]*|<[\s\S]*)$/);
+    const title = (match ? match[1] : String(raw)).replace(/[\s|/]+$/, '').trim();
+    const tail = match ? match[2].trim() : '';
+
+    return { title, tail };
+  }
+
+  name(kind, id) {
+    const { title, tail } = this.splitName(kind, id);
+    return title || tail.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  costs(kind, id) {
+    const { tail } = this.splitName(kind, id);
+    const all = (re) => [...tail.matchAll(re)].map((m) => m[1] ?? m[2]).filter((v) => v !== undefined && v !== '');
+
+    return {
+      tail,
+      mana: all(/<mana>\s*([\d.]+)\s*<\/mana>/g),
+      life: all(/<lifecost>\s*([\d.]+)\s*<\/lifecost>/g),
+      detail: all(/([\d.]+)\s*<detail>/g),
+      cd: all(/<CD>\s*([\d.]+)\s*<\/CD>|([\d.]+)\s*<CD>\s*<\/CD>/g),
+    };
+  }
+
+  costsText(costs) {
+    const parts = [];
+    if (costs.mana.length) parts.push(`энергия ${costs.mana.join(' / ')}`);
+    if (costs.life.length) parts.push(`здоровье ${costs.life.join(' / ')}`);
+    if (costs.detail.length) parts.push(`детали ${costs.detail.join(' / ')}`);
+    if (costs.cd.length) parts.push(`кд ${costs.cd.join(' / ')} с`);
+    return parts.join(', ');
+  }
+
+  costsElement(costs, style) {
+    const element = DOM({ tag: 'span', style });
+    // Разметка из нашего же lang (те же теги, что в билде); <white> снимаем — на тёмном фоне он лишний.
+    element.innerHTML = costs.tail.replace(/<\/?white>/g, '');
+    return element;
   }
 
   description(kind, id) {
@@ -171,11 +240,13 @@ export class TalentAdmin {
     return text === key ? '' : String(text).trim();
   }
 
+  // hero1/hero2 — обычно один и тот же герой за обе фракции, имя показываем один раз.
   heroNames(row) {
-    return [row.hero1, row.hero2]
+    const names = [row.hero1, row.hero2]
       .map(Number)
       .filter((id) => id > 0)
       .map((id) => Lang.heroName(id) || `hero ${id}`);
+    return [...new Set(names)];
   }
 
   statLabel(key) {
@@ -249,6 +320,20 @@ export class TalentAdmin {
       this.applyFilters();
     });
 
+    this.sortSelect = this.select(
+      [
+        ['id', 'По id'],
+        ['name', 'По названию'],
+        ['cd', 'По перезарядке'],
+        ['cost', 'По стоимости'],
+        ['level', 'По уровню'],
+      ],
+      (value) => {
+        this.sort = value;
+        this.applySort();
+      },
+    );
+
     this.syncCheck = DOM({ tag: 'input', type: 'checkbox' });
     this.syncCheck.addEventListener('change', () => {
       this.filters.sync = this.syncCheck.checked;
@@ -272,13 +357,7 @@ export class TalentAdmin {
         tag: 'button',
         style: ['tadm-button', 'tadm-close'],
         domaudio: domAudioPresets.closeButton,
-        event: [
-          'click',
-          () => {
-            if (!this.confirmDiscard()) return;
-            View.show('castle');
-          },
-        ],
+        event: ['click', () => this.close()],
       },
       '✕',
     );
@@ -288,7 +367,7 @@ export class TalentAdmin {
     const header = DOM(
       { style: 'tadm-header' },
       DOM({ style: 'tadm-header-row' }, DOM({ style: 'tadm-title' }, 'Таланты'), tabs, this.searchInput, this.exportButton, close),
-      DOM({ style: 'tadm-header-row' }, this.levelSelect, this.raritySelect, this.activeSelect, this.heroSelect, syncLabel, this.countEl),
+      DOM({ style: 'tadm-header-row' }, this.levelSelect, this.raritySelect, this.activeSelect, this.heroSelect, this.sortSelect, syncLabel, this.countEl),
     );
 
     this.listEl = DOM({ style: 'tadm-list', tabIndex: 0 }, DOM({ style: 'tadm-empty' }, 'Загрузка…'));
@@ -348,14 +427,18 @@ export class TalentAdmin {
     this.heroSelect.style.display = kind === 'hero' ? '' : 'none';
 
     if (kind === 'hero') {
+      // Один герой может быть под двумя id (по фракциям) — в фильтре одна строка на имя.
       const heroes = new Map();
       for (const row of this.rows.hero) {
         for (const id of [row.hero1, row.hero2].map(Number)) {
-          if (id > 0 && !heroes.has(id)) heroes.set(id, Lang.heroName(id) || `hero ${id}`);
+          if (id <= 0) continue;
+          const name = Lang.heroName(id) || `hero ${id}`;
+          if (!heroes.has(name)) heroes.set(name, new Set());
+          heroes.get(name).add(id);
         }
       }
-      const sorted = [...heroes].sort((a, b) => a[1].localeCompare(b[1]));
-      this.setOptions(this.heroSelect, [['', 'Все герои'], ...sorted.map(([id, name]) => [String(id), name])]);
+      const sorted = [...heroes].sort((a, b) => a[0].localeCompare(b[0]));
+      this.setOptions(this.heroSelect, [['', 'Все герои'], ...sorted.map(([name, ids]) => [[...ids].join(','), name])]);
       this.heroSelect.value = this.filters.hero;
       if (this.heroSelect.value !== this.filters.hero) this.filters.hero = '';
     }
@@ -366,7 +449,7 @@ export class TalentAdmin {
       this.items[kind] = this.rows[kind].map((row) => ({ row, element: this.renderRow(kind, row) }));
     }
 
-    this.listEl.replaceChildren(...this.items[kind].map((item) => item.element));
+    this.applySort();
     this.applyFilters();
     this.renderEditor();
   }
@@ -401,9 +484,15 @@ export class TalentAdmin {
       if (stats) meta.push(Object.entries(stats).map(([k, v]) => `${v} ${this.statLabel(k)}`).join(', '));
     }
 
+    const costs = this.costs(kind, row.id);
     const badges = DOM({ style: 'tadm-badges' });
     // Необязательные отметки — слева, уровень и редкость — у правого края, чтобы стояли колонкой.
     if (sync !== 'ok') badges.append(DOM({ style: ['tadm-badge', 'tadm-badge-sync'], title: sync === 'missing' ? 'Нет в content/talent_data' : 'Отличается от content/talent_data' }, sync === 'missing' ? 'нет в контенте' : '≠ контент'));
+    if (costs.tail) {
+      const costsEl = this.costsElement(costs, 'tadm-costs');
+      costsEl.title = this.costsText(costs);
+      badges.append(costsEl);
+    }
     if (Number(row.active) === 1) badges.append(DOM({ style: ['tadm-badge', 'tadm-badge-active'], title: 'Активный' }, 'акт'));
     badges.append(DOM({ style: ['tadm-badge', MMTEST_LEVELS.includes(level) ? 'tadm-badge-mmtest' : 'tadm-badge-level'] }, MMTEST_LEVELS.includes(level) ? `mm ${level}` : `ур ${level}`));
     if (kind === 'common') badges.append(DOM({ style: ['tadm-badge', `tadm-rarity-${Number(row.rarity) || 0}`], title: this.rarityName(Number(row.rarity) || 0) }, '●'));
@@ -421,7 +510,7 @@ export class TalentAdmin {
       badges,
     );
 
-    element.dataset.search = [row.id, name, ...meta, row.stats || '', row.params || '', row.conflict || ''].join(' ').toLowerCase();
+    element.dataset.search = [row.id, name, ...meta, this.costsText(costs), row.stats || '', row.params || '', row.conflict || ''].join(' ').toLowerCase();
     element.classList.toggle('tadm-row-selected', row.id === this.selectedId);
   }
 
@@ -434,10 +523,52 @@ export class TalentAdmin {
     if (f.level && f.level !== 'mmtest' && level !== Number(f.level)) return false;
     if (kind === 'common' && f.rarity !== '' && (Number(row.rarity) || 0) !== Number(f.rarity)) return false;
     if (f.active !== '' && Number(row.active) !== Number(f.active)) return false;
-    if (kind === 'hero' && f.hero && Number(row.hero1) !== Number(f.hero) && Number(row.hero2) !== Number(f.hero)) return false;
+    if (kind === 'hero' && f.hero) {
+      const ids = f.hero.split(',').map(Number);
+      if (!ids.includes(Number(row.hero1)) && !ids.includes(Number(row.hero2))) return false;
+    }
     if (f.sync && this.syncState(kind, row) === 'ok') return false;
 
     return true;
+  }
+
+  // Талант без значения (нет КД / стоимости) — в конец списка.
+  sortValue(kind, row) {
+    const first = (list) => (list.length ? Math.max(...list.map(Number)) : null);
+
+    switch (this.sort) {
+      case 'name':
+        return this.name(kind, row.id) || null;
+      case 'cd':
+        return first(this.costs(kind, row.id).cd);
+      case 'cost': {
+        const costs = this.costs(kind, row.id);
+        return first([...costs.mana, ...costs.life, ...costs.detail]);
+      }
+      case 'level':
+        return Number(row.level) || 1;
+      default:
+        return row.id;
+    }
+  }
+
+  applySort() {
+    if (!this.loaded) return;
+
+    const kind = this.kind;
+    const keyed = this.items[kind].map((item) => ({ item, value: this.sortValue(kind, item.row) }));
+    const descending = this.sort === 'cd' || this.sort === 'cost';
+
+    keyed.sort((a, b) => {
+      if (a.value === b.value) return a.item.row.id - b.item.row.id;
+      if (a.value === null) return 1;
+      if (b.value === null) return -1;
+      if (typeof a.value === 'string') return a.value.localeCompare(b.value);
+      return descending ? b.value - a.value : a.value - b.value;
+    });
+
+    this.items[kind] = keyed.map(({ item }) => item);
+    this.listEl.replaceChildren(...this.items[kind].map((item) => item.element));
   }
 
   applyFilters() {
@@ -516,20 +647,22 @@ export class TalentAdmin {
     const draft = this.draft;
     const name = this.name(kind, row.id);
     const prefix = KINDS[kind].langPrefix;
+    const costs = this.costs(kind, row.id);
 
     const head = DOM(
       { style: 'tadm-ed-head' },
       DOM({ tag: 'img', style: 'tadm-ed-icon', src: KINDS[kind].icon(row.id) }),
       DOM(
         { style: 'tadm-ed-titles' },
-        DOM({ style: 'tadm-ed-name' }, name || '— без названия —'),
+        DOM({ style: 'tadm-ed-name' }, name || '— без названия —', costs.tail ? this.costsElement(costs, 'tadm-ed-costs') : ''),
+        costs.tail ? DOM({ style: 'tadm-ed-cost-text' }, `Стоимость и перезарядка: ${this.costsText(costs) || 'см. название'}`) : '',
         DOM(
           { style: 'tadm-ed-sub' },
           `#${row.id}`,
           kind === 'common' && row.externalId ? ` · externalId ${row.externalId}` : '',
           kind === 'hero' ? ` · ${this.heroNames(row).join(', ') || 'без героя'}` : '',
         ),
-        DOM({ style: 'tadm-hint' }, `Название и описание — в content/lang/ru.js и en.js: ${prefix}${row.id}_name, ${prefix}${row.id}_description`),
+        DOM({ style: 'tadm-hint' }, `Название (со стоимостью и КД) и описание — в content/lang/ru.js и en.js: ${prefix}${row.id}_name, ${prefix}${row.id}_description`),
       ),
     );
 
