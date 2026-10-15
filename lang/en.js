@@ -574,6 +574,7 @@ export const en = {
     shop_bottom: 'The shop will be updated in',
     // Fair (fair.js)
     fairCatSkins: 'Skins',
+    fairCatAll: 'Full assortment',
     fairCatFlags: 'Flags',
     fairCatFrames: 'Frames',
     fairCatLoadscreens: 'Loading screens',

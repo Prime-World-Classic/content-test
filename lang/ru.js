@@ -582,6 +582,7 @@ export const ru = {
     shop_bottom: 'Ассортимент товаров обновится через',
     // Ярмарка (fair.js)
     fairCatSkins: 'Скины',
+    fairCatAll: 'Весь ассортимент',
     fairCatFlags: 'Флаги',
     fairCatFrames: 'Рамки',
     fairCatLoadscreens: 'Загрузочные экраны',

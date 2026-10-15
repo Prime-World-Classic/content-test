@@ -1898,17 +1898,33 @@ export class Window {
   }
 
   static spectateMatch(match) {
-    const team = (teamId) =>
-      DOM(
+    const playerRow = (player) => {
+      const hero = DOM({ style: 'spectate-hero' });
+      hero.style.backgroundImage = `url(content/hero/${Number(player.hero) || 0}/1.webp)`;
+      return DOM({ style: 'spectate-player' }, hero, DOM({ style: 'spectate-nickname' }, player.nickname || `id${player.id}`));
+    };
+    // Party members go next to each other and are joined by a square bracket
+    // on the outer side of the hero icons (party: 0 - solo, 1, 2, ... - party)
+    const team = (teamId) => {
+      const groups = [];
+      const byParty = new Map();
+      for (const player of match.players.filter((item) => item.team === teamId)) {
+        const party = Number(player.party) || 0;
+        if (party && byParty.has(party)) {
+          byParty.get(party).push(player);
+          continue;
+        }
+        const group = [player];
+        groups.push(group);
+        if (party) byParty.set(party, group);
+      }
+      return DOM(
         { style: ['spectate-team', `spectate-team--${teamId}`] },
-        ...match.players
-          .filter((player) => player.team === teamId)
-          .map((player) => {
-            const hero = DOM({ style: 'spectate-hero' });
-            hero.style.backgroundImage = `url(content/hero/${Number(player.hero) || 0}/1.webp)`;
-            return DOM({ style: 'spectate-player' }, hero, DOM({ style: 'spectate-nickname' }, player.nickname || `id${player.id}`));
-          }),
+        ...groups.map((group) =>
+          group.length > 1 ? DOM({ style: 'spectate-party' }, ...group.map(playerRow)) : playerRow(group[0]),
+        ),
       );
+    };
     const minutes = Math.max(0, Math.floor((Date.now() - Number(match.startedAt || 0)) / 60000));
     const watch = match.watchable
       ? DOM(

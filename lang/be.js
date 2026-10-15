@@ -2,6 +2,7 @@ export const be = {
   locale: ['be_BY'],
   name: 'Беларускі',
   word: {
+    fairCatAll: 'Увесь асартымент',
     nickname: 'Нікнейм',
     code: 'Код/бот тэлеграм',
     password: 'Пароль',

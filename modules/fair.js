@@ -106,7 +106,7 @@ export async function syncFairGameFiles() {
   }
 }
 
-let shownTab = 'skin';
+let shownTab = 'all';
 let sortMode = 'default';
 let hideOwned = false;
 
@@ -146,6 +146,10 @@ function circle(url, extraStyle) {
   return el;
 }
 
+function loadscreenImage(item) {
+  return item.image || `content/img/fair/loadscreens/${item.externalId}.webp`;
+}
+
 function itemPicture(item, ctx) {
   switch (item.categoryId) {
     case CAT.skin: {
@@ -173,7 +177,7 @@ function itemPicture(item, ctx) {
     }
     case CAT.loadscreen: {
       const thumb = DOM({ style: 'fair-thumb' });
-      thumb.style.backgroundImage = `url("${item.image || `content/img/fair/loadscreens/${item.externalId}.webp`}")`;
+      thumb.style.backgroundImage = `url("${loadscreenImage(item)}")`;
       if (item.id == 0) thumb.classList.add('is-default');
       return thumb;
     }
@@ -185,15 +189,15 @@ function itemPicture(item, ctx) {
 
 // ---------------------------------------------------------------- окно
 
-export async function fair(tab = null) {
+export async function fair(tab = null, { previewData = null } = {}) {
   const isCollectionTab = (id) => id === 'collection';
   if (tab) shownTab = tab;
 
   View.castleCrystalContainer?.classList.remove('crystal-container-anim');
 
-  const ctx = { topHero: { heroId: 1, skinId: 1, frameId: 0 }, available: [], purchased: [], local: loadLocalState() };
+  const ctx = { topHero: { heroId: 1, skinId: 1, frameId: 0 }, available: [], purchased: [], local: previewData ? { owned: [], selected: {} } : loadLocalState() };
 
-  const [available, purchased, topHero] = await Promise.all([
+  const [available, purchased, topHero] = previewData ? [previewData.available, previewData.purchased, previewData.topHero] : await Promise.all([
     App.api.request('shop', 'available').catch((e) => (App.error(e), [])),
     App.api.request('shop', 'purchase').catch((e) => (App.error(e), [])),
     App.api.request(App.CURRENT_MM, 'getHeroWithFrameId').catch((e) => (App.error(e), null)),
@@ -214,10 +218,11 @@ export async function fair(tab = null) {
     }
   }
 
-  await Shop.retrieveLastUpdate();
+  if (!previewData) await Shop.retrieveLastUpdate();
+  const initialTimeLeft = previewData ? 3600000 : Shop.timeBeforeUpdate;
 
   const sidebar = DOM({ style: 'bs-sidebar' });
-  const content = DOM({ style: ['bs-content', 'fair-content'] });
+  const content = DOM({ style: ['bs-content', 'fair-content', 'wtop-list-scroll'] });
   const detail = DOM({ style: 'fair-detail' });
   const tabButtons = new Map();
 
@@ -254,13 +259,56 @@ export async function fair(tab = null) {
   const cards = DOM({ style: 'fair-cards-wrap' });
 
   // ---- нижняя строка: таймер обновления ассортимента
-  const timerValue = DOM({ tag: 'b' }, Timer.getFormattedTimer(Shop.timeBeforeUpdate));
+  const timerValue = DOM({ tag: 'b' }, Timer.getFormattedTimer(initialTimeLeft));
   const footer = DOM({ style: ['bs-footer', 'fair-footer'] }, DOM({ style: 'fair-timer' }, Lang.text('shop_bottom'), ' ', timerValue));
 
   let selected = null;
+  let loadscreenPreview = null;
+
+  const closePreview = () => {
+    if (!loadscreenPreview) return;
+    const { node, opener } = loadscreenPreview;
+    if (Splash.body?.contains(node)) Splash.hide();
+    loadscreenPreview = null;
+    if (opener?.isConnected) opener.focus();
+  };
+
+  const previewLoadscreen = (item, opener) => {
+    if (item.categoryId !== CAT.loadscreen || item.id == 0) return;
+    closePreview();
+    const close = DOM(
+      { tag: 'button', type: 'button', style: 'fair-preview-close', title: Lang.text('titleClose'), event: ['click', closePreview] },
+      DOM({ tag: 'img', src: 'content/icons/close-cropped.svg', alt: Lang.text('titleClose') }),
+    );
+    const node = DOM(
+      { style: 'fair-loadscreen-preview', event: ['click', (event) => { if (event.target === node) closePreview(); }] },
+      DOM({ style: 'fair-loadscreen-preview-body' },
+        DOM({ tag: 'h2', id: 'fair-preview-title', style: 'fair-preview-title' }, itemName(item)),
+        DOM({ tag: 'img', style: 'fair-preview-image', src: loadscreenImage(item), alt: itemName(item) }),
+        close,
+      ),
+    );
+    node.setAttribute('role', 'dialog');
+    node.setAttribute('aria-modal', 'true');
+    node.setAttribute('aria-labelledby', 'fair-preview-title');
+    node.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        closePreview();
+      } else if (event.key === 'Tab') {
+        event.preventDefault();
+        close.focus();
+      }
+    });
+    loadscreenPreview = { node, opener };
+    Splash.show(node, false);
+    close.focus();
+  };
 
   const itemsOfTab = () => {
     if (isCollectionTab(shownTab)) return ctx.purchased.slice();
+    if (shownTab === 'all') return ctx.available.slice();
     const cat = CATEGORIES.find((c) => c.id === shownTab);
     return ctx.available.filter((item) => item.categoryId === cat.categoryId);
   };
@@ -336,11 +384,23 @@ export async function fair(tab = null) {
       action(item),
     );
     el.fairItem = item;
+    if (item.categoryId === CAT.loadscreen && item.id != 0) {
+      el.tabIndex = 0;
+      el.addEventListener('dblclick', (event) => {
+        if (!event.target.closest('.fair-price')) previewLoadscreen(item, el);
+      });
+      el.addEventListener('keydown', (event) => {
+        if (event.target === el && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault();
+          previewLoadscreen(item, el);
+        }
+      });
+    }
     return el;
   };
 
   const grid = (items) => {
-    const el = DOM({ style: 'fair-cards' });
+    const el = DOM({ style: items.every((item) => item.categoryId === CAT.loadscreen) ? ['fair-cards', 'fair-cards--loadscreens'] : 'fair-cards' });
     for (const item of items) el.append(card(item));
     return el;
   };
@@ -402,8 +462,8 @@ export async function fair(tab = null) {
       return;
     }
 
-    if (isCollectionTab(shownTab)) {
-      // коллекция — разделами по категориям
+    if (isCollectionTab(shownTab) || shownTab === 'all') {
+      // Collection and full assortment retain the same category grouping.
       for (const cat of CATEGORIES) {
         const own = items.filter((item) => item.categoryId === cat.categoryId);
         if (sortMode === 'default') own.sort((a, b) => Number(b.id == 0) - Number(a.id == 0)); // стандартный — первым
@@ -480,6 +540,7 @@ export async function fair(tab = null) {
   };
 
   const buy = (item) => {
+    if (previewData) return;
     if (!item.test && crystalCount() < item.price) {
       Splash.show(DOM({}, Lang.text('fairNotEnough').replace('{price}', item.price).replace('{balance}', crystalCount())));
       return;
@@ -531,6 +592,7 @@ export async function fair(tab = null) {
   };
 
   const equip = (item) => {
+    if (previewData) return;
     const text = DOM({}, Lang.text('windowShopEquipItem'), DOM({ style: 'splash-shop-item-name' }, itemName(item)), '?');
     confirm('equipment', text, item, Lang.text('windowShopEquip'), async () => {
       try {
@@ -565,12 +627,15 @@ export async function fair(tab = null) {
   const show = (id) => {
     shownTab = id;
     selected = null;
-    for (const [tid, el] of tabButtons) el.classList.toggle('is-active', tid === id);
+    for (const [tid, el] of tabButtons) {
+      el.classList.toggle('is-active', tid === id);
+      el.setAttribute('aria-pressed', String(tid === id));
+    }
     hideRow.classList.toggle('is-disabled', isCollectionTab(id));
     const cat = CATEGORIES.find((c) => c.id === id);
     title.replaceChildren(
-      DOM({ tag: 'span' }, Lang.text(cat ? cat.label : 'shop_collection')),
-      DOM({ style: 'fair-title-hint' }, Lang.text(cat ? cat.hint : 'fairHintCollection')),
+      DOM({ tag: 'span' }, Lang.text(shownTab === 'all' ? 'fairCatAll' : cat ? cat.label : 'shop_collection')),
+      DOM({ style: 'fair-title-hint' }, shownTab === 'all' ? '' : Lang.text(cat ? cat.hint : 'fairHintCollection')),
     );
     content.scrollTop = 0;
     renderCards();
@@ -579,6 +644,7 @@ export async function fair(tab = null) {
 
   const counter = (id) => {
     if (isCollectionTab(id)) return ctx.purchased.filter((item) => item.id != 0).length;
+    if (id === 'all') return ctx.available.length;
     const cat = CATEGORIES.find((c) => c.id === id);
     return ctx.available.filter((item) => item.categoryId === cat.categoryId).length;
   };
@@ -587,11 +653,12 @@ export async function fair(tab = null) {
     for (const [id, el] of tabButtons) el.querySelector('.fair-count').innerText = String(counter(id));
   };
 
-  for (const tabDesc of [...CATEGORIES, { id: 'collection', label: 'shop_collection' }]) {
+  for (const tabDesc of [{ id: 'all', label: 'fairCatAll' }, ...CATEGORIES, { id: 'collection', label: 'shop_collection' }]) {
     const el = DOM(
       {
         domaudio: domAudioPresets.bigButton,
-        style: isCollectionTab(tabDesc.id) ? ['castle-menu-item-button', 'bs-cat', 'fair-cat', 'fair-cat--collection'] : ['castle-menu-item-button', 'bs-cat', 'fair-cat'],
+        tag: 'button', type: 'button',
+        style: isCollectionTab(tabDesc.id) ? ['wtop-mode-tab', 'fair-cat', 'fair-cat--collection'] : ['wtop-mode-tab', 'fair-cat'],
         event: ['click', () => show(tabDesc.id)],
       },
       DOM({ tag: 'span', style: 'fair-cat-text' }, Lang.text(tabDesc.label)),
@@ -627,7 +694,7 @@ export async function fair(tab = null) {
   );
 
   // таймер обновления ассортимента: по нулю ярмарка открывается заново
-  let timeLeft = Shop.timeBeforeUpdate;
+  let timeLeft = initialTimeLeft;
   const timer = setInterval(() => {
     if (!root.isConnected) return;
     timeLeft -= 1000;
@@ -639,9 +706,15 @@ export async function fair(tab = null) {
     timerValue.innerText = Timer.getFormattedTimer(timeLeft);
     balanceValue.innerText = String(crystalCount());
   }, 1000);
-  root.cleanup = () => clearInterval(timer);
+  root.cleanup = () => {
+    clearInterval(timer);
+    closePreview();
+  };
+  if (previewData) {
+    for (const control of root.querySelectorAll('.fair-price')) control.setAttribute('aria-disabled', 'true');
+  }
 
-  show(shownTab === 'collection' || CATEGORIES.some((c) => c.id === shownTab) ? shownTab : 'skin');
+  show(shownTab === 'all' || shownTab === 'collection' || CATEGORIES.some((c) => c.id === shownTab) ? shownTab : 'all');
   return root;
 }
 
