@@ -4006,15 +4006,28 @@ ${Lang.text('castleBuildCategoryUnavailable')}` },
               },
               Lang.text('friendClose'),
             );
+            const nicknameLine = DOM(
+              { id: 'friendRemoveText', style: 'friend-menu-nickname' },
+              DOM({ tag: 'span' }, String(item.nickname || '')),
+            );
+            nicknameLine.tabIndex = 0;
+            const updateNicknameOverflow = () => {
+              const overflow = Math.max(0, nicknameLine.firstChild.offsetWidth - nicknameLine.clientWidth);
+              nicknameLine.style.setProperty('--nickname-scroll-distance', `${overflow}px`);
+              nicknameLine.classList.toggle('friend-menu-nickname--overflowing', overflow > 1);
+            };
+            nicknameLine.addEventListener('mouseenter', updateNicknameOverflow);
+            nicknameLine.addEventListener('focus', updateNicknameOverflow);
             body.append(
               DOM({ style: 'splash-modal-scope-friend-action' }),
               modal,
-              DOM({ id: 'friendRemoveText' }, String(item.nickname || '')),
+              nicknameLine,
               profileButton,
               removeButton,
               cancelButton,
             );
             Splash.show(body);
+            requestAnimationFrame(updateNicknameOverflow);
             return false;
           });
           bottom.append(call, group);

@@ -9713,6 +9713,41 @@ body:has(#wcastle-call)::before {
   text-align: center;
 }
 
+#friendRemoveText.friend-menu-nickname {
+  box-sizing: border-box;
+  width: 88%;
+  min-width: 0;
+  max-width: 88%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
+  outline: none;
+}
+
+.friend-menu-nickname > span {
+  display: inline-block;
+  width: max-content;
+  min-width: 100%;
+}
+
+.friend-menu-nickname--overflowing {
+  text-align: left !important;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 2cqh), transparent 100%);
+  mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 2cqh), transparent 100%);
+}
+
+.friend-menu-nickname--overflowing:is(:hover, :focus) > span {
+  animation: mm-nickname-pan 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .friend-menu-nickname--overflowing:is(:hover, :focus) > span {
+    animation: none;
+  }
+}
+
 .build-rename-button {
   font-size: 1.84cqh !important;
 }
