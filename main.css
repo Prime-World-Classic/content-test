@@ -12410,6 +12410,12 @@ body:has(#wcastle-call)::before {
   text-shadow: none;
 }
 
+/* section notes under the hint (loading screens: preview, rotation) */
+.fair-title-note {
+  margin-top: 0.3cqh;
+  color: rgba(252, 229, 188, 0.8);
+}
+
 /* quick list of heroes (skins) */
 .fair-quickbar {
   position: sticky;

@@ -21,9 +21,9 @@ import { UserCfg } from './battleSettings.js';
 //
 // Новые категории (shop_item.categoryId, отдельной таблицы категорий в базе нет):
 // - Загрузочные экраны (4): externalId = имя картинки: content/img/fair/loadscreens/<имя>.webp (превью лаунчера)
-//   и /UI/Styles/LoadingBack/Fair/<имя>.dds в данных игры (DXT1 1920x1080). Выбранное имя — user.cfg
-//   `setvar fair_loadscreen = <имя>` (none — фон карты), игра подменяет фон загрузки только у этого игрока
-//   (PW_Game LoadingScreenLogic, FairLoadingBack). Новый экран = webp в лаунчер + dds в Data (патч игры).
+//   и /UI/Styles/LoadingBack/Fair/<имя>.dds в данных игры (1920x1080). Можно выбрать несколько экранов (ротация):
+//   user.cfg `setvar fair_loadscreen = <имя1>,<имя2>` (none — фон карты), каждый бой игра берёт случайный
+//   из списка и подменяет фон загрузки только у этого игрока (PW_Game LoadingScreenLogic, FairLoadingBack). Новый экран = webp в лаунчер + dds в Data (патч игры).
 // - Похвалы (5): externalId = номер похвалы, текст — Lang `praise_<номер>` (ru/en), название — `praise_<номер>_name`.
 //   В бой уходит только номер: user.cfg `setvar praise_id = <номер>` -> CmdPraise (amount), а текст каждый клиент
 //   берёт из praises.txt («<номер>\t<текст>», пишет syncFairGameFiles) — PW_Game AdventureScreen::OnPraise.
@@ -36,11 +36,19 @@ import { UserCfg } from './battleSettings.js';
 const CAT = { flag: 1, frame: 2, skin: 3, loadscreen: 4, praise: 5 };
 
 const CATEGORIES = [
-  { id: 'skin', categoryId: CAT.skin, label: 'fairCatSkins', hint: 'fairHintSkins' },
-  { id: 'flag', categoryId: CAT.flag, label: 'fairCatFlags', hint: 'fairHintFlags' },
-  { id: 'frame', categoryId: CAT.frame, label: 'fairCatFrames', hint: 'fairHintFrames' },
-  { id: 'loadscreen', categoryId: CAT.loadscreen, label: 'fairCatLoadscreens', hint: 'fairHintLoadscreens' },
-  { id: 'praise', categoryId: CAT.praise, label: 'fairCatPraises', hint: 'fairHintPraises' },
+  // single — подпись на карточке товара (множественное число — только в названиях категорий), notes — подсказки раздела
+  { id: 'skin', categoryId: CAT.skin, label: 'fairCatSkins', single: 'fairItemSkin', hint: 'fairHintSkins' },
+  { id: 'flag', categoryId: CAT.flag, label: 'fairCatFlags', single: 'fairItemFlag', hint: 'fairHintFlags' },
+  { id: 'frame', categoryId: CAT.frame, label: 'fairCatFrames', single: 'fairItemFrame', hint: 'fairHintFrames' },
+  {
+    id: 'loadscreen',
+    categoryId: CAT.loadscreen,
+    label: 'fairCatLoadscreens',
+    single: 'fairItemLoadscreen',
+    hint: 'fairHintLoadscreens',
+    notes: ['fairNoteLoadscreenPreview', 'fairNoteLoadscreenRotation'],
+  },
+  { id: 'praise', categoryId: CAT.praise, label: 'fairCatPraises', single: 'fairItemPraise', hint: 'fairHintPraises' },
 ];
 
 const TEST_ITEMS = [
@@ -56,7 +64,8 @@ const TEST_ITEMS = [
 // категории, выбор в которых хранит лаунчер
 const LOCAL_CATEGORIES = [CAT.loadscreen, CAT.praise];
 
-// owned — id купленных тестовых товаров, selected — { categoryId: externalId } (нет записи — стандартный)
+// owned — id купленных тестовых товаров, selected — { categoryId: externalId } (нет записи — стандартный),
+// у загрузочных экранов — список externalId (ротация)
 const LOCAL_STORAGE = 'fair_local_v2';
 
 function loadLocalState() {
@@ -72,6 +81,13 @@ function saveLocalState(state) {
   try {
     localStorage.setItem(LOCAL_STORAGE, JSON.stringify(state));
   } catch {}
+}
+
+// экраны в ротации; раньше выбирался один экран и хранился строкой
+function loadscreenRotation(state) {
+  const value = state.selected[CAT.loadscreen];
+  const list = Array.isArray(value) ? value : value ? [value] : [];
+  return list.map(String).filter((name) => /^[A-Za-z0-9_-]{1,64}$/.test(name));
 }
 
 // Файлы игры (My Games/Prime World Classic): номер выбранной похвалы и имя загрузочного экрана в user.cfg,
@@ -92,10 +108,10 @@ export async function syncFairGameFiles() {
     await NativeAPI.fileSystem.promises.mkdir(folder, { recursive: true });
     await NativeAPI.fileSystem.promises.writeFile(NativeAPI.path.join(folder, 'praises.txt'), lines.join('\n') + '\n', 'utf8');
 
-    const selected = loadLocalState().selected;
-    const praiseId = Number(selected[CAT.praise]) || 0;
-    // имя фона /UI/Styles/LoadingBack/Fair/<имя>.dds в данных игры; none — фон карты
-    const loadscreen = /^[A-Za-z0-9_-]{1,64}$/.test(selected[CAT.loadscreen] || '') ? selected[CAT.loadscreen] : 'none';
+    const state = loadLocalState();
+    const praiseId = Number(state.selected[CAT.praise]) || 0;
+    // имена фонов /UI/Styles/LoadingBack/Fair/<имя>.dds через запятую; none — фон карты
+    const loadscreen = loadscreenRotation(state).join(',') || 'none';
     await UserCfg.load();
     const changes = {};
     if (UserCfg.num('praise_id', 0) !== praiseId) changes.praise_id = praiseId;
@@ -217,6 +233,11 @@ export async function fair(tab = null, { previewData = null } = {}) {
       if (ctx.local.owned.includes(item.id)) ctx.purchased.push({ ...item, enabled: true });
     }
   }
+  // купленные экраны и похвалы (в shop.available их нет) — тоже в разделах ярмарки, скрываются «Скрыть купленные»
+  for (const item of ctx.purchased) {
+    if (!LOCAL_CATEGORIES.includes(item.categoryId) || item.id == 0) continue;
+    if (!ctx.available.some((a) => a.categoryId === item.categoryId && a.id == item.id)) ctx.available.push({ ...item, enabled: false });
+  }
 
   if (!previewData) await Shop.retrieveLastUpdate();
   const initialTimeLeft = previewData ? 3600000 : Shop.timeBeforeUpdate;
@@ -313,19 +334,29 @@ export async function fair(tab = null, { previewData = null } = {}) {
     return ctx.available.filter((item) => item.categoryId === cat.categoryId);
   };
 
+  // в разделах ярмарки enabled = «можно купить», в коллекции — «можно выбрать»
   const isOwned = (item) => !isCollectionTab(shownTab) && !item.enabled;
-  // в коллекции enabled = «можно выбрать» (у скинов — по текущему скину героя)
+  const owns = (item) => isCollectionTab(shownTab) || isOwned(item);
+  // тот же товар из коллекции (по нему видно, выбран ли купленный товар в разделе ярмарки)
+  const purchasedOf = (item) => (ctx.purchased.includes(item) ? item : ctx.purchased.find((p) => p.categoryId === item.categoryId && p.id == item.id));
   const isEquipped = (item) => {
+    if (item.categoryId === CAT.loadscreen) {
+      const rotation = loadscreenRotation(ctx.local);
+      return item.id == 0 ? !rotation.length : rotation.includes(String(item.externalId));
+    }
     if (LOCAL_CATEGORIES.includes(item.categoryId)) {
       return String(ctx.local.selected[item.categoryId] ?? 'default') === String(item.externalId);
     }
+    const own = purchasedOf(item);
     if (item.categoryId === CAT.skin) {
       const { heroId, skinId } = heroOf(item);
       const hero = MM.hero?.find((h) => h.id == heroId);
-      return hero ? hero.skin == skinId : !item.enabled;
+      return hero ? hero.skin == skinId : !!own && !own.enabled;
     }
-    return !item.enabled;
+    return !!own && !own.enabled;
   };
+  // выбранный экран из ротации снимается той же кнопкой
+  const inRotation = (item) => item.categoryId === CAT.loadscreen && item.id != 0 && isEquipped(item);
 
   const filteredItems = () => {
     let items = itemsOfTab();
@@ -348,7 +379,8 @@ export async function fair(tab = null, { previewData = null } = {}) {
   };
 
   const badge = (item) => {
-    if (isCollectionTab(shownTab)) return isEquipped(item) ? DOM({ style: ['fair-badge', 'is-equipped'] }, Lang.text('shop_in_use')) : DOM();
+    if (owns(item) && isEquipped(item)) return DOM({ style: ['fair-badge', 'is-equipped'] }, Lang.text(inRotation(item) ? 'fairInRotation' : 'shop_in_use'));
+    if (isCollectionTab(shownTab)) return DOM();
     if (isOwned(item)) return DOM({ style: ['fair-badge', 'is-owned'] }, Lang.text('fairOwned'));
     if (item.isNew) return DOM({ style: ['fair-badge', 'is-new'] }, Lang.text('fairNew'));
     return DOM();
@@ -357,16 +389,17 @@ export async function fair(tab = null, { previewData = null } = {}) {
   const subtitle = (item) => {
     if (item.categoryId === CAT.skin) return heroName(heroOf(item).heroId);
     if (item.test && item.id != 0) return Lang.text('fairTestItem');
-    return Lang.text(CATEGORIES.find((c) => c.categoryId === item.categoryId)?.label || '');
+    return Lang.text(CATEGORIES.find((c) => c.categoryId === item.categoryId)?.single || '');
   };
 
   const action = (item) => {
-    if (isCollectionTab(shownTab)) {
-      return isEquipped(item)
-        ? DOM({ style: 'fair-tag' }, Lang.text('shop_in_use'))
-        : DOM({ style: 'fair-price', event: ['click', (e) => (e.stopPropagation(), select(item), equip(item))] }, Lang.text('shop_use'));
+    if (owns(item)) {
+      if (isEquipped(item) && !inRotation(item)) return DOM({ style: 'fair-tag' }, Lang.text('shop_in_use'));
+      return DOM(
+        { style: 'fair-price', domaudio: domAudioPresets.bigButton, event: ['click', (e) => (e.stopPropagation(), select(item), equip(item))] },
+        Lang.text(inRotation(item) ? 'fairRemoveFromRotation' : 'shop_use'),
+      );
     }
-    if (isOwned(item)) return DOM({ style: 'fair-tag' }, Lang.text('fairInCollection'));
     return DOM(
       { style: ['fair-price', 'fair-price--crystals'], domaudio: domAudioPresets.bigButton, title: Lang.text('fairBuyFor').replace('{price}', item.price), event: ['click', (e) => (e.stopPropagation(), select(item), buy(item))] },
       DOM({ tag: 'img', src: 'content/img/queue/DiamondBlue.png', style: 'fair-gem' }),
@@ -502,9 +535,10 @@ export async function fair(tab = null, { previewData = null } = {}) {
     if (item.test) desc += ` ${Lang.text('fairTestHint')}`;
 
     let button = DOM();
-    if (isCollectionTab(shownTab)) {
-      if (!isEquipped(item)) button = fairButton(Lang.text('shop_use'), () => equip(item));
-    } else if (!isOwned(item)) {
+    if (owns(item)) {
+      if (inRotation(item)) button = fairButton(Lang.text('fairRemoveFromRotation'), () => equip(item));
+      else if (!isEquipped(item)) button = fairButton(Lang.text('shop_use'), () => equip(item));
+    } else {
       button = fairButton(Lang.text('fairBuyFor').replace('{price}', item.price), () => buy(item));
     }
     detail.append(
@@ -594,36 +628,43 @@ export async function fair(tab = null, { previewData = null } = {}) {
     });
   };
 
-  const equip = (item) => {
+  // купленный товар выбирается сразу, без окна подтверждения
+  const equip = async (item) => {
     if (previewData) return;
-    const text = DOM({}, Lang.text('windowShopEquipItem'), DOM({ style: 'splash-shop-item-name' }, itemName(item)), '?');
-    confirm('equipment', text, item, Lang.text('windowShopEquip'), async () => {
-      try {
-        if (LOCAL_CATEGORIES.includes(item.categoryId)) {
-          if (item.id == 0) delete ctx.local.selected[item.categoryId];
-          else ctx.local.selected[item.categoryId] = String(item.externalId);
-          saveLocalState(ctx.local);
-          await syncFairGameFiles();
-        } else if (item.categoryId === CAT.skin) {
-          const { heroId, skinId } = heroOf(item);
-          await Build.changeSkinForHero(heroId, skinId);
-        } else if (item.id == 0) {
-          await App.api.request('shop', 'applyDefault', { categoryId: item.categoryId });
-        } else {
-          await App.api.request('shop', 'apply', { id: item.id });
-        }
-      } catch (e) {
-        App.error(e);
-        return;
+    try {
+      if (item.categoryId === CAT.loadscreen) {
+        // ротация: «Выбрать» добавляет экран, «Убрать» снимает; стандартный экран очищает ротацию
+        const name = String(item.externalId);
+        const rotation = loadscreenRotation(ctx.local);
+        const next = item.id == 0 ? [] : rotation.includes(name) ? rotation.filter((n) => n !== name) : [...rotation, name];
+        if (next.length) ctx.local.selected[CAT.loadscreen] = next;
+        else delete ctx.local.selected[CAT.loadscreen];
+        saveLocalState(ctx.local);
+        await syncFairGameFiles();
+      } else if (LOCAL_CATEGORIES.includes(item.categoryId)) {
+        if (item.id == 0) delete ctx.local.selected[item.categoryId];
+        else ctx.local.selected[item.categoryId] = String(item.externalId);
+        saveLocalState(ctx.local);
+        await syncFairGameFiles();
+      } else if (item.categoryId === CAT.skin) {
+        const { heroId, skinId } = heroOf(item);
+        await Build.changeSkinForHero(heroId, skinId);
+      } else if (item.id == 0) {
+        await App.api.request('shop', 'applyDefault', { categoryId: item.categoryId });
+      } else {
+        await App.api.request('shop', 'apply', { id: item.id });
       }
-      for (const other of ctx.purchased) {
-        if (other.categoryId !== item.categoryId) continue;
-        if (item.categoryId === CAT.skin && heroOf(other).heroId !== heroOf(item).heroId) continue;
-        other.enabled = other !== item;
-      }
-      renderCards();
-      renderDetail();
-    });
+    } catch (e) {
+      App.error(e);
+      return;
+    }
+    for (const other of ctx.purchased) {
+      if (other.categoryId !== item.categoryId) continue;
+      if (item.categoryId === CAT.skin && heroOf(other).heroId !== heroOf(item).heroId) continue;
+      other.enabled = other.id != item.id;
+    }
+    renderCards();
+    renderDetail();
   };
 
   // ---- вкладки
@@ -638,7 +679,11 @@ export async function fair(tab = null, { previewData = null } = {}) {
     const cat = CATEGORIES.find((c) => c.id === id);
     title.replaceChildren(
       DOM({ tag: 'span' }, Lang.text(shownTab === 'all' ? 'fairCatAll' : cat ? cat.label : 'shop_collection')),
-      DOM({ style: 'fair-title-hint' }, shownTab === 'all' ? '' : Lang.text(cat ? cat.hint : 'fairHintCollection')),
+      DOM(
+        { style: 'fair-title-hint' },
+        shownTab === 'all' ? '' : Lang.text(cat ? cat.hint : 'fairHintCollection'),
+        ...(cat?.notes || []).map((key) => DOM({ style: 'fair-title-note' }, Lang.text(key))),
+      ),
     );
     content.scrollTop = 0;
     renderCards();
