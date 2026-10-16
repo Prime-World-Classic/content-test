@@ -34,6 +34,8 @@ import { UserCfg } from './battleSettings.js';
 // тоже хранится только в localStorage (кристаллы не списываются).
 
 const CAT = { flag: 1, frame: 2, skin: 3, loadscreen: 4, praise: 5 };
+// с какого числа побед на герое показывается каждый из 4 вариантов рамки (бэкенд: mm.model.js getFrameTypeFromVictoryCount, «>= 25» и т. д.)
+const FRAME_WINS = [25, 50, 75, 100];
 
 const CATEGORIES = [
   // single — подпись на карточке товара (множественное число — только в названиях категорий), notes — подсказки раздела
@@ -184,13 +186,19 @@ function itemPicture(item, ctx) {
       const variants = frames.map((image, index) => {
         const portrait = DOM({ style: 'fair-frame-portrait' });
         portrait.style.backgroundImage = `url("content/hero/${hero.heroId}/${hero.skinId}.webp")`;
-        const box = DOM({ style: 'fair-frame', title: `${itemName(item)} ${index + 1}/${frames.length}` }, portrait);
+        const box = DOM({ style: 'fair-frame' }, portrait);
         if (image) {
           const frame = DOM({ style: 'fair-frame-img' });
           frame.style.backgroundImage = image;
           box.append(frame);
         }
-        return box;
+        if (frames.length < 2) return box;
+        const wins = FRAME_WINS[index];
+        return DOM(
+          { style: 'fair-frame-variant', title: Lang.text('fairFrameWinsTitle').replace('{name}', itemName(item)).replace('{n}', index + 1).replace('{total}', frames.length).replace('{wins}', wins) },
+          box,
+          DOM({ style: 'fair-frame-wins' }, Lang.text('fairFrameWins').replace('{wins}', wins)),
+        );
       });
       return DOM({ style: 'fair-iconrow' }, DOM({ style: frames.length > 1 ? 'fair-frame-set' : 'fair-frame-single' }, ...variants));
     }

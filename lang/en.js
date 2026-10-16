@@ -604,6 +604,8 @@ export const en = {
     fairHideOwned: 'Hide purchased',
     fairBalance: 'Your crystals:',
     fairOwned: 'Purchased',
+    fairFrameWins: '{wins}+ wins',
+    fairFrameWinsTitle: '{name} {n}/{total}: {wins}+ wins on the hero',
     fairNew: 'New!',
     fairInCollection: 'In collection',
     fairBuyFor: 'Buy for {price}',

@@ -612,6 +612,8 @@ export const ru = {
     fairHideOwned: 'Скрыть купленные',
     fairBalance: 'Ваши кристаллы:',
     fairOwned: 'Куплено',
+    fairFrameWins: '{wins}+ побед',
+    fairFrameWinsTitle: '{name} {n}/{total}: побед на герое — {wins}+',
     fairNew: 'Новое!',
     fairInCollection: 'В коллекции',
     fairBuyFor: 'Купить за {price}',
