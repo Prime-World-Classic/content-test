@@ -288,12 +288,12 @@ export class Events {
     if (!stat) {
       // старый бэкенд: «соединений (активных)»
       el.innerText = `${data.online}`;
-      el.removeAttribute('title');
+      Events.admStatLines = [];
       return;
     }
     // всего (в бою / в тамбуре / отошли), подписи — в подсказке
     el.innerText = `${stat.total} (${stat.battle} / ${stat.tambour} / ${stat.away})`;
-    el.title = [
+    Events.admStatLines = [
       `${Lang.text('admStatTotal')}: ${stat.total}`,
       `${Lang.text('friendStatusBattle')}: ${stat.battle}`,
       `${Lang.text('friendStatusTambour')}: ${stat.tambour}`,
@@ -302,7 +302,40 @@ export class Events {
       `${Lang.text('admStatCastle')}: ${stat.castle}`,
       `${Lang.text('admStatActive')}: ${stat.active}`,
       `${Lang.text('admStatConnections')}: ${stat.connections}`,
-    ].join('\n');
+    ];
+    Events.initAdmStatTooltip(el);
+    Events.renderAdmStatTooltip();
+  }
+
+  // Подсказка как в чате (.chat-role-tooltip) — слева от плашки, обновляется на лету.
+  static initAdmStatTooltip(el) {
+    if (Events.admStatTooltip) return;
+    Events.admStatTooltip = DOM({ style: 'chat-role-tooltip' });
+    document.body.append(Events.admStatTooltip);
+    el.addEventListener('mouseenter', () => {
+      Events.admStatHover = el;
+      Events.renderAdmStatTooltip();
+    });
+    el.addEventListener('mouseleave', () => {
+      Events.admStatHover = null;
+      Events.admStatTooltip.style.display = 'none';
+    });
+  }
+
+  static renderAdmStatTooltip() {
+    const tooltip = Events.admStatTooltip;
+    const el = Events.admStatHover;
+    if (!tooltip || !el) return;
+    const lines = Events.admStatLines || [];
+    if (!lines.length) {
+      tooltip.style.display = 'none';
+      return;
+    }
+    tooltip.replaceChildren(...lines.map((line) => DOM({ tag: 'div' }, line)));
+    tooltip.style.display = 'block';
+    const rect = el.getBoundingClientRect();
+    tooltip.style.left = `${rect.left - tooltip.offsetWidth - 8}px`;
+    tooltip.style.top = `${rect.top}px`;
   }
 
   static MMKick(data) {
