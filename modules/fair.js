@@ -22,8 +22,9 @@ import { UserCfg } from './battleSettings.js';
 // Новые категории (shop_item.categoryId, отдельной таблицы категорий в базе нет):
 // - Загрузочные экраны (4): externalId = имя картинки: content/img/fair/loadscreens/<имя>.webp (превью лаунчера)
 //   и /UI/Styles/LoadingBack/Fair/<имя>.dds в данных игры (1920x1080). Можно выбрать несколько экранов (ротация):
-//   user.cfg `setvar fair_loadscreen = <имя1>,<имя2>` (none — фон карты), каждый бой игра берёт случайный
-//   из списка и подменяет фон загрузки только у этого игрока (PW_Game LoadingScreenLogic, FairLoadingBack). Новый экран = webp в лаунчер + dds в Data (патч игры).
+//   перед каждым запуском игры лаунчер берёт случайный экран из ротации и пишет в user.cfg
+//   `setvar fair_loadscreen = <имя>` (none — фон карты), игра подменяет фон загрузки только у этого игрока
+//   (PW_Game LoadingScreenLogic, FairLoadingBack). Новый экран = webp в лаунчер + dds в Data (патч игры).
 // - Похвалы (5): externalId = номер похвалы, текст — Lang `praise_<номер>` (ru/en), название — `praise_<номер>_name`.
 //   В бой уходит только номер: user.cfg `setvar praise_id = <номер>` -> CmdPraise (amount), а текст каждый клиент
 //   берёт из praises.txt («<номер>\t<текст>», пишет syncFairGameFiles) — PW_Game AdventureScreen::OnPraise.
@@ -94,7 +95,7 @@ function loadscreenRotation(state) {
 
 // Файлы игры (My Games/Prime World Classic): номер выбранной похвалы и имя загрузочного экрана в user.cfg,
 // тексты всех похвал в praises.txt (у получателя похвалы должен быть текст её номера). Вызывается при входе
-// в замок и при выборе экрана или похвалы.
+// в замок, при выборе экрана или похвалы и перед каждым запуском игры (PWGame.start).
 export async function syncFairGameFiles() {
   try {
     if (!NativeAPI.status) return;
@@ -112,8 +113,11 @@ export async function syncFairGameFiles() {
 
     const state = loadLocalState();
     const praiseId = Number(state.selected[CAT.praise]) || 0;
-    // имена фонов /UI/Styles/LoadingBack/Fair/<имя>.dds через запятую; none — фон карты
-    const loadscreen = loadscreenRotation(state).join(',') || 'none';
+    // имя фона /UI/Styles/LoadingBack/Fair/<имя>.dds; none — фон карты. Из ротации экран выбирает лаунчер —
+    // случайный при каждом запуске игры: выпущенный PW_Game понимает только одно имя (список через запятую
+    // он считает неверным и показывает фон карты)
+    const rotation = loadscreenRotation(state);
+    const loadscreen = rotation.length ? rotation[Math.floor(Math.random() * rotation.length)] : 'none';
     await UserCfg.load();
     const changes = {};
     if (UserCfg.num('praise_id', 0) !== praiseId) changes.praise_id = praiseId;

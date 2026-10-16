@@ -215,6 +215,9 @@ export class PWGame {
   static async start(id, callback, ips, port, method = 'runGame') {
     await PWGame.check();
 
+    // загрузочный экран «Ярмарки»: каждый бой — случайный из ротации (пишется в user.cfg до запуска игры)
+    await import('./fair.js').then(({ syncFairGameFiles }) => syncFairGameFiles()).catch((e) => console.error('fair: sync before game failed', e));
+
     if (ips) {
       // The whole block always goes to the client, reordered by the probes:
       // fastest reachable first, unreachable at the end.
