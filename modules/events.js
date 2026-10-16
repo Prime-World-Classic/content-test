@@ -282,7 +282,27 @@ export class Events {
   }
 
   static ADMStat(data) {
-    document.getElementById('ADMStat').innerText = `${data.online}`;
+    const el = document.getElementById('ADMStat');
+    if (!el) return;
+    const stat = data?.stat;
+    if (!stat) {
+      // старый бэкенд: «соединений (активных)»
+      el.innerText = `${data.online}`;
+      el.removeAttribute('title');
+      return;
+    }
+    // всего (в бою / в тамбуре / отошли), подписи — в подсказке
+    el.innerText = `${stat.total} (${stat.battle} / ${stat.tambour} / ${stat.away})`;
+    el.title = [
+      `${Lang.text('admStatTotal')}: ${stat.total}`,
+      `${Lang.text('friendStatusBattle')}: ${stat.battle}`,
+      `${Lang.text('friendStatusTambour')}: ${stat.tambour}`,
+      `${Lang.text('friendStatusAway')}: ${stat.away}`,
+      `${Lang.text('friendStatusQueue')}: ${stat.queue}`,
+      `${Lang.text('admStatCastle')}: ${stat.castle}`,
+      `${Lang.text('admStatActive')}: ${stat.active}`,
+      `${Lang.text('admStatConnections')}: ${stat.connections}`,
+    ].join('\n');
   }
 
   static MMKick(data) {
