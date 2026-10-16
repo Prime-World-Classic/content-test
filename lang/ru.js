@@ -518,8 +518,6 @@ export const ru = {
     friendStatusAway: 'Отошел',
     admStatTotal: 'Всего',
     admStatCastle: 'В замке',
-    admStatConnections: 'Соединений',
-    admStatActive: 'Активны за 5 мин',
     friendStatusOffline: 'Не в сети',
     friendDurationLessMinute: '<1 мин',
     friendDurationMinutes: '{n} мин',

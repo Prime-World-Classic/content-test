@@ -300,8 +300,6 @@ export class Events {
       `${Lang.text('friendStatusAway')}: ${stat.away}`,
       `${Lang.text('friendStatusQueue')}: ${stat.queue}`,
       `${Lang.text('admStatCastle')}: ${stat.castle}`,
-      `${Lang.text('admStatActive')}: ${stat.active}`,
-      `${Lang.text('admStatConnections')}: ${stat.connections}`,
     ];
     Events.initAdmStatTooltip(el);
     Events.renderAdmStatTooltip();

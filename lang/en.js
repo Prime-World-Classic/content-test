@@ -510,8 +510,6 @@ export const en = {
     friendStatusAway: 'Away',
     admStatTotal: 'Total',
     admStatCastle: 'In castle',
-    admStatConnections: 'Connections',
-    admStatActive: 'Active in 5 min',
     friendStatusOffline: 'Offline',
     friendDurationLessMinute: '<1 min',
     friendDurationMinutes: '{n} min',
