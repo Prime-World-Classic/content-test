@@ -215,6 +215,15 @@ export class PWGame {
   static async start(id, callback, ips, port, method = 'runGame') {
     await PWGame.check();
 
+    // бой уже найден, а апдейтер ещё пишет файлы игры (обновление началось во время подтверждения):
+    // запускаем игру только после его завершения
+    if (NativeAPI.updateInProgress) {
+      App.notify(Lang.text('updateGameStartWait'));
+      while (NativeAPI.updateInProgress) {
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      }
+    }
+
     // загрузочный экран «Ярмарки»: каждый бой — случайный из ротации (пишется в user.cfg до запуска игры)
     await import('./fair.js').then(({ syncFairGameFiles }) => syncFairGameFiles()).catch((e) => console.error('fair: sync before game failed', e));
 

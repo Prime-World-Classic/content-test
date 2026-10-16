@@ -366,6 +366,9 @@ export const en = {
     checkingUpdatesAndFiles: 'Checking updates and game files... Please wait',
     fileCheckCorrupted: 'File check corrupted: ',
     updateError: 'Update error: ',
+    updateBattleBlocked: 'An update is in progress — you can go to battle once it finishes',
+    updateSearchStopped: 'An update has started — battle search stopped',
+    updateGameStartWait: 'An update is in progress — the game will start as soon as it finishes',
 
     //Api
     connectionLostError: 'Connection lost, please wait... [{count}]',

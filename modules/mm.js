@@ -232,6 +232,32 @@ export class MM {
     }
   }
 
+  // Пока идёт обновление игры или лаунчера, в бой не пускаем: апдейтер пишет файлы игры,
+  // а после обновления лаунчера окно перезагрузится. Замок при этом доступен (View.updateIndicator).
+  static isBlockedByUpdate() {
+    if (!NativeAPI.updateInProgress) return false;
+    App.error(Lang.text('updateBattleBlocked'));
+    return true;
+  }
+
+  // Началось обновление: снимаем себя с боя. Лидер (или игрок без пати) отменяет поиск сам;
+  // участник пати отменить поиск не может — он снимает готовность (unreadyParty), а сервер
+  // останавливает поиск всей пати, если он уже идёт.
+  static onUpdateStarted() {
+    const partyId = Number(MM.partyId) || 0;
+    if (partyId && partyId !== Number(App.storage.data?.id)) {
+      const wasActive = MM.active;
+      App.api
+        .request(App.CURRENT_MM, 'unreadyParty', { id: partyId })
+        .then(() => wasActive && App.notify(Lang.text('updateSearchStopped')))
+        .catch((e) => console.error('unreadyParty', e));
+      return;
+    }
+    if (!MM.active) return;
+    App.notify(Lang.text('updateSearchStopped'));
+    MM.start();
+  }
+
   static async gameStartCheck() {
     if (PWGame.gameConnectionTestIsActive) {
       return;
@@ -265,6 +291,10 @@ export class MM {
   }
 
   static async start() {
+    if (!MM.active && MM.isBlockedByUpdate()) {
+      return;
+    }
+
     if (NativeAPI.status) {
       await MM.gameStartCheck();
     } else {

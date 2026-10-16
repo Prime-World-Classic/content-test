@@ -6,6 +6,7 @@ import { App } from './app.js';
 import { NativeAPI } from './nativeApi.js';
 import { Settings } from './settings.js';
 import { Splash } from './splash.js';
+import { MM } from './mm.js';
 
 window.addEventListener('message', (event) => {
   if (event.data == '') {
@@ -29,17 +30,9 @@ Promise.all([Lang.init(), TalentData.init()]).then(() => {
   NativeAPI.init();
 
   NativeAPI.update((data) => {
-    if (View.updateProgress) {
-      Splash.hide();
-    }
-
-    if (data.update) {
-      View.updateProgress = View.progress();
-
-      View.updateProgress.firstChild.style.width = data.total + '%';
-
-      View.updateProgress.lastChild.innerText = `${data.title} ${data.total}%...`;
-    }
+    // идущий поиск боя останавливаем: игра не должна запуститься, пока апдейтер пишет её файлы
+    if (data.update && !View.updateProgress) MM.onUpdateStarted();
+    View.updateIndicator(data);
   }).catch((e) => NativeAPI.logUpdateError(e, 'update'));
 
   Settings.init().then(() => {

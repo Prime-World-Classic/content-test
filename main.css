@@ -3554,6 +3554,70 @@ button.build-action-item.btn-hover.color-1 .btn-duplicate {
   background: rgba(0, 0, 0, 0.6);
 }
 
+/* update progress: a small bar at the top, clicks pass through it (View.updateIndicator) */
+.update-indicator {
+  position: fixed;
+  top: 1.2vh;
+  left: 50%;
+  z-index: 10000;
+  width: min(34vw, 520px);
+  height: 3.4vh;
+  min-height: 22px;
+  overflow: hidden;
+  border-radius: 1.7vh;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0.8vh rgba(0, 0, 0, 0.6);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* below the castle chat: .chat sits at the bottom of .castle-chat (castle.css), the bar goes right under it,
+   the same width; the chat grows upwards, so the bar never covers it */
+.update-indicator.update-indicator--chat {
+  position: absolute;
+  top: calc(100% + 0.8cqh);
+  left: 10%;
+  z-index: auto;
+  width: 80%;
+  height: 3.2cqh;
+  min-height: 0;
+  border-radius: 1.2cqh;
+  transform: none;
+}
+
+.update-indicator--chat .update-indicator-text {
+  font-size: 1.5cqh;
+}
+
+/* with pinned messages the chat goes down to 17cqh (castle.css): lift it for the update bar, which must stay
+   above the bottom hero panel (16.3cqh) */
+.castle-chat:has(.chat.chat-has-pinned):has(.update-indicator--chat) {
+  bottom: 21cqh;
+}
+
+.update-indicator-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  opacity: 0.85;
+  transition: width 0.3s ease-out;
+}
+
+.update-indicator-text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.6vh;
+  font-weight: 700;
+  text-shadow: 0 0 0.4vh rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+}
+
 .progress {
   position: relative;
   width: 90cqw;

@@ -1414,6 +1414,29 @@ export class View {
     return body;
   }
 
+  // Прогресс обновления — небольшая плашка под чатом замка (до входа в замок — сверху экрана),
+  // замок не перекрывает, клики проходят сквозь неё. На время обновления бой запрещён (MM.isBlockedByUpdate).
+  // data: { update, title, total } от NativeAPI.update.
+  static updateIndicator(data) {
+    if (!data.update) {
+      if (View.updateProgress) View.updateProgress.remove();
+      View.updateProgress = false;
+      return;
+    }
+    if (!View.updateProgress) {
+      View.updateProgress = DOM({ style: 'update-indicator' }, DOM({ style: ['update-indicator-bar', 'animation1'] }), DOM({ style: 'update-indicator-text' }));
+    }
+    // чат замка пересоздаётся вместе с замком — каждый раз ищем, под чем показываться
+    const chat = document.querySelector('.castle-chat');
+    const host = chat || document.body;
+    if (View.updateProgress.parentNode !== host) {
+      View.updateProgress.classList.toggle('update-indicator--chat', !!chat);
+      host.append(View.updateProgress);
+    }
+    View.updateProgress.firstChild.style.width = data.total + '%';
+    View.updateProgress.lastChild.innerText = `${data.title} ${data.total}%...`;
+  }
+
   static async castle(castleArg = null) {
     document.body.classList.add('noselect');
 
@@ -1692,6 +1715,10 @@ export class View {
             }
             status.dataset.busy = '1';
             try {
+              if (MM.isBlockedByUpdate()) {
+                return;
+              }
+
               if (NativeAPI.status) {
                 if (PWGame.gameConnectionTestIsActive) {
                   return;

@@ -16,5 +16,5 @@ function loadScript(src) {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  await loadScript('content/modules/_modules.js?v=20261015-fair-followup-2').catch(console.error);
+  await loadScript('content/modules/_modules.js?v=20261016-update-indicator-1').catch(console.error);
 });

@@ -371,6 +371,9 @@ export const ru = {
     checkingUpdatesAndFiles: 'Проверка обновлений и файлов игры... Подождите',
     fileCheckCorrupted: 'Неисправна проверка файлов: ',
     updateError: 'Ошибка обновления: ',
+    updateBattleBlocked: 'Идёт обновление — в бой можно будет пойти после его завершения',
+    updateSearchStopped: 'Началось обновление — поиск боя остановлен',
+    updateGameStartWait: 'Идёт обновление — игра запустится сразу после его завершения',
 
     //Api
     connectionLostError: 'Разрыв соединения, подождите... [{count}]',

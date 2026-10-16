@@ -516,6 +516,10 @@ export class Build {
           'click',
           async () => {
             try {
+              if (MM.isBlockedByUpdate()) {
+                return;
+              }
+
               if (NativeAPI.status) {
                 await MM.gameStartCheck();
 
