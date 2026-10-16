@@ -180,16 +180,19 @@ function itemPicture(item, ctx) {
     }
     case CAT.frame: {
       const hero = ctx.topHero;
-      const portrait = DOM({ style: 'fair-frame-portrait' });
-      portrait.style.backgroundImage = `url("content/hero/${hero.heroId}/${hero.skinId}.webp")`;
-      const box = DOM({ style: 'fair-frame' }, portrait);
-      if (item.id != 0) {
-        const frames = Shop.getFrameIcon(`${item.externalId}/${hero.frameId}`);
-        const frame = DOM({ style: 'fair-frame-img' });
-        frame.style.backgroundImage = frames[Math.max(0, hero.frameId - 1)];
-        box.append(frame);
-      }
-      return DOM({ style: 'fair-iconrow' }, box);
+      const frames = item.id == 0 ? [null] : Shop.getFrameIcon(`${item.externalId}/${hero.frameId}`);
+      const variants = frames.map((image, index) => {
+        const portrait = DOM({ style: 'fair-frame-portrait' });
+        portrait.style.backgroundImage = `url("content/hero/${hero.heroId}/${hero.skinId}.webp")`;
+        const box = DOM({ style: 'fair-frame', title: `${itemName(item)} ${index + 1}/${frames.length}` }, portrait);
+        if (image) {
+          const frame = DOM({ style: 'fair-frame-img' });
+          frame.style.backgroundImage = image;
+          box.append(frame);
+        }
+        return box;
+      });
+      return DOM({ style: 'fair-iconrow' }, DOM({ style: frames.length > 1 ? 'fair-frame-set' : 'fair-frame-single' }, ...variants));
     }
     case CAT.loadscreen: {
       const thumb = DOM({ style: 'fair-thumb' });
@@ -441,7 +444,14 @@ export async function fair(tab = null, { previewData = null } = {}) {
     return el;
   };
 
+  // перерисовка после «Выбрать»/«Убрать»/покупки не должна сбрасывать прокрутку в начало
   const renderCards = () => {
+    const scroll = content.scrollTop;
+    fillCards();
+    content.scrollTop = scroll;
+  };
+
+  const fillCards = () => {
     const items = filteredItems();
     cards.replaceChildren();
     quickbar.replaceChildren();
