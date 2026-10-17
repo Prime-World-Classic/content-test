@@ -664,32 +664,10 @@ export class Castle {
       Castle.phantomBuildingSize = size;
 
       Castle.dragSwapPlan = Castle.draggedBuilding ? Castle.planBuildingSwap() : null;
-      if (Castle.dragSwapPlan) {
-        // здание кладут на другое: фантом встаёт туда, где окажется после обмена
-        Castle.phantomBuilding.posX = Castle.dragSwapPlan.posX;
-        Castle.phantomBuilding.posY = Castle.dragSwapPlan.posY;
-      }
       Castle.phantomBuildingIsAllowedToBuild =
         Castle.dragSwapPlan !== null || Castle.isBuildingAllowed(Castle.phantomBuilding.posX, Castle.phantomBuilding.posY, size);
       Castle.UpdateGridImage();
     }
-  }
-
-  // клетка сетки под курсором
-  static getCursorCell() {
-    return [
-      Math.floor((Castle.gridTranslation[0] - Castle.gridCursorPosX) / 7.0),
-      Math.floor((Castle.gridTranslation[1] - Castle.gridCursorPosZ) / 7.0) + 17,
-    ];
-  }
-
-  static findPlacedBuildingAtCell(cellX, cellY) {
-    return (
-      Castle.placedBuildings.find((b) => {
-        const size = Castle.getBuildingSize(b.id);
-        return cellX >= b.posX && cellX < b.posX + size && cellY >= b.posY && cellY < b.posY + size;
-      }) || null
-    );
   }
 
   static isAreaOverlapping(aX, aY, aSize, bX, bY, bSize) {
@@ -714,21 +692,14 @@ export class Castle {
   }
 
   // Обмен местами: перетаскиваемое здание кладут поверх других — вытеснить можно сразу несколько.
-  // Если курсор над зданием, перетаскиваемое встаёт по его центру, иначе — где курсор.
   // Вытесненные переезжают на освободившееся место, сохраняя взаимное расположение (если не влезают так —
   // по центру, в угол или в любую свободную точку старого места); кому места не хватило — ждут в панели.
   static planBuildingSwap() {
     const dragged = Castle.draggedBuilding;
     const size = Castle.getBuildingSize(dragged.building.id);
-    const candidates = [[Castle.phantomBuilding.posX, Castle.phantomBuilding.posY]];
-    const [cellX, cellY] = Castle.getCursorCell();
-    const underCursor = Castle.findPlacedBuildingAtCell(cellX, cellY);
-    if (underCursor) {
-      const offset = Math.floor((Castle.getBuildingSize(underCursor.id) - size) / 2);
-      candidates.unshift([underCursor.posX + offset, underCursor.posY + offset]);
-    }
-    const pos = candidates.find(([x, y]) => Castle.isInsideBuildZone(x, y, size) && Castle.getOverlappingBuildings(x, y, size).length > 0);
-    if (!pos) {
+    // здание стоит ровно там, где курсор, — к зданиям под ним не притягивается
+    const pos = [Castle.phantomBuilding.posX, Castle.phantomBuilding.posY];
+    if (!Castle.isInsideBuildZone(pos[0], pos[1], size) || !Castle.getOverlappingBuildings(pos[0], pos[1], size).length) {
       return null;
     }
     // крупные — первыми: им труднее найти место
