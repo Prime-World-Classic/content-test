@@ -390,7 +390,13 @@ export class Castle {
   static buildingBubblesDoms = {};
 
   static allowedToBuildGridTex = new Uint8Array(64 * 64 * 4).fill(0);
-  static allowedToBuildGrid = Array.from(Array(47), () => new Array(38));
+  static allowedToBuildGrid = Array.from(Array(47), () => new Array(38)); // номер стоящего здания + 1 или пусто
+  // чьи клетки: номер здания (R — младший байт, G — старший). Шейдер сетки сливает клетки одного здания
+  // в одну плитку и обводит её по краю — так видно, где кончается одно здание и начинается другое.
+  static gridIdTex = new Uint8Array(64 * 64 * 4).fill(0);
+  static gridIdTexture;
+  static GRID_ID_MOVE_BASE = 1800; // куда переедут вытесненные здания (номера < 2048: в шейдере mediump)
+  static GRID_ID_PHANTOM = 2000; // ставящееся здание
 
   static phantomBuildingSize = 0;
   static phantomBuilding = {
@@ -1098,10 +1104,11 @@ export class Castle {
   static GRID_CELL_PHANTOM_GOOD = [40, 255, 60, 255];
   static GRID_CELL_PHANTOM_BAD = [255, 20, 20, 255];
   static GRID_CELL_SWAP_TARGET = [0, 200, 255, 255]; // здание, на которое кладут, и куда оно переедет
-  static GRID_CELL_SWAP_PENDING = [210, 90, 255, 255]; // ему не хватит места — будет ждать на курсоре
+  static GRID_CELL_SWAP_PENDING = [210, 90, 255, 255]; // ему не хватит места — будет ждать в панели
 
   static UpdateGridImage() {
     const data = Castle.allowedToBuildGridTex;
+    const ids = Castle.gridIdTex;
     const phantom = Castle.phantomBuilding;
     const phantomSize = Castle.phantomBuildingSize;
     const plan = Castle.dragSwapPlan;
@@ -1111,36 +1118,42 @@ export class Castle {
       const posX = i % 64;
       const posY = Math.floor(i / 64);
       let color = null;
+      let id = 0;
       if (posX < 47 && posY < 38) {
         if (Castle.allowedToBuildGrid[posX][posY]) {
           color = Castle.GRID_CELL_OCCUPIED;
+          id = Castle.allowedToBuildGrid[posX][posY];
         }
-        for (const move of moves) {
-          if (
-            inArea(posX, posY, move.building.posX, move.building.posY, move.size) ||
-            (move.pos && inArea(posX, posY, move.pos[0], move.pos[1], move.size))
-          ) {
+        moves.forEach((move, m) => {
+          if (inArea(posX, posY, move.building.posX, move.building.posY, move.size)) {
             color = move.pos ? Castle.GRID_CELL_SWAP_TARGET : Castle.GRID_CELL_SWAP_PENDING;
+          } else if (move.pos && inArea(posX, posY, move.pos[0], move.pos[1], move.size)) {
+            color = Castle.GRID_CELL_SWAP_TARGET;
+            id = Castle.GRID_ID_MOVE_BASE + m;
           }
-        }
+        });
         if (phantom.id && inArea(posX, posY, phantom.posX, phantom.posY, phantomSize)) {
           color = Castle.phantomBuildingIsAllowedToBuild ? Castle.GRID_CELL_PHANTOM_GOOD : Castle.GRID_CELL_PHANTOM_BAD;
+          id = Castle.GRID_ID_PHANTOM;
         }
       }
       data.set(color || [0, 0, 0, 0], i * 4);
+      ids[i * 4] = id & 255;
+      ids[i * 4 + 1] = id >> 8;
     }
   }
 
   static UpdateAllowedToBuildGrid() {
     Castle.allowedToBuildGrid = Array.from(Array(47), () => new Array(38));
-    for (const placedBuilding of Castle.placedBuildings) {
+    Castle.placedBuildings.forEach((placedBuilding, index) => {
       const pbSize = Castle.sceneBuildings[Castle.buildings[placedBuilding.id]].size[0];
       for (let i = 0; i < pbSize; ++i) {
         for (let j = 0; j < pbSize; ++j) {
-          Castle.allowedToBuildGrid[placedBuilding.posX + i][placedBuilding.posY + j] = 1;
+          Castle.allowedToBuildGrid[placedBuilding.posX + i][placedBuilding.posY + j] = index + 1;
         }
       }
-    }
+    });
+    Castle.UpdateGridImage();
   }
 
   static placePhantomBuilding() {
@@ -1419,6 +1432,14 @@ export class Castle {
         Castle.gl.UNSIGNED_BYTE,
         null,
       ); // data
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MAG_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.NEAREST);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.CLAMP_TO_EDGE);
+      Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_T, Castle.gl.CLAMP_TO_EDGE);
+
+      Castle.gridIdTexture = Castle.gl.createTexture();
+      Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, Castle.gridIdTexture);
+      Castle.gl.texImage2D(Castle.gl.TEXTURE_2D, 0, Castle.gl.RGBA, 64, 64, 0, Castle.gl.RGBA, Castle.gl.UNSIGNED_BYTE, null);
       Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MAG_FILTER, Castle.gl.NEAREST);
       Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_MIN_FILTER, Castle.gl.NEAREST);
       Castle.gl.texParameteri(Castle.gl.TEXTURE_2D, Castle.gl.TEXTURE_WRAP_S, Castle.gl.CLAMP_TO_EDGE);
@@ -3234,6 +3255,11 @@ export class Castle {
       let texLocationSM = Castle.getUniformLocation(program, attribNameSM);
 
       Castle.gl.uniform1i(texLocationSM, textures.length + 1);
+
+      Castle.gl.activeTexture(Castle.gl.TEXTURE0 + textures.length + 2);
+      Castle.gl.bindTexture(Castle.gl.TEXTURE_2D, Castle.gridIdTexture);
+      Castle.gl.texImage2D(Castle.gl.TEXTURE_2D, 0, Castle.gl.RGBA, 64, 64, 0, Castle.gl.RGBA, Castle.gl.UNSIGNED_BYTE, Castle.gridIdTex);
+      Castle.gl.uniform1i(Castle.getUniformLocation(program, 'gridIdTex'), textures.length + 2);
     }
 
     if (isSMPass) {
