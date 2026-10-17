@@ -2735,7 +2735,8 @@ export class App {
             Splash.hide();
 
             // 3D-замок создаётся один раз (Castle.initDemo), поэтому раньше новая фракция появлялась
-            // только после перезапуска лаунчера. Теперь пересобираем лишь сцену замка.
+            // только после перезапуска лаунчера. Теперь пересобираем лишь сцену замка, а в интерфейсе —
+            // только то, что зависит от фракции (View.refreshCastleFaction): окна остаются открытыми.
             if (Castle.gl) {
               try {
                 await Castle.switchScene(Number(selectedFaction) == 1 ? 'ad' : 'doct');
@@ -2744,7 +2745,9 @@ export class App {
               }
             }
 
-            View.show('castle');
+            if (!Castle.gl || !View.refreshCastleFaction()) {
+              View.show('castle');
+            }
           },
         ],
       },

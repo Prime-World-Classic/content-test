@@ -90,6 +90,7 @@ export class View {
   static mmQueueMap = {};
   static _actionBarCfgEnsured = false;
   static friendsMenuItem = null;
+  static flagMenuItem = null;
   static hasFriendIncomingRequest = false;
   static castleActiveTab = 'heroes';
   static castleOpenedBuildHeroId = 0;
@@ -1531,6 +1532,28 @@ export class View {
     return body;
   }
 
+  static updateCastleFactionFlag() {
+    if (!View.flagMenuItem) return;
+    View.flagMenuItem.style.backgroundImage =
+      Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`;
+  }
+
+  // Смена фракции: от неё в замке зависят только флаг, список построек и иконки ждущих зданий.
+  // Весь замок (группа, чат, герои, друзья) не пересобираем и открытые окна не закрываем.
+  // false — замок сейчас не открыт, обновлять нечего.
+  static refreshCastleFaction() {
+    const castleBody = document.getElementById('castle-body');
+    if (!castleBody || View.active !== castleBody) return false;
+    View.updateCastleFactionFlag();
+    if (View.castleActiveTab === 'buildings') {
+      const scroll = Number(View.castleBottom?.scrollLeft) || 0;
+      View.bodyCastleBuildings();
+      View.resetCastleBottomScroll(scroll);
+    }
+    Castle.renderPendingTray();
+    return true;
+  }
+
   static async refreshCastlePlayOnly(partyData = null) {
     const castleBody = document.getElementById('castle-body');
     const activeCastleView = castleBody && View.active === castleBody;
@@ -2304,8 +2327,8 @@ export class View {
       'list',
     );
 
-    flagMenuItem.style.backgroundImage =
-      Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`;
+    View.flagMenuItem = flagMenuItem;
+    View.updateCastleFactionFlag();
 
     View.arrows = new Object();
     View.arrows.ls = DOM({
