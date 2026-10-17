@@ -970,6 +970,11 @@ export class View {
 
     Castle.toggleRender(Castle.RENDER_LAYER_LAUNCHER, method == 'castle');
 
+    // ушли из замка — из Строительства тоже: ожидающее здание исчезает
+    if (method != 'castle') {
+      Castle.buildMode = false;
+    }
+
     try {
       var template = await View[method](value, value2, value3);
     } catch (error) {
@@ -2349,6 +2354,7 @@ export class View {
     // Инициализируем вкладку героев после создания toolbar-контейнера,
     // чтобы кнопки списков появились сразу при входе в замок.
     View.bodyCastleHeroes();
+    Castle.buildMode = false;
 
     View.resetCastleBottomScroll(Number(View.castleBottom?.scrollLeft) || 0);
 
@@ -2793,8 +2799,10 @@ ${Lang.text('castleBuildCategoryUnavailable')}` },
         });
 
         // Затем устанавливаем ID выбранного здания и добавляем класс
-        Castle.phantomBuilding.id = building.dataset.buildingId;
-        building.classList.add('selectedBuild');
+        // (пока вытесненное здание ждёт, чтобы его поставили, новое не выбрать)
+        if (Castle.selectPhantomBuilding(building.dataset.buildingId)) {
+          building.classList.add('selectedBuild');
+        }
       });
 
       preload.add(building);
