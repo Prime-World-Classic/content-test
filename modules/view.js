@@ -944,7 +944,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261015-talent-admin-4';
+    const cssVersion = '20261017-building-drag-3';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1458,6 +1458,8 @@ export class View {
     if (!Castle.canvas) {
       Castle.canvas = DOM({ tag: 'canvas', id: 'castle-game-surface' });
       Castle.buildingBubbles = DOM({ style: 'castle-buildings-bubbles' });
+      // вытесненные при перестановке здания ждут здесь, пока их не поставят
+      Castle.pendingTray = DOM({ style: 'castle-pending-buildings' });
     }
 
     try {
@@ -1470,7 +1472,8 @@ export class View {
       App.error(error);
     }
 
-    body.append(backgroundImage, Castle.canvas, Castle.buildingBubbles, View.castleQuestBody);
+    body.append(backgroundImage, Castle.canvas, Castle.buildingBubbles, Castle.pendingTray, View.castleQuestBody);
+    Castle.renderPendingTray();
 
     try {
       await View.castleQuestUpdate();
@@ -2791,6 +2794,11 @@ ${Lang.text('castleBuildCategoryUnavailable')}` },
       }
 
       building.dataset.buildingId = i;
+      // одиночное здание, которое уже стоит или ждёт, — серое
+      if (Castle.isBuildingUnavailable(i)) {
+        building.classList.add('castle-building-item-taken');
+        building.dataset.tooltip = Lang.text('castleBuildingAlreadyBuilt');
+      }
 
       building.addEventListener('click', async () => {
         // Сначала удаляем класс selectedBuild со всех зданий
@@ -2799,7 +2807,7 @@ ${Lang.text('castleBuildCategoryUnavailable')}` },
         });
 
         // Затем устанавливаем ID выбранного здания и добавляем класс
-        // (пока вытесненное здание ждёт, чтобы его поставили, новое не выбрать)
+        // (одиночное здание, которое уже стоит или ждёт, не выбрать)
         if (Castle.selectPhantomBuilding(building.dataset.buildingId)) {
           building.classList.add('selectedBuild');
         }

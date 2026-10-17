@@ -16,6 +16,7 @@ import { Settings } from './settings.js';
 import { Sound } from './sound.js';
 import { PreloadImages } from './preloadImages.js';
 import { DOM } from './dom.js';
+import { Lang } from './lang.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
 import { EaselCastleFx } from './easel/easelCastleFx.js';
@@ -190,6 +191,9 @@ export class Castle {
     Castle.#buildMode = Boolean(value);
     if (wasBuildMode && !Castle.#buildMode) {
       Castle.cancelBuildInteraction();
+    }
+    if (wasBuildMode !== Castle.#buildMode) {
+      Castle.renderPendingTray();
     }
   }
 
@@ -403,15 +407,23 @@ export class Castle {
   // Перемещение здания зажатым ПКМ (только в режиме строительства).
   // dragCandidate — ПКМ нажат на здании, но мышь ещё не сдвинулась (отпустили на месте — снос, как раньше);
   // draggedBuilding — здание снято с места и едет за курсором как фантом;
-  // dragSwapPlan — куда встанут здание и то, на которое его кладут (обмен местами);
-  // pendingBuilding — вытесненное здание, которому не нашлось места: ждёт на курсоре, пока его не поставят ЛКМ,
-  // при выходе из Строительства исчезает.
+  // dragSwapPlan — куда встанут здание и те, на которые его кладут (обмен местами);
+  // pendingBuildings — вытесненные здания, которым не нашлось места: ждут в панели у нижнего края экрана
+  // (Castle.pendingTray), пока их не поставят; при выходе из Строительства исчезают.
+  // placingPending — ожидающее здание, которое взяли из панели и ставят (ЛКМ — поставить, ПКМ — вернуть в панель).
   static DRAG_START_THRESHOLD_PX = 4;
   static dragCandidate = null;
   static draggedBuilding = null;
   static dragSwapPlan = null;
-  static pendingBuilding = null;
+  static pendingBuildings = [];
+  static placingPending = null;
+  static pendingTray = null;
   static suppressContextMenu = false;
+
+  // Отмена действий в Строительстве: перед каждой постройкой, сносом, поворотом и перестановкой
+  // запоминается расстановка (стоящие и ждущие здания). Живёт, пока открыто Строительство.
+  static UNDO_LIMIT = 50;
+  static undoStack = [];
 
   static buildingsNames = [
     ['', ''],
@@ -503,6 +515,38 @@ export class Castle {
     unicorn: 'services',
     easel: 'services',
   };
+
+  // Здания первых четырёх вкладок (для героев, производство, развитие, услуги) — в одном экземпляре;
+  // декорации и осветители можно ставить сколько угодно.
+  static UNIQUE_BUILDING_CATEGORIES = ['heroes', 'production', 'house', 'services'];
+
+  static isUniqueBuilding(id) {
+    return Castle.UNIQUE_BUILDING_CATEGORIES.includes(Castle.getBuildingCategory(Castle.buildings[id]));
+  }
+
+  // здание уже стоит, едет за курсором или ждёт в панели, пока его поставят
+  static isBuildingTaken(id) {
+    const same = (b) => b && b.id == id;
+    return Castle.placedBuildings.some(same) || Castle.pendingBuildings.some(same) || same(Castle.draggedBuilding?.building);
+  }
+
+  static isBuildingUnavailable(id) {
+    return Castle.isUniqueBuilding(id) && Castle.isBuildingTaken(id);
+  }
+
+  // серым в панели построек — одиночные здания, которые уже стоят или ждут
+  static updateBuildingItemsState() {
+    document.querySelectorAll('.castle-building-item').forEach((item) => {
+      const unavailable = Castle.isBuildingUnavailable(item.dataset.buildingId);
+      item.classList.toggle('castle-building-item-taken', unavailable);
+      if (unavailable) {
+        item.dataset.tooltip = Lang.text('castleBuildingAlreadyBuilt');
+        item.classList.remove('selectedBuild');
+      } else {
+        delete item.dataset.tooltip;
+      }
+    });
+  }
 
   static getBuildingCategory(name) {
     if (Castle.lightingDecos.includes(name)) return 'lights';
@@ -663,44 +707,63 @@ export class Castle {
     return Castle.getOverlappingBuildings(posX, posY, size).every((b) => ignore.includes(b));
   }
 
-  // Обмен местами: перетаскиваемое здание кладут на другое (под курсором или единственное, которое оно накрывает).
-  // Перетаскиваемое встаёт по центру того, на которое положили, а то — на освободившееся место
-  // (по центру старого места или в его угол). Не влезает — будет ждать на курсоре (pending).
+  // Обмен местами: перетаскиваемое здание кладут поверх других — вытеснить можно сразу несколько.
+  // Если курсор над зданием, перетаскиваемое встаёт по его центру, иначе — где курсор.
+  // Вытесненные переезжают на освободившееся место, сохраняя взаимное расположение (если не влезают так —
+  // по центру, в угол или в любую свободную точку старого места); кому места не хватило — ждут в панели.
   static planBuildingSwap() {
     const dragged = Castle.draggedBuilding;
     const size = Castle.getBuildingSize(dragged.building.id);
-    const cursorPos = [Castle.phantomBuilding.posX, Castle.phantomBuilding.posY];
+    const candidates = [[Castle.phantomBuilding.posX, Castle.phantomBuilding.posY]];
     const [cellX, cellY] = Castle.getCursorCell();
-    let target = Castle.findPlacedBuildingAtCell(cellX, cellY);
-    let targetUnderCursor = Boolean(target);
-    if (!target) {
-      const overlapping = Castle.getOverlappingBuildings(cursorPos[0], cursorPos[1], size);
-      if (overlapping.length !== 1) {
-        return null;
-      }
-      target = overlapping[0];
+    const underCursor = Castle.findPlacedBuildingAtCell(cellX, cellY);
+    if (underCursor) {
+      const offset = Math.floor((Castle.getBuildingSize(underCursor.id) - size) / 2);
+      candidates.unshift([underCursor.posX + offset, underCursor.posY + offset]);
     }
-    const targetSize = Castle.getBuildingSize(target.id);
-    const snapped = [target.posX + Math.floor((targetSize - size) / 2), target.posY + Math.floor((targetSize - size) / 2)];
-    const candidates = targetUnderCursor ? [snapped, cursorPos] : [cursorPos, snapped];
-    const pos = candidates.find(([x, y]) => Castle.isAreaFreeFor(x, y, size, [target]));
+    const pos = candidates.find(([x, y]) => Castle.isInsideBuildZone(x, y, size) && Castle.getOverlappingBuildings(x, y, size).length > 0);
     if (!pos) {
       return null;
     }
+    // крупные — первыми: им труднее найти место
+    const targets = Castle.getOverlappingBuildings(pos[0], pos[1], size).sort(
+      (a, b) => Castle.getBuildingSize(b.id) - Castle.getBuildingSize(a.id),
+    );
     const reserved = [{ posX: pos[0], posY: pos[1], size: size }];
-    const targetCandidates = [
-      [dragged.origX + Math.floor((size - targetSize) / 2), dragged.origY + Math.floor((size - targetSize) / 2)],
-      [dragged.origX, dragged.origY],
-    ];
-    const targetPos = targetCandidates.find(([x, y]) => Castle.isAreaFreeFor(x, y, targetSize, [target], reserved)) || null;
-    return { posX: pos[0], posY: pos[1], target: target, targetPos: targetPos };
+    const moves = targets.map((target) => {
+      const targetSize = Castle.getBuildingSize(target.id);
+      const keep = [dragged.origX + (target.posX - pos[0]), dragged.origY + (target.posY - pos[1])];
+      const centerOffset = Math.floor((size - targetSize) / 2);
+      const spots = [];
+      for (let x = dragged.origX; x <= dragged.origX + size - targetSize; ++x) {
+        for (let y = dragged.origY; y <= dragged.origY + size - targetSize; ++y) {
+          spots.push([x, y]);
+        }
+      }
+      spots.sort((a, b) => Math.hypot(a[0] - keep[0], a[1] - keep[1]) - Math.hypot(b[0] - keep[0], b[1] - keep[1]));
+      const free =
+        [keep, [dragged.origX + centerOffset, dragged.origY + centerOffset], [dragged.origX, dragged.origY], ...spots].find(([x, y]) =>
+          Castle.isAreaFreeFor(x, y, targetSize, targets, reserved),
+        ) || null;
+      if (free) {
+        reserved.push({ posX: free[0], posY: free[1], size: targetSize });
+      }
+      return { building: target, pos: free };
+    });
+    return { posX: pos[0], posY: pos[1], moves: moves };
   }
 
   static selectPhantomBuilding(id) {
-    if (Castle.pendingBuilding || Castle.draggedBuilding) {
+    if (Castle.draggedBuilding) {
       Castle.playErrorSound();
       return false;
     }
+    if (Castle.isBuildingUnavailable(id)) {
+      Castle.playErrorSound();
+      return false;
+    }
+    // взятое из панели ожидающее здание остаётся ждать в ней
+    Castle.setPlacingPending(null);
     Castle.phantomBuilding.id = id;
     Castle.phantomBuilding.rot = 0;
     Castle.updatePhantomPosition();
@@ -758,8 +821,10 @@ export class Castle {
     if (index < 0) {
       return;
     }
+    // расстановка до перестановки — для отмены, если здание действительно переедет
+    const undoSnapshot = Castle.snapshotBuildings();
     Castle.placedBuildings.splice(index, 1);
-    Castle.draggedBuilding = { building: building, origX: building.posX, origY: building.posY };
+    Castle.draggedBuilding = { building: building, origX: building.posX, origY: building.posY, undoSnapshot: undoSnapshot };
     Castle.phantomBuilding.id = building.id;
     Castle.phantomBuilding.rot = building.rot;
     Castle.UpdateAllowedToBuildGrid();
@@ -776,17 +841,20 @@ export class Castle {
     Castle.updatePhantomPosition();
     const building = dragged.building;
     const plan = Castle.dragSwapPlan;
-    let pending = null;
+    const pending = [];
     let moved = true;
+    const undoSnapshot = dragged.undoSnapshot;
     if (plan) {
       building.posX = plan.posX;
       building.posY = plan.posY;
-      if (plan.targetPos) {
-        plan.target.posX = plan.targetPos[0];
-        plan.target.posY = plan.targetPos[1];
-      } else {
-        Castle.placedBuildings.splice(Castle.placedBuildings.indexOf(plan.target), 1);
-        pending = plan.target;
+      for (const move of plan.moves) {
+        if (move.pos) {
+          move.building.posX = move.pos[0];
+          move.building.posY = move.pos[1];
+        } else {
+          Castle.placedBuildings.splice(Castle.placedBuildings.indexOf(move.building), 1);
+          pending.push(move.building);
+        }
       }
     } else if (Castle.phantomBuildingIsAllowedToBuild) {
       building.posX = Castle.phantomBuilding.posX;
@@ -798,11 +866,13 @@ export class Castle {
     }
     Castle.placedBuildings.push(building);
     Castle.draggedBuilding = null;
+    if (moved) {
+      Castle.pushUndo(undoSnapshot);
+    }
     Castle.resetPhantomBuilding();
-    if (pending) {
-      Castle.pendingBuilding = pending;
-      Castle.phantomBuilding.id = pending.id;
-      Castle.phantomBuilding.rot = pending.rot;
+    if (pending.length) {
+      Castle.pendingBuildings.push(...pending);
+      Castle.renderPendingTray();
     }
     Castle.isStaticSMCached = false;
     Castle.WriteBuildings();
@@ -828,12 +898,136 @@ export class Castle {
       Castle.isStaticSMCached = false;
       Castle.WriteBuildings();
     }
-    // ожидающее здание уже убрано из placedBuildings — просто забываем его
-    Castle.pendingBuilding = null;
+    // ожидающие здания уже убраны из placedBuildings — просто забываем их; отменять больше нечего
+    Castle.pendingBuildings = [];
+    Castle.undoStack = [];
+    Castle.placingPending = null;
+    Castle.renderPendingTray();
     Castle.resetPhantomBuilding();
     document.querySelectorAll('.castle-building-item').forEach((item) => {
       item.classList.remove('selectedBuild');
     });
+  }
+
+  static snapshotBuildings() {
+    return {
+      placed: Castle.placedBuildings.map((b) => ({ ...b })),
+      pending: Castle.pendingBuildings.map((b) => ({ ...b })),
+    };
+  }
+
+  static pushUndo(snapshot = Castle.snapshotBuildings()) {
+    Castle.undoStack.push(snapshot);
+    if (Castle.undoStack.length > Castle.UNDO_LIMIT) {
+      Castle.undoStack.shift();
+    }
+  }
+
+  static undoBuildAction() {
+    const snapshot = Castle.draggedBuilding ? null : Castle.undoStack.pop();
+    if (!Castle.buildMode || !snapshot) {
+      Castle.playErrorSound();
+      return;
+    }
+    Castle.dragCandidate = null;
+    Castle.placingPending = null;
+    Castle.placedBuildings = snapshot.placed;
+    Castle.pendingBuildings = snapshot.pending;
+    Castle.resetPhantomBuilding();
+    document.querySelectorAll('.castle-building-item').forEach((item) => {
+      item.classList.remove('selectedBuild');
+    });
+    Castle.isStaticSMCached = false;
+    Castle.WriteBuildings();
+    Castle.renderPendingTray();
+    Sound.play(SOUNDS_LIBRARY.CLICK_BUTTON_PRESS_SMALL, { volume: Castle.GetVolume(Castle.AUDIO_SOUNDS) });
+  }
+
+  // Ctrl+Z — если его не занял глобальный хоткей войса (по умолчанию он как раз Ctrl+Z)
+  static isUndoHotkeyFree() {
+    return NativeAPI.voiceShortcut?.key !== 'Ctrl+Z';
+  }
+
+  static onUndoKeyDown(event) {
+    if (!Castle.buildMode || !(event.ctrlKey || event.metaKey) || event.shiftKey || event.altKey || event.code !== 'KeyZ') {
+      return;
+    }
+    const target = event.target;
+    if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) {
+      return;
+    }
+    event.preventDefault();
+    Castle.undoBuildAction();
+  }
+
+  // взять ожидающее здание из панели (null — вернуть в панель то, что сейчас ставится)
+  static setPlacingPending(building) {
+    if (!building && !Castle.placingPending) {
+      return;
+    }
+    if (building) {
+      if (Castle.draggedBuilding || !Castle.pendingBuildings.includes(building)) {
+        Castle.playErrorSound();
+        return;
+      }
+      document.querySelectorAll('.castle-building-item').forEach((item) => {
+        item.classList.remove('selectedBuild');
+      });
+      Castle.placingPending = building;
+      Castle.phantomBuilding.id = building.id;
+      Castle.phantomBuilding.rot = building.rot;
+      Castle.updatePhantomPosition();
+    } else {
+      Castle.placingPending = null;
+      Castle.resetPhantomBuilding();
+    }
+    Castle.renderPendingTray();
+  }
+
+  static renderPendingTray() {
+    Castle.updateBuildingItemsState();
+    const tray = Castle.pendingTray;
+    if (!tray) {
+      return;
+    }
+    tray.replaceChildren();
+    tray.style.display = Castle.buildMode ? '' : 'none';
+    if (!Castle.buildMode) {
+      return;
+    }
+    const canUndo = Castle.undoStack.length > 0;
+    tray.append(
+      DOM(
+        {
+          style: ['castle-build-undo', ...(canUndo ? [] : ['castle-build-undo-disabled'])],
+          domaudio: domAudioPresets.defaultButton,
+          data: {
+            tooltip: Lang.text('castleBuildUndoTooltip') + (Castle.isUndoHotkeyFree() ? ' (Ctrl+Z)' : ''),
+          },
+          event: ['click', () => Castle.undoBuildAction()],
+        },
+        Lang.text('castleBuildUndo'),
+      ),
+    );
+    if (!Castle.pendingBuildings.length) {
+      return;
+    }
+    tray.append(DOM({ style: 'castle-pending-buildings-title' }, Lang.text('castlePendingBuildingsTitle')));
+    const list = DOM({ style: 'castle-pending-buildings-list' });
+    for (const building of Castle.pendingBuildings) {
+      const name = Castle.buildings[building.id];
+      const item = DOM(
+        {
+          style: ['castle-pending-building', ...(building === Castle.placingPending ? ['castle-pending-building-active'] : [])],
+          domaudio: domAudioPresets.defaultButton,
+          data: { tooltip: Lang.text('castlePendingBuildingTooltip') },
+          event: ['click', () => Castle.setPlacingPending(building === Castle.placingPending ? null : building)],
+        },
+        DOM({ tag: 'img', src: `content/img/buildings/${Castle.currentSceneName}/${name}.png` }),
+      );
+      list.append(item);
+    }
+    tray.append(list);
   }
 
   static isBuildingAllowed(posX, posY, size) {
@@ -911,7 +1105,7 @@ export class Castle {
     const phantom = Castle.phantomBuilding;
     const phantomSize = Castle.phantomBuildingSize;
     const plan = Castle.dragSwapPlan;
-    const targetSize = plan ? Castle.getBuildingSize(plan.target.id) : 0;
+    const moves = plan ? plan.moves.map((move) => ({ ...move, size: Castle.getBuildingSize(move.building.id) })) : [];
     const inArea = (x, y, areaX, areaY, size) => x >= areaX && y >= areaY && x < areaX + size && y < areaY + size;
     for (let i = 0; i < data.length / 4; ++i) {
       const posX = i % 64;
@@ -921,12 +1115,12 @@ export class Castle {
         if (Castle.allowedToBuildGrid[posX][posY]) {
           color = Castle.GRID_CELL_OCCUPIED;
         }
-        if (plan) {
+        for (const move of moves) {
           if (
-            inArea(posX, posY, plan.target.posX, plan.target.posY, targetSize) ||
-            (plan.targetPos && inArea(posX, posY, plan.targetPos[0], plan.targetPos[1], targetSize))
+            inArea(posX, posY, move.building.posX, move.building.posY, move.size) ||
+            (move.pos && inArea(posX, posY, move.pos[0], move.pos[1], move.size))
           ) {
-            color = plan.targetPos ? Castle.GRID_CELL_SWAP_TARGET : Castle.GRID_CELL_SWAP_PENDING;
+            color = move.pos ? Castle.GRID_CELL_SWAP_TARGET : Castle.GRID_CELL_SWAP_PENDING;
           }
         }
         if (phantom.id && inArea(posX, posY, phantom.posX, phantom.posY, phantomSize)) {
@@ -951,16 +1145,23 @@ export class Castle {
 
   static placePhantomBuilding() {
     if (Castle.phantomBuildingIsAllowedToBuild) {
-      if (Castle.pendingBuilding) {
+      Castle.pushUndo();
+      if (Castle.placingPending) {
         // вытесненное здание ставят обратно — то же самое здание, а не новое
-        const pending = Castle.pendingBuilding;
+        const pending = Castle.placingPending;
         pending.posX = Castle.phantomBuilding.posX;
         pending.posY = Castle.phantomBuilding.posY;
         Castle.placedBuildings.push(pending);
-        Castle.pendingBuilding = null;
+        Castle.pendingBuildings.splice(Castle.pendingBuildings.indexOf(pending), 1);
+        Castle.placingPending = null;
         Castle.resetPhantomBuilding();
+        Castle.renderPendingTray();
       } else {
         Castle.placedBuildings.push(Object.assign({}, Castle.phantomBuilding));
+        // одиночное здание второй раз не поставить — снимаем его с курсора
+        if (Castle.isUniqueBuilding(Castle.phantomBuilding.id)) {
+          Castle.resetPhantomBuilding();
+        }
       }
       Castle.isStaticSMCached = false;
       Castle.WriteBuildings();
@@ -980,6 +1181,7 @@ export class Castle {
     for (let b = 0; b < Castle.placedBuildings.length; ++b) {
       let building = Castle.placedBuildings[b];
       if (building.posX == posX && building.posY == posY) {
+        Castle.pushUndo();
         building.rot = (building.rot + 1) % 4;
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
@@ -993,6 +1195,7 @@ export class Castle {
     for (let b = 0; b < Castle.placedBuildings.length; ++b) {
       let building = Castle.placedBuildings[b];
       if (building.posX == posX && building.posY == posY) {
+        Castle.pushUndo();
         Castle.placedBuildings.splice(b, 1);
         Castle.isStaticSMCached = false;
         Castle.WriteBuildings();
@@ -1052,6 +1255,7 @@ export class Castle {
   }
 
   static async WriteBuildings() {
+    Castle.renderPendingTray();
     if (!NativeAPI.status) {
       Castle.UpdateAllowedToBuildGrid();
       return;
@@ -1133,6 +1337,7 @@ export class Castle {
     // перемещение зданий зажатым ПКМ; отпускание ловим на window — курсор мог уйти с холста
     canvas.addEventListener('mousedown', Castle.onBuildingMouseDown);
     window.addEventListener('mouseup', Castle.onBuildingMouseUp);
+    window.addEventListener('keydown', Castle.onUndoKeyDown);
 
     oncontextmenu = (event) => {
       event.preventDefault();
@@ -1140,8 +1345,13 @@ export class Castle {
         Castle.suppressContextMenu = false;
         return;
       }
-      // здание едет за курсором или ждёт, пока его поставят, — ПКМ его не отменяет
-      if (Castle.draggedBuilding || Castle.pendingBuilding) {
+      // здание едет за курсором — ПКМ его не отменяет
+      if (Castle.draggedBuilding) {
+        return;
+      }
+      // ожидающее здание, взятое из панели, ПКМ возвращает в панель
+      if (Castle.placingPending) {
+        Castle.setPlacingPending(null);
         return;
       }
       Castle.resetPhantomBuilding();
@@ -2362,7 +2572,11 @@ export class Castle {
         rotation: 0,
         position: [0, 0],
         name: 'grid',
-        translation: [Castle.zeroTranslation[0] + (mesh.size[0] / 2.0) * 7.0, 1 + Castle.GRID_LIFT, Castle.zeroTranslation[1] + (mesh.size[1] / 2.0) * 7.0],
+        translation: [
+          Castle.zeroTranslation[0] + (mesh.size[0] / 2.0) * 7.0,
+          1 + Castle.GRID_LIFT,
+          Castle.zeroTranslation[1] + (mesh.size[1] / 2.0) * 7.0,
+        ],
       });
     }
 

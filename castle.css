@@ -5906,3 +5906,91 @@ body:has(#wbuild) .castle-bottom-content {
     font-size: min(3.3cqh, 3cqw);
   }
 }
+
+/* Buildings pushed out by a swap wait here until placed (Castle.pendingTray) */
+.castle-pending-buildings {
+  position: absolute;
+  left: 50%;
+  bottom: 18cqh;
+  transform: translateX(-50%);
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6cqh;
+  padding: 0.8cqh 1.2cqh 1cqh;
+  border: 0.2cqh solid rgba(236, 195, 117, 0.85);
+  border-radius: 1.2cqh;
+  background: rgba(8, 32, 38, 0.86);
+  box-shadow: 0 0 1.5cqh rgba(0, 0, 0, 0.6);
+}
+.castle-pending-buildings-title {
+  color: rgba(236, 195, 117, 1);
+  font-size: 1.7cqh;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.castle-pending-buildings-list {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 0.8cqh;
+}
+.castle-pending-building {
+  width: 9cqh;
+  height: 9cqh;
+  border: 0.2cqh solid rgba(236, 195, 117, 0.5);
+  border-radius: 0.8cqh;
+  background: radial-gradient(ellipse at 50% 45%, rgba(45, 209, 189, 0.45) 0%, rgba(45, 209, 189, 0) 70%);
+  cursor: pointer;
+  animation: castlePendingPulse 1.2s ease-in-out alternate infinite;
+}
+.castle-pending-building img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.castle-pending-building:hover {
+  filter: brightness(1.25);
+}
+.castle-pending-building-active {
+  border-color: rgba(120, 255, 120, 1);
+  box-shadow: 0 0 1.2cqh rgba(120, 255, 120, 0.8);
+  animation: none;
+}
+@keyframes castlePendingPulse {
+  0% {
+    box-shadow: 0 0 0.3cqh rgba(236, 195, 117, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 1.2cqh rgba(236, 195, 117, 0.9);
+  }
+}
+
+/* Single-instance building that already stands or waits: greyed out in the build list */
+.castle-building-item.castle-building-item-taken {
+  filter: grayscale(1) brightness(0.55);
+  cursor: default;
+}
+.castle-building-item.castle-building-item-taken .hover-brightness:hover {
+  filter: none;
+}
+.castle-build-undo {
+  padding: 0.5cqh 1.6cqh;
+  border: 0.2cqh solid rgba(236, 195, 117, 0.85);
+  border-radius: 0.8cqh;
+  background: rgba(20, 60, 66, 0.95);
+  color: rgba(236, 195, 117, 1);
+  font-size: 1.6cqh;
+  font-weight: bold;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.castle-build-undo:hover {
+  filter: brightness(1.25);
+}
+.castle-build-undo.castle-build-undo-disabled {
+  opacity: 0.45;
+  cursor: default;
+  filter: none;
+}

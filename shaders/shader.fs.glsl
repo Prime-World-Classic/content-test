@@ -214,9 +214,11 @@ void main()
   vec3 albedo = FRAG_COLOR.xyz;
 #endif
 
-  // Apply lighting
+  // Apply lighting (сетка строительства — подсказка, а не часть сцены: не темнеет ни в тени, ни ночью)
+#ifndef PS_GRID
   FRAG_COLOR.xyz *= max(max(light, shadowContrast * ambientLight.rgb), vec3(emissive));
   FRAG_COLOR.xyz *= sunLight.a;
+#endif
 
 #ifdef DEFERRED
   gl_FragData[0] = vec4(FRAG_COLOR.xyz, 1.0);
