@@ -94,6 +94,8 @@ export class View {
   static castleActiveTab = 'heroes';
   static castleOpenedBuildHeroId = 0;
   static CASTLE_HERO_LISTS_MAX = 8;
+  // здания меню постройки с анимированной иконкой <имя>_anim.webp (показывается при наведении)
+  static CASTLE_ANIMATED_ICONS = ['cat', 'dog', 'unicorn'];
   static CASTLE_HERO_LIST_STORAGE_KEY = 'castleHeroSelectedList';
   static CASTLE_HERO_LAST_ACTIVE_LIST_STORAGE_KEY = 'castleHeroLastActiveList';
   static CASTLE_HERO_LIST_NAMES_STORAGE_KEY = 'castleHeroListNames';
@@ -2768,6 +2770,19 @@ ${Lang.text('castleBuildCategoryUnavailable')}` },
       );
 
       building.dataset.url = `content/img/buildings/${Castle.currentSceneName}/${item}.png`;
+
+      // питомцы оживают при наведении: анимированная иконка (tools/pw-convert/animate_pet_icons.py),
+      // её первый кадр совпадает со статичной
+      if (View.CASTLE_ANIMATED_ICONS.includes(item)) {
+        const animUrl = `content/img/buildings/${Castle.currentSceneName}/${item}_anim.webp`;
+        new Image().src = animUrl;
+        const setIcon = (url) => {
+          const bg = building.style.backgroundImage;
+          if (bg) building.style.backgroundImage = bg.replace(/url\([^)]*\)/, `url("${url}")`);
+        };
+        building.addEventListener('mouseenter', () => setIcon(animUrl));
+        building.addEventListener('mouseleave', () => setIcon(building.dataset.url));
+      }
 
       building.dataset.buildingId = i;
 
