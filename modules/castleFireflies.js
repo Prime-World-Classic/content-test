@@ -48,14 +48,17 @@ export class CastleFireflies {
     obj.meshData.groundPositions = pos;
   }
 
-  // Карта высот: для каждой клетки XZ — наибольшая высота треугольников земли над ней
-  static buildHeightField(castle) {
+  // Карта высот: для каждой клетки XZ — наибольшая высота треугольников земли над ней.
+  // castle — сцена с sceneObjects (Castle или собираемая Castle.buildScene). Нужна только spawn, поэтому
+  // при смене фракции считается заранее, порциями (slice — ожидание следующей порции, Castle.buildScene).
+  static async buildHeightField(castle, slice = null) {
     const cs = CastleFireflies.cellSize;
     const tris = [];
     let minX = Infinity, minZ = Infinity, maxX = -Infinity, maxZ = -Infinity;
     for (const obj of castle.sceneObjects) {
       const pos = obj.meshData && obj.meshData.groundPositions;
       if (!pos) continue;
+      if (slice) await slice();
       const t = obj.transform || [1, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 1];
       const n = pos.length / 3;
       const w = new Float32Array(n * 3);
@@ -89,6 +92,7 @@ export class CastleFireflies {
     const groundH = new Float32Array(gw * gh).fill(NaN); // только рельеф и скалы
     const waterH = new Float32Array(gw * gh).fill(NaN);
     for (let i = 0; i < tris.length; i += 5) {
+      if (slice && i % 10000 === 0) await slice();
       const w = tris[i];
       const a = tris[i + 1] * 3, b = tris[i + 2] * 3, c = tris[i + 3] * 3;
       const ax = w[a], ay = w[a + 1], az = w[a + 2];
@@ -217,11 +221,6 @@ export class CastleFireflies {
         range: 3 + rnd() * 5,
       });
     }
-  }
-
-  static onSceneLoaded(castle) {
-    CastleFireflies.buildHeightField(castle);
-    CastleFireflies.spawn(castle);
   }
 
   // Положение и яркость светлячков в момент t; яркость — короткие вспышки

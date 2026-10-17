@@ -23,6 +23,7 @@ import { redrawShadowRect, rotatingShadowRect } from './castleSkin.js';
 import { CastlePets } from './castlePets.js';
 import { CastleLighting } from './castleLighting.js';
 import { CastleFireflies } from './castleFireflies.js';
+import { CastleSceneFade, FrameBudget, forEachLimited, yieldFrame } from './castleSceneFade.js';
 
 export class Castle {
   static canvas;
@@ -1337,32 +1338,44 @@ export class Castle {
     }
   }
 
-  // Загрузка сцены фракции: объекты, здания, текстуры, шейдеры (дефайн фракции). Вызывается из
-  // initDemo и при смене фракции (switchScene) — без пересоздания WebGL-контекста и страницы.
+  // Загрузка сцены фракции при запуске (initDemo). Смена фракции — switchScene.
   static async loadScene(sceneName) {
-    Castle.sceneObjects = [];
-    Castle.debugObjects = [];
+    Castle.applyScene(await Castle.buildScene(sceneName, Castle.INIT_BUDGET_MS));
+  }
+
+  // Работа загрузки за кадр, мс: при запуске замок ещё не рисуется, при смене фракции рисуется старая сцена
+  static INIT_BUDGET_MS = 50;
+  static SWITCH_BUDGET_MS = 6;
+
+  // Сцена фракции (объекты, здания, текстуры, шейдеры с дефайном фракции) — в отдельном объекте,
+  // текущую сцену не трогает: при смене фракции старая рисуется, пока грузится новая.
+  static async buildScene(sceneName, budgetMs) {
+    const scene = {
+      name: sceneName,
+      factionDef: sceneName == 'doct' ? 'SCENE_DOCT' : 'SCENE_AD',
+      sceneObjects: [],
+      sceneBuildings: {},
+      sceneTextures: [],
+      sceneTextureAvg: [],
+      sceneShaders: [],
+      debugObjects: [],
+    };
 
     let shaderNames = [],
       texNames = [];
-    Castle.sceneBuildings = new Object();
 
     let sceneMeshesToLoadCount = -1; // Initial value. Scene must have objects
 
     let result = await HTTP.request('content/scenes.json');
 
-    Castle.scenesJson = result;
+    scene.scenesJson = result;
 
-    Castle.currentScene = result.scenes.find((value) => value.sceneName === sceneName);
+    scene.currentScene = result.scenes.find((value) => value.sceneName === sceneName);
 
-    sceneMeshesToLoadCount = Castle.currentScene.objects.length + Castle.currentScene.buildings.length; // Set scene objects count to some valid value
+    sceneMeshesToLoadCount = scene.currentScene.objects.length + scene.currentScene.buildings.length; // Set scene objects count to some valid value
 
-    let loadedBuildings = [];
-
-    loadedBuildings.push(Castle.currentScene.buildings);
-
-    for (let obj of Castle.currentScene.objects) {
-      Castle.sceneObjects.push({
+    for (let obj of scene.currentScene.objects) {
+      scene.sceneObjects.push({
         meshName: obj.mesh,
         meshData: {},
         shader: obj.shader,
@@ -1393,11 +1406,7 @@ export class Castle {
       sceneMeshesToLoadCount--; // Decrement after each loaded object
     }
 
-    Castle.identityMatrix = new Float32Array(16);
-
-    mat4.identity(Castle.identityMatrix);
-
-    for (let building of Castle.currentScene.buildings) {
+    for (let building of scene.currentScene.buildings) {
       let buildingTranslation = building.translation ? building.translation : [0, 0];
 
       for (let obj of building.objects) {
@@ -1405,8 +1414,8 @@ export class Castle {
 
         obj.transform[11] -= buildingTranslation[1];
 
-        if (!(building.name in Castle.sceneBuildings)) {
-          Castle.sceneBuildings[building.name] = {
+        if (!(building.name in scene.sceneBuildings)) {
+          scene.sceneBuildings[building.name] = {
             size: building.size,
             objects: [],
             transparentObjects: [],
@@ -1414,8 +1423,8 @@ export class Castle {
         }
 
         let selectedContainer = obj.blend
-          ? Castle.sceneBuildings[building.name].transparentObjects
-          : Castle.sceneBuildings[building.name].objects;
+          ? scene.sceneBuildings[building.name].transparentObjects
+          : scene.sceneBuildings[building.name].objects;
 
         selectedContainer.push({
           meshName: obj.mesh,
@@ -1449,12 +1458,35 @@ export class Castle {
       sceneMeshesToLoadCount--;
     }
 
-    await Castle.loadResources(Castle.sceneObjects, Castle.sceneBuildings, shaderNames, texNames);
+    const budget = new FrameBudget(budgetMs);
+    await Castle.loadResources(scene, shaderNames, texNames, budget);
+    // карта высот рельефа для светлячков — до подмены сцены, порциями
+    await CastleFireflies.buildHeightField(scene, () => budget.slice());
+
+    return scene;
+  }
+
+  // Сделать собранную сцену текущей (между кадрами, целиком)
+  static applyScene(scene) {
+    Castle.currentSceneName = scene.name;
+    Castle.shaderFactionDef = scene.factionDef;
+    Castle.scenesJson = scene.scenesJson;
+    Castle.currentScene = scene.currentScene;
+    Castle.sceneObjects = scene.sceneObjects;
+    Castle.sceneBuildings = scene.sceneBuildings;
+    Castle.sceneTextures = scene.sceneTextures;
+    Castle.sceneTextureAvg = scene.sceneTextureAvg;
+    Castle.sceneShaders = scene.sceneShaders;
+    Castle.debugObjects = scene.debugObjects;
+
+    Castle.identityMatrix = new Float32Array(16);
+
+    mat4.identity(Castle.identityMatrix);
 
     // источники света зданий — из их свечений (нужны загруженные меши и средние цвета текстур)
     CastleLighting.buildTemplates(Castle);
-    // карта высот рельефа и места светлячков
-    CastleFireflies.onSceneLoaded(Castle);
+    // места светлячков (по карте высот из buildScene)
+    CastleFireflies.spawn(Castle);
 
     Castle.updateGridTranslation();
   }
@@ -1498,43 +1530,29 @@ export class Castle {
   // Смена фракции без перезагрузки лаунчера: тот же WebGL-контекст, обработчики и цикл отрисовки,
   // заново грузится только сцена (объекты, здания, текстуры, шейдеры), свет теней и музыка.
   // Расстановка зданий (castle.cfg) общая для обеих фракций и не меняется.
+  // Без подвисания: новая сцена собирается порциями между кадрами, пока рисуется старая, затем
+  // подменяется целиком, а последний кадр старой растворяется поверх новой (CastleSceneFade).
   static async switchScene(sceneName) {
     if (!Castle.gl || sceneName === Castle.currentSceneName || Castle.sceneLoading) return;
-    const gl = Castle.gl;
     Castle.sceneLoading = true;
     try {
-      const freeMeshes = (list) => {
-        for (const obj of list || []) {
-          if (obj.meshData && obj.meshData.vertices) gl.deleteBuffer(obj.meshData.vertices);
-        }
-      };
-      freeMeshes(Castle.sceneObjects);
-      for (const name in Castle.sceneBuildings || {}) {
-        freeMeshes(Castle.sceneBuildings[name].objects);
-        freeMeshes(Castle.sceneBuildings[name].transparentObjects);
-      }
-      for (const texture of Castle.sceneTextures || []) {
-        if (texture) gl.deleteTexture(texture);
-      }
-      for (const shader of Castle.sceneShaders || []) {
-        if (shader?.PSO?.prog) gl.deleteProgram(shader.PSO.prog);
-        if (shader?.PSO_SM?.prog) gl.deleteProgram(shader.PSO_SM.prog);
-        if (shader?.PSO_GB?.prog) gl.deleteProgram(shader.PSO_GB.prog);
-      }
-      Castle.uniformLocationCache = new Object();
-      // Отрисовка только включает атрибуты (enableVertexAttribArray) и не выключает. После удаления
-      // буферов включённый атрибут без буфера даёт INVALID_OPERATION на drawArrays, если шейдеры
-      // новой фракции его не перепривяжут, — выключаем все, нужные включатся при отрисовке.
-      const maxAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-      for (let i = 0; i < maxAttribs; i++) gl.disableVertexAttribArray(i);
-      gl.bindBuffer(gl.ARRAY_BUFFER, null);
+      const scene = await Castle.buildScene(sceneName, Castle.SWITCH_BUDGET_MS);
 
-      Castle.currentSceneName = sceneName;
-      Castle.shaderFactionDef = sceneName == 'doct' ? 'SCENE_DOCT' : 'SCENE_AD';
+      // снимок — только если замок сейчас рисуется (иначе кадр не придёт)
+      if (!Castle.render.includes(false)) await CastleSceneFade.capture();
+
+      const old = {
+        sceneObjects: Castle.sceneObjects,
+        sceneBuildings: Castle.sceneBuildings,
+        sceneTextures: Castle.sceneTextures,
+        sceneShaders: Castle.sceneShaders,
+      };
+      Castle.applyScene(scene);
+      Castle.freeScene(old);
+
       if (Castle.isSMEnabled) {
         Castle.setupLightMatrix(sceneName);
       }
-      await Castle.loadScene(sceneName);
       Castle.isStaticSMCached = false;
 
       Sound.stop('castle');
@@ -1542,6 +1560,37 @@ export class Castle {
     } finally {
       Castle.sceneLoading = false;
     }
+  }
+
+  // Освободить GPU-ресурсы сцены, которая уже не текущая
+  static freeScene(scene) {
+    const gl = Castle.gl;
+    const freeMeshes = (list) => {
+      for (const obj of list || []) {
+        if (obj.meshData && obj.meshData.vertices) gl.deleteBuffer(obj.meshData.vertices);
+      }
+    };
+    freeMeshes(scene.sceneObjects);
+    for (const name in scene.sceneBuildings || {}) {
+      freeMeshes(scene.sceneBuildings[name].objects);
+      freeMeshes(scene.sceneBuildings[name].transparentObjects);
+    }
+    for (const texture of scene.sceneTextures || []) {
+      if (texture) gl.deleteTexture(texture);
+    }
+    for (const shader of scene.sceneShaders || []) {
+      for (const program of [shader?.PSO, shader?.PSO_SM, shader?.PSO_GB]) {
+        if (!program?.prog) continue;
+        gl.deleteProgram(program.prog);
+        delete Castle.uniformLocationCache[program.progId];
+      }
+    }
+    // Отрисовка только включает атрибуты (enableVertexAttribArray) и не выключает. После удаления
+    // буферов включённый атрибут без буфера даёт INVALID_OPERATION на drawArrays, если шейдеры
+    // новой фракции его не перепривяжут, — выключаем все, нужные включатся при отрисовке.
+    const maxAttribs = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+    for (let i = 0; i < maxAttribs; i++) gl.disableVertexAttribArray(i);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
   }
 
   static sceneLoading = false;
@@ -1578,7 +1627,10 @@ export class Castle {
     return uniformLocation;
   }
 
-  static async loadResources(sceneObjects, sceneBuildings, notUniqeShaderNames, notUniqeTexNames) {
+  // Шейдеры, текстуры и меши сцены. Файлы грузятся параллельно, работа на главном потоке
+  // (загрузка в GPU, разбор мешей) идёт порциями по budget, шейдеры компилируются в фоне.
+  static async loadResources(scene, notUniqeShaderNames, notUniqeTexNames, budget) {
+    const gl = Castle.gl;
     let shaderNames = [...new Set(notUniqeShaderNames)];
     let texNames = [...new Set(notUniqeTexNames)];
 
@@ -1590,119 +1642,130 @@ export class Castle {
       sceneObjectsContainer[objId].texture4Id = texNames.findIndex((value) => value === sceneObjectsContainer[objId].texture_4);
     }
 
-    for (var objId = 0; objId < sceneObjects.length; objId++) {
-      remapIndices(sceneObjects, objId);
+    // все меши сцены: [контейнер, индекс] — объекты сцены, затем здания
+    const meshes = [];
+    for (let objId = 0; objId < scene.sceneObjects.length; objId++) {
+      remapIndices(scene.sceneObjects, objId);
+      meshes.push([scene.sceneObjects, objId]);
     }
-    for (let b in Castle.sceneBuildings) {
-      let building = Castle.sceneBuildings[b].objects;
-      for (objId = 0; objId < building.length; ++objId) {
-        remapIndices(building, objId);
-      }
-
-      let buildingTransp = Castle.sceneBuildings[b].transparentObjects;
-      for (objId = 0; objId < buildingTransp.length; ++objId) {
-        remapIndices(buildingTransp, objId);
+    for (let b in scene.sceneBuildings) {
+      for (const container of [scene.sceneBuildings[b].objects, scene.sceneBuildings[b].transparentObjects]) {
+        for (let objId = 0; objId < container.length; ++objId) {
+          remapIndices(container, objId);
+          meshes.push([container, objId]);
+        }
       }
     }
 
-    Castle.sceneTextures = new Array(texNames.length);
-    Castle.sceneTextureAvg = new Array(texNames.length);
-    let loaded = { mesh: 0, texture: 0, shader: 0 };
+    scene.sceneTextures = new Array(texNames.length);
+    scene.sceneTextureAvg = new Array(texNames.length);
+    scene.sceneShaders = new Array(shaderNames.length);
 
-    Castle.sceneShaders = new Array(shaderNames.length);
+    const [vsText, fsText, ...definesTexts] = await Promise.all([
+      HTTP.request(`content/shaders/shader.vs.glsl`, 'text'),
+      HTTP.request(`content/shaders/shader.fs.glsl`, 'text'),
+      ...shaderNames.map((name) => HTTP.request(`content/shaders/${name}.glsl`, 'text')),
+    ]);
 
-    let vsText = await HTTP.request(`content/shaders/shader.vs.glsl`, 'text');
+    // компиляция идёт, пока грузятся текстуры и меши
+    const shadersReady = Castle.compileSceneShaders(scene, shaderNames, definesTexts, vsText, fsText, budget);
 
-    let fsText = await HTTP.request(`content/shaders/shader.fs.glsl`, 'text');
+    const texturesReady = forEachLimited(texNames, 8, async (name, i) => {
+      let image = await PreloadImages.loadAsync(`content/textures/${name}.webp`);
+      // Распаковать картинку заранее, вне главного потока, — иначе её распакует texImage2D. Не image.decode():
+      // он ждёт отрисовки кадра и в свёрнутом окне не завершается. Параметры — как у texImage2D по умолчанию.
+      try {
+        image = await createImageBitmap(image, { premultiplyAlpha: 'none', colorSpaceConversion: 'default' });
+      } catch (e) {}
+      await budget.slice();
+      // средний цвет — цвет источника света у свечений зданий (CastleLighting.glowOf)
+      scene.sceneTextureAvg[i] = CastleLighting.averageColor(image);
+      // Грани скайбокса (sky_*) — без повтора: при REPEAT край грани подмешивает противоположный
+      // край, и на стыке граней видна тонкая линия.
+      scene.sceneTextures[i] = Castle.loadTexture(image, /^sky_/.test(name) ? gl.CLAMP_TO_EDGE : gl.REPEAT);
+      image.close?.();
+    });
 
-    const preparePrograms = (definesText) => {
-      let programColor = Castle.prepareShader(
-        `\n#define RENDER_PASS_COLOR\n #define ${Castle.shaderFactionDef}`,
-        definesText,
-        vsText,
-        fsText,
-      );
+    const meshesReady = forEachLimited(meshes, 8, async ([container, objId]) => {
+      const meshData = await HTTP.request(`content/meshes/${container[objId].meshName}`, 'arrayBuffer');
+      await budget.slice();
+      Castle.uploadMesh(scene, shaderNames, container, objId, meshData);
+    });
 
-      let programSM = Castle.prepareShader(`\n#define RENDER_PASS_SM\n #define ${Castle.shaderFactionDef}`, definesText, vsText, fsText);
+    await Promise.all([shadersReady, texturesReady, meshesReady]);
 
+    // id для отладки (debugObjects) — в порядке сцены, как при последовательной загрузке
+    for (const [container, objId] of meshes) {
+      container[objId].debugId = scene.debugObjects.push(container[objId].meshName);
+    }
+  }
+
+  // Программы шейдеров сцены: цвет, карта теней и G-buffer (если есть отложенное освещение).
+  // С KHR_parallel_shader_compile драйвер компилирует их в своих потоках, а мы только опрашиваем
+  // готовность раз в кадр; без расширения — по одной программе за порцию бюджета.
+  static async compileSceneShaders(scene, shaderNames, definesTexts, vsText, fsText, budget) {
+    const gl = Castle.gl;
+    const parallel = gl.getExtension('KHR_parallel_shader_compile');
+    const fd = scene.factionDef;
+
+    const startPrograms = (definesText) => ({
+      programColor: Castle.startProgram(`\n#define RENDER_PASS_COLOR\n #define ${fd}`, definesText, vsText, fsText),
+      programSM: Castle.startProgram(`\n#define RENDER_PASS_SM\n #define ${fd}`, definesText, vsText, fsText),
       // G-buffer отложенного освещения (CastleLighting) — тот же шейдер с тремя выходами
-      let programGB = CastleLighting.supported
-        ? Castle.prepareShader(
-            `\n#define RENDER_PASS_COLOR\n#define DEFERRED\n #define ${Castle.shaderFactionDef}`,
+      programGB: CastleLighting.supported
+        ? Castle.startProgram(
+            `\n#define RENDER_PASS_COLOR\n#define DEFERRED\n #define ${fd}`,
             definesText,
             vsText,
             fsText,
             '#extension GL_EXT_draw_buffers : require\n',
           )
-        : null;
+        : null,
+    });
+    const finishPrograms = (p) => ({
+      programColor: Castle.finishProgram(p.programColor),
+      programSM: Castle.finishProgram(p.programSM),
+      programGB: p.programGB ? Castle.finishProgram(p.programGB) : null,
+    });
 
-      return { programColor, programSM, programGB };
-    };
-
-    for (let i = 0; i < shaderNames.length; ++i) {
-      let definesText = await HTTP.request(`content/shaders/${shaderNames[i]}.glsl`, 'text');
-
+    const jobs = shaderNames.map((name, i) => {
+      let definesText = definesTexts[i];
       // Скиннинг (VS_SKIN) — размер массива костей. Если шейдер со скиннингом не собрался (например, не хватило
       // uniform-векторов: нужно 3 на кость), собираем без VS_SKIN — такие объекты стоят в позе привязки.
       const skinned = /#define VS_SKIN\b/.test(definesText);
       if (skinned) definesText += `\n#define SKIN_MAX_BONES ${Castle.SKIN_MAX_BONES}\n`;
+      return { name, definesText, skinned, started: null };
+    });
 
-      let { programColor, programSM, programGB } = preparePrograms(definesText);
+    if (parallel) {
+      for (const job of jobs) job.started = startPrograms(job.definesText);
+      const progs = jobs.flatMap((job) => Object.values(job.started).filter(Boolean).map((p) => p.prog));
+      while (!progs.every((prog) => gl.getProgramParameter(prog, parallel.COMPLETION_STATUS_KHR))) {
+        await yieldFrame();
+      }
+    }
 
-      if (skinned && (programColor === 1 || programSM === 1)) {
+    for (let i = 0; i < jobs.length; ++i) {
+      const job = jobs[i];
+      if (!job.started) {
+        await budget.slice();
+        job.started = startPrograms(job.definesText);
+      }
+      let { programColor, programSM, programGB } = finishPrograms(job.started);
+
+      if (job.skinned && (programColor === 1 || programSM === 1)) {
         console.warn('Castle: шейдер со скиннингом не собрался, скиннинговые объекты без анимации');
-        ({ programColor, programSM, programGB } = preparePrograms(definesText.replace(/#define VS_SKIN\b/, '')));
+        for (const program of [programColor, programSM, programGB]) if (program && program !== 1) gl.deleteProgram(program.prog);
+        ({ programColor, programSM, programGB } = finishPrograms(startPrograms(job.definesText.replace(/#define VS_SKIN\b/, ''))));
       }
 
-      Castle.sceneShaders[i] = {
+      scene.sceneShaders[i] = {
         PSO: programColor,
         PSO_SM: programSM,
         PSO_GB: programGB && programGB !== 1 ? programGB : null,
-        attributes: Castle.scenesJson.shaderLayouts.find((value) => value.name === shaderNames[i]).layout,
+        attributes: scene.scenesJson.shaderLayouts.find((value) => value.name === job.name).layout,
         vertStride: 0,
       };
-
-      loaded.shader++;
-    }
-
-    for (let i = 0; i < texNames.length; ++i) {
-      // Грани скайбокса (sky_*) — без повтора: при REPEAT край грани подмешивает противоположный
-      // край, и на стыке граней видна тонкая линия.
-      const image = await PreloadImages.loadAsync(`content/textures/${texNames[i]}.webp`);
-      // средний цвет — цвет источника света у свечений зданий (CastleLighting.glowOf)
-      Castle.sceneTextureAvg[i] = CastleLighting.averageColor(image);
-      Castle.sceneTextures[i] = Castle.loadTexture(
-        image,
-        /^sky_/.test(texNames[i]) ? Castle.gl.CLAMP_TO_EDGE : Castle.gl.REPEAT,
-      );
-
-      loaded.texture++;
-    }
-
-    for (let i = 0; i < sceneObjects.length; ++i) {
-      await Castle.loadMesh(shaderNames, sceneObjects, i);
-
-      loaded.mesh++;
-    }
-
-    let totalMeshes = Castle.sceneObjects.length;
-
-    for (let buildingMain in Castle.sceneBuildings) {
-      let building = Castle.sceneBuildings[buildingMain].objects;
-
-      for (let objId = 0; objId < building.length; ++objId) {
-        await Castle.loadMesh(shaderNames, building, objId);
-      }
-
-      totalMeshes += building.length;
-
-      let buildingTransp = Castle.sceneBuildings[buildingMain].transparentObjects;
-
-      for (let objId = 0; objId < buildingTransp.length; ++objId) {
-        await Castle.loadMesh(shaderNames, buildingTransp, objId);
-      }
-
-      totalMeshes += buildingTransp.length;
     }
   }
 
@@ -1729,55 +1792,65 @@ export class Castle {
 
   // fsPrefix — строки, которые должны стоять до любого кода фрагментного шейдера (#extension)
   static prepareShader(renderPassDefine, definesText, vsText, fsText, fsPrefix = '') {
-    let vertexShader = Castle.gl.createShader(Castle.gl.VERTEX_SHADER),
-      fragmentShader = Castle.gl.createShader(Castle.gl.FRAGMENT_SHADER);
+    return Castle.finishProgram(Castle.startProgram(renderPassDefine, definesText, vsText, fsText, fsPrefix));
+  }
 
-    Castle.gl.shaderSource(vertexShader, definesText + renderPassDefine + vsText);
+  // Компиляция и сборка программы без опроса статуса: опрос ждёт драйвер, а с
+  // KHR_parallel_shader_compile до готовности (COMPLETION_STATUS_KHR) работа идёт в фоне
+  static startProgram(renderPassDefine, definesText, vsText, fsText, fsPrefix = '') {
+    const gl = Castle.gl;
+    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
 
-    Castle.gl.shaderSource(fragmentShader, fsPrefix + definesText + renderPassDefine + fsText);
+    gl.shaderSource(vertexShader, definesText + renderPassDefine + vsText);
+    gl.shaderSource(fragmentShader, fsPrefix + definesText + renderPassDefine + fsText);
+    gl.compileShader(vertexShader);
+    gl.compileShader(fragmentShader);
 
-    Castle.gl.compileShader(vertexShader);
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vertexShader);
+    gl.attachShader(prog, fragmentShader);
+    gl.linkProgram(prog);
 
-    if (!Castle.gl.getShaderParameter(vertexShader, Castle.gl.COMPILE_STATUS)) {
-      console.error('ERROR compiling vertex shader!', Castle.gl.getShaderInfoLog(vertexShader));
+    return { prog, vertexShader, fragmentShader };
+  }
 
+  // Проверка собранной программы: { prog, progId } или 1, если не собралась
+  static finishProgram(started) {
+    const gl = Castle.gl;
+    const { prog, vertexShader, fragmentShader } = started;
+    const fail = (message, log) => {
+      console.error(message, log);
+      gl.deleteProgram(prog);
+      gl.deleteShader(vertexShader);
+      gl.deleteShader(fragmentShader);
       return 1;
-    }
-
-    Castle.gl.compileShader(fragmentShader);
-
-    if (!Castle.gl.getShaderParameter(fragmentShader, Castle.gl.COMPILE_STATUS)) {
-      console.error('ERROR compiling fragment shader!', Castle.gl.getShaderInfoLog(fragmentShader));
-
-      return 1;
-    }
-    //console.log('Loaded shader ' + shaderNames[shaderId]);
-    let program = {
-      prog: Castle.gl.createProgram(),
-      progId: this.uniqueProgCounter++,
     };
 
-    Castle.gl.attachShader(program.prog, vertexShader);
-
-    Castle.gl.attachShader(program.prog, fragmentShader);
-
-    Castle.gl.linkProgram(program.prog);
-
-    if (!Castle.gl.getProgramParameter(program.prog, Castle.gl.LINK_STATUS)) {
-      console.error('ERROR linking program!', Castle.gl.getProgramInfoLog(program.prog));
-
-      return 1;
+    if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+      return fail('ERROR compiling vertex shader!', gl.getShaderInfoLog(vertexShader));
+    }
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      return fail('ERROR compiling fragment shader!', gl.getShaderInfoLog(fragmentShader));
+    }
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      return fail('ERROR linking program!', gl.getProgramInfoLog(prog));
     }
 
-    Castle.gl.validateProgram(program.prog);
+    gl.validateProgram(prog);
 
-    if (!Castle.gl.getProgramParameter(program.prog, Castle.gl.VALIDATE_STATUS)) {
-      console.error('ERROR validating program!', Castle.gl.getProgramInfoLog(program.prog));
-
-      return 1;
+    if (!gl.getProgramParameter(prog, gl.VALIDATE_STATUS)) {
+      return fail('ERROR validating program!', gl.getProgramInfoLog(prog));
     }
 
-    return program;
+    // шейдеры уже в программе — удалятся вместе с ней
+    gl.deleteShader(vertexShader);
+    gl.deleteShader(fragmentShader);
+
+    return {
+      prog,
+      progId: this.uniqueProgCounter++,
+    };
   }
 
   static lerp(a, b, alpha) {
@@ -1807,9 +1880,8 @@ export class Castle {
     return texture;
   }
 
-  static async loadMesh(shaderNames, sceneObjectsContainer, objectId) {
-    let meshData = await HTTP.request(`content/meshes/${sceneObjectsContainer[objectId].meshName}`, 'arrayBuffer');
-
+  // Меш из загруженного файла: буфер вершин в GPU, границы, средний цвет вершин
+  static uploadMesh(scene, shaderNames, sceneObjectsContainer, objectId, meshData) {
     let vertices = Castle.gl.createBuffer();
 
     let meshFloat = new Float32Array(meshData);
@@ -1818,7 +1890,7 @@ export class Castle {
 
     Castle.gl.bufferData(Castle.gl.ARRAY_BUFFER, meshFloat, Castle.gl.STATIC_DRAW);
 
-    let attributes = Castle.scenesJson.shaderLayouts.find(
+    let attributes = scene.scenesJson.shaderLayouts.find(
       (value) => value.name === shaderNames[sceneObjectsContainer[objectId].shaderId],
     ).layout;
 
@@ -1880,7 +1952,6 @@ export class Castle {
     // Плоские горизонтальные подложки зданий (квадрат земли/травы чуть над рельефом) не должны
     // отбрасывать тень: при солнце сверху она пряталась под самой подложкой, а при низком солнце
     // (смена дня и ночи) уезжала в сторону тёмным параллелограммом.
-    sceneObjectsContainer[objectId].debugId = Castle.debugObjects.push(sceneObjectsContainer[objectId].meshName);
 
     // Рельеф (terrain/understage, у Доктов горы — doct/rocks_*) тень принимает, но не отбрасывает: его меши обрезаны по прямой за
     // краем карты, и при солнце сбоку их тень ложилась на замок многоугольниками с прямыми краями
@@ -1911,8 +1982,8 @@ export class Castle {
   }
 
   static loop() {
-    // Пока switchScene грузит сцену другой фракции, массивы сцены неполные — не рисуем.
-    let isStopRender = Castle.render.includes(false) || Castle.sceneLoading;
+    // Пока switchScene грузит сцену другой фракции, рисуется старая: новая собирается отдельно (buildScene).
+    let isStopRender = Castle.render.includes(false);
     if (isStopRender) {
       requestAnimationFrame(Castle.loop);
       return;
@@ -2147,6 +2218,8 @@ export class Castle {
 
       CastleFireflies.draw(Castle.gl, Castle, fireflyLevel);
     }
+    // смена фракции: снимок кадра старой сцены и его растворение поверх новой
+    CastleSceneFade.afterFrame(Castle.gl);
     Castle.gl.disable(Castle.gl.BLEND);
     Castle.gl.enable(Castle.gl.CULL_FACE);
     Castle.gl.colorMask(true, true, true, true);
