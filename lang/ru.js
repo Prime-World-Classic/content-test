@@ -6492,6 +6492,7 @@ export const ru = {
     bsPrefChatOff: 'Отключить чат',
     bsPrefFrameRate: 'Частота кадров',
     bsPrefGpuSyncLag: 'Параллельная работа процессора и видеокарты',
+    bsPrefGpuSyncLagNote: 'FPS выше на 5–20 %. Экспериментально: если заметите артефакты, выключите.',
     bsPrefGraphicQuality: 'Качество графики',
     bsPrefGraphics: 'Графика',
     bsPrefLeftClick: 'Передвижение по левому клику',

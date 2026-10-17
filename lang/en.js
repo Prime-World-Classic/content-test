@@ -6510,6 +6510,7 @@ export const en = {
     bsPrefChatOff: 'Disable Chat',
     bsPrefFrameRate: 'Frame Rate',
     bsPrefGpuSyncLag: 'Parallel CPU and GPU Work',
+    bsPrefGpuSyncLagNote: '5–20% higher FPS. Experimental: turn it off if you notice visual glitches.',
     bsPrefGraphicQuality: 'Graphics quality',
     bsPrefGraphics: 'Graphics',
     bsPrefLeftClick: 'Move on Left Click',

@@ -808,6 +808,7 @@ function buildGamePage(ctx) {
       { type: 'check', id: 'vsync', variable: 'gfx_vsync', def: 1, label: 'bsPrefVsync' },
       { type: 'note', label: 'bsPrefVsyncNote' },
       { type: 'check', id: 'gpuSyncLag', variable: 'gfx_gpu_sync_lag', def: 0, label: 'bsPrefGpuSyncLag' },
+      { type: 'note', label: 'bsPrefGpuSyncLagNote' },
     ],
     ctx,
   );
