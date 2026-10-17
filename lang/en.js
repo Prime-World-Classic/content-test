@@ -6517,6 +6517,8 @@ export const en = {
     bsPrefLeftClick: 'Move on Left Click',
     bsPrefMusicVolume: 'Music volume',
     bsPrefResolution: 'Screen Resolution',
+    bsPrefResolutionCustom: 'Custom...',
+    bsPrefResolutionMax: 'max',
     bsPrefSound: 'Sound',
     bsPrefSoundVolume: 'Sound Volume',
     bsPrefUseBadWordsFilter: 'Use Profanity Filter',

@@ -678,21 +678,26 @@ function buildGamePage(ctx) {
   };
   const draft = { ...current };
 
+  // своё разрешение: от 800x600 до разрешения экрана
   const [screenW, screenH] = screenSize();
+  const minW = Math.min(800, screenW);
+  const minH = Math.min(600, screenH);
+  const clampSize = (w, h) => [Math.min(screenW, Math.max(minW, w)), Math.min(screenH, Math.max(minH, h))];
+
   const modes = RESOLUTIONS.filter(([w, h]) => w <= screenW && h <= screenH).map(([w, h]) => `${w}x${h}`);
   if (!modes.includes(`${screenW}x${screenH}`)) modes.push(`${screenW}x${screenH}`);
-  if (/^\d+x\d+$/.test(current.resolution) && !modes.includes(current.resolution)) modes.push(current.resolution);
   modes.sort((a, b) => {
     const [aw, ah] = a.split('x').map(Number);
     const [bw, bh] = b.split('x').map(Number);
     return bw - aw || bh - ah;
   });
-  if (!current.resolution) draft.resolution = current.resolution = modes[0];
+  if (!/^\d+x\d+$/.test(current.resolution)) current.resolution = modes[0];
+  draft.resolution = clampSize(...current.resolution.split('x').map(Number)).join('x');
 
   const accept = button(Lang.text('bsAccept'), () => applyGraphics());
   const cancel = button(Lang.text('bsCancel'), () => {
     Object.assign(draft, current);
-    resolution.value = draft.resolution;
+    showResolution();
     quality.value = String(draft.quality);
     windowed.checked = draft.windowed;
     updateButtons();
@@ -717,9 +722,55 @@ function buildGamePage(ctx) {
 
   const resolution = DOM({ tag: 'select', style: 'bs-select' });
   for (const mode of modes) resolution.append(DOM({ tag: 'option', value: mode }, mode.replace('x', ' x ')));
-  resolution.value = draft.resolution;
+  resolution.append(DOM({ tag: 'option', value: 'custom' }, Lang.text('bsPrefResolutionCustom')));
+
+  const sizeInput = (max) => {
+    const input = DOM({ tag: 'input', style: ['bs-select', 'bs-size-input'] });
+    Object.assign(input, { type: 'text', inputMode: 'numeric', maxLength: 5 });
+    input.addEventListener('input', () => {
+      input.value = input.value.replace(/\D/g, '');
+      if (Number(input.value) > max) input.value = String(max);
+    });
+    input.addEventListener('change', commitCustom);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') input.blur();
+    });
+    return input;
+  };
+  const customW = sizeInput(screenW);
+  const customH = sizeInput(screenH);
+  const customRow = DOM(
+    { style: 'bs-size-row' },
+    customW,
+    DOM({ style: 'bs-size-sep' }, 'x'),
+    customH,
+    DOM({ style: 'bs-size-hint' }, `${Lang.text('bsPrefResolutionMax')} ${screenW} x ${screenH}`),
+  );
+
+  function commitCustom() {
+    const [w, h] = clampSize(Number(customW.value) || screenW, Number(customH.value) || screenH);
+    customW.value = String(w);
+    customH.value = String(h);
+    draft.resolution = `${w}x${h}`;
+    updateButtons();
+  }
+  function showResolution(forceCustom = false) {
+    const custom = forceCustom || !modes.includes(draft.resolution);
+    resolution.value = custom ? 'custom' : draft.resolution;
+    const [w, h] = draft.resolution.split('x');
+    customW.value = w;
+    customH.value = h;
+    customRow.style.display = custom ? '' : 'none';
+  }
+  showResolution();
   resolution.addEventListener('change', () => {
+    if (resolution.value === 'custom') {
+      showResolution(true);
+      customW.focus();
+      return;
+    }
     draft.resolution = resolution.value;
+    showResolution();
     updateButtons();
   });
 
@@ -742,7 +793,7 @@ function buildGamePage(ctx) {
     header('bsPrefGraphics'),
     DOM(
       { style: 'bs-grid' },
-      DOM({ style: 'bs-field' }, DOM({ style: 'bs-field-label' }, Lang.text('bsPrefResolution')), resolution),
+      DOM({ style: 'bs-field' }, DOM({ style: 'bs-field-label' }, Lang.text('bsPrefResolution')), resolution, customRow),
       DOM({ style: 'bs-field' }, DOM({ style: 'bs-field-label' }, Lang.text('bsPrefGraphicQuality')), quality),
     ),
     DOM({ style: ['bs-row', 'bs-row--check'] }, windowed, windowedLabel),

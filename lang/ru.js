@@ -6499,6 +6499,8 @@ export const ru = {
     bsPrefLeftClick: 'Передвижение по левому клику',
     bsPrefMusicVolume: 'Громкость музыки',
     bsPrefResolution: 'Разрешение экрана',
+    bsPrefResolutionCustom: 'Своё…',
+    bsPrefResolutionMax: 'макс.',
     bsPrefSound: 'Звук',
     bsPrefSoundVolume: 'Громкость звуков',
     bsPrefUseBadWordsFilter: 'Использовать мат-фильтр',

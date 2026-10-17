@@ -12293,6 +12293,30 @@ body:has(#wcastle-call)::before {
   background-position: right 1cqh center;
 }
 
+#wbattle-settings .bs-field .bs-size-input {
+  width: 9cqh;
+  padding: 0 0.6cqh;
+  text-align: center;
+  background-image: none;
+  cursor: text;
+}
+
+.bs-size-row {
+  display: flex;
+  align-items: center;
+  gap: 1cqh;
+}
+
+.bs-size-sep {
+  color: #ffe5b7;
+}
+
+.bs-size-hint {
+  margin-left: 0.6cqh;
+  font-size: 1.5cqh;
+  color: rgba(255, 229, 183, 0.65);
+}
+
 #wbattle-settings .castle-menu-item-button.bs-button.bs-wheel-count-btn {
   display: flex;
   align-items: center;
