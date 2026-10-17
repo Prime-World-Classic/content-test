@@ -6508,6 +6508,10 @@ export const en = {
     bsPing8: 'Gather here',
     bsPing9: 'Defend',
     bsPrefChatOff: 'Disable Chat',
+    bsPrefFrameRate: 'Frame Rate',
+    bsPrefGpuSyncLag: 'Parallel CPU and GPU Work',
+    bsPrefGpuSyncLagNote:
+      'The CPU prepares the next frame while the GPU draws the current one: 5–20% higher FPS, input delay of at most one frame. Experimental: turn it off if you notice visual glitches. Takes effect from the next battle.',
     bsPrefGraphicQuality: 'Graphics quality',
     bsPrefGraphics: 'Graphics',
     bsPrefLeftClick: 'Move on Left Click',
@@ -6517,6 +6521,9 @@ export const en = {
     bsPrefSoundVolume: 'Sound Volume',
     bsPrefUseBadWordsFilter: 'Use Profanity Filter',
     bsPrefVoiceVolume: 'Voice volume',
+    bsPrefVsync: 'Vertical Sync',
+    bsPrefVsyncNote:
+      'Frames are shown in step with the monitor refresh: no screen tearing, but FPS cannot exceed the monitor refresh rate. Turn it off to remove the FPS cap. Takes effect from the next battle.',
     bsPrefWindowMode: 'Windowed Mode in Battle',
     bsQualityHigh: 'High',
     bsQualityLow: 'Low',

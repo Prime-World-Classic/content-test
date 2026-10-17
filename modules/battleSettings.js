@@ -750,6 +750,19 @@ function buildGamePage(ctx) {
   );
   updateButtons();
 
+  // частота кадров: сохраняется сразу, игра читает её при запуске боя
+  const frameRate = buildRowsPage(
+    [
+      { type: 'header', label: 'bsPrefFrameRate' },
+      { type: 'check', id: 'vsync', variable: 'gfx_vsync', def: 1, label: 'bsPrefVsync' },
+      { type: 'note', label: 'bsPrefVsyncNote' },
+      { type: 'check', id: 'gpuSyncLag', variable: 'gfx_gpu_sync_lag', def: 0, label: 'bsPrefGpuSyncLag' },
+      { type: 'note', label: 'bsPrefGpuSyncLagNote' },
+    ],
+    ctx,
+  );
+  page.append(...frameRate.childNodes);
+
   // звук: применяется сразу, как ползунки в игре (0..1, ping_sound_volume — 0..100)
   const volume = (label, variable, def, max = 1, steps = 100, enabled = true) => {
     const value = Math.min(max, Math.max(0, UserCfg.num(variable, def)));
