@@ -193,6 +193,7 @@ export class CastleLighting {
     gl.bindTexture(gl.TEXTURE_2D, CastleLighting.depthTexture);
     gl.uniform1i(p.uniforms.depthTex, 1);
     gl.uniform2f(p.uniforms.invSize, 1 / CastleLighting.width, 1 / CastleLighting.height);
+    gl.uniform2f(p.uniforms.zNearFar, castle.zNear, castle.zFar);
     CastleLighting.drawQuad(gl, p);
     gl.depthFunc(gl.LESS);
     gl.enable(gl.CULL_FACE);
@@ -509,13 +510,15 @@ void main() {
   gl_FragColor = vec4(albedo.rgb * vColor * (falloff * ndl), 0.0);
 }`;
 
-// Тонмаппинг neutral() — тот же, что в shader.fs.glsl; FXAA (упрощённый, по яркости) на результате.
+// Тонмаппинг neutral() — тот же, что в shader.fs.glsl; FXAA (упрощённый, по яркости) на результате,
+// только на краях геометрии (geometryEdge), текстуры остаются чёткими.
 const COMPOSITE_FS = `
 #extension GL_EXT_frag_depth : require
 precision highp float;
 uniform sampler2D hdrTex;
 uniform sampler2D depthTex;
 uniform vec2 invSize;
+uniform vec2 zNearFar;
 varying vec2 vUv;
 
 vec3 neutral(vec3 color) {
@@ -541,8 +544,30 @@ vec3 ldr(vec2 uv) {
 
 float luma(vec3 c) { return dot(c, vec3(0.299, 0.587, 0.114)); }
 
+// 1 / расстояние от камеры по глубине окна (перспектива zNear..zFar)
+float invDepth(vec2 uv) {
+  float d = texture2D(depthTex, uv).r;
+  return (zNearFar.y - d * (zNearFar.y - zNearFar.x)) / (zNearFar.x * zNearFar.y);
+}
+
+// Край геометрии (силуэт на фоне другой поверхности). FXAA смотрит только на яркость и без этой маски
+// замыливал контрастные текстуры (камень, черепица, трава). 1/z на любой плоскости линейна по экрану:
+// вторая разность ~0 на гранях и изломах стен и большая на разрыве глубины, в т.ч. у низких зданий на земле.
+bool geometryEdge() {
+  vec2 dx = vec2(invSize.x, 0.0), dy = vec2(0.0, invSize.y);
+  float iM = invDepth(vUv);
+  float eX = abs(invDepth(vUv - dx) + invDepth(vUv + dx) - 2.0 * iM);
+  float eY = abs(invDepth(vUv - dy) + invDepth(vUv + dy) - 2.0 * iM);
+  return max(eX, eY) > 0.01 * iM;
+}
+
 void main() {
   vec3 rgbM = ldr(vUv);
+  if (!geometryEdge()) {
+    gl_FragColor = vec4(rgbM, 1.0);
+    gl_FragDepthEXT = texture2D(depthTex, vUv).r;
+    return;
+  }
   vec3 rgbNW = ldr(vUv + vec2(-1.0, -1.0) * invSize);
   vec3 rgbNE = ldr(vUv + vec2(1.0, -1.0) * invSize);
   vec3 rgbSW = ldr(vUv + vec2(-1.0, 1.0) * invSize);
