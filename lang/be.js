@@ -79,6 +79,7 @@ export const be = {
     castleBuildCategoryLights: 'Асвятляльнікі',
     castleBuildCategoryStorage: 'Склад',
     castleBuildCategoryUnavailable: 'Пакуль недаступна',
+    castleFactionUpdating: 'Абнаўленне замка',
     castleBuildUndo: 'Адмяніць',
     castleBuildUndoTooltip: 'Адмяніць апошняе дзеянне ў Будаўніцтве',
     castlePendingBuildingsTitle: 'Чакаюць месца',

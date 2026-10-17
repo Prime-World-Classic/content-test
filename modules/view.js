@@ -945,7 +945,7 @@ export class View {
   static castleTotalCrystal = DOM({ tag: 'div', style: ['question-icon'] }, DOM({ style: 'quest-counter' }, ''));
 
   static setCss(name = 'content/style.css') {
-    const cssVersion = '20261017-building-drag-3';
+    const cssVersion = '20261017-faction-updating-1';
     const separator = name.includes('?') ? '&' : '?';
     let css = DOM({ tag: 'link', rel: 'stylesheet', href: `${name}${separator}v=${cssVersion}` });
 
@@ -1536,6 +1536,24 @@ export class View {
     if (!View.flagMenuItem) return;
     View.flagMenuItem.style.backgroundImage =
       Castle.currentSceneName == 'doct' ? `url(content/icons/Human_logo_over.webp)` : `url(content/icons/Elf_logo_over.webp)`;
+  }
+
+  // Индикатор поверх герба фракции, пока Castle.switchScene собирает сцену: кольцо, затемнение и надпись.
+  // Герб в это время не нажимается.
+  static setCastleFactionUpdating(updating) {
+    const flag = View.flagMenuItem;
+    if (!flag) return;
+    flag.querySelector('.castle-faction-updating')?.remove();
+    flag.classList.toggle('flag-menu-item-updating', updating);
+    if (updating) {
+      flag.append(
+        DOM(
+          { style: 'castle-faction-updating' },
+          DOM({ style: 'castle-faction-updating-ring' }),
+          DOM({ style: 'castle-faction-updating-label' }, Lang.text('castleFactionUpdating')),
+        ),
+      );
+    }
   }
 
   // Смена фракции: от неё в замке зависят только флаг, список построек и иконки ждущих зданий.

@@ -114,6 +114,7 @@ export const ru = {
     castleBuildCategoryLights: 'Осветители',
     castleBuildCategoryStorage: 'Склад',
     castleBuildCategoryUnavailable: 'Пока недоступно',
+    castleFactionUpdating: 'Обновление замка',
     castleBuildUndo: 'Отменить',
     castleBuildUndoTooltip: 'Отменить последнее действие в Строительстве',
     castlePendingBuildingsTitle: 'Ждут места',

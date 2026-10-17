@@ -2738,10 +2738,14 @@ export class App {
             // только после перезапуска лаунчера. Теперь пересобираем лишь сцену замка, а в интерфейсе —
             // только то, что зависит от фракции (View.refreshCastleFaction): окна остаются открытыми.
             if (Castle.gl) {
+              // пока собирается сцена новой фракции, на гербе — «Обновление замка»
+              View.setCastleFactionUpdating(true);
               try {
                 await Castle.switchScene(Number(selectedFaction) == 1 ? 'ad' : 'doct');
               } catch (error) {
                 App.error(error);
+              } finally {
+                View.setCastleFactionUpdating(false);
               }
             }
 

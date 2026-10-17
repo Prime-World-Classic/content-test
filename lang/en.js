@@ -112,6 +112,7 @@ export const en = {
     castleBuildCategoryLights: 'Lights',
     castleBuildCategoryStorage: 'Storage',
     castleBuildCategoryUnavailable: 'Not available yet',
+    castleFactionUpdating: 'Updating the castle',
     castleBuildUndo: 'Undo',
     castleBuildUndoTooltip: 'Undo the last action in Construction',
     castlePendingBuildingsTitle: 'Waiting for a spot',
