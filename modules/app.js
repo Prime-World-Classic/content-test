@@ -36,17 +36,19 @@ export class App {
   // VPS молчит, побеждает он (проверено: wss://pw-classic-backup.ru
   // открывается, wss://pw-classic.ru в этот момент — 1006 без ответа).
   static VPS_BACKUP = 'wss://pw-classic-backup.ru';
-  // ВАЖНО: прокси CF молча роняет WS-фреймы больше ~23 КБ (замер: 22 КБ
-  // проходит, ≥24 КБ сброшен; после oversized-фрейма деградирует всё
-  // соединение). Поэтому ВСЕ ответы лончеру должны быть < 23 КБ: чат-синк —
-  // чанками, admin-списки талантов — пагинация с бюджетом (backend: лог
-  // LARGE RESPONSE при ответе > 15 КБ), build.sets — локальные данные.
-  // CF (api2.zone-play.com:2096, Cloudflare SaaS WS-прокси) исключён: замерено,
-  // что CF роняет соединения после ~2 средних S→C фреймов (2×5.4 КБ OK, 3-й
-  // не доходит; 17.9 КБ первым — OK, вторым — нет; задержки не помогают).
-  // Прямой DOK:2096 и VPS (pw-classic.ru) — без ограничений. Повторно
-  // включить, только если CF починит WS-прокси.
-  static hostList = [this.RVPN, this.VPS, this.VPS_BACKUP];
+  // Cloudflare-край (DOK). Сам CF фреймы не режет: из сети без фильтрации
+  // (2026-10-17) по одному соединению прошли фреймы по 60 КБ и 360 КБ
+  // подряд. Обрывы «после ~2 средних фреймов» (замер 2026-09: 2×5.4 КБ OK,
+  // 3-й нет; 17.9 КБ первым OK, вторым нет) — это российские провайдеры
+  // (ТСПУ, с 2025-06): TCP к IP Cloudflare «замерзает» после первых
+  // ~16–20 КБ за соединение, без RST. Ужимать фреймы бесполезно — лимит
+  // на всё соединение. Поэтому CF в гонке только с пробой (PROBED_HOSTS,
+  // HostRacer.startProbe): ~48 КБ вниз до победы. Под фильтрацией проба не
+  // проходит — игрока ведёт VPS; без неё (зарубеж, VPN) CF работает как
+  // обычный хост. Замёрзший позже — штраф на 10 мин (HostRacer.penalize).
+  static CF = 'wss://api2.zone-play.com:2096/api';
+  static PROBED_HOSTS = [this.CF];
+  static hostList = [this.RVPN, this.VPS, this.VPS_BACKUP, this.CF];
 
   // Бессмертное подключение: таймаут на кандидата растёт по мере провальных
   // раундов (потолок — конец списка); тупикового «конечного отказа» нет —
@@ -76,13 +78,14 @@ export class App {
           return '';
         }
       },
+      probeHosts: this.PROBED_HOSTS,
     });
 
     while (true) {
       const result = await this.racer.race({ timeoutMs: this.connectTimeoutForRound(round) });
 
       if (result.ok) {
-        return this.init(result.socket, result.host, result.latencyMs);
+        return this.init(result.socket, result.host, result.latencyMs, result.buffered);
       }
 
       round++;
@@ -119,12 +122,12 @@ export class App {
     await Promise.all(tasks);
   }
 
-  static async init(socket = null, host = null, latencyMs = 0) {
+  static async init(socket = null, host = null, latencyMs = 0, buffered = null) {
     // ws://26.187.55.30:3737 - Radmin VPN relay (DOK)
     // wss://pw-classic.ru - VPS
     // wss://pw-classic-backup.ru - VPS2 (резерв)
-    // wss://api2.zone-play.com:2096/api - Cloudflare edge (DOK)
-    App.api = new Api(this.hostList, Events, { socket: socket, host: host, latencyMs: latencyMs });
+    // wss://api2.zone-play.com:2096/api - Cloudflare edge (DOK), только с пробой
+    App.api = new Api(this.hostList, Events, { socket: socket, host: host, latencyMs: latencyMs, buffered: buffered });
 
     await Store.init();
 

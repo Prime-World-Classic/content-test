@@ -53,10 +53,12 @@ export class Api {
     this.RECONNECT_DELAY_MS = 1000;
 
     // Серия таймаутов запросов на OPEN-сокете — признак «тихо деградировавшего»
-    // соединения (CF роняет oversized-фреймы молча). Лечится сменой хоста
-    // через гонку (retry на том же сокете бесполезен — дроп детерминирован).
+    // соединения (провайдер «заморозил» TCP к Cloudflare: сокет OPEN, но
+    // данные не идут). Лечится сменой хоста через гонку (retry на том же
+    // сокете бесполезен); хост с пробой при этом штрафуется (App.racer.penalize).
     this.RECONNECT_ON_TIMEOUTS = 2;
     this._consecutiveTimeouts = 0;
+    this._closeReason = null; // 'degraded' — закрыли сами из-за тишины/таймаутов
 
     this.lastMessageAt = Date.now();
     this._connecting = false;
@@ -68,7 +70,7 @@ export class Api {
     if (initial.socket) {
       // notifyOpen=false: ShowCurrentView нужен после init App.storage,
       // а сокет из гонки уже открыт — onopen «промахнулся»
-      this.attach(initial.socket, initial.host, initial.latencyMs, { notifyOpen: false });
+      this.attach(initial.socket, initial.host, initial.latencyMs, { notifyOpen: false, buffered: initial.buffered });
     }
 
     this.startKeepalive();
@@ -108,7 +110,7 @@ export class Api {
         const result = await App.racer.race({ timeoutMs: App.connectTimeoutForRound(round) });
 
         if (result.ok) {
-          this.attach(result.socket, result.host, result.latencyMs);
+          this.attach(result.socket, result.host, result.latencyMs, { buffered: result.buffered });
           return;
         }
 
@@ -125,19 +127,43 @@ export class Api {
   /**
    * Привязать сокет (из гонки) к Api. Скет может быть уже открытым
    * (первое подключение/реаконнект) или ещё подключающимся.
+   * buffered — сообщения, пришедшие во время пробы хоста (пуши при
+   * подключении): доставляются следующим тиком (после `App.api = ...`),
+   * новые до этого копятся за ними — порядок сохраняется.
    */
-  attach(socket, host, latencyMs = 0, { notifyOpen = true } = {}) {
+  attach(socket, host, latencyMs = 0, { notifyOpen = true, buffered = null } = {}) {
     this.WebSocket = socket;
     this.MAIN_HOST = host;
     this.lastLatencyMs = latencyMs;
     this.lastConnectTs = Date.now();
     this.lastMessageAt = Date.now();
     this._consecutiveTimeouts = 0;
+    this._closeReason = null;
 
-    this.WebSocket.onmessage = (event) => {
+    const deliver = (data) => {
       this.lastMessageAt = Date.now();
-      this.message(event.data);
+      this.message(data);
     };
+
+    const backlog = Array.isArray(buffered) ? buffered.slice() : [];
+
+    if (backlog.length) {
+      this.WebSocket.onmessage = (event) => backlog.push(event.data);
+
+      setTimeout(() => {
+        if (this.WebSocket !== socket) {
+          return;
+        }
+
+        socket.onmessage = (event) => deliver(event.data);
+
+        for (const data of backlog) {
+          deliver(data);
+        }
+      }, 0);
+    } else {
+      this.WebSocket.onmessage = (event) => deliver(event.data);
+    }
 
     this.WebSocket.onerror = () => {}; // onclose последует
 
@@ -149,6 +175,13 @@ export class Api {
 
       console.log(`API close: code=${code} host=${this.MAIN_HOST} uptime=${uptimeSec}s`);
 
+      if (this._closeReason === 'degraded') {
+        try {
+          App.racer?.penalize?.(this.MAIN_HOST);
+        } catch (error) {}
+      }
+
+      this._closeReason = null;
       this.reconnects++;
       this.lastCloseCode = code;
       this.lastCloseTs = Date.now();
@@ -216,6 +249,8 @@ export class Api {
       if (this.WebSocket && this.WebSocket.readyState === WebSocket.OPEN) {
         if (Date.now() - this.lastMessageAt > this.WATCHDOG_SILENCE_MS) {
           console.log(`Watchdog: тишина дольше ${this.WATCHDOG_SILENCE_MS} мс, закрываем соединение ${this.MAIN_HOST}`);
+
+          this._closeReason = 'degraded';
 
           try {
             this.WebSocket.close(4000);
@@ -353,6 +388,7 @@ export class Api {
       console.warn(`API: ${this._consecutiveTimeouts} таймаута подряд, переподключение через гонку (хост ${this.MAIN_HOST})`);
 
       this._consecutiveTimeouts = 0;
+      this._closeReason = 'degraded';
 
       try {
         this.WebSocket.close();
@@ -361,7 +397,7 @@ export class Api {
   }
 
   // Пагинированный запрос: сервер отдаёт {items, next, more} (страница тримится
-  // под бюджет размера — фрейм не перерастает лимит WS-прокси CF). Цикл до
+  // под бюджет размера — без многокилобайтных фреймов). Цикл до
   // набора полного набора; возвращается плоский массив (экраны ждут список).
   // Совместимость со старым бэкендом: обычный массив = одна страница.
   async requestPaged(object, method, data) {
