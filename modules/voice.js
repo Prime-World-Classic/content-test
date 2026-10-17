@@ -365,9 +365,11 @@ export class Voice {
   }
 
   // Настройка «Мут всех и себя» (ключ novoice остался от прежней «Выключить войс чат»): звонки
-  // соединяются как обычно, но собеседники и свой микрофон начинают заглушёнными. Снять мут можно
-  // как обычно — кнопкой динамика у игрока (в панели и в оверлее боя) и Ctrl+Z; на следующий
-  // матч все снова в муте (resetMutedAllForMatch). Личный мут собеседников (сохраняется)
+  // матча соединяются как обычно, но собеседники и свой микрофон начинают заглушёнными. Снять мут
+  // можно как обычно — кнопкой динамика у игрока (в панели и в оверлее боя) и Ctrl+Z; на
+  // следующий матч все снова в муте (resetMutedAllForMatch). Не глушим звонки друзьям: в них
+  // заходят сами, и тиммейт, с которым говорили ещё до матча, остаётся в этом звонке —
+  // его слышно, и свой микрофон тогда тоже не выключаем. Личный мут собеседников (сохраняется)
   // не трогаем — после снятия галочки всё как было.
   static mutedAllUnmuted = new Set();
 
@@ -375,16 +377,34 @@ export class Voice {
     return Boolean(Settings.settings?.novoice);
   }
 
-  static isPeerSilenced(id) {
-    if (Voice.isPeerMuted(id)) return true;
-    return Voice.isMutedAll() && !Voice.mutedAllUnmuted.has(Number(id));
+  static isInMatch() {
+    return Boolean(MM.isInTambur || MM.isInBattle);
   }
 
-  static applyMutedAll() {
-    Voice.mutedAllUnmuted.clear();
-    if (Voice.mic) {
-      Voice.mic.enabled = !Voice.isMutedAll() && !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
-    }
+  static isMutedAllTarget(id) {
+    if (!Voice.isMutedAll() || Voice.mutedAllUnmuted.has(Number(id))) return false;
+    const target = Voice.manager[Number(id)];
+    return !target || !Voice.isFriendScopedConnection(target);
+  }
+
+  static isPeerSilenced(id) {
+    return Voice.isPeerMuted(id) || Voice.isMutedAllTarget(id);
+  }
+
+  // Свой микрофон при первом звонке: в матче под «Мут всех и себя» — выключен.
+  static getInitialMicEnabled() {
+    if (Settings.settings?.voiceRadioMode) return false;
+    if (Voice.isMutedAll() && Voice.isInMatch()) return false;
+    return Voice.getMicWanted();
+  }
+
+  static hasFriendCall(allySet = null) {
+    return Object.keys(Voice.manager).some(
+      (id) => Voice.isFriendScopedConnection(Voice.manager[id]) && (!allySet || allySet.has(Number(id))),
+    );
+  }
+
+  static refreshMutedAll() {
     for (const id in Voice.manager) {
       Voice.applyPeerOutputVolume(id);
     }
@@ -393,12 +413,26 @@ export class Voice {
 
   static setMutedAll(muted) {
     Settings.settings.novoice = Boolean(muted);
-    Voice.applyMutedAll();
+    Voice.mutedAllUnmuted.clear();
+    if (Voice.mic) {
+      if (!Voice.isMutedAll()) {
+        Voice.mic.enabled = !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+      } else if (Voice.isInMatch() && !Voice.hasFriendCall()) {
+        Voice.mic.enabled = false;
+      }
+    }
+    Voice.refreshMutedAll();
   }
 
-  static resetMutedAllForMatch() {
+  static resetMutedAllForMatch(allyIds = []) {
+    Voice.mutedAllUnmuted.clear();
     if (!Voice.isMutedAll()) return;
-    Voice.applyMutedAll();
+    const allySet = new Set(allyIds.map(Number));
+    if (Voice.mic && !Voice.hasFriendCall(allySet)) {
+      Voice.mic.enabled = false;
+    }
+    Voice.log('mute-all-match', { keepMic: Boolean(Voice.mic?.enabled) });
+    Voice.refreshMutedAll();
   }
 
   static setPeerMuted(id, muted = true) {
@@ -425,7 +459,8 @@ export class Voice {
       return;
     }
     const nextMuted = !Voice.isPeerSilenced(targetId);
-    if (Voice.isMutedAll()) {
+    const target = Voice.manager[targetId];
+    if (Voice.isMutedAll() && !(target && Voice.isFriendScopedConnection(target))) {
       // Под «Мут всех и себя» снятие/возврат мута живёт до конца матча и не меняет личный мут.
       if (nextMuted) {
         Voice.mutedAllUnmuted.delete(targetId);
@@ -788,7 +823,7 @@ export class Voice {
 
     if (Voice.mic) {
       // В режиме рации микрофон включается только удержанием клавиши.
-      Voice.mic.enabled = !Voice.isMutedAll() && !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+      Voice.mic.enabled = Voice.getInitialMicEnabled();
     }
   }
 
@@ -865,7 +900,7 @@ export class Voice {
       Voice.processingInput.connect(Voice.processingGain);
     } else {
       // Без обработки собеседникам уходит сама дорожка микрофона — меняем её в отправителях.
-      track.enabled = Voice.mic ? Voice.mic.enabled : !Voice.isMutedAll() && !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+      track.enabled = Voice.mic ? Voice.mic.enabled : Voice.getInitialMicEnabled();
       for (const id in Voice.manager) {
         const senders = Voice.manager[id]?.peer?.getSenders?.() || [];
         for (const sender of senders) {
@@ -1619,8 +1654,9 @@ export class Voice {
   }
 
   static async association(i, users, key) {
-    // Новый матч: под «Мут всех и себя» все снова в муте, включая свой микрофон.
-    Voice.resetMutedAllForMatch();
+    // Новый матч: под «Мут всех и себя» все снова в муте, включая свой микрофон, — кроме
+    // союзников, с которыми звонок друзей шёл ещё до матча.
+    Voice.resetMutedAllForMatch(users.map((user) => user.id));
 
     // Панель покажет сам звонок (call/accept): в лобби может быть некому звонить.
     let start = false;
@@ -1910,7 +1946,7 @@ export class Voice {
 
     // Звонок другу, начатый самим игроком, сразу с включённым микрофоном (не при переподключении
     // после боя и не в режиме рации — там микрофон включает зажатая клавиша)
-    if (Voice.mic && this.key === 'friend' && !Number(options?.reconnect || 0) && !Settings.settings?.voiceRadioMode && !Voice.isMutedAll() && !Voice.mic.enabled) {
+    if (Voice.mic && this.key === 'friend' && !Number(options?.reconnect || 0) && !Settings.settings?.voiceRadioMode && !Voice.mic.enabled) {
       Voice.mic.enabled = true;
       Voice.setMicWanted(true);
       Sound.play(SOUNDS_LIBRARY.VC_ENABALED, {

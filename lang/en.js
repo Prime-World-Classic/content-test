@@ -563,7 +563,7 @@ export const en = {
     voiceClosed: 'ended',
     callsDropped: 'Calls successfully dropped except for your friends',
     voiceDisabled: 'Voice communication is disabled',
-    voiceMutedAllHint: '“Mute everyone and myself” is on: every match starts with all players and your mic muted. Unmute a player with the speaker button next to them',
+    voiceMutedAllHint: '“Mute everyone and myself” is on: every match starts with teammates and your mic muted, except those you were talking to before the match. Unmute a player with the speaker button next to them',
     synthesisLang: 'en-US',
     hotkeyDropCalls: '<strong>Ctrl+K</strong> - drop all calls except friends',
     hotkeyDropCallsSuffix: ' - drop all calls except friends',
