@@ -3,8 +3,10 @@
 import * as mat4 from '../glMatrix/mat4.js';
 import * as quat from '../glMatrix/quat.js';
 
-// Пути — относительно самого модуля (content/modules/easel/), а не документа
-export const CONTENT_BASE = new URL('../../', import.meta.url).href;
+// Пути — относительно самого модуля (content/modules/easel/), а не документа. Путь — через переменную:
+// литерал в new URL('...', import.meta.url) dev-сервер Vite переписывает как ассет и теряет «/» на конце.
+const CONTENT_REL = '../../';
+export const CONTENT_BASE = new URL(CONTENT_REL, import.meta.url).href;
 export const EASEL_BASE = CONTENT_BASE + 'easel/';
 
 export async function fetchOk(url, type = 'json') {

@@ -18,7 +18,9 @@ import { PreloadImages } from './preloadImages.js';
 import { DOM } from './dom.js';
 import { domAudioPresets } from './domAudioPresets.js';
 import { SOUNDS_LIBRARY } from './soundsLibrary.js';
-import { EaselCastleFx, redrawShadowRect, rotatingShadowRect } from './easel/easelCastleFx.js';
+import { EaselCastleFx } from './easel/easelCastleFx.js';
+import { redrawShadowRect, rotatingShadowRect } from './castleSkin.js';
+import { CastlePets } from './castlePets.js';
 import { CastleLighting } from './castleLighting.js';
 import { CastleFireflies } from './castleFireflies.js';
 
@@ -2026,6 +2028,9 @@ export class Castle {
       }
     }
 
+    // питомцы в домиках (и в домике-фантоме при постройке) — после того, как фантом попал в список
+    CastlePets.update(Castle, buildingsToDraw);
+
     if (Castle.isSMEnabled && !Castle.isStaticSMCached && Castle.sceneObjects && Castle.isBuildingsLoaded) {
       Castle.gl.bindFramebuffer(Castle.gl.FRAMEBUFFER, Castle.depthFramebuffer);
       Castle.gl.viewport(0, 0, Castle.depthTextureSize, Castle.depthTextureSize);
@@ -2055,6 +2060,9 @@ export class Castle {
     // тень анимированных капель «Мастерской свитков»: перерисовка участка карты теней
     if (Castle.isSMEnabled && Castle.isStaticSMCached && buildingsToDraw.some((b) => b.name === 'easel')) {
       EaselCastleFx.updateShadow(Castle, buildingsToDraw);
+    }
+    if (Castle.isSMEnabled && Castle.isStaticSMCached) {
+      CastlePets.updateShadow(Castle, buildingsToDraw);
     }
 
     // Отложенное освещение: непрозрачное — в G-buffer, затем огни зданий и вывод на экран
@@ -2570,7 +2578,7 @@ export class Castle {
 
     Castle.gl.uniformMatrix4fv(matWorldUniformLocation, Castle.gl.FALSE, worldMatrix2);
 
-    // кости скиннинга (VS_SKIN): поза объекта (EaselCastleFx), до первой позы — поза привязки
+    // кости скиннинга (VS_SKIN): поза объекта (castleSkin.js — мольберт, питомцы), до первой позы — поза привязки
     let bonesLocation = Castle.getUniformLocation(program, 'bones');
     if (bonesLocation) {
       Castle.gl.uniform4fv(bonesLocation, Castle.currentDrawObject?.bones || Castle.bindPoseBones());
