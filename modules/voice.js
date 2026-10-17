@@ -161,6 +161,11 @@ export class Voice {
 
   static battleSuspendedAt = 0;
 
+  // Союзники по матчу, с которыми звонок друзей шёл ещё до матча (он не ставится на паузу).
+  // Если связь с ними оборвётся в бою, их переподключение надо пустить — иначе звонок
+  // вернулся бы только после боя.
+  static battleFriendAllies = new Set();
+
   static battleSuspendMaxMs = 3 * 60 * 1000;
 
   // Матч, в котором звонки не рвём: 1×1 (союзников нет — иначе пауза сбросила бы всех)
@@ -1439,7 +1444,29 @@ export class Voice {
     return Voice.battleKeepCalls || Voice.isTestClient();
   }
 
+  static isBattleFriendAlly(id) {
+    return Voice.battleFriendAllies.has(Number(id));
+  }
+
+  static rememberBattleFriendAllies(allyIds = []) {
+    const allySet = new Set((allyIds || []).map((x) => Number(x)));
+    Voice.battleFriendAllies = new Set();
+    for (const idText of Object.keys(Voice.manager)) {
+      const id = Number(idText);
+      if (allySet.has(id) && Voice.isFriendScopedConnection(Voice.manager[idText])) {
+        Voice.battleFriendAllies.add(id);
+      }
+    }
+    // Связь могла оборваться ещё до лобби — тогда звонка в manager нет, но идёт переподключение.
+    for (const job of Voice.reconnectJobs.values()) {
+      if (allySet.has(job.id) && (job.key === 'friend' || (!job.key && job.important))) {
+        Voice.battleFriendAllies.add(job.id);
+      }
+    }
+  }
+
   static suspendPeersForBattle(allyIds = [], playerCount = 0) {
+    Voice.rememberBattleFriendAllies(allyIds);
     if (Voice.setMatchKeepCalls(playerCount)) {
       // Ничего не ставим на паузу и не игнорируем переподключения друзей до начала боя.
       Voice.battleSuspendedAt = 0;
@@ -1488,6 +1515,7 @@ export class Voice {
   static restoreSuspendedBattlePeers() {
     Voice.battleSuspendedAt = 0;
     Voice.battleKeepCalls = false;
+    Voice.battleFriendAllies.clear();
     if (!Voice.battleSuspendedPeers.size) {
       return;
     }

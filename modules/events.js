@@ -407,7 +407,11 @@ export class Events {
     const logIn = (decision, extra = {}) =>
       Voice.log('incoming', { id: Number(data?.id), key: callKey, reconnect: Number(data?.reconnect || 0), caller: Boolean(data?.isCaller), decision, ...extra });
     // 1×1 и тестовый клиент: звонок не рвётся на матч, поэтому его переподключение пускаем.
-    const keepReconnect = Voice.isMatchKeepCalls() && Number(data?.reconnect || 0) === 1;
+    // Так же пускаем переподключение союзника, с которым звонок друзей шёл ещё до матча:
+    // этот звонок в бою не ставится на паузу, и обрыв связи не должен ждать конца боя.
+    const isReconnect = Number(data?.reconnect || 0) === 1;
+    const keepReconnect =
+      isReconnect && (Voice.isMatchKeepCalls() || (callKey === 'friend' && Voice.isBattleFriendAlly(data?.id)));
     if ((MM.isInBattle || Voice.isBattleSuspendActive()) && callKey === 'friend' && !keepReconnect) {
       logIn('ignored-battle', { inBattle: MM.isInBattle });
       return;
