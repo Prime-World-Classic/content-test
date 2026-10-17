@@ -1421,7 +1421,7 @@ export class Window {
               event: [
                 'change',
                 (e) => {
-                  Settings.settings.novoice = e.target.checked;
+                  Voice.setMutedAll(e.target.checked);
                 },
               ],
             },

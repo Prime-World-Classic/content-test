@@ -342,7 +342,7 @@ export class Voice {
     const peerGain = Voice.peerPercentToGain(Voice.getPeerVolumePercent(targetId));
     const globalGain = Math.max(0, Math.min(1, Number(Voice.volumeLevel) || 0));
     const gain = peerGain * globalGain;
-    const effectiveGain = Voice.isPeerMuted(targetId) ? 0 : gain;
+    const effectiveGain = Voice.isPeerSilenced(targetId) ? 0 : gain;
     if (target.playbackGain) {
       try {
         target.playbackGain.gain.value = effectiveGain;
@@ -352,7 +352,7 @@ export class Voice {
       if (target.playbackGain) {
         target.controller.muted = true;
       } else {
-        target.controller.muted = Voice.isPeerMuted(targetId);
+        target.controller.muted = Voice.isPeerSilenced(targetId);
         target.controller.volume = Math.max(0, Math.min(1, effectiveGain));
       }
     }
@@ -362,6 +362,43 @@ export class Voice {
     Voice.ensurePeerSettingsLoaded();
     const targetId = Number(id);
     return Number.isFinite(targetId) && targetId > 0 && Voice.mutedPeers.has(targetId);
+  }
+
+  // Настройка «Мут всех и себя» (ключ novoice остался от прежней «Выключить войс чат»): звонки
+  // соединяются как обычно, но собеседники и свой микрофон начинают заглушёнными. Снять мут можно
+  // как обычно — кнопкой динамика у игрока (в панели и в оверлее боя) и Ctrl+Z; на следующий
+  // матч все снова в муте (resetMutedAllForMatch). Личный мут собеседников (сохраняется)
+  // не трогаем — после снятия галочки всё как было.
+  static mutedAllUnmuted = new Set();
+
+  static isMutedAll() {
+    return Boolean(Settings.settings?.novoice);
+  }
+
+  static isPeerSilenced(id) {
+    if (Voice.isPeerMuted(id)) return true;
+    return Voice.isMutedAll() && !Voice.mutedAllUnmuted.has(Number(id));
+  }
+
+  static applyMutedAll() {
+    Voice.mutedAllUnmuted.clear();
+    if (Voice.mic) {
+      Voice.mic.enabled = !Voice.isMutedAll() && !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+    }
+    for (const id in Voice.manager) {
+      Voice.applyPeerOutputVolume(id);
+    }
+    Voice.updateInfoPanel();
+  }
+
+  static setMutedAll(muted) {
+    Settings.settings.novoice = Boolean(muted);
+    Voice.applyMutedAll();
+  }
+
+  static resetMutedAllForMatch() {
+    if (!Voice.isMutedAll()) return;
+    Voice.applyMutedAll();
   }
 
   static setPeerMuted(id, muted = true) {
@@ -387,8 +424,22 @@ export class Voice {
     if (!Number.isFinite(targetId) || targetId <= 0) {
       return;
     }
-    const nextMuted = !Voice.isPeerMuted(targetId);
-    Voice.setPeerMuted(targetId, nextMuted);
+    const nextMuted = !Voice.isPeerSilenced(targetId);
+    if (Voice.isMutedAll()) {
+      // Под «Мут всех и себя» снятие/возврат мута живёт до конца матча и не меняет личный мут.
+      if (nextMuted) {
+        Voice.mutedAllUnmuted.delete(targetId);
+      } else {
+        Voice.mutedAllUnmuted.add(targetId);
+      }
+      if (!nextMuted && Voice.isPeerMuted(targetId)) {
+        Voice.setPeerMuted(targetId, false);
+      } else {
+        Voice.applyPeerOutputVolume(targetId);
+      }
+    } else {
+      Voice.setPeerMuted(targetId, nextMuted);
+    }
     App.api
       .ghost('user', 'callMuteState', {
         id: targetId,
@@ -444,6 +495,7 @@ export class Voice {
       job.timer = null;
     }
     Voice.reconnectJobs.delete(token);
+    Voice.hideInfoPanelIfIdle();
   }
 
   static getReconnectJob(id, key) {
@@ -455,10 +507,28 @@ export class Voice {
     return Voice.infoPanel?.querySelector?.('.voice-info-panel-body') || null;
   }
 
+  // Панель нужна, только пока идёт звонок (или его переподключение — между попытками записи
+  // собеседника нет) или включён свой микрофон (в режиме рации без собеседников говорить
+  // некому). Иначе — пустая рамка с крестиком, которая висела после каждого лобби без
+  // голосовых союзников.
+  static shouldShowInfoPanel() {
+    if (Object.keys(Voice.manager).length > 0 || Voice.reconnectJobs.size > 0) return true;
+    return Boolean(Voice.mic?.enabled) && !Settings.settings?.voiceRadioMode;
+  }
+
   static showInfoPanel(force = false) {
     if (!Voice.infoPanel) return;
     if (!force && Voice.infoPanelHiddenByUser) return;
+    if (!Voice.shouldShowInfoPanel()) return;
+    if (!Voice.getInfoPanelBody()?.firstChild) {
+      Voice.updateInfoPanel();
+    }
     Voice.infoPanel.style.display = 'flex';
+  }
+
+  static hideInfoPanelIfIdle() {
+    if (!Voice.infoPanel || Voice.shouldShowInfoPanel()) return;
+    Voice.infoPanel.style.display = 'none';
   }
 
   static stopAllReconnectJobs() {
@@ -469,6 +539,7 @@ export class Voice {
       }
     }
     Voice.reconnectJobs.clear();
+    Voice.hideInfoPanelIfIdle();
   }
 
   static ensureReconnectJob(id, key, name = '', important = false, initialDelayMs = 0) {
@@ -574,7 +645,6 @@ export class Voice {
   }
 
   static async setMicEnabled(enabled) {
-    if (Settings.settings.novoice) return;
     if (!Voice.userMedia || !Voice.mic) {
       await Voice.initLocalMedia();
     }
@@ -667,8 +737,6 @@ export class Voice {
   }
 
   static async initLocalMediaOnce() {
-    Voice.showInfoPanel();
-
     try {
       Voice.userMedia = await navigator.mediaDevices.getUserMedia(Voice.getMediaConstraints());
     } catch (error) {
@@ -720,7 +788,7 @@ export class Voice {
 
     if (Voice.mic) {
       // В режиме рации микрофон включается только удержанием клавиши.
-      Voice.mic.enabled = !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+      Voice.mic.enabled = !Voice.isMutedAll() && !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
     }
   }
 
@@ -797,7 +865,7 @@ export class Voice {
       Voice.processingInput.connect(Voice.processingGain);
     } else {
       // Без обработки собеседникам уходит сама дорожка микрофона — меняем её в отправителях.
-      track.enabled = Voice.mic ? Voice.mic.enabled : !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
+      track.enabled = Voice.mic ? Voice.mic.enabled : !Voice.isMutedAll() && !Settings.settings?.voiceRadioMode && Voice.getMicWanted();
       for (const id in Voice.manager) {
         const senders = Voice.manager[id]?.peer?.getSenders?.() || [];
         for (const sender of senders) {
@@ -842,7 +910,6 @@ export class Voice {
 
   static async toggleEnabledMic() {
     Voice.infoPanelHiddenByUser = false;
-    Voice.showInfoPanel(true);
     if (!Voice.userMedia) {
       await Voice.initLocalMedia();
 
@@ -873,6 +940,7 @@ export class Voice {
     }
 
     Voice.updateInfoPanel();
+    Voice.showInfoPanel(true);
   }
 
   static indication(source, callback) {
@@ -1046,11 +1114,14 @@ export class Voice {
           hintDivider +
           Lang.text('voicePeerVolumeHint') +
           '<br>────────────<br>' +
+          (Voice.isMutedAll() ? `${Lang.text('voiceMutedAllHint')}<br>` : '') +
           `<strong>${toggleKey}</strong>${Lang.text('enableMicSuffix').replace('{Voice.mic.label}', micLabel)}`;
       }
     }
 
     panelBody.append(tutorial);
+
+    Voice.hideInfoPanelIfIdle();
   }
 
   static playerInfoPanel(id) {
@@ -1130,9 +1201,9 @@ export class Voice {
     );
     
     const updateItemView = () => {
-      const mutedMark = Voice.isPeerMuted(Number(id)) ? ' [MUTED]' : '';
+      const mutedMark = Voice.isPeerSilenced(Number(id)) ? ' [MUTED]' : '';
       item.innerText = `${state()}${mutedMark}`;
-      mute.replaceChildren(uiIcon(Voice.isPeerMuted(Number(id)) ? 'sound-off' : 'sound-on'));
+      mute.replaceChildren(uiIcon(Voice.isPeerSilenced(Number(id)) ? 'sound-off' : 'sound-on'));
       mutedByIcon.style.display = Voice.isMutedByPeer(Number(id)) ? '' : 'none';
     };
     
@@ -1548,13 +1619,10 @@ export class Voice {
   }
 
   static async association(i, users, key) {
-    if (Settings.settings.novoice) {
-      throw Lang.text('voiceDisabled');
-    }
+    // Новый матч: под «Мут всех и себя» все снова в муте, включая свой микрофон.
+    Voice.resetMutedAllForMatch();
 
-    Voice.infoPanelHiddenByUser = false;
-    Voice.showInfoPanel(true);
-
+    // Панель покажет сам звонок (call/accept): в лобби может быть некому звонить.
     let start = false;
 
     for (let user of users) {
@@ -1647,7 +1715,7 @@ export class Voice {
         }
       }
       
-      this.controller.muted = Voice.isPeerMuted(this.id);
+      this.controller.muted = Voice.isPeerSilenced(this.id);
       Voice.applyPeerOutputVolume(this.id);
 
       this.controller.play();
@@ -1823,13 +1891,6 @@ export class Voice {
   }
 
   async call(options = {}) {
-    if (Settings.settings.novoice) {
-      throw Lang.text('voiceDisabled');
-    }
-
-    Voice.infoPanelHiddenByUser = false;
-    Voice.showInfoPanel(true);
-
     if (!this.peer) {
       return;
     }
@@ -1838,11 +1899,18 @@ export class Voice {
       return;
     }
 
+    // Попытка переподключения не открывает заново панель, закрытую крестиком.
+    const isReconnect = Boolean(Number(options?.reconnect || 0));
+    if (!isReconnect) {
+      Voice.infoPanelHiddenByUser = false;
+    }
+    Voice.showInfoPanel(!isReconnect);
+
     await Voice.initLocalMedia();
 
     // Звонок другу, начатый самим игроком, сразу с включённым микрофоном (не при переподключении
     // после боя и не в режиме рации — там микрофон включает зажатая клавиша)
-    if (Voice.mic && this.key === 'friend' && !Number(options?.reconnect || 0) && !Settings.settings?.voiceRadioMode && !Voice.mic.enabled) {
+    if (Voice.mic && this.key === 'friend' && !Number(options?.reconnect || 0) && !Settings.settings?.voiceRadioMode && !Voice.isMutedAll() && !Voice.mic.enabled) {
       Voice.mic.enabled = true;
       Voice.setMicWanted(true);
       Sound.play(SOUNDS_LIBRARY.VC_ENABALED, {
@@ -1902,16 +1970,12 @@ export class Voice {
   }
 
   async accept(offer) {
-    if (Settings.settings.novoice) {
-      throw Lang.text('voiceDisabled');
+    if (!this.peer) {
+      return;
     }
 
     Voice.infoPanelHiddenByUser = false;
     Voice.showInfoPanel(true);
-
-    if (!this.peer) {
-      return;
-    }
 
     await Voice.initLocalMedia();
 

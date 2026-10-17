@@ -403,14 +403,6 @@ export class Events {
 
 
   static async VCall(data) {
-    if (Settings.settings?.novoice) {
-      Sound.stop('ui-call');
-      Window.callData = null;
-      if (Window.windows?.main?.id === 'wcastle-call') {
-        Window.close('main');
-      }
-      return;
-    }
     const callKey = String(data?.key || '');
     const logIn = (decision, extra = {}) =>
       Voice.log('incoming', { id: Number(data?.id), key: callKey, reconnect: Number(data?.reconnect || 0), caller: Boolean(data?.isCaller), decision, ...extra });

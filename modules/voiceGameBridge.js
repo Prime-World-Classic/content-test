@@ -151,9 +151,7 @@ export class VoiceGameBridge {
         }
 
         case 'mic':
-          if (!Settings.settings?.novoice) {
-            Voice.toggleEnabledMic();
-          }
+          Voice.toggleEnabledMic();
           break;
 
         case 'ptt':
@@ -272,7 +270,7 @@ export class VoiceGameBridge {
 
   static buildState() {
     const settings = Settings.settings || {};
-    const enabled = settings.voiceOverlay !== false && !settings.novoice;
+    const enabled = settings.voiceOverlay !== false;
     const pos = Array.isArray(settings.voiceOverlayPos) ? settings.voiceOverlayPos : [-1, -1];
     const lines = [
       'PWV 1',
@@ -314,7 +312,7 @@ export class VoiceGameBridge {
         alive.add(peer.stream);
         if (VoiceGameBridge.isSpeaking(peer.stream, now)) flags |= 1;
       }
-      if (Voice.isPeerMuted(id)) flags |= 2;
+      if (Voice.isPeerSilenced(id)) flags |= 2;
       if (Voice.isMutedByPeer(id)) flags |= 4;
       if (!connected) flags |= 8;
       const peerMic = VoiceGameBridge.peerMicStates.get(id);
