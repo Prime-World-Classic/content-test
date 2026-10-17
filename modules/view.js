@@ -28,6 +28,7 @@ import { ensureActionBarSlotsInNativeCfg, loadKeybinds } from './keybindings/key
 import { getHeroSearchAliases } from './heroSearchAliases.js';
 import { uiIcon } from './uiIcon.js';
 import { TalentAdmin } from './talentAdmin.js';
+import { ReplayUpload } from './replayUpload.js';
 
 const KEYBOARD_LAYOUT_EN_TO_RU = {
   q: 'й',
@@ -1450,6 +1451,7 @@ export class View {
 
     Shop.retrieveLastUpdate();
     syncFairGameFiles(); // номер выбранной похвалы и тексты похвал — в файлы игры
+    ReplayUpload.resume(); // недосланные реплеи боёв (после перезапуска лончера тоже)
 
     View.setCss('content/castle.css');
 

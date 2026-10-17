@@ -360,12 +360,40 @@ export class NativeAPI {
     await Promise.race([NativeAPI.hashTestDone, sleep(3000)]);
   }
 
+  // Прочие фоновые процессы с колбэками в странице (сжатие реплея —
+  // replayUpload.js): перед reload ждём их, зависшие — убиваем.
+  static CHILD_RELOAD_WAIT_MS = 30 * 1000;
+
+  static reloadChildren = new Set();
+
+  static trackChildBeforeReload(child) {
+    const entry = { child, done: null };
+    entry.done = new Promise((resolve) => {
+      child.once('close', resolve);
+      child.once('error', resolve);
+    }).finally(() => NativeAPI.reloadChildren.delete(entry));
+    NativeAPI.reloadChildren.add(entry);
+  }
+
+  static async waitChildrenBeforeReload() {
+    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    for (const entry of [...NativeAPI.reloadChildren]) {
+      await Promise.race([entry.done, sleep(NativeAPI.CHILD_RELOAD_WAIT_MS)]);
+      if (!NativeAPI.reloadChildren.has(entry)) continue;
+      try {
+        entry.child.kill();
+      } catch {}
+      await Promise.race([entry.done, sleep(3000)]);
+    }
+  }
+
   static async resetWhenContentReady() {
     if (!NativeAPI.status) return;
     const fs = NativeAPI.fileSystem;
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await NativeAPI.markReloadAfterUpdate();
     await NativeAPI.waitHashTestBeforeReload();
+    await NativeAPI.waitChildrenBeforeReload();
     await sleep(1500);
     for (let attempt = 1; attempt <= 20; attempt++) {
       let missing = '';

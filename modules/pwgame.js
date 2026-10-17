@@ -1,6 +1,7 @@
 import { App } from './app.js';
 import { Lang } from './lang.js';
 import { NativeAPI } from './nativeApi.js';
+import { ReplayUpload } from './replayUpload.js';
 
 export class PWGame {
   static PATH = '../Game/Bin/PW_Game.exe';
@@ -237,13 +238,21 @@ export class PWGame {
 
     PWGame.openProtocolSocket();
 
+    // игра закрыта — реплей этого боя на бэкенд (replayUpload.js), зрителю не нужно
+    const onGameExit = () => {
+      if (method !== 'spectate') {
+        ReplayUpload.afterGame(id);
+      }
+      callback();
+    };
+
     if (NativeAPI.platform == 'linux') {
       let spawn = await NativeAPI.childProcess.exec(PWGame.LUTRIS_EXEC);
       spawn.on('close', async (code) => {
-        callback();
+        onGameExit();
       });
     } else {
-      await NativeAPI.exec(PWGame.PATH, PWGame.WORKING_DIR_PATH, ['protocol', PWGame.currentPlayPwProtocol], callback);
+      await NativeAPI.exec(PWGame.PATH, PWGame.WORKING_DIR_PATH, ['protocol', PWGame.currentPlayPwProtocol], onGameExit);
     }
   }
 
