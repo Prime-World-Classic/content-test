@@ -1,0 +1,5 @@
+{
+  "channel": "content-test",
+  "set": "bootstrap V4",
+  "note": "UI-ассеты вырезаны (tools/content-bootstrap-prune.py), их доставляет вторая стадия из launcher-pwc; между стадиями обновления лончер показывает полноэкранный Splash вместо замка"
+}
